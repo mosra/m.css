@@ -9,10 +9,18 @@ from docutils.utils import smartquotes
 import pelican.signals
 from pelican.readers import RstReader
 
+try:
+    import pyphen
+except ImportError:
+    pyphen = None
+
 # These come from settings
+enable_hyphenation = False
 smart_quotes = False
 hyphenation_lang = 'en'
 docutils_settings = {}
+
+words_re = re.compile("""\w+""", re.UNICODE|re.X)
 
 class SmartQuotes(docutils.transforms.universal.SmartQuotes):
     """Smart quote transform
@@ -96,12 +104,68 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
 
             self.unsupported_languages = set() # reset
 
+class Pyphen(Transform):
+    """Hyphenation using pyphen
+
+    Enabled or disabled using HTMLSANITY_HYPHENATION boolean option, defaulting
+    to ``False``.
+    """
+
+    # Max Docutils priority is 990, be sure that this is applied at the very
+    # last
+    default_priority = 991
+
+    def __init__(self, document, startnode):
+        Transform.__init__(self, document, startnode=startnode)
+
+    def apply(self):
+        global enable_hyphenation
+        if not enable_hyphenation:
+            return
+
+        document_language = self.document.settings.language_code
+
+        pyphen_for_lang = {}
+
+        # Go through all text words and hyphenate them
+        for node in self.document.traverse(nodes.TextElement):
+            # Skip preformatted text blocks, special elements and field names
+            if isinstance(node, (nodes.FixedTextElement, nodes.Special, nodes.field_name)):
+                continue
+
+            # Proper language-dependent hyphenation
+            lang = node.get_language_code(document_language)
+
+            # Create new Pyphen object for given lang, if not yet cached. I'm
+            # assuming this is faster than recreating the instance for every
+            # text node
+            if lang not in pyphen_for_lang:
+                pyphen_for_lang[lang] = pyphen.Pyphen(lang=lang)
+
+            for txtnode in node.traverse(nodes.Text):
+                # Exclude:
+                #  - literals and spans inside literals
+                #  - field bodies (such as various :save_as: etc.)
+                if isinstance(txtnode.parent, nodes.literal) or isinstance(txtnode.parent.parent, nodes.literal) or isinstance(txtnode.parent.parent, nodes.field_body):
+                    continue
+
+                txtnode.parent.replace(txtnode, nodes.Text(words_re.sub(lambda m: pyphen_for_lang[lang].inserted(m.group(0), '\u00AD'), txtnode.astext())))
+
 class SaneHtmlTranslator(HTMLTranslator):
     """Sane HTML translator
 
     Patched version of docutils builtin HTML5 translator, improving the output
     further.
     """
+
+    # Overrides the ones from docutils HTML5 writer to enable the soft hyphen
+    # character
+    special_characters = {ord('&'): '&amp;',
+                          ord('<'): '&lt;',
+                          ord('"'): '&quot;',
+                          ord('>'): '&gt;',
+                          ord('@'): '&#64;', # may thwart address harvesters
+                          ord('\u00AD'): '&shy;'}
 
     # Somehow this does the trick and removes docinfo from the body. Was
     # present in the HTML4 translator but not in the HTML5 one, so copying it
@@ -368,7 +432,7 @@ class SaneHtmlWriter(docutils.writers.html5_polyglot.Writer):
         self.translator_class = SaneHtmlTranslator
 
     def get_transforms(self):
-        return docutils.writers.html5_polyglot.Writer.get_transforms(self) + [SmartQuotes]
+        return docutils.writers.html5_polyglot.Writer.get_transforms(self) + [SmartQuotes, Pyphen]
 
 class SaneRstReader(RstReader):
     writer_class = SaneHtmlWriter
@@ -397,8 +461,10 @@ def render_rst(value):
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
 
-    global enable_smart_quotes, docutils_settings
-    enable_smart_quotes = pelicanobj.settings.get('HTMLSANITY_SMART_QUOTES', False)
+    global enable_hyphenation, smart_quotes, hyphenation_lang, docutils_settings
+    enable_hyphenation = pelicanobj.settings.get('HTMLSANITY_HYPHENATION', False)
+    smart_quotes = pelicanobj.settings.get('HTMLSANITY_SMART_QUOTES', False)
+    hyphenation_lang = pelicanobj.settings['DEFAULT_LANG']
     docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
 
 def add_reader(readers):
