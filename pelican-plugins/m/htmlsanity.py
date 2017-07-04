@@ -458,8 +458,16 @@ def render_rst(value):
     pub.publish(enable_exit_status=True)
     return pub.writer.parts.get('body')
 
+def hyphenate(value, enable=None, lang=None):
+    if enable is None: enable = enable_hyphenation
+    if lang is None: lang = hyphenation_lang
+    if not enable: return value
+    pyphen_ = pyphen.Pyphen(lang=lang)
+    return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '\u00AD'), str(value))
+
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
+    pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
 
     global enable_hyphenation, smart_quotes, hyphenation_lang, docutils_settings
     enable_hyphenation = pelicanobj.settings.get('HTMLSANITY_HYPHENATION', False)
