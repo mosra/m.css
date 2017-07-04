@@ -1,14 +1,100 @@
 import re
 
 from docutils.writers.html5_polyglot import HTMLTranslator
+from docutils.transforms import Transform
 import docutils
-from docutils import nodes
+from docutils import nodes, utils
+from docutils.utils import smartquotes
 
 import pelican.signals
 from pelican.readers import RstReader
 
 # These come from settings
+smart_quotes = False
+hyphenation_lang = 'en'
 docutils_settings = {}
+
+class SmartQuotes(docutils.transforms.universal.SmartQuotes):
+    """Smart quote transform
+
+    Copy-paste of docutils builtin smart_quotes feature, patched to *not*
+    replace quotes etc. in inline code blocks.  Original source from
+    https://github.com/docutils-mirror/docutils/blob/e88c5fb08d5cdfa8b4ac1020dd6f7177778d5990/docutils/transforms/universal.py#L207
+
+    Contrary to the builtin, this is controlled via HTMLSANITY_SMART_QUOTES
+    instead of smart_quotes in DOCUTILS_SETTINGS, so the original smart quotes
+    implementation is not executed.
+    """
+
+    # Original SmartQuotes have priority 850, we are patching them so we need
+    # a lower number
+    default_priority = 849
+
+    def apply(self):
+        # We are using our own config variable instead of
+        # self.document.settings.smart_quotes in order to avoid the builtin
+        # SmartQuotes to be executed as well
+        global smart_quotes
+        if not smart_quotes:
+            return
+        try:
+            alternative = smart_quotes.startswith('alt')
+        except AttributeError:
+            alternative = False
+        # print repr(alternative)
+
+        document_language = self.document.settings.language_code
+
+        # "Educate" quotes in normal text. Handle each block of text
+        # (TextElement node) as a unit to keep context around inline nodes:
+        for node in self.document.traverse(nodes.TextElement):
+            # skip preformatted text blocks and special elements:
+            if isinstance(node, (nodes.FixedTextElement, nodes.Special)):
+                continue
+            # nested TextElements are not "block-level" elements:
+            if isinstance(node.parent, nodes.TextElement):
+                continue
+
+            # list of text nodes in the "text block":
+            # Patched here to exclude text spans inside literal nodes.
+            # Hopefully two nesting levels are enough.
+            txtnodes = [txtnode for txtnode in node.traverse(nodes.Text)
+                        if not isinstance(txtnode.parent,
+                                          nodes.option_string) and
+                           not isinstance(txtnode.parent,
+                                          nodes.literal) and
+                           not isinstance(txtnode.parent.parent,
+                                          nodes.literal)]
+
+            # language: use typographical quotes for language "lang"
+            lang = node.get_language_code(document_language)
+            # use alternative form if `smart-quotes` setting starts with "alt":
+            if alternative:
+                if '-x-altquot' in lang:
+                    lang = lang.replace('-x-altquot', '')
+                else:
+                    lang += '-x-altquot'
+            # drop subtags missing in quotes:
+            for tag in utils.normalize_language_tag(lang):
+                if tag in smartquotes.smartchars.quotes:
+                    lang = tag
+                    break
+            else: # language not supported: (keep ASCII quotes)
+                if lang not in self.unsupported_languages:
+                    self.document.reporter.warning('No smart quotes '
+                        'defined for language "%s".'%lang, base_node=node)
+                self.unsupported_languages.add(lang)
+                lang = ''
+
+            # Iterator educating quotes in plain text:
+            # '2': set all, using old school en- and em- dash shortcuts
+            teacher = smartquotes.educate_tokens(self.get_tokens(txtnodes),
+                                                 attr='2', language=lang)
+
+            for txtnode, newtext in zip(txtnodes, teacher):
+                txtnode.parent.replace(txtnode, nodes.Text(newtext))
+
+            self.unsupported_languages = set() # reset
 
 class SaneHtmlTranslator(HTMLTranslator):
     """Sane HTML translator
@@ -281,6 +367,9 @@ class SaneHtmlWriter(docutils.writers.html5_polyglot.Writer):
 
         self.translator_class = SaneHtmlTranslator
 
+    def get_transforms(self):
+        return docutils.writers.html5_polyglot.Writer.get_transforms(self) + [SmartQuotes]
+
 class SaneRstReader(RstReader):
     writer_class = SaneHtmlWriter
     field_body_translator_class = _SaneFieldBodyTranslator
@@ -308,6 +397,8 @@ def render_rst(value):
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
 
+    global enable_smart_quotes, docutils_settings
+    enable_smart_quotes = pelicanobj.settings.get('HTMLSANITY_SMART_QUOTES', False)
     docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
 
 def add_reader(readers):
