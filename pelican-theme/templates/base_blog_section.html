@@ -1,0 +1,16 @@
+{% extends "base_blog.html" %}
+{% block content %}
+<div class="m-col-m-10">
+  {% block content_title %}
+  {% endblock content_title %}
+  {% for article in articles_page.object_list %}
+  <article>
+    {% include "article_header.html" %}
+    {% include "article_footer.html" %}
+  </article>
+  {% endfor %}
+  {% if articles_page.has_other_pages() %}
+    {% include 'pagination.html' %}
+  {% endif %}
+</div>
+{% endblock content %}

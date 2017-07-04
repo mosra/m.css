@@ -1,0 +1,9 @@
+{% extends "base_blog_section.html" %}
+
+{% block title %}Posts tagged {{ tag }} | {{ BLOGNAME }}{% endblock %}
+
+{% block content_title %}
+<div class="m-info m-note">
+  Showing only posts tagged <em>{{ tag }}</em>. <a href="{{ BLOGURL }}/">Show all posts.</a>
+</div>
+{% endblock %}

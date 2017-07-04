@@ -1,0 +1,23 @@
+{% extends "base_blog.html" %}
+{% block content %}
+<div class="m-col-m-10">
+  {% block content_title %}
+  {% endblock content_title %}
+  {% for article in articles_page.object_list %}
+  <article>
+    {% include "article_header.html" %}
+    {% if loop.first and articles_page.number == 1 %}
+    <div class="m-clearfix-l"></div>
+    {{ article.content }}
+    {% endif %}
+    {% include "article_footer.html" %}
+    {% if not loop.first or articles_page.number != 1 %}
+    <div class="m-clearfix-l"></div>
+    {% endif %}
+  </article>
+  {% endfor %}
+  {% if articles_page.has_other_pages() %}
+      {% include 'pagination.html' %}
+  {% endif %}
+</div>
+{% endblock content %}

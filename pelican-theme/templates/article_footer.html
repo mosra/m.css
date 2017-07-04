@@ -1,0 +1,3 @@
+<footer>
+  <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url }} ">{{ article.category }}</a>.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+</footer>

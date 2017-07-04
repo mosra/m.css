@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="{{ DEFAULT_LANG }}">
+<head>
+  {% block head %}
+  <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
+  {% for href in CSS_FILES %}
+  <link rel="stylesheet" href="{{ href }}" />
+  {% endfor %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="{{ THEME_COLOR }}" />
+  <meta charset="UTF-8" />
+  {% if FEED_ALL_ATOM %}
+  <link href="{{ FEED_ALL_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
+  {% endif %}
+  {% if CATEGORY_FEED_ATOM and category %}
+  <link href="{{ CATEGORY_FEED_ATOM|format(category.slug) }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} | {{ category }}" />
+  {% endif %}
+  {% endblock head %}
+</head>
+<body>
+<header>
+  <nav id="navigation">
+    <div class="m-container">
+      <div class="m-row">
+        <a href="{{ SITEURL }}/" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">
+          {% if SITE_LOGO %}<img src="{{ SITE_LOGO }}" />{% endif %}
+          {{ SITE_LOGO_TEXT }}
+        </a>
+        <a id="m-navbar-show" href="#navigation" title="Show navigation" class="m-col-t-3 m-hide-m m-right">&#9776;</a>
+        <a id="m-navbar-hide" href="#" title="Hide navigation" class="m-col-t-3 m-hide-m m-right">&#9776;</a>
+        <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+          <div class="m-row">
+            <ol class="m-col-t-6 m-col-m-none">
+              {% for title, link, sub in LINKS_NAVBAR1 %}
+              <li>
+                <a href="{{ link }}" {% if title == page_title %}id="m-navbar-current"{% endif %}>{{ title }}</a>
+                {% if sub %}
+                <ol>
+                  {% for title, link in sub %}
+                    <li><a href="{{ link }}">{{ title }}</a></li>
+                  {% endfor %}
+                </ol>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ol>
+            <ol class="m-col-t-6 m-col-m-none">
+              {% for title, link, sub in LINKS_NAVBAR2 %}
+              <li>
+                <a href="{{ link }}" {% if title == page_title %}id="m-navbar-current"{% endif %}>{{ title }}</a>
+                {% if sub %}
+                <ol>
+                  {% for title, link in sub %}
+                    <li><a href="{{ link }}">{{ title }}</a></li>
+                  {% endfor %}
+                </ol>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+  {% block main %}
+  {% endblock %}
+</main>
+<footer>
+  <nav>
+    <div class="m-container">
+      <div class="m-row">
+        <div class="m-col-s-3 m-col-t-6">
+          <h3>
+            {% if LINKS_FOOTER1[0][1] %}<a href="{{ LINKS_FOOTER1[0][1] }}/">{% endif %}
+            {{ LINKS_FOOTER1[0][0] }}
+            {% if LINKS_FOOTER1[0][1] %}</a>{% endif %}
+          </h3>
+          <ul>
+            {% for title, link in LINKS_FOOTER1 %}
+            {% if loop.index0 != 0 %}<li><a href="{{ link }}">{{ title }}</a></li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="m-col-s-3 m-col-t-6">
+          <h3>
+            {% if LINKS_FOOTER2[0][1] %}<a href="{{ LINKS_FOOTER2[0][1] }}/">{% endif %}
+            {{ LINKS_FOOTER2[0][0] }}
+            {% if LINKS_FOOTER2[0][1] %}</a>{% endif %}
+          </h3>
+          <ul>
+            {% for title, link in LINKS_FOOTER2 %}
+            {% if loop.index0 != 0 %}<li><a href="{{ link }}">{{ title }}</a></li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="m-clearfix-t"></div>
+        <div class="m-col-s-3 m-col-t-6">
+          <h3>
+            {% if LINKS_FOOTER3[0][1] %}<a href="{{ LINKS_FOOTER3[0][1] }}/">{% endif %}
+            {{ LINKS_FOOTER3[0][0] }}
+            {% if LINKS_FOOTER3[0][1] %}</a>{% endif %}
+          </h3>
+          <ul>
+            {% for title, link in LINKS_FOOTER3 %}
+            {% if loop.index0 != 0 %}<li><a href="{{ link }}">{{ title }}</a></li>{% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="m-col-s-3 m-col-t-6">
+          {% if LINKS_FOOTER4 %}
+          <h3>
+            {% if LINKS_FOOTER4[0][1] %}<a href="{{ LINKS_FOOTER4[0][1] }}/">{% endif %}
+            {{ LINKS_FOOTER4[0][0] }}
+            {% if LINKS_FOOTER4[0][1] %}</a>{% endif %}
+          </h4>
+          <ul>
+            {% for title, link in LINKS_FOOTER4 %}
+            {% if loop.index0 != 0 %}<li><a href="{{ link }}">{{ title }}</a></li>{% endif %}
+            {% endfor %}
+          </ul>
+          {% else %}
+          <h3><a href="{{ BLOGURL }}">Blog</a></h3>
+          <ul>
+            {% for cat, null in categories %}
+            <li><a href="{{ cat.url }}">{{ cat }}</a></li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+      <div class="m-row">
+        <div class="m-col-l-10 m-push-l-1">
+          {{ FINE_PRINT|render_rst }}
+        </div>
+      </div>
+    </div>
+  </nav>
+</footer>
+</body>
+</html>
