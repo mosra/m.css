@@ -1,0 +1,104 @@
+@import url('m-grid.css');
+@import url('m-components.css');
+@import url('m-debug.css');
+
+:root {
+  /* Text properties */
+  --font: 'Source Sans Pro', sans-serif;
+  --code-font: 'Source Code Pro', monospace;
+  --link-decoration: underline;
+  --link-decoration-nav: none;
+  --link-decoration-heading: none;
+  --nav-brand-case: uppercase;
+  --nav-menu-case: none;
+  --nav-heading-case: uppercase;
+  --nav-categories-case: lowercase;
+  --nav-heading-case: uppercase;
+  --nav-categories-case: lowercase;
+  --heading-font-weight: bold;
+
+  /* Basics */
+  --background-color: #2f363f;
+  --color: #dcdcdc;
+  --line-color: #405363;
+  --link-color: #5b9dd9;
+  --link-active-color: #a5c9ea;
+  --mark-color: #2f83cc;
+  --mark-background-color: #c7cf2f;
+  --code-color: #e6e6e6;
+  --code-background-color: #34424d;
+
+  /* Header */
+  --header-border-width: 0 0 0.25rem 0;
+  --header-color: #ffffff;
+  --header-background-color: #22272e;
+  --header-link-color: #ffffff;
+  --header-link-active-color: #a5c9ea;
+  --header-link-current-color: #5b9dd9;
+  --header-link-active-background-color: #292f37;
+
+  /* Footer */
+  --footer-font-size: 0.85rem;
+  --footer-color: #c5c5c5;
+  --footer-background-color: #444e5c;
+  --footer-link-color: #ffffff;
+  --footer-link-active-color: #a5c9ea;
+
+  /* Article */
+  --article-header-color: #f0f0f0;
+  --article-footer-color: #c5c5c5;
+  --article-heading-color: #a5c9ea;
+  --article-heading-active-color: #dcdcdc;
+  --article-jumbo-cover-background-color: #666666;
+
+  /* Right navigation panel */
+  --navpanel-link-color: #ffffff;
+  --navpanel-link-active-color: #a5c9ea;
+
+  /* Colored components */
+  --default-color: #dcdcdc;
+  --default-filled-color: #dcdcdc;
+  --default-filled-background-color: #34424d;
+  --default-filled-link-color: #5b9dd9;
+  --default-filled-link-active-color: #a5c9ea;
+
+  --primary-color: #2f83cc;
+  --primary-filled-color: #2f363f;
+  --primary-filled-background-color: #a5c2db;
+  --primary-filled-link-color: #2a75b6;
+  --primary-filled-link-active-color: #2f363f;
+
+  --success-color: #3bd267;
+  --success-filled-color: #acecbe;
+  --success-filled-background-color: #2a703f;
+  --success-filled-link-color: #3bd267;
+  --success-filled-link-active-color: #acecbe;
+
+  --warning-color: #c7cf2f;
+  --warning-filled-color: #e9ecae;
+  --warning-filled-background-color: #6d702a;
+  --warning-filled-link-color: #b8bf2b;
+  --warning-filled-link-active-color: #e9ecae;
+
+  --danger-color: #cd3431;
+  --danger-filled-color: #ff9391;
+  --danger-filled-background-color: #702b2a;
+  --danger-filled-link-color: #d85c59;
+  --danger-filled-link-active-color: #ff9391;
+
+  --info-color: #a5c9ea;
+  --info-filled-color: #a5caeb;
+  --info-filled-background-color: #2a4f70;
+  --info-filled-link-color: #5297d7;
+  --info-filled-link-active-color: #a5caeb;
+
+  --dim-color: #747474;
+  --dim-link-color: #acacac;
+  --dim-link-active-color: #747474;
+  --dim-filled-color: #747474;
+  --dim-filled-background-color: #2d3236;
+  --dim-filled-link-color: #acacac;
+  --dim-filled-link-active-color: #747474;
+}
+
+/* kate: indent-width 2; */
