@@ -7,6 +7,9 @@ from docutils import nodes
 import pelican.signals
 from pelican.readers import RstReader
 
+# These come from settings
+docutils_settings = {}
+
 class SaneHtmlTranslator(HTMLTranslator):
     """Sane HTML translator
 
@@ -282,8 +285,34 @@ class SaneRstReader(RstReader):
     writer_class = SaneHtmlWriter
     field_body_translator_class = _SaneFieldBodyTranslator
 
+def render_rst(value):
+    extra_params = {'initial_header_level': '2',
+                    'syntax_highlight': 'short',
+                    'input_encoding': 'utf-8',
+                    'exit_status_level': 2,
+                    'embed_stylesheet': False}
+    if docutils_settings:
+        extra_params.update(docutils_settings)
+
+    pub = docutils.core.Publisher(
+        writer=SaneHtmlWriter(),
+        source_class=docutils.io.StringInput,
+        destination_class=docutils.io.StringOutput)
+    pub.set_components('standalone', 'restructuredtext', 'html')
+    pub.writer.translator_class = _SaneFieldBodyTranslator
+    pub.process_programmatic_settings(None, extra_params, None)
+    pub.set_source(source=value)
+    pub.publish(enable_exit_status=True)
+    return pub.writer.parts.get('body')
+
+def configure_pelican(pelicanobj):
+    pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
+
+    docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
+
 def add_reader(readers):
     readers.reader_classes['rst'] = SaneRstReader
 
 def register():
+    pelican.signals.initialized.connect(configure_pelican)
     pelican.signals.readers_init.connect(add_reader)
