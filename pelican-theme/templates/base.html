@@ -9,11 +9,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="{{ THEME_COLOR }}" />
   <meta charset="UTF-8" />
-  {% if FEED_ALL_ATOM %}
-  <link href="{{ FEED_ALL_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
+  {% if FEED_ALL_ATOM_URL %}
+  <link href="{{ FEED_ALL_ATOM_URL }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
   {% endif %}
-  {% if CATEGORY_FEED_ATOM and category %}
-  <link href="{{ CATEGORY_FEED_ATOM|format(category.slug) }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} | {{ category }}" />
+  {% if CATEGORY_FEED_ATOM_URL and category %}
+  <link href="{{ CATEGORY_FEED_ATOM_URL|format(category.slug) }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} | {{ category }}" />
   {% endif %}
   {% endblock head %}
 </head>
