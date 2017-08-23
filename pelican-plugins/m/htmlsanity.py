@@ -456,7 +456,7 @@ def render_rst(value):
     pub.process_programmatic_settings(None, extra_params, None)
     pub.set_source(source=value)
     pub.publish(enable_exit_status=True)
-    return pub.writer.parts.get('body')
+    return pub.writer.parts.get('body').strip()
 
 def hyphenate(value, enable=None, lang=None):
     if enable is None: enable = enable_hyphenation
