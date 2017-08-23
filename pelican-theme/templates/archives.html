@@ -1,23 +1,26 @@
 {% extends "base_blog.html" %}
 {% block content %}
-<div class="m-col-m-10">
-  {% block content_title %}
-  {% endblock content_title %}
-  {% for article in articles_page.object_list %}
-  <article>
-    {% include "article_header.html" %}
-    {% if loop.first and articles_page.number == 1 %}
-    <div class="m-clearfix-l"></div>
-    {{ article.content }}
-    {% endif %}
-    {% include "article_footer.html" %}
-    {% if not loop.first or articles_page.number != 1 %}
-    <div class="m-clearfix-l"></div>
-    {% endif %}
-  </article>
-  {% endfor %}
-  {% if articles_page.has_other_pages() %}
-      {% include 'pagination.html' %}
-  {% endif %}
-</div>
+    <div class="m-col-m-10">
+      {% block content_title %}
+      {% endblock content_title %}
+      {% for article in articles_page.object_list %}
+      <article>
+        {% macro header() %}{% include "article_header.html" %}{% endmacro %}
+        {{ header()|indent(8) }}
+        {% if loop.first and articles_page.number == 1 %}
+        <div class="m-clearfix-l"></div>
+        {{ article.content|indent(8) }}
+        {% endif %}
+        {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
+        {{ footer()|indent(8) }}
+        {% if not loop.first or articles_page.number != 1 %}
+        <div class="m-clearfix-l"></div>
+        {% endif %}
+      </article>
+      {% endfor %}
+      {% if articles_page.has_other_pages() %}
+      {% macro pagination() %}{% include 'pagination.html' %}{% endmacro %}
+      {{ pagination()|indent(6) }}
+      {% endif %}
+    </div>
 {% endblock content %}

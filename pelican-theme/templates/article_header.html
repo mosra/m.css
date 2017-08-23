@@ -1,11 +1,10 @@
 <header>
-  <h1><a href="{{ article.url }}" rel="bookmark"
-  title="Permalink to {{ article.title|striptags }}">
+  <h1><a href="{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">
     <time class="m-date" datetime="{{ article.date.isoformat() }}">
-    {% set month, day, year = article.locale_date.split(' ') %}
-    {{ month }} <span class="m-date-day">{{ day }}</span> {{year}}
+      {% set month, day, year = article.locale_date.split(' ') %}
+      {{ month }} <span class="m-date-day">{{ day }}</span> {{year}}
     </time>
-  {{ article.title }}
+    {{ article.title }}
   </a></h1>
-  {{ article.summary }}
+  {{ article.summary|indent(2) }}
 </header>

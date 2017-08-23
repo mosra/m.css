@@ -1,14 +1,21 @@
 {% set page_title = page.title|replace('&shy;', '') %}
 {% extends "base.html" %}
 
-{% block title %}{{ page.title }} | {{ SITENAME }}{%endblock%}
+{% block title %}{{ page.title }} | {{ SITENAME }}{% endblock %}
+
+{% block head %}
+  {{- super() -}}
+  {% if page.css %}
+  <link rel="stylesheet" href="{{ page|expand_link('css') }}" />
+  {% endif %}
+{% endblock %}
 
 {% block main %}
 <article class="m-container" id="m-container-inflatable">
   <div class="m-row">
     <div class="m-col-l-10 m-push-l-1">
       <h1>{{ page.title }}</h1>
-      {{ page.content }}
+      {{ page.content|indent(6) }}
     </div>
   </div>
 </article>

@@ -18,58 +18,60 @@
 {% endblock %}
 
 {% block content %}
-{% if article.cover %}
-<article class="m-jumbo {{ article.class }}">
-  <header>
-    <div class="m-jumbo-image" style="background-image: url('{{ article|expand_link('cover') }}');">
-      <div class="m-jumbo-cover">
-        <div class="m-container">
-          <div class="m-row">
-            <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-left">{{ article.locale_date }}</div>
-            <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-right">{% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}</div>
-          </div>
-          <div class="m-row">
-            <div class="m-col-t-12 m-col-s-10 m-push-s-1 m-col-m-8 m-push-m-2">
-              {% set title = article.title.split(' &#8212; ') %}
-              <h1><a href="{{ article.url }}" rel="bookmark"
-    title="Permalink to {{ article.title|striptags }}">
-              {{ title[0] }}
-              </a></h1>
-              {% if title|length >= 2 %}<h2>{{ title[1] }}</h2>{% endif %}
+    {% if article.cover %}
+    <article class="m-jumbo {{ article.class }}">
+      <header>
+        <div class="m-jumbo-image" style="background-image: url('{{ article|expand_link('cover') }}');">
+          <div class="m-jumbo-cover">
+            <div class="m-container">
+              <div class="m-row">
+                <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-left">{{ article.locale_date }}</div>
+                <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-right">{% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}</div>
+              </div>
+              <div class="m-row">
+                <div class="m-col-t-12 m-col-s-10 m-push-s-1 m-col-m-8 m-push-m-2">
+                  {% set title = article.title.split(' &#8212; ') %}
+                  <h1><a href="{{ article.url }}" rel="bookmark"
+        title="Permalink to {{ article.title|striptags }}">
+                  {{ title[0] }}
+                  </a></h1>
+                  {% if title|length >= 2 %}<h2>{{ title[1] }}</h2>{% endif %}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="m-container m-nopady">
-      <div class="m-row">
-        <div class="m-col-m-10 m-push-m-1 m-nopady">
-          {{ article.summary }}
+        <div class="m-container m-nopady">
+          <div class="m-row">
+            <div class="m-col-m-10 m-push-m-1 m-nopady">
+              {{ article.summary }}
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="m-container m-nopady" id="m-container-inflatable">
+        <div class="m-row">
+          <div class="m-col-m-10 m-push-m-1 m-nopady">
+          {{ article.content }}
+          </div>
         </div>
       </div>
-    </div>
-  </header>
-  <div class="m-container m-nopady" id="m-container-inflatable">
-    <div class="m-row">
-      <div class="m-col-m-10 m-push-m-1 m-nopady">
-      {{ article.content }}
-      </div>
-    </div>
-  </div>
-  <footer class="m-container m-nopady">
-    <div class="m-row">
-      <div class="m-col-m-10 m-push-m-1 m-nopady">
-        <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url }} ">{{ article.category }}</a>.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
-      </div>
-    </div>
-  </footer>
-</article>
-{% else %}
-<article class="m-col-m-10">
-  {% include "article_header.html" %}
-  <div class="m-clearfix-l"></div>
-  {{ article.content }}
-  {% include "article_footer.html" %}
-</article>
-{% endif %}
+      <footer class="m-container m-nopady">
+        <div class="m-row">
+          <div class="m-col-m-10 m-push-m-1 m-nopady">
+            <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url }} ">{{ article.category }}</a>.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+          </div>
+        </div>
+      </footer>
+    </article>
+    {% else %}
+    <article class="m-col-m-10">
+      {% macro header() %}{% include "article_header.html" %}{% endmacro %}
+      {{ header()|indent(6) }}
+      <div class="m-clearfix-l"></div>
+      {{ article.content|indent(6) }}
+      {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
+      {{ footer()|indent(6) }}
+    </article>
+    {% endif %}
 {% endblock %}
