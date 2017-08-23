@@ -52,7 +52,9 @@
       <div class="m-container m-nopady" id="m-container-inflatable">
         <div class="m-row">
           <div class="m-col-m-10 m-push-m-1 m-nopady">
-          {{ article.content }}
+<!-- content -->
+{{ article.content }}
+<!-- /content -->
           </div>
         </div>
       </div>
@@ -69,7 +71,9 @@
       {% macro header() %}{% include "article_header.html" %}{% endmacro %}
       {{ header()|indent(6) }}
       <div class="m-clearfix-l"></div>
-      {{ article.content|indent(6) }}
+<!-- content -->
+{{ article.content }}
+<!-- /content -->
       {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
       {{ footer()|indent(6) }}
     </article>

@@ -9,7 +9,9 @@
         {{ header()|indent(8) }}
         {% if loop.first and articles_page.number == 1 %}
         <div class="m-clearfix-l"></div>
-        {{ article.content|indent(8) }}
+<!-- content -->
+{{ article.content }}
+<!-- /content -->
         {% endif %}
         {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
         {{ footer()|indent(8) }}
