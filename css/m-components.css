@@ -442,13 +442,13 @@ div.m-scroll {
 .m-fullwidth {
   width: 100%;
 }
-.m-text-center {
+.m-text-center, .m-text-center.m-noindent {
   text-align: center;
 }
-.m-text-left {
+.m-text-left, .m-text-left.m-noindent {
   text-align: left;
 }
-.m-text-right {
+.m-text-right, .m-text-right.m-noindent {
   text-align: right;
 }
 
