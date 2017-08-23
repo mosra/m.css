@@ -783,7 +783,7 @@ img.m-image {
   left: 0;
   width: 100%;
   height: 100%;
-  border-color: #ffffff;
+  border-color: var(--background-color);
   border-style: solid;
   border-width: 0.25rem;
   padding: 0.5rem;
