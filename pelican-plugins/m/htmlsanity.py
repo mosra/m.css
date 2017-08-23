@@ -297,6 +297,12 @@ class SaneHtmlTranslator(HTMLTranslator):
     def depart_figure(self, node):
         self.body.append('</figure>\n')
 
+    def visit_caption(self, node):
+        self.body.append(self.starttag(node, 'figcaption', ''))
+
+    def depart_caption(self, node):
+        self.body.append('</figcaption>\n')
+
     # Line blocks are <p> with lines separated using simple <br />. No need for
     # nested <div>s.
     def visit_line(self, node):
