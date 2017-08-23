@@ -761,14 +761,75 @@ table.m-table tr.m-dim td, table.m-table td.m-dim {
   color: var(--dim-link-active-color);
 }
 
-/* Images, image grid */
+/* Image, figure */
 img.m-image {
   display: block;
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1rem;
+  border-radius: 0.2rem;
 }
+figure.m-figure {
+  max-width: 100%;
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+  position: relative;
+  display: table;
+}
+figure.m-figure:before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1000;
+  border-style: solid;
+  border-width: 0.125rem;
+  border-radius: 0.2rem;
+  border-color: var(--line-color);
+}
+figure.m-figure.m-flat:before {
+  border-color: transparent;
+}
+figure.m-figure > * {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+figure.m-figure:after {
+  content: ' ';
+  display: block;
+  margin-top: 1rem;
+  height: 1px;
+}
+figure.m-figure img {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  border-top-left-radius: 0.2rem;
+  border-top-right-radius: 0.2rem;
+}
+figure.m-figure figcaption {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: var(--heading-font-weight);
+  font-size: 1.17rem; /* taken from webkit defaults for h3 */
+}
+figure.m-figure a img {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+figure.m-figure.m-fullwidth {
+  display: block;
+}
+figure.m-figure.m-fullwidth img {
+  width: 100%;
+}
+
+/* Image grid */
 .m-imagegrid {
   margin-top: 1rem;
   margin-bottom: 1rem;
