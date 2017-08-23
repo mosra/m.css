@@ -112,14 +112,14 @@
         <div class="m-col-s-3 m-col-t-6">
           {% if LINKS_FOOTER4 %}
           <h3>
-            {% if LINKS_FOOTER4[0][1] %}<a href="{{ LINKS_FOOTER4[0][1] }}/">{% endif %}
-            {{ LINKS_FOOTER4[0][0] }}
-            {% if LINKS_FOOTER4[0][1] %}</a>{% endif %}
+            {%- if LINKS_FOOTER4[0][1] %}<a href="{{ LINKS_FOOTER4[0][1] }}/">{% endif %}
+            {{- LINKS_FOOTER4[0][0] -}}
+            {% if LINKS_FOOTER4[0][1] %}</a>{% endif -%}
           </h4>
           <ul>
-            {% for title, link in LINKS_FOOTER4 %}
-            {% if loop.index0 != 0 %}<li><a href="{{ link }}">{{ title }}</a></li>{% endif %}
-            {% endfor %}
+            {% for title, link in LINKS_FOOTER4 %}{% if loop.index0 != 0 %}
+            <li><a href="{{ link }}">{{ title }}</a></li>
+            {% endif %}{% endfor %}
           </ul>
           {% else %}
           <h3><a href="{{ BLOGURL }}">Blog</a></h3>
