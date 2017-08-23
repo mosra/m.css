@@ -647,6 +647,8 @@ table.m-table td.m-dim {
 .m-block.m-dim a:hover, .m-block.m-dim a:focus, .m-block.m-dim a:active {
   color: var(--dim-link-active-color);
 }
+.m-block.m-flat { border-color: transparent; }
+.m-block.m-flat h3 { color: var(--default-color); }
 
 /* Colored note, table coloring */
 .m-note.m-default { background-color: var(--default-filled-background-color); }
