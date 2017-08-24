@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="m-container m-nopady">
+        <div class="m-container">
           <div class="m-row">
             <div class="m-col-m-10 m-push-m-1 m-nopady">
               {{ article.summary }}
@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <footer class="m-container m-nopady">
+      <footer class="m-container">
         <div class="m-row">
           <div class="m-col-m-10 m-push-m-1 m-nopady">
             <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url }} ">{{ article.category }}</a>.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
