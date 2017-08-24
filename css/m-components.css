@@ -838,7 +838,7 @@ figure.m-figure.m-fullwidth img {
   width: 0;
 }
 .m-imagegrid > figure:hover > a > div {
-  background: linear-gradient(transparent 0%, transparent 75%, rgba(0, 0, 0, 0.85) 100%); ;
+  background: linear-gradient(transparent 0%, transparent 75%, rgba(0, 0, 0, 0.85) 100%);
   color: #ffffff;
 }
 .m-imagegrid > figure > a > img {
