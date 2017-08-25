@@ -55,9 +55,6 @@ pre {
   background-color: var(--code-background-color);
   border-radius: 0.2rem;
   border-color: var(--line-color);
-
-  box-sizing: content-box;
-  max-width: 100%;
   overflow-x: auto;
 }
 
