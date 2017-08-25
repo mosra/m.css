@@ -56,6 +56,7 @@ pre {
   border-radius: 0.2rem;
   border-color: var(--line-color);
   overflow-x: auto;
+  margin-top: 0; /* stupid defaults */
 }
 
 /* Inline elements */
