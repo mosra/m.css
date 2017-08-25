@@ -9,10 +9,15 @@
   {% endif %}
   <meta name="keywords" content="{{ article.tags|join(", ") }}" />
   <meta property="og:title" content="{{ article.title|striptags }}" />
+  <meta name="twitter:title" content="{{ article.title|striptags }}" />
   <meta property="og:url" content="{{ article.url }}" />
+  <meta name="twitter:url" content="{{ article.url }}" />
   <meta property="og:description" content="{{ article.summary|striptags }}" />
+  <meta name="twitter:description" content="{{ article.summary|striptags }}" />
   {% if article.cover %}
   <meta property="og:image" content="{{ article|expand_link('cover') }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{{ article|expand_link('cover') }}" />
   {% endif %}
   <meta property="og:type" content="article" />
 {% endblock %}
