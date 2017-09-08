@@ -469,7 +469,7 @@ def hyphenate(value, enable=None, lang=None):
     if lang is None: lang = hyphenation_lang
     if not enable: return value
     pyphen_ = pyphen.Pyphen(lang=lang)
-    return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '\u00AD'), str(value))
+    return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '&shy;'), str(value))
 
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
