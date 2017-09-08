@@ -1,4 +1,4 @@
-{% set page_title = page.title|replace('&shy;', '') %}
+{% set page_title = page.title|dehyphenate %}
 {% extends "base.html" %}
 
 {% block title %}{{ page.title }} | {{ SITENAME }}{% endblock %}

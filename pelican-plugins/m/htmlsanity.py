@@ -471,9 +471,15 @@ def hyphenate(value, enable=None, lang=None):
     pyphen_ = pyphen.Pyphen(lang=lang)
     return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '&shy;'), str(value))
 
+def dehyphenate(value, enable=None):
+    if enable is None: enable = enable_hyphenation
+    if not enable: return value
+    return value.replace('&shy;', '')
+
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
+    pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
 
     global enable_hyphenation, smart_quotes, hyphenation_lang, docutils_settings
     enable_hyphenation = pelicanobj.settings.get('HTMLSANITY_HYPHENATION', False)
