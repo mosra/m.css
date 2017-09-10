@@ -525,34 +525,6 @@ dl.m-diary dd {
   padding: 1rem;
 }
 
-/* Inflatable content */
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > div > pre {
-  margin: 0 -1rem 1rem -1rem;
-}
-
 /* Tables */
 table.m-table {
   border-collapse: collapse;
@@ -602,6 +574,16 @@ table.m-table td.m-dim {
   padding-right: 0.4375rem;
   border-left-width: 0.0625rem;
 /*   border-right-width: 0.0625rem; causes horizontal scrollbar */
+}
+
+table.m-table tr.m-default td, table.m-table td.m-default,
+table.m-table tr.m-primary td, table.m-table td.m-primary,
+table.m-table tr.m-success td, table.m-table td.m-success,
+table.m-table tr.m-warning td, table.m-table td.m-warning,
+table.m-table tr.m-danger td, table.m-table td.m-danger,
+table.m-table tr.m-info td, table.m-table td.m-info,
+table.m-table tr.m-dim td, table.m-table td.m-dim {
+  border-color: var(--background-color);
 }
 
 /* Colored block */
@@ -716,14 +698,33 @@ table.m-table td.m-dim {
   color: var(--dim-filled-link-active-color);
 }
 
-table.m-table tr.m-default td, table.m-table td.m-default,
-table.m-table tr.m-primary td, table.m-table td.m-primary,
-table.m-table tr.m-success td, table.m-table td.m-success,
-table.m-table tr.m-warning td, table.m-table td.m-warning,
-table.m-table tr.m-danger td, table.m-table td.m-danger,
-table.m-table tr.m-info td, table.m-table td.m-info,
-table.m-table tr.m-dim td, table.m-table td.m-dim {
-  border-color: var(--background-color);
+/* Inflatable content */
+/* TODO: get rid of div.highlight and additional div for additional classes */
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > section > section > section > section > section > div > pre {
+  margin: 0 -1rem 1rem -1rem;
 }
 
 /* Colored text */
