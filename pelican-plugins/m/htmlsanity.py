@@ -34,10 +34,6 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
     implementation is not executed.
     """
 
-    # Original SmartQuotes have priority 850, we are patching them so we need
-    # a lower number
-    default_priority = 849
-
     def apply(self):
         # We are using our own config variable instead of
         # self.document.settings.smart_quotes in order to avoid the builtin
