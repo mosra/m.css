@@ -13,7 +13,7 @@ def gh_internal(account, ref, title, link):
     elif '@' in ref:
         project, _, commit = ref.partition('@')
         url = base_url.format(account, project, "commit", commit)
-        if not title: title = link
+        if not title: title = account + "/" + project + "@" + commit[0:7]
     elif '$' in ref:
         project, _, branch = ref.partition('$')
         url = base_url.format(account, project, "tree", branch)
