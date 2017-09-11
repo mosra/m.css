@@ -30,6 +30,8 @@ class Image(Directive):
     -   the align, scale, width, height options removed (handled better by
         m.css)
     -   .m-image CSS class added
+    -   adding a outer container for clickable image to make the clickable area
+        cover only the image
     """
 
     required_arguments = 1
@@ -39,6 +41,8 @@ class Image(Directive):
                    'name': directives.unchanged,
                    'class': directives.class_option,
                    'target': directives.unchanged_required}
+
+    image_class = 'm-image'
 
     def run(self):
         messages = []
@@ -63,16 +67,26 @@ class Image(Directive):
                 messages.append(data)       # data is a system message
             del self.options['target']
 
-        # Add some sane default class to the image
+        # Remove the classes from the image element, will be added either to it
+        # or to the wrapping element later
         set_classes(self.options)
-        self.options.setdefault('classes', []).append('m-image')
-
+        classes = self.options.get('classes', [])
+        if 'classes' in self.options: del self.options['classes']
         image_node = nodes.image(self.block_text, **self.options)
+
         self.add_name(image_node)
         if reference_node:
-            reference_node += image_node
-            return messages + [reference_node]
+            if self.image_class:
+                container_node = nodes.container()
+                container_node['classes'] += [self.image_class] + classes
+                reference_node += image_node
+                container_node += reference_node
+                return messages + [container_node]
+            else:
+                reference_node += image_node
+                return messages + [reference_node]
         else:
+            if self.image_class: image_node['classes'] += [self.image_class] + classes
             return messages + [image_node]
 
 class ImageGrid(rst.Directive):
