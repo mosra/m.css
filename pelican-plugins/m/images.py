@@ -42,6 +42,7 @@ class Image(Directive):
                    'class': directives.class_option,
                    'target': directives.unchanged_required}
 
+    # Overriden by Figure
     image_class = 'm-image'
 
     def run(self):
@@ -88,6 +89,52 @@ class Image(Directive):
         else:
             if self.image_class: image_node['classes'] += [self.image_class] + classes
             return messages + [image_node]
+
+class Figure(Image):
+    """Figure directive
+
+    Copy of docutils.parsers.rst.directives.Figure with:
+
+    -   the align, figwidth options removed (handled better by m.css)
+    -   .m-figure CSS class added
+    """
+
+    option_spec = Image.option_spec.copy()
+    option_spec['figclass'] = directives.class_option
+    has_content = True
+
+    image_class = None
+
+    def run(self):
+        figclasses = self.options.pop('figclass', None)
+        (image_node,) = Image.run(self)
+        if isinstance(image_node, nodes.system_message):
+            return [image_node]
+        figure_node = nodes.figure('', image_node)
+        if figclasses:
+            figure_node['classes'] += figclasses
+        figure_node['classes'] += ['m-figure']
+
+        if self.content:
+            node = nodes.Element()          # anonymous container for parsing
+            self.state.nested_parse(self.content, self.content_offset, node)
+            first_node = node[0]
+            if isinstance(first_node, nodes.paragraph):
+                caption = nodes.caption(first_node.rawsource, '',
+                                        *first_node.children)
+                caption.source = first_node.source
+                caption.line = first_node.line
+                figure_node += caption
+            elif not (isinstance(first_node, nodes.comment)
+                      and len(first_node) == 0):
+                error = self.state_machine.reporter.error(
+                      'Figure caption must be a paragraph or empty comment.',
+                      nodes.literal_block(self.block_text, self.block_text),
+                      line=self.lineno)
+                return [figure_node, error]
+            if len(node) > 1:
+                figure_node += nodes.legend('', *node[1:])
+        return [figure_node]
 
 class ImageGrid(rst.Directive):
     has_content = True
@@ -137,4 +184,5 @@ def register():
     signals.initialized.connect(configure)
 
     rst.directives.register_directive('image', Image)
+    rst.directives.register_directive('figure', Figure)
     rst.directives.register_directive('image-grid', ImageGrid)
