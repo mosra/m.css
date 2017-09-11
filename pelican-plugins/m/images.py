@@ -7,8 +7,14 @@ from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
 from pelican import signals
 from pelican import StaticGenerator
-import PIL.Image
-import PIL.ExifTags
+
+# If Pillow is not available, it's not an error unless one uses the image grid
+# functionality
+try:
+    import PIL.Image
+    import PIL.ExifTags
+except ImportError:
+    PIL = None
 
 settings = {}
 
