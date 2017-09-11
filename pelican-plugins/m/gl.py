@@ -15,7 +15,7 @@ def glext(name, rawtext, text, lineno, inliner, options={}, content=[]):
 def glfn(name, rawtext, text, lineno, inliner, options={}, content=[]):
     title, fn = parse_link(text)
     if not title: title = "gl{}()".format(fn)
-    url = "https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{}.xhtml".format(name)
+    url = "https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{}.xhtml".format(fn)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
