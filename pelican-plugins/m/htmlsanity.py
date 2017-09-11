@@ -163,6 +163,14 @@ class SaneHtmlTranslator(HTMLTranslator):
                           ord('@'): '&#64;', # may thwart address harvesters
                           ord('\u00AD'): '&shy;'}
 
+    def __init__(self, document):
+        HTMLTranslator.__init__(self, document)
+
+        # There's a minor difference between docutils 0.13 and 0.14 that breaks
+        # stuff. Monkey-patch it here.
+        if not hasattr(self, 'in_word_wrap_point'):
+            self.in_word_wrap_point = HTMLTranslator.sollbruchstelle
+
     # Somehow this does the trick and removes docinfo from the body. Was
     # present in the HTML4 translator but not in the HTML5 one, so copying it
     # verbatim over
@@ -211,7 +219,7 @@ class SaneHtmlTranslator(HTMLTranslator):
         # Protect text like ``--an-option`` and the regular expression
         # ``[+]?(\d+(\.\d*)?|\.\d+)`` from bad line wrapping
         for token in self.words_and_spaces.findall(text):
-            if token.strip() and self.sollbruchstelle.search(token):
+            if token.strip() and self.in_word_wrap_point.search(token):
                 self.body.append('<span class="pre">%s</span>'
                                     % self.encode(token))
             else:
