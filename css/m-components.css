@@ -896,7 +896,10 @@ figure.m-figure.m-fullwidth img {
   position: relative;
   margin: 0;
 }
-.m-imagegrid > figure > a > div {
+.m-imagegrid > figure > div,
+.m-imagegrid > figure > figcaption,
+.m-imagegrid > figure > a > div,
+.m-imagegrid > figure > a > figcaption {
   position: absolute;
   top: 0;
   left: 0;
@@ -906,23 +909,31 @@ figure.m-figure.m-fullwidth img {
   border-style: solid;
   border-width: 0.25rem;
   padding: 0.5rem;
+}
+.m-imagegrid > figure > figcaption,
+.m-imagegrid > figure > a > figcaption {
   color: transparent;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.75rem;
 }
-.m-imagegrid > figure > a > div::before {
+.m-imagegrid > figure > div::before,
+.m-imagegrid > figure > figcaption::before,
+.m-imagegrid > figure > a > div::before,
+.m-imagegrid > figure > a > figcaption::before {
   content: '';
   display: inline-block;
   height: 100%;
   vertical-align: bottom;
   width: 0;
 }
-.m-imagegrid > figure:hover > a > div {
+.m-imagegrid > figure:hover > figcaption,
+.m-imagegrid > figure:hover > a > figcaption {
   background: linear-gradient(transparent 0%, transparent 75%, rgba(0, 0, 0, 0.85) 100%);
   color: #ffffff;
 }
+.m-imagegrid > figure > img,
 .m-imagegrid > figure > a > img {
   width: 100%;
   height: 100%;
