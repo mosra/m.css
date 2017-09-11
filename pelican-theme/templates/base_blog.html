@@ -12,27 +12,27 @@
 {% block content %}
 {% endblock %}
 {% if article and article.cover %}
-<nav class="m-navpanel m-container">
-  <div class="m-row">
-    <div class="m-col-m-5 m-push-m-1 m-col-s-6">
-      <h3>Cate&shy;gories</h3>
-      <ol class="m-block-bar-m">
-        {% for cat, null in categories %}
-        <li><a href="{{ cat.url }}">{{ cat }}</a></li>
-        {% endfor %}
-      </ol>
+  <nav class="m-navpanel m-container">
+    <div class="m-row">
+      <div class="m-col-m-5 m-push-m-1 m-col-s-6">
+        <h3>Cate&shy;gories</h3>
+        <ol class="m-block-bar-m">
+          {% for cat, null in categories %}
+          <li><a href="{{ cat.url }}">{{ cat }}</a></li>
+          {% endfor %}
+        </ol>
+      </div>
+      <div class="m-col-m-5 m-push-m-1 m-col-s-6">
+        <h3>Tag cloud</h3>
+        <ul class="m-tagcloud">
+          {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
+          {% for tag, articles in tags|sort(attribute='0') %}
+          <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url }}">{{ tag }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
-    <div class="m-col-m-5 m-push-m-1 m-col-s-6">
-      <h3>Tag cloud</h3>
-      <ul class="m-tagcloud">
-        {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
-        {% for tag, articles in tags|sort(attribute='0') %}
-        <li class="m-tag-{{ (TAG_CLOUD_LEVELS*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url }}">{{ tag }}</a></li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-</nav>
+  </nav>
 {% else %}
     <nav class="m-navpanel m-col-m-2">
       <h3>Cate&shy;gories</h3>
@@ -45,7 +45,7 @@
       <ul class="m-tagcloud">
         {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
         {% for tag, articles in tags|sort(attribute='0') %}
-        <li class="m-tag-{{ (TAG_CLOUD_LEVELS*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url }}">{{ tag }}</a></li>
+        <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url }}">{{ tag }}</a></li>
         {% endfor %}
       </ul>
     </nav>
