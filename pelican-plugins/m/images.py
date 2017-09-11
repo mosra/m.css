@@ -1,7 +1,7 @@
 import os
 from docutils.parsers import rst
 from docutils.parsers.rst import Directive
-from docutils.parsers.rst import directives
+from docutils.parsers.rst import directives, states
 from docutils.nodes import fully_normalize_name, whitespace_normalize_name
 from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
@@ -25,8 +25,11 @@ def configure(pelicanobj):
 class Image(Directive):
     """Image directive
 
-    Copy of docutils.parsers.rst.directives.Image with some default classes
-    added on top.
+    Copy of docutils.parsers.rst.directives.Image with:
+
+    -   the align, scale, width, height options removed (handled better by
+        m.css)
+    -   .m-image CSS class added
     """
 
     required_arguments = 1
@@ -34,7 +37,8 @@ class Image(Directive):
     final_argument_whitespace = True
     option_spec = {'alt': directives.unchanged,
                    'name': directives.unchanged,
-                   'class': directives.class_option}
+                   'class': directives.class_option,
+                   'target': directives.unchanged_required}
 
     def run(self):
         messages = []
