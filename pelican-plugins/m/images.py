@@ -7,8 +7,8 @@ from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
 from pelican import signals
 from pelican import StaticGenerator
-from PIL import Image
-from PIL import ExifTags
+import PIL.Image
+import PIL.ExifTags
 
 settings = {}
 
@@ -82,11 +82,11 @@ class ImageGrid(rst.Directive):
 
             # Open the files and calculate the overall width
             absuri = uri.format(filename=os.path.join(os.getcwd(), settings['path']))
-            im = Image.open(absuri)
+            im = PIL.Image.open(absuri)
             exif = {
-                ExifTags.TAGS[k]: v
+                PIL.ExifTags.TAGS[k]: v
                 for k, v in im._getexif().items()
-                if k in ExifTags.TAGS and len(str(v)) < 256
+                if k in PIL.ExifTags.TAGS and len(str(v)) < 256
             }
             caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), *exif['ExposureTime'], exif['ISOSpeedRatings'])
             rel_width = float(im.width)/im.height
