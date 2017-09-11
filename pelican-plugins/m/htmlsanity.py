@@ -85,10 +85,6 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
                     lang = tag
                     break
             else: # language not supported: (keep ASCII quotes)
-                if lang not in self.unsupported_languages:
-                    self.document.reporter.warning('No smart quotes '
-                        'defined for language "%s".'%lang, base_node=node)
-                self.unsupported_languages.add(lang)
                 lang = ''
 
             # Iterator educating quotes in plain text:
