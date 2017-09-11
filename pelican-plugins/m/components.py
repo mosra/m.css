@@ -102,6 +102,9 @@ class InfoBlock(Block):
 class DimBlock(Block):
     style_class = 'm-dim'
 
+class FlatBlock(Block):
+    style_class = 'm-flat'
+
 class Frame(rst.Directive):
     final_argument_whitespace = True
     has_content = True
@@ -144,5 +147,6 @@ def register():
     rst.directives.register_directive('block-danger', DangerBlock)
     rst.directives.register_directive('block-info', InfoBlock)
     rst.directives.register_directive('block-dim', DimBlock)
+    rst.directives.register_directive('block-flat', FlatBlock)
 
     rst.directives.register_directive('frame', Frame)
