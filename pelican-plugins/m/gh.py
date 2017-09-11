@@ -24,7 +24,9 @@ def gh_internal(account, ref, title, link):
         if not title: title = url
     else:
         url = "https://github.com/{}/{}".format(account, ref)
-        if not title: title = url
+        if not title:
+            # if simple profile link, no need to expand to full URL
+            title = link if not '/' in ref else url
 
     return title, url
 
