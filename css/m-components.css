@@ -742,74 +742,6 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   color: var(--dim-filled-link-active-color);
 }
 
-/* Inflatable content */
-/* TODO: get rid of div.highlight and additional div for additional classes */
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > div > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > div > div > pre {
-  margin: 0 -1rem 1rem -1rem;
-}
-
-/* Active sections in inflatable content affect left border of some components */
-#m-container-inflatable section:target > .m-note,
-#m-container-inflatable section:target > .m-frame,
-#m-container-inflatable section:target > .m-block,
-#m-container-inflatable section:target > div > pre,
-#m-container-inflatable section:target > div > div > pre
-#m-container-inflatable section:target section > .m-note,
-#m-container-inflatable section:target section > .m-frame,
-#m-container-inflatable section:target section > .m-block,
-#m-container-inflatable section:target section > div > pre,
-#m-container-inflatable section:target section > div > div > pre {
-  margin-left: -1.0rem;
-  border-left-style: solid;
-  border-left-width: 0.25rem;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  padding-left: 0.75rem;
-}
-#m-container-inflatable section:target > div > pre,
-#m-container-inflatable section:target > div > div > pre,
-#m-container-inflatable section:target section > div > pre,
-#m-container-inflatable section:target section > div > div > pre {
-  border-color: var(--line-color);
-}
-#m-container-inflatable section:target > .m-note.m-default,
-#m-container-inflatable section:target section > .m-note.m-default {
-  border-left-color: var(--line-color);
-}
-#m-container-inflatable section:target > .m-note.m-primary,
-#m-container-inflatable section:target section > .m-note.m-primary {
-  border-left-color: var(--primary-color);
-}
-#m-container-inflatable section:target > .m-note.m-success,
-#m-container-inflatable section:target section > .m-note.m-success {
-  border-left-color: var(--success-color);
-}
-#m-container-inflatable section:target > .m-note.m-warning,
-#m-container-inflatable section:target section > .m-note.m-warning {
-  border-left-color: var(--warning-color);
-}
-#m-container-inflatable section:target > .m-note.m-danger,
-#m-container-inflatable section:target section > .m-note.m-danger {
-  border-left-color: var(--danger-color);
-}
-#m-container-inflatable section:target > .m-note.m-info,
-#m-container-inflatable section:target section > .m-note.m-info {
-  border-left-color: var(--info-color);
-}
-#m-container-inflatable section:target > .m-note.m-dim,
-#m-container-inflatable section:target section > .m-note.m-dim {
-  border-left-color: var(--dim-color);
-}
-
 /* Colored text */
 .m-text.m-default { color: var(--default-color); }
 .m-text.m-primary { color: var(--primary-color); }
@@ -949,6 +881,74 @@ figure.m-figure.m-fullwidth img {
     float: none;
     width: 100% !important;
   }
+}
+
+/* Inflatable content */
+/* TODO: get rid of div.highlight and additional div for additional classes */
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > div > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > div > div > pre {
+  margin: 0 -1rem 1rem -1rem;
+}
+
+/* Active sections in inflatable content affect left border of some components */
+#m-container-inflatable section:target > .m-note,
+#m-container-inflatable section:target > .m-frame,
+#m-container-inflatable section:target > .m-block,
+#m-container-inflatable section:target > div > pre,
+#m-container-inflatable section:target > div > div > pre
+#m-container-inflatable section:target section > .m-note,
+#m-container-inflatable section:target section > .m-frame,
+#m-container-inflatable section:target section > .m-block,
+#m-container-inflatable section:target section > div > pre,
+#m-container-inflatable section:target section > div > div > pre {
+  margin-left: -1.0rem;
+  border-left-style: solid;
+  border-left-width: 0.25rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding-left: 0.75rem;
+}
+#m-container-inflatable section:target > div > pre,
+#m-container-inflatable section:target > div > div > pre,
+#m-container-inflatable section:target section > div > pre,
+#m-container-inflatable section:target section > div > div > pre {
+  border-color: var(--line-color);
+}
+#m-container-inflatable section:target > .m-note.m-default,
+#m-container-inflatable section:target section > .m-note.m-default {
+  border-left-color: var(--line-color);
+}
+#m-container-inflatable section:target > .m-note.m-primary,
+#m-container-inflatable section:target section > .m-note.m-primary {
+  border-left-color: var(--primary-color);
+}
+#m-container-inflatable section:target > .m-note.m-success,
+#m-container-inflatable section:target section > .m-note.m-success {
+  border-left-color: var(--success-color);
+}
+#m-container-inflatable section:target > .m-note.m-warning,
+#m-container-inflatable section:target section > .m-note.m-warning {
+  border-left-color: var(--warning-color);
+}
+#m-container-inflatable section:target > .m-note.m-danger,
+#m-container-inflatable section:target section > .m-note.m-danger {
+  border-left-color: var(--danger-color);
+}
+#m-container-inflatable section:target > .m-note.m-info,
+#m-container-inflatable section:target section > .m-note.m-info {
+  border-left-color: var(--info-color);
+}
+#m-container-inflatable section:target > .m-note.m-dim,
+#m-container-inflatable section:target section > .m-note.m-dim {
+  border-left-color: var(--dim-color);
 }
 
 /* Code block (uses Pygments CSS classes) */
