@@ -1,3 +1,4 @@
+import os.path
 import re
 
 from docutils.writers.html5_polyglot import HTMLTranslator
@@ -190,6 +191,35 @@ class SaneHtmlTranslator(HTMLTranslator):
         start = self.context.pop()
         self.docinfo = self.body[start:]
         self.body = []
+
+    # Remove useless cruft from images, such as width, height, scale; don't put
+    # URI in alt text.
+    def visit_image(self, node):
+        atts = {}
+        uri = node['uri']
+        ext = os.path.splitext(uri)[1].lower()
+        if ext in self.object_image_types:
+            atts['data'] = uri
+            atts['type'] = self.object_image_types[ext]
+        else:
+            atts['src'] = uri
+            if 'alt' in node: atts['alt'] = node['alt']
+        if (isinstance(node.parent, nodes.TextElement) or
+            (isinstance(node.parent, nodes.reference) and
+             not isinstance(node.parent.parent, nodes.TextElement))):
+            # Inline context or surrounded by <a>...</a>.
+            suffix = ''
+        else:
+            suffix = '\n'
+        if ext in self.object_image_types:
+            # do NOT use an empty tag: incorrect rendering in browsers
+            self.body.append(self.starttag(node, 'object', suffix, **atts) +
+                             node.get('alt', uri) + '</object>' + suffix)
+        else:
+            self.body.append(self.emptytag(node, 'img', suffix, **atts))
+
+    def depart_image(self, node):
+        pass
 
     # Use HTML5 <section> tag for sections (instead of <div class="section">)
     def visit_section(self, node):
