@@ -98,7 +98,7 @@ class ImageGrid(rst.Directive):
             image_node = nodes.image('', uri=image_reference)
             text_nodes, _ = self.state.inline_text(image[3], self.lineno)
             text_node = nodes.paragraph('', '', *text_nodes)
-            overlay_node = nodes.container()
+            overlay_node = nodes.caption()
             overlay_node.append(text_node)
             link_node = nodes.reference('', refuri=image_reference)
             link_node.append(image_node)
