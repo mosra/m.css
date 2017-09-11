@@ -126,15 +126,6 @@ class Pyphen(Transform):
             if isinstance(node, (nodes.FixedTextElement, nodes.Special, nodes.field_name)):
                 continue
 
-            # Proper language-dependent hyphenation
-            lang = node.get_language_code(document_language)
-
-            # Create new Pyphen object for given lang, if not yet cached. I'm
-            # assuming this is faster than recreating the instance for every
-            # text node
-            if lang not in pyphen_for_lang:
-                pyphen_for_lang[lang] = pyphen.Pyphen(lang=lang)
-
             for txtnode in node.traverse(nodes.Text):
                 # Exclude:
                 #  - document title
@@ -154,6 +145,17 @@ class Pyphen(Transform):
 
                 # Useful for debugging, don't remove ;)
                 #print(repr(txtnode.parent), repr(txtnode.parent.parent), repr(txtnode.parent.parent.parent))
+
+                # Proper language-dependent hyphenation. Can't be done for
+                # `node` as a paragraph can consist of more than one language.
+                lang = txtnode.parent.get_language_code(document_language)
+
+                # Create new Pyphen object for given lang, if not yet cached.
+                # I'm assuming this is faster than recreating the instance for
+                # every text node
+                if lang not in pyphen_for_lang:
+                    if lang not in pyphen.LANGUAGES: continue
+                    pyphen_for_lang[lang] = pyphen.Pyphen(lang=lang)
 
                 txtnode.parent.replace(txtnode, nodes.Text(words_re.sub(lambda m: pyphen_for_lang[lang].inserted(m.group(0), '\u00AD'), txtnode.astext())))
 
