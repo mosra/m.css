@@ -12,7 +12,8 @@ body {
 .m-container {
   width: 100%;
   margin: auto;
-  padding: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 .m-row {
   margin-left: -1rem;
@@ -48,12 +49,20 @@ body {
   margin-right: 0;
 }
 
-.m-container.m-nopad, [class*='m-col-'].m-nopad, .m-container.m-nopadx, [class*='m-col-'].m-nopadx {
+.m-container.m-nopad, [class*='m-col-'].m-nopad,
+.m-container.m-nopadx, [class*='m-col-'].m-nopadx,
+.m-container.m-nopadl, [class*='m-col-'].m-nopadl {
   padding-left: 0;
+}
+.m-container.m-nopad, [class*='m-col-'].m-nopad,
+.m-container.m-nopadx, [class*='m-col-'].m-nopadx,
+.m-container.m-nopadr, [class*='m-col-'].m-nopadr {
   padding-right: 0;
 }
-.m-container.m-nopad, [class*='m-col-'].m-nopad, .m-container.m-nopady, [class*='m-col-'].m-nopady {
+[class*='m-col-'].m-nopad, [class*='m-col-'].m-nopady, [class*='m-col-'].m-nopadt {
   padding-top: 0;
+}
+[class*='m-col-'].m-nopad, [class*='m-col-'].m-nopady, [class*='m-col-'].m-nopadb {
   padding-bottom: 0;
 }
 

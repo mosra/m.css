@@ -146,7 +146,7 @@ body > header > nav ol {
   padding-left: 1rem;
   margin: 0;
 }
-body > header > nav .m-container, body > header > nav [class*='m-col-'] {
+body > header > nav [class*='m-col-'] {
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -234,6 +234,8 @@ body > footer {
   width: 100%;
 }
 body > footer > nav {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   font-size: var(--footer-font-size);
   text-align: center;
   color: var(--footer-color);
@@ -255,6 +257,12 @@ body > footer > nav a {
 }
 body > footer > nav a:hover, body > footer > nav a:focus, body > footer > nav a:active {
   color: var(--footer-link-active-color);
+}
+
+/* Main content */
+body > main {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 /* Article elements */
@@ -335,8 +343,8 @@ article section:target {
 }
 
 /* Jumbo article */
-article.m-jumbo, article.m-jumbo > header {
-  margin-bottom: 0;
+article.m-jumbo {
+  margin-top: -1rem;
 }
 article.m-jumbo > header .m-jumbo-image {
   background-size: cover;
@@ -346,6 +354,7 @@ article.m-jumbo > header .m-jumbo-image {
   font-size: 2.5vh;
   height: 60vh;
   margin-bottom: 1rem;
+  padding-top: 1rem;
 }
 article.m-jumbo > header .m-jumbo-cover {
   background: linear-gradient(transparent 0%, transparent 50%, var(--background-color) 100%);
