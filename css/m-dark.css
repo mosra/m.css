@@ -20,6 +20,7 @@
   /* Basics */
   --background-color: #2f363f;
   --color: #dcdcdc;
+  --color-inverse-highlight: rgba(220, 220, 220, 0.33);
   --line-color: #405363;
   --link-color: #5b9dd9;
   --link-active-color: #a5c9ea;

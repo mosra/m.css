@@ -54,7 +54,6 @@ pre {
   color: var(--code-color);
   background-color: var(--code-background-color);
   border-radius: 0.2rem;
-  border-color: var(--line-color);
   overflow-x: auto;
   margin-top: 0; /* stupid defaults */
 }
@@ -943,6 +942,29 @@ figure.m-figure.m-fullwidth img {
     float: none;
     width: 100% !important;
   }
+}
+
+/* Code block (uses Pygments CSS classes) */
+div.highlight pre span.hll {
+  background-color: var(--line-color);
+  border-color: var(--line-color);
+  margin-left: -1.0rem;
+  margin-right: -1.0rem;
+  border-left-style: solid;
+  border-left-width: 0.25rem;
+  padding-left: 0.75rem;
+}
+.m-inverted-highlight div.highlight pre {
+  color: var(--color-inverse-highlight);
+}
+.m-inverted-highlight div.highlight pre > span {
+  opacity: 0.3333;
+}
+.m-inverted-highlight div.highlight pre > span.hll {
+  color: var(--color);
+  opacity: 1;
+  background-color: transparent;
+  border-color: transparent;
 }
 
 /* Spacing after every block element, but not after the last */

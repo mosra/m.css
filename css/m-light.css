@@ -18,6 +18,7 @@
   /* Basics */
   --background-color: #ffffff;
   --color: #000000;
+  --color-inverse-highlight: rgba(0, 0, 0, 0.33);
   --line-color: #f7e3db;
   --link-color: #ea7944;
   --link-active-color: #cb4b16;
