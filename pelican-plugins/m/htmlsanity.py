@@ -208,10 +208,10 @@ class SaneHtmlTranslator(HTMLTranslator):
         if 'code' in classes:
             # filter 'code' from class arguments
             node['classes'] = [cls for cls in classes if cls != 'code']
-            self.body.append(self.starttag(node, 'code', ''))
+            self.body.append(self.starttag(node, 'code', '', CLASS='highlight'))
             return
         self.body.append(
-            self.starttag(node, 'code', ''))
+            self.starttag(node, 'code', '', CLASS='highlight'))
         text = node.astext()
         # remove hard line breaks (except if in a parsed-literal block)
         if not isinstance(node.parent, nodes.literal_block):
