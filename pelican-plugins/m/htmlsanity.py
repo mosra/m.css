@@ -141,10 +141,23 @@ class Pyphen(Transform):
 
             for txtnode in node.traverse(nodes.Text):
                 # Exclude:
+                #  - document title
                 #  - literals and spans inside literals
-                #  - field bodies (such as various :save_as: etc.)
-                if isinstance(txtnode.parent, nodes.literal) or isinstance(txtnode.parent.parent, nodes.literal) or isinstance(txtnode.parent.parent, nodes.field_body):
+                #  - raw code (such as SVG)
+                if isinstance(txtnode.parent, nodes.title) or \
+                   isinstance(txtnode.parent, nodes.literal) or \
+                   isinstance(txtnode.parent.parent, nodes.literal) or \
+                   isinstance(txtnode.parent, nodes.raw):
                     continue
+
+                # From fields include only the summary
+                if isinstance(txtnode.parent.parent, nodes.field_body):
+                    field_name_index = txtnode.parent.parent.parent.first_child_matching_class(nodes.field_name)
+                    if txtnode.parent.parent.parent[field_name_index][0] != 'summary':
+                        continue
+
+                # Useful for debugging, don't remove ;)
+                #print(repr(txtnode.parent), repr(txtnode.parent.parent), repr(txtnode.parent.parent.parent))
 
                 txtnode.parent.replace(txtnode, nodes.Text(words_re.sub(lambda m: pyphen_for_lang[lang].inserted(m.group(0), '\u00AD'), txtnode.astext())))
 
