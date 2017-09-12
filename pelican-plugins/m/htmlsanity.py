@@ -242,36 +242,19 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.section_level -= 1
         self.body.append('</section>\n')
 
-    # Literal -- print as <code> (instead of some <div>)
+    # Literal -- print as <code> (instead of some <span>)
     def visit_literal(self, node):
-        # special case: "code" role
-        classes = node.get('classes', [])
-        if 'code' in classes:
-            # filter 'code' from class arguments
-            node['classes'] = [cls for cls in classes if cls != 'code']
-            self.body.append(self.starttag(node, 'code', '', CLASS='highlight'))
-            return
-        self.body.append(
-            self.starttag(node, 'code', '', CLASS='highlight'))
-        text = node.astext()
-        # remove hard line breaks (except if in a parsed-literal block)
-        if not isinstance(node.parent, nodes.literal_block):
-            text = text.replace('\n', ' ')
-        # Protect text like ``--an-option`` and the regular expression
-        # ``[+]?(\d+(\.\d*)?|\.\d+)`` from bad line wrapping
-        for token in self.words_and_spaces.findall(text):
-            if token.strip() and self.in_word_wrap_point.search(token):
-                self.body.append('<span class="pre">%s</span>'
-                                    % self.encode(token))
-            else:
-                self.body.append(self.encode(token))
-        self.body.append('</code>')
-        # Content already processed:
-        raise nodes.SkipNode
+        self.body.append(self.starttag(node, 'code', ''))
 
     def depart_literal(self, node):
-        # skipped unless literal element is from "code" role:
         self.body.append('</code>')
+
+    # Literal block -- use <pre> without nested <code> and useless classes
+    def visit_literal_block(self, node):
+        self.body.append(self.starttag(node, 'pre', ''))
+
+    def depart_literal_block(self, node):
+        self.body.append('</pre>\n')
 
     # Anchor -- drop the useless classes
     def visit_reference(self, node):
