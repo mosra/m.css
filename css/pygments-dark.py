@@ -6,6 +6,7 @@ from pygments.token import Keyword, Name, Comment, String, Error, \
 class DarkStyle(Style):
 
     background_color = None
+    highlight_color = '#405363'
     default_style = ""
 
     styles = {

@@ -895,17 +895,14 @@ figure.m-figure.m-fullwidth img {
 }
 
 /* Inflatable content */
-/* TODO: get rid of div.highlight and additional div for additional classes */
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] > div > div > pre,
+#m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > div > pre,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > div > div > pre {
+#m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code {
   margin: 0 -1rem 1rem -1rem;
 }
 
@@ -936,13 +933,11 @@ figure.m-figure.m-fullwidth img {
 #m-container-inflatable section:target > .m-note,
 #m-container-inflatable section:target > .m-frame,
 #m-container-inflatable section:target > .m-block,
-#m-container-inflatable section:target > div > pre,
-#m-container-inflatable section:target > div > div > pre
+#m-container-inflatable section:target > pre.m-code,
 #m-container-inflatable section:target section > .m-note,
 #m-container-inflatable section:target section > .m-frame,
 #m-container-inflatable section:target section > .m-block,
-#m-container-inflatable section:target section > div > pre,
-#m-container-inflatable section:target section > div > div > pre {
+#m-container-inflatable section:target section > pre.m-code {
   margin-left: -1.0rem;
   border-left-style: solid;
   border-left-width: 0.25rem;
@@ -950,10 +945,8 @@ figure.m-figure.m-fullwidth img {
   border-bottom-left-radius: 0;
   padding-left: 0.75rem;
 }
-#m-container-inflatable section:target > div > pre,
-#m-container-inflatable section:target > div > div > pre,
-#m-container-inflatable section:target section > div > pre,
-#m-container-inflatable section:target section > div > div > pre {
+#m-container-inflatable section:target > pre.m-code,
+#m-container-inflatable section:target section > pre.m-code {
   border-color: var(--line-color);
 }
 #m-container-inflatable section:target > .m-note.m-default,
@@ -986,8 +979,7 @@ figure.m-figure.m-fullwidth img {
 }
 
 /* Code block (uses Pygments CSS classes) */
-div.highlight pre span.hll {
-  background-color: var(--line-color);
+pre.m-code span.hll {
   border-color: var(--line-color);
   margin-left: -1.0rem;
   margin-right: -1.0rem;
@@ -995,13 +987,13 @@ div.highlight pre span.hll {
   border-left-width: 0.25rem;
   padding-left: 0.75rem;
 }
-.m-inverted-highlight div.highlight pre {
-  color: var(--color-inverse-highlight);
+pre.m-code.m-inverted {
+  color: var(--code-inverted-color);
 }
-.m-inverted-highlight div.highlight pre > span {
+pre.m-code.m-inverted > span {
   opacity: 0.3333;
 }
-.m-inverted-highlight div.highlight pre > span.hll {
+pre.m-code.m-inverted > span.hll {
   color: var(--color);
   opacity: 1;
   background-color: transparent;
@@ -1016,8 +1008,8 @@ div.m-scroll, table.m-table, div.m-image, img.m-image,
 figure.m-figure, .m-imagegrid {
   margin-bottom: 1rem;
 }
-p:last-child, ul:last-child, ol:last-child, dl:last-child, blockquote:last-child, hr:last-child,
-div.highligt:last-child pre, /* TODO: get rid of div.highlight */
+p:last-child, ul:last-child, ol:last-child, dl:last-child, 
+blockquote:last-child, hr:last-child, pre:last-child,
 article:last-child, article section:last-child,
 .m-note:last-child, .m-frame:last-child, .m-block:last-child,
 table.m-table:last-child, img.m-image:last-child, div.m-image:last-child,

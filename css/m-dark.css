@@ -20,13 +20,13 @@
   /* Basics */
   --background-color: #2f363f;
   --color: #dcdcdc;
-  --color-inverse-highlight: rgba(220, 220, 220, 0.33);
   --line-color: #405363;
   --link-color: #5b9dd9;
   --link-active-color: #a5c9ea;
   --mark-color: #2f83cc;
   --mark-background-color: #c7cf2f;
   --code-color: #e6e6e6;
+  --code-inverted-color: rgba(230, 230, 230, 0.33);
   --code-background-color: #34424d;
 
   /* Header */
