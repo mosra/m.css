@@ -129,6 +129,42 @@ class Frame(rst.Directive):
                                 note_node)
         return [note_node]
 
+class Text(rst.Directive):
+    has_content = True
+    optional_arguments = 0
+
+    style_class = ''
+
+    def run(self):
+        text = '\n'.join(self.content)
+        note_node = nodes.topic(text)
+        note_node['classes'] += ['m-text', self.style_class]
+
+        self.state.nested_parse(self.content, self.content_offset,
+                                note_node)
+        return [note_node]
+
+class DefaultText(Text):
+    style_class = 'm-default'
+
+class PrimaryText(Text):
+    style_class = 'm-primary'
+
+class SuccessText(Text):
+    style_class = 'm-success'
+
+class WarningText(Text):
+    style_class = 'm-warning'
+
+class DangerText(Text):
+    style_class = 'm-danger'
+
+class InfoText(Text):
+    style_class = 'm-info'
+
+class DimText(Text):
+    style_class = 'm-dim'
+
 def register():
     rst.directives.register_directive('transition', Transition)
 
@@ -150,3 +186,11 @@ def register():
     rst.directives.register_directive('block-flat', FlatBlock)
 
     rst.directives.register_directive('frame', Frame)
+
+    rst.directives.register_directive('text-default', DefaultText)
+    rst.directives.register_directive('text-primary', PrimaryText)
+    rst.directives.register_directive('text-success', SuccessText)
+    rst.directives.register_directive('text-warning', WarningText)
+    rst.directives.register_directive('text-danger', DangerText)
+    rst.directives.register_directive('text-info', InfoText)
+    rst.directives.register_directive('text-dim', DimText)
