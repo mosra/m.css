@@ -188,6 +188,7 @@ body > header > nav:target #m-navbar-hide {
     margin-left: 0;
     padding-left: 1rem;
     padding-right: 1rem;
+    white-space: nowrap;
   }
   body > header > nav li ol {
     background-color: var(--header-background-color);
