@@ -174,7 +174,7 @@ class ImageGrid(rst.Directive):
             link_node = nodes.reference('', refuri=image_reference)
             link_node.append(image_node)
             link_node.append(overlay_node)
-            wrapper_node = nodes.figure(width="{}%".format(image[1]*100.0/total_widths[image[2]]))
+            wrapper_node = nodes.figure(width="{:.3f}%".format(image[1]*100.0/total_widths[image[2]]))
             wrapper_node.append(link_node)
             grid_node.append(wrapper_node)
 
