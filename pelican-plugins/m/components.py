@@ -1,5 +1,6 @@
 from docutils.parsers import rst
 from docutils.parsers.rst import directives
+from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
 
 class Transition(rst.Directive):
@@ -18,25 +19,28 @@ class Note(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     optional_arguments = 1
+    option_spec = {'class': directives.class_option}
 
     style_class = ''
 
     def run(self):
+        set_classes(self.options)
+
         if len(self.arguments) == 1:
             title_text = self.arguments[0]
             title_nodes, _ = self.state.inline_text(title_text, self.lineno)
             title_node = nodes.title('', '', *title_nodes)
 
         text = '\n'.join(self.content)
-        note_node = nodes.topic(text)
-        note_node['classes'] += ['m-note', self.style_class]
+        topic_node = nodes.topic(text, **self.options)
+        topic_node['classes'] += ['m-note', self.style_class]
 
         if len(self.arguments) == 1:
-            note_node.append(title_node)
+            topic_node.append(title_node)
 
         self.state.nested_parse(self.content, self.content_offset,
-                                note_node)
-        return [note_node]
+                                topic_node)
+        return [topic_node]
 
 class DefaultNote(Note):
     style_class = 'm-default'
@@ -63,23 +67,26 @@ class Block(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     required_arguments = 1
+    option_spec = {'class': directives.class_option}
 
     style_class = ''
 
     def run(self):
+        set_classes(self.options)
+
         title_text = self.arguments[0]
         title_elements, _ = self.state.inline_text(title_text, self.lineno)
         title_node = nodes.title('', '', *title_elements)
 
         text = '\n'.join(self.content)
-        note_node = nodes.topic(text)
-        note_node['classes'] += ['m-block', self.style_class]
-        note_node.append(title_node)
+        topic_node = nodes.topic(text, **self.options)
+        topic_node['classes'] += ['m-block', self.style_class]
+        topic_node.append(title_node)
 
         self.state.nested_parse(self.content, self.content_offset,
-                                note_node)
+                                topic_node)
 
-        return [note_node]
+        return [topic_node]
 
 class DefaultBlock(Block):
     style_class = 'm-default'
@@ -109,35 +116,40 @@ class Frame(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     optional_arguments = 1
+    option_spec = {'class': directives.class_option}
 
     style_class = ''
 
     def run(self):
+        set_classes(self.options)
+
         if len(self.arguments) == 1:
             title_text = self.arguments[0]
             title_nodes, _ = self.state.inline_text(title_text, self.lineno)
             title_node = nodes.title('', '', *title_nodes)
 
         text = '\n'.join(self.content)
-        note_node = nodes.topic(text)
-        note_node['classes'] += ['m-frame', self.style_class]
+        topic_node = nodes.topic(text, **self.options)
+        topic_node['classes'] += ['m-frame', self.style_class]
 
         if len(self.arguments) == 1:
-            note_node.append(title_node)
+            topic_node.append(title_node)
 
         self.state.nested_parse(self.content, self.content_offset,
-                                note_node)
-        return [note_node]
+                                topic_node)
+        return [topic_node]
 
 class Text(rst.Directive):
     has_content = True
-    optional_arguments = 0
+    option_spec = {'class': directives.class_option}
 
     style_class = ''
 
     def run(self):
+        set_classes(self.options)
+
         text = '\n'.join(self.content)
-        note_node = nodes.topic(text)
+        note_node = nodes.topic(text, **self.options)
         note_node['classes'] += ['m-text', self.style_class]
 
         self.state.nested_parse(self.content, self.content_offset,
