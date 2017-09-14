@@ -149,12 +149,12 @@ class Text(rst.Directive):
         set_classes(self.options)
 
         text = '\n'.join(self.content)
-        note_node = nodes.topic(text, **self.options)
-        note_node['classes'] += ['m-text', self.style_class]
+        container_node = nodes.container(text, **self.options)
+        container_node['classes'] += ['m-text', self.style_class]
 
         self.state.nested_parse(self.content, self.content_offset,
-                                note_node)
-        return [note_node]
+                                container_node)
+        return [container_node]
 
 class DefaultText(Text):
     style_class = 'm-default'
