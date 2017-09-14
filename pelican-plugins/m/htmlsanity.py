@@ -203,6 +203,16 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.docinfo = self.body[start:]
         self.body = []
 
+    # Have <abbr> properly with title
+    def visit_abbreviation(self, node):
+        attrs = {}
+        if node.hasattr('title'):
+            attrs['title'] = node['title']
+        self.body.append(self.starttag(node, 'abbr', '', **attrs))
+
+    def depart_abbreviation(self, node):
+        self.body.append('</abbr>')
+
     # Remove useless cruft from images, such as width, height, scale; don't put
     # URI in alt text.
     def visit_image(self, node):
