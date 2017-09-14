@@ -131,7 +131,7 @@ def latex2svg(code, params=default_params, working_directory=None):
             return None, None
 
     def get_measure(output, name):
-        regex = r'\b%s=([0-9.]+)pt' % name
+        regex = r'\b%s=([0-9.e-]+)pt' % name
         match = re.search(regex, output)
         if match:
             return float(match.group(1)) / fontsize
