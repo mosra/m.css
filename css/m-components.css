@@ -866,16 +866,19 @@ article section:target figure.m-code-figure {
 }
 
 /* Image grid */
-.m-imagegrid > figure {
+.m-imagegrid > div {
+  background-color: var(--background-color); /* to avoid section HL shining through */
+}
+.m-imagegrid > div > figure {
   display: block;
   float: left;
   position: relative;
   margin: 0;
 }
-.m-imagegrid > figure > div,
-.m-imagegrid > figure > figcaption,
-.m-imagegrid > figure > a > div,
-.m-imagegrid > figure > a > figcaption {
+.m-imagegrid > div > figure > div,
+.m-imagegrid > div > figure > figcaption,
+.m-imagegrid > div > figure > a > div,
+.m-imagegrid > div > figure > a > figcaption {
   position: absolute;
   top: 0;
   left: 0;
@@ -886,44 +889,63 @@ article section:target figure.m-code-figure {
   border-width: 0.25rem;
   padding: 0.5rem;
 }
-.m-imagegrid > figure > figcaption,
-.m-imagegrid > figure > a > figcaption {
+.m-imagegrid > div > figure:first-child > div,
+.m-imagegrid > div > figure:first-child > figcaption,
+.m-imagegrid > div > figure:first-child > a > div,
+.m-imagegrid > div > figure:first-child > a > figcaption {
+  border-left-width: 0;
+}
+.m-imagegrid > div > figure:last-child > div,
+.m-imagegrid > div > figure:last-child > figcaption,
+.m-imagegrid > div > figure:last-child > a > div,
+.m-imagegrid > div > figure:last-child > a > figcaption {
+  border-right-width: 0;
+}
+.m-imagegrid > div > figure > figcaption,
+.m-imagegrid > div > figure > a > figcaption {
   color: transparent;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 0.75rem;
 }
-.m-imagegrid > figure > div::before,
-.m-imagegrid > figure > figcaption::before,
-.m-imagegrid > figure > a > div::before,
-.m-imagegrid > figure > a > figcaption::before {
+.m-imagegrid > div > figure > div::before,
+.m-imagegrid > div > figure > figcaption::before,
+.m-imagegrid > div > figure > a > div::before,
+.m-imagegrid > div > figure > a > figcaption::before {
   content: '';
   display: inline-block;
   height: 100%;
   vertical-align: bottom;
   width: 0;
 }
-.m-imagegrid > figure:hover > figcaption,
-.m-imagegrid > figure:hover > a > figcaption {
+.m-imagegrid > div > figure:hover > figcaption,
+.m-imagegrid > div > figure:hover > a > figcaption {
   background: linear-gradient(transparent 0%, transparent 75%, rgba(0, 0, 0, 0.85) 100%);
   color: #ffffff;
 }
-.m-imagegrid > figure > img,
-.m-imagegrid > figure > a > img {
+.m-imagegrid > div > figure > img,
+.m-imagegrid > div > figure > a > img {
   width: 100%;
   height: 100%;
 }
-.m-imagegrid::after {
+.m-imagegrid > div::after {
   display: block;
   content: ' ';
   clear: both;
 }
 
 @media screen and (max-width: 767px) {
-  .m-imagegrid > figure {
+  .m-imagegrid > div > figure {
     float: none;
     width: 100% !important;
+  }
+  .m-imagegrid > div > figure > div,
+  .m-imagegrid > div > figure > figcaption,
+  .m-imagegrid > div > figure > a > div,
+  .m-imagegrid > div > figure > a > figcaption {
+    border-left-width: 0;
+    border-right-width: 0;
   }
 }
 
@@ -931,20 +953,18 @@ article section:target figure.m-code-figure {
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
 #m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
 #m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
   margin: 0 -1rem 1rem -1rem;
 }
 
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid {
-  margin: 0 -1.25rem 1rem -1.25rem;
-}
 @media screen and (min-width: 576px) {
   #m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
   #m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {

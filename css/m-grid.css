@@ -414,8 +414,4 @@ body {
   }
 }
 
-#m-container-inflatable {
-  overflow-x: hidden;  /* needed by image grid :( */
-}
-
 /* kate: indent-width 2; */

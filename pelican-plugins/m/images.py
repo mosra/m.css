@@ -143,11 +143,12 @@ class ImageGrid(rst.Directive):
         grid_node = nodes.container()
         grid_node['classes'] += ['m-imagegrid', 'm-container-inflate']
 
-        images = []
+        rows = [[]]
         total_widths = [0]
         for uri in self.content:
             # New line, calculating width from 0 again
             if not uri:
+                rows.append([])
                 total_widths.append(0)
                 continue
 
@@ -162,21 +163,26 @@ class ImageGrid(rst.Directive):
             caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), *exif['ExposureTime'], exif['ISOSpeedRatings'])
             rel_width = float(im.width)/im.height
             total_widths[-1] += rel_width
-            images.append((uri, rel_width, len(total_widths) - 1, caption))
+            rows[-1].append((uri, rel_width, len(total_widths) - 1, caption))
 
-        for image in images:
-            image_reference = rst.directives.uri(image[0])
-            image_node = nodes.image('', uri=image_reference)
-            text_nodes, _ = self.state.inline_text(image[3], self.lineno)
-            text_node = nodes.paragraph('', '', *text_nodes)
-            overlay_node = nodes.caption()
-            overlay_node.append(text_node)
-            link_node = nodes.reference('', refuri=image_reference)
-            link_node.append(image_node)
-            link_node.append(overlay_node)
-            wrapper_node = nodes.figure(width="{:.3f}%".format(image[1]*100.0/total_widths[image[2]]))
-            wrapper_node.append(link_node)
-            grid_node.append(wrapper_node)
+        for row in rows:
+            row_node = nodes.container()
+
+            for image in row:
+                image_reference = rst.directives.uri(image[0])
+                image_node = nodes.image('', uri=image_reference)
+                text_nodes, _ = self.state.inline_text(image[3], self.lineno)
+                text_node = nodes.paragraph('', '', *text_nodes)
+                overlay_node = nodes.caption()
+                overlay_node.append(text_node)
+                link_node = nodes.reference('', refuri=image_reference)
+                link_node.append(image_node)
+                link_node.append(overlay_node)
+                wrapper_node = nodes.figure(width="{:.3f}%".format(image[1]*100.0/total_widths[image[2]]))
+                wrapper_node.append(link_node)
+                row_node.append(wrapper_node)
+
+            grid_node.append(row_node)
 
         return [grid_node]
 
