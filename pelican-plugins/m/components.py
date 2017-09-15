@@ -139,6 +139,23 @@ class Frame(rst.Directive):
                                 topic_node)
         return [topic_node]
 
+class CodeFigure(rst.Directive):
+    has_content = True
+    option_spec = {'class': directives.class_option}
+
+    style_class = ''
+
+    def run(self):
+        set_classes(self.options)
+
+        text = '\n'.join(self.content)
+        figure_node = nodes.figure(text, **self.options)
+        figure_node['classes'] += ['m-code-figure', self.style_class]
+
+        self.state.nested_parse(self.content, self.content_offset,
+                                figure_node)
+        return [figure_node]
+
 class Text(rst.Directive):
     has_content = True
     option_spec = {'class': directives.class_option}
@@ -198,6 +215,7 @@ def register():
     rst.directives.register_directive('block-flat', FlatBlock)
 
     rst.directives.register_directive('frame', Frame)
+    rst.directives.register_directive('code-figure', CodeFigure)
 
     rst.directives.register_directive('text-default', DefaultText)
     rst.directives.register_directive('text-primary', PrimaryText)

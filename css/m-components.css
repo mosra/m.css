@@ -831,6 +831,40 @@ figure.m-figure.m-fullwidth img {
   width: 100%;
 }
 
+/* Code figure */
+figure.m-code-figure {
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  position: relative;
+  padding: 1rem;
+}
+figure.m-code-figure:before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1; /* so it doesn't make the contents inactive */
+  border-style: solid;
+  border-width: 0.125rem;
+  border-radius: 0.2rem;
+  border-color: var(--code-background-color); /* to match the <pre> background */
+}
+figure.m-code-figure.m-flat:before {
+  border-color: transparent;
+}
+figure.m-code-figure > pre:first-child {
+  position: relative; /* so it's above the border */
+  margin: -1rem -1rem 1rem -1rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+article section:target figure.m-code-figure {
+  z-index: 1; /* so the selection border isn't above figure border */
+}
+
 /* Image grid */
 .m-imagegrid > figure {
   display: block;
@@ -898,10 +932,12 @@ figure.m-figure.m-fullwidth img {
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
 #m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
+#m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code {
+#m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
+#m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
   margin: 0 -1rem 1rem -1rem;
 }
 
@@ -933,10 +969,12 @@ figure.m-figure.m-fullwidth img {
 #m-container-inflatable section:target > .m-frame,
 #m-container-inflatable section:target > .m-block,
 #m-container-inflatable section:target > pre.m-code,
+#m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
 #m-container-inflatable section:target section > .m-note,
 #m-container-inflatable section:target section > .m-frame,
 #m-container-inflatable section:target section > .m-block,
-#m-container-inflatable section:target section > pre.m-code {
+#m-container-inflatable section:target section > pre.m-code,
+#m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   margin-left: -1.0rem;
   border-left-style: solid;
   border-left-width: 0.25rem;
@@ -944,8 +982,16 @@ figure.m-figure.m-fullwidth img {
   border-bottom-left-radius: 0;
   padding-left: 0.75rem;
 }
+#m-container-inflatable section:target > figure.m-code-figure::before,
+#m-container-inflatable section:target section > figure.m-code-figure::before {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-width: 0.25rem;
+}
 #m-container-inflatable section:target > pre.m-code,
-#m-container-inflatable section:target section > pre.m-code {
+#m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
+#m-container-inflatable section:target section > pre.m-code,
+#m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   border-color: var(--line-color);
 }
 #m-container-inflatable section:target > .m-note.m-default,
@@ -1015,15 +1061,15 @@ div.m-math.m-info svg, svg.m-math.m-info { fill: var(--info-color); }
 div.m-math.m-dim svg, svg.m-math.m-dim { fill: var(--dim-color); }
 
 /* Spacing after every block element, but not after the last */
-p, ul, ol, dl, blockquote, hr, pre,
+p, ul, ol, dl, blockquote, hr, pre, figure.m-code-figure,
 article, article > header, article section,
 .m-note, .m-frame, .m-block,
 div.m-scroll, table.m-table, div.m-image, img.m-image,
 figure.m-figure, .m-imagegrid, div.m-math {
   margin-bottom: 1rem;
 }
-p:last-child, ul:last-child, ol:last-child, dl:last-child, 
-blockquote:last-child, hr:last-child, pre:last-child,
+p:last-child, ul:last-child, ol:last-child, dl:last-child, blockquote:last-child,
+hr:last-child, pre:last-child, figure.m-code-figure:last-child,
 article:last-child, article section:last-child,
 .m-note:last-child, .m-frame:last-child, .m-block:last-child,
 table.m-table:last-child, img.m-image:last-child, div.m-image:last-child,
