@@ -29,7 +29,7 @@ main p {
 }
 main p.m-noindent {
   text-indent: 0;
-  text-align: initial;
+  text-align: left;
 }
 blockquote {
   margin-top: 0;
@@ -171,7 +171,7 @@ body > header > nav:target #m-navbar-show {
   display: none;
 }
 body > header > nav:target #m-navbar-hide {
-  display: initial;
+  display: inline-block;
 }
 
 /* Header navigation -- 768px and up (tablets, desktops) */

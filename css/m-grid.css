@@ -222,7 +222,7 @@ body {
   .m-clearfix-t::after { display: none; }
 
   .m-hide-s { display: none; }
-  .m-show-s { display: initial; }
+  .m-show-s { display: block; }
 
   .m-col-s-none {
     width: auto;
@@ -314,7 +314,7 @@ body {
   .m-clearfix-s::after { display: none; }
 
   .m-hide-m { display: none; }
-  .m-show-m { display: initial; }
+  .m-show-m { display: block; }
 
   .m-col-m-none {
     width: auto;
@@ -406,7 +406,7 @@ body {
   .m-clearfix-m::after { display: none; }
 
   .m-hide-l { display: none; }
-  .m-show-l { display: initial; }
+  .m-show-l { display: block; }
 
   .m-col-l-none {
     width: auto;
