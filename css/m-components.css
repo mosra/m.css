@@ -103,7 +103,7 @@ body > header {
   background-color: var(--header-background-color);
 }
 body > header > nav a {
-  text-decoration: var(--nav-link-decoration);
+  text-decoration: var(--link-decoration-nav);
   text-transform: var(--nav-menu-case);
   line-height: 1.5rem;
   display: inline-block;
@@ -251,7 +251,7 @@ body > footer > nav ul {
   margin: 0;
 }
 body > footer > nav a {
-  text-decoration: var(--nav-link-decoration);
+  text-decoration: var(--link-decoration-nav);
   text-transform: var(--nav-menu-case);
   color: var(--footer-link-color);
 }
@@ -337,7 +337,7 @@ article section:target {
 }
 article > header h1 a, article section > h2 a, article section > h3 a,
 article section > h4 a, article section > h5 a, article section > h6 a {
-  text-decoration: var(--heading-link-decoration);
+  text-decoration: var(--link-decoration-heading);
 }
 
 /* Jumbo article */
@@ -410,7 +410,7 @@ nav.m-navpanel ol, nav.m-navpanel ul {
 }
 nav.m-navpanel a {
   color: var(--navpanel-link-color);
-  text-decoration: var(--nav-link-decoration);
+  text-decoration: var(--link-decoration-nav);
 }
 nav.m-navpanel a:hover, nav.m-navpanel a:focus, nav.m-navpanel a:active {
   color: var(--navpanel-link-active-color);
