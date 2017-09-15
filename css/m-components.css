@@ -329,17 +329,15 @@ article > footer p {
 
 /* Article -- dynamic section headers */
 article section:target {
+  margin-left: -1.0rem;
+  border-left-style: solid;
+  border-left-width: 0.25rem;
+  padding-left: 0.75rem;
   border-color: var(--article-heading-color);
 }
 article > header h1 a, article section > h2 a, article section > h3 a,
 article section > h4 a, article section > h5 a, article section > h6 a {
   text-decoration: var(--heading-link-decoration);
-}
-article section:target {
-  margin-left: -1.0rem;
-  border-left-style: solid;
-  border-left-width: 0.25rem;
-  padding-left: 0.75rem;
 }
 
 /* Jumbo article */
