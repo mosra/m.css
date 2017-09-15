@@ -787,7 +787,7 @@ figure.m-figure:before {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: -1000;
+  z-index: -1; /* so it doesn't make the contents inactive */
   border-style: solid;
   border-width: 0.125rem;
   border-radius: 0.2rem;
@@ -807,6 +807,7 @@ figure.m-figure:after {
   height: 1px;
 }
 figure.m-figure img {
+  position: relative; /* so it's above the border */
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
