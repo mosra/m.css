@@ -11,8 +11,13 @@ body {
 /* Block elements */
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
   font-weight: var(--heading-font-weight);
+}
+h1 {
+  margin-bottom: 1rem;
+}
+h2, h3, h4, h5, h6 {
+  margin-bottom: 0.5rem;
 }
 p, ul, ol, dl {
   margin-top: 0;
@@ -265,11 +270,27 @@ body > main {
   padding-bottom: 1rem;
 }
 
+/* Page heading (not in <header>), breadcrumb naviation on pages */
+article h1 {
+  font-size: 1.75rem;
+}
+article h1 .m-breadcrumb {
+  color: var(--dim-color);
+  font-weight: normal;
+}
+article h1 .m-breadcrumb a {
+  color: var(--article-heading-color);
+}
+article h1 .m-breadcrumb a:hover, article h1 a:focus, article h1 a:active {
+  color: var(--article-heading-active-color);
+}
+
 /* Article elements */
 article > header h1 {
   font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
-article > header h1, article > header h1 a,
+article h1 a, article > header h1, article > header h1 a,
 article section > h2, article section > h2 a,
 article section > h3, article section > h3 a,
 article section > h4, article section > h4 a,
@@ -277,7 +298,7 @@ article section > h5, article section > h5 a,
 article section > h6, article section > h6 a {
   color: var(--article-heading-color);
 }
-article > header h1 a:hover, article > header h1 a:focus, article > header h1 a:active,
+article h1 a:hover, article > header h1 a:hover, article > header h1 a:focus, article > header h1 a:active,
 article section > h2 a:hover, article section > h2 a:focus, article section > h2 a:active,
 article section > h3 a:hover, article section > h3 a:focus, article section > h3 a:active,
 article section > h4 a:hover, article section > h4 a:focus, article section > h4 a:active,
@@ -335,7 +356,7 @@ article section:target {
   padding-left: 0.75rem;
   border-color: var(--article-heading-color);
 }
-article > header h1 a, article section > h2 a, article section > h3 a,
+article h1 a, article > header h1 a, article section > h2 a, article section > h3 a,
 article section > h4 a, article section > h5 a, article section > h6 a {
   text-decoration: var(--link-decoration-heading);
 }
