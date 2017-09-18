@@ -24,10 +24,10 @@
 
 {% block content %}
   {% if article.cover %}
-  <article class="m-jumbo{% if article.class %} {{ article.class }}{%endif%}">
+  <article id="m-jumbo"{% if article.class %}class="{{ article.class }}"{%endif%}">
     <header>
-      <div class="m-jumbo-image" style="background-image: url('{{ article|expand_link('cover') }}');">
-        <div class="m-jumbo-cover">
+      <div id="m-jumbo-image" style="background-image: url('{{ article|expand_link(article.cover) }}');">
+        <div id="m-jumbo-cover">
           <div class="m-container">
             <div class="m-row">
               <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-left">{{ article.locale_date }}</div>
