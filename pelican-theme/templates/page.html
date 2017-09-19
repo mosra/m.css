@@ -1,7 +1,13 @@
 {% set page_title = page.title %}
 {% extends "base.html" %}
 
-{% block title %}{{ page.title }} | {{ SITENAME }}{% endblock %}
+{% block title %}
+{% if page.breadcrumb %}
+{% set breadcrumbs = page.breadcrumb.strip().split('\n') %}
+{% for i in breadcrumbs %}{% set url, _, title = i.strip().partition(' ') %}{{ title }} &raquo; {% endfor %}
+{% endif %}
+{{ page.title }} | {{ SITENAME -}}
+{% endblock %}
 
 {% block head %}
   {{- super() -}}
@@ -14,7 +20,19 @@
 <article class="m-container" id="m-container-inflatable">
   <div class="m-row">
     <div class="m-col-l-10 m-push-l-1">
-      <h1>{{ page.title }}</h1>
+      {% if not page.landing %}
+      <h1>
+        {% if page.breadcrumb %}
+        <span class="m-breadcrumb">
+          {% set breadcrumbs = page.breadcrumb.strip().split('\n') %}
+          {% for i in breadcrumbs %}
+          {% set url, _, title = i.strip().partition(' ') %}
+          <a href="{{ url|expand_link(page) }}">{{ title }}</a> &raquo;
+          {% endfor %}
+        </span>
+        {% endif %}
+        {{ page.title }}
+      </h1>
 <!-- content -->
 {{ page.content -}}
 <!-- /content -->
