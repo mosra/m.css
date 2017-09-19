@@ -31,13 +31,13 @@
         <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
           <div class="m-row">
             <ol class="m-col-t-6 m-col-m-none">
-              {% for title, link, sub in LINKS_NAVBAR1 %}
+              {% for title, link, slug, sub in LINKS_NAVBAR1 %}
               <li>
-                <a href="{{ link }}"{% if title == page_title %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+                <a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
                 {% if sub %}
                 <ol>
-                  {% for title, link in sub %}
-                  <li><a href="{{ link }}">{{ title }}</a></li>
+                  {% for title, link, slug in sub %}
+                  <li><a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                   {% endfor %}
                 </ol>
                 {% endif %}
@@ -45,13 +45,13 @@
               {% endfor %}
             </ol>
             <ol class="m-col-t-6 m-col-m-none">
-              {% for title, link, sub in LINKS_NAVBAR2 %}
+              {% for title, link, slug, sub in LINKS_NAVBAR2 %}
               <li>
-                <a href="{{ link }}"{% if title == page_title %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+                <a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
                 {% if sub %}
                 <ol>
-                  {% for title, link in sub %}
-                  <li><a href="{{ link }}">{{ title }}</a></li>
+                  {% for title, link, slug in sub %}
+                  <li><a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                   {% endfor %}
                 </ol>
                 {% endif %}
