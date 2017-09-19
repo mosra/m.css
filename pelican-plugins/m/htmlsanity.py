@@ -20,6 +20,7 @@ enable_hyphenation = False
 smart_quotes = False
 hyphenation_lang = 'en'
 docutils_settings = {}
+intrasite_link_regex = ''
 
 words_re = re.compile("""\w+""", re.UNICODE|re.X)
 
@@ -514,16 +515,33 @@ def dehyphenate(value, enable=None):
     if not enable: return value
     return value.replace('&shy;', '')
 
+def expand_link(link, content):
+    link_regex = r"""^
+        (?P<markup>)(?P<quote>)
+        (?P<path>{0}(?P<value>.*))
+        $""".format(intrasite_link_regex)
+    links = re.compile(link_regex, re.X)
+    return links.sub(
+        lambda m: content._link_replacer(content.get_siteurl(), m),
+        link)
+
+def expand_links(text, content):
+    return content._update_content(content, text, content.get_siteurl())
+
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
+    pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
+    pelicanobj.settings['JINJA_FILTERS']['expand_links'] = expand_links
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
     pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
 
-    global enable_hyphenation, smart_quotes, hyphenation_lang, docutils_settings
+    global enable_hyphenation, smart_quotes, hyphenation_lang, \
+        docutils_settings, intrasite_link_regex
     enable_hyphenation = pelicanobj.settings.get('HTMLSANITY_HYPHENATION', False)
     smart_quotes = pelicanobj.settings.get('HTMLSANITY_SMART_QUOTES', False)
     hyphenation_lang = pelicanobj.settings['DEFAULT_LANG']
     docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
+    intrasite_link_regex = pelicanobj.settings['INTRASITE_LINK_REGEX']
 
 def add_reader(readers):
     readers.reader_classes['rst'] = SaneRstReader
