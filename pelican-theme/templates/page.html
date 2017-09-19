@@ -6,7 +6,7 @@
 {% block head %}
   {{- super() -}}
   {% if page.css %}
-  <link rel="stylesheet" href="{{ page|expand_link('css') }}" />
+  <link rel="stylesheet" href="{{ page.css|expand_link(page) }}" />
   {% endif %}
 {% endblock %}
 

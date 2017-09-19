@@ -15,9 +15,9 @@
   <meta property="og:description" content="{{ article.summary|striptags }}" />
   <meta name="twitter:description" content="{{ article.summary|striptags }}" />
   {% if article.cover %}
-  <meta property="og:image" content="{{ article|expand_link('cover') }}" />
+  <meta property="og:image" content="{{ article.cover|expand_link(article) }}" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="{{ article|expand_link('cover') }}" />
+  <meta name="twitter:image" content="{{ article.cover|expand_link(article) }}" />
   {% endif %}
   <meta property="og:type" content="article" />
 {% endblock %}
@@ -26,7 +26,7 @@
   {% if article.cover %}
   <article id="m-jumbo"{% if article.class %}class="{{ article.class }}"{%endif%}">
     <header>
-      <div id="m-jumbo-image" style="background-image: url('{{ article|expand_link(article.cover) }}');">
+      <div id="m-jumbo-image" style="background-image: url('{{ article.cover|expand_link(article) }}');">
         <div id="m-jumbo-cover">
           <div class="m-container">
             <div class="m-row">
