@@ -32,10 +32,13 @@
   --header-border-width: 0 0 0.25rem 0;
   --header-color: #ffffff;
   --header-background-color: #22272e;
+  --header-background-color-landing: rgba(34, 39, 46, 0.75);
+  --header-background-color-jumbo: rgba(34, 39, 46, 0.25);
   --header-link-color: #ffffff;
   --header-link-active-color: #a5c9ea;
   --header-link-current-color: #5b9dd9;
   --header-link-active-background-color: #292f37;
+  --header-link-active-background-color-semi: rgba(41, 47, 55, 0.5);
 
   /* Footer */
   --footer-font-size: 0.85rem;

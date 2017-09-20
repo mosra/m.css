@@ -19,7 +19,7 @@
 </head>
 <body>
 <header>
-  <nav id="navigation">
+  <nav id="navigation"{% if page and page.landing and page.cover %} class="m-navbar-landing"{% endif %}{% if article and article.cover %} class="m-navbar-jumbo"{% endif %}>
     <div class="m-container">
       <div class="m-row">
         <a href="{{ SITEURL }}/" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">

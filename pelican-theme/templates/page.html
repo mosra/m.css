@@ -17,25 +17,37 @@
 {% endblock %}
 
 {% block main %}
-<article class="m-container" id="m-container-inflatable">
-  <div class="m-row">
-    <div class="m-col-l-10 m-push-l-1">
-      {% if not page.landing %}
-      <h1>
-        {% if page.breadcrumb %}
-        <span class="m-breadcrumb">
-          {% set breadcrumbs = page.breadcrumb.strip().split('\n') %}
-          {% for i in breadcrumbs %}
-          {% set url, _, title = i.strip().partition(' ') %}
-          <a href="{{ url|expand_link(page) }}">{{ title }}</a> &raquo;
-          {% endfor %}
-        </span>
+<article>
+  {% if page.landing %}
+  <div id="m-landing-image"{% if page.cover %} style="background-image: url('{{ page.cover|expand_link(page) }}');"{% endif %}>
+    <div id="m-landing-cover">
+      <div class="m-container">
+        {{ page.landing }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <div class="m-container" id="m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        {% if not page.landing %}
+        <h1>
+          {% if page.breadcrumb %}
+          <span class="m-breadcrumb">
+            {% set breadcrumbs = page.breadcrumb.strip().split('\n') %}
+            {% for i in breadcrumbs %}
+            {% set url, _, title = i.strip().partition(' ') %}
+            <a href="{{ url|expand_link(page) }}">{{ title }}</a> &raquo;
+            {% endfor %}
+          </span>
+          {% endif %}
+          {{ page.title }}
+        </h1>
         {% endif %}
-        {{ page.title }}
-      </h1>
 <!-- content -->
 {{ page.content -}}
 <!-- /content -->
+      </div>
     </div>
   </div>
 </article>
