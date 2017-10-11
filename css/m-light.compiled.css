@@ -431,8 +431,13 @@ body {
 /* Block elements */
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
   font-weight: normal;
+}
+h1 {
+  margin-bottom: 1rem;
+}
+h2, h3, h4, h5, h6 {
+  margin-bottom: 0.5rem;
 }
 p, ul, ol, dl {
   margin-top: 0;
@@ -512,16 +517,43 @@ code {
 }
 
 /* Header navigation */
-body > header {
+body > header > nav {
   width: 100%;
+  background-color: #ffffff;
+  height: 3rem;
+}
+body > header > nav.m-navbar-landing,
+body > header > nav.m-navbar-jumbo {
+  background-color: transparent;
+  position: relative;
+}
+body > header > nav.m-navbar-landing {
+  opacity: 0.8;
+}
+body > header > nav.m-navbar-jumbo {
+  background-color: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+}
+body > header > nav.m-navbar-landing:hover,
+body > header > nav.m-navbar-jumbo:hover {
+  background-color: rgba(255, 255, 255, 0.75);
+  opacity: 1;
+}
+body> header > nav.m-navbar-landing:target,
+body> header > nav.m-navbar-jumbo:target {
+  background-color: #ffffff;
+  opacity: 1;
+}
+body > header > nav.m-navbar-landing a#m-navbar-brand {
+  visibility: hidden;
+}
+body > header > nav.m-navbar-landing:target a#m-navbar-brand {
+  visibility: visible;
 }
 body > header > nav {
   margin-left: auto;
   margin-right: auto;
   color: #000000;
-}
-body > header {
-  background-color: rgba(255, 255, 255, 0.75);
 }
 body > header > nav a {
   text-decoration: none;
@@ -529,42 +561,41 @@ body > header > nav a {
   line-height: 1.5rem;
   display: inline-block;
   vertical-align: middle;
-  margin-left: -0.5rem;
-  padding-left: 0.5rem;
-  border-style: solid;
-  border-color: transparent;
-  border-width: 0 0 0 0.25rem;
   color: #000000;
 }
-body > header > nav a#m-navbar-brand {
+body > header > nav a#m-navbar-brand, body > header > nav a#m-navbar-show, body > header > nav a#m-navbar-hide {
   text-transform: lowercase;
+  font-weight: normal;
   font-size: 1.125rem;
+  line-height: 3rem;
 }
 body > header > nav #m-navbar-collapse {
   padding-bottom: 1rem;
 }
-body > header > nav a#m-navbar-current {
-  color: #ea7944;
-  border-color: #ea7944;
-}
-body > header > nav li {
+body > header > nav #m-navbar-collapse li {
   border-style: solid;
   border-color: transparent;
   border-width: 0 0 0 0.25rem;
-  margin-left: -0.5rem;
+  margin-left: -1rem;
 }
-body > header > nav li a {
-  margin: 0 0 0 -0.25rem;
+body > header > nav #m-navbar-collapse li a {
+  border-style: solid;
+  border-color: transparent;
+  margin-left: -0.25rem;
+  padding-left: 0.75rem;
+  border-width: 0 0 0 0.25rem;
   width: 100%;
 }
-body > header > nav a#m-navbar-brand, body > header > nav a#m-navbar-show, body > header > nav a#m-navbar-hide {
-  line-height: 3rem;
-  font-weight: normal;
+body > header > nav #m-navbar-collapse li a#m-navbar-current {
+  color: #ea7944;
+  border-color: #ea7944;
 }
 body > header > nav ol {
   list-style-type: none;
-  padding-left: 1rem;
   margin: 0;
+}
+body > header > nav ol ol {
+  padding-left: 1.5rem;
 }
 body > header > nav [class*='m-col-'] {
   padding-top: 0;
@@ -573,12 +604,22 @@ body > header > nav [class*='m-col-'] {
 body > header > nav a:hover, body > header > nav a:focus, body > header > nav a:active {
   color: #cb4b16;
 }
-body > header > nav li:hover {
+body > header > nav #m-navbar-collapse li:hover {
   border-color: #cb4b16;
 }
-body > header > nav li a:hover, body > header > nav li a:focus, body > header > nav li a:active {
+body > header > nav #m-navbar-collapse li a:hover,
+body > header > nav #m-navbar-collapse li a:focus,
+body > header > nav #m-navbar-collapse li a:active {
   border-color: #cb4b16;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+body > header > nav.m-navbar-landing #m-navbar-collapse li a:hover,
+body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:hover,
+body > header > nav.m-navbar-landing #m-navbar-collapse li a:focus,
+body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:focus,
+body > header > nav.m-navbar-landing #m-navbar-collapse li a:active,
+body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:active {
+  background-color: var(--header-link-active-background-color-semi);
 }
 
 /* Header navigation -- collapsible part */
@@ -601,9 +642,6 @@ body > header > nav:target #m-navbar-hide {
   body > header > nav:target #m-navbar-show, body > header > nav:target #m-navbar-hide {
     display: none;
   }
-  body > header > nav #m-navbar-collapse {
-    padding-bottom: 0;
-  }
   body > header > nav a {
     line-height: 3rem;
     margin-left: 0;
@@ -611,15 +649,18 @@ body > header > nav:target #m-navbar-hide {
     padding-right: 1rem;
     white-space: nowrap;
   }
-  body > header > nav li ol {
-    background-color: rgba(255, 255, 255, 0.75);
+  body > header > nav #m-navbar-collapse {
+    padding-bottom: 0;
   }
-  body > header > nav ol ol li {
+  body > header > nav #m-navbar-collapse li ol {
+    background-color: #ffffff;
+  }
+  body > header > nav #m-navbar-collapse ol ol li {
     margin-left: 0;
     padding-left: 0;
     border-left-width: 0;
   }
-  body > header > nav ol ol li a {
+  body > header > nav #m-navbar-collapse ol ol li a {
     margin-left: 0;
     padding-left: 0.75rem;
   }
@@ -686,11 +727,27 @@ body > main {
   padding-bottom: 1rem;
 }
 
+/* Page heading (not in <header>), breadcrumb naviation on pages */
+article h1 {
+  font-size: 1.75rem;
+}
+article h1 .m-breadcrumb {
+  color: #bdbdbd;
+  font-weight: normal;
+}
+article h1 .m-breadcrumb a {
+  color: #cb4b16;
+}
+article h1 .m-breadcrumb a:hover, article h1 a:focus, article h1 a:active {
+  color: #802f0e;
+}
+
 /* Article elements */
 article > header h1 {
   font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
-article > header h1, article > header h1 a,
+article h1 a, article > header h1, article > header h1 a,
 article section > h2, article section > h2 a,
 article section > h3, article section > h3 a,
 article section > h4, article section > h4 a,
@@ -698,7 +755,7 @@ article section > h5, article section > h5 a,
 article section > h6, article section > h6 a {
   color: #cb4b16;
 }
-article > header h1 a:hover, article > header h1 a:focus, article > header h1 a:active,
+article h1 a:hover, article > header h1 a:hover, article > header h1 a:focus, article > header h1 a:active,
 article section > h2 a:hover, article section > h2 a:focus, article section > h2 a:active,
 article section > h3 a:hover, article section > h3 a:focus, article section > h3 a:active,
 article section > h4 a:hover, article section > h4 a:focus, article section > h4 a:active,
@@ -756,55 +813,68 @@ article section:target {
   padding-left: 0.75rem;
   border-color: #cb4b16;
 }
-article > header h1 a, article section > h2 a, article section > h3 a,
+article h1 a, article > header h1 a, article section > h2 a, article section > h3 a,
 article section > h4 a, article section > h5 a, article section > h6 a {
   text-decoration: none;
 }
 
-/* Jumbo article */
-article.m-jumbo {
+/* Landing page, jumbo article */
+#m-landing-image {
+  background-size: cover;
+  background-color: #666666;
+  background-position: center center;
+  background-repeat: no-repeat;
+  margin-top: -4rem;
+  padding-top: 5rem;
+  color: #ffffff;
+}
+#m-landing-cover {
+  padding-bottom: 4rem;
+}
+article#m-jumbo {
   margin-top: -1rem;
 }
-article.m-jumbo > header .m-jumbo-image {
+article#m-jumbo > header #m-jumbo-image {
   background-size: cover;
   background-color: #666666;
   background-position: center center;
   background-repeat: no-repeat;
   font-size: 2.5vh;
   height: 60vh;
+  margin-top: -4rem;
   margin-bottom: 1rem;
-  padding-top: 1rem;
+  padding-top: 5rem;
 }
-article.m-jumbo > header .m-jumbo-cover {
+article#m-jumbo > header #m-jumbo-cover, #m-landing-cover {
   background: linear-gradient(transparent 0%, transparent 50%, #ffffff 100%);
   width: 100%;
   height: 100%;
 }
-article.m-jumbo > header h1, article.m-jumbo > header h2 {
+article#m-jumbo > header h1, article#m-jumbo > header h2 {
   text-align: center;
   font-weight: bold;
 }
-article.m-jumbo > header h1 {
+article#m-jumbo > header h1 {
   font-size: 10vh;
 }
-article.m-jumbo > header h2 {
+article#m-jumbo > header h2 {
   font-size: 3vh;
 }
-article.m-jumbo > header a {
+article#m-jumbo > header a {
   text-decoration: none;
 }
 
-article.m-jumbo > header, article.m-jumbo > header h1, article.m-jumbo > header a {
+article#m-jumbo > header, article#m-jumbo > header h1, article#m-jumbo > header a {
   color: #ffffff;
 }
-article.m-jumbo > header a:hover, article.m-jumbo > header a:focus, article.m-jumbo > header a:active {
+article#m-jumbo > header a:hover, article#m-jumbo > header a:focus, article#m-jumbo > header a:active {
   color: #f0f0f0;
 }
 
-article.m-jumbo.m-inverted > header, article.m-jumbo.m-inverted > header h1, article.m-jumbo.m-inverted > header a {
+article#m-jumbo.m-inverted > header, article#m-jumbo.m-inverted > header h1, article#m-jumbo.m-inverted > header a {
   color: #000000;
 }
-article.m-jumbo.m-inverted > header a:hover, article.m-jumbo.m-inverted > header a:focus, article.m-jumbo.m-inverted > header a:active {
+article#m-jumbo.m-inverted > header a:hover, article#m-jumbo.m-inverted > header a:focus, article#m-jumbo.m-inverted > header a:active {
   color: #0f0f0f;
 }
 
