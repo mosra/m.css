@@ -29,7 +29,10 @@
   {% endif %}
   <meta property="og:type" content="website" />
   {% if page.css %}
-  <link rel="stylesheet" href="{{ page.css|expand_link(page) }}" />
+  {% set styles = page.css.strip().split('\n') %}
+  {% for style in styles %}
+  <link rel="stylesheet" href="{{ style|expand_link(page) }}" />
+  {% endfor %}
   {% endif %}
 {% endblock %}
 
