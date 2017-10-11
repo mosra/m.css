@@ -11,6 +11,23 @@
 
 {% block head %}
   {{- super() -}}
+  {% if page.description %}
+  <meta name="description" content="{{ page.description }}" />
+  {% endif %}
+  <meta property="og:title" content="{{ page.title }}" />
+  <meta name="twitter:title" content="{{ page.title }}" />
+  <meta property="og:url" content="{{ page.url }}" />
+  <meta name="twitter:url" content="{{ page.url }}" />
+  <meta property="og:description" content="{{ page.summary|striptags }}" />
+  <meta name="twitter:description" content="{{ page.summary|striptags }}" />
+  {% if page.cover %}
+  <meta property="og:image" content="{{ page.cover|expand_link(page) }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="{{ page.cover|expand_link(page) }}" />
+  {% else %}
+  <meta name="twitter:card" content="summary" />
+  {% endif %}
+  <meta property="og:type" content="website" />
   {% if page.css %}
   <link rel="stylesheet" href="{{ page.css|expand_link(page) }}" />
   {% endif %}
