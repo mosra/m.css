@@ -1,3 +1,39 @@
-{% extends "base.html" %}
-{% block main %}
-{% endblock %}
+{% extends "base_blog.html" %}
+
+{% block head %}
+  {{- super() -}}
+  {% if articles_page.has_previous() %}
+  <link rel="prev" href="{{ articles_previous_page.url }}" />
+  {% endif %}
+  {% if articles_page.has_next() %}
+  <link rel="next" href="{{ articles_next_page.url }}" />
+  {% endif %}
+{% endblock head %}
+
+{% block content %}
+    <div class="m-col-m-10">
+      {% block content_title %}
+      {% endblock content_title %}
+      {% for article in articles_page.object_list %}
+      <article>
+        {% macro header() %}{% include "article_header.html" %}{% endmacro %}
+        {{ header()|indent(8) }}
+        {% if loop.first and articles_page.number == 1 %}
+        <div class="m-clearfix-l"></div>
+<!-- content -->
+{{ article.content }}
+<!-- /content -->
+        {% endif %}
+        {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
+        {{ footer()|indent(8) }}
+        {% if not loop.first or articles_page.number != 1 %}
+        <div class="m-clearfix-l"></div>
+        {% endif %}
+      </article>
+      {% endfor %}
+      {% if articles_page.has_other_pages() %}
+      {% macro pagination() %}{% include 'pagination.html' %}{% endmacro %}
+      {{ pagination()|indent(6) }}
+      {% endif %}
+    </div>
+{% endblock content %}
