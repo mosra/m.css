@@ -18,6 +18,8 @@
   <meta property="og:image" content="{{ article.cover|expand_link(article) }}" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="{{ article.cover|expand_link(article) }}" />
+  {% else %}
+  <meta name="twitter:card" content="summary" />
   {% endif %}
   <meta property="og:type" content="article" />
 {% endblock %}
