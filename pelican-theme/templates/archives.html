@@ -1,4 +1,15 @@
 {% extends "base_blog.html" %}
+
+{% block head %}
+  {{- super() -}}
+  {% if articles_page.has_previous() %}
+  <link rel="prev" href="{{ articles_previous_page.url }}" />
+  {% endif %}
+  {% if articles_page.has_next() %}
+  <link rel="next" href="{{ articles_next_page.url }}" />
+  {% endif %}
+{% endblock head %}
+
 {% block content %}
     <div class="m-col-m-10">
       {% block content_title %}
