@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="{{ href }}" />
   {% endfor %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% if THEME_COLOR %}
   <meta name="theme-color" content="{{ THEME_COLOR }}" />
+  {% endif %}
   <meta charset="UTF-8" />
   {% if FEED_ALL_ATOM_URL %}
   <link href="{{ FEED_ALL_ATOM_URL }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
@@ -73,6 +75,7 @@
     <div class="m-container">
       <div class="m-row">
         <div class="m-col-s-3 m-col-t-6">
+          {% if LINKS_FOOTER1 %}
           <h3>
             {%- if LINKS_FOOTER1[0][1] %}<a href="{{ LINKS_FOOTER1[0][1] }}">{% endif %}
             {{- LINKS_FOOTER1[0][0] -}}
@@ -83,8 +86,10 @@
             <li><a href="{{ link }}">{{ title }}</a></li>
             {% endif %}{% endfor %}
           </ul>
+          {% endif %}
         </div>
         <div class="m-col-s-3 m-col-t-6">
+          {% if LINKS_FOOTER2 %}
           <h3>
             {%- if LINKS_FOOTER2[0][1] %}<a href="{{ LINKS_FOOTER2[0][1] }}">{% endif %}
             {{- LINKS_FOOTER2[0][0] -}}
@@ -95,9 +100,11 @@
             <li><a href="{{ link }}">{{ title }}</a></li>
             {% endif %}{% endfor %}
           </ul>
+          {% endif %}
         </div>
         <div class="m-clearfix-t"></div>
         <div class="m-col-s-3 m-col-t-6">
+          {% if LINKS_FOOTER3 %}
           <h3>
             {%- if LINKS_FOOTER3[0][1] %}<a href="{{ LINKS_FOOTER3[0][1] }}">{% endif %}
             {{- LINKS_FOOTER3[0][0] -}}
@@ -108,6 +115,7 @@
             <li><a href="{{ link }}">{{ title }}</a></li>
             {% endif %}{% endfor %}
           </ul>
+          {% endif %}
         </div>
         <div class="m-col-s-3 m-col-t-6">
           {% if LINKS_FOOTER4 %}
@@ -133,7 +141,9 @@
       </div>
       <div class="m-row">
         <div class="m-col-l-10 m-push-l-1">
+          {% if FINE_PRINT %}
           {{ FINE_PRINT|render_rst|indent(10) }}
+          {% endif %}
         </div>
       </div>
     </div>
