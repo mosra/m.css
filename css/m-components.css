@@ -100,6 +100,7 @@ code {
 body > header > nav {
   width: 100%;
   background-color: var(--header-background-color);
+  height: 3rem;
 }
 body > header > nav.m-navbar-landing,
 body > header > nav.m-navbar-jumbo {
