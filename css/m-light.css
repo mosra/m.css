@@ -14,6 +14,9 @@
   --nav-categories-case: lowercase;
   --heading-font-weight: normal;
 
+  /* Shapes */
+  --border-radius: 0.2rem;
+
   /* Basics */
   --background-color: #ffffff;
   --color: #000000;

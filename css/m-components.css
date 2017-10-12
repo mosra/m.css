@@ -58,7 +58,7 @@ pre {
   padding: 0.5rem 1rem;
   color: var(--code-color);
   background-color: var(--code-background-color);
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
   overflow-x: auto;
   margin-top: 0; /* stupid defaults */
 }
@@ -577,14 +577,14 @@ dl.m-diary dd {
 
 /* Note, frame, block */
 .m-note {
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
   padding: 1rem;
 }
 .m-frame {
   background-color: var(--background-color);
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
   border-color: var(--line-color);
   padding: 0.875rem;
 }
@@ -592,7 +592,7 @@ dl.m-diary dd {
   border-style: solid;
   border-width: 0.0625rem;
   border-left-width: 0.25rem;
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
   border-color: var(--line-color);
   padding: 0.9375rem 0.9375rem 0.9375rem 0.75rem;
 }
@@ -836,7 +836,7 @@ div.m-image {
 }
 img.m-image, div.m-image img {
   max-width: 100%;
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
 }
 div.m-image.m-fullwidth img {
   width: 100%;
@@ -861,7 +861,7 @@ figure.m-figure:before {
   z-index: -1; /* so it doesn't make the contents inactive */
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
   border-color: var(--line-color);
 }
 figure.m-figure.m-flat:before {
@@ -920,7 +920,7 @@ figure.m-code-figure:before {
   z-index: -1; /* so it doesn't make the contents inactive */
   border-style: solid;
   border-width: 0.125rem;
-  border-radius: 0.2rem;
+  border-radius: var(--border-radius);
   border-color: var(--code-background-color); /* to match the <pre> background */
 }
 figure.m-code-figure.m-flat:before {
