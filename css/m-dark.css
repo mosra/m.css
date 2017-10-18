@@ -69,7 +69,7 @@
   --default-filled-link-color: #5b9dd9;
   --default-filled-link-active-color: #a5c9ea;
 
-  --primary-color: #2f83cc;
+  --primary-color: #a5c9ea;
   --primary-filled-color: #2f363f;
   --primary-filled-background-color: #a5c2db;
   --primary-filled-link-color: #2a75b6;
@@ -93,7 +93,7 @@
   --danger-filled-link-color: #d85c59;
   --danger-filled-link-active-color: #ff9391;
 
-  --info-color: #a5c9ea;
+  --info-color: #2f83cc;
   --info-filled-color: #a5caeb;
   --info-filled-background-color: #2a4f70;
   --info-filled-link-color: #5297d7;
