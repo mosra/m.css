@@ -526,7 +526,7 @@ def expand_link(link, content):
         link)
 
 def expand_links(text, content):
-    return content._update_content(content, text, content.get_siteurl())
+    return content._update_content(text, content.get_siteurl())
 
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
