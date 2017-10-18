@@ -1035,25 +1035,29 @@ article section:target figure.m-code-figure {
 #m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
 #m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
-  margin: 0 -1rem 1rem -1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
 }
 
 @media screen and (min-width: 576px) {
   #m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
   #m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
-    margin: 0 -10% 1rem -10%;
+    margin-left: -10%;
+    margin-right: -10%;
   }
 }
 @media screen and (min-width: 768px) {
   #m-container-inflatable > .m-row > .m-col-m-10 > .m-imagegrid.m-container-inflate,
   #m-container-inflatable > .m-row > .m-col-m-10 section > .m-imagegrid.m-container-inflate {
-    margin: 0 -10% 1rem -10%;
+    margin-left: -10%;
+    margin-right: -10%;
   }
 }
 @media screen and (min-width: 992px) {
   #m-container-inflatable > .m-row > .m-col-l-10 > .m-imagegrid.m-container-inflate,
   #m-container-inflatable > .m-row > .m-col-l-10 section > .m-imagegrid.m-container-inflate {
-    margin: 0 -10% 1rem -10%;
+    margin-left: -10%;
+    margin-right: -10%;
   }
 }
 
