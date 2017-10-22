@@ -24,5 +24,14 @@ class DarkStyle(Style):
 
         # CMake
         Name.Builtin:           'bold #ffffff',
-        Name.Variable:          '#c7cf2f'
+        Name.Variable:          '#c7cf2f',
+
+        # reST, HTML
+        Name.Tag:               'bold #dcdcdc',
+        Name.Attribute:         'bold #dcdcdc',
+        Name.Class:             'bold #dcdcdc',
+        Operator.Word:          'bold #dcdcdc',
+        Generic.Heading:        'bold #ffffff',
+        Generic.Emph:           'italic #e6e6e6',
+        Generic.Strong:         'bold #e6e6e6'
     }
