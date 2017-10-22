@@ -512,6 +512,12 @@ div.m-scroll {
 .m-text-right, .m-text-right.m-noindent {
   text-align: right;
 }
+.m-text.m-small {
+  font-size: 85.4%;
+}
+.m-text.m-big {
+  font-size: 117%;
+}
 
 /* Lists */
 ul.m-unstyled, ol.m-unstyled {
