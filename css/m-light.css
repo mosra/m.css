@@ -5,6 +5,7 @@
   /* Text properties */
   --font: 'Libre Baskerville', serif;
   --code-font: 'Source Code Pro', monospace;
+  --font-size: 14px;
   --link-decoration: underline;
   --link-decoration-nav: none;
   --link-decoration-heading: none;

@@ -1,6 +1,6 @@
 /* Globals */
 html {
-  font-size: 16px;
+  font-size: var(--font-size);
   background-color: var(--background-color);
 }
 body {

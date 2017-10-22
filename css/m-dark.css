@@ -6,6 +6,7 @@
   /* Text properties */
   --font: 'Source Sans Pro', sans-serif;
   --code-font: 'Source Code Pro', monospace;
+  --font-size: 16px;
   --link-decoration: underline;
   --link-decoration-nav: none;
   --link-decoration-heading: none;
