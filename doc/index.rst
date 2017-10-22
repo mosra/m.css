@@ -1,0 +1,83 @@
+m.css
+#####
+
+:save_as: index.html
+:url:
+:cover: {filename}/static/cover.jpg
+:summary: A no-bullshit, no-JavaScript CSS framework and Pelican theme for
+    content-oriented websites
+:landing:
+    .. container:: m-row
+
+        .. container:: m-col-l-6 m-push-l-1 m-col-m-7 m-nopadb
+
+            .. raw:: html
+
+                <h1>m.css</h1>
+
+    .. container:: m-row
+
+        .. container:: m-col-l-6 m-push-l-1 m-col-m-7 m-nopadt
+
+            *A no-bullshit, no-JavaScript CSS framework and Pelican theme for content-oriented websites.*
+
+            Do you *hate* contemporary web development like I do? Do you also feel that
+            it's not right for a web page to take *seconds* and *megabytes* to render? Do
+            you want to write beautiful content but *can't* because the usual CMS tools
+            make your blood boil and so you rather stay silent? Well, I have something for
+            you.
+
+        .. container:: m-col-l-3 m-push-l-2 m-col-m-4 m-push-m-1 m-col-s-6 m-push-s-3 m-col-t-8 m-push-t-2
+
+            .. button-primary:: https://github.com/mosra/m.css/tree/master/css/m-dark.compiled.css
+                :class: m-fullwidth
+
+                Get the essence
+
+                :filesize-gz:`{filename}/../css/m-dark.compiled.css` of compressed CSS
+
+.. container:: m-row m-container-inflate
+
+    .. container:: m-col-m-4
+
+        .. block-success:: *Pure* CSS and HTML
+
+            Everything you need is :filesize-gz:`{filename}/../css/m-dark.compiled.css`
+            of compressed CSS. This framework has exactly 0 bytes of JavaScript
+            because *nobody actually needs it*. Even for responsive websites.
+
+            .. button-success:: {filename}/css.rst
+                :class: m-fullwidth
+
+                Get the CSS
+
+    .. container:: m-col-m-4
+
+        .. block-warning:: Designed for *content*
+
+            If you just want to write content with beautiful typography, you
+            don't need forms, progressbars, popups, dropdowns or other shit.
+            You want fast iteration times.
+
+            .. button-warning:: {filename}/pelican.rst
+                :class: m-fullwidth
+
+                Use it with Pelican
+
+    .. container:: m-col-m-4
+
+        .. block-info:: Authoring made *easy*
+
+            Code snippets, math, linking to docs, presenting photography in a
+            beautiful way? Or making a complex page without even needing to
+            touch HTML? Everything is possible.
+
+            .. button-info:: {filename}/plugins.rst
+                :class: m-fullwidth
+
+                Get Pelican plugins
+
+.. class:: m-text-center m-noindent
+
+*Still not convinced?* Head over to a `detailed explanation <{filename}/why.rst>`_
+of this project goals and design decisions.

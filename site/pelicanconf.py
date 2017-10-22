@@ -1,0 +1,127 @@
+AUTHOR = 'Vladimír Vondruš'
+
+SITE_LOGO_TEXT = 'm.css'
+
+SITENAME = 'm.css'
+SITEURL = ''
+STATIC_URL = '/{path}'
+
+PATH = 'content'
+ARTICLE_PATHS = ['examples']
+PAGE_PATHS = ['']
+
+TIMEZONE = 'Europe/Prague'
+
+DEFAULT_LANG = 'en'
+DATE_FORMATS = {'en': ('en_US', '%b %d %Y')}
+
+# Feed generation is usually not desired when developing
+FEED_ATOM = None
+FEED_ALL_ATOM = None
+CATEGORY_FEED_ATOM = None
+TRANSLATION_FEED_ATOM = None
+AUTHOR_FEED_ATOM = None
+AUTHOR_FEED_RSS = None
+
+LINKS_NAVBAR1 = [('Why?', '/why/', 'why', []),
+                 ('CSS', '/css/', 'css', [
+                    ('Grid system', '/css/grid/', 'css/grid'),
+                    ('Typography', '/css/typography/', 'css/typography'),
+                    ('Components', '/css/components/', 'css/components'),
+                    ('Page layout', '/css/page-layout/', 'css/page-layout'),
+                    ('Themes', '/css/themes/', 'css/themes')]),
+                 ('Pelican', '/pelican/', 'pelican', [
+                    ('Writing content', '/pelican/writing-content/', 'pelican/writing-content'),
+                    ('Theme', '/pelican/theme/', 'pelican/theme')])]
+
+LINKS_NAVBAR2 = [('Pelican plugins', '/plugins/', 'plugins', [
+                    ('HTML sanity', '/plugins/htmlsanity/', 'plugins/htmlsanity'),
+                    ('Components', '/plugins/components/', 'plugins/components'),
+                    ('Images', '/plugins/images/', 'plugins/images'),
+                    ('Math and code', '/plugins/math-and-code/', 'plugins/math-and-code'),
+                    ('Links', '/plugins/links/', 'plugins/links')]),
+                 ('GitHub', 'https://github.com/mosra/m.css', '', [])]
+
+LINKS_FOOTER1 = [('m.css', '/'),
+                 ('Why?', '/why/'),
+                 ('GitHub', 'https://github.com/mosra/m.css'),
+                 ('Twitter', 'https://twitter.com/czmosra')]
+
+LINKS_FOOTER2 = [('CSS', '/css/'),
+                 ('Grid system', '/css/grid/'),
+                 ('Typography', '/css/typography/'),
+                 ('Components', '/css/components/'),
+                 ('Page layout', '/css/page-layout/'),
+                 ('Themes', '/css/themes/')]
+
+LINKS_FOOTER3 = [('Pelican', '/pelican/'),
+                 ('Writing content', '/pelican/writing-content/'),
+                 ('Theme', '/pelican/theme/')]
+
+LINKS_FOOTER4 = [('Pelican plugins', '/plugins/'),
+                 ('HTML sanity', '/plugins/htmlsanity/'),
+                 ('Components', '/plugins/components/'),
+                 ('Images', '/plugins/images/'),
+                 ('Math and code', '/plugins/math-and-code/'),
+                 ('Links', '/plugins/links/')]
+
+FINE_PRINT = """
+m.css. Copyright © Vladimír Vondruš 2017. Site powered by Pelican and ``m.css``
+(yes, I am eating my own dog food). Contact the author via
+`e-mail <mosra@centrum.cz>`_, :abbr:`Jabber <mosra@jabbim.cz>`,
+`Twitter <https://twitter.com/czmosra>`_ or smoke signals.
+"""
+
+DEFAULT_PAGINATION = 10
+
+STATIC_PATHS = ['static']
+
+PLUGIN_PATHS = ['../pelican-plugins']
+PLUGINS = ['m.abbr',
+           'm.code',
+           'm.components',
+           'm.dox',
+           'm.filesize',
+           'm.gl',
+           'm.gh',
+           'm.htmlsanity',
+           'm.images',
+           'm.math']
+
+THEME = '../pelican-theme'
+THEME_STATIC_DIR = 'static'
+THEME_COLOR = '#22272e'
+CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
+             STATIC_URL.format(path='static/m-dark.css'),
+             #STATIC_URL.format(path='static/m-debug.css')
+             ]
+#CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700%7CSource+Code+Pro:400,400i,600',
+             #STATIC_URL.format(path='static/m-light.css')]
+
+FORMATTED_FIELDS = ['summary', 'landing']
+
+HTMLSANITY_SMART_QUOTES = True
+HTMLSANITY_HYPHENATION = True
+
+DOXYGEN_TAGFILES = [
+    ('../doc/doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::'])]
+
+DIRECT_TEMPLATES = []
+
+PAGE_URL = '/{slug}/'
+PAGE_SAVE_AS = '{slug}/index.html'
+ARTICLE_URL = '/{category}/{slug}/'
+ARTICLE_SAVE_AS = '{category}/{slug}/index.html'
+AUTHOR_URL = '/author/{slug}/'
+AUTHOR_SAVE_AS = 'author/{slug}/index.html'
+CATEGORY_URL = '/{slug}/'
+CATEGORY_SAVE_AS = '{slug}/index.html'
+TAG_URL = '/tag/{slug}/'
+TAG_SAVE_AS = 'tag/{slug}/index.html'
+
+AUTHORS_SAVE_AS = None # Not used
+CATEGORIES_SAVE_AS = None # Not used
+TAGS_SAVE_AS = None # Not used
+
+SLUGIFY_SOURCE = 'basename'
+PATH_METADATA = '(?P<slug>.+).rst'

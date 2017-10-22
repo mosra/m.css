@@ -1,0 +1,116 @@
+CSS
+###
+
+.. role:: css(code)
+    :language: css
+.. role:: html(code)
+    :language: html
+
+The CSS style is the essence of ``m.css``. It makes use of HTML5 tags as much
+as possible to avoid redundant classes. Contrary to other popular frameworks,
+all custom CSS classes and IDs are prefixed with ``m-`` to avoid conflicts with
+3rd party styles. All sizes, paddings and border widths are specified using
+``rem`` units, relative to base page font size; :css:`box-sizing: border-box`
+is applied to all elements by default.
+
+`Quick start`_
+==============
+
+To make full advantage of ``m.css``, you need just three files written in plain
+CSS. Download them below or :gh:`grab the whole Git repository <mosra/m.css>`:
+
+-   :gh:`m-grid.css <mosra/m.css$master/css/m-grid.css>` with optional
+    :gh:`m-debug.css <mosra/m.css$master/css/m-debug.css>`
+-   :gh:`m-components.css <mosra/m.css$master/css/m-components.css>`
+-   :gh:`m-dark.css <mosra/m.css$master/css/m-dark.css>` or
+    :gh:`m-light.css <mosra/m.css$master/css/m-light.css>`
+
+In addition to the above, if you want to present highlighted code snippets on
+your website, there's also a builtin style for `Pygments <http://pygments.org/>`_,
+matching ``m.css`` themes:
+
+-   :gh:`pygments-dark.css <mosra/m.css$master/css/pygments-dark.css>`,
+    generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-dark.py>`
+
+Once you have the files, include them in your HTML markup. The top-level
+``m-dark.css`` / ``m-light.css`` file includes the other via CSS :css:`@import`
+statement, so you don't need to reference these. The dark theme uses the
+`Source Sans Pro <https://fonts.google.com/specimen/Source+Sans+Pro>`_ font for
+copy and `Source Code Pro <https://fonts.google.com/specimen/Source+Code+Pro>`_
+font for pre-formatted text and code, which you need to reference as well. See
+the `Themes <{filename}/css/themes.rst>`_ page for requirements of other
+themes.
+
+Besides that, in order to have devices recognize your website properly as
+responsive and not zoom it all the way out to an unreadable mess, don't forget
+to include a proper :html:`<meta>` tag. The HTML5 DOCTYPE is also required.
+
+.. code:: html
+
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <link rel="stylesheet" href="m-dark.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      ...
+    </html>
+
+.. block-warning:: Browser compatibility
+
+    Note that some older browsers have problems with CSS variables and
+    :css:`@import` statements. Because of that, the builtin themes provide
+    a ``*.compiled.css`` versions that are *post*\ processed without CSS
+    variables or :css:`@import` statements. The compiled version includes also
+    the Pygments style, all combined in one file:
+
+    -   :gh:`m-dark.compiled.css <mosra/m.css$master/css/m-dark.compiled.css>`
+        (:filesize:`{filename}/../css/m-dark.compiled.css`,
+        :filesize-gz:`{filename}/../css/m-dark.compiled.css` compressed)
+    -   :gh:`m-light.compiled.css <mosra/m.css$master/css/m-light.compiled.css>`
+        (:filesize:`{filename}/../css/m-light.compiled.css`,
+        :filesize-gz:`{filename}/../css/m-light.compiled.css` compressed)
+
+    I recommend using the original files for development and switching to the
+    compiled versions when publishing the website.
+
+With this, you can start using the framework right away. Click the headings
+below to get to know more.
+
+`Grid system » <{filename}/css/grid.rst>`_
+==========================================
+
+The ``m-grid.css`` file provides a 12-column layout, inspired by
+`Bootstrap <https://getbootstrap.com>`_. It provides a simple, easy-to-use
+solution for modern responsive web development. It comes together with
+``m-debug.css`` that helps debugging the most common mistakes in grid layouts.
+
+`Typography » <{filename}/css/typography.rst>`_
+===============================================
+
+Sane default style for body text, paragraphs, lists, links, headings and other
+common typographical elements, provided by the ``m-components.css`` file.
+
+`Components » <{filename}/css/components.rst>`_
+===============================================
+
+The ``m-components.css`` file also contains styles for visual elements that add
+more structure to your content. From simple notes and topic blocks, tables,
+images or figures to complex elements like code snippets, math formulas or
+image grid.
+
+`Page layout » <{filename}/css/page-layout.rst>`_
+=================================================
+
+Besides that, ``m-components.css`` has also full-fledged collection of elements
+to form not only the content, but the whole page including navigation ---
+header and footer, section headings, article styling with sidebar and tag cloud
+and more.
+
+`Themes » <{filename}/css/themes.rst>`_
+=======================================
+
+Finally, ``m-dark.css`` and ``m-light.css`` use CSS variables to achieve easy
+theming. Two builtin themes, used by the author himself on a bunch of websites
+to guarantee that everything fits well together.

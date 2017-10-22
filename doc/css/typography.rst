@@ -1,0 +1,270 @@
+Typography
+##########
+
+:breadcrumb: {filename}/css.rst CSS
+
+.. role:: css(code)
+    :language: css
+
+Right after being responsive, typography is the second most important thing in
+``m.css`` and so the most often used HTML elements are styled to make them look
+great by default.
+
+.. contents::
+    :class: m-block m-default
+
+`Paragraphs, quotes and poems`_
+===============================
+
+Each :html:`<p>` element inside :html:`<main>` has the first line indented, is
+justified and is separated from the following content by some padding. The
+:html:`<blockquote>` elements are, in addition, indented with a distinctive
+line on the left. Because the indentation may look distracting for manually
+wrapped line blocks, assign :css:`.m-poem` to such paragraph to indent all
+lines the same way. To remove the indentation and justification altogether, use
+:css:`.m-noindent`.
+
+.. code-figure::
+
+    .. code:: html
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id elit
+        posuere, consectetur magna congue, sagittis est. Pellentesque est neque,
+        aliquet nec consectetur in, mattis ac diam. Aliquam placerat justo ut purus
+        interdum, ac placerat lacus consequat.</p>
+
+        <blockquote>Ut dictum enim posuere metus porta, et aliquam ex condimentum.
+        Proin sagittis nisi leo, ac pellentesque purus bibendum sit amet.</blockquote>
+
+        <p class="m-poem">
+        Curabitur<br/>
+        sodales<br/>
+        arcu<br/>
+        elit</p>
+
+        <p class="m-noindent">Mauris id suscipit mauris, in scelerisque lectus. Aenean
+        nec nunc eu sem tincidunt imperdiet ut non elit. Integer nisi tellus,
+        ullamcorper vitae euismod quis, venenatis eu nulla.</p>
+
+    .. raw:: html
+
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id elit
+        posuere, consectetur magna congue, sagittis est. Pellentesque est neque,
+        aliquet nec consectetur in, mattis ac diam. Aliquam placerat justo ut purus
+        interdum, ac placerat lacus consequat.</p>
+
+        <blockquote>Ut dictum enim posuere metus porta, et aliquam ex condimentum.
+        Proin sagittis nisi leo, ac pellentesque purus bibendum sit amet.</blockquote>
+
+        <p class="m-poem">
+        Curabitur<br/>
+        sodales<br/>
+        arcu<br/>
+        elit</p>
+
+        <p class="m-noindent">Mauris id suscipit mauris, in scelerisque lectus. Aenean
+        nec nunc eu sem tincidunt imperdiet ut non elit. Integer nisi tellus,
+        ullamcorper vitae euismod quis, venenatis eu nulla.</p>
+
+`Lists, diaries`_
+=================
+
+Ordered and unordered lists have padding on bottom only on the first level.
+Mark the list with :css:`.m-unstyled` to remove the asterisks/numbers and
+indentation.
+
+.. code-figure::
+
+    .. code:: html
+
+        <ul>
+          <li>Item 1</li>
+          <li>
+            Item 2
+            <ol>
+              <li>An item</li>
+              <li>Another item</li>
+            </ol>
+          </li>
+          <li>Item 3</li>
+        </ul>
+
+        <ol class="m-unstyled">
+          <li>Item of an unstyled list</li>
+          <li>Another item of an unstyled list</li>
+        </ol>
+
+    .. raw:: html
+
+        <ul>
+        <li>Item 1</li>
+        <li>
+          Item 2
+          <ol>
+            <li>An item</li>
+            <li>Another item</li>
+          </ol>
+        </li>
+        <li>Item 3</li>
+        </ul>
+
+        <ol class="m-unstyled">
+          <li>Item of an unstyled list</li>
+          <li>Another item of an unstyled list</li>
+        </ol>
+
+It's possible to convert a list to a single line with items separated by ``|``
+to save vertical space on mobile devices and responsively change it back on
+larger screens. Mark such list with :css:`.m-block-bar-*`:
+
+.. code-figure::
+
+    .. code:: html
+
+        <ul class="m-block-bar-m">
+          <li>Item 1</li>
+          <li>Item 2</li>
+          <li>Item 3</li>
+        </ul>
+
+    .. raw:: html
+
+        <ul class="m-block-bar-m">
+          <li>Item 1</li>
+          <li>Item 2</li>
+          <li>Item 3</li>
+        </ul>
+
+.. note-success::
+
+    Shrink your browser window to see the effect in the above list.
+
+Mark your definition list with :css:`.m-diary` to put the titles next to
+definitions.
+
+.. code-figure::
+
+    .. code:: html
+
+        <dl class="m-diary">
+          <dt>07:30:15</dt>
+          <dd>Woke up. The hangover is crazy today.</dd>
+          <dt>13:47:45</dt>
+          <dd>Got up from bed. Trying to find something to eat.</dd>
+          <dt>23:34:13</dt>
+          <dd>Finally put my pants on. Too late.</dd>
+        </dl>
+
+    .. raw:: html
+
+        <dl class="m-diary">
+          <dt>07:30:15</dt>
+          <dd>Woke up. The hangover is crazy today.</dd>
+          <dt>13:47:45</dt>
+          <dd>Got up from bed. Trying to find something to eat.</dd>
+          <dt>23:34:13</dt>
+          <dd>Finally put my pants on. Too late.</dd>
+        </dl>
+
+`Transitions`_
+==============
+
+Horizontal line is centered and fills 75% of the parent element. For a more
+fancy transition, use :css:`.m-transition` on a paragraph.
+
+.. code-figure::
+
+    .. code:: html
+
+        ...
+        <hr/>
+        ...
+        <p class="m-transition">~ ~ ~</p>
+        ...
+
+    .. raw:: html
+
+        <p>Vivamus dui quam, volutpat eu lorem sit amet, molestie tristique erat.
+        Vestibulum dapibus est eu risus pellentesque volutpat.</p>
+        <hr/>
+        <p>Aenean tellus turpis, suscipit quis iaculis ut, suscipit nec magna.
+        Vestibulum finibus sit amet neque nec volutpat. Suspendisse sit amet nisl in
+        orci posuere mattis.</p>
+        <p class="m-transition">~ ~ ~</p>
+        <p> Praesent eu metus sed felis faucibus placerat ut eu quam. Aliquam convallis
+        accumsan ante sit amet iaculis. Phasellus rhoncus hendrerit leo vitae lacinia.
+        Maecenas iaculis dui ex, eu interdum lacus ornare sit amet.</p>
+
+`Preformatted blocks`_
+======================
+
+The :html:`pre` element preserves your whitespace and adds a convenient
+scrollbar if the content is too wide. If inside an
+`inflatable nested grid <{filename}/css/grid.rst#inflatable-nested-grid>`_, it
+will have negative margin to make its contents aligned with surrounding text.
+
+.. code-figure::
+
+    .. code:: html
+
+        <pre>
+        int main() {
+            return 0;
+        }
+        </pre>
+
+    .. raw:: html
+
+        <pre>
+        int main() {
+            return 0;
+        }
+        </pre>
+
+.. note-info::
+
+    The Components page has additional information about
+    `code blocks styling <{filename}/css/components.rst#code-blocks>`_.
+
+`Inline elements`_
+==================
+
+.. code-figure::
+
+    .. code:: html
+
+        A <a href="#">link</a>, <em>emphasised text</em>, <strong>strong text</strong>,
+        <abbr title="abbreviation">abbr</abbr> shown inside a normal text flow to
+        verify that they don't break text flow. Then there is <small>small text</small>,
+        <sup>super</sup>, <sub>sub</sub> and <s>that is probably all I can think of
+        right now</s> oh, there is also <mark>marked text</mark> and
+        <code>int a = some_code();</code>.
+
+    .. raw:: html
+
+        A <a href="#">link</a>, <em>emphasised text</em>, <strong>strong text</strong>,
+        <abbr title="abbreviation">abbr</abbr> shown inside a normal text flow to
+        verify that they don't break text flow. Then there is <small>small text</small>,
+        <sup>super</sup>, <sub>sub</sub> and <s>that is probably all I can think of
+        right now</s> oh, there is also <mark>marked text</mark> and
+        <code>int a = some_code();</code>.
+
+`Text alignment`_
+=================
+
+Use :css:`.m-text-left`, :css:`.m-text-right` or :css:`.m-text-center` to
+align text inside its parent element. See
+`Floating around <{filename}/css/grid.rst#floating-around>`_ in the grid system
+for aligning and floating blocks in a similar way.
+
+`Padding`_
+==========
+
+Block elements :html:`<p>`, :html:`<ol>`, :html:`<ul>`, :html:`<dl>`,
+:html:`<blockqote>`, :html:`<pre>` and :html:`<hr>` by default have :css:`1rem`
+padding after, except when they are the last child, to avoid excessive spacing.
+
+.. note-dim::
+    :class: m-text-center
+
+    `« Grid <{filename}/css/grid.rst>`_ | `CSS <{filename}/css.rst>`_ | `Components » <{filename}/css/components.rst>`_
