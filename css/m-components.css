@@ -5,6 +5,7 @@ html {
 }
 body {
   font-family: var(--font);
+  font-size: 1rem;
   color: var(--color);
 }
 

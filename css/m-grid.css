@@ -1,11 +1,6 @@
 /* Important basics */
-*, ::before, ::after {
-  box-sizing: border-box;
-}
-body {
-  font-size: 1rem;
-  margin: 0;
-}
+*, ::before, ::after { box-sizing: border-box; }
+body { margin: 0; }
 
 /* 12-column layout. Inspired by Bootstrap and
    https://www.w3schools.com/css/css_rwd_grid.asp */
