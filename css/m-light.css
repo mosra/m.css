@@ -66,36 +66,42 @@
   --default-filled-background-color: #fbf0ec;
   --default-filled-link-color: #ea7944;
   --default-filled-link-active-color: #cb4b16;
+  --default-button-active-color: #cb4b16;
 
   --primary-color: #cb4b16;
   --primary-filled-color: #fbe4d9;
   --primary-filled-background-color: #ef9069;
   --primary-filled-link-color: #782f0d;
   --primary-filled-link-active-color: #2f1205;
+  --primary-button-active-color: #000000;
 
   --success-color: #31c25d;
   --success-filled-color: #f4fcf6;
   --success-filled-background-color: #4dd376;
   --success-filled-link-color: #c5f2d1;
   --success-filled-link-active-color: #dcf6e3;
+  --success-button-active-color: #dcf6e3;
 
   --warning-color: #c7cf2f;
   --warning-filled-color: #fcfcf4;
   --warning-filled-background-color: #d1d34d;
   --warning-filled-link-color: #f0f1c7;
   --warning-filled-link-active-color: #f6f6dc;
+  --warning-button-active-color: #f6f6dc;
 
   --danger-color: #f60000;
   --danger-filled-color: #fdf3f3;
   --danger-filled-background-color: #e23e3e;
   --danger-filled-link-color: #f2c7c6;
   --danger-filled-link-active-color: #f6dddc;
+  --danger-button-active-color: #f6dddc;
 
   --info-color: #2e7dc5;
   --info-filled-color: #f4f8fc;
   --info-filled-background-color: #4c93d3;
   --info-filled-link-color: #c6ddf2;
   --info-filled-link-active-color: #dbeaf7;
+  --info-button-active-color: #c6ddf2;
 
   --dim-color: #bdbdbd;
   --dim-link-color: #c0c0c0;
@@ -104,6 +110,7 @@
   --dim-filled-background-color: #f1f1f1;
   --dim-filled-link-color: #c0c0c0;
   --dim-filled-link-active-color: #949494;
+  --dim-button-active-color: #c0c0c0;
 }
 
 /* kate: indent-width 2; */
