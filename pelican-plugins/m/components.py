@@ -194,6 +194,74 @@ class InfoText(Text):
 class DimText(Text):
     style_class = 'm-dim'
 
+class Button(rst.Directive):
+    has_content = True
+    final_argument_whitespace = True
+    required_arguments = 1
+    option_spec = {'class': directives.class_option}
+
+    style_class = ''
+
+    def run(self):
+        set_classes(self.options)
+
+        text = '\n'.join(self.content)
+        ref_node = nodes.reference(text, '', refuri=self.arguments[0], **self.options)
+        ref_node['classes'] += ['m-button', self.style_class]
+
+        if self.content:
+            node = nodes.Element()          # anonymous container for parsing
+            self.state.nested_parse(self.content, self.content_offset, node)
+            first_node = node[0]
+            if not isinstance(first_node, nodes.paragraph):
+                error = self.state_machine.reporter.error(
+                      'Button must contain directly a caption and optional description',
+                      nodes.literal_block(self.block_text, self.block_text),
+                      line=self.lineno)
+                return [ref_node, error]
+
+            if len(node) == 1:
+                caption = nodes.inline(first_node.rawsource, '',
+                                       *first_node.children)
+            else:
+                caption = nodes.container(first_node.rawsource,
+                                          *first_node.children)
+                caption['classes'] += ['m-big']
+
+            caption.source = first_node.source
+            caption.line = first_node.line
+            ref_node += caption
+
+            if len(node) > 1:
+                second_node = node[1]
+                description = nodes.container(second_node.rawsource,
+                                              *second_node.children)
+                description['classes'] += ['m-small']
+                ref_node += description
+
+        return [ref_node]
+
+class DefaultButton(Button):
+    style_class = 'm-default'
+
+class PrimaryButton(Button):
+    style_class = 'm-primary'
+
+class SuccessButton(Button):
+    style_class = 'm-success'
+
+class WarningButton(Button):
+    style_class = 'm-warning'
+
+class DangerButton(Button):
+    style_class = 'm-danger'
+
+class InfoButton(Button):
+    style_class = 'm-info'
+
+class DimButton(Button):
+    style_class = 'm-dim'
+
 def register():
     rst.directives.register_directive('transition', Transition)
 
@@ -224,3 +292,11 @@ def register():
     rst.directives.register_directive('text-danger', DangerText)
     rst.directives.register_directive('text-info', InfoText)
     rst.directives.register_directive('text-dim', DimText)
+
+    rst.directives.register_directive('button-default', DefaultButton)
+    rst.directives.register_directive('button-primary', PrimaryButton)
+    rst.directives.register_directive('button-success', SuccessButton)
+    rst.directives.register_directive('button-warning', WarningButton)
+    rst.directives.register_directive('button-danger', DangerButton)
+    rst.directives.register_directive('button-info', InfoButton)
+    rst.directives.register_directive('button-dim', DimButton)
