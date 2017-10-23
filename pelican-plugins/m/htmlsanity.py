@@ -340,6 +340,11 @@ class SaneHtmlTranslator(HTMLTranslator):
             ('colwidths-given' not in node.parent.parent['classes'])):
             return
 
+    # Don't put comments into the HTML output
+    def visit_comment(self, node,
+                      sub=re.compile('-(?=-)').sub):
+        raise nodes.SkipNode
+
     # Containers don't need those stupid "docutils" class names
     def visit_container(self, node):
         atts = {}

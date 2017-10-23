@@ -82,6 +82,8 @@ horrible, right?) with a custom HTML5 writer derived from
 -   Line blocks are simply :html:`<p>` elements with lines delimited using
     :html:`<br>`
 -   The :html:`<abbr>` tag now properly includes a ``title`` attribute
+-   :abbr:`reST <reStructuredText>` comments are simply ignored, instead of
+    being put into :html:`<!-- -->`
 
 `Typography`_
 =============

@@ -95,8 +95,8 @@ Example:
 
     Another character used, another level of headings.
 
-    .. a comment which is rendered to HTML output enclosed in <!-- -->
-        characters. This is still a comment.
+    .. a comment, which is simply ignored when producing HTML output.
+        This is still a comment.
 
         This as well.
             and
