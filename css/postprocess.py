@@ -84,6 +84,10 @@ def postprocess(files):
                         out.write("\n")
                         continue
 
+                    # Comment or empty line, ignore
+                    if comment_rx.match(line):
+                        continue
+
                     # Something else, copy verbatim to the output
                     out.write(line)
 
