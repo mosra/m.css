@@ -81,7 +81,7 @@ m.css
         .. block-warning:: Designed for *content*
 
             If you just want to write content with beautiful typography, you
-            don't need forms, progressbars, popups, dropdowns or other shit.
+            don't need forms, progressbars, popups, dropdowns or other cruft.
             You want fast iteration times.
 
             .. button-warning:: {filename}/pelican.rst
