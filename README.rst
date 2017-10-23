@@ -1,6 +1,10 @@
 m.css
 #####
 
+.. image:: https://badges.gitter.im/mosra/m.css.svg
+   :alt: Join the chat at https://gitter.im/mosra/m.css
+   :target: https://gitter.im/mosra/m.css?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 *A no-bullshit, no-JavaScript CSS framework and Pelican theme for content-oriented websites.*
 
 **Project still under heavy construction --- especially the first steps may be
