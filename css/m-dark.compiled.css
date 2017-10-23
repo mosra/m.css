@@ -1,11 +1,31 @@
 /* Generated using `./postprocess.py m-dark.css`. Do not edit. */
 
-/* Important basics */
+/*
+    This file is part of m.css.
+
+    Copyright © 2017 Vladimír Vondruš <mosra@centrum.cz>
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
 *, ::before, ::after { box-sizing: border-box; }
 body { margin: 0; }
-
-/* 12-column layout. Inspired by Bootstrap and
-   https://www.w3schools.com/css/css_rwd_grid.asp */
 .m-container {
   width: 100%;
   margin: auto;
@@ -45,7 +65,6 @@ body { margin: 0; }
   margin-left: 0;
   margin-right: 0;
 }
-
 .m-container.m-nopad, [class*='m-col-'].m-nopad,
 .m-container.m-nopadx, [class*='m-col-'].m-nopadx,
 .m-container.m-nopadl, [class*='m-col-'].m-nopadl {
@@ -62,15 +81,11 @@ body { margin: 0; }
 [class*='m-col-'].m-nopad, [class*='m-col-'].m-nopady, [class*='m-col-'].m-nopadb {
   padding-bottom: 0;
 }
-
-/* 12-column layout -- T (portrait phones) */
 [class*='m-col-t-'] { float: left; }
-
 [class*='m-col-t-'].m-left-t, [class*='m-col-t-'].m-right-t {
   padding-top: 0px;
   padding-bottom: 0px;
 }
-
 .m-left-t {
   float: left;
 }
@@ -97,7 +112,6 @@ body { margin: 0; }
   margin-right: auto;
   float: none;
 }
-
 .m-col-t-1  { width: calc(1  * 100% / 12); }
 .m-col-t-2  { width: calc(2  * 100% / 12); }
 .m-col-t-3  { width: calc(3  * 100% / 12); }
@@ -110,7 +124,6 @@ body { margin: 0; }
 .m-col-t-10 { width: calc(10 * 100% / 12); }
 .m-col-t-11 { width: calc(11 * 100% / 12); }
 .m-col-t-12 { width: calc(12 * 100% / 12); }
-
 .m-push-t-1  { left: calc(1  * 100% / 12); }
 .m-push-t-2  { left: calc(2  * 100% / 12); }
 .m-push-t-3  { left: calc(3  * 100% / 12); }
@@ -122,7 +135,6 @@ body { margin: 0; }
 .m-push-t-9  { left: calc(9  * 100% / 12); }
 .m-push-t-10 { left: calc(10 * 100% / 12); }
 .m-push-t-11 { left: calc(11 * 100% / 12); }
-
 .m-pull-t-1  { right: calc(1  * 100% / 12); }
 .m-pull-t-2  { right: calc(2  * 100% / 12); }
 .m-pull-t-3  { right: calc(3  * 100% / 12); }
@@ -134,23 +146,17 @@ body { margin: 0; }
 .m-pull-t-9  { right: calc(9  * 100% / 12); }
 .m-pull-t-10 { right: calc(10 * 100% / 12); }
 .m-pull-t-11 { right: calc(11 * 100% / 12); }
-
-/* 12-column layout -- S, 576px and up (landscape phones) */
 @media screen and (min-width: 576px) {
   .m-container { width: 560px; }
-
   #m-container-inflatable .m-col-s-10 .m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
-
   [class*='m-col-s-'] { float: left; }
-
   [class*='m-col-s-'].m-left-s, [class*='m-col-s-'].m-right-s {
     padding-top: 0px;
     padding-bottom: 0px;
   }
-
   .m-left-s {
     float: left;
   }
@@ -176,7 +182,6 @@ body { margin: 0; }
     margin-right: auto;
     float: none;
   }
-
   .m-col-s-1  { width: calc(1  * 100% / 12); }
   .m-col-s-2  { width: calc(2  * 100% / 12); }
   .m-col-s-3  { width: calc(3  * 100% / 12); }
@@ -189,7 +194,6 @@ body { margin: 0; }
   .m-col-s-10 { width: calc(10 * 100% / 12); }
   .m-col-s-11 { width: calc(11 * 100% / 12); }
   .m-col-s-12 { width: calc(12 * 100% / 12); }
-
   .m-push-s-0  { left: calc(0  * 100% / 12); }
   .m-push-s-1  { left: calc(1  * 100% / 12); }
   .m-push-s-2  { left: calc(2  * 100% / 12); }
@@ -202,7 +206,6 @@ body { margin: 0; }
   .m-push-s-9  { left: calc(9  * 100% / 12); }
   .m-push-s-10 { left: calc(10 * 100% / 12); }
   .m-push-s-11 { left: calc(11 * 100% / 12); }
-
   .m-pull-s-0  { right: calc(0  * 100% / 12); }
   .m-pull-s-1  { right: calc(1  * 100% / 12); }
   .m-pull-s-2  { right: calc(2  * 100% / 12); }
@@ -215,34 +218,25 @@ body { margin: 0; }
   .m-pull-s-9  { right: calc(9  * 100% / 12); }
   .m-pull-s-10 { right: calc(10 * 100% / 12); }
   .m-pull-s-11 { right: calc(11 * 100% / 12); }
-
   .m-clearfix-t::after { display: none; }
-
   .m-hide-s { display: none; }
   .m-show-s { display: block; }
-
   .m-col-s-none {
     width: auto;
     float: none;
   }
 }
-
-/* 12-column layout -- M, 768px and up (tablets, small desktops) */
 @media screen and (min-width: 768px) {
   .m-container { width: 750px; }
-
   #m-container-inflatable .m-col-m-10 .m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
-
   [class*='m-col-m-'] { float: left; }
-
   [class*='m-col-m-'].m-left-m, [class*='m-col-m-'].m-right-m {
     padding-top: 0px;
     padding-bottom: 0px;
   }
-
   .m-left-m {
     float: left;
   }
@@ -268,7 +262,6 @@ body { margin: 0; }
     margin-right: auto;
     float: none;
   }
-
   .m-col-m-1  { width: calc(1  * 100% / 12); }
   .m-col-m-2  { width: calc(2  * 100% / 12); }
   .m-col-m-3  { width: calc(3  * 100% / 12); }
@@ -281,7 +274,6 @@ body { margin: 0; }
   .m-col-m-10 { width: calc(10 * 100% / 12); }
   .m-col-m-11 { width: calc(11 * 100% / 12); }
   .m-col-m-12 { width: calc(12 * 100% / 12); }
-
   .m-push-m-0  { left: calc(0  * 100% / 12); }
   .m-push-m-1  { left: calc(1  * 100% / 12); }
   .m-push-m-2  { left: calc(2  * 100% / 12); }
@@ -294,7 +286,6 @@ body { margin: 0; }
   .m-push-m-9  { left: calc(9  * 100% / 12); }
   .m-push-m-10 { left: calc(10 * 100% / 12); }
   .m-push-m-11 { left: calc(11 * 100% / 12); }
-
   .m-pull-m-0  { right: calc(0  * 100% / 12); }
   .m-pull-m-1  { right: calc(1  * 100% / 12); }
   .m-pull-m-2  { right: calc(2  * 100% / 12); }
@@ -307,34 +298,25 @@ body { margin: 0; }
   .m-pull-m-9  { right: calc(9  * 100% / 12); }
   .m-pull-m-10 { right: calc(10 * 100% / 12); }
   .m-pull-m-11 { right: calc(11 * 100% / 12); }
-
   .m-clearfix-s::after { display: none; }
-
   .m-hide-m { display: none; }
   .m-show-m { display: block; }
-
   .m-col-m-none {
     width: auto;
     float: none;
   }
 }
-
-/* 12-column layout -- L, 992px and up (desktops, very large tablets) */
 @media screen and (min-width: 992px) {
   .m-container { width: 960px; }
-
   #m-container-inflatable .m-col-l-10 .m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
-
   [class*='m-col-l-'] { float: left; }
-
   [class*='m-col-l-'].m-left-l, [class*='m-col-l-'].m-right-l {
     padding-top: 0px;
     padding-bottom: 0px;
   }
-
   .m-left-l {
     float: left;
   }
@@ -360,7 +342,6 @@ body { margin: 0; }
     margin-right: auto;
     float: none;
   }
-
   .m-col-l-1  { width: calc(1  * 100% / 12); }
   .m-col-l-2  { width: calc(2  * 100% / 12); }
   .m-col-l-3  { width: calc(3  * 100% / 12); }
@@ -373,7 +354,6 @@ body { margin: 0; }
   .m-col-l-10 { width: calc(10 * 100% / 12); }
   .m-col-l-11 { width: calc(11 * 100% / 12); }
   .m-col-l-12 { width: calc(12 * 100% / 12); }
-
   .m-push-l-0  { left: calc(0  * 100% / 12); }
   .m-push-l-1  { left: calc(1  * 100% / 12); }
   .m-push-l-2  { left: calc(2  * 100% / 12); }
@@ -386,7 +366,6 @@ body { margin: 0; }
   .m-push-l-9  { left: calc(9  * 100% / 12); }
   .m-push-l-10 { left: calc(10 * 100% / 12); }
   .m-push-l-11 { left: calc(11 * 100% / 12); }
-
   .m-pull-l-0  { right: calc(0  * 100% / 12); }
   .m-pull-l-1  { right: calc(1  * 100% / 12); }
   .m-pull-l-2  { right: calc(2  * 100% / 12); }
@@ -399,21 +378,15 @@ body { margin: 0; }
   .m-pull-l-9  { right: calc(9  * 100% / 12); }
   .m-pull-l-10 { right: calc(10 * 100% / 12); }
   .m-pull-l-11 { right: calc(11 * 100% / 12); }
-
   .m-clearfix-m::after { display: none; }
-
   .m-hide-l { display: none; }
   .m-show-l { display: block; }
-
   .m-col-l-none {
     width: auto;
     float: none;
   }
 }
 
-/* kate: indent-width 2; */
-
-/* Globals */
 html {
   font-size: 16px;
   background-color: #2f363f;
@@ -423,8 +396,6 @@ body {
   font-size: 1rem;
   color: #dcdcdc;
 }
-
-/* Block elements */
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   font-weight: bold;
@@ -478,8 +449,6 @@ pre {
   overflow-x: auto;
   margin-top: 0; /* stupid defaults */
 }
-
-/* Inline elements */
 abbr {
   cursor: help;
   text-decoration: underline dotted;
@@ -511,8 +480,6 @@ code {
   color: #e6e6e6;
   background-color: #34424d;
 }
-
-/* Header navigation */
 body > header > nav {
   width: 100%;
   background-color: #22272e;
@@ -617,8 +584,6 @@ body > header > nav.m-navbar-landing #m-navbar-collapse li a:active,
 body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:active {
   background-color: rgba(41, 47, 55, 0.5);
 }
-
-/* Header navigation -- collapsible part */
 body > header > nav #m-navbar-hide {
   display: none;
 }
@@ -631,8 +596,6 @@ body > header > nav:target #m-navbar-show {
 body > header > nav:target #m-navbar-hide {
   display: inline-block;
 }
-
-/* Header navigation -- 768px and up (tablets, desktops) */
 @media screen and (min-width: 768px) {
   body > header > nav #m-navbar-show, body > header > nav #m-navbar-hide,
   body > header > nav:target #m-navbar-show, body > header > nav:target #m-navbar-hide {
@@ -686,8 +649,6 @@ body > header > nav:target #m-navbar-hide {
     visibility: visible;
   }
 }
-
-/* Footer navigation */
 body > footer {
   width: 100%;
 }
@@ -716,14 +677,10 @@ body > footer > nav a {
 body > footer > nav a:hover, body > footer > nav a:focus, body > footer > nav a:active {
   color: #a5c9ea;
 }
-
-/* Main content */
 body > main {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
-
-/* Page heading (not in <header>), breadcrumb naviation on pages */
 article h1 {
   font-size: 1.75rem;
 }
@@ -737,8 +694,6 @@ article h1 .m-breadcrumb a {
 article h1 .m-breadcrumb a:hover, article h1 a:focus, article h1 a:active {
   color: #dcdcdc;
 }
-
-/* Article elements */
 article > header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -800,8 +755,6 @@ article > footer p {
   font-size: 0.85rem;
   text-indent: 0;
 }
-
-/* Article -- dynamic section headers */
 article section:target {
   margin-left: -1.0rem;
   border-left-style: solid;
@@ -813,8 +766,6 @@ article h1 a, article > header h1 a, article section > h2 a, article section > h
 article section > h4 a, article section > h5 a, article section > h6 a {
   text-decoration: none;
 }
-
-/* Landing page, jumbo article */
 #m-landing-image {
   background-size: cover;
   background-color: #666666;
@@ -859,28 +810,22 @@ article#m-jumbo > header h2 {
 article#m-jumbo > header a {
   text-decoration: none;
 }
-
 article#m-jumbo > header, article#m-jumbo > header h1, article#m-jumbo > header a {
   color: #ffffff;
 }
 article#m-jumbo > header a:hover, article#m-jumbo > header a:focus, article#m-jumbo > header a:active {
   color: #f0f0f0;
 }
-
 article#m-jumbo.m-inverted > header, article#m-jumbo.m-inverted > header h1, article#m-jumbo.m-inverted > header a {
   color: #000000;
 }
 article#m-jumbo.m-inverted > header a:hover, article#m-jumbo.m-inverted > header a:focus, article#m-jumbo.m-inverted > header a:active {
   color: #0f0f0f;
 }
-
-/* Article pagination */
 .m-article-pagination {
   text-align: center;
   padding: 1rem;
 }
-
-/* Right navigation panel */
 nav.m-navpanel {
   text-align: center;
 }
@@ -902,16 +847,12 @@ nav.m-navpanel a {
 nav.m-navpanel a:hover, nav.m-navpanel a:focus, nav.m-navpanel a:active {
   color: #a5c9ea;
 }
-
-/* Tag cloud */
 ul.m-tagcloud li { display: inline; }
 ul.m-tagcloud li.m-tag-1 { font-size: 0.75rem; }
 ul.m-tagcloud li.m-tag-2 { font-size: 0.825rem; }
 ul.m-tagcloud li.m-tag-3 { font-size: 1rem; }
 ul.m-tagcloud li.m-tag-4 { font-size: 1.25rem; }
 ul.m-tagcloud li.m-tag-5 { font-size: 1.5rem; }
-
-/* Utility */
 div.m-scroll {
   max-width: 100%;
   overflow-x: auto;
@@ -934,8 +875,6 @@ div.m-scroll {
 .m-text.m-big {
   font-size: 117%;
 }
-
-/* Lists */
 ul.m-unstyled, ol.m-unstyled {
   list-style-type: none;
   padding-left: 0;
@@ -964,8 +903,6 @@ ul[class*='m-block-bar-'] li:not(:last-child)::after, ol[class*='m-block-bar-'] 
   ul.m-block-bar-l li, ol.m-block-bar-l li { display: list-item; }
   ul.m-block-bar-l li:not(:last-child)::after, ol.m-block-bar-l li:not(:last-child)::after { content: ""; }
 }
-
-/* Special paragraph styling */
 p.m-poem {
   text-indent: 0;
   text-align: left;
@@ -977,8 +914,6 @@ p.m-transition {
   text-align: center;
   font-size: 2rem;
 }
-
-/* Definition list styling */
 dl.m-diary {
   margin-bottom: 1.25rem;
 }
@@ -996,8 +931,6 @@ dl.m-diary dd {
   padding-top: 0.25rem;
   padding-left: 3.5rem;
 }
-
-/* Note, frame, block */
 .m-note {
   border-radius: 0.2rem;
   padding: 1rem;
@@ -1018,8 +951,6 @@ dl.m-diary dd {
   border-color: #405363;
   padding: 0.9375rem 0.9375rem 0.9375rem 0.75rem;
 }
-
-/* Button */
 a.m-button {
   display: inline-block;
   border-radius: 0.2rem;
@@ -1043,8 +974,6 @@ a.m-button .m-big:first-child {
 a.m-button .m-small:last-child {
   font-size: 0.854rem;
 }
-
-/* Tables */
 table.m-table {
   border-collapse: collapse;
   margin-left: auto;
@@ -1094,9 +1023,7 @@ table.m-table td.m-dim, th.m-dim {
   padding-left: 0.4375rem;
   padding-right: 0.4375rem;
   border-left-width: 0.0625rem;
-/*   border-right-width: 0.0625rem; causes horizontal scrollbar */
 }
-
 table.m-table tr.m-default td, table.m-table td.m-default,
 table.m-table tr.m-default th, table.m-table th.m-default,
 table.m-table tr.m-primary td, table.m-table td.m-primary,
@@ -1113,8 +1040,6 @@ table.m-table tr.m-dim td, table.m-table td.m-dim,
 table.m-table tr.m-dim th, table.m-table th.m-dim {
   border-color: #2f363f;
 }
-
-/* Colored block */
 .m-block.m-default { border-left-color: #405363; }
 .m-block.m-default h3 { color: #dcdcdc; }
 .m-block.m-primary { border-left-color: #a5c9ea; }
@@ -1137,12 +1062,9 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
 }
 .m-block.m-flat { border-color: transparent; }
 .m-block.m-flat h3 { color: #dcdcdc; }
-
-/* Colored note, table coloring */
 .m-note.m-default { background-color: #34424d; }
 .m-note.m-default, table.m-table tr.m-default td, table.m-table td.m-default,
                    table.m-table tr.m-default th, table.m-table th.m-default {
-  /* No background for default table to keep the row hover */
   color: #dcdcdc;
 }
 .m-note.m-primary a:hover, table.m-table tr.m-primary td a:hover, table.m-table td.m-primary a:hover,
@@ -1157,7 +1079,6 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
                      table.m-table tr.m-primary th a, table.m-table th.m-primary a {
   color: #5b9dd9;
 }
-
 .m-note.m-primary, table.m-table tr.m-primary td, table.m-table td.m-primary,
                    table.m-table tr.m-primary th, table.m-table th.m-primary {
   background-color: #a5c2db;
@@ -1260,8 +1181,6 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
                         table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
   color: #747474;
 }
-
-/* Colored text */
 .m-text.m-default { color: #dcdcdc; }
 .m-text.m-primary { color: #a5c9ea; }
 .m-text.m-success { color: #3bd267; }
@@ -1273,8 +1192,6 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
 .m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
   color: #747474;
 }
-
-/* Colored button */
 a.m-button { color: #2f363f; }
 a.m-button.m-default { background-color: #dcdcdc; }
 a.m-button.m-primary { background-color: #a5c9ea; }
@@ -1304,8 +1221,6 @@ a.m-button.m-info:hover, a.m-button.m-info:focus, a.m-button.m-info:active {
 a.m-button.m-dim:hover, a.m-button.m-dim:focus, a.m-button.m-dim:active {
   background-color: #acacac;
 }
-
-/* Image */
 img.m-image {
   display: block;
   margin-left: auto;
@@ -1321,8 +1236,6 @@ img.m-image, div.m-image img {
 div.m-image.m-fullwidth img {
   width: 100%;
 }
-
-/* Figure */
 figure.m-figure {
   max-width: 100%;
   margin-top: 0;
@@ -1381,8 +1294,6 @@ figure.m-figure.m-fullwidth {
 figure.m-figure.m-fullwidth img {
   width: 100%;
 }
-
-/* Code figure */
 figure.m-code-figure {
   margin-top: 0;
   margin-left: 0;
@@ -1415,8 +1326,6 @@ figure.m-code-figure > pre:first-child {
 article section:target figure.m-code-figure {
   z-index: 1; /* so the selection border isn't above figure border */
 }
-
-/* Image grid */
 .m-imagegrid > div {
   background-color: #2f363f; /* to avoid section HL shining through */
 }
@@ -1485,7 +1394,6 @@ article section:target figure.m-code-figure {
   content: ' ';
   clear: both;
 }
-
 @media screen and (max-width: 767px) {
   .m-imagegrid > div > figure {
     float: none;
@@ -1499,8 +1407,6 @@ article section:target figure.m-code-figure {
     border-right-width: 0;
   }
 }
-
-/* Inflatable content */
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
 #m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
@@ -1516,7 +1422,6 @@ article section:target figure.m-code-figure {
   margin-left: -1rem;
   margin-right: -1rem;
 }
-
 @media screen and (min-width: 576px) {
   #m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
   #m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
@@ -1538,8 +1443,6 @@ article section:target figure.m-code-figure {
     margin-right: -10%;
   }
 }
-
-/* Active sections in inflatable content affect left border of some components */
 #m-container-inflatable section:target > .m-note,
 #m-container-inflatable section:target > .m-frame,
 #m-container-inflatable section:target > .m-block,
@@ -1597,8 +1500,6 @@ article section:target figure.m-code-figure {
 #m-container-inflatable section:target section > .m-note.m-dim {
   border-left-color: #747474;
 }
-
-/* Code block (uses Pygments CSS classes) */
 pre.m-code span.hll {
   border-color: #405363;
   margin-left: -1.0rem;
@@ -1619,13 +1520,9 @@ pre.m-code.m-inverted > span.hll {
   background-color: transparent;
   border-color: transparent;
 }
-
-/* Math block, inline math */
 div.m-math {
   text-align: center;
 }
-
-/* Colored math block, inline math */
 div.m-math svg, svg.m-math { fill: #dcdcdc; }
 div.m-math.m-default svg, svg.m-math.m-default { fill: #dcdcdc; }
 div.m-math.m-primary svg, svg.m-math.m-primary { fill: #a5c9ea; }
@@ -1634,8 +1531,6 @@ div.m-math.m-warning svg, svg.m-math.m-warning { fill: #c7cf2f; }
 div.m-math.m-danger svg, svg.m-math.m-danger { fill: #cd3431; }
 div.m-math.m-info svg, svg.m-math.m-info { fill: #2f83cc; }
 div.m-math.m-dim svg, svg.m-math.m-dim { fill: #747474; }
-
-/* Spacing after every block element, but not after the last */
 p, ul, ol, dl, blockquote, hr, pre, figure.m-code-figure,
 article, article > header, article section,
 .m-note, .m-frame, .m-block, .m-button,
@@ -1651,8 +1546,6 @@ table.m-table:last-child, img.m-image:last-child, div.m-image:last-child,
 figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
   margin-bottom: 0;
 }
-
-/* kate: indent-width 2; */
 
 .m-code .hll { background-color: #405363 }
 .m-code .c { color: #a5c9ea } /* Comment */
