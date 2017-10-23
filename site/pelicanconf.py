@@ -117,11 +117,11 @@ THEME = '../pelican-theme'
 THEME_STATIC_DIR = 'static'
 THEME_COLOR = '#22272e'
 CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
-             STATIC_URL.format(path='static/m-dark.css'),
-             #STATIC_URL.format(path='static/m-debug.css')
+             '/static/m-dark.css',
+             #'/static/m-debug.css'
              ]
 #CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700%7CSource+Code+Pro:400,400i,600',
-             #STATIC_URL.format(path='static/m-light.css')]
+             #'/static/m-light.css']
 
 FORMATTED_FIELDS = ['summary', 'landing']
 
@@ -150,3 +150,13 @@ TAGS_SAVE_AS = None # Not used
 
 SLUGIFY_SOURCE = 'basename'
 PATH_METADATA = '(?P<slug>.+).rst'
+
+# If https://github.com/getpelican/pelican/pull/2196 is not applied, all URLs
+# would have / prepended twice, so removing it from the settings.
+if True:
+    STATIC_URL = '{path}'
+    PAGE_URL = '{slug}'
+    ARTICLE_URL = '{category}/{slug}/'
+    AUTHOR_URL = 'author/{slug}/'
+    CATEGORY_URL = '{slug}/'
+    TAG_URL = 'tag/{slug}/'

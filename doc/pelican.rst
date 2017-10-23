@@ -32,7 +32,7 @@ Pelican
 Python and unlike most other static site generators, it uses
 `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ instead of
 Markdown for authoring content. ``m.css`` provides a theme for it, together
-with a set of useful `plugins <{filename}/plugins.rst>`_.
+with a set of useful plugins.
 
 .. note-warning::
 
@@ -44,15 +44,14 @@ with a set of useful `plugins <{filename}/plugins.rst>`_.
 `Quick start`_
 ==============
 
-Note that currently most of the functionality provided by ``m.css`` requires
-patches that aren't integrated into any released version yet, so it's
-recommended to install a patched version using Python's ``pip`` instead of
-using the stable 3.7.1 release. Note that in order to use ``m.css`` plugins
-later, you want to install the Python 3 version:
+Install Pelican either via ``pip`` or using your system package manager. Note
+that in order to use ``m.css`` `plugins <{filename}/plugins.rst>`_ later, you
+may want to install the Python 3 version.
 
 .. code:: sh
 
-    pip install git+https://github.com/mosra/pelican.git@mosra-master
+    # You may need sudo here
+    pip install pelican
 
 Once you have Pelican installed, create a directory for your website and
 bootstrap it:

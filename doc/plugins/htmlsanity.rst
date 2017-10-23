@@ -52,12 +52,6 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
     HTMLSANITY_SMART_QUOTES = True
     HTMLSANITY_HYPHENATION = True
 
-.. note-warning::
-
-    Note that you need Pelican with :gh:`getpelican/pelican@7336de45cbb5f60e934b65f823d0583b48a6c96b`
-    applied for this to work properly. It's scheduled to be part of
-    yet-to-be-released version 3.8.
-
 `What it does`_
 ===============
 

@@ -25,6 +25,9 @@
 import os.path
 import re
 
+import six
+from six.moves.urllib.parse import urlparse, urlunparse
+
 from docutils.writers.html5_polyglot import HTMLTranslator
 from docutils.transforms import Transform
 import docutils
@@ -33,6 +36,11 @@ from docutils.utils import smartquotes
 
 import pelican.signals
 from pelican.readers import RstReader
+from pelican.contents import Content, Author, Category, Tag, Static
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     import pyphen
@@ -512,6 +520,61 @@ class SaneRstReader(RstReader):
     writer_class = SaneHtmlWriter
     field_body_translator_class = _SaneFieldBodyTranslator
 
+# Implementation of SaneRstReader adapted from
+# https://github.com/getpelican/pelican/blob/7336de45cbb5f60e934b65f823d0583b48a6c96b/pelican/readers.py#L206
+# for compatibility with stock Pelican 3.7.1 that doesn't have writer_class or
+# field_body_translator_class fields, so we override _parse_metadata and
+# _get_publisher directly.
+# TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2163
+# is released
+class SaneRstReaderPelican371(RstReader):
+    def _parse_metadata(self, document):
+        """Return the dict containing document metadata"""
+        formatted_fields = self.settings['FORMATTED_FIELDS']
+
+        output = {}
+        for docinfo in document.traverse(docutils.nodes.docinfo):
+            for element in docinfo.children:
+                if element.tagname == 'field':  # custom fields (e.g. summary)
+                    name_elem, body_elem = element.children
+                    name = name_elem.astext()
+                    if name in formatted_fields:
+                        visitor = _SaneFieldBodyTranslator(document)
+                        body_elem.walkabout(visitor)
+                        value = visitor.astext()
+                    else:
+                        value = body_elem.astext()
+                elif element.tagname == 'authors':  # author list
+                    name = element.tagname
+                    value = [element.astext() for element in element.children]
+                else:  # standard fields (e.g. address)
+                    name = element.tagname
+                    value = element.astext()
+                name = name.lower()
+
+                output[name] = self.process_metadata(name, value)
+        return output
+
+    def _get_publisher(self, source_path):
+        extra_params = {'initial_header_level': '2',
+                        'syntax_highlight': 'short',
+                        'input_encoding': 'utf-8',
+                        'exit_status_level': 2,
+                        'embed_stylesheet': False}
+        user_params = self.settings.get('DOCUTILS_SETTINGS')
+        if user_params:
+            extra_params.update(user_params)
+
+        pub = docutils.core.Publisher(
+            writer=SaneHtmlWriter(),
+            source_class=self.FileInput,
+            destination_class=docutils.io.StringOutput)
+        pub.set_components('standalone', 'restructuredtext', 'html')
+        pub.process_programmatic_settings(None, extra_params, None)
+        pub.set_source(source_path=source_path)
+        pub.publish(enable_exit_status=True)
+        return pub
+
 def render_rst(value):
     extra_params = {'initial_header_level': '2',
                     'syntax_highlight': 'short',
@@ -544,25 +607,109 @@ def dehyphenate(value, enable=None):
     if not enable: return value
     return value.replace('&shy;', '')
 
-def expand_link(link, content):
+# TODO: merge into expand_link when 3.8
+# with https://github.com/getpelican/pelican/pull/2164 (or the _link_replacer
+# part of it) is released
+def expand_link_fn(link, content, fn):
     link_regex = r"""^
         (?P<markup>)(?P<quote>)
         (?P<path>{0}(?P<value>.*))
         $""".format(intrasite_link_regex)
     links = re.compile(link_regex, re.X)
     return links.sub(
-        lambda m: content._link_replacer(content.get_siteurl(), m),
+        lambda m: fn(content.get_siteurl(), m),
         link)
+
+def expand_link(link, content):
+    return expand_link_fn(link, content, content._link_replacer)
+
+# The replacer() function is adapted from
+# https://github.com/getpelican/pelican/blob/3.7.1/pelican/contents.py#L213
+# in order to be compatible with Pelican <= 3.7.1 that doesn't have it
+# available publicly as _link_replacer
+# TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2164
+# (or the _link_replacer part of it) is released
+def expand_link_pelican371(link, content):
+    def replacer(siteurl, m):
+        what = m.group('what')
+        value = urlparse(m.group('value'))
+        path = value.path
+        origin = m.group('path')
+
+        # XXX Put this in a different location.
+        if what in {'filename', 'attach'}:
+            if path.startswith('/'):
+                path = path[1:]
+            else:
+                # relative to the source path of this content
+                path = content.get_relative_source_path(
+                    os.path.join(content.relative_dir, path)
+                )
+
+            if path not in content._context['filenames']:
+                unquoted_path = path.replace('%20', ' ')
+
+                if unquoted_path in content._context['filenames']:
+                    path = unquoted_path
+
+            linked_content = content._context['filenames'].get(path)
+            if linked_content:
+                if what == 'attach':
+                    if isinstance(linked_content, Static):
+                        linked_content.attach_to(content)
+                    else:
+                        logger.warning(
+                            "%s used {attach} link syntax on a "
+                            "non-static file. Use {filename} instead.",
+                            content.get_relative_source_path())
+                origin = '/'.join((siteurl, linked_content.url))
+                origin = origin.replace('\\', '/')  # for Windows paths.
+            else:
+                logger.warning(
+                    "Unable to find `%s`, skipping url replacement.",
+                    value.geturl(), extra={
+                        'limit_msg': ("Other resources were not found "
+                                        "and their urls not replaced")})
+        elif what == 'category':
+            origin = '/'.join((siteurl, Category(path, content.settings).url))
+        elif what == 'tag':
+            origin = '/'.join((siteurl, Tag(path, content.settings).url))
+        elif what == 'index':
+            origin = '/'.join((siteurl, content.settings['INDEX_SAVE_AS']))
+        elif what == 'author':
+            origin = '/'.join((siteurl, Author(path, content.settings).url))
+        else:
+            logger.warning(
+                "Replacement Indicator '%s' not recognized, "
+                "skipping replacement",
+                what)
+
+        # keep all other parts, such as query, fragment, etc.
+        parts = list(value)
+        parts[2] = origin
+        origin = urlunparse(parts)
+
+        return ''.join((m.group('markup'), m.group('quote'), origin,
+                        m.group('quote')))
+
+    return expand_link_fn(link, content, replacer)
 
 def expand_links(text, content):
     return content._update_content(text, content.get_siteurl())
 
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
-    pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
     pelicanobj.settings['JINJA_FILTERS']['expand_links'] = expand_links
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
     pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
+
+    # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2164
+    # (or the _link_replacer part of it) is released
+    if not hasattr(Content, '_link_replacer'):
+        logger.warning('Unpatched Pelican <= 3.7.1 detected, monkey-patching for expand_link filter support')
+        pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link_pelican371
+    else:
+        pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
 
     global enable_hyphenation, smart_quotes, hyphenation_lang, \
         docutils_settings, intrasite_link_regex
@@ -573,7 +720,13 @@ def configure_pelican(pelicanobj):
     intrasite_link_regex = pelicanobj.settings['INTRASITE_LINK_REGEX']
 
 def add_reader(readers):
-    readers.reader_classes['rst'] = SaneRstReader
+    # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2163
+    # is released
+    if not hasattr(RstReader, 'writer_class') or not hasattr(RstReader, 'field_body_translator_class'):
+        logger.warning('Unpatched Pelican <= 3.7.1 detected, monkey-patching for htmlsanity support')
+        readers.reader_classes['rst'] = SaneRstReaderPelican371
+    else:
+        readers.reader_classes['rst'] = SaneRstReader
 
 def register():
     pelican.signals.initialized.connect(configure_pelican)
