@@ -44,3 +44,9 @@ possible.
 
 *Still not convinced?* Head over to a `detailed explanation <http://mcss.mosra.cz/why/>`_
 of this project goals and design decisions.
+
+LICENSE
+=======
+
+m.css is licensed under MIT/Expat license, see `COPYING <COPYING>`_ file for
+details.
