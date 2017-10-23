@@ -58,7 +58,8 @@ m.css
 
                 Get the essence
 
-                :filesize-gz:`{filename}/../css/m-dark.compiled.css` of compressed CSS
+                | :filesize-gz:`{filename}/../css/m-dark.compiled.css` of gzipped CSS,
+                | licensed under MIT
 
 .. container:: m-row m-container-inflate
 

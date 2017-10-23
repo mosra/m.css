@@ -122,4 +122,5 @@ to flesh this thing out to be the Greatest Web Framework Ever™.
 
     Contributions welcome, though! Does it look like I'm not putting enough
     effort in? Submit an improvement! Make a difference
-    :gh:`over at GitHub <mosra/m.css/issues/new>`.
+    :gh:`over at GitHub <mosra/m.css/issues/new>`. Both the ``m.css`` code and
+    contents of this site are public, available under the MIT license.

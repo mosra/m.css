@@ -90,9 +90,10 @@ LINKS_FOOTER4 = [('Pelican plugins', '/plugins/'),
                  ('Links', '/plugins/links/')]
 
 FINE_PRINT = """
-m.css. Copyright © Vladimír Vondruš 2017. Site powered by Pelican and ``m.css``
-(yes, I am eating my own dog food). Contact the author via
-`e-mail <mosra@centrum.cz>`_, :abbr:`Jabber <mosra@jabbim.cz>`,
+m.css. Copyright © Vladimír Vondruš 2017. Site powered by `Pelican <https://getpelican.com>`_
+and m.css (yes, I am eating my own dog food). Both the code and site content is
+`available on GitHub under MIT <https://github.com/mosra/m.css>`_. Contact the
+author via `e-mail <mosra@centrum.cz>`_, :abbr:`Jabber <mosra@jabbim.cz>`,
 `Twitter <https://twitter.com/czmosra>`_ or smoke signals.
 """
 
