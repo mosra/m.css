@@ -1,15 +1,11 @@
 m.css
 #####
 
+*A no-bullshit, no-JavaScript CSS framework and Pelican theme for content-oriented websites.*
+
 .. image:: https://badges.gitter.im/mosra/m.css.svg
    :alt: Join the chat at https://gitter.im/mosra/m.css
    :target: https://gitter.im/mosra/m.css?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-
-*A no-bullshit, no-JavaScript CSS framework and Pelican theme for content-oriented websites.*
-
-**Project still under heavy construction --- especially the first steps may be
-very rough for you. If that's the case, take it with a grain of salt and come
-back later, please.**
 
 Do you *hate* contemporary web development like I do? Do you also feel that
 it's not right for a web page to take *seconds* and *megabytes* to render? Do
