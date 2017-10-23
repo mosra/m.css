@@ -69,6 +69,7 @@ LINKS_NAVBAR2 = [('Pelican plugins', '/plugins/', 'plugins', [
 LINKS_FOOTER1 = [('m.css', '/'),
                  ('Why?', '/why/'),
                  ('GitHub', 'https://github.com/mosra/m.css'),
+                 ('Gitter', 'https://gitter.im/mosra/m.css'),
                  ('Twitter', 'https://twitter.com/czmosra')]
 
 LINKS_FOOTER2 = [('CSS', '/css/'),
