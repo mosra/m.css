@@ -46,8 +46,28 @@ possible.
 
 `Get Pelican plugins <http://mcss.mosra.cz/plugins/>`_
 
+-------
+
 *Still not convinced?* Head over to a `detailed explanation <http://mcss.mosra.cz/why/>`_
 of this project goals and design decisions.
+
+CONTRIBUTING
+============
+
+Head over to the `contribution guide <CONTRIBUTING.rst>`_.
+
+CONTACT
+=======
+
+Want to learn more about m.css? Found a bug or want to share an awesome idea?
+Feel free to visit the project website or contact the author at:
+
+-   Website --- http://mcss.mosra.cz
+-   GitHub --- https://github.com/mosra/m.css
+-   Gitter --- https://gitter.im/mosra/m.css
+-   Twitter --- https://twitter.com/czmosra
+-   E-mail --- mosra@centrum.cz
+-   Jabber --- mosra@jabbim.cz
 
 LICENSE
 =======
