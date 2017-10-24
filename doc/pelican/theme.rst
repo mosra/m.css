@@ -54,7 +54,9 @@ subdir of your ``m.css`` submodule), then you tell it to put the static
 contents of the theme into a ``static/`` directory in the root of your
 webserver; the ``CSS_FILES`` variable is a list of CSS files that the theme
 needs. You can put there any files you need, but there need to be at least the
-files mentioned on the `CSS themes <{filename}/css/themes.rst>`_ page.
+files mentioned on the `CSS themes <{filename}/css/themes.rst>`_ page. Lastly,
+the theme uses some Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
+plugin, so that plugin needs to be loaded as well.
 
 .. code:: py
 
@@ -63,6 +65,9 @@ files mentioned on the `CSS themes <{filename}/css/themes.rst>`_ page.
     CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
                  '/static/m-dark.css']
     DIRECT_TEMPLATES = ['index']
+
+    PLUGIN_PATHS += ['m.css/pelican-plugins']
+    PLUGINS += ['m.htmlsanity']
 
 Here you can take advantage of the ``pelicanconf.py`` and ``publishconf.py``
 distinction --- use ``m-dark.css`` for local development and override the
