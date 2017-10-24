@@ -42,10 +42,6 @@ except ImportError:
 
 settings = {}
 
-def configure(pelicanobj):
-    settings['path'] = pelicanobj.settings.get('PATH', 'content')
-    pass
-
 class Image(Directive):
     """Image directive
 
@@ -177,7 +173,7 @@ class ImageGrid(rst.Directive):
                 continue
 
             # Open the files and calculate the overall width
-            absuri = uri.format(filename=os.path.join(os.getcwd(), settings['path']))
+            absuri = uri.format(filename=os.path.join(os.getcwd(), settings['PATH']))
             im = PIL.Image.open(absuri)
             exif = {
                 PIL.ExifTags.TAGS[k]: v
@@ -210,6 +206,9 @@ class ImageGrid(rst.Directive):
             grid_node.append(row_node)
 
         return [grid_node]
+
+def configure(pelicanobj):
+    settings['PATH'] = pelicanobj.settings.get('PATH', 'content')
 
 def register():
     signals.initialized.connect(configure)
