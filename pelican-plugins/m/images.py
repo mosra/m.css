@@ -184,7 +184,8 @@ class ImageGrid(rst.Directive):
                 for k, v in im._getexif().items()
                 if k in PIL.ExifTags.TAGS and len(str(v)) < 256
             }
-            caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), *exif['ExposureTime'], exif['ISOSpeedRatings'])
+            # Can't use just *exif['ExposureTime'] on Py3.4
+            caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), exif['ExposureTime'][0], exif['ExposureTime'][1], exif['ISOSpeedRatings'])
             rel_width = float(im.width)/im.height
             total_widths[-1] += rel_width
             rows[-1].append((uri, rel_width, len(total_widths) - 1, caption))
