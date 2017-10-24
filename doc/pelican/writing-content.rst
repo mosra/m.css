@@ -57,7 +57,7 @@ intuitive usage in many use cases. The basic rules are not far from Markdown:
     all your content is encouraged).
 -   Paragraphs are separated from each other by a blank line. Consecutive lines
     of text are concatenated together using spaces, ignoring the newlines. See
-    the `Block elements <#block-elements>`_ section below for more options.
+    the `Basic block elements`_ section below for more options.
 -   Multiple consecutive whitespace characters are rendered as a single space
     (but that's largely due to how HTML behaves).
 -   Everything is escaped when converting to HTML, so inline HTML will appear
