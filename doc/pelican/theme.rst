@@ -88,7 +88,8 @@ is present. Example configuration for the builtin dark theme:
     THEME_COLOR = '#22272e'
 
 Value of :py:`SITENAME` is used in the :html:`<title>` tag, separated with a
-``|`` character from page / article name.
+``|`` character from page / article title. If page title is the same as
+:py:`SITENAME` (for example on the index page), only the page title is shown.
 
 `Top navbar`_
 -------------

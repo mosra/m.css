@@ -6,7 +6,11 @@
 {% set breadcrumbs = page.breadcrumb.strip().split('\n') %}
 {% for i in breadcrumbs %}{% set url, _, title = i.strip().partition(' ') %}{{ title }} &raquo; {% endfor %}
 {% endif %}
+{% if page.title == SITENAME %}
+{{ page.title -}}
+{% else %}
 {{ page.title }} | {{ SITENAME -}}
+{% endif %}
 {% endblock %}
 
 {% block head %}
