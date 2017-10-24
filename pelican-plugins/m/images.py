@@ -52,12 +52,13 @@ class Image(Directive):
     -   .m-image CSS class added
     -   adding a outer container for clickable image to make the clickable area
         cover only the image
+    -   optionally dying when alt text is not present
     """
 
     required_arguments = 1
     optional_arguments = 0
     final_argument_whitespace = True
-    option_spec = {'alt': directives.unchanged,
+    option_spec = {'alt': directives.unchanged_required,
                    'name': directives.unchanged,
                    'class': directives.class_option,
                    'target': directives.unchanged_required}
@@ -94,6 +95,13 @@ class Image(Directive):
         classes = self.options.get('classes', [])
         if 'classes' in self.options: del self.options['classes']
         image_node = nodes.image(self.block_text, **self.options)
+
+        if not 'alt' in self.options and settings['M_IMAGES_REQUIRE_ALT_TEXT']:
+            error = self.state_machine.reporter.error(
+                    'Images and figures require the alt text. See the M_IMAGES_REQUIRE_ALT_TEXT option.',
+                    image_node,
+                    line=self.lineno)
+            return [error]
 
         self.add_name(image_node)
         if reference_node:
@@ -209,6 +217,7 @@ class ImageGrid(rst.Directive):
 
 def configure(pelicanobj):
     settings['PATH'] = pelicanobj.settings.get('PATH', 'content')
+    settings['M_IMAGES_REQUIRE_ALT_TEXT'] = pelicanobj.settings.get('M_IMAGES_REQUIRE_ALT_TEXT', False)
 
 def register():
     signals.initialized.connect(configure)

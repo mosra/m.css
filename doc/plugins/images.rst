@@ -46,6 +46,7 @@ library installed. This plugin assumes presence of
 .. code:: python
 
     PLUGINS += ['m.htmlsanity', 'm.images']
+    M_IMAGES_REQUIRE_ALT_TEXT = False
 
 `Images, figures`_
 ==================
@@ -60,6 +61,9 @@ directives and:
     `figure <{filename}/css/components.rst#figures>`_ styling.
 -   Removes the :rst:`:align:`, :rst:`:figwidth:` and :rst:`:scale:` options,
     as this is better handled by ``m.css`` features.
+-   To maintain accessibility easier, makes it possible to enforce :rst:`:alt:`
+    text for every image and figure by setting :py:`M_IMAGES_REQUIRE_ALT_TEXT`
+    to :py:`True`.
 
 You can add `additional CSS classes <{filename}/css/components.rst#images>`_ to
 images or figures via the :rst:`:class:` or :rst:`:figclass:` options,
