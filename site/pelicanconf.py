@@ -156,7 +156,7 @@ PATH_METADATA = '(?P<slug>.+).rst'
 # would have / prepended twice, so removing it from the settings.
 if True:
     STATIC_URL = '{path}'
-    PAGE_URL = '{slug}'
+    PAGE_URL = '{slug}/'
     ARTICLE_URL = '{category}/{slug}/'
     AUTHOR_URL = 'author/{slug}/'
     CATEGORY_URL = '{slug}/'
