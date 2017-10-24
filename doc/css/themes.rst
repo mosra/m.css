@@ -36,7 +36,7 @@ theme file is also an self-contained entry point for the whole ``m.css``
 framework --- it includes all the other necessary CSS files except fonts via
 CSS :css:`@import` statements.
 
-.. block-info:: Browser support
+.. block-warning:: Browser support
 
     Note that :abbr:`some older browsers have problems <IE and Edge, I'm looking at you>`
     with CSS variables and :css:`@import` statements. Because of that, the
