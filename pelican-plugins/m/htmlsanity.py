@@ -26,7 +26,7 @@ import os.path
 import re
 
 import six
-from six.moves.urllib.parse import urlparse, urlunparse
+from six.moves.urllib.parse import urlparse, urlunparse, urljoin
 
 from docutils.writers.html5_polyglot import HTMLTranslator
 from docutils.transforms import Transform
@@ -53,6 +53,7 @@ smart_quotes = False
 hyphenation_lang = 'en'
 docutils_settings = {}
 intrasite_link_regex = ''
+siteurl = ''
 
 words_re = re.compile("""\w+""", re.UNICODE|re.X)
 
@@ -697,9 +698,15 @@ def expand_link_pelican371(link, content):
 def expand_links(text, content):
     return content._update_content(text, content.get_siteurl())
 
+# To be consistent with both what Pelican does now with '/'.join(SITEURL, url)
+# and with https://github.com/getpelican/pelican/pull/2196
+def format_siteurl(url):
+    return urljoin(siteurl + ('/' if not siteurl.endswith('/') else ''), url)
+
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
     pelicanobj.settings['JINJA_FILTERS']['expand_links'] = expand_links
+    pelicanobj.settings['JINJA_FILTERS']['format_siteurl'] = format_siteurl
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
     pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
 
@@ -712,12 +719,13 @@ def configure_pelican(pelicanobj):
         pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
 
     global enable_hyphenation, smart_quotes, hyphenation_lang, \
-        docutils_settings, intrasite_link_regex
+        docutils_settings, intrasite_link_regex, siteurl
     enable_hyphenation = pelicanobj.settings.get('M_HTMLSANITY_HYPHENATION', False)
     smart_quotes = pelicanobj.settings.get('M_HTMLSANITY_SMART_QUOTES', False)
     hyphenation_lang = pelicanobj.settings['DEFAULT_LANG']
     docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
     intrasite_link_regex = pelicanobj.settings['INTRASITE_LINK_REGEX']
+    siteurl = pelicanobj.settings['SITEURL']
 
 def add_reader(readers):
     # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2163

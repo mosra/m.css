@@ -29,7 +29,8 @@ HTML sanity
 
 .. role:: html(code)
     :language: html
-
+.. role:: jinja(code)
+    :language: jinja
 .. role:: py(code)
     :language: py
 
@@ -274,6 +275,17 @@ making use of both fields could look like this:
     :date: 2017-06-22
     :legal: This article is released under `CC0 {filename}/license.rst`_.
     :cover: {filename}/img/article-cover.jpg
+
+`SITEURL formatting`_
+---------------------
+
+Convenience filter replacing the common expression :jinja:`{{ SITEURL }}/{{ page.url }}`
+with a formatter that makes use of `urljoin <https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin>`_ so it does the right thing also when
+dealing with absolute URLs and even when they start with just ``//``:
+
+.. code:: jinja
+
+    {{ page.url|format_siteurl }}
 
 `Text hyphenation`_
 -------------------

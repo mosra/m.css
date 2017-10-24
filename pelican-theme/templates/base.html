@@ -127,10 +127,10 @@
           {% endif %}{% endfor %}
         </ul>
         {% else %}
-        <h3><a href="{{ BLOGURL }}">Blog</a></h3>
+        <h3><a href="{{ BLOGURL|format_siteurl }}">Blog</a></h3>
         <ul>
           {% for cat, null in categories %}
-          <li><a href="{{ cat.url }}">{{ cat }}</a></li>
+          <li><a href="{{ cat.url|format_siteurl }}">{{ cat }}</a></li>
           {% endfor %}
         </ul>
         {% endif %}

@@ -30,7 +30,7 @@ SITENAME = 'm.css'
 SITEURL = ''
 
 BLOGNAME = 'm.css example articles'
-BLOGURL = '/examples'
+BLOGURL = 'examples/'
 
 STATIC_URL = '/{path}'
 

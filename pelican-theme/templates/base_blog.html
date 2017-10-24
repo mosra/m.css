@@ -18,7 +18,7 @@
         <h3>Cate&shy;gories</h3>
         <ol class="m-block-bar-m">
           {% for cat, null in categories %}
-          <li><a href="{{ cat.url }}">{{ cat }}</a></li>
+          <li><a href="{{ cat.url|format_siteurl }}">{{ cat }}</a></li>
           {% endfor %}
         </ol>
       </div>
@@ -27,7 +27,7 @@
         <ul class="m-tagcloud">
           {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
           {% for tag, articles in tags|sort(attribute='0') %}
-          <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url }}">{{ tag }}</a></li>
+          <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
           {% endfor %}
         </ul>
       </div>
@@ -38,14 +38,14 @@
       <h3>Cate&shy;gories</h3>
       <ol class="m-block-bar-m">
         {% for cat, null in categories %}
-        <li><a href="{{ cat.url }}">{{ cat|hyphenate }}</a></li>
+        <li><a href="{{ cat.url|format_siteurl }}">{{ cat|hyphenate }}</a></li>
         {% endfor %}
       </ol>
       <h3>Tag cloud</h3>
       <ul class="m-tagcloud">
         {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
         {% for tag, articles in tags|sort(attribute='0') %}
-        <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url }}">{{ tag }}</a></li>
+        <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
         {% endfor %}
       </ul>
     </nav>

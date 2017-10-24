@@ -10,8 +10,8 @@
   <meta name="keywords" content="{{ article.tags|join(", ") }}" />
   <meta property="og:title" content="{{ article.title }}" />
   <meta name="twitter:title" content="{{ article.title }}" />
-  <meta property="og:url" content="{{ article.url }}" />
-  <meta name="twitter:url" content="{{ article.url }}" />
+  <meta property="og:url" content="{{ article.url|format_siteurl }}" />
+  <meta name="twitter:url" content="{{ article.url|format_siteurl }}" />
   <meta property="og:description" content="{{ article.summary|striptags }}" />
   <meta name="twitter:description" content="{{ article.summary|striptags }}" />
   {% if article.cover %}
@@ -33,12 +33,12 @@
           <div class="m-container">
             <div class="m-row">
               <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-left">{{ article.locale_date }}</div>
-              <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-right">{% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}</div>
+              <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-right">{% for author in article.authors %}<a href="{{ author.url|format_siteurl }}">{{ author }}</a>{% endfor %}</div>
             </div>
             <div class="m-row">
               <div class="m-col-t-12 m-col-s-10 m-push-s-1 m-col-m-8 m-push-m-2">
                 {% set title = article.title.split(' — ') %}
-                <h1><a href="{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title }}">
+                <h1><a href="{{ article.url|format_siteurl }}" rel="bookmark" title="Permalink to {{ article.title }}">
                   {{ title[0] }}
                 </a></h1>
                 {% if title|length >= 2 %}
@@ -69,7 +69,7 @@
     <footer class="m-container">
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopadb">
-          <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url }} ">{{ article.category }}</a>.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+          <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url|format_siteurl }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url|format_siteurl }} ">{{ article.category }}</a>.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url|format_siteurl }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
         </div>
       </div>
     </footer>
