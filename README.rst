@@ -1,7 +1,8 @@
 m.css
 #####
 
-*A no-bullshit, no-JavaScript CSS framework and Pelican theme for content-oriented websites.*
+*A no-bullshit, no-JavaScript CSS framework and Pelican theme for
+content-oriented websites.*
 
 .. image:: https://badges.gitter.im/mosra/m.css.svg
    :alt: Join the chat at https://gitter.im/mosra/m.css

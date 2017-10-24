@@ -43,13 +43,14 @@ m.css
 
         .. container:: m-col-l-6 m-push-l-1 m-col-m-7 m-nopadt
 
-            *A no-bullshit, no-JavaScript CSS framework and Pelican theme for content-oriented websites.*
+            *A no-bullshit, no-JavaScript CSS framework and Pelican theme for
+            content-oriented websites.*
 
-            Do you *hate* contemporary web development like I do? Do you also feel that
-            it's not right for a web page to take *seconds* and *megabytes* to render? Do
-            you want to write beautiful content but *can't* because the usual CMS tools
-            make your blood boil and so you rather stay silent? Well, I have something for
-            you.
+            Do you *hate* contemporary web development like I do? Do you also
+            feel that it's not right for a web page to take *seconds* and
+            *megabytes* to render? Do you want to write beautiful content but
+            *can't* because the usual CMS tools make your blood boil and so you
+            rather stay silent? Well, I have something for you.
 
         .. container:: m-col-l-3 m-push-l-2 m-col-m-4 m-push-m-1 m-col-s-6 m-push-s-3 m-col-t-8 m-push-t-2
 
