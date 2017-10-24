@@ -84,6 +84,22 @@ for publishing.
 `Configuration`_
 ================
 
+Value of :py:`SITENAME` is used in the :html:`<title>` tag, separated with a
+``|`` character from page title. If page title is the same as :py:`SITENAME`
+(for example on the index page), only the page title is shown. The static part
+of the website with pages is treated differently from the "blog" part with
+articles and there are two additional configuration options :py:`BLOGURL` and
+:py:`BLOGNAME` that control how various parts of the theme link to the blog and
+how blog pages are named in the :html:`<title>` element.
+
+.. code:: py
+
+    SITENAME = 'Your Brand'
+    SITEURL = ''
+
+    BLOGNAME = 'Your Brand Blog'
+    BLOGURL = '/blog'
+
 Theme color :html:`<meta>` tag used by `CSS themes`_ can be specified with
 the :py:`THEME_COLOR` variable. If not set, no theme color :html:`<meta>` tag
 is present. Example configuration for the builtin dark theme:
@@ -91,10 +107,6 @@ is present. Example configuration for the builtin dark theme:
 .. code:: py
 
     THEME_COLOR = '#22272e'
-
-Value of :py:`SITENAME` is used in the :html:`<title>` tag, separated with a
-``|`` character from page / article title. If page title is the same as
-:py:`SITENAME` (for example on the index page), only the page title is shown.
 
 `Top navbar`_
 -------------

@@ -28,6 +28,10 @@ SITE_LOGO_TEXT = 'm.css'
 
 SITENAME = 'm.css'
 SITEURL = ''
+
+BLOGNAME = 'm.css example articles'
+BLOGURL = '/examples'
+
 STATIC_URL = '/{path}'
 
 PATH = 'content'
