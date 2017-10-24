@@ -99,6 +99,17 @@ to include a proper :html:`<meta>` tag. The HTML5 DOCTYPE is also required.
     I recommend using the original files for development and switching to the
     compiled versions when publishing the website.
 
+.. block-info:: Tip: server-side compression
+
+    Even though the CSS files are already quite small, enabling server-side
+    compression will make your website load even faster. If you have an Apache
+    server running, enabling the compression is just a matter of adding the
+    following to your ``.htaccess`` file:
+
+    .. code:: apache
+
+        AddOutputFilter DEFLATE html css js
+
 With this, you can start using the framework right away. Click the headings
 below to get to know more.
 
