@@ -46,7 +46,9 @@
   <div id="m-landing-image"{% if page.cover %} style="background-image: url('{{ page.cover|expand_link(page) }}');"{% endif %}>
     <div id="m-landing-cover">
       <div class="m-container">
-        {{ page.landing|expand_links(page) }}
+<!-- landing -->
+{{ page.landing|expand_links(page) -}}
+<!-- /landing -->
       </div>
     </div>
   </div>
