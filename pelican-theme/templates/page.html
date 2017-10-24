@@ -20,8 +20,8 @@
   {% endif %}
   <meta property="og:title" content="{{ page.title }}" />
   <meta name="twitter:title" content="{{ page.title }}" />
-  <meta property="og:url" content="{% if page.url %}{{ page.url|format_siteurl }}{% else %}{{ SITEURL }}{% endif %}" />
-  <meta name="twitter:url" content="{% if page.url %}{{ page.url|format_siteurl }}{% else %}{{ SITEURL }}{% endif %}" />
+  <meta property="og:url" content="{{ page.url|format_siteurl }}" />
+  <meta name="twitter:url" content="{{ page.url|format_siteurl }}" />
   <meta property="og:description" content="{{ page.summary|striptags }}" />
   <meta name="twitter:description" content="{{ page.summary|striptags }}" />
   {% if page.cover %}

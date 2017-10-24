@@ -32,7 +32,7 @@ SITEURL = ''
 BLOGNAME = 'm.css example articles'
 BLOGURL = 'examples/'
 
-STATIC_URL = '/{path}'
+STATIC_URL = '{path}'
 
 PATH = 'content'
 ARTICLE_PATHS = ['examples']
@@ -139,13 +139,13 @@ DIRECT_TEMPLATES = []
 
 PAGE_URL = '/{slug}/'
 PAGE_SAVE_AS = '{slug}/index.html'
-ARTICLE_URL = '/{category}/{slug}/'
+ARTICLE_URL = '{category}/{slug}/'
 ARTICLE_SAVE_AS = '{category}/{slug}/index.html'
-AUTHOR_URL = '/author/{slug}/'
+AUTHOR_URL = 'author/{slug}/'
 AUTHOR_SAVE_AS = 'author/{slug}/index.html'
-CATEGORY_URL = '/{slug}/'
+CATEGORY_URL = '{slug}/'
 CATEGORY_SAVE_AS = '{slug}/index.html'
-TAG_URL = '/tag/{slug}/'
+TAG_URL = 'tag/{slug}/'
 TAG_SAVE_AS = 'tag/{slug}/index.html'
 
 AUTHORS_SAVE_AS = None # Not used
@@ -154,13 +154,3 @@ TAGS_SAVE_AS = None # Not used
 
 SLUGIFY_SOURCE = 'basename'
 PATH_METADATA = '(?P<slug>.+).rst'
-
-# If https://github.com/getpelican/pelican/pull/2196 is not applied, all URLs
-# would have / prepended twice, so removing it from the settings.
-if True:
-    STATIC_URL = '{path}'
-    PAGE_URL = '{slug}/'
-    ARTICLE_URL = '{category}/{slug}/'
-    AUTHOR_URL = 'author/{slug}/'
-    CATEGORY_URL = '{slug}/'
-    TAG_URL = 'tag/{slug}/'

@@ -90,7 +90,8 @@ Value of :py:`SITENAME` is used in the :html:`<title>` tag, separated with a
 of the website with pages is treated differently from the "blog" part with
 articles and there are two additional configuration options :py:`BLOGURL` and
 :py:`BLOGNAME` that control how various parts of the theme link to the blog and
-how blog pages are named in the :html:`<title>` element.
+how blog pages are named in the :html:`<title>` element. The :py:`BLOGURL` can
+be either absolute or relative to :py:`SITEURL`.
 
 .. code:: py
 
@@ -98,7 +99,7 @@ how blog pages are named in the :html:`<title>` element.
     SITEURL = ''
 
     BLOGNAME = 'Your Brand Blog'
-    BLOGURL = '/blog'
+    BLOGURL = 'blog/'
 
 Theme color :html:`<meta>` tag used by `CSS themes`_ can be specified with
 the :py:`THEME_COLOR` variable. If not set, no theme color :html:`<meta>` tag
