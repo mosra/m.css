@@ -137,20 +137,20 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.dox` package to your plugins in ``pelicanconf.py``. The plugin uses
 Doxygen tag files to get a list of linkable symbols and you need to provide
 list of 3-tuples containing tag file path, URL prefix and list of implicitly
-prepended namespaces in :py:`DOXYGEN_TAGFILES` configuration to make the plugin
+prepended namespaces in :py:`M_DOX_TAGFILES` configuration to make the plugin
 work. Example configuration:
 
 .. code:: python
 
     PLUGINS += ['m.dox']
-    DOXYGEN_TAGFILES = [
+    M_DOX_TAGFILES = [
         ('doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::']),
         ('doxygen/magnum.tag', 'http://doc.magnum.graphics/magnum/', ['Magnum::'])]
 
 Use the :rst:`:dox:` interpreted text role for linking to documented symbols.
 All link targets understood by Doxygen's ``@ref`` or ``@link`` commands are
 understood by this plugin as well. In order to save you some typing, the
-leading namespace(s) mentioned in the :py:`DOXYGEN_TAGFILES` setting can be
+leading namespace(s) mentioned in the :py:`M_DOX_TAGFILES` setting can be
 omitted when linking to given symbol. If a symbol can't be found, a warning is
 printed to output and the link text is rendered in monospace font.
 

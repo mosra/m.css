@@ -39,7 +39,7 @@ symbol_prefixes = ['']
 def init(pelicanobj):
     global symbol_mapping, symbol_prefixes
 
-    tagfiles = pelicanobj.settings.get('DOXYGEN_TAGFILES', [])
+    tagfiles = pelicanobj.settings.get('M_DOX_TAGFILES', [])
 
     # Pre-round to populate subclasses
 

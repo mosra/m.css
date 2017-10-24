@@ -126,10 +126,9 @@ CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,6
 
 FORMATTED_FIELDS = ['summary', 'landing']
 
-HTMLSANITY_SMART_QUOTES = True
-HTMLSANITY_HYPHENATION = True
-
-DOXYGEN_TAGFILES = [
+M_HTMLSANITY_SMART_QUOTES = True
+M_HTMLSANITY_HYPHENATION = True
+M_DOX_TAGFILES = [
     ('../doc/doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::'])]
 
 DIRECT_TEMPLATES = []

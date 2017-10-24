@@ -49,8 +49,8 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 .. code:: python
 
     PLUGINS += ['m.htmlsanity']
-    HTMLSANITY_SMART_QUOTES = True
-    HTMLSANITY_HYPHENATION = True
+    M_HTMLSANITY_SMART_QUOTES = True
+    M_HTMLSANITY_HYPHENATION = True
 
 `What it does`_
 ===============
@@ -130,7 +130,7 @@ on top. See for yourself:
 
 The default language is of course taken from the standard :py:`DEFAULT_LANG`
 option, which defaults to :py:`'en'`. This feature is controlled by the
-:py:`HTMLSANITY_SMART_QUOTES` option, which, similarly to the builtin
+:py:`M_HTMLSANITY_SMART_QUOTES` option, which, similarly to the builtin
 :py:`TYPOGRIFY` option, defaults to :py:`False`.
 
 .. note-warning::
@@ -200,7 +200,7 @@ that are candidates for a word break:
 
 Thanks to Unicode magic this is either hidden or converted to a real hyphen and
 *doesn't* break search or SEO. This feature is controlled by the
-:py:`HTMLSANITY_HYPHENATION` option, which also defaults to :py:`False`.
+:py:`M_HTMLSANITY_HYPHENATION` option, which also defaults to :py:`False`.
 
 .. note-success::
 
@@ -229,8 +229,8 @@ settings). Just pipe your variable through the ``render_rst`` filter:
     </html>
 
 The filter is fully equivalent to the builtin reST rendering and the above
-:py:`HTMLSANITY_SMART_QUOTES` and :py:`HTMLSANITY_HYPHENATION` options affect
-it as well.
+:py:`M_HTMLSANITY_SMART_QUOTES` and :py:`M_HTMLSANITY_HYPHENATION` options
+affect it as well.
 
 .. note-warning::
 
@@ -292,7 +292,7 @@ items), use the ``hyphenate`` filter:
       </ul>
     </nav>
 
-The hyphenation is by default controlled by the :py:`HTMLSANITY_HYPHENATION`
+The hyphenation is by default controlled by the :py:`M_HTMLSANITY_HYPHENATION`
 option. If you want to control this separately, pass a boolean variable or
 simply :py:`True` to the filter ``enable`` argument. The language is by default
 taken from the standard :py:`DEFAULT_LANG` option, if you want to override it,

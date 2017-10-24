@@ -713,8 +713,8 @@ def configure_pelican(pelicanobj):
 
     global enable_hyphenation, smart_quotes, hyphenation_lang, \
         docutils_settings, intrasite_link_regex
-    enable_hyphenation = pelicanobj.settings.get('HTMLSANITY_HYPHENATION', False)
-    smart_quotes = pelicanobj.settings.get('HTMLSANITY_SMART_QUOTES', False)
+    enable_hyphenation = pelicanobj.settings.get('M_HTMLSANITY_HYPHENATION', False)
+    smart_quotes = pelicanobj.settings.get('M_HTMLSANITY_SMART_QUOTES', False)
     hyphenation_lang = pelicanobj.settings['DEFAULT_LANG']
     docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
     intrasite_link_regex = pelicanobj.settings['INTRASITE_LINK_REGEX']
