@@ -128,7 +128,9 @@ link title, second the URL, third page slug of the corresponding page (used
 to highlight currently active menu item) and fourth is a list of sub-menu items
 (which are 3-tuples --- link title, URL and page slug). Providing an empty slug
 will make the menu item never highlighted; providing an empty list of sub-menu
-items will not add any submenu.
+items will not add any submenu. All blog-related pages (articles, article
+listing, authors, tags, categories etc.) have the slug set to a special value
+``[blog]``.
 
 Example configuration, matching example markup from the
 `CSS page layout <{filename}/css/page-layout.rst#sub-menus-in-the-navbar>`__
@@ -142,7 +144,7 @@ documentation:
                      ('Showcase', '/showcase/', 'showcase', []),
                      ('Download', '/download/', 'download', [])]
 
-    LINKS_NAVBAR2 = [('Blog', '/blog/', 'blog', [
+    LINKS_NAVBAR2 = [('Blog', '/blog/', '[blog]', [
                         ('News', '/blog/news/', ''),
                         ('Archive', '/blog/archive/', '')]),
                      ('Contact', '/contact/', 'contact', [])]
