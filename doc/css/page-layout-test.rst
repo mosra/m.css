@@ -119,7 +119,7 @@ Shouldn't be any difference.
 
     .. container:: m-col-m-4 m-col-s-6
 
-        .. class:: m-inverted-highlight
+        .. class:: m-inverted
         .. code:: c++
             :hl_lines: 2
 
