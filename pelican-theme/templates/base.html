@@ -4,7 +4,7 @@
   {% block head %}
   <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
   {% for href in CSS_FILES %}
-  <link rel="stylesheet" href="{{ href }}" />
+  <link rel="stylesheet" href="{{ href|format_siteurl }}" />
   {% endfor %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   {% if THEME_COLOR %}
