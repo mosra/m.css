@@ -1,7 +1,7 @@
 m.css
 #####
 
-*A no-bullshit, no-JavaScript CSS framework and Pelican theme for
+*A no-nonsense, no-JavaScript CSS framework and Pelican theme for
 content-oriented websites.*
 
 .. image:: https://badges.gitter.im/mosra/m.css.svg
@@ -29,7 +29,7 @@ Designed for content
 ====================
 
 If you just want to write content with beautiful typography, you don't need
-forms, progressbars, popups, dropdowns or other shit. You want fast iteration
+forms, progressbars, popups, dropdowns or other cruft. You want fast iteration
 times.
 
 `Use it with Pelican <http://mcss.mosra.cz/pelican/>`_
