@@ -45,7 +45,8 @@ more.
 
 A barebones HTML markup structure using ``m.css`` looks like below. There is
 the usual preamble, with :html:`<html lang="en">` and a :html:`<meta>` tag
-specifying the file encoding. Some browsers assume UTF-8 by default (as per the
+specifying the file encoding, which should be the first thing in :html:`<head>`.
+Some browsers assume UTF-8 by default (as per the
 `HTML5 standard <https://www.w3schools.com/html/html_charset.asp>`__), but some
 not, so it's better to always include it. In the :html:`<head>`
 element it's important to also specify that the site is responsive via the
@@ -61,10 +62,10 @@ have to stick to the shown structure.
     <!DOCTYPE html>
     <html lang="en">
       <head>
+        <meta charset="UTF-8" />
         <title>Page title</title>
         <link rel="stylesheet" href="m-dark.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta charset="UTF-8" />
       </head>
       <body>
         <header><nav>

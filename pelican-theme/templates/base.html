@@ -2,6 +2,7 @@
 <html lang="{{ DEFAULT_LANG }}">
 <head>
   {% block head %}
+  <meta charset="UTF-8" />
   <title>{% block title %}{{ SITENAME }}{% endblock title %}</title>
   {% for href in CSS_FILES %}
   <link rel="stylesheet" href="{{ href|format_siteurl }}" />
@@ -10,7 +11,6 @@
   {% if THEME_COLOR %}
   <meta name="theme-color" content="{{ THEME_COLOR }}" />
   {% endif %}
-  <meta charset="UTF-8" />
   {% if FEED_ALL_ATOM_URL %}
   <link href="{{ FEED_ALL_ATOM_URL }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
   {% endif %}
