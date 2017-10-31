@@ -1231,6 +1231,7 @@ pre.m-code.m-inverted > span.hll {
 
 /* Math block, inline math */
 div.m-math {
+  overflow-x: auto;
   text-align: center;
 }
 

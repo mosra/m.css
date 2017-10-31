@@ -1521,6 +1521,7 @@ pre.m-code.m-inverted > span.hll {
   border-color: transparent;
 }
 div.m-math {
+  overflow-x: auto;
   text-align: center;
 }
 div.m-math svg, svg.m-math { fill: #000000; }
