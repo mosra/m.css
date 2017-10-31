@@ -66,6 +66,12 @@ Feel free to visit the project website or contact the author at:
 -   E-mail --- mosra@centrum.cz
 -   Jabber --- mosra@jabbim.cz
 
+CREDITS
+=======
+
+See `CREDITS.rst <CREDITS.rst>` file for details. Big thanks to everyone
+involved!
+
 LICENSE
 =======
 
