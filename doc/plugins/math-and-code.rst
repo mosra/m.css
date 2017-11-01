@@ -61,12 +61,11 @@ The plugin overrides the builtin docutils
 and `math interpreted text role <http://docutils.sourceforge.net/docs/ref/rst/roles.html#math>`_
 and:
 
--   Instead of relying on MathML or MathJax, uses
-    `latex2svg <https://github.com/tuxu/latex2svg>`_ to convert input LaTeX
-    math formula to a SVG file, which is then embedded directly to the page.
-    All glyphs are converted to paths.
--   Adds a :html:`<title>` and :html:`<description>` containing the original
-    formula to the generated :html:`<svg>` element for accessibility.
+-   Instead of relying on MathML or MathJax, uses :gh:`latex2svg <tuxu/latex2svg>`
+    to convert input LaTeX math formula to a SVG file, which is then embedded
+    directly to the page. All glyphs are converted to paths.
+-   Adds a :html:`<title>` and :html:`<desc>` containing the original formula
+    to the generated :html:`<svg>` element for accessibility.
 
 Put `math blocks <{filename}/css/components.rst#math>`_ into the :rst:`.. math::`
 directive; if you want to color the equations, add corresponding

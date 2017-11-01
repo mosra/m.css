@@ -790,10 +790,23 @@ bit of a figure inception shown here):
 `Math`_
 =======
 
-:html:`<svg>` elements containing math can be wrapped in
-:html:`<div class="m-math">` to make it centered. `CSS color classes <#colors>`_
-can be applied to the :html:`<div>` as well. It's a good practice to include
-:html:`<title>` and :html:`<description>` elements for accessibility reasons.
+The ``latex2svg.py`` utility from :gh:`tuxu/latex2svg` can be used to generate
+SVG representation of your LaTeX math formulas. Assuming you have some LaTeX
+distribution and `dvisvgm <http://dvisvgm.bplaced.net/>`_ installed, the usage
+is simple:
+
+.. code:: sh
+
+    echo "$$ a^2 = b^2 + c^2 $$" | python pelican-plugins/latex2svg.py > formula.svg
+
+The ``formula.svg`` file will then contain the rendered formula, which with
+some minor patching (removing the XML preamble etc.) can be pasted directly
+into your HTML code. The :html:`<svg>` element containing math can be wrapped
+in :html:`<div class="m-math">` to make it centered. Similarly to code
+blocks, the math block shows a horizontal scrollbar if the content is too wide
+on narrow screens. `CSS color classes <#colors>`_ can be applied to the
+:html:`<div>`. It's a good practice to include :html:`<title>` and
+:html:`<desc>` elements for accessibility reasons.
 
 .. code-figure::
 
@@ -837,7 +850,10 @@ can be applied to the :html:`<div>` as well. It's a good practice to include
 For inline math, add the :css:`.m-math` class to the :html:`<svg>` tag
 directly. Note that you'll probably need to manually specify
 :css:`vertical-align` style to make the formula align well with surrounding
-text. You can use CSS color classes here as well.
+text. You can use CSS color classes here as well. When using the ``latex2svg.py``
+utility, wrap the formula in ``$`` instead of ``$$`` to produce inline math;
+the ``depth`` value returned on stderr can be taken as a base for the
+:css:`vertical-align` property.
 
 .. code-figure::
 
@@ -861,7 +877,7 @@ text. You can use CSS color classes here as well.
             <use x='0' xlink:href='#math2-g1-50' y='0'/>
             <use x='5.85299' xlink:href='#math2-g0-25' y='0'/>
           </g>
-        </svg> with the <svg class="m-math m-primary" style="vertical-align: -0.0pt;" height='6.43422pt' version='1.1' viewBox='0 -5.14737 6.41894 5.14737' width='8.02368pt'>
+        </svg> with the <svg class="m-math m-warning" style="vertical-align: -0.0pt;" height='6.43422pt' version='1.1' viewBox='0 -5.14737 6.41894 5.14737' width='8.02368pt'>
           <title>LaTeX Math</title>
           <desc>\tau</desc>
           <defs>
@@ -876,7 +892,7 @@ text. You can use CSS color classes here as well.
 
     Producing SVG manually using command-line tools is no fun, so ``m.css``
     provides a `Pelican plugin <{filename}/plugins/math-and-code.rst#math>`__
-    that integrates latex math directly into your markup. Check it out!
+    that integrates LaTeX math directly into your markup. Check it out!
 
 `Padding`_
 ==========
