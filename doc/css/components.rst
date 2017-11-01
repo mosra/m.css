@@ -475,7 +475,7 @@ Similarly to other components, you can color particular :html:`<tr>` or
           <td><a href="#">Link</a></td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
 
 `Images`_
 =========
