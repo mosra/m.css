@@ -543,6 +543,12 @@ div.m-scroll {
 .m-text.m-big {
   font-size: 117%;
 }
+.m-text.m-strong {
+  font-weight: bold;
+}
+.m-text.m-em {
+  font-style: italic;
+}
 h1 .m-thin, h2 .m-thin, h3 .m-thin, h4 .m-thin, h5 .m-thin, h6 .m-thin {
   font-weight: normal;
 }

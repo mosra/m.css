@@ -311,6 +311,11 @@ will have negative margin to make its contents aligned with surrounding text.
         right now</s> oh, there is also <mark>marked text</mark> and
         <code>int a = some_code();</code>.
 
+.. note-info::
+
+    The Components page has additional information about
+    `text styling <{filename}/css/components.rst#text>`_.
+
 `Text alignment`_
 =================
 
