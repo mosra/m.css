@@ -32,9 +32,10 @@ Grid system
 
 Inspired by `Bootstrap <http://getbootstrap.com>`_, the grid system is the
 heart of a responsive website layout. The `m-grid.css <{filename}/css.rst>`_
-file contains all the setup you need for it. Besides that, in order to have
-devices recognize your website properly as responsive and not zoom it out all
-the way to an unreadable mess, don't forget to add this to your :html:`<head>`:
+file contains all the setup you need for it, it's completely standalone.
+Besides that, in order to have devices recognize your website properly as
+responsive and not zoom it out all the way to an unreadable mess, don't forget
+to add this to your :html:`<head>`:
 
 .. code:: html
 
