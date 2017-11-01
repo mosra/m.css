@@ -190,6 +190,44 @@ definitions.
           <dd>Finally put my pants on. Too late.</dd>
         </dl>
 
+`Headings`_
+===========
+
+The :html:`<h1>` is meant to be a page heading, thus it is styled a bit
+differently --- it's bigger and has :css:`1rem` padding after. The :html:`<h2>`
+to :html:`<h6>` are smaller and have just :css:`0.5rem` padding after, to be
+closer to the content that follows. Wrapping part of the heading in a
+:css:`.m-thin` will make it appear thinner, depending on used CSS theme.
+
+.. code-figure::
+
+    .. code:: html
+
+        <h1>Heading 1 <span class="m-thin">with subtitle</span></h1>
+        <h2>Heading 2 <span class="m-thin">with subtitle</span></h2>
+        <h3>Heading 3 <span class="m-thin">with subtitle</span></h3>
+        <h4>Heading 4 <span class="m-thin">with subtitle</span></h4>
+        <h5>Heading 5 <span class="m-thin">with subtitle</span></h5>
+        <h6>Heading 6 <span class="m-thin">with subtitle</span></h6>
+
+    .. raw:: html
+
+        <h1>Heading 1 <span class="m-thin">with subtitle</span></h1>
+        <h2>Heading 2 <span class="m-thin">with subtitle</span></h2>
+        <h3>Heading 3 <span class="m-thin">with subtitle</span></h3>
+        <h4>Heading 4 <span class="m-thin">with subtitle</span></h4>
+        <h5>Heading 5 <span class="m-thin">with subtitle</span></h5>
+        <h6>Heading 6 <span class="m-thin">with subtitle</span></h6>
+
+.. note-warning::
+
+    Headings are styled in a slightly different way for
+    `page sections <{filename}/css/page-layout.rst#main-content>`_ and
+    `article headers <{filename}/css/page-layout.rst#articles>`_, clicks the
+    links for more information. There is also a possibility to put
+    `breadcrumb navigation <{filename}/css/page-layout.rst#breadcrumb-navigation>`_
+    in the :html:`<h1>` element.
+
 `Transitions`_
 ==============
 
