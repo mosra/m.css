@@ -54,9 +54,9 @@ patch_src = re.compile(r"""<\?xml version='1.0' encoding='UTF-8'\?>
 
 patch_dst = r"""<svg{attribs} \g<attribs>>
 <title>LaTeX Math</title>
-<description>
+<desc>
 {formula}
-</description>
+</desc>
 """
 
 unique_src = re.compile(r"""(?P<name> id|xlink:href)='(?P<ref>#?)(?P<id>g\d+-\d+|page\d+)'""")
