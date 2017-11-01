@@ -669,7 +669,9 @@ For example, code highlighted using:
 
 Will spit out a bunch of :html:`<span>` elements like below. To create a code
 block, wrap the output in :html:`<pre class="m-code">` (note that whitespace
-matters inside this tag):
+matters inside this tag). The block doesn't wrap lines on narrow screens to not
+hurt readability, a horizontal scrollbar is shown instead if the content is
+too wide.
 
 .. code-figure::
 
