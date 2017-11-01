@@ -354,8 +354,9 @@ content "below the fold", *not* the cover image.
 The cover image always spans the whole screen width and goes also under the top
 navbar. In order to make the navbar aware of the image, put a :css:`.m-navbar-landing`
 CSS class on the :html:`<nav>` element --- this makes navbar dimmer with
-transparent background and hides the brand link on the left (with the
-assumption that the landing page includes a bigger version of it). While the
+transparent background. Usually the brand link on the left is superfluous as
+the landing page repeats it in a more prominent place, to hide it put a
+:css:`.m-navbar-brand-hidden` on the :css:`#m-navbar-brand` element. While the
 landing page is designed to catch attention of new users, it shouldn't prevent
 regular visitors from navigating the website --- because of that the top navbar
 is not hidden completely and hovering it will make it more visible. This works
@@ -579,8 +580,7 @@ Similarly to `landing pages <#landing-pages>`_, the cover image of the jumbo
 article always spans the whole screen width and goes below the top navbar. If
 you want the navbar to be semi-transparent, put :css:`.m-navbar-jumbo` on the
 :html:`<nav>` element. Compared to `landing pages <#landing-pages>`_ the navbar
-retains semi-transparent background and the brand link is not hidden, as brand
-name is not expected to be duplicated in article header.
+retains semi-transparent background at all times.
 
 .. note-info::
 

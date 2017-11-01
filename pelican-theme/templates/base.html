@@ -23,7 +23,7 @@
 <header><nav id="navigation"{% if page and page.landing and page.cover %} class="m-navbar-landing"{% endif %}{% if article and article.cover %} class="m-navbar-jumbo"{% endif %}>
   <div class="m-container">
     <div class="m-row">
-      <a href="{{ SITEURL }}/" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">
+      <a href="{{ SITEURL }}/" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m{% if page and page.landing and page.cover and page.navbar_brand_hidden %} m-navbar-brand-hidden{% endif %}">
         {%- if SITE_LOGO %}<img src="{{ SITE_LOGO }}" />{% endif -%}
         {{- SITE_LOGO_TEXT -}}
       </a>
