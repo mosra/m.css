@@ -65,7 +65,7 @@ is below:
 .. code:: html
 
     <link rel="stylesheet" href="m-dark.css" /> <!-- or m-dark.compiled.css -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?Source+Sans+Pro:400,400i,600%7Cfamily=Source+Code+Pro:400,400i,600" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?Source+Sans+Pro:400,400i,600,600i%7Cfamily=Source+Code+Pro:400,400i,600" />
     <meta name="theme-color" content="#22272e" />
 
 This theme is used on this site and also on http://magnum.graphics.
@@ -82,7 +82,7 @@ Besides that, you need to reference also
 .. code:: html
 
     <link rel="stylesheet" href="m-light.css" /> <!-- or m-light.compiled.css -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700%7CSource+Code+Pro:400,400i,600" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600" />
     <meta name="theme-color" content="#cb4b16" />
 
 If you want to see this theme live, go to http://blog.mosra.cz.

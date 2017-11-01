@@ -121,7 +121,7 @@ PLUGINS = ['m.abbr',
 THEME = '../pelican-theme'
 THEME_STATIC_DIR = 'static'
 THEME_COLOR = '#22272e'
-CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
+CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&amp;subset=latin-ext',
              '/static/m-dark.css',
              #'/static/m-debug.css'
              ]

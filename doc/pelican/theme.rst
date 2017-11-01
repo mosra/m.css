@@ -62,7 +62,7 @@ plugin, so that plugin needs to be loaded as well.
 
     THEME = 'm.css/pelican-theme'
     THEME_STATIC_DIR = 'static'
-    CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
+    CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600,600i%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
                  '/static/m-dark.css']
     DIRECT_TEMPLATES = ['index']
 
