@@ -521,7 +521,7 @@ Use the HTML5 :html:`<figure>` tag together with :css:`.m-figure` to style it.
 As with plain image, it's by default centered, slightly rounded and has a
 border around the caption and description. The caption is expected to be in the
 :html:`<figcaption>` element. The description is optional, but should be
-wrapped in some tag as well (for example a :html:`<div>`). The
+wrapped in some tag as well (for example a :html:`<span>`). The
 :css:`.m-fullwidth` class works here too and you can also wrap the
 :html:`<img>` element in an :html:`<a>` tag to make it clickable.
 
@@ -536,7 +536,7 @@ the border is distracting, apply the :css:`.m-flat` class to hide it.
         <figure class="m-figure">
           <img src="ship.jpg" alt="Ship" />
           <figcaption>A Ship</figcaption>
-          <div>Photo © <a href="http://blog.mosra.cz/">The Author</a></div>
+          <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
         </figure>
 
     .. raw:: html
@@ -544,7 +544,7 @@ the border is distracting, apply the :css:`.m-flat` class to hide it.
         <figure class="m-figure">
           <img src="{filename}/static/ship-small.jpg" alt="Ship" />
           <figcaption>A Ship</figcaption>
-          <div>Photo © <a href="http://blog.mosra.cz/">The Author</a></div>
+          <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
         </figure>
 
 `Image grid`_

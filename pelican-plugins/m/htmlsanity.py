@@ -286,6 +286,14 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.section_level -= 1
         self.body.append('</section>\n')
 
+    # Legend inside figure -- print as <span> (instead of <div class="legend">,
+    # as that's not valid inside HTML5 <figure> element)
+    def visit_legend(self, node):
+        self.body.append(self.starttag(node, 'span'))
+
+    def depart_legend(self, node):
+        self.body.append('</span>\n')
+
     # Literal -- print as <code> (instead of some <span>)
     def visit_literal(self, node):
         self.body.append(self.starttag(node, 'code', ''))

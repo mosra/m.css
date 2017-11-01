@@ -66,7 +66,8 @@ horrible, right?) with a custom HTML5 writer derived from
     specified otherwise
 -   Figures are using HTML5 :html:`<figure>` tag instead of
     :html:`<div class="figure">`, figure caption is using HTML5 :html:`<figcaption>`
-    instead of :html:`<p class="caption">`
+    instead of :html:`<p class="caption">` and figure legend is just a :html:`<span>`
+    as :html:`<div>` is not allowed inside :html:`<figure>`
 -   Drops *a lot of* useless classes from elements such as :html:`<div class="docutils">`
 -   Makes it possible to have :html:`<a>` elements with block contents (allowed
     in HTML5)
