@@ -34,11 +34,11 @@
           <ol class="m-col-t-6 m-col-m-none">
             {% for title, link, slug, sub in LINKS_NAVBAR1 %}
             <li>
-              <a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+              <a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
               {% if sub %}
               <ol>
                 {% for title, link, slug in sub %}
-                <li><a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+                <li><a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                 {% endfor %}
               </ol>
               {% endif %}
@@ -48,11 +48,11 @@
           <ol class="m-col-t-6 m-col-m-none">
             {% for title, link, slug, sub in LINKS_NAVBAR2 %}
             <li>
-              <a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+              <a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
               {% if sub %}
               <ol>
                 {% for title, link, slug in sub %}
-                <li><a href="{{ link }}"{% if slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+                <li><a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                 {% endfor %}
               </ol>
               {% endif %}

@@ -205,6 +205,10 @@ elsewhere; the container is marked as `inflatable <{filename}/css/grid.rst#infla
 Page title is rendered in an :html:`<h1>` and there's nothing else apart from
 the page content.
 
+Pages can override which menu item in the `top navbar`_ will be highlighted
+by specifying the corresponding menu item slug in the :rst:`:highlight:` field.
+If the field is not present, page's own slug is used instead.
+
 `Extra CSS`_
 ------------
 

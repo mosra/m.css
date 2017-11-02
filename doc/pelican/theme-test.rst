@@ -31,6 +31,7 @@ Test
 :css: {filename}/static/dummy.css
       {filename}/static/dummy.css
 :summary: um
+:highlight: pelican/theme
 :header:
     .. note-warning::
 
@@ -43,4 +44,5 @@ Test
         This shouldn't be wrapped in a ``<p>``.
 
 This page should have a breadcrumb, summary in a meta tag, header and a footer
-and also two additional links to ``/static/dummy.css``.
+and also two additional links to ``/static/dummy.css``. It should also
+highlight the Pelican Theme menu item in the top navbar.
