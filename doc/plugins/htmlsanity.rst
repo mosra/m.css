@@ -286,8 +286,14 @@ making use of both fields could look like this:
 ---------------------
 
 Convenience filter replacing the common expression :jinja:`{{ SITEURL }}/{{ page.url }}`
-with a formatter that makes use of `urljoin <https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin>`_ so it does the right thing also when
-dealing with absolute URLs and even when they start with just ``//``:
+with a formatter that makes use of `urljoin <https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urljoin>`_
+so it does the right thing also when dealing with absolute URLs and even when
+they start with just ``//``.
+
+For example, if :py:`SITEURL` is :py:`'http://your.site'` and you apply
+``format_siteurl`` to :py:`'about/'`, then you get ``http://your.site/about/``;
+but if you apply it to :py:`'https://github.com/mosra/m.css'`, then you get
+just ``https://github.com/mosra/m.css``.
 
 .. code:: jinja
 
