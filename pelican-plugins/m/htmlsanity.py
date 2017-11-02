@@ -409,8 +409,10 @@ class SaneHtmlTranslator(HTMLTranslator):
         Determine if the <p> tags around paragraph ``node`` can be omitted.
         """
         if (isinstance(node.parent, nodes.document) or
-            isinstance(node.parent, nodes.compound)):
-            # Never compact paragraphs in document or compound.
+            isinstance(node.parent, nodes.compound) or
+            isinstance(node.parent, nodes.field_body)):
+            # Never compact paragraphs in document, compound or directly in
+            # field bodies (such as article summary or page footer)
             return False
         for key, value in node.attlist():
             if (node.is_not_default(key) and
@@ -504,7 +506,6 @@ class _SaneFieldBodyTranslator(SaneHtmlTranslator):
 
     def __init__(self, document):
         SaneHtmlTranslator.__init__(self, document)
-        self.compact_p = None
 
     def astext(self):
         return ''.join(self.body)
