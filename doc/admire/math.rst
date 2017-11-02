@@ -30,7 +30,6 @@ m.css math
 .. role:: text-primary
     :class: m-text m-primary
 
-:save_as: admire/math/index.html
 :url: admire/math/
 :cover: {filename}/static/cover-math.jpg
 :summary: The fastest possible math rendering for the modern web
