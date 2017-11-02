@@ -138,7 +138,7 @@ M_DOX_TAGFILES = [
 
 DIRECT_TEMPLATES = []
 
-PAGE_URL = '/{slug}/'
+PAGE_URL = '{slug}/'
 PAGE_SAVE_AS = '{slug}/index.html'
 ARTICLE_URL = '{category}/{slug}/'
 ARTICLE_SAVE_AS = '{category}/{slug}/index.html'
