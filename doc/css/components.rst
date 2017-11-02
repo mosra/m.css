@@ -32,8 +32,8 @@ Components
 
         `« Typography <{filename}/css/typography.rst>`_ | `CSS <{filename}/css.rst>`_ | `Page layout » <{filename}/css/page-layout.rst>`_
 
-``m.css`` provides a set of basic components for further improving the layout
-and display of authored content.
+m.css provides a set of basic components for further improving the layout and
+display of authored content.
 
 .. contents::
     :class: m-block m-default
@@ -41,9 +41,9 @@ and display of authored content.
 `Colors`_
 =========
 
-Similarly to Bootstrap, ``m.css`` has a set of predefined colors that affect
-how a certain component looks. This works on majority of components shown on
-this page. The colors are:
+Similarly to Bootstrap, m.css has a set of predefined colors that affect how a
+certain component looks. This works on majority of components shown on this
+page. The colors are:
 
 -   :css:`.m-default` is a default style that doesn't grab attention
 -   :css:`.m-primary` is meant to be used to highlight the primary element on a
@@ -672,15 +672,15 @@ Then, percentage width :math:`p_i` of each image is calculated as:
 .. note-info::
 
     The image width calculation is quite annoying to do manually, that's why
-    ``m.css`` provides a `Pelican plugin <{filename}/plugins/images.rst#image-grid>`_
+    m.css provides a `Pelican plugin <{filename}/plugins/images.rst#image-grid>`_
     that does the hard work for you.
 
 `Code`_
 =======
 
-``m.css`` recognizes code highlighting compatible with `Pygments <http://pygments.org/>`_
+m.css recognizes code highlighting compatible with `Pygments <http://pygments.org/>`_
 and provides additional styling for it. There's a set of builtin `pygments-*.css <{filename}/css.rst>`_
-styles that match the ``m.css`` themes.
+styles that match the m.css themes.
 
 For example, code highlighted using:
 
@@ -753,7 +753,7 @@ instead of :html:`<pre>`:
 
 .. note-success::
 
-    To make your life easier, ``m.css`` provides a
+    To make your life easier, m.css provides a
     `Pelican plugin <{filename}/plugins/math-and-code.rst#code>`__
     that integrates Pygments code highlighting as a :abbr:`reST <reStructuredText>`
     directive.
@@ -895,7 +895,7 @@ the ``depth`` value returned on stderr can be taken as a base for the
 
 .. note-warning::
 
-    Producing SVG manually using command-line tools is no fun, so ``m.css``
+    Producing SVG manually using command-line tools is no fun, so m.css
     provides a `Pelican plugin <{filename}/plugins/math-and-code.rst#math>`__
     that integrates LaTeX math directly into your markup. Check it out!
 

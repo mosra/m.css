@@ -62,10 +62,10 @@ and `figure <http://docutils.sourceforge.net/docs/ref/rst/directives.html#figure
 directives and:
 
 -   Adds :css:`.m-image` / :css:`.m-figure` CSS classes to them so they have
-    the expected ``m.css`` `image <{filename}/css/components.rst#images>`_ and
+    the expected m.css `image <{filename}/css/components.rst#images>`_ and
     `figure <{filename}/css/components.rst#figures>`_ styling.
 -   Removes the :rst:`:align:`, :rst:`:figwidth:` and :rst:`:scale:` options,
-    as this is better handled by ``m.css`` features.
+    as this is better handled by m.css features.
 -   To maintain accessibility easier, makes it possible to enforce :rst:`:alt:`
     text for every image and figure by setting :py:`M_IMAGES_REQUIRE_ALT_TEXT`
     to :py:`True`.

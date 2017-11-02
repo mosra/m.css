@@ -30,17 +30,17 @@ CSS
 .. role:: html(code)
     :language: html
 
-The CSS style is the essence of ``m.css``. It makes use of HTML5 tags as much
-as possible to avoid redundant classes. Contrary to other popular frameworks,
-all custom CSS classes and IDs are prefixed with ``m-`` to avoid conflicts with
-3rd party styles. All sizes, paddings and border widths are specified using
-``rem`` units, relative to base page font size; :css:`box-sizing: border-box`
-is applied to all elements by default.
+The CSS style is the essence of m.css. It makes use of HTML5 tags as much as
+possible to avoid redundant classes. Contrary to other popular frameworks, all
+custom CSS classes and IDs are prefixed with ``m-`` to avoid conflicts with 3rd
+party styles. All sizes, paddings and border widths are specified using ``rem``
+units, relative to base page font size; :css:`box-sizing: border-box` is
+applied to all elements by default.
 
 `Quick start`_
 ==============
 
-To make full advantage of ``m.css``, you need just three files written in plain
+To make full advantage of m.css, you need just three files written in plain
 CSS. Download them below or :gh:`grab the whole Git repository <mosra/m.css>`:
 
 -   :gh:`m-grid.css <mosra/m.css$master/css/m-grid.css>` with optional
@@ -51,7 +51,7 @@ CSS. Download them below or :gh:`grab the whole Git repository <mosra/m.css>`:
 
 In addition to the above, if you want to present highlighted code snippets on
 your website, there's also a builtin style for `Pygments <http://pygments.org/>`_,
-matching ``m.css`` themes:
+matching m.css themes:
 
 -   :gh:`pygments-dark.css <mosra/m.css$master/css/pygments-dark.css>`,
     generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-dark.py>`

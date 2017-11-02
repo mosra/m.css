@@ -35,11 +35,11 @@ Themes
 .. role:: css(code)
     :language: css
 
-``m.css`` provides two themes, a dark and a light one. A theme consists of just
-a set of CSS variables, which affect fonts, colors and other properties. The
-theme file is also an self-contained entry point for the whole ``m.css``
-framework --- it includes all the other necessary CSS files except fonts via
-CSS :css:`@import` statements.
+m.css provides two themes, a dark and a light one. A theme consists of just a
+set of CSS variables, which affect fonts, colors and other properties. The
+theme file is also an self-contained entry point for the whole m.css framework
+--- it includes all the other necessary CSS files except fonts via CSS
+:css:`@import` statements.
 
 .. block-warning:: Browser support
 

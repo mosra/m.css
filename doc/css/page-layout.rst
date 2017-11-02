@@ -38,9 +38,8 @@ Page layout
 .. role:: sh(code)
     :language: sh
 
-Besides separate components, ``m.css`` provides a fully-fledged whole page
-layout, including top navigation bar, footer navigation, article styling and
-more.
+Besides separate components, m.css provides a fully-fledged whole page layout,
+including top navigation bar, footer navigation, article styling and more.
 
 .. contents::
     :class: m-block m-default
@@ -48,8 +47,8 @@ more.
 `Basic markup structure`_
 =========================
 
-A barebones HTML markup structure using ``m.css`` looks like below. There is
-the usual preamble, with :html:`<html lang="en">` and a :html:`<meta>` tag
+A barebones HTML markup structure using m.css looks like below. There is the
+usual preamble, with :html:`<html lang="en">` and a :html:`<meta>` tag
 specifying the file encoding, which should be the first thing in :html:`<head>`.
 Some browsers assume UTF-8 by default (as per the
 `HTML5 standard <https://www.w3schools.com/html/html_charset.asp>`__), but some
@@ -150,7 +149,7 @@ either ``#navigation`` or ``#`` to the page URL, which triggers the
 -----------------------------------------
 
 To save vertical space on small screens, it's possible to split the navbar
-contents into two (or more) columns using standard ``m.css``
+contents into two (or more) columns using standard m.css
 `grid functionality <{filename}/css/grid.rst>`_:
 
 .. code:: html
@@ -244,7 +243,7 @@ size and is padded from top and bottom by :css:`1rem` to make it feel less
 crowded. It's meant to be used for navigation, but besides that it gives you a
 complete freedom. As an example, you can populate it with four columns (which
 become two columns on narrow screens) of navigation and a fine print, using
-just the builtin ``m.css`` grid features:
+just the builtin m.css grid features:
 
 .. code:: html
 
@@ -299,11 +298,11 @@ just the builtin ``m.css`` grid features:
 
 The :html:`<main>` content is separated from the header and footer by
 :css:`1rem` padding, besides that there is no additional implicit styling. It's
-recommended to make use of ``m.css`` `grid features <{filename}/css/grid.rst>`_
-for content layout --- in particular, the :html:`<main>` element by itself
-doesn't even put any width restriction on the content.
+recommended to make use of m.css `grid features <{filename}/css/grid.rst>`_ for
+content layout --- in particular, the :html:`<main>` element by itself doesn't
+even put any width restriction on the content.
 
-To follow HTML5 semantic features, ``m.css`` expects you to put your main page
+To follow HTML5 semantic features, m.css expects you to put your main page
 content into an :html:`<article>` element, be it an article or not. Heading is
 always in an :html:`<h1>` inside the article element, sub-sections are wrapped
 in nested :html:`<section>` elements with :html:`<h2>` and further. Example
@@ -332,14 +331,14 @@ markup together with 10-column grid setup around the main content:
 ----------------
 
 Besides usual pages, which have the :html:`<article>` element filled with
-:html:`<h1>` followed by a wall of content, ``m.css`` has first-class support
-for landing pages. The major component of a landing page is a cover image in
-the background, spanning the whole page width in a :css:`#m-landing-image`
-element. The image is covered by :css:`#m-landing-cover` element that blends
-the image into the background on the bottom. On top of it you have full freedom
-to put any layout you need, for example a logo, a short introductionary
-paragraph and a download button. Note that the grid setup has to only wrap the
-content "below the fold", *not* the cover image.
+:html:`<h1>` followed by a wall of content, m.css has first-class support for
+landing pages. The major component of a landing page is a cover image in the
+background, spanning the whole page width in a :css:`#m-landing-image` element.
+The image is covered by :css:`#m-landing-cover` element that blends the image
+into the background on the bottom. On top of it you have full freedom to put
+any layout you need, for example a logo, a short introductionary paragraph and
+a download button. Note that the grid setup has to only wrap the content "below
+the fold", *not* the cover image.
 
 .. code:: html
 
@@ -440,8 +439,8 @@ This works for nested sections as well.
 `Articles`_
 -----------
 
-For blog-like articles, ``m.css`` provides styling for article header, summary
-and footer --- just put :html:`<header>` and :html:`<footer>` elements directly
+For blog-like articles, m.css provides styling for article header, summary and
+footer --- just put :html:`<header>` and :html:`<footer>` elements directly
 into the surrounding :html:`<article>` tag. Article header is rendered in a
 bigger and brighter font, while footer is rendered in a smaller and dimmer
 font. Example markup and corresponding rendering:

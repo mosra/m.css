@@ -31,8 +31,8 @@ Pelican
 `Pelican <https://getpelican.com/>`_ is a static site generator powered by
 Python and unlike most other static site generators, it uses
 `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ instead of
-Markdown for authoring content. ``m.css`` provides a theme for it, together
-with a set of useful plugins.
+Markdown for authoring content. m.css provides a theme for it, together with a
+set of useful plugins.
 
 .. note-warning::
 
@@ -45,8 +45,8 @@ with a set of useful plugins.
 ==============
 
 Install Pelican either via ``pip`` or using your system package manager. Note
-that in order to use ``m.css`` `plugins <{filename}/plugins.rst>`_ later, you
-may want to install the Python 3 version.
+that in order to use m.css `plugins <{filename}/plugins.rst>`_ later, you may
+want to install the Python 3 version.
 
 .. code:: sh
 
@@ -118,5 +118,5 @@ not know about yet.
 =========================================
 
 A feature-packed theme with modern and responsive design that exposes all of
-``m.css`` functionality with goodies on top such as social meta tags,
-breadcrumb navigation and more.
+m.css functionality with goodies on top such as social meta tags, breadcrumb
+navigation and more.

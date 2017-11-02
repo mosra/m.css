@@ -209,8 +209,8 @@ Example and corresponding output, note the indentation:
 .. note-info::
 
     Please note that the above example code uses some directives provided by
-    ``m.css`` `Pelican plugins <{filename}/plugins.rst>`_ that are not builtin
-    in the :abbr:`reST <reStructuredText>` parser itself.
+    m.css `Pelican plugins <{filename}/plugins.rst>`_ that are not builtin in
+    the :abbr:`reST <reStructuredText>` parser itself.
 
 `Interpreted text roles`_
 -------------------------
@@ -420,10 +420,10 @@ make them into clickable headers that you can link to later.
     directive will automatically make a Table of Contents list out of headings
     in your document. Very useful for navigation in large pages and articles.
 
-For stuff like images, figures, code blocks, math listing etc., ``m.css``
-provides `Pelican plugins <{filename}/plugins.rst>`_ that do it better than the
-builtin way. Head over to the official :abbr:`reST <reStructuredText>`
-documentation for `more info about builtin directives <http://docutils.sourceforge.net/docs/ref/rst/directives.html>`_.
+For stuff like images, figures, code blocks, math listing etc., m.css provides
+`Pelican plugins <{filename}/plugins.rst>`_ that do it better than the builtin
+way. Head over to the official :abbr:`reST <reStructuredText>` documentation
+for `more info about builtin directives <http://docutils.sourceforge.net/docs/ref/rst/directives.html>`_.
 
 `Essential interpreted text roles`_
 ===================================
@@ -435,7 +435,7 @@ documentation for `more info about builtin directives <http://docutils.sourcefor
 -   It's also possible to put raw HTML code inline by deriving from the
     `raw <http://docutils.sourceforge.net/docs/ref/rst/roles.html#raw>`__ role.
 
-Again, ``m.css`` provides `Pelican plugins`_ that allow you to have inline
-code, math, GitHub and Doxygen links and much more. Head over to the official
+Again, m.css provides `Pelican plugins`_ that allow you to have inline code,
+math, GitHub and Doxygen links and much more. Head over to the official
 :abbr:`reST <reStructuredText>` documentation for
 `more info about builtin roles <http://docutils.sourceforge.net/docs/ref/rst/roles.html>`_.

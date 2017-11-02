@@ -36,7 +36,7 @@ Typography
     :language: css
 
 Right after being responsive, typography is the second most important thing in
-``m.css`` and so the most often used HTML elements are styled to make them look
+m.css and so the most often used HTML elements are styled to make them look
 great by default.
 
 .. contents::

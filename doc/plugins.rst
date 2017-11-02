@@ -28,9 +28,8 @@ Pelican plugins
 .. role:: py(code)
     :language: py
 
-The `Pelican theme <{filename}/pelican/theme.rst>`_ provided by ``m.css``
-uses only a part of the functionality on its own, the rest is exposed by
-various plugins.
+The `Pelican theme <{filename}/pelican/theme.rst>`_ provided by m.css uses only
+a part of the functionality on its own, the rest is exposed by various plugins.
 
 `Usage`_
 ========
@@ -57,7 +56,7 @@ Click on the headings below to get to know more.
 `HTML sanity » <{filename}/plugins/htmlsanity.rst>`_
 ====================================================
 
-The :py:`m.htmlsanity` plugin is essential for ``m.css``. It makes your markup
+The :py:`m.htmlsanity` plugin is essential for m.css. It makes your markup
 valid HTML5, offers a few opt-in typographical improvements and enables you to
 make full use of features provided by other plugins.
 

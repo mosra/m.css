@@ -35,7 +35,7 @@ Theme
 .. role:: rst(code)
     :language: rst
 
-The second largest offering of ``m.css`` is a full-featured theme for the
+The second largest offering of m.css is a full-featured theme for the
 `Pelican static site generator <https://getpelican.com/>`_. The theme is
 designed to fit both the use case of a simple blog consisting of just articles
 or a full product/project/portfolio website where the blog is only a side dish.
@@ -47,7 +47,7 @@ or a full product/project/portfolio website where the blog is only a side dish.
 ==============
 
 The easiest way to start is putting the :gh:`whole Git repository <mosra/m.css>`
-of ``m.css`` into your project, for example as a submodule:
+of m.css into your project, for example as a submodule:
 
 .. code:: sh
 
@@ -55,12 +55,12 @@ of ``m.css`` into your project, for example as a submodule:
 
 The most minimal configuration to use the theme is the following. Basically you
 need to tell Pelican where the theme resides (it's in the ``pelican-theme/``
-subdir of your ``m.css`` submodule), then you tell it to put the static
-contents of the theme into a ``static/`` directory in the root of your
-webserver; the ``CSS_FILES`` variable is a list of CSS files that the theme
-needs. You can put there any files you need, but there need to be at least the
-files mentioned on the `CSS themes <{filename}/css/themes.rst>`_ page. Lastly,
-the theme uses some Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
+subdir of your m.css submodule), then you tell it to put the static contents of
+the theme into a ``static/`` directory in the root of your webserver; the
+``CSS_FILES`` variable is a list of CSS files that the theme needs. You can put
+there any files you need, but there need to be at least the files mentioned on
+the `CSS themes <{filename}/css/themes.rst>`_ page. Lastly, the theme uses some
+Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
 plugin, so that plugin needs to be loaded as well.
 
 .. code:: py
@@ -230,7 +230,7 @@ Put one URL per line, internal link targets are expanded. Example:
 ------------------------
 
 It's common for pages to be organized in a hierarchy and the user should be
-aware of it. ``m.css`` Pelican theme provides breadcrumb navigation, which is
+aware of it. m.css Pelican theme provides breadcrumb navigation, which is
 rendered in main page heading (as described in the
 `CSS page layout <{filename}/css/page-layout.rst#breadcrumb-navigation>`__
 documentation) and also in page title. Breadcrumb links are taken from the
@@ -493,7 +493,7 @@ to prev and next page, besides that there's :html:`<link rel="prev">` and
 
 .. note-warning::
 
-    The ``m.css`` Pelican theme doesn't provide per-year, per-month or per-day
+    The m.css Pelican theme doesn't provide per-year, per-month or per-day
     archive pages or category, tag, author *list* pages at the moment. List of
     categories and tags is available in a sidebar from any article or article
     listing page.

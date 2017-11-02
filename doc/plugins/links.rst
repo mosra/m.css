@@ -38,8 +38,8 @@ Links
 .. role:: rst(code)
     :language: rst
 
-``m.css`` plugins make linking to external content almost too easy. If your
-website is about coding, chances are quite high that you will be linking to
+m.css plugins make linking to external content almost too easy. If your website
+is about coding, chances are quite high that you will be linking to
 repositories, documentation or bugtrackers. Manually copy-pasting links from
 the browser gets quite annoying after a while and also doesn't really help with
 keeping the reST sources readable.
@@ -194,7 +194,7 @@ assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 The plugin overrides the builtin Pelican
 `abbr interpreted text role <http://docs.getpelican.com/en/stable/content.html#file-metadata>`_
 and makes its syntax consistent with other common roles of :abbr:`reST <reStructuredText>`
-and ``m.css``.
+and m.css.
 
 Use the :rst:`:abbr:` interpreted text role for creating abbreviations with
 title in angle brackets:

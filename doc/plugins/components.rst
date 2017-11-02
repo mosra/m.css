@@ -41,9 +41,9 @@ Components
 .. role:: css(code)
     :language: css
 
-Most of ``m.css`` `CSS components <{filename}/css/components.rst>`_ are exposed
-to Pelican via custom :abbr:`reST <reStructuredText>` directives. Unlike with
-pure CSS, the directives are *not* prefixed with ``m-`` to save some typing ---
+Most of m.css `CSS components <{filename}/css/components.rst>`_ are exposed to
+Pelican via custom :abbr:`reST <reStructuredText>` directives. Unlike with pure
+CSS, the directives are *not* prefixed with ``m-`` to save some typing ---
 which is the most important thing when authoring content.
 
 .. contents::

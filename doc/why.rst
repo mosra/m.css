@@ -57,8 +57,8 @@ for.
 
 .. note-info::
 
-    Well, while ``m.css`` itself doesn't *need* JavaScript, it doesn't prevent
-    you from using it -- put in as many jQueries as you want.
+    Well, while m.css itself doesn't *need* JavaScript, it doesn't prevent
+    *you* from using it -- put in as many jQueries as you want.
 
 Why no CSS preprocessors?
 =========================
@@ -83,16 +83,15 @@ If you are like me, you want a website that presents your main work, not that
 your main work is presenting websites. So remove the unneeded hassle of paying
 extra for a dynamic webhosting, installing and maintaining a huge CMS and
 patching it twice a month for a neverending stream new CVEs. Together with
-`Pelican <{filename}/pelican.rst>`_, ``m.css`` provides a solution harnessing
-the endless possibilities of your local machine to generate a bunch of static
-HTML files, which you can then upload *anywhere*. And as a bonus, you have the
-full control over your content --- nothing's hidden in opaque databases.
+`Pelican <{filename}/pelican.rst>`_, m.css provides a solution harnessing the
+endless possibilities of your local machine to generate a bunch of static HTML
+files, which you can then upload *anywhere*. And as a bonus, you have the full
+control over your content --- nothing's hidden in opaque databases.
 
 .. note-success::
 
-    This is all optional, though --- ``m.css`` can work with a dynamic CMS
-    below as well. Or with your hand-written HTML. Not sure about WYSIWYG
-    editors, tho.
+    This is all optional, though --- m.css can work with a dynamic CMS below as
+    well. Or with your hand-written HTML. Not sure about WYSIWYG editors, tho.
 
 Why Pelican and not Jekyll or ...?
 ==================================
@@ -122,5 +121,5 @@ to flesh this thing out to be the Greatest Web Framework Ever™.
 
     Contributions welcome, though! Does it look like I'm not putting enough
     effort in? Submit an improvement! Make a difference
-    :gh:`over at GitHub <mosra/m.css/issues/new>`. Both the ``m.css`` code and
+    :gh:`over at GitHub <mosra/m.css/issues/new>`. Both the m.css code and
     contents of this site are public, available under the MIT license.
