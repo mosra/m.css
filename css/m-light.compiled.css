@@ -389,12 +389,13 @@ body { margin: 0; }
 
 html {
   font-size: 14px;
-  background-color: #ffffff;
+  background-color: #eeeeee;
 }
 body {
   font-family: 'Libre Baskerville', serif;
   font-size: 1rem;
   color: #000000;
+  background-color: #ffffff;
 }
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
