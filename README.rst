@@ -69,7 +69,7 @@ Feel free to visit the project website or contact the author at:
 CREDITS
 =======
 
-See `CREDITS.rst <CREDITS.rst>`_ file for details. Big thanks to everyone
+See the `CREDITS.rst <CREDITS.rst>`_ file for details. Big thanks to everyone
 involved!
 
 LICENSE

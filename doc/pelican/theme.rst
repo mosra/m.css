@@ -351,6 +351,18 @@ social links:
 `Articles`_
 ===========
 
+Compared to pages, articles have additional metadata like :rst:`:date:`,
+:rst:`:author:`, :rst:`:category:` and :rst:`tags` that order them and divide
+them into various sections. Besides that, there's article :rst:`:summary:`,
+that, unlike with pages, is displayed at the top of the article, along with
+other metadata.
+
+All article listing pages (archives, categories, tags, authors) are displaying
+just the article summary and the full article content is available only on the
+dedicated article page. An exception to this is the main index or archive page,
+where the first article is fully expanded so the users are greeted with some
+actual content instead of just a boring list of article summaries.
+
 `Jumbo articles`_
 -----------------
 

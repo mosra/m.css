@@ -39,7 +39,7 @@ Code contribution
         /*
             This file is part of m.css.
 
-            Copyright © Vladimír Vondruš <mosra@centrum.cz>
+            Copyright © 2017 Vladimír Vondruš <mosra@centrum.cz>
             Copyright © YEAR YOUR_NAME <your@mail.com>
 
             Permission is hereby granted, free of charge, to any person obtaining a
