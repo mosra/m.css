@@ -126,7 +126,7 @@ CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,6
              '/static/m-dark.css',
              #'/static/m-debug.css'
              ]
-#CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700%7CSource+Code+Pro:400,400i,600',
+#CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
              #'/static/m-light.css']
 
 FORMATTED_FIELDS = ['summary', 'landing', 'header', 'footer']
