@@ -267,10 +267,10 @@ just the builtin ``m.css`` grid features:
           </div>
           <div class="m-clearfix-t"></div>
           <div class="m-col-s-3 m-col-t-6">
-            <h3><a href="#">Contact</a></h3>
+            <h3>Contact</h3>
             <ul>
-              <li><a href="#">E-mail</a></li>
-              <li><a href="#">GitHub</a></li>
+              <li><a href="mailto:you@your.brand">E-mail</a></li>
+              <li><a href="https://github.com/your-brand">GitHub</a></li>
             </ul>
           </div>
           <div class="m-col-s-3 m-col-t-6">

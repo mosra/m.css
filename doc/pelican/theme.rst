@@ -135,7 +135,8 @@ to highlight currently active menu item) and fourth is a list of sub-menu items
 will make the menu item never highlighted; providing an empty list of sub-menu
 items will not add any submenu. All blog-related pages (articles, article
 listing, authors, tags, categories etc.) have the slug set to a special value
-``[blog]``.
+``[blog]``. The URL is prepended with :py:`SITEURL` unless it contains also
+domain name, then it's left as-is (`detailed behavior <{filename}/plugins/htmlsanity.rst#siteurl-formatting>`_).
 
 Example configuration, matching example markup from the
 `CSS page layout <{filename}/css/page-layout.rst#sub-menus-in-the-navbar>`__
@@ -145,14 +146,14 @@ documentation:
 
     SITE_LOGO_TEXT = 'Your Brand'
 
-    LINKS_NAVBAR1 = [('Features', '/features/', 'features', []),
-                     ('Showcase', '/showcase/', 'showcase', []),
-                     ('Download', '/download/', 'download', [])]
+    LINKS_NAVBAR1 = [('Features', 'features/', 'features', []),
+                     ('Showcase', 'showcase/', 'showcase', []),
+                     ('Download', 'download/', 'download', [])]
 
-    LINKS_NAVBAR2 = [('Blog', '/blog/', '[blog]', [
-                        ('News', '/blog/news/', ''),
-                        ('Archive', '/blog/archive/', '')]),
-                     ('Contact', '/contact/', 'contact', [])]
+    LINKS_NAVBAR2 = [('Blog', 'blog/', '[blog]', [
+                        ('News', 'blog/news/', ''),
+                        ('Archive', 'blog/archive/', '')]),
+                     ('Contact', 'contact/', 'contact', [])]
 
 `Footer navigation`_
 --------------------
@@ -167,7 +168,8 @@ given column empty.
 
 The variables are lists of 2-tuples, containing link title and URL. First item
 is used for column header, if link URL of the first item is empty, given column
-header is just a plain :html:`<h3>` without a link.
+header is just a plain :html:`<h3>` without a link. The URLs are processed in
+the same way as in the `top navbar`_.
 
 Footer fine print can be specified via :py:`FINE_PRINT`. Contents of the
 variable are processed as :abbr:`reST <reStructuredText>`, so you can use all
@@ -180,16 +182,16 @@ documentation, populating the last column implicitly:
 .. code:: py
 
     LINKS_FOOTER1 = [('Your Brand', '/'),
-                     ('Features', '/features/'),
-                     ('Showcase', '/showcase/')]
+                     ('Features', 'features/'),
+                     ('Showcase', 'showcase/')]
 
-    LINKS_FOOTER2 = [('Download', '/download/'),
-                     ('Packages', '/download/packages/'),
-                     ('Source', '/download/source/')]
+    LINKS_FOOTER2 = [('Download', 'download/'),
+                     ('Packages', 'download/packages/'),
+                     ('Source', 'download/source/')]
 
-    LINKS_FOOTER3 = [('Contact', '/contact/'),
-                     ('E-mail', '#'),
-                     ('GitHub', '#')]
+    LINKS_FOOTER3 = [('Contact', ''),
+                     ('E-mail', 'mailto:you@your.brand'),
+                     ('GitHub', 'https://github.com/your-brand')]
 
     FINE_PRINT = """
     Your Brand. Copyright © `You <mailto:you@your.brand>`_, 2017. All rights

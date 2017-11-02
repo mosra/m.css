@@ -12,10 +12,10 @@
   <meta name="theme-color" content="{{ THEME_COLOR }}" />
   {% endif %}
   {% if FEED_ALL_ATOM_URL %}
-  <link href="{{ FEED_ALL_ATOM_URL }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
+  <link href="{{ FEED_ALL_ATOM_URL|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
   {% endif %}
   {% if CATEGORY_FEED_ATOM_URL and category %}
-  <link href="{{ CATEGORY_FEED_ATOM_URL|format(category.slug) }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} | {{ category }}" />
+  <link href="{{ CATEGORY_FEED_ATOM_URL|format(category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} | {{ category }}" />
   {% endif %}
   {% endblock head %}
 </head>
@@ -34,11 +34,11 @@
           <ol class="m-col-t-6 m-col-m-none">
             {% for title, link, slug, sub in LINKS_NAVBAR1 %}
             <li>
-              <a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+              <a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
               {% if sub %}
               <ol>
                 {% for title, link, slug in sub %}
-                <li><a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+                <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                 {% endfor %}
               </ol>
               {% endif %}
@@ -48,11 +48,11 @@
           <ol class="m-col-t-6 m-col-m-none">
             {% for title, link, slug, sub in LINKS_NAVBAR2 %}
             <li>
-              <a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+              <a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
               {% if sub %}
               <ol>
                 {% for title, link, slug in sub %}
-                <li><a href="{{ link }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+                <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                 {% endfor %}
               </ol>
               {% endif %}
@@ -74,13 +74,13 @@
       <div class="m-col-s-3 m-col-t-6">
         {% if LINKS_FOOTER1 %}
         <h3>
-          {%- if LINKS_FOOTER1[0][1] %}<a href="{{ LINKS_FOOTER1[0][1] }}">{% endif %}
+          {%- if LINKS_FOOTER1[0][1] %}<a href="{{ LINKS_FOOTER1[0][1]|format_siteurl }}">{% endif %}
           {{- LINKS_FOOTER1[0][0] -}}
           {% if LINKS_FOOTER1[0][1] -%}</a>{% endif -%}
         </h3>
         <ul>
           {% for title, link in LINKS_FOOTER1 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
+          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
           {% endif %}{% endfor %}
         </ul>
         {% endif %}
@@ -88,13 +88,13 @@
       <div class="m-col-s-3 m-col-t-6">
         {% if LINKS_FOOTER2 %}
         <h3>
-          {%- if LINKS_FOOTER2[0][1] %}<a href="{{ LINKS_FOOTER2[0][1] }}">{% endif %}
+          {%- if LINKS_FOOTER2[0][1] %}<a href="{{ LINKS_FOOTER2[0][1]|format_siteurl }}">{% endif %}
           {{- LINKS_FOOTER2[0][0] -}}
           {% if LINKS_FOOTER2[0][1] %}</a>{% endif -%}
         </h3>
         <ul>
           {% for title, link in LINKS_FOOTER2 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
+          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
           {% endif %}{% endfor %}
         </ul>
         {% endif %}
@@ -103,13 +103,13 @@
       <div class="m-col-s-3 m-col-t-6">
         {% if LINKS_FOOTER3 %}
         <h3>
-          {%- if LINKS_FOOTER3[0][1] %}<a href="{{ LINKS_FOOTER3[0][1] }}">{% endif %}
+          {%- if LINKS_FOOTER3[0][1] %}<a href="{{ LINKS_FOOTER3[0][1]|format_siteurl }}">{% endif %}
           {{- LINKS_FOOTER3[0][0] -}}
           {% if LINKS_FOOTER3[0][1] %}</a>{% endif -%}
         </h3>
         <ul>
           {% for title, link in LINKS_FOOTER3 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
+          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
           {% endif %}{% endfor %}
         </ul>
         {% endif %}
@@ -117,13 +117,13 @@
       <div class="m-col-s-3 m-col-t-6">
         {% if LINKS_FOOTER4 %}
         <h3>
-          {%- if LINKS_FOOTER4[0][1] %}<a href="{{ LINKS_FOOTER4[0][1] }}">{% endif %}
+          {%- if LINKS_FOOTER4[0][1] %}<a href="{{ LINKS_FOOTER4[0][1]|format_siteurl }}">{% endif %}
           {{- LINKS_FOOTER4[0][0] -}}
           {% if LINKS_FOOTER4[0][1] %}</a>{% endif -%}
         </h3>
         <ul>
           {% for title, link in LINKS_FOOTER4 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link }}">{{ title }}</a></li>
+          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
           {% endif %}{% endfor %}
         </ul>
         {% else %}

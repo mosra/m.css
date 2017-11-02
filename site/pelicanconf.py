@@ -51,48 +51,48 @@ TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
-LINKS_NAVBAR1 = [('Why?', '/why/', 'why', []),
-                 ('CSS', '/css/', 'css', [
-                    ('Grid system', '/css/grid/', 'css/grid'),
-                    ('Typography', '/css/typography/', 'css/typography'),
-                    ('Components', '/css/components/', 'css/components'),
-                    ('Page layout', '/css/page-layout/', 'css/page-layout'),
-                    ('Themes', '/css/themes/', 'css/themes')]),
-                 ('Pelican', '/pelican/', 'pelican', [
-                    ('Writing content', '/pelican/writing-content/', 'pelican/writing-content'),
-                    ('Theme', '/pelican/theme/', 'pelican/theme')])]
+LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
+                 ('CSS', 'css/', 'css', [
+                    ('Grid system', 'css/grid/', 'css/grid'),
+                    ('Typography', 'css/typography/', 'css/typography'),
+                    ('Components', 'css/components/', 'css/components'),
+                    ('Page layout', 'css/page-layout/', 'css/page-layout'),
+                    ('Themes', 'css/themes/', 'css/themes')]),
+                 ('Pelican', 'pelican/', 'pelican', [
+                    ('Writing content', 'pelican/writing-content/', 'pelican/writing-content'),
+                    ('Theme', 'pelican/theme/', 'pelican/theme')])]
 
-LINKS_NAVBAR2 = [('Pelican plugins', '/plugins/', 'plugins', [
-                    ('HTML sanity', '/plugins/htmlsanity/', 'plugins/htmlsanity'),
-                    ('Components', '/plugins/components/', 'plugins/components'),
-                    ('Images', '/plugins/images/', 'plugins/images'),
-                    ('Math and code', '/plugins/math-and-code/', 'plugins/math-and-code'),
-                    ('Links', '/plugins/links/', 'plugins/links')]),
+LINKS_NAVBAR2 = [('Pelican plugins', 'plugins/', 'plugins', [
+                    ('HTML sanity', 'plugins/htmlsanity/', 'plugins/htmlsanity'),
+                    ('Components', 'plugins/components/', 'plugins/components'),
+                    ('Images', 'plugins/images/', 'plugins/images'),
+                    ('Math and code', 'plugins/math-and-code/', 'plugins/math-and-code'),
+                    ('Links', 'plugins/links/', 'plugins/links')]),
                  ('GitHub', 'https://github.com/mosra/m.css', '', [])]
 
 LINKS_FOOTER1 = [('m.css', '/'),
-                 ('Why?', '/why/'),
+                 ('Why?', 'why/'),
                  ('GitHub', 'https://github.com/mosra/m.css'),
                  ('Gitter', 'https://gitter.im/mosra/m.css'),
                  ('Twitter', 'https://twitter.com/czmosra')]
 
-LINKS_FOOTER2 = [('CSS', '/css/'),
-                 ('Grid system', '/css/grid/'),
-                 ('Typography', '/css/typography/'),
-                 ('Components', '/css/components/'),
-                 ('Page layout', '/css/page-layout/'),
-                 ('Themes', '/css/themes/')]
+LINKS_FOOTER2 = [('CSS', 'css/'),
+                 ('Grid system', 'css/grid/'),
+                 ('Typography', 'css/typography/'),
+                 ('Components', 'css/components/'),
+                 ('Page layout', 'css/page-layout/'),
+                 ('Themes', 'css/themes/')]
 
-LINKS_FOOTER3 = [('Pelican', '/pelican/'),
-                 ('Writing content', '/pelican/writing-content/'),
-                 ('Theme', '/pelican/theme/')]
+LINKS_FOOTER3 = [('Pelican', 'pelican/'),
+                 ('Writing content', 'pelican/writing-content/'),
+                 ('Theme', 'pelican/theme/')]
 
-LINKS_FOOTER4 = [('Pelican plugins', '/plugins/'),
-                 ('HTML sanity', '/plugins/htmlsanity/'),
-                 ('Components', '/plugins/components/'),
-                 ('Images', '/plugins/images/'),
-                 ('Math and code', '/plugins/math-and-code/'),
-                 ('Links', '/plugins/links/')]
+LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
+                 ('HTML sanity', 'plugins/htmlsanity/'),
+                 ('Components', 'plugins/components/'),
+                 ('Images', 'plugins/images/'),
+                 ('Math and code', 'plugins/math-and-code/'),
+                 ('Links', 'plugins/links/')]
 
 FINE_PRINT = """
 m.css. Copyright © Vladimír Vondruš 2017. Site powered by `Pelican <https://getpelican.com>`_
