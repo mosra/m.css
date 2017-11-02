@@ -74,6 +74,7 @@ LINKS_FOOTER1 = [('m.css', '/'),
                  ('Why?', 'why/'),
                  ('GitHub', 'https://github.com/mosra/m.css'),
                  ('Gitter', 'https://gitter.im/mosra/m.css'),
+                 ('E-mail', 'mailto:mosra@centrum.cz'),
                  ('Twitter', 'https://twitter.com/czmosra')]
 
 LINKS_FOOTER2 = [('CSS', 'css/'),
