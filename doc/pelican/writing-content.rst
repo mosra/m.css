@@ -26,6 +26,11 @@ Writing content
 ###############
 
 :breadcrumb: {filename}/pelican.rst Pelican
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `Pelican <{filename}/pelican.rst>`_ | `Theme » <{filename}/pelican/theme.rst>`_
 
 While the official `reStructuredText <http://docutils.sourceforge.net/rst.html>`_
 documentation provides an extensive syntax guide, the info is scattered across
@@ -434,8 +439,3 @@ Again, ``m.css`` provides `Pelican plugins`_ that allow you to have inline
 code, math, GitHub and Doxygen links and much more. Head over to the official
 :abbr:`reST <reStructuredText>` documentation for
 `more info about builtin roles <http://docutils.sourceforge.net/docs/ref/rst/roles.html>`_.
-
-.. note-dim::
-    :class: m-text-center
-
-    `Pelican <{filename}/pelican.rst>`_ | `Theme » <{filename}/pelican/theme.rst>`_

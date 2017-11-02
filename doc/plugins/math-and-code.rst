@@ -26,6 +26,11 @@ Math and code
 #############
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Images <{filename}/plugins/images.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Links » <{filename}/plugins/links.rst>`_
 
 .. role:: css(code)
     :language: css
@@ -195,8 +200,3 @@ specify which language should be highlighted, derive a custom role from it:
     With the :cmake:`add_executable(foo bar.cpp)` CMake command you can create
     an executable from a file that contains just :cpp:`int main() { return 666; }`
     and nothing else.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Images <{filename}/plugins/images.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Links » <{filename}/plugins/links.rst>`_

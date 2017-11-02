@@ -26,6 +26,11 @@ Typography
 ##########
 
 :breadcrumb: {filename}/css.rst CSS
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Grid <{filename}/css/grid.rst>`_ | `CSS <{filename}/css.rst>`_ | `Components » <{filename}/css/components.rst>`_
 
 .. role:: css(code)
     :language: css
@@ -330,8 +335,3 @@ for aligning and floating blocks in a similar way.
 Block elements :html:`<p>`, :html:`<ol>`, :html:`<ul>`, :html:`<dl>`,
 :html:`<blockqote>`, :html:`<pre>` and :html:`<hr>` by default have :css:`1rem`
 padding after, except when they are the last child, to avoid excessive spacing.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Grid <{filename}/css/grid.rst>`_ | `CSS <{filename}/css.rst>`_ | `Components » <{filename}/css/components.rst>`_

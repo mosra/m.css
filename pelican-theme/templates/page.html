@@ -41,6 +41,17 @@
 {% endblock %}
 
 {% block main %}
+{% if page.header %}
+<div class="m-container m-container-inflatable">
+  <div class="m-row">
+    <div class="m-col-l-10 m-push-l-1 m-nopadb">
+<!-- header -->
+{{ page.header|expand_links(page) -}}
+<!-- /header -->
+    </div>
+  </div>
+</div>
+{% endif %}
 <article>
   {% if page.landing %}
   <div id="m-landing-image"{% if page.cover %} style="background-image: url('{{ page.cover|expand_link(page) }}');"{% endif %}>
@@ -77,4 +88,15 @@
     </div>
   </div>
 </article>
+{% if page.footer %}
+<div class="m-container m-container-inflatable">
+  <div class="m-row">
+    <div class="m-col-l-10 m-push-l-1 m-nopadt">
+<!-- footer -->
+{{ page.footer|expand_links(page) -}}
+<!-- /footer -->
+    </div>
+  </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -26,6 +26,11 @@ Links
 #####
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_
 
 .. role:: py(code)
     :language: py
@@ -235,8 +240,3 @@ first before calculating the size.
     :filesize:`{filename}/../css/m-dark.compiled.css` but only
     :filesize-gz:`{filename}/../css/m-dark.compiled.css` when the server
     sends it compressed.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_

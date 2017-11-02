@@ -26,6 +26,11 @@ Page layout
 ###########
 
 :breadcrumb: {filename}/css.rst CSS
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Components <{filename}/css/components.rst>`_ | `CSS <{filename}/css.rst>`_ | `Themes » <{filename}/css/themes.rst>`_
 
 .. role:: raw-html(raw)
    :format: html
@@ -639,8 +644,3 @@ and save vertical space. For a tag cloud, mark the :html:`<ul>` with
             </ul>
           </div>
         </nav>
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Components <{filename}/css/components.rst>`_ | `CSS <{filename}/css.rst>`_ | `Themes » <{filename}/css/themes.rst>`_

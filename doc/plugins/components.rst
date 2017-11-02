@@ -26,6 +26,11 @@ Components
 ##########
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« HTML sanity <{filename}/plugins/htmlsanity.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Images » <{filename}/plugins/images.rst>`_
 
 .. role:: rst(code)
     :language: rst
@@ -332,8 +337,3 @@ arranging content in three-column grid can be done like this:
         .. container:: m-col-m-4 m-text-center
 
             Right column content.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« HTML sanity <{filename}/plugins/htmlsanity.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Images » <{filename}/plugins/images.rst>`_

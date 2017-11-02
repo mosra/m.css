@@ -34,6 +34,11 @@ m.css math
 :url: admire/math/
 :cover: {filename}/static/cover-math.jpg
 :summary: The fastest possible math rendering for the modern web
+:footer:
+    .. note-dim::
+
+        *Wondering what m.css is all about?* Visit the `main page <{filename}/index.rst>`_
+        to see what else it can offer to you.
 :landing:
     .. container:: m-row
 
@@ -189,8 +194,3 @@ line spacing and that nothing gets relayouted during page load:
     .. class:: m-text m-text-right m-dim m-em
 
     ---  `Discrete Fourier transform § Shift theorem <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Shift_theorem>`_, Wikipedia
-
-.. note-dim::
-
-    *Wondering what m.css is all about?* Visit the `main page <{filename}/index.rst>`_
-    to see what else it can offer to you.

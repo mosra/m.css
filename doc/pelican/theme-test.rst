@@ -31,6 +31,16 @@ Test
 :css: {filename}/static/dummy.css
       {filename}/static/dummy.css
 :summary: um
+:header:
+    .. note-warning::
 
-This page should have a breadcrumb and also two additional links to
-``/static/dummy.css``.
+        This is a page header with an `internal link <{filename}/pelican.rst>`_.
+        This shouldn't be wrapped in a ``<p>``.
+:footer:
+    .. note-danger::
+
+        This is a page footer with an `internal link <{filename}/pelican.rst>`_.
+        This shouldn't be wrapped in a ``<p>``.
+
+This page should have a breadcrumb, summary in a meta tag, header and a footer
+and also two additional links to ``/static/dummy.css``.

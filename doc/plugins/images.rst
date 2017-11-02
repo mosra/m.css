@@ -26,6 +26,11 @@ Images
 ######
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Components <{filename}/plugins/components.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Math and code » <{filename}/plugins/math-and-code.rst>`_
 
 Gives sane defaults to images and figures and provides a way to present
 beautiful image galleries.
@@ -140,8 +145,3 @@ with non-repeating images, head over to `my blog <http://blog.mosra.cz/cesty/mai
     the images present on a filesystem to extract size information. It's
     advised to use the builtin *absolute* ``{filename}`` or ``{attach}`` syntax
     for `linking to internal content <http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Components <{filename}/plugins/components.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Math and code » <{filename}/plugins/math-and-code.rst>`_

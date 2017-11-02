@@ -26,6 +26,11 @@ Components
 ##########
 
 :breadcrumb: {filename}/css.rst CSS
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Typography <{filename}/css/typography.rst>`_ | `CSS <{filename}/css.rst>`_ | `Page layout » <{filename}/css/page-layout.rst>`_
 
 ``m.css`` provides a set of basic components for further improving the layout
 and display of authored content.
@@ -912,8 +917,3 @@ element overflows.
 
 There's also :css:`.m-fullwidth` that will make your element always occupy 100%
 of the parent element width. Useful for tables or images.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Typography <{filename}/css/typography.rst>`_ | `CSS <{filename}/css.rst>`_ | `Page layout » <{filename}/css/page-layout.rst>`_

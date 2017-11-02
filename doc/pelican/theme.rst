@@ -26,6 +26,11 @@ Theme
 #####
 
 :breadcrumb: {filename}/pelican.rst Pelican
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Writing content <{filename}/pelican/writing-content.rst>`_ | `Pelican <{filename}/pelican.rst>`_
 
 .. role:: rst(code)
     :language: rst
@@ -196,8 +201,9 @@ documentation, populating the last column implicitly:
 
 Page content is simply put into :html:`<main>`, wrapped in an :html:`<article>`,
 in the center 10 columns on large screens and spanning the full 12 columns
-elsewhere. Page title is rendered in an :html:`<h1>` and there's nothing else
-apart from the page content.
+elsewhere; the container is marked as `inflatable <{filename}/css/grid.rst#inflatable-nested-grid>`_.
+Page title is rendered in an :html:`<h1>` and there's nothing else apart from
+the page content.
 
 `Extra CSS`_
 ------------
@@ -301,6 +307,43 @@ destination and URL.
 .. note-info::
 
     You can see the landing page in action on the `main project page <{filename}/index.rst>`_.
+
+`Page header and footer`_
+-------------------------
+
+It's possible to add extra :abbr:`reST <reStructuredText>`-processed content
+(such as page-specific navigation) before and after the page contents by
+putting it into :rst:`:header:` / :rst:`:footer:` fields. Compared to having
+these directly in page content, these will be put semantically outside the page
+:html:`<article>` element (so even before the :html:`<h1>` heading and after
+the last :html:`<section>` ends). The header / footer is put, equivalently to
+page content, in the center 10 columns on large screens and spanning the full
+12 columns elsewhere; the container is marked as `inflatable`_. Example of a
+page-specific footer navigation, extending the breadcrumb navigation from
+above:
+
+.. code:: rst
+
+    Steam engine
+    ############
+
+    :breadcrumb: {filename}/help.rst Help
+                 {filename}/help/components.rst Components
+    :footer:
+        `« Water tank <{filename}/help/components/water-tank.rst>`_ |
+        `Components <{filename}/help/components.rst>`_ |
+        `Chimney » <{filename}/help/components/chimney.rst>`_
+
+.. block-warning:: Configuration
+
+    Similarly to landing page content, in order to have the :rst:`:header:` /
+    :rst:`:footer:` fields properly parsed, you need to explicitly list them in
+    :py:`FORMATTED_FIELDS`. Don't forget that :py:`'summary'` is already listed
+    there.
+
+    .. code:: py
+
+        FORMATTED_FIELDS += ['header', 'footer']
 
 `(Social) meta tags for pages`_
 -------------------------------
@@ -459,8 +502,3 @@ is valid HTML5 and should be parsable as XML.
 
     This is one of the main goals of this project. Please
     :gh:`report a bug <mosra/m.css/issues/new>` if it's not like that.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Writing content <{filename}/pelican/writing-content.rst>`_ | `Pelican <{filename}/pelican.rst>`_

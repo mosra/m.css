@@ -128,7 +128,7 @@ CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,6
 #CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700%7CSource+Code+Pro:400,400i,600',
              #'/static/m-light.css']
 
-FORMATTED_FIELDS = ['summary', 'landing']
+FORMATTED_FIELDS = ['summary', 'landing', 'header', 'footer']
 
 M_HTMLSANITY_SMART_QUOTES = True
 M_HTMLSANITY_HYPHENATION = True

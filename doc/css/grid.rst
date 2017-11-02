@@ -26,6 +26,11 @@ Grid system
 ###########
 
 :breadcrumb: {filename}/css.rst CSS
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `CSS <{filename}/css.rst>`_ | `Typography » <{filename}/css/typography.rst>`_
 
 .. role:: css(code)
     :language: css
@@ -367,8 +372,3 @@ you to spot the problems better:
 Other than highlighting problems, this file doesn't alter your website
 appearance in any way. To save unnecessary requests and bandwidth, I recommend
 that you remove the reference again when publishing the website.
-
-.. note-dim::
-    :class: m-text-center
-
-    `CSS <{filename}/css.rst>`_ | `Typography » <{filename}/css/typography.rst>`_

@@ -26,6 +26,11 @@ Themes
 ######
 
 :breadcrumb: {filename}/css.rst CSS
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `« Page layout <{filename}/css/page-layout.rst>`_ | `CSS <{filename}/css.rst>`_
 
 .. role:: css(code)
     :language: css
@@ -122,8 +127,3 @@ then generate a CSS file out of it:
 
     Made a theme and want to share it with the world? I'm happy to
     :gh:`incorporate your contributions <mosra/m.css/pulls/new>`.
-
-.. note-dim::
-    :class: m-text-center
-
-    `« Page layout <{filename}/css/page-layout.rst>`_ | `CSS <{filename}/css.rst>`_

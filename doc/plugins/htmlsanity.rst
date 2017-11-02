@@ -26,6 +26,11 @@ HTML sanity
 ###########
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `Pelican plugins <{filename}/plugins.rst>`_ | `Components » <{filename}/plugins/components.rst>`_
 
 .. role:: html(code)
     :language: html
@@ -340,8 +345,3 @@ There are already
 that try to do similar things, but they *attempt* to fix it using BeautifulSoup
 on top of the generated HTML. That's a horrendous thing to do, so why not just
 prevent the horror from happening?
-
-.. note-dim::
-    :class: m-text-center
-
-    `Pelican plugins <{filename}/plugins.rst>`_ | `Components » <{filename}/plugins/components.rst>`_
