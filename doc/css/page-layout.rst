@@ -519,7 +519,7 @@ Date and author name is rendered on top left and right in front of the cover
 image, the heading (and optional subheading) as well. By default, the text on
 top of the cover image is rendered white, add an additional :css:`.m-inverted`
 CSS class to have it black. The article contents are marked with
-:css:`#m-container-inflatable` to make
+:css:`.m-container-inflatable` to make
 `inflated nested layouts <{filename}/css/grid.rst#inflatable-nested-grid>`_
 such as `image grid <{filename}/css/components.rst#image-grid>`_ possible.
 
@@ -555,7 +555,7 @@ such as `image grid <{filename}/css/components.rst#image-grid>`_ possible.
           </div>
         </div>
       </header>
-      <div class="m-container" id="m-container-inflatable">
+      <div class="m-container m-container-inflatable">
         <div class="m-row">
           <div class="m-col-m-10 m-push-m-1 m-nopady">
           Article contents. Pellentesque est neque, aliquet nec consectetur in,

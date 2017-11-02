@@ -148,7 +148,7 @@ body { margin: 0; }
 .m-pull-t-11 { right: calc(11 * 100% / 12); }
 @media screen and (min-width: 576px) {
   .m-container { width: 560px; }
-  #m-container-inflatable .m-col-s-10 .m-container-inflate {
+  .m-container-inflatable .m-col-s-10 .m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
@@ -228,7 +228,7 @@ body { margin: 0; }
 }
 @media screen and (min-width: 768px) {
   .m-container { width: 750px; }
-  #m-container-inflatable .m-col-m-10 .m-container-inflate {
+  .m-container-inflatable .m-col-m-10 .m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
@@ -308,7 +308,7 @@ body { margin: 0; }
 }
 @media screen and (min-width: 992px) {
   .m-container { width: 960px; }
-  #m-container-inflatable .m-col-l-10 .m-container-inflate {
+  .m-container-inflatable .m-col-l-10 .m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
@@ -1416,52 +1416,52 @@ article section:target figure.m-code-figure {
     border-right-width: 0;
   }
 }
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
-#m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
-#m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
+.m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
+.m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
   margin-left: -1rem;
   margin-right: -1rem;
 }
 @media screen and (min-width: 576px) {
-  #m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
-  #m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
+  .m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
+  .m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
 }
 @media screen and (min-width: 768px) {
-  #m-container-inflatable > .m-row > .m-col-m-10 > .m-imagegrid.m-container-inflate,
-  #m-container-inflatable > .m-row > .m-col-m-10 section > .m-imagegrid.m-container-inflate {
+  .m-container-inflatable > .m-row > .m-col-m-10 > .m-imagegrid.m-container-inflate,
+  .m-container-inflatable > .m-row > .m-col-m-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
 }
 @media screen and (min-width: 992px) {
-  #m-container-inflatable > .m-row > .m-col-l-10 > .m-imagegrid.m-container-inflate,
-  #m-container-inflatable > .m-row > .m-col-l-10 section > .m-imagegrid.m-container-inflate {
+  .m-container-inflatable > .m-row > .m-col-l-10 > .m-imagegrid.m-container-inflate,
+  .m-container-inflatable > .m-row > .m-col-l-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
 }
-#m-container-inflatable section:target > .m-note,
-#m-container-inflatable section:target > .m-frame,
-#m-container-inflatable section:target > .m-block,
-#m-container-inflatable section:target > pre.m-code,
-#m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
-#m-container-inflatable section:target section > .m-note,
-#m-container-inflatable section:target section > .m-frame,
-#m-container-inflatable section:target section > .m-block,
-#m-container-inflatable section:target section > pre.m-code,
-#m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
+.m-container-inflatable section:target > .m-note,
+.m-container-inflatable section:target > .m-frame,
+.m-container-inflatable section:target > .m-block,
+.m-container-inflatable section:target > pre.m-code,
+.m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target section > .m-note,
+.m-container-inflatable section:target section > .m-frame,
+.m-container-inflatable section:target section > .m-block,
+.m-container-inflatable section:target section > pre.m-code,
+.m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   margin-left: -1.0rem;
   border-left-style: solid;
   border-left-width: 0.25rem;
@@ -1469,44 +1469,44 @@ article section:target figure.m-code-figure {
   border-bottom-left-radius: 0;
   padding-left: 0.75rem;
 }
-#m-container-inflatable section:target > figure.m-code-figure::before,
-#m-container-inflatable section:target section > figure.m-code-figure::before {
+.m-container-inflatable section:target > figure.m-code-figure::before,
+.m-container-inflatable section:target section > figure.m-code-figure::before {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
 }
-#m-container-inflatable section:target > pre.m-code,
-#m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
-#m-container-inflatable section:target section > pre.m-code,
-#m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
+.m-container-inflatable section:target > pre.m-code,
+.m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target section > pre.m-code,
+.m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   border-color: #405363;
 }
-#m-container-inflatable section:target > .m-note.m-default,
-#m-container-inflatable section:target section > .m-note.m-default {
+.m-container-inflatable section:target > .m-note.m-default,
+.m-container-inflatable section:target section > .m-note.m-default {
   border-left-color: #405363;
 }
-#m-container-inflatable section:target > .m-note.m-primary,
-#m-container-inflatable section:target section > .m-note.m-primary {
+.m-container-inflatable section:target > .m-note.m-primary,
+.m-container-inflatable section:target section > .m-note.m-primary {
   border-left-color: #a5c9ea;
 }
-#m-container-inflatable section:target > .m-note.m-success,
-#m-container-inflatable section:target section > .m-note.m-success {
+.m-container-inflatable section:target > .m-note.m-success,
+.m-container-inflatable section:target section > .m-note.m-success {
   border-left-color: #3bd267;
 }
-#m-container-inflatable section:target > .m-note.m-warning,
-#m-container-inflatable section:target section > .m-note.m-warning {
+.m-container-inflatable section:target > .m-note.m-warning,
+.m-container-inflatable section:target section > .m-note.m-warning {
   border-left-color: #c7cf2f;
 }
-#m-container-inflatable section:target > .m-note.m-danger,
-#m-container-inflatable section:target section > .m-note.m-danger {
+.m-container-inflatable section:target > .m-note.m-danger,
+.m-container-inflatable section:target section > .m-note.m-danger {
   border-left-color: #cd3431;
 }
-#m-container-inflatable section:target > .m-note.m-info,
-#m-container-inflatable section:target section > .m-note.m-info {
+.m-container-inflatable section:target > .m-note.m-info,
+.m-container-inflatable section:target section > .m-note.m-info {
   border-left-color: #2f83cc;
 }
-#m-container-inflatable section:target > .m-note.m-dim,
-#m-container-inflatable section:target section > .m-note.m-dim {
+.m-container-inflatable section:target > .m-note.m-dim,
+.m-container-inflatable section:target section > .m-note.m-dim {
   border-left-color: #747474;
 }
 pre.m-code span.hll {

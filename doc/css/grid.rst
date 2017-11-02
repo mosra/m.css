@@ -334,12 +334,12 @@ use the full available width --- for example to show big pictures or to fit
 many things next to each other.
 
 If you have a ten-column content area with one column space on each side, mark
-your :css:`.m-container` element with :css:`#m-container-inflatable` and then
+your :css:`.m-container` element with :css:`.m-container-inflatable` and then
 put your nested content in elements marked with :css:`.m-container-inflate`.
 
 .. code:: html
 
-    <div class="m-container" id="m-container-inflatable">
+    <div class="m-container m-container-inflatable">
       <div class="m-row">
         <div class="m-col-l-10 m-push-l-1">
           <div class="m-container-inflate">.m-container-inflate</div>

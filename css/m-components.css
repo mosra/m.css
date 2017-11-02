@@ -1119,55 +1119,55 @@ article section:target figure.m-code-figure {
 }
 
 /* Inflatable content */
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
-#m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
-#m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
-#m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
+.m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
+.m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
   margin-left: -1rem;
   margin-right: -1rem;
 }
 
 @media screen and (min-width: 576px) {
-  #m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
-  #m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
+  .m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
+  .m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
 }
 @media screen and (min-width: 768px) {
-  #m-container-inflatable > .m-row > .m-col-m-10 > .m-imagegrid.m-container-inflate,
-  #m-container-inflatable > .m-row > .m-col-m-10 section > .m-imagegrid.m-container-inflate {
+  .m-container-inflatable > .m-row > .m-col-m-10 > .m-imagegrid.m-container-inflate,
+  .m-container-inflatable > .m-row > .m-col-m-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
 }
 @media screen and (min-width: 992px) {
-  #m-container-inflatable > .m-row > .m-col-l-10 > .m-imagegrid.m-container-inflate,
-  #m-container-inflatable > .m-row > .m-col-l-10 section > .m-imagegrid.m-container-inflate {
+  .m-container-inflatable > .m-row > .m-col-l-10 > .m-imagegrid.m-container-inflate,
+  .m-container-inflatable > .m-row > .m-col-l-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
     margin-right: -10%;
   }
 }
 
 /* Active sections in inflatable content affect left border of some components */
-#m-container-inflatable section:target > .m-note,
-#m-container-inflatable section:target > .m-frame,
-#m-container-inflatable section:target > .m-block,
-#m-container-inflatable section:target > pre.m-code,
-#m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
-#m-container-inflatable section:target section > .m-note,
-#m-container-inflatable section:target section > .m-frame,
-#m-container-inflatable section:target section > .m-block,
-#m-container-inflatable section:target section > pre.m-code,
-#m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
+.m-container-inflatable section:target > .m-note,
+.m-container-inflatable section:target > .m-frame,
+.m-container-inflatable section:target > .m-block,
+.m-container-inflatable section:target > pre.m-code,
+.m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target section > .m-note,
+.m-container-inflatable section:target section > .m-frame,
+.m-container-inflatable section:target section > .m-block,
+.m-container-inflatable section:target section > pre.m-code,
+.m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   margin-left: -1.0rem;
   border-left-style: solid;
   border-left-width: 0.25rem;
@@ -1175,44 +1175,44 @@ article section:target figure.m-code-figure {
   border-bottom-left-radius: 0;
   padding-left: 0.75rem;
 }
-#m-container-inflatable section:target > figure.m-code-figure::before,
-#m-container-inflatable section:target section > figure.m-code-figure::before {
+.m-container-inflatable section:target > figure.m-code-figure::before,
+.m-container-inflatable section:target section > figure.m-code-figure::before {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
 }
-#m-container-inflatable section:target > pre.m-code,
-#m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
-#m-container-inflatable section:target section > pre.m-code,
-#m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
+.m-container-inflatable section:target > pre.m-code,
+.m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target section > pre.m-code,
+.m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   border-color: var(--line-color);
 }
-#m-container-inflatable section:target > .m-note.m-default,
-#m-container-inflatable section:target section > .m-note.m-default {
+.m-container-inflatable section:target > .m-note.m-default,
+.m-container-inflatable section:target section > .m-note.m-default {
   border-left-color: var(--line-color);
 }
-#m-container-inflatable section:target > .m-note.m-primary,
-#m-container-inflatable section:target section > .m-note.m-primary {
+.m-container-inflatable section:target > .m-note.m-primary,
+.m-container-inflatable section:target section > .m-note.m-primary {
   border-left-color: var(--primary-color);
 }
-#m-container-inflatable section:target > .m-note.m-success,
-#m-container-inflatable section:target section > .m-note.m-success {
+.m-container-inflatable section:target > .m-note.m-success,
+.m-container-inflatable section:target section > .m-note.m-success {
   border-left-color: var(--success-color);
 }
-#m-container-inflatable section:target > .m-note.m-warning,
-#m-container-inflatable section:target section > .m-note.m-warning {
+.m-container-inflatable section:target > .m-note.m-warning,
+.m-container-inflatable section:target section > .m-note.m-warning {
   border-left-color: var(--warning-color);
 }
-#m-container-inflatable section:target > .m-note.m-danger,
-#m-container-inflatable section:target section > .m-note.m-danger {
+.m-container-inflatable section:target > .m-note.m-danger,
+.m-container-inflatable section:target section > .m-note.m-danger {
   border-left-color: var(--danger-color);
 }
-#m-container-inflatable section:target > .m-note.m-info,
-#m-container-inflatable section:target section > .m-note.m-info {
+.m-container-inflatable section:target > .m-note.m-info,
+.m-container-inflatable section:target section > .m-note.m-info {
   border-left-color: var(--info-color);
 }
-#m-container-inflatable section:target > .m-note.m-dim,
-#m-container-inflatable section:target section > .m-note.m-dim {
+.m-container-inflatable section:target > .m-note.m-dim,
+.m-container-inflatable section:target section > .m-note.m-dim {
   border-left-color: var(--dim-color);
 }
 
