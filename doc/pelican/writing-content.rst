@@ -32,6 +32,9 @@ Writing content
 
         `Pelican <{filename}/pelican.rst>`_ | `Theme » <{filename}/pelican/theme.rst>`_
 
+.. role:: rst(code)
+    :language: rst
+
 While the official `reStructuredText <http://docutils.sourceforge.net/rst.html>`_
 documentation provides an extensive syntax guide, the info is scattered across
 many pages. The following page will try to explain the basics and mention a
