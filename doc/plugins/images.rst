@@ -32,6 +32,13 @@ Images
 
         `« Components <{filename}/plugins/components.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Math and code » <{filename}/plugins/math-and-code.rst>`_
 
+.. role:: css(code)
+    :language: css
+.. role:: py(code)
+    :language: py
+.. role:: rst(code)
+    :language: rst
+
 Gives sane defaults to images and figures and provides a way to present
 beautiful image galleries.
 

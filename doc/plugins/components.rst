@@ -32,14 +32,12 @@ Components
 
         `« HTML sanity <{filename}/plugins/htmlsanity.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Images » <{filename}/plugins/images.rst>`_
 
-.. role:: rst(code)
-    :language: rst
-
 .. role:: html(code)
     :language: html
-
-.. role:: css(code)
-    :language: css
+.. role:: py(code)
+    :language: py
+.. role:: rst(code)
+    :language: rst
 
 Most of m.css `CSS components <{filename}/css/components.rst>`_ are exposed to
 Pelican via custom :abbr:`reST <reStructuredText>` directives. Unlike with pure

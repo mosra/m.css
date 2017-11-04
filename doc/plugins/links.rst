@@ -34,7 +34,6 @@ Links
 
 .. role:: py(code)
     :language: py
-
 .. role:: rst(code)
     :language: rst
 

@@ -34,6 +34,8 @@ Grid system
 
 .. role:: css(code)
     :language: css
+.. role:: html(code)
+    :language: html
 
 Inspired by `Bootstrap <http://getbootstrap.com>`_, the grid system is the
 heart of a responsive website layout. The `m-grid.css <{filename}/css.rst>`_

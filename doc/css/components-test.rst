@@ -29,6 +29,9 @@ Test
 :breadcrumb: {filename}/css.rst CSS
              {filename}/css/components.rst Components
 
+.. role:: html(code)
+    :language: html
+
 Blocks
 ======
 

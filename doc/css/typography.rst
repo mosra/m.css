@@ -34,6 +34,8 @@ Typography
 
 .. role:: css(code)
     :language: css
+.. role:: html(code)
+    :language: html
 
 Right after being responsive, typography is the second most important thing in
 m.css and so the most often used HTML elements are styled to make them look
