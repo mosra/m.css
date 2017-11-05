@@ -49,14 +49,12 @@ default_params = {
 }
 
 
-if not hasattr(os.environ, 'LIBGS') and not find_library('libgs'):
+if not hasattr(os.environ, 'LIBGS') and not find_library('gs'):
     if sys.platform == 'darwin':
         # Fallback to homebrew Ghostscript on macOS
         homebrew_libgs = '/usr/local/opt/ghostscript/lib/libgs.dylib'
         if os.path.exists(homebrew_libgs):
             default_params['libgs'] = homebrew_libgs
-    if sys.platform == 'linux':
-            default_params['libgs'] = find_library('gs')
     if not default_params['libgs']:
         print('Warning: libgs not found')
 
