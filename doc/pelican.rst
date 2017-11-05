@@ -53,8 +53,10 @@ want to install the Python 3 version.
     # You may need sudo here
     pip install pelican
 
-Once you have Pelican installed, create a directory for your website and
-bootstrap it:
+Note that using the m.css theme or Pelican plugins may require additional
+dependencies than just Pelican --- documentation of each lists the additional
+requirements, if any. Once you have Pelican installed, create a directory for
+your website and bootstrap it:
 
 .. code:: sh
 

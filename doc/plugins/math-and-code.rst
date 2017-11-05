@@ -52,14 +52,19 @@ rendering directly from your :abbr:`reST <reStructuredText>` sources.
 
 Download the `m/math.py and m/latex2svg.py <{filename}/plugins.rst>`_ files,
 put them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and
-add :py:`m.math` package to your :py:`PLUGINS` in ``pelicanconf.py``. In
-addition you need some LaTeX distribution and `dvisvgm <http://dvisvgm.bplaced.net/>`_
-installed. This plugin assumes presence of
-`m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+add :py:`m.math` package to your :py:`PLUGINS` in ``pelicanconf.py``. This
+plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. code:: python
 
     PLUGINS += ['m.htmlsanity', 'm.math']
+
+In addition you need some LaTeX distribution installed. Use your distribution
+package manager, for example on Ubuntu:
+
+.. code:: sh
+
+    sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
 
 The plugin overrides the builtin docutils
 `math directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#math>`_
@@ -125,13 +130,19 @@ want to add additional CSS classes, derive a custom role from it.
 
 Download the `m/code.py <{filename}/plugins.rst>`_ file, put it including the
 ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add :py:`m.code`
-package to your :py:`PLUGINS` in ``pelicanconf.py``. In addition you need to
-have `Pygments <http://pygments.org>`_ installed. This plugin assumes presence
-of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin assumes
+presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. code:: python
 
     PLUGINS += ['m-htmlsanity', 'm.code']
+
+In addition you need to have `Pygments <http://pygments.org>`_ installed. Get
+it via ``pip`` or your distribution package manager:
+
+.. code:: sh
+
+    pip install Pygments
 
 The plugin overrides the builtin docutils
 `code directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#code>`_

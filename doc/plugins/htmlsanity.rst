@@ -58,6 +58,14 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
     M_HTMLSANITY_SMART_QUOTES = True
     M_HTMLSANITY_HYPHENATION = True
 
+Hyphenation (see below) requires the `Pyphen <http://pyphen.org/>`_ library,
+either install it via ``pip`` or your distribution package manager or disable
+it with the above setting.
+
+.. code:: sh
+
+    pip install Pyphen
+
 `What it does`_
 ===============
 

@@ -50,15 +50,21 @@ beautiful image galleries.
 
 Download the `m/images.py <{filename}/plugins.rst>`_ file, put it including the
 ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.images``
-package to your :py:`PLUGINS` in ``pelicanconf.py``. To use the image grid
-feature, in addition you need the `Pillow <https://pypi.python.org/pypi/Pillow>`_
-library installed. This plugin assumes presence of
-`m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin assumes
+presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. code:: python
 
     PLUGINS += ['m.htmlsanity', 'm.images']
     M_IMAGES_REQUIRE_ALT_TEXT = False
+
+To use the image grid feature (see below), in addition you need the
+`Pillow <https://pypi.python.org/pypi/Pillow>`_ library installed. Get it via
+``pip`` or your distribution package manager:
+
+.. code:: sh
+
+    pip install Pillow
 
 `Images, figures`_
 ==================

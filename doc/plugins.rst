@@ -51,7 +51,9 @@ and restart Pelican. Download the plugins below or
     :gh:`m.abbr <mosra/m.css$master/pelican-plugins/m/abbr.py>`,
     :gh:`m.filesize <mosra/m.css$master/pelican-plugins/m/filesize.py>`
 
-Click on the headings below to get to know more.
+Click on the headings below to get to know more. Note that particular plugins
+can have additional dependencies besides just Pelican, see documentation of
+each of them to see more.
 
 `HTML sanity » <{filename}/plugins/htmlsanity.rst>`_
 ====================================================

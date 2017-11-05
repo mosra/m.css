@@ -18,14 +18,10 @@ Code contribution
     `documentation <http://mcss.mosra.cz/>`_.
 -   Documentation and the website is essential part of the project and every
     larger Pelican theme, plugin code or CSS contribution should be reflected
-    there. The website is contained inside `site/ <site>`_ subdirectory and you
-    can build and start a local version of it using Pelican by executing
-    ``make devserver`` in there. The website is then available at
-    http://localhost:8000. See `Pelican usage documentation <http://mcss.mosra.cz/pelican/>`_
-    for more information.
--   Documentation and website content is written in reStructuredText and
+    there. Documentation and website content is written in reStructuredText and
     resides in `doc/ <doc>`_ subdirectory. Please verify that all your changes
-    there do not break the website build.
+    there do not break the website build; see the `README <README.rst>`_ for
+    a guide how to build it.
 -   Best way to contribute is by using GitHub `pull requests <https://github.com/mosra/m.css/pulls>`_
     --- fork the repository and make pull request from feature branch. You can
     also send patches via e-mail or contact me any other way.
