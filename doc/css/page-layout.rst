@@ -594,8 +594,8 @@ retains semi-transparent background at all times.
 
     See `how the jumbo article looks <{filename}/examples/jumbo-article.rst>`_.
 
-`Category list and tag cloud`_
-------------------------------
+`Category, author list and tag cloud`_
+--------------------------------------
 
 Wrap :html:`<h3>` headers and :html:`<ol>` list in :css:`nav.m-navpanel`, you
 can also make use of the :css:`.m-block-bar-*` CSS class to
@@ -618,6 +618,11 @@ and save vertical space. For a tag cloud, mark the :html:`<ul>` with
             <li><a href="#">News</a></li>
             <li><a href="#">Archive</a></li>
           </ol>
+          <h3>Authors</h3>
+          <ol class="m-block-bar-m">
+            <li><a href="#">An Author</a></li>
+            <li><a href="#">Some Other Author</a></li>
+          </ol>
           <h3>Tag cloud</h3>
           <ul class="m-tagcloud">
             <li class="m-tag-1"><a href="#">Announcement</a></li>
@@ -630,14 +635,21 @@ and save vertical space. For a tag cloud, mark the :html:`<ul>` with
     .. raw:: html
 
         <nav class="m-row m-navpanel">
-          <div class="m-col-s-6 m-col-m-3 m-push-m-3">
+          <div class="m-col-s-4">
             <h3>Categories</h3>
             <ol class="m-block-bar-m">
               <li><a href="#">News</a></li>
               <li><a href="#">Archive</a></li>
             </ol>
           </div>
-          <div class="m-col-s-6 m-col-m-3 m-push-m-3">
+          <div class="m-col-s-4">
+            <h3>Authors</h3>
+            <ol class="m-block-bar-m">
+              <li><a href="#">An Author</a></li>
+              <li><a href="#">Some Other Author</a></li>
+            </ol>
+          </div>
+          <div class="m-col-s-4">
             <h3>Tag cloud</h3>
             <ul class="m-tagcloud">
               <li class="m-tag-1"><a href="#">Announcement</a></li>
