@@ -1,9 +1,9 @@
 {% extends "base_blog_section.html" %}
 
-{% block title %}Posts by {{ author }} | {{ BLOGNAME }}{% endblock %}
+{% block title %}Posts by {{ author }} | {{ M_BLOG_NAME }}{% endblock %}
 
 {% block content_title %}
       <div class="m-info m-note">
-        Showing only posts by <em>{{ author }}</em>. <a href="{{ BLOGURL|format_siteurl }}">Show all posts.</a>
+        Showing only posts by <em>{{ author }}</em>. <a href="{{ M_BLOG_URL|format_siteurl }}">Show all posts.</a>
       </div>
 {% endblock %}

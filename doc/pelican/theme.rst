@@ -57,18 +57,18 @@ The most minimal configuration to use the theme is the following. Basically you
 need to tell Pelican where the theme resides (it's in the ``pelican-theme/``
 subdir of your m.css submodule), then you tell it to put the static contents of
 the theme into a ``static/`` directory in the root of your webserver; the
-``CSS_FILES`` variable is a list of CSS files that the theme needs. You can put
-there any files you need, but there need to be at least the files mentioned on
-the `CSS themes <{filename}/css/themes.rst>`_ page. Lastly, the theme uses some
-Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
+:py:`M_CSS_FILES` variable is a list of CSS files that the theme needs. You can
+put there any files you need, but there need to be at least the files mentioned
+on the `CSS themes <{filename}/css/themes.rst>`_ page. Lastly, the theme uses
+some Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
 plugin, so that plugin needs to be loaded as well.
 
 .. code:: py
 
     THEME = 'm.css/pelican-theme'
     THEME_STATIC_DIR = 'static'
-    CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600,600i%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
-                 '/static/m-dark.css']
+    M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600,600i%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
+                   '/static/m-dark.css']
     DIRECT_TEMPLATES = ['index']
 
     PLUGIN_PATHS += ['m.css/pelican-plugins']
@@ -76,10 +76,16 @@ plugin, so that plugin needs to be loaded as well.
 
 Here you can take advantage of the ``pelicanconf.py`` and ``publishconf.py``
 distinction --- use ``m-dark.css`` for local development and override the
-:py:`CSS_FILES` to use the smaller, faster and more compatible ``m-dark.compiled.css``
+:py:`M_CSS_FILES` to use the smaller, faster and more compatible ``m-dark.compiled.css``
 for publishing.
 
 .. note-info::
+
+    To reduce confusion, new configuration variables specific to m.css theme
+    and plugins are prefixed with ``M_``. Configuration variables without
+    prefix are builtin Pelican options.
+
+.. note-warning::
 
     The above configuration should be enough to produce a (mostly empty)
     version of your website using the theme without any errors during
@@ -93,37 +99,37 @@ Value of :py:`SITENAME` is used in the :html:`<title>` tag, separated with a
 ``|`` character from page title. If page title is the same as :py:`SITENAME`
 (for example on the index page), only the page title is shown. The static part
 of the website with pages is treated differently from the "blog" part with
-articles and there are two additional configuration options :py:`BLOGURL` and
-:py:`BLOGNAME` that control how various parts of the theme link to the blog and
-how blog pages are named in the :html:`<title>` element. The :py:`BLOGURL` can
-be either absolute or relative to :py:`SITEURL`.
+articles and there are two additional configuration options :py:`M_BLOG_URL` and
+:py:`M_BLOG_NAME` that control how various parts of the theme link to the blog
+and how blog pages are named in the :html:`<title>` element. The :py:`M_BLOG_URL`
+can be either absolute or relative to :py:`SITEURL`.
 
 .. code:: py
 
     SITENAME = 'Your Brand'
     SITEURL = ''
 
-    BLOGNAME = 'Your Brand Blog'
-    BLOGURL = 'blog/'
+    M_BLOG_NAME = 'Your Brand Blog'
+    M_BLOG_URL = 'blog/'
 
 Theme color :html:`<meta>` tag used by `CSS themes`_ can be specified with
-the :py:`THEME_COLOR` variable. If not set, no theme color :html:`<meta>` tag
+the :py:`M_THEME_COLOR` variable. If not set, no theme color :html:`<meta>` tag
 is present. Example configuration for the builtin dark theme:
 
 .. code:: py
 
-    THEME_COLOR = '#22272e'
+    M_THEME_COLOR = '#22272e'
 
 `Top navbar`_
 -------------
 
-:py:`SITE_LOGO` is an image file that will be used as a brand logo on left side
-of the navbar, :py:`SITE_LOGO_TEXT` is brand logo text. Specifying just one of
-these does the expected thing. The brand logo/text is a link that leads to
-:py:`SITTEURL`.
+:py:`M_SITE_LOGO` is an image file that will be used as a brand logo on left
+side of the navbar, :py:`M_SITE_LOGO_TEXT` is brand logo text. Specifying just
+one of these does the expected thing. The brand logo/text is a link that leads
+to :py:`SITTEURL`.
 
-:py:`LINKS_NAVBAR1` and :py:`LINKS_NAVBAR2` variables contain links to put in
-the top navbar. On narrow screens, the navbar is divided into two columns,
+:py:`M_LINKS_NAVBAR1` and :py:`M_LINKS_NAVBAR2` variables contain links to put
+in the top navbar. On narrow screens, the navbar is divided into two columns,
 links from the first variable are in the left column while links from the
 second variable are in the right column. Omit the second variable if you want
 the links to be in a single column.
@@ -144,25 +150,25 @@ documentation:
 
 .. code:: py
 
-    SITE_LOGO_TEXT = 'Your Brand'
+    M_SITE_LOGO_TEXT = 'Your Brand'
 
-    LINKS_NAVBAR1 = [('Features', 'features/', 'features', []),
-                     ('Showcase', 'showcase/', 'showcase', []),
-                     ('Download', 'download/', 'download', [])]
+    M_LINKS_NAVBAR1 = [('Features', 'features/', 'features', []),
+                       ('Showcase', 'showcase/', 'showcase', []),
+                       ('Download', 'download/', 'download', [])]
 
-    LINKS_NAVBAR2 = [('Blog', 'blog/', '[blog]', [
-                        ('News', 'blog/news/', ''),
-                        ('Archive', 'blog/archive/', '')]),
-                     ('Contact', 'contact/', 'contact', [])]
+    M_LINKS_NAVBAR2 = [('Blog', 'blog/', '[blog]', [
+                            ('News', 'blog/news/', ''),
+                            ('Archive', 'blog/archive/', '')]),
+                       ('Contact', 'contact/', 'contact', [])]
 
 `Footer navigation`_
 --------------------
 
-Similarly to the top navbar, :py:`LINKS_FOOTER1`, :py:`LINKS_FOOTER2`,
-:py:`LINKS_FOOTER3` and :py:`LINKS_FOOTER4` variables contain links to put in
-the footer navigation. The links are arranged in four columns, which get
-reduced to just two columns on small screens. Omitting :py:`LINKS_FOOTER4` will
-fill the last column with a *Blog* entry, linking to the Archives page and
+Similarly to the top navbar, :py:`M_LINKS_FOOTER1`, :py:`M_LINKS_FOOTER2`,
+:py:`M_LINKS_FOOTER3` and :py:`M_LINKS_FOOTER4` variables contain links to put
+in the footer navigation. The links are arranged in four columns, which get
+reduced to just two columns on small screens. Omitting :py:`M_LINKS_FOOTER4`
+will fill the last column with a *Blog* entry, linking to the Archives page and
 listing all blog categories; omitting any of the remaining variables will make
 given column empty.
 
@@ -171,7 +177,7 @@ is used for column header, if link URL of the first item is empty, given column
 header is just a plain :html:`<h3>` without a link. The URLs are processed in
 the same way as in the `top navbar`_.
 
-Footer fine print can be specified via :py:`FINE_PRINT`. Contents of the
+Footer fine print can be specified via :py:`M_FINE_PRINT`. Contents of the
 variable are processed as :abbr:`reST <reStructuredText>`, so you can use all
 the formatting and linking capabilities in there.
 
@@ -181,19 +187,19 @@ documentation, populating the last column implicitly:
 
 .. code:: py
 
-    LINKS_FOOTER1 = [('Your Brand', '/'),
-                     ('Features', 'features/'),
-                     ('Showcase', 'showcase/')]
+    M_LINKS_FOOTER1 = [('Your Brand', '/'),
+                       ('Features', 'features/'),
+                       ('Showcase', 'showcase/')]
 
-    LINKS_FOOTER2 = [('Download', 'download/'),
-                     ('Packages', 'download/packages/'),
-                     ('Source', 'download/source/')]
+    M_LINKS_FOOTER2 = [('Download', 'download/'),
+                       ('Packages', 'download/packages/'),
+                       ('Source', 'download/source/')]
 
-    LINKS_FOOTER3 = [('Contact', ''),
-                     ('E-mail', 'mailto:you@your.brand'),
-                     ('GitHub', 'https://github.com/your-brand')]
+    M_LINKS_FOOTER3 = [('Contact', ''),
+                       ('E-mail', 'mailto:you@your.brand'),
+                       ('GitHub', 'https://github.com/your-brand')]
 
-    FINE_PRINT = """
+    M_FINE_PRINT = """
     Your Brand. Copyright © `You <mailto:you@your.brand>`_, 2017. All rights
     reserved.
     """
