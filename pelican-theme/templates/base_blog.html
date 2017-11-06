@@ -14,7 +14,7 @@
 {% if article and article.cover %}
   <nav class="m-navpanel m-container">
     <div class="m-row">
-      <div class="m-col-m-5 m-push-m-1 m-col-s-6">
+      <div class="{% if M_SHOW_AUTHOR_LIST %}m-col-s-4{% else %}m-col-m-4 m-push-m-2 m-col-s-6{% endif %}">
         <h3>Cate&shy;gories</h3>
         <ol class="m-block-bar-m">
           {% for cat, null in categories %}
@@ -22,7 +22,17 @@
           {% endfor %}
         </ol>
       </div>
-      <div class="m-col-m-5 m-push-m-1 m-col-s-6">
+      {% if M_SHOW_AUTHOR_LIST %}
+      <div class="m-col-s-4">
+        <h3>Authors</h3>
+        <ol class="m-block-bar-m">
+          {% for author, null in authors %}
+          <li><a href="{{ author.url|format_siteurl }}">{{ author }}</a></li>
+          {% endfor %}
+        </ol>
+      </div>
+      {% endif %}
+      <div class="{% if M_SHOW_AUTHOR_LIST %}m-col-s-4{% else %}m-col-m-4 m-push-m-2 m-col-s-6{% endif %}">
         <h3>Tag cloud</h3>
         <ul class="m-tagcloud">
           {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
@@ -41,6 +51,14 @@
         <li><a href="{{ cat.url|format_siteurl }}">{{ cat|hyphenate }}</a></li>
         {% endfor %}
       </ol>
+      {% if M_SHOW_AUTHOR_LIST %}
+      <h3>Authors</h3>
+      <ol class="m-block-bar-m">
+        {% for author, null in authors %}
+        <li><a href="{{ author.url|format_siteurl }}">{{ author }}</a></li>
+        {% endfor %}
+      </ol>
+      {% endif %}
       <h3>Tag cloud</h3>
       <ul class="m-tagcloud">
         {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}

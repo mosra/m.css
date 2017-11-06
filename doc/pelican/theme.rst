@@ -418,6 +418,15 @@ dedicated article page. An exception to this is the main index or archive page,
 where the first article is fully expanded so the users are greeted with some
 actual content instead of just a boring list of article summaries.
 
+Article pages show a list of sections and tags in a right sidebar. By default,
+list of authors is not displayed as there is usually just one author. If you
+want to display the authors as well, enable it using the :py:`SHOW_AUTHOR_LIST`
+option in the configuration:
+
+.. code:: py
+
+    M_SHOW_AUTHOR_LIST = True
+
 `Jumbo articles`_
 -----------------
 
@@ -434,6 +443,9 @@ title and subtitle that's then rendered in a different font size. Example:
     :cover: {filename}/static/ship.jpg
     :slug: jumbo-article
     :summary: Article summary paragraph.
+
+Sidebar with tag, category and author list shown in the classic article layout
+on the right is moved to the bottom for jumbo articles.
 
 .. note-info::
 
