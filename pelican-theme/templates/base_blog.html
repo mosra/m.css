@@ -27,7 +27,7 @@
         <ul class="m-tagcloud">
           {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
           {% for tag, articles in tags|sort(attribute='0') %}
-          <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
+          <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }}"><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
           {% endfor %}
         </ul>
       </div>
@@ -45,7 +45,7 @@
       <ul class="m-tagcloud">
         {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
         {% for tag, articles in tags|sort(attribute='0') %}
-        <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }} "><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
+        <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }}"><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
         {% endfor %}
       </ul>
     </nav>
