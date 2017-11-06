@@ -25,13 +25,12 @@
 /* Globals */
 html {
   font-size: var(--font-size);
-  background-color: var(--footer-background-color);
+  background-color: var(--background-color);
 }
 body {
   font-family: var(--font);
   font-size: 1rem;
   color: var(--color);
-  background-color: var(--background-color);
 }
 
 /* Block elements */
