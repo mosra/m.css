@@ -32,6 +32,6 @@ SITEURL = 'http://mcss.mosra.cz'
 OUTPUT_PATH = 'published/'
 DELETE_OUTPUT_DIRECTORY = True
 
-CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&amp;subset=latin-ext',
-             'static/m-dark.compiled.css']
+M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&amp;subset=latin-ext',
+               'static/m-dark.compiled.css']
 THEME_STATIC_PATHS = ['static/m-dark.compiled.css']
