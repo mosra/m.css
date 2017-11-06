@@ -66,14 +66,20 @@ package manager, for example on Ubuntu:
 
     sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
 
+.. note-success::
+
+    This plugin makes use of the ``latex2svg.py`` utility from :gh:`tuxu/latex2svg`,
+    © 2017 `Tino Wagner <http://www.tinowagner.com/>`_, licensed under
+    :gh:`MIT <tuxu/latex2svg$master/LICENSE.md>`.
+
 The plugin overrides the builtin docutils
 `math directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#math>`_
 and `math interpreted text role <http://docutils.sourceforge.net/docs/ref/rst/roles.html#math>`_
 and:
 
--   Instead of relying on MathML or MathJax, uses :gh:`latex2svg <tuxu/latex2svg>`
-    to convert input LaTeX math formula to a SVG file, which is then embedded
-    directly to the page. All glyphs are converted to paths.
+-   Instead of relying on MathML or MathJax, converts input LaTeX math formula
+    to a SVG file, which is then embedded directly to the page. All glyphs are
+    converted to paths.
 -   Adds a :html:`<title>` and :html:`<desc>` containing the original formula
     to the generated :html:`<svg>` element for accessibility.
 
