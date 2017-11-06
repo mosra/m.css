@@ -409,8 +409,9 @@ social links:
 Compared to pages, articles have additional metadata like :rst:`:date:`,
 :rst:`:author:`, :rst:`:category:` and :rst:`tags` that order them and divide
 them into various sections. Besides that, there's article :rst:`:summary:`,
-that, unlike with pages, is displayed at the top of the article, along with
-other metadata.
+that, unlike with pages, is displayed in the article header; other metadata are
+displayed in article footer. The article can also optionally have a
+:rst:`:modified:` date, which is shown as date of last update in the footer.
 
 All article listing pages (archives, categories, tags, authors) are displaying
 just the article summary and the full article content is available only on the
