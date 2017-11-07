@@ -41,7 +41,7 @@ PAGE_PATHS = ['']
 TIMEZONE = 'Europe/Prague'
 
 DEFAULT_LANG = 'en'
-DATE_FORMATS = {'en': ('en_US.UTF-8', '%b %d %Y')}
+DATE_FORMATS = {'en': ('en_US.UTF-8', '%b %d, %Y')}
 
 # Feed generation is usually not desired when developing
 FEED_ATOM = None
