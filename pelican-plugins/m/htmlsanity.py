@@ -162,10 +162,11 @@ class Pyphen(Transform):
                    isinstance(txtnode.parent, nodes.raw):
                     continue
 
-                # From fields include only the summary
+                # From fields include only the ones that are in
+                # FORMATTED_FIELDS
                 if isinstance(txtnode.parent.parent, nodes.field_body):
                     field_name_index = txtnode.parent.parent.parent.first_child_matching_class(nodes.field_name)
-                    if txtnode.parent.parent.parent[field_name_index][0] != 'summary':
+                    if txtnode.parent.parent.parent[field_name_index][0] not in settings['FORMATTED_FIELDS']:
                         continue
 
                 # Useful for debugging, don't remove ;)
@@ -721,7 +722,7 @@ def configure_pelican(pelicanobj):
     global settings
     settings['M_HTMLSANITY_HYPHENATION'] = pelicanobj.settings.get('M_HTMLSANITY_HYPHENATION', False)
     settings['M_HTMLSANITY_SMART_QUOTES'] = pelicanobj.settings.get('M_HTMLSANITY_SMART_QUOTES', False)
-    for i in 'DEFAULT_LANG', 'DOCUTILS_SETTINGS', 'INTRASITE_LINK_REGEX', 'SITEURL':
+    for i in 'DEFAULT_LANG', 'DOCUTILS_SETTINGS', 'INTRASITE_LINK_REGEX', 'SITEURL', 'FORMATTED_FIELDS':
         settings[i] = pelicanobj.settings[i]
 
 def add_reader(readers):

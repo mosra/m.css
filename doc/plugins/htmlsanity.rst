@@ -163,10 +163,10 @@ screens of mobile devices, where there is just way too much blank space because
 of long words being wrapped on new lines.
 
 The hyphenation is done using `Pyphen <http://pyphen.org/>`_ and is applied to
-whole document contents and article summaries (except for literal and raw
-blocks, of course). All other fields including document title are excluded from
-hyphenation. You can see it in practice in the following convoluted example,
-it's also language-aware:
+whole document contents and fields that are included in the :py:`FORMATTED_FIELDS`.
+All other fields including document title are excluded from hyphenation, the
+same goes for literal and raw blocks. You can see it in practice in the
+following convoluted example, it's also language-aware:
 
 .. code-figure::
 
