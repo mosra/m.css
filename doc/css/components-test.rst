@@ -465,7 +465,7 @@ Figure, centered:
     <figure class="m-figure">
       <img src="{filename}/static/ship-small.jpg" />
       <figcaption>A Ship</figcaption>
-      <div>Photo © <a href="http://blog.mosra.cz/">The Author</a></div>
+      <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
     </figure>
 
 Figure, centered, image link, flat:
@@ -475,7 +475,7 @@ Figure, centered, image link, flat:
     <figure class="m-figure m-flat">
       <a href="http://blog.mosra.cz/"><img src="{filename}/static/ship-small.jpg" /></a>
       <figcaption>A Ship</figcaption>
-      <div>Photo © <a href="http://blog.mosra.cz/">The Author</a></div>
+      <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
     </figure>
 
 Figure, fullwidth, without description (yes, it should be pixelated):
@@ -485,6 +485,52 @@ Figure, fullwidth, without description (yes, it should be pixelated):
     <figure class="m-figure m-fullwidth">
       <img src="{filename}/static/ship-small.jpg" />
       <figcaption>A Ship</figcaption>
+    </figure>
+
+Figure, fullwidth, with a long caption and description, there should be no
+unnecessary wrapping of the text:
+
+.. raw:: html
+
+    <figure class="m-figure m-fullwidth">
+      <img src="{filename}/static/ship-small.jpg" />
+      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
+      <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
+      On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+      Rights Reserved.</span>
+    </figure>
+
+Figure with a large image but not fullwidth, should look the same as above, no
+leaking of the image outside of the page:
+
+.. raw:: html
+
+    <figure class="m-figure">
+      <img src="{filename}/static/ship.jpg" />
+      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
+      <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
+      On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+      Rights Reserved.</span>
+    </figure>
+
+Figure with a long caption and description, then just a caption (it should wrap
+instead of extending the border and there should be proper padding on bottom):
+
+.. raw:: html
+
+    <figure class="m-figure">
+      <img src="{filename}/static/ship-small.jpg" />
+      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
+      <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
+      On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+      Rights Reserved.</span>
+    </figure>
+
+.. raw:: html
+
+    <figure class="m-figure">
+      <img src="{filename}/static/ship-small.jpg" />
+      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
     </figure>
 
 Image grid

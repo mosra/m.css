@@ -968,12 +968,15 @@ figure.m-figure.m-flat:before {
 figure.m-figure > * {
   margin-left: 1rem;
   margin-right: 1rem;
+  display: table-caption;
+  caption-side: bottom;
 }
-figure.m-figure:after {
-  content: ' ';
-  display: block;
-  margin-top: 1rem;
-  height: 1px;
+figure.m-figure > *:first-child {
+  /* otherwise figure with clickable image is center differently */
+  display: inline;
+}
+figure.m-figure > *:last-child {
+  margin-bottom: 1rem;
 }
 figure.m-figure img {
   position: relative; /* so it's above the border */
@@ -982,6 +985,7 @@ figure.m-figure img {
   margin-bottom: 0;
   border-top-left-radius: 0.2rem;
   border-top-right-radius: 0.2rem;
+  max-width: 100%;
 }
 figure.m-figure figcaption {
   margin-top: 0.5rem;
@@ -993,11 +997,23 @@ figure.m-figure a img {
   margin-left: -1rem;
   margin-right: -1rem;
 }
-figure.m-figure.m-fullwidth {
+figure.m-figure.m-fullwidth, figure.m-figure.m-fullwidth > * {
+  /* Using inline for the content would lose the margin on wrapped lines */
   display: block;
+}
+figure.m-figure.m-fullwidth > *:first-child {
+  display: inline;
 }
 figure.m-figure.m-fullwidth img {
   width: 100%;
+}
+figure.m-figure.m-fullwidth:after {
+  /* Specifying bottom margin on the last element works only if it is displayed
+     as table caption, so I have to hack it here. */
+  content: ' ';
+  display: block;
+  margin-top: 1rem;
+  height: 1px;
 }
 
 /* Code figure */
