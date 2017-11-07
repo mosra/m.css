@@ -47,14 +47,7 @@ try:
 except ImportError:
     pyphen = None
 
-# These come from settings
-enable_hyphenation = False
-smart_quotes = False
-hyphenation_lang = 'en'
-docutils_settings = {}
-intrasite_link_regex = ''
-siteurl = ''
-
+settings = {}
 words_re = re.compile("""\w+""", re.UNICODE|re.X)
 
 class SmartQuotes(docutils.transforms.universal.SmartQuotes):
@@ -73,11 +66,10 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
         # We are using our own config variable instead of
         # self.document.settings.smart_quotes in order to avoid the builtin
         # SmartQuotes to be executed as well
-        global smart_quotes
-        if not smart_quotes:
+        if not settings['M_HTMLSANITY_SMART_QUOTES']:
             return
         try:
-            alternative = smart_quotes.startswith('alt')
+            alternative = settings['M_HTMLSANITY_SMART_QUOTES'].startswith('alt')
         except AttributeError:
             alternative = False
         # print repr(alternative)
@@ -146,8 +138,7 @@ class Pyphen(Transform):
         Transform.__init__(self, document, startnode=startnode)
 
     def apply(self):
-        global enable_hyphenation
-        if not enable_hyphenation:
+        if not settings['M_HTMLSANITY_HYPHENATION']:
             return
 
         document_language = self.document.settings.language_code
@@ -591,8 +582,8 @@ def render_rst(value):
                     'input_encoding': 'utf-8',
                     'exit_status_level': 2,
                     'embed_stylesheet': False}
-    if docutils_settings:
-        extra_params.update(docutils_settings)
+    if settings['DOCUTILS_SETTINGS']:
+        extra_params.update(settings['DOCUTILS_SETTINGS'])
 
     pub = docutils.core.Publisher(
         writer=SaneHtmlWriter(),
@@ -606,14 +597,14 @@ def render_rst(value):
     return pub.writer.parts.get('body').strip()
 
 def hyphenate(value, enable=None, lang=None):
-    if enable is None: enable = enable_hyphenation
-    if lang is None: lang = hyphenation_lang
+    if enable is None: enable = settings['M_HTMLSANITY_HYPHENATION']
+    if lang is None: lang = settings['DEFAULT_LANG']
     if not enable: return value
     pyphen_ = pyphen.Pyphen(lang=lang)
     return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '&shy;'), str(value))
 
 def dehyphenate(value, enable=None):
-    if enable is None: enable = enable_hyphenation
+    if enable is None: enable = settings['M_HTMLSANITY_HYPHENATION']
     if not enable: return value
     return value.replace('&shy;', '')
 
@@ -624,7 +615,7 @@ def expand_link_fn(link, content, fn):
     link_regex = r"""^
         (?P<markup>)(?P<quote>)
         (?P<path>{0}(?P<value>.*))
-        $""".format(intrasite_link_regex)
+        $""".format(settings['INTRASITE_LINK_REGEX'])
     links = re.compile(link_regex, re.X)
     return links.sub(
         lambda m: fn(content.get_siteurl(), m),
@@ -710,7 +701,7 @@ def expand_links(text, content):
 # To be consistent with both what Pelican does now with '/'.join(SITEURL, url)
 # and with https://github.com/getpelican/pelican/pull/2196
 def format_siteurl(url):
-    return urljoin(siteurl + ('/' if not siteurl.endswith('/') else ''), url)
+    return urljoin(settings['SITEURL'] + ('/' if not settings['SITEURL'].endswith('/') else ''), url)
 
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
@@ -727,14 +718,11 @@ def configure_pelican(pelicanobj):
     else:
         pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
 
-    global enable_hyphenation, smart_quotes, hyphenation_lang, \
-        docutils_settings, intrasite_link_regex, siteurl
-    enable_hyphenation = pelicanobj.settings.get('M_HTMLSANITY_HYPHENATION', False)
-    smart_quotes = pelicanobj.settings.get('M_HTMLSANITY_SMART_QUOTES', False)
-    hyphenation_lang = pelicanobj.settings['DEFAULT_LANG']
-    docutils_settings = pelicanobj.settings['DOCUTILS_SETTINGS']
-    intrasite_link_regex = pelicanobj.settings['INTRASITE_LINK_REGEX']
-    siteurl = pelicanobj.settings['SITEURL']
+    global settings
+    settings['M_HTMLSANITY_HYPHENATION'] = pelicanobj.settings.get('M_HTMLSANITY_HYPHENATION', False)
+    settings['M_HTMLSANITY_SMART_QUOTES'] = pelicanobj.settings.get('M_HTMLSANITY_SMART_QUOTES', False)
+    for i in 'DEFAULT_LANG', 'DOCUTILS_SETTINGS', 'INTRASITE_LINK_REGEX', 'SITEURL':
+        settings[i] = pelicanobj.settings[i]
 
 def add_reader(readers):
     # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2163
