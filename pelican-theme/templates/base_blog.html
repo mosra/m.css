@@ -14,25 +14,25 @@
 {% if article and article.cover %}
   <nav class="m-navpanel m-container">
     <div class="m-row">
-      <div class="{% if M_SHOW_AUTHOR_LIST %}m-col-s-4{% else %}m-col-m-4 m-push-m-2 m-col-s-6{% endif %}">
+      <div class="m-col-s-4 m-col-l-2 {% if M_SHOW_AUTHOR_LIST %}m-push-l-1{% else %}m-push-s-2 m-push-l-3{% endif %}">
         <h3>Cate&shy;gories</h3>
-        <ol class="m-block-bar-m">
+        <ol class="m-block-bar-s">
           {% for cat, null in categories %}
           <li><a href="{{ cat.url|format_siteurl }}">{{ cat }}</a></li>
           {% endfor %}
         </ol>
       </div>
       {% if M_SHOW_AUTHOR_LIST %}
-      <div class="m-col-s-4">
+      <div class="m-col-s-4 m-col-l-2 m-push-l-3">
         <h3>Authors</h3>
-        <ol class="m-block-bar-m">
+        <ol class="m-block-bar-s">
           {% for author, null in authors %}
           <li><a href="{{ author.url|format_siteurl }}">{{ author }}</a></li>
           {% endfor %}
         </ol>
       </div>
       {% endif %}
-      <div class="{% if M_SHOW_AUTHOR_LIST %}m-col-s-4{% else %}m-col-m-4 m-push-m-2 m-col-s-6{% endif %}">
+      <div class="m-col-s-4 m-col-l-2 {% if M_SHOW_AUTHOR_LIST %}m-push-l-5{% else %}m-push-s-2 m-push-l-5{% endif %}">
         <h3>Tag cloud</h3>
         <ul class="m-tagcloud">
           {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
