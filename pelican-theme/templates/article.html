@@ -69,7 +69,8 @@
     <footer class="m-container">
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopadb">
-          <p>Posted {% if article.authors %}by {% for author in article.authors %}<a href="{{ author.url|format_siteurl }}">{{ author }}</a>{% endfor %}{% endif %} on <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time> in <a href="{{ article.category.url|format_siteurl }} ">{{ article.category }}</a>{% if article.modified %}; <span class="m-text m-success">updated <time datetime="{{ article.modified.isoformat() }}">{{ article.locale_modified }}</time></span>{% endif %}.{% if article.tags %} Tags: {% for tag in article.tags %}<a href="{{ tag.url|format_siteurl }}">{{ tag }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.{% endif %}</p>
+          {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
+          {{ footer()|indent(10) }}
         </div>
       </div>
     </footer>
@@ -82,8 +83,10 @@
 <!-- content -->
 {{ article.content -}}
 <!-- /content -->
-      {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
-      {{ footer()|indent(6) }}
+      <footer>
+        {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
+        {{ footer()|indent(8) }}
+      </footer>
     </article>
     {% endif %}
 {% endblock %}

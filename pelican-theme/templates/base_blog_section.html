@@ -18,8 +18,10 @@
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
         {{ header()|indent(8) }}
-        {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
-        {{ footer()|indent(8) }}
+        <footer>
+          {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
+          {{ footer()|indent(10) }}
+        </footer>
       </article>
       {% endfor %}
       {% if articles_page.has_other_pages() %}
