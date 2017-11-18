@@ -70,66 +70,69 @@ the color style as well. Text and links always have the default color, except
 for :css:`.m-block.m-dim`. It's also possible to have a block without the
 border, just add :css:`.m-flat` class to it.
 
+It's recommended to use the :html:`<aside>` element to highlight the semantics,
+but the CSS class can be used on any block element.
+
 .. code-figure::
 
     .. code:: html
 
-        <div class="m-block m-default">
+        <aside class="m-block m-default">
           <h3>Default block</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices
           a erat eu suscipit. <a href="#">Link.</a>
-        </div>
+        </aside>
 
     .. raw:: html
 
         <div class="m-row">
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-default">
+            <aside class="m-block m-default">
               <h3>Default block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-primary">
+            <aside class="m-block m-primary">
               <h3>Primary block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-success">
+            <aside class="m-block m-success">
               <h3>Success block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-warning">
+            <aside class="m-block m-warning">
               <h3>Warning block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-danger">
+            <aside class="m-block m-danger">
               <h3>Danger block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-info">
+            <aside class="m-block m-info">
               <h3>Info block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-dim">
+            <aside class="m-block m-dim">
               <h3>Dim block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-block m-flat">
+            <aside class="m-block m-flat">
               <h3>Flat block</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
         </div>
 
@@ -145,65 +148,68 @@ Besides notes, there is a frame element defined by :css:`.m-frame`, which just
 wraps your content in a slightly rounded border. No color classes apply to a
 frame.
 
+Like with blocks, tt's recommended to use the :html:`<aside>` element for
+semantic purposes, but the CSS classes can be used on any block element.
+
 .. code-figure::
 
     .. code:: html
 
-        <div class="m-note m-success">
+        <aside class="m-note m-success">
           <h3>Success note</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-        </div>
+        </aside>
 
     .. raw:: html
 
         <div class="m-row">
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-default">
+            <aside class="m-note m-default">
               <h3>Default note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-primary">
+            <aside class="m-note m-primary">
               <h3>Primary note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-success">
+            <aside class="m-note m-success">
               <h3>Success note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-warning">
+            <aside class="m-note m-warning">
               <h3>Warning note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-danger">
+            <aside class="m-note m-danger">
               <h3>Danger note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-info">
+            <aside class="m-note m-info">
               <h3>Info note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-note m-dim">
+            <aside class="m-note m-dim">
               <h3>Dim note</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <div class="m-frame">
+            <aside class="m-frame">
               <h3>Frame</h3>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
-            </div>
+            </aside>
           </div>
         </div>
 
