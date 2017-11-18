@@ -158,7 +158,8 @@ add a thinner subtitle.
 
 To save vertical space on small screens, it's possible to split the navbar
 contents into two (or more) columns using standard m.css
-`grid functionality <{filename}/css/grid.rst>`_:
+`grid functionality <{filename}/css/grid.rst>`_. For better accessibility,
+specify the start index on the second :html:`<ol>` element.
 
 .. code:: html
     :hl_lines: 7 8 9 10 11 12 13 14 15 16 17 18 19
@@ -177,7 +178,7 @@ contents into two (or more) columns using standard m.css
                 <li><a href="#">Showcase</a></li>
                 <li><a href="#">Download</a></li>
               </ol>
-              <ol class="m-col-t-6 m-col-m-none">
+              <ol class="m-col-t-6 m-col-m-none" start="4">
                 <li><a href="#">Blog</a></li>
                 <li><a href="#">Contact</a></li>
               </ol>
@@ -211,7 +212,7 @@ appear as an indented sub-list.
                 <li><a href="#">Showcase</a></li>
                 <li><a href="#">Download</a></li>
               </ol>
-              <ol class="m-col-t-6 m-col-m-none">
+              <ol class="m-col-t-6 m-col-m-none" start="4">
                 <li>
                   <a href="#">Blog</a>
                   <ol>

@@ -45,7 +45,8 @@
             </li>
             {% endfor %}
           </ol>
-          <ol class="m-col-t-6 m-col-m-none">
+          {% set start = M_LINKS_NAVBAR1|length + 1 %}
+          <ol class="m-col-t-6 m-col-m-none" start="{{ start }}">
             {% for title, link, slug, sub in M_LINKS_NAVBAR2 %}
             <li>
               <a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
