@@ -136,6 +136,35 @@ but the CSS class can be used on any block element.
           </div>
         </div>
 
+`Badges`_
+=========
+
+Badges are blocks together with an avatar, containing for example info about
+the author of given article. Simply add :css:`.m-badge` to your colored block
+element and put an :html:`<img>` element with the avatar as the first child.
+
+.. code-figure::
+
+    .. code:: html
+
+        <div class="m-block m-badge m-success">
+          <img src="author.jpg" alt="The Author" />
+          <h3>About the author</h3>
+          <p><a href="#">The Author</a> is ...</p>
+        </div>
+
+    .. raw:: html
+
+        <div class="m-block m-badge m-success">
+          <img src="{filename}/static/mosra.jpg" alt="The Author" />
+          <h3>About the author</h3>
+          <p><a href="http://blog.mosra.cz">The Author</a> is not really
+          smiling at you from this avatar. Sorry about that. He knows that and
+          he promises to improve. Stalk him
+          <a href="https://twitter.com/czmosra">on Twitter</a> if you want to
+          get notified when he gets a better avatar.</p>
+        </div>
+
 `Notes, frame`_
 ===============
 

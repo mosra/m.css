@@ -643,6 +643,26 @@ dl.m-diary dd {
   padding: 0.9375rem 0.9375rem 0.9375rem 0.75rem;
 }
 
+/* Badge */
+.m-block.m-badge::after {
+  content: ' ';
+  display: block;
+  clear: both;
+}
+.m-block.m-badge h3 {
+  margin-left: 5rem;
+}
+.m-block.m-badge p {
+  margin-left: 5rem;
+  text-indent: 0;
+}
+.m-block.m-badge img {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2rem;
+  float: left;
+}
+
 /* Button */
 a.m-button {
   display: inline-block;

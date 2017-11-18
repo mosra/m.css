@@ -82,6 +82,30 @@ Blocks
       </div>
     </div>
 
+Badge
+=====
+
+Badge with lots of text and less text:
+
+.. raw:: html
+
+    <div class="m-block m-badge m-primary">
+      <img src="{filename}/static/mosra.jpg" alt="The Author" />
+      <h3>About the author</h3>
+      <p><a href="#">The Author</a> is lorem ipsum dolor sit amet, consectetur
+      adipiscing elit. Aenean id elit posuere, consectetur magna congue,
+      sagittis est. Pellentesque est neque, aliquet nec consectetur in, mattis
+      ac diam. Aliquam placerat justo ut purus interdum, ac placerat lacus
+      consequat. Mauris id suscipit mauris, in scelerisque lectus.</p>
+    </div>
+
+    <div class="m-block m-badge m-dim">
+      <img src="{filename}/static/mosra.jpg" alt="The Author" />
+      <h3>About the author</h3>
+      <p><a href="#">The Author</a> is lorem ipsum dolor sit amet, consectetur
+      adipiscing elit.</p>
+    </div>
+
 Notes, frame
 ============
 
