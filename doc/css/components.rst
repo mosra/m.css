@@ -863,7 +863,7 @@ is simple:
 
 .. code:: sh
 
-    echo "$$ a^2 = b^2 + c^2 $$" | python pelican-plugins/latex2svg.py > formula.svg
+    echo "$$ a^2 = b^2 + c^2 $$" | python pelican-plugins/m/latex2svg.py > formula.svg
 
 The ``formula.svg`` file will then contain the rendered formula, which with
 some minor patching (removing the XML preamble etc.) can be pasted directly
