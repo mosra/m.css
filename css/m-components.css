@@ -1244,6 +1244,8 @@ article section:target figure.m-code-figure {
 .m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   border-color: var(--line-color);
 }
+.m-container-inflatable section:target > figure.m-code-figure::before,
+.m-container-inflatable section:target section > figure.m-code-figure::before,
 .m-container-inflatable section:target > .m-note.m-default,
 .m-container-inflatable section:target section > .m-note.m-default {
   border-left-color: var(--line-color);
@@ -1275,12 +1277,9 @@ article section:target figure.m-code-figure {
 
 /* Code block (uses Pygments CSS classes) */
 pre.m-code span.hll {
-  border-color: var(--line-color);
   margin-left: -1.0rem;
   margin-right: -1.0rem;
-  border-left-style: solid;
-  border-left-width: 0.25rem;
-  padding-left: 0.75rem;
+  padding-left: 1.0rem;
 }
 pre.m-code.m-inverted {
   color: var(--code-inverted-color);
