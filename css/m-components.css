@@ -668,6 +668,21 @@ a.m-button .m-small:last-child {
   font-size: 0.854rem;
 }
 
+/* Label */
+.m-label {
+  border-radius: var(--border-radius);
+  font-size: 75%;
+  font-weight: normal;
+  padding: 0.125rem 0.25rem;
+  vertical-align: 7.5%;
+}
+.m-label.m-flat {
+  border-width: 0.0625rem;
+  border-style: solid;
+  border-color: var(--dim-color);
+  padding: 0.0625rem 0.1875rem;
+}
+
 /* Tables */
 table.m-table {
   border-collapse: collapse;
@@ -885,28 +900,28 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   color: var(--dim-filled-link-active-color);
 }
 
-/* Colored text */
-.m-text.m-default { color: var(--default-color); }
-.m-text.m-primary { color: var(--primary-color); }
-.m-text.m-success { color: var(--success-color); }
-.m-text.m-warning { color: var(--warning-color); }
-.m-text.m-danger { color: var(--danger-color); }
-.m-text.m-info { color: var(--info-color); }
-.m-text.m-dim { color: var(--dim-color); }
+/* Colored text, flat label */
+.m-text.m-default, .m-label.m-flat.m-default { color: var(--default-color); }
+.m-text.m-primary, .m-label.m-flat.m-primary { color: var(--primary-color); }
+.m-text.m-success, .m-label.m-flat.m-success { color: var(--success-color); }
+.m-text.m-warning, .m-label.m-flat.m-warning { color: var(--warning-color); }
+.m-text.m-danger, .m-label.m-flat.m-danger { color: var(--danger-color); }
+.m-text.m-info, .m-label.m-flat.m-info { color: var(--info-color); }
+.m-text.m-dim, .m-label.m-flat.m-dim { color: var(--dim-color); }
 .m-text.m-dim a { color: var(--dim-link-color); }
 .m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
   color: var(--dim-link-active-color);
 }
 
-/* Colored button */
-a.m-button { color: var(--background-color); }
-a.m-button.m-default { background-color: var(--default-color); }
-a.m-button.m-primary { background-color: var(--primary-color); }
-a.m-button.m-success { background-color: var(--success-color); }
-a.m-button.m-warning { background-color: var(--warning-color); }
-a.m-button.m-danger { background-color: var(--danger-color); }
-a.m-button.m-info { background-color: var(--info-color); }
-a.m-button.m-dim { background-color: var(--dim-color); }
+/* Colored button, label */
+a.m-button, .m-label { color: var(--background-color); }
+a.m-button.m-default, .m-label:not(.m-flat).m-default { background-color: var(--default-color); }
+a.m-button.m-primary, .m-label:not(.m-flat).m-primary { background-color: var(--primary-color); }
+a.m-button.m-success, .m-label:not(.m-flat).m-success { background-color: var(--success-color); }
+a.m-button.m-warning, .m-label:not(.m-flat).m-warning { background-color: var(--warning-color); }
+a.m-button.m-danger, .m-label:not(.m-flat).m-danger { background-color: var(--danger-color); }
+a.m-button.m-info, .m-label:not(.m-flat).m-info { background-color: var(--info-color); }
+a.m-button.m-dim, .m-label:not(.m-flat).m-dim { background-color: var(--dim-color); }
 a.m-button.m-default:hover, a.m-button.m-default:focus, a.m-button.m-default:active {
   background-color: var(--default-button-active-color);
 }

@@ -151,6 +151,26 @@ Text
     <p class="m-text m-info">Info text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra imperdiet tortor sed vehicula. <a href="#">Link.</a></p>
     <p class="m-text m-dim">Dim text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra imperdiet tortor sed vehicula. <a href="#">Link.</a></p>
 
+Labels
+======
+
+They should have proper vertical alignment.
+
+.. raw:: html
+
+    <h1>Heading 1 <span class="m-label m-default">label</span> <span class="m-label m-dim">label</span></h1>
+    <h2>Heading 2 <span class="m-label m-primary">label</span> <span class="m-label m-flat m-default">flat</span></h2>
+    <h3>Heading 3 <span class="m-label m-success">label</span> <span class="m-label m-flat m-primary">flat</span></h3>
+    <h4>Heading 4 <span class="m-label m-warning">label</span> <span class="m-label m-flat m-success">flat</span></h4>
+    <h5>Heading 5 <span class="m-label m-danger">label</span> <span class="m-label m-flat m-warning">flat</span></h5>
+    <h6>Heading 6 <span class="m-label m-info">label</span> <span class="m-label m-flat m-danger">flat</span></h6>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span class="m-label m-primary">label</span> <span class="m-label m-flat m-info">flat</span> Vivamus ultrices a erat eu suscipit. Aliquam pharetra imperdiet tortor sed vehicula.</p>
+
+    <p class="m-text m-big">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices <span class="m-label m-success">label</span> <span class="m-label m-flat m-dim">flat</span> a erat eu suscipit. Aliquam pharetra imperdiet tortor sed vehicula.</p>
+
+    <p class="m-text m-small">Lorem ipsum dolor sit amet,  <span class="m-label m-warning">label</span> <span class="m-label m-flat m-info">flat</span> consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra imperdiet tortor sed vehicula.</p>
+
 Tables
 ======
 

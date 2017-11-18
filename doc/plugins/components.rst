@@ -335,3 +335,26 @@ arranging content in three-column grid can be done like this:
         .. container:: m-col-m-4 m-text-center
 
             Right column content.
+
+For inline components, derive a custom role with additional CSS classes. For
+example:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. role:: label-success
+            :class: m-label m-success
+        .. role:: label-danger
+            :class: m-label m-danger
+
+        -   Design direction and project goals :label-success:`done`
+        -   Automated testing :label-danger:`missing`
+
+    .. role:: label-success
+        :class: m-label m-success
+    .. role:: label-danger
+        :class: m-label m-danger
+
+    -   Design direction and project goals :label-success:`done`
+    -   Automated testing :label-danger:`missing`

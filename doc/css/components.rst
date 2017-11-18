@@ -357,6 +357,27 @@ class inside the :html:`<a>` to achieve the following effect:
           </a>
         </div>
 
+`Labels`_
+=========
+
+Use :css:`.m-label` together with a color class to style a label. Combine with
+:css:`.m-flat` to create a less noticeable label. The label size adapts to size
+of surrounding text.
+
+.. code-figure::
+
+    .. code:: html
+
+        <h3>An article <span class="m-label m-success">updated</span></h3>
+        <p class="m-text m-dim">That's how things are now.
+        <span class="m-label m-flat m-primary">clarified</span></p>
+
+    .. raw:: html
+
+        <h3>An article <span class="m-label m-success">updated</span></h3>
+        <p class="m-text m-dim">That's how things are now.
+        <span class="m-label m-flat m-primary">clarified</span></p>
+
 `Tables`_
 =========
 
