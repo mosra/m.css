@@ -122,9 +122,7 @@ m.css math
 
                 Get the Pelican plugin
 
-.. raw:: html
-
-    <div id="demo"></div>
+.. _demo:
 
 Demo time!
 ==========
