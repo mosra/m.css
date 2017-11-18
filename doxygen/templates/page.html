@@ -1,0 +1,38 @@
+{% set navbar_current = 'pages' %}
+{% extends 'base.html' %}
+
+{% block title %}{% set j = joiner(' &raquo; ') %}{% for name, _ in compound.breadcrumb %}{{ j() }}{{ name }}{% endfor %} | {{ super() }}{% endblock %}
+
+{% block main %}
+        <h1>
+          {% for name, target in compound.breadcrumb[:-1] %}
+          <span class="m-breadcrumb"><a href="{{ target }}">{{ name }}</a> &raquo;</span>
+          {% endfor %}
+          {{ compound.breadcrumb[-1][0] }}
+        </h1>
+        {% if compound.brief %}
+        <p>{{ compound.brief }}</p>
+        {% endif %}
+        {% if compound.sections %}
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            {% for id, name, children in compound.sections recursive %}
+            {% if children %}
+            <li>
+              <a href="#{{ id }}">{{ name }}</a>
+              <ul>
+{{ loop(children)|indent(4, true) }}
+              </ul>
+            </li>
+            {% else %}
+            <li><a href="#{{ id }}">{{ name }}</a></li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+{% if compound.description %}
+{{ compound.description }}
+{% endif %}
+{% endblock %}

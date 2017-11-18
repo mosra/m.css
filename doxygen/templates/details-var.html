@@ -1,0 +1,17 @@
+          <section class="m-dox-details" id="{{ var.id }}"><div>
+            <h3>
+              {% if compound.templates != None %}
+              <div class="m-dox-template">
+                {% set j = joiner(', ') %}
+                template&lt;{% for t in compound.templates %}{{ j() }}{{ t.type }} {% if t.name %}{{ t.name }}{% else %}_{{ loop.index }}{% endif %}{% endfor %}&gt;
+              </div>
+              {% endif %}
+              {%+ if var.is_static %}static {% endif %}{{ var.type }} {{ prefix }}<a href="#{{ var.id }}" class="m-dox-self">{{ var.name }}</a>{% if var.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}{% if var.is_constexpr %} <span class="m-label m-primary">constexpr</span>{% endif %}
+              {# the empty line needs to be here to prevent the lines from merging #}
+
+            </h3>
+            {% if var.brief %}
+            <p>{{ var.brief }}</p>
+            {% endif %}
+{{ var.description }}
+          </div></section>

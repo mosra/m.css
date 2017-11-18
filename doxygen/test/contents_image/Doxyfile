@@ -1,0 +1,6 @@
+INPUT                   = input.dox
+IMAGE_PATH              = .
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ compound.name }} example | {{ super() }}{% endblock %}
+
+{% block main %}
+          <h1>{{ compound.name }} <span class="m-thin">example</span></h1>
+          {% if compound.brief %}
+          <p>{{ compound.brief }}</p>
+          {% endif %}
+{% if compound.description %}
+{{ compound.description }}
+{% endif %}
+{% endblock %}

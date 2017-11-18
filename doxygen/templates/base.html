@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}{% endblock %}</title>
+  {% for css in HTML_EXTRA_STYLESHEET %}
+  <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
+  {% endfor %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} <span class="m-thin">{{ PROJECT_BRIEF }}</span>{% endif %}</a>
+      <a id="m-navbar-show" href="#navigation" title="Show navigation" class="m-col-t-3 m-hide-m m-text-right"></a>
+      <a id="m-navbar-hide" href="#" title="Hide navigation" class="m-col-t-3 m-hide-m m-text-right"></a>
+      <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
+        <div class="m-row">
+          <ol class="m-col-t-6 m-col-m-none">
+            <li><a href="pages.html"{% if navbar_current == 'pages' %} id="m-navbar-current"{% endif %}>Pages</a></li>
+            <li><a href="namespaces.html"{% if navbar_current == 'namespaces' %} id="m-navbar-current"{% endif %}>Namespaces</a></li>
+          </ol>
+          <ol class="m-col-t-6 m-col-m-none" start="3">
+            <li><a href="annotated.html"{% if navbar_current == 'annotated' %} id="m-navbar-current"{% endif %}>Classes</a></li>
+            <li><a href="files.html"{% if navbar_current == 'files' %} id="m-navbar-current"{% endif %}>Files</a></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        {% if M_PAGE_HEADER %}
+        {{ M_PAGE_HEADER|replace('{filename}', FILENAME) }}
+        {% endif %}
+{% block main %}
+{% endblock %}
+      </div>
+    </div>
+  </div>
+</article></main>
+<footer><nav>
+  <div class="m-container">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <p>{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}. Created by <a href="http://doxygen.org/">Doxygen</a> {{ DOXYGEN_VERSION }} and <a href="http://mcss.mosra.cz/">m.css</a>.</p>
+      </div>
+    </div>
+  </div>
+</nav></footer>
+</body>
+</html>

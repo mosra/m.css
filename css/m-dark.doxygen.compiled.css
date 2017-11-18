@@ -1,0 +1,174 @@
+/* Generated using `./postprocess.py m-dark.css m-doxygen.css --no-import -o m-dark.doxygen.compiled.css`. Do not edit. */
+
+/*
+    This file is part of m.css.
+
+    Copyright © 2017 Vladimír Vondruš <mosra@centrum.cz>
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+*/
+
+a.m-dox, a.m-dox-self, a.m-dox-external,
+ul.m-dox li.m-dox-expansible > a:first-child, ul.m-dox li.m-dox-collapsible > a:first-child {
+  text-decoration: none;
+}
+a.m-dox, a.m-dox-self {
+  font-weight: bold;
+}
+ul.m-dox li.m-dox-expansible > a:first-child,
+ul.m-dox li.m-dox-collapsible > a:first-child,
+ul.m-dox li.m-dox-expansible > a:first-child:hover,
+ul.m-dox li.m-dox-expansible > a:first-child:focus,
+ul.m-dox li.m-dox-expansible > a:first-child:active,
+ul.m-dox li.m-dox-collapsible > a:first-child:hover,
+ul.m-dox li.m-dox-collapsible > a:first-child:focus,
+ul.m-dox li.m-dox-collapsible > a:first-child:active {
+  color: #dcdcdc;
+}
+a.m-dox-self,
+ul.m-dox li.m-dox-expansible > a:first-child:before,
+ul.m-dox li.m-dox-collapsible > a:first-child:before {
+  color: #a5c9ea;
+}
+a.m-dox-self:hover, a.m-dox-self:focus, a.m-dox-self:active,
+ul.m-dox li.m-dox-expansible > a:first-child:hover::before,
+ul.m-dox li.m-dox-expansible > a:first-child:focus::before,
+ul.m-dox li.m-dox-expansible > a:first-child:active::before,
+ul.m-dox li.m-dox-collapsible > a:first-child:hover::before,
+ul.m-dox li.m-dox-collapsible > a:first-child:focus::before,
+ul.m-dox li.m-dox-collapsible > a:first-child:active::before {
+  color: #dcdcdc;
+}
+h3 a.m-dox-external {
+  font-weight: normal;
+}
+span.m-dox-wrap-bumper {
+  margin-right: -1rem;
+}
+span.m-dox-wrap {
+  padding-left: 1rem;
+  display: inline-block;
+  vertical-align: text-top;
+  white-space: pre-line;
+  max-width: 100%;
+}
+dl.m-dox dd {
+  margin-bottom: 0.5rem;
+}
+ul.m-dox {
+  list-style: none;
+  margin-left:  1.0375rem;
+  padding-left: 0.9rem;
+  border-left-color: #405363;
+  border-left-width: 0.0625rem;
+  border-left-style: solid;
+}
+ul.m-dox li {
+  text-indent: -1rem;
+  padding-left: 1rem;
+}
+ul.m-dox li.m-dox-expansible > ul {
+  display: none;
+}
+ul.m-dox li.m-dox-expansible, ul.m-dox li.m-dox-collapsible {
+  padding-left: 0.6rem;
+}
+ul.m-dox li.m-dox-expansible > ul.m-dox, ul.m-dox li.m-dox-collapsible > ul.m-dox {
+  margin-left: 0.5rem;
+}
+ul.m-dox li.m-dox-expansible > a:first-child:before, ul.m-dox li.m-dox-collapsible > a:first-child:before {
+  background-color: #2f363f;
+  display: inline-block;
+  width: 0.4rem;
+  font-weight: bold;
+}
+ul.m-dox li.m-dox-expansible > a:first-child:before { content: '⊕'; }
+ul.m-dox li.m-dox-collapsible > a:first-child:before { content: '⊖'; }
+h1 .m-dox-template {
+  font-size: 1.3rem;
+  font-weight: normal;
+}
+h3 .m-dox-template {
+  font-size: 1rem;
+  font-weight: normal;
+}
+.m-dox-template, dl.m-dox dd, ul.m-dox li > span.m-dox {
+  color: #747474;
+}
+.m-dox-template a, dl.m-dox dd a, ul.m-dox li > span.m-dox a {
+  color: #acacac;
+}
+.m-dox-template a:hover, .m-dox-template a:focus, .m-dox-template a:active,
+dl.m-dox dd a:hover, dl.m-dox dd a:focus, dl.m-dox dd a:active,
+ul.m-dox li > span.m-dox a:hover, ul.m-dox li > span.m-dox a:focus, ul.m-dox li > span.m-dox a:active {
+  color: #747474;
+}
+article section.m-dox-details > div {
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  position: relative;
+  padding: 1rem;
+}
+article section.m-dox-details > div::before {
+  position: absolute;
+  content: ' ';
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  border-style: solid;
+  border-width: 0.125rem;
+  border-radius: 0.2rem;
+  border-color: #22272e;
+}
+article section.m-dox-details > div > h3:first-child {
+  position: relative;
+  margin: -1rem -1rem 1rem -1rem;
+  padding: 0.5rem 1rem;
+  background-color: #22272e;
+  border-top-left-radius: 0.2rem;
+  border-top-right-radius: 0.2rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+article section.m-dox-details:target {
+  border-color: transparent;
+}
+article section.m-dox-details:target > div {
+  z-index: 1;
+}
+.m-container-inflatable > .m-row > [class*='m-col-'] section.m-dox-details > div {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+.m-container-inflatable section.m-dox-details:target > div > h3:first-child,
+.m-container-inflatable section.m-dox-details:target section > div > h3:first-child {
+  margin-left: -1.0rem;
+  border-left-style: solid;
+  border-left-color: #dcdcdc;
+  border-left-width: 0.25rem;
+  padding-left: 0.75rem;
+}
+.m-container-inflatable section.m-dox-details:target > div::before,
+.m-container-inflatable section-dox-details:target section > div.m::before {
+  border-left-width: 0.25rem;
+  border-left-color: #a5c9ea;
+}

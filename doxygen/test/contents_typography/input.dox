@@ -1,0 +1,43 @@
+/** @mainpage
+
+@section section Page section
+
+> A blockquote.
+
+    Preformatted text.
+
+@subsection subsection Page subsection
+
+-   Unordered
+-   list
+-   of
+    -   nested
+    -   items
+-   and back
+
+@subsubsection subsubsection Sub-sub section
+
+1.  Ordered
+2.  list
+3.  of
+    1.  nested
+    2.  items
+4.  and back
+
+@anchor an-anchor
+
+This is a `typewriter text`, *emphasis* and **bold**. http://google.com and
+[URL](http://google.com). En-dash -- and em-dash ---. Reference to a
+@ref subsection.
+
+*/
+
+/** @page warnings Content that produces warnings
+
+# Markdown heading 1
+
+## Markdown heading 2
+
+### Markdown heading 3
+
+*/

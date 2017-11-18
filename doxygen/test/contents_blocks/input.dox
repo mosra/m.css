@@ -1,0 +1,25 @@
+/** @mainpage
+
+First paragraph containing some content.
+@attention An attention section.
+@see Other section.
+
+Paragraph following the sections.
+
+@note A note.
+
+@bug This is a bug.
+
+@todo Or a TODO.
+
+@deprecated Which is deprecated.
+
+@xrefitem old "Old stuff" "Just old" This is old.
+
+*/
+
+/** @page other Other page
+
+@todo Diffferent TODO
+
+*/

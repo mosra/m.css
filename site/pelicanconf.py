@@ -68,6 +68,7 @@ M_LINKS_NAVBAR2 = [('Pelican plugins', 'plugins/', 'plugins', [
                         ('Images', 'plugins/images/', 'plugins/images'),
                         ('Math and code', 'plugins/math-and-code/', 'plugins/math-and-code'),
                         ('Links', 'plugins/links/', 'plugins/links')]),
+                   ('Doxygen theme', 'doxygen/', 'doxygen', []),
                    ('GitHub', 'https://github.com/mosra/m.css', '', [])]
 
 M_LINKS_FOOTER1 = [('m.css', '/'),
@@ -86,7 +87,9 @@ M_LINKS_FOOTER2 = [('CSS', 'css/'),
 
 M_LINKS_FOOTER3 = [('Pelican', 'pelican/'),
                    ('Writing content', 'pelican/writing-content/'),
-                   ('Theme', 'pelican/theme/')]
+                   ('Theme', 'pelican/theme/'),
+                   ('', ''),
+                   ('Doxygen theme', 'doxygen/')]
 
 M_LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
                    ('HTML sanity', 'plugins/htmlsanity/'),
@@ -122,7 +125,7 @@ PLUGINS = ['m.abbr',
 THEME = '../pelican-theme'
 THEME_STATIC_DIR = 'static'
 M_THEME_COLOR = '#22272e'
-M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&amp;subset=latin-ext',
+M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&subset=latin-ext',
                '/static/m-dark.css',
               #'/static/m-debug.css'
               ]

@@ -1,0 +1,35 @@
+          <section class="m-dox-details" id="{{ define.id }}"><div>
+            <h3>
+              {% set j = joiner(',\n              ') %}
+              <span class="m-dox-wrap-bumper">#define <a href="#{{ define.id }}" class="m-dox-self">{{ define.name }}</a>{% if define.params != None %}(</span><span class="m-dox-wrap">{% for param in define.params %}{{ j() }}{{ param[0] }}{% endfor %}){% endif %}</span>
+            </h3>
+            {% if define.brief %}
+            <p>{{ define.brief }}</p>
+            {% endif %}
+            {% if define.has_param_details or define.return_value %}
+            <table class="m-table m-fullwidth m-flat">
+              {% if define.has_param_details %}
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                {% for name, description in define.params %}
+                <tr>
+                  <td{% if loop.index == 1 %} style="width: 1%"{% endif %}>{{ name }}</td>
+                  <td>{{ description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
+              {% if define.return_value %}
+              <tfoot>
+                <tr>
+                  <th{% if not define.has_param_details %} style="width: 1%"{% endif %}>Returns</th>
+                  <td>{{ define.return_value }}</td>
+                </tr>
+              </tfoot>
+              {% endif %}
+            </table>
+            {% endif %}
+{{ define.description }}
+          </div></section>

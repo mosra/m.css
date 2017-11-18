@@ -1,0 +1,15 @@
+/** @mainpage
+
+@image html tiny.png Alt text
+
+*/
+
+/** @page warnings Images that produce warnings
+
+@image html nonexistent.png Image that doesn't exist.
+
+Image without alt text:
+
+@image html tiny.png
+
+*/

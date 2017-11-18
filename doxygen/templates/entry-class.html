@@ -1,0 +1,8 @@
+            <dt>
+              {% if class.templates != None %}
+              {% set j = joiner(', ') %}
+              <div class="m-dox-template">template&lt;{% for t in class.templates %}{{ j() }}{{ t.type }}{% if t.name %} {{ t.name }}{% endif %}{% if t.default %} = {{ t.default }}{% endif %}{% endfor %}&gt;</div>
+              {% endif %}
+              {{ class.kind }} <a href="{{ class.url }}" class="m-dox">{{ class.name }}</a>
+            </dt>
+            <dd>{{ class.brief }}</dd>

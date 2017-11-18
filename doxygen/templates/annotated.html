@@ -1,0 +1,21 @@
+{% set navbar_current = 'annotated' %}
+{% extends 'base-index.html' %}
+
+{% block main %}
+        <h1>Classes</h2>
+        <ul class="m-dox">
+          {% for i in index.symbols recursive %}
+          {% if i.children %}
+          <li class="m-dox-collapsible{% if loop.depth > M_CLASS_TREE_EXPAND_LEVELS or (i.kind != 'namespace' and M_EXPAND_INNER_TYPES) %} collapsed{% endif %}">
+            <a href="#" onclick="return toggle(this)">{{ i.kind }}</a> <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span>
+            <ul class="m-dox">
+{{ loop(i.children)|indent(4, true) }}
+            </ul>
+          </li>
+          {% else %}
+          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span></li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+{{ super() -}}
+{% endblock %}

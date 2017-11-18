@@ -1,0 +1,10 @@
+INPUT                   =
+FILE_PATTERNS           = *.h *.dox
+RECURSIVE               = YES
+AUTOLINK_SUPPORT        = NO
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
+
+M_FILE_TREE_EXPAND_LEVELS = 2

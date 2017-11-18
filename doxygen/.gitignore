@@ -1,0 +1,5 @@
+__pycache__
+htmlcov
+test/*/html/
+test/*/xml/
+.coverage

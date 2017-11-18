@@ -1,0 +1,5 @@
+INPUT                   = input.dox
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
