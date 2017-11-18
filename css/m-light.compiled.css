@@ -532,6 +532,12 @@ body > header > nav a#m-navbar-brand, body > header > nav a#m-navbar-show, body 
   font-size: 1.125rem;
   line-height: 3rem;
 }
+body > header > nav a#m-navbar-brand .m-thin {
+  font-weight: normal;
+}
+body > header > nav a#m-navbar-show:before, body > header > nav a#m-navbar-hide:before {
+  content:'\2630';
+}
 body > header > nav #m-navbar-collapse {
   padding-bottom: 1rem;
 }
@@ -960,6 +966,24 @@ dl.m-diary dd {
   border-color: #f7e3db;
   padding: 0.9375rem 0.9375rem 0.9375rem 0.75rem;
 }
+.m-block.m-badge::after {
+  content: ' ';
+  display: block;
+  clear: both;
+}
+.m-block.m-badge h3 {
+  margin-left: 5rem;
+}
+.m-block.m-badge p {
+  margin-left: 5rem;
+  text-indent: 0;
+}
+.m-block.m-badge img {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 2rem;
+  float: left;
+}
 a.m-button {
   display: inline-block;
   border-radius: 0.2rem;
@@ -983,6 +1007,19 @@ a.m-button .m-big:first-child {
 a.m-button .m-small:last-child {
   font-size: 0.854rem;
 }
+.m-label {
+  border-radius: 0.2rem;
+  font-size: 75%;
+  font-weight: normal;
+  padding: 0.125rem 0.25rem;
+  vertical-align: 7.5%;
+}
+.m-label.m-flat {
+  border-width: 0.0625rem;
+  border-style: solid;
+  border-color: #bdbdbd;
+  padding: 0.0625rem 0.1875rem;
+}
 table.m-table {
   border-collapse: collapse;
   margin-left: auto;
@@ -991,7 +1028,7 @@ table.m-table {
 div.m-scroll > table.m-table:last-child {
   margin-bottom: 0.0625rem;
 }
-table.m-table tbody tr:hover {
+table.m-table:not(.m-flat) tbody tr:hover {
   background-color: #f7e3db;
 }
 table.m-table th, table.m-table td {
@@ -1190,25 +1227,25 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
                         table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
   color: #949494;
 }
-.m-text.m-default { color: #000000; }
-.m-text.m-primary { color: #cb4b16; }
-.m-text.m-success { color: #31c25d; }
-.m-text.m-warning { color: #c7cf2f; }
-.m-text.m-danger { color: #f60000; }
-.m-text.m-info { color: #2e7dc5; }
-.m-text.m-dim { color: #bdbdbd; }
+.m-text.m-default, .m-label.m-flat.m-default { color: #000000; }
+.m-text.m-primary, .m-label.m-flat.m-primary { color: #cb4b16; }
+.m-text.m-success, .m-label.m-flat.m-success { color: #31c25d; }
+.m-text.m-warning, .m-label.m-flat.m-warning { color: #c7cf2f; }
+.m-text.m-danger, .m-label.m-flat.m-danger { color: #f60000; }
+.m-text.m-info, .m-label.m-flat.m-info { color: #2e7dc5; }
+.m-text.m-dim, .m-label.m-flat.m-dim { color: #bdbdbd; }
 .m-text.m-dim a { color: #c0c0c0; }
 .m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
   color: #949494;
 }
-a.m-button { color: #ffffff; }
-a.m-button.m-default { background-color: #000000; }
-a.m-button.m-primary { background-color: #cb4b16; }
-a.m-button.m-success { background-color: #31c25d; }
-a.m-button.m-warning { background-color: #c7cf2f; }
-a.m-button.m-danger { background-color: #f60000; }
-a.m-button.m-info { background-color: #2e7dc5; }
-a.m-button.m-dim { background-color: #bdbdbd; }
+a.m-button, .m-label { color: #ffffff; }
+a.m-button.m-default, .m-label:not(.m-flat).m-default { background-color: #000000; }
+a.m-button.m-primary, .m-label:not(.m-flat).m-primary { background-color: #cb4b16; }
+a.m-button.m-success, .m-label:not(.m-flat).m-success { background-color: #31c25d; }
+a.m-button.m-warning, .m-label:not(.m-flat).m-warning { background-color: #c7cf2f; }
+a.m-button.m-danger, .m-label:not(.m-flat).m-danger { background-color: #f60000; }
+a.m-button.m-info, .m-label:not(.m-flat).m-info { background-color: #2e7dc5; }
+a.m-button.m-dim, .m-label:not(.m-flat).m-dim { background-color: #bdbdbd; }
 a.m-button.m-default:hover, a.m-button.m-default:focus, a.m-button.m-default:active {
   background-color: #cb4b16;
 }
@@ -1493,6 +1530,8 @@ article section:target figure.m-code-figure {
 .m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   border-color: #f7e3db;
 }
+.m-container-inflatable section:target > figure.m-code-figure::before,
+.m-container-inflatable section:target section > figure.m-code-figure::before,
 .m-container-inflatable section:target > .m-note.m-default,
 .m-container-inflatable section:target section > .m-note.m-default {
   border-left-color: #f7e3db;
@@ -1522,12 +1561,9 @@ article section:target figure.m-code-figure {
   border-left-color: #bdbdbd;
 }
 pre.m-code span.hll {
-  border-color: #f7e3db;
   margin-left: -1.0rem;
   margin-right: -1.0rem;
-  border-left-style: solid;
-  border-left-width: 0.25rem;
-  padding-left: 0.75rem;
+  padding-left: 1.0rem;
 }
 pre.m-code.m-inverted {
   color: rgba(91, 91, 91, 0.33);
