@@ -142,6 +142,10 @@ show the :raw-html:`&#9776;` glyph aligned to the right instead of
 either ``#navigation`` or ``#`` to the page URL, which triggers the
 :css:`#m-navbar-collapse` element to be shown under as a list or hidden again.
 
+Similarly to `headings <{filename}/css/typography.rst#headings>`_ you can wrap
+a part of the :css:`#m-navbar-brand` element in a :css:`.m-thin` CSS class to
+add a thinner subtitle.
+
 .. note-info::
 
     You can change the :css:`#navigation` ID to a different name, if you want,
