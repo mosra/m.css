@@ -200,36 +200,18 @@ Tables
 
 .. raw:: html
 
-    <table class="m-table m-center-t">
-      <caption>Table caption</caption>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Heading</th>
-          <th>Second<br/>heading</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Cell</td>
-          <td>Second cell</td>
-        </tr>
-      </tbody>
-      <tbody>
-        <tr>
-          <th scope="row">2</th>
-          <td>2nd row cell</td>
-          <td>2nd row 2nd cell</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <th>&Sigma;</th>
-          <td>Footer</td>
-          <td>Second<br/>footer</td>
-        </tr>
-      </tfoot>
+    <table class="m-table m-flat">
+      <caption>Flat table (w/o hover effect)</caption>
+      <tr>
+        <th scope="row">1</th>
+        <td>Cell</td>
+        <td>Second cell</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>2nd row cell</td>
+        <td>2nd row 2nd cell</td>
+      </tr>
     </table>
     <div class="m-scroll"><table class="m-table m-fullwidth">
       <caption>Full-width table</caption>

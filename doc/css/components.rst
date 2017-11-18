@@ -412,9 +412,9 @@ of surrounding text.
 
 Use :css:`.m-table` to apply styling to a table. The table is centered by
 default; rows are separated by lines, with :html:`<thead>` and :html:`<tfoot>`
-being separated by a thicker line. Rows are highlighted on hover, :html:`<th>`
-is rendered in bold, all :html:`<th>` and :html:`<td>` are aligned to left
-while table :html:`<caption>` is centered. Example table:
+being separated by a thicker line. The :html:`<th>` element is rendered in
+bold, all :html:`<th>` and :html:`<td>` are aligned to left while table
+:html:`<caption>` is centered. Example table:
 
 .. code-figure::
 
@@ -469,8 +469,6 @@ while table :html:`<caption>` is centered. Example table:
               <td>Cell</td>
               <td>Second cell</td>
             </tr>
-          </tbody>
-          <tbody>
             <tr>
               <th scope="row">2</th>
               <td>2nd row cell</td>
@@ -486,8 +484,10 @@ while table :html:`<caption>` is centered. Example table:
           </tfoot>
         </table>
 
-Similarly to other components, you can color particular :html:`<tr>` or
-:html:`<td>` elements using the color classes from above:
+Rows are highlighted on hover, if you want to disable that, put :css:`.m-flat`
+CSS class on the :html:`<table>` element. Similarly to other components, you
+can color particular :html:`<tr>` or :html:`<td>` elements using the color
+classes from above:
 
 .. raw:: html
 

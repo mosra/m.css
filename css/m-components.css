@@ -712,7 +712,7 @@ table.m-table {
 div.m-scroll > table.m-table:last-child {
   margin-bottom: 0.0625rem;
 }
-table.m-table tbody tr:hover {
+table.m-table:not(.m-flat) tbody tr:hover {
   background-color: var(--line-color);
 }
 table.m-table th, table.m-table td {
