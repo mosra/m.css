@@ -1179,13 +1179,13 @@ article section:target figure.m-code-figure {
 .m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
 .m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
 .m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
-.m-container-inflatable > .m-row > [class*='m-col-'] > pre.m-code,
+.m-container-inflatable > .m-row > [class*='m-col-'] > pre,
 .m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > pre.m-code,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > pre,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure {
   margin-left: -1rem;
   margin-right: -1rem;
@@ -1217,12 +1217,12 @@ article section:target figure.m-code-figure {
 .m-container-inflatable section:target > .m-note,
 .m-container-inflatable section:target > .m-frame,
 .m-container-inflatable section:target > .m-block,
-.m-container-inflatable section:target > pre.m-code,
+.m-container-inflatable section:target > pre,
 .m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
 .m-container-inflatable section:target section > .m-note,
 .m-container-inflatable section:target section > .m-frame,
 .m-container-inflatable section:target section > .m-block,
-.m-container-inflatable section:target section > pre.m-code,
+.m-container-inflatable section:target section > pre,
 .m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   margin-left: -1.0rem;
   border-left-style: solid;
@@ -1237,9 +1237,9 @@ article section:target figure.m-code-figure {
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
 }
-.m-container-inflatable section:target > pre.m-code,
+.m-container-inflatable section:target > pre,
 .m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
-.m-container-inflatable section:target section > pre.m-code,
+.m-container-inflatable section:target section > pre,
 .m-container-inflatable section:target section > figure.m-code-figure > pre:first-child {
   border-color: var(--line-color);
 }
