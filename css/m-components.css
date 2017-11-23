@@ -804,19 +804,18 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   /* No background for default table to keep the row hover */
   color: var(--default-filled-color);
 }
-.m-note.m-primary a:hover, table.m-table tr.m-primary td a:hover, table.m-table td.m-primary a:hover,
-                           table.m-table tr.m-primary th a:hover, table.m-table th.m-primary a:hover,
-.m-note.m-primary a:focus, table.m-table tr.m-primary td a:focus, table.m-table td.m-primary a:focus,
-                           table.m-table tr.m-primary th a:focus, table.m-table th.m-primary a:focus,
-.m-note.m-primary a:active, table.m-table tr.m-primary td a:active, table.m-table td.m-primary a:active,
-                            table.m-table tr.m-primary th a:active, table.m-table th.m-primary a:active {
+.m-note.m-default a:hover, table.m-table tr.m-default td a:hover, table.m-table td.m-default a:hover,
+                           table.m-table tr.m-default th a:hover, table.m-table th.m-default a:hover,
+.m-note.m-default a:focus, table.m-table tr.m-default td a:focus, table.m-table td.m-default a:focus,
+                           table.m-table tr.m-default th a:focus, table.m-table th.m-default a:focus,
+.m-note.m-default a:active, table.m-table tr.m-default td a:active, table.m-table td.m-default a:active,
+                            table.m-table tr.m-default th a:active, table.m-table th.m-default a:active {
   color: var(--default-filled-link-active-color);
 }
 .m-note.m-primary a, table.m-table tr.m-primary td a, table.m-table td.m-primary a,
                      table.m-table tr.m-primary th a, table.m-table th.m-primary a {
   color: var(--default-filled-link-color);
 }
-
 .m-note.m-primary, table.m-table tr.m-primary td, table.m-table td.m-primary,
                    table.m-table tr.m-primary th, table.m-table th.m-primary {
   background-color: var(--primary-filled-background-color);
