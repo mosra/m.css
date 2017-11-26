@@ -22,11 +22,15 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os.path
+
 import docutils
 from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
+from docutils.utils.error_reporting import SafeString, ErrorString, locale_encoding
 from docutils.parsers.rst import Directive, directives
-from docutils import nodes, utils
+import docutils.parsers.rst.directives.misc
+from docutils import io, nodes, utils, statemachine
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
@@ -63,6 +67,88 @@ class Code(Directive):
         pre.append(content)
         return [pre]
 
+class Include(docutils.parsers.rst.directives.misc.Include):
+    def run(self):
+        """
+        Verbatim copy of docutils.parsers.rst.directives.misc.Include.run()
+        that just calls to our Code instead of builtin CodeBlock but otherwise
+        just passes it back to the parent implementation.
+        """
+        if not 'code' in self.options:
+            return docutils.parsers.rst.directives.misc.Include.run(self)
+
+        source = self.state_machine.input_lines.source(
+            self.lineno - self.state_machine.input_offset - 1)
+        source_dir = os.path.dirname(os.path.abspath(source))
+        path = directives.path(self.arguments[0])
+        if path.startswith('<') and path.endswith('>'):
+            path = os.path.join(self.standard_include_path, path[1:-1])
+        path = os.path.normpath(os.path.join(source_dir, path))
+        path = utils.relative_path(None, path)
+        path = nodes.reprunicode(path)
+        encoding = self.options.get(
+            'encoding', self.state.document.settings.input_encoding)
+        e_handler=self.state.document.settings.input_encoding_error_handler
+        tab_width = self.options.get(
+            'tab-width', self.state.document.settings.tab_width)
+        try:
+            self.state.document.settings.record_dependencies.add(path)
+            include_file = io.FileInput(source_path=path,
+                                        encoding=encoding,
+                                        error_handler=e_handler)
+        except UnicodeEncodeError as error:
+            raise self.severe('Problems with "%s" directive path:\n'
+                              'Cannot encode input file path "%s" '
+                              '(wrong locale?).' %
+                              (self.name, SafeString(path)))
+        except IOError as error:
+            raise self.severe('Problems with "%s" directive path:\n%s.' %
+                      (self.name, ErrorString(error)))
+        startline = self.options.get('start-line', None)
+        endline = self.options.get('end-line', None)
+        try:
+            if startline or (endline is not None):
+                lines = include_file.readlines()
+                rawtext = ''.join(lines[startline:endline])
+            else:
+                rawtext = include_file.read()
+        except UnicodeError as error:
+            raise self.severe('Problem with "%s" directive:\n%s' %
+                              (self.name, ErrorString(error)))
+        # start-after/end-before: no restrictions on newlines in match-text,
+        # and no restrictions on matching inside lines vs. line boundaries
+        after_text = self.options.get('start-after', None)
+        if after_text:
+            # skip content in rawtext before *and incl.* a matching text
+            after_index = rawtext.find(after_text)
+            if after_index < 0:
+                raise self.severe('Problem with "start-after" option of "%s" '
+                                  'directive:\nText not found.' % self.name)
+            rawtext = rawtext[after_index + len(after_text):]
+        before_text = self.options.get('end-before', None)
+        if before_text:
+            # skip content in rawtext after *and incl.* a matching text
+            before_index = rawtext.find(before_text)
+            if before_index < 0:
+                raise self.severe('Problem with "end-before" option of "%s" '
+                                  'directive:\nText not found.' % self.name)
+            rawtext = rawtext[:before_index]
+
+        include_lines = statemachine.string2lines(rawtext, tab_width,
+                                                  convert_whitespace=True)
+
+        self.options['source'] = path
+        codeblock = Code(self.name,
+                            [self.options.pop('code')], # arguments
+                            self.options,
+                            include_lines, # content
+                            self.lineno,
+                            self.content_offset,
+                            self.block_text,
+                            self.state,
+                            self.state_machine)
+        return codeblock.run()
+
 def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     set_classes(options)
     classes = ['m-code']
@@ -90,4 +176,5 @@ code.options = {'class': directives.class_option,
 
 def register():
     rst.directives.register_directive('code', Code)
+    rst.directives.register_directive('include', Include)
     rst.roles.register_canonical_role('code', code)

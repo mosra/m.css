@@ -191,6 +191,23 @@ option to highlight lines; if you want to add additional CSS classes, use the
             return 0;
         }
 
+The builtin `include directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#include>`_
+is also patched to use the improved code directive. Simply specify external
+code snippets filename and set the language using the :rst:`:code:` option.
+All options of the :rst:`.. code::` directive are supported as well.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. include:: snippet.cpp
+            :code: c++
+            :start-line: 2
+
+    .. include:: math-and-code-snippet.cpp
+        :code: c++
+        :start-line: 2
+
 For inline code highlighting, use :rst:`:code:` interpreted text role. To
 specify which language should be highlighted, derive a custom role from it:
 
