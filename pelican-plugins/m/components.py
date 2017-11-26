@@ -167,18 +167,21 @@ class CodeFigure(rst.Directive):
     has_content = True
     option_spec = {'class': directives.class_option}
 
-    style_class = ''
+    style_class = 'm-code-figure'
 
     def run(self):
         set_classes(self.options)
 
         text = '\n'.join(self.content)
         figure_node = nodes.figure(text, **self.options)
-        figure_node['classes'] += ['m-code-figure', self.style_class]
+        figure_node['classes'] += [self.style_class]
 
         self.state.nested_parse(self.content, self.content_offset,
                                 figure_node)
         return [figure_node]
+
+class ConsoleFigure(CodeFigure):
+    style_class = 'm-console-figure'
 
 class Text(rst.Directive):
     has_content = True
@@ -308,6 +311,7 @@ def register():
 
     rst.directives.register_directive('frame', Frame)
     rst.directives.register_directive('code-figure', CodeFigure)
+    rst.directives.register_directive('console-figure', ConsoleFigure)
 
     rst.directives.register_directive('text-default', DefaultText)
     rst.directives.register_directive('text-primary', PrimaryText)

@@ -24,6 +24,8 @@
 
 @import url('m-grid.css');
 @import url('m-components.css');
+/* TODO: pygments-light.css */
+@import url('pygments-console.css');
 
 :root {
   /* Text properties */
@@ -53,6 +55,7 @@
   --code-color: #5b5b5b;
   --code-inverted-color: rgba(91, 91, 91, 0.33);
   --code-background-color: #fbf0ec;
+  --console-background-color: #000000;
 
   /* Header */
   --header-border-width: 0.25rem 0 0 0;

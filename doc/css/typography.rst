@@ -293,7 +293,7 @@ will have negative margin to make its contents aligned with surrounding text.
 .. note-info::
 
     The Components page has additional information about
-    `code blocks styling <{filename}/css/components.rst#code-blocks>`_.
+    `code block styling <{filename}/css/components.rst#code>`_.
 
 `Inline elements`_
 ==================

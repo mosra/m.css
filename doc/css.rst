@@ -49,12 +49,14 @@ CSS. Download them below or :gh:`grab the whole Git repository <mosra/m.css>`:
 -   :gh:`m-dark.css <mosra/m.css$master/css/m-dark.css>` or
     :gh:`m-light.css <mosra/m.css$master/css/m-light.css>`
 
-In addition to the above, if you want to present highlighted code snippets on
-your website, there's also a builtin style for `Pygments <http://pygments.org/>`_,
-matching m.css themes:
+In addition to the above, if you want to present highlighted code snippets (or
+colored terminal output) on your website, there's also a builtin style for
+`Pygments <http://pygments.org/>`_, matching m.css themes:
 
 -   :gh:`pygments-dark.css <mosra/m.css$master/css/pygments-dark.css>`,
     generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-dark.py>`
+-   :gh:`pygments-console.css <mosra/m.css$master/css/pygments-console.css>`,
+    generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-console.py>`
 
 Once you have the files, include them in your HTML markup. The top-level
 ``m-dark.css`` / ``m-light.css`` file includes the other via CSS :css:`@import`
@@ -87,7 +89,7 @@ to include a proper :html:`<meta>` tag. The HTML5 DOCTYPE is also required.
     :css:`@import` statements. Because of that, the builtin themes provide
     a ``*.compiled.css`` versions that are *post*\ processed without CSS
     variables or :css:`@import` statements. The compiled version includes also
-    the Pygments style, all combined in one file:
+    the code and console Pygments style, all combined in one file:
 
     -   :gh:`m-dark.compiled.css <mosra/m.css$master/css/m-dark.compiled.css>`
         (:filesize:`{filename}/../css/m-dark.compiled.css`,

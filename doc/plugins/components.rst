@@ -174,6 +174,9 @@ additional CSS classes.
 
         And a resulting output.
 
+Use :rst:`.. console-figure::` to denote code figure styled for a
+`console listing <{filename}/css/components.rst#colored-terminal-output>`_.
+
 `Text`_
 =======
 

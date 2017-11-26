@@ -187,3 +187,12 @@ Flat code figure:
         snippet
 
     And a resulting output.
+
+Console figure:
+
+.. console-figure::
+
+    .. include:: math-and-code-console.ansi
+        :code: ansi
+
+    And a description of that illegal crackery that's done above.

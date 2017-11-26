@@ -815,9 +815,44 @@ instead of :html:`<pre>`:
 .. note-success::
 
     To make your life easier, m.css provides a
-    `Pelican plugin <{filename}/plugins/math-and-code.rst#code>`__
-    that integrates Pygments code highlighting as a :abbr:`reST <reStructuredText>`
+    `Pelican plugin <{filename}/plugins/math-and-code.rst#code>`__ that
+    integrates Pygments code highlighting as a :abbr:`reST <reStructuredText>`
     directive.
+
+`Colored terminal output`_
+==========================
+
+Besides code, it's also possible to "highlight" ANSI-colored terminal output.
+For that, m.css provides a custom Pygments lexer that's together with
+`pygments-console.css <{filename}/css.rst>`_ able to detect and highlight the
+basic 4-bit color codes (8 foreground colors in either normal or bright
+version). Download the :gh:`ansilexer.py <mosra/m.css$master/pelican-plugins/m/ansilexer.py>`
+file or use it directly from your Git clone of m.css. Example usage:
+
+.. code:: sh
+
+    ls -C --color=always | pygmentize -l pelican-plugins/m/ansilexer.py:AnsiLexer -x -f html -O nowrap
+
+Wrap the HTML output in either :html:`<pre class="m-console">` for a block
+listing or :html:`<code class="m-console">` for inline listing. The output
+might then look similarly to this:
+
+.. code-figure::
+
+    .. code:: html
+
+        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">pelican-plugins</span>  README.rst
+        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>    <span class="g g-AnsiBrightBlue">site</span></pre>
+
+    .. raw:: html
+
+        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">pelican-plugins</span>  README.rst
+        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>    <span class="g g-AnsiBrightBlue">site</span></pre>
+
+.. note-success::
+
+    The Pelican plugin mentioned above is able to do
+    `colored console highlighting as well <{filename}/plugins/math-and-code.rst#colored-terminal-output>`_.
 
 `Code figure`_
 ==============
@@ -852,6 +887,10 @@ bit of a figure inception shown here):
         snippet</pre>
           And a resulting output.
         </figure>
+
+It's also possible to have matching border for a console output. Just use
+:css:`.m-console-figure` instead of :css:`.m-code-figure` on the :html:`<figure>`
+element.
 
 `Math`_
 =======

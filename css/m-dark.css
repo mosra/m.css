@@ -25,6 +25,7 @@
 @import url('m-grid.css');
 @import url('m-components.css');
 @import url('pygments-dark.css');
+@import url('pygments-console.css');
 
 :root {
   /* Text properties */
@@ -56,6 +57,7 @@
   --code-color: #e6e6e6;
   --code-inverted-color: rgba(230, 230, 230, 0.33);
   --code-background-color: #22272e;
+  --console-background-color: #000000;
 
   /* Header */
   --header-border-width: 0 0 0.25rem 0;

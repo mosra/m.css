@@ -234,3 +234,24 @@ specify which language should be highlighted, derive a custom role from it:
     With the :cmake:`add_executable(foo bar.cpp)` CMake command you can create
     an executable from a file that contains just :cpp:`int main() { return 666; }`
     and nothing else.
+
+`Colored terminal output`_
+--------------------------
+
+Use the ``ansi`` pseudo-language for highlighting
+`colored terminal output <{filename}/css/components.rst#colored-terminal-output>`_.
+The plugin will take care of the rest like using the custom Pygments lexer and
+assigning a proper CSS class. Because ANSI escape codes might cause problems
+with some editors and look confusing when viewed via :sh:`git diff` on the
+terminal, it's best to have the listings in external files and use
+:rst:`.. include::`:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. include:: console.ansi
+            :code: ansi
+
+    .. include:: math-and-code-console.ansi
+        :code: ansi

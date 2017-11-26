@@ -114,6 +114,7 @@ If you want to modify the Pygments style, it's a bit more involved. You need to
 edit the ``*.py`` file instead of the ``*.css``:
 
 -   :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-dark.py>`
+-   :gh:`pygments-console.py <mosra/m.css$master/css/pygments-console.py>`
 
 After making changes, copy it somewhere so Pygments can load it as a style and
 then generate a CSS file out of it:
@@ -122,6 +123,9 @@ then generate a CSS file out of it:
 
     sudo cp pygments-dark.py /usr/lib/python3.6/site-packages/pygments/styles/dark.py
     pygmentize -f html -S dark -a .m-code > pygments-dark.css
+
+    sudo cp pygments-console.py /usr/lib/python3.6/site-packages/pygments/styles/console.py
+    pygmentize -f html -S console -a .m-console > pygments-console.css
 
 .. note-success::
 

@@ -620,6 +620,8 @@ Without link or caption:
 `Code figure`_
 ==============
 
+.. don't remove the header link, needed for testing!
+
 A flat code figure:
 
 .. raw:: html
@@ -641,4 +643,15 @@ should not affect it.
         code
     snippet</pre>
         <pre>And a resulting output.</pre>
+    </figure>
+
+Console figure:
+
+.. raw:: html
+
+    <figure class="m-console-figure">
+        <pre class="m-console">Some
+        console
+    output</pre>
+        And a description of that illegal crackery that's done above.
     </figure>

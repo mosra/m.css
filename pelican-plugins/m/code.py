@@ -34,7 +34,34 @@ from docutils import io, nodes, utils, statemachine
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
-from pygments.lexers import TextLexer, get_lexer_by_name
+from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+from . import ansilexer
+
+def _highlight(code, language, options):
+    # Use our own lexer for ANSI
+    if language == 'ansi':
+        lexer = ansilexer.AnsiLexer()
+    else:
+        try:
+            lexer = get_lexer_by_name(language)
+        except ValueError:
+            logger.warning("No lexer found for language '{}', code highlighting disabled".format(language))
+            lexer = TextLexer()
+
+    if (isinstance(lexer, BashSessionLexer) or
+        isinstance(lexer, ansilexer.AnsiLexer)):
+        class_ = 'm-console'
+    else:
+        class_ = 'm-code'
+
+    formatter = HtmlFormatter(nowrap=True, **options)
+    parsed = highlight(code, lexer, formatter).strip()
+    return class_, parsed
 
 class Code(Directive):
     required_arguments = 1
@@ -48,21 +75,17 @@ class Code(Directive):
 
     def run(self):
         self.assert_has_content()
-        set_classes(self.options)
 
-        classes = ['m-code']
+        set_classes(self.options)
+        classes = []
         if 'classes' in self.options:
             classes += self.options['classes']
             del self.options['classes']
 
-        try:
-            lexer = get_lexer_by_name(self.arguments[0])
-        except ValueError:
-            lexer = TextLexer()
-        formatter = HtmlFormatter(nowrap=True, **self.options)
-        parsed = highlight('\n'.join(self.content), lexer, formatter)
+        class_, highlighted = _highlight('\n'.join(self.content), self.arguments[0], self.options)
+        classes += [class_]
 
-        content = nodes.raw('', parsed, format='html')
+        content = nodes.raw('', highlighted, format='html')
         pre = nodes.literal_block('', classes=classes)
         pre.append(content)
         return [pre]
@@ -151,22 +174,20 @@ class Include(docutils.parsers.rst.directives.misc.Include):
 
 def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     set_classes(options)
-    classes = ['m-code']
+    classes = []
     if 'classes' in options:
         classes += options['classes']
         del options['classes']
 
     # Not sure why language is duplicated in classes?
     language = options.get('language', '')
+    del options['language']
     if language in classes: classes.remove(language)
-    try:
-        lexer = get_lexer_by_name(language)
-    except ValueError:
-        lexer = TextLexer()
-    formatter = HtmlFormatter(nowrap=True)
-    parsed = highlight(utils.unescape(text), lexer, formatter).strip()
 
-    content = nodes.raw('', parsed, format='html')
+    class_, highlighted = _highlight(utils.unescape(text), language, options)
+    classes += [class_]
+
+    content = nodes.raw('', highlighted, format='html')
     node = nodes.literal(rawtext, '', classes=classes, **options)
     node.append(content)
     return [node], []
