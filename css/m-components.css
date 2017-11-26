@@ -540,13 +540,13 @@ div.m-scroll {
 .m-fullwidth {
   width: 100%;
 }
-.m-text-center, .m-text-center.m-noindent {
+.m-text-center, .m-text-center.m-noindent, table.m-table th.m-text-center {
   text-align: center;
 }
-.m-text-left, .m-text-left.m-noindent {
+.m-text-left, .m-text-left.m-noindent, table.m-table th.m-text-left {
   text-align: left;
 }
-.m-text-right, .m-text-right.m-noindent {
+.m-text-right, .m-text-right.m-noindent, table.m-table th.m-text-right {
   text-align: right;
 }
 .m-text.m-small {
