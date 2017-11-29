@@ -50,6 +50,28 @@ except ImportError:
 settings = {}
 words_re = re.compile("""\w+""", re.UNICODE|re.X)
 
+# TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2256
+# is released
+pelican371_default_lang_patch = False
+
+def extract_document_language(document):
+    # Take the one from settings as default
+    # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2256
+    # is released
+    if pelican371_default_lang_patch:
+        language = settings['DEFAULT_LANG']
+    else:
+        language = document.settings.language_code
+
+    # Then try to find the :lang: metadata option
+    for field in document.traverse(nodes.field):
+        assert isinstance(field[0], nodes.field_name)
+        assert isinstance(field[1], nodes.field_body)
+        # field_body -> paragraph -> text
+        if field[0][0] == 'lang': return str(field[1][0][0])
+
+    return language
+
 class SmartQuotes(docutils.transforms.universal.SmartQuotes):
     """Smart quote transform
 
@@ -74,7 +96,7 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
             alternative = False
         # print repr(alternative)
 
-        document_language = self.document.settings.language_code
+        document_language = extract_document_language(self.document)
 
         # "Educate" quotes in normal text. Handle each block of text
         # (TextElement node) as a unit to keep context around inline nodes:
@@ -141,7 +163,7 @@ class Pyphen(Transform):
         if not settings['M_HTMLSANITY_HYPHENATION']:
             return
 
-        document_language = self.document.settings.language_code
+        document_language = extract_document_language(self.document)
 
         pyphen_for_lang = {}
 
@@ -581,6 +603,7 @@ def render_rst(value):
     extra_params = {'initial_header_level': '2',
                     'syntax_highlight': 'short',
                     'input_encoding': 'utf-8',
+                    'language_code': settings['DEFAULT_LANG'],
                     'exit_status_level': 2,
                     'embed_stylesheet': False}
     if settings['DOCUTILS_SETTINGS']:
@@ -710,6 +733,15 @@ def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['format_siteurl'] = format_siteurl
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
     pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
+
+    # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2256
+    # is released
+    reader = RstReader(pelicanobj.settings)
+    pub = reader._get_publisher(os.devnull)
+    if pub.settings.language_code != pelicanobj.settings['DEFAULT_LANG']:
+        logger.warning("Unpatched Pelican <= 3.7.1 detected, monkey-patching for DEFAULT_LANG-aware reST parsing")
+        global pelican371_default_lang_patch
+        pelican371_default_lang_patch = True
 
     # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2164
     # (or the _link_replacer part of it) is released

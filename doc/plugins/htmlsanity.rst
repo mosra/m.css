@@ -143,10 +143,11 @@ on top. See for yourself:
 
     *"Autres temps, autres mœurs"*
 
-The default language is of course taken from the standard :py:`DEFAULT_LANG`
-option, which defaults to :py:`'en'`. This feature is controlled by the
-:py:`M_HTMLSANITY_SMART_QUOTES` option, which, similarly to the builtin
-:py:`TYPOGRIFY` option, defaults to :py:`False`.
+The default language is taken from the standard :py:`DEFAULT_LANG` option,
+which defaults to :py:`'en'`, and can be also overriden on per-page or
+per-article basis using the :rst:`:lang:` metadata option. This feature is
+controlled by the :py:`M_HTMLSANITY_SMART_QUOTES` option, which, similarly to
+the builtin :py:`TYPOGRIFY` option, defaults to :py:`False`.
 
 .. note-warning::
 
@@ -214,8 +215,10 @@ that are candidates for a word break:
     <p lang="fr">an&shy;ti&shy;cons&shy;ti&shy;tu&shy;tion&shy;nel&shy;le&shy;ment</p>
 
 Thanks to Unicode magic this is either hidden or converted to a real hyphen and
-*doesn't* break search or SEO. This feature is controlled by the
-:py:`M_HTMLSANITY_HYPHENATION` option, which also defaults to :py:`False`.
+*doesn't* break search or SEO. Similarly to smart quotes, the default language
+is taken from the standard :py:`DEFAULT_LANG` option or the :rst:`:lang:`
+metadata option.This feature is controlled by the :py:`M_HTMLSANITY_HYPHENATION`
+option, which also defaults to :py:`False`.
 
 .. note-success::
 
@@ -244,8 +247,8 @@ settings). Just pipe your variable through the ``render_rst`` filter:
     </html>
 
 The filter is fully equivalent to the builtin reST rendering and the above
-:py:`M_HTMLSANITY_SMART_QUOTES` and :py:`M_HTMLSANITY_HYPHENATION` options
-affect it as well.
+:py:`M_HTMLSANITY_SMART_QUOTES`, :py:`M_HTMLSANITY_HYPHENATION` and
+:py:`DEFAULT_LANG` options affect it as well.
 
 .. note-warning::
 
