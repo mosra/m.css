@@ -53,7 +53,7 @@ BUILDING THE SITE
 
 **Note:** this is about building the m.css website itself, *not* about using
 m.css in your project. Check `the website <http://mcss.mosra.cz>`_ for end-user
-docs instead.*
+docs instead.
 
 The m.css website makes use of all the m.css features, which means that it also
 needs all the possible dependencies, combined. Sorry in advance :)
@@ -62,7 +62,7 @@ On ArchLinux:
 
 .. code:: sh
 
-    pacman -S texlive-most pelican python-pillow
+    sudo pacman -S texlive-most pelican python-pillow
     cower -d python-pyphen # Build the python-pyphen package from AUR
 
 On Ubuntu you need these:
