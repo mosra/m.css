@@ -714,7 +714,7 @@ def configure_pelican(pelicanobj):
     # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2164
     # (or the _link_replacer part of it) is released
     if not hasattr(Content, '_link_replacer'):
-        logger.warning('Unpatched Pelican <= 3.7.1 detected, monkey-patching for expand_link filter support')
+        logger.warning("Unpatched Pelican <= 3.7.1 detected, monkey-patching for expand_link filter support")
         pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link_pelican371
     else:
         pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
@@ -729,7 +729,7 @@ def add_reader(readers):
     # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2163
     # is released
     if not hasattr(RstReader, 'writer_class') or not hasattr(RstReader, 'field_body_translator_class'):
-        logger.warning('Unpatched Pelican <= 3.7.1 detected, monkey-patching for htmlsanity support')
+        logger.warning("Unpatched Pelican <= 3.7.1 detected, monkey-patching for htmlsanity support")
         readers.reader_classes['rst'] = SaneRstReaderPelican371
     else:
         readers.reader_classes['rst'] = SaneRstReader
