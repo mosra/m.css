@@ -180,7 +180,7 @@ class Pyphen(Transform):
                 # I'm assuming this is faster than recreating the instance for
                 # every text node
                 if lang not in pyphen_for_lang:
-                    if lang not in pyphen.LANGUAGES: continue
+                    if not pyphen or lang not in pyphen.LANGUAGES: continue
                     pyphen_for_lang[lang] = pyphen.Pyphen(lang=lang)
 
                 txtnode.parent.replace(txtnode, nodes.Text(words_re.sub(lambda m: pyphen_for_lang[lang].inserted(m.group(0), '\u00AD'), txtnode.astext())))
@@ -600,7 +600,7 @@ def render_rst(value):
 def hyphenate(value, enable=None, lang=None):
     if enable is None: enable = settings['M_HTMLSANITY_HYPHENATION']
     if lang is None: lang = settings['DEFAULT_LANG']
-    if not enable: return value
+    if not enable or not pyphen: return value
     pyphen_ = pyphen.Pyphen(lang=lang)
     return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '&shy;'), str(value))
 
