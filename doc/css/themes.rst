@@ -120,7 +120,7 @@ then generate a CSS file out of it:
 
 .. code:: sh
 
-    sudo cp pygments-dark.py /usr/lib/python3*/site-packages/pygments/styles/dark.py
+    sudo cp pygments-dark.py /usr/lib/python3.6/site-packages/pygments/styles/dark.py
     pygmentize -f html -S dark -a .m-code > pygments-dark.css
 
 .. note-success::
