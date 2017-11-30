@@ -446,7 +446,8 @@ article section > h4 a, article section > h5 a, article section > h6 a {
   color: #ffffff;
 }
 #m-landing-cover {
-  padding-bottom: 4rem;
+  padding-bottom: 6rem;
+  margin-bottom: -3rem;
 }
 article#m-jumbo {
   margin-top: -1rem;
