@@ -208,6 +208,13 @@ All options of the :rst:`.. code::` directive are supported as well.
         :code: c++
         :start-line: 2
 
+.. note-info::
+
+    Note that the :rst:`.. include::` directives are processed before Pelican
+    comes into play, and thus no special internal linking capabilities are
+    supported. In particular, relative paths are assumed to be relative to path
+    of the source file.
+
 For inline code highlighting, use :rst:`:code:` interpreted text role. To
 specify which language should be highlighted, derive a custom role from it:
 
