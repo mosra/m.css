@@ -1318,6 +1318,7 @@ pre.m-code.m-inverted > span.hll {
 /* Math block, inline math */
 div.m-math {
   overflow-x: auto;
+  overflow-y: hidden; /* Chrome 62 displays a vertical scrollbar otherwise */
   text-align: center;
 }
 
