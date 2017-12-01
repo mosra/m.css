@@ -81,3 +81,9 @@ Image grid, inflated:
 
         {filename}/static/flowers.jpg
         {filename}/static/ship.jpg
+
+Image grid with a PNG file:
+
+.. image-grid::
+
+    {filename}/static/tiny.png

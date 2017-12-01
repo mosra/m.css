@@ -183,13 +183,20 @@ class ImageGrid(rst.Directive):
             # Open the files and calculate the overall width
             absuri = uri.format(filename=os.path.join(os.getcwd(), settings['PATH']))
             im = PIL.Image.open(absuri)
-            exif = {
-                PIL.ExifTags.TAGS[k]: v
-                for k, v in im._getexif().items()
-                if k in PIL.ExifTags.TAGS and len(str(v)) < 256
-            }
-            # Can't use just *exif['ExposureTime'] on Py3.4
-            caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), exif['ExposureTime'][0], exif['ExposureTime'][1], exif['ISOSpeedRatings'])
+
+            # Get EXIF info, if it's there
+            if hasattr(im, '_getexif'):
+                exif = {
+                    PIL.ExifTags.TAGS[k]: v
+                    for k, v in im._getexif().items()
+                    if k in PIL.ExifTags.TAGS and len(str(v)) < 256
+                }
+                # Can't use just *exif['ExposureTime'] on Py3.4
+                caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), exif['ExposureTime'][0], exif['ExposureTime'][1], exif['ISOSpeedRatings'])
+
+            # It's not (e.g. a PNG file), empty caption
+            else: caption = ""
+
             rel_width = float(im.width)/im.height
             total_widths[-1] += rel_width
             rows[-1].append((uri, rel_width, caption))
@@ -200,10 +207,17 @@ class ImageGrid(rst.Directive):
             for uri, rel_width, caption in row:
                 image_reference = rst.directives.uri(uri)
                 image_node = nodes.image('', uri=image_reference)
-                text_nodes, _ = self.state.inline_text(caption, self.lineno)
-                text_node = nodes.paragraph('', '', *text_nodes)
-                overlay_node = nodes.caption()
-                overlay_node.append(text_node)
+
+                # <figurecaption> in case there's a caption
+                if caption:
+                    text_nodes, _ = self.state.inline_text(caption, self.lineno)
+                    text_node = nodes.paragraph('', '', *text_nodes)
+                    overlay_node = nodes.caption()
+                    overlay_node.append(text_node)
+
+                # Otherwise an empty <div>
+                else: overlay_node = nodes.container()
+
                 link_node = nodes.reference('', refuri=image_reference)
                 link_node.append(image_node)
                 link_node.append(overlay_node)

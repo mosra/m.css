@@ -125,10 +125,10 @@ option for both images and figures.
 Use the :rst:`.. image-grid::` directive for creating
 `image grid <{filename}/css/components.rst#image-grid>`_. Directive contents
 are a list of image URLs, blank lines separate grid rows. The plugin
-automatically extracts size information and scales the images accordingly, in
-addition EXIF properties such as aperture, shutter speed and ISO are extracted
-and displayed in the caption on hover. The images are also made clickable, the
-target is the image file itself.
+automatically extracts size information and scales the images accordingly. If
+the image has EXIF information, properties such as aperture, shutter speed and
+ISO are extracted and displayed in the caption on hover. The images are also
+made clickable, the target is the image file itself.
 
 Example of a two-row image grid is below. Sorry for reusing the same two images
 all over (I'm making it easier for myself); if you want to see a live example
