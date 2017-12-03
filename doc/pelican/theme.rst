@@ -175,7 +175,8 @@ given column empty.
 The variables are lists of 2-tuples, containing link title and URL. First item
 is used for column header, if link URL of the first item is empty, given column
 header is just a plain :html:`<h3>` without a link. The URLs are processed in
-the same way as in the `top navbar`_.
+the same way as in the `top navbar`_. A tuple entry with empty title (i.e.,
+:py:`('', '')`) will put a spacer into the list.
 
 Footer fine print can be specified via :py:`M_FINE_PRINT`. Contents of the
 variable are processed as :abbr:`reST <reStructuredText>`, so you can use all

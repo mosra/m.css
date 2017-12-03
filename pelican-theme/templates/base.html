@@ -81,7 +81,7 @@
         </h3>
         <ul>
           {% for title, link in M_LINKS_FOOTER1 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
+          <li>{% if title %}<a href="{{ link|format_siteurl }}">{{ title }}</a>{% else %}&nbsp;{% endif %}</li>
           {% endif %}{% endfor %}
         </ul>
         {% endif %}
@@ -95,7 +95,7 @@
         </h3>
         <ul>
           {% for title, link in M_LINKS_FOOTER2 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
+          <li>{% if title %}<a href="{{ link|format_siteurl }}">{{ title }}</a>{% else %}&nbsp;{% endif %}</li>
           {% endif %}{% endfor %}
         </ul>
         {% endif %}
@@ -110,7 +110,7 @@
         </h3>
         <ul>
           {% for title, link in M_LINKS_FOOTER3 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
+          <li>{% if title %}<a href="{{ link|format_siteurl }}">{{ title }}</a>{% else %}&nbsp;{% endif %}</li>
           {% endif %}{% endfor %}
         </ul>
         {% endif %}
@@ -124,7 +124,7 @@
         </h3>
         <ul>
           {% for title, link in M_LINKS_FOOTER4 %}{% if loop.index0 != 0 %}
-          <li><a href="{{ link|format_siteurl }}">{{ title }}</a></li>
+          <li>{% if title %}<a href="{{ link|format_siteurl }}">{{ title }}</a>{% else %}&nbsp;{% endif %}</li>
           {% endif %}{% endfor %}
         </ul>
         {% else %}
