@@ -38,10 +38,12 @@ comment_end_rx = re.compile("^\\s*(.*\\*/)\\s*$")
 variable_declaration_rx = re.compile("^\\s*(?P<key>--[a-z-]+)\\s*:\\s*(?P<value>[^;]+)\\s*;\\s*$")
 variable_use_rx = re.compile("^(?P<before>.+)var\\((?P<key>--[a-z-]+)\\)(?P<after>.+)$")
 
-def postprocess(files):
+def postprocess(files, process_imports, out_file):
     directory = os.path.dirname(files[0])
-    basename, ext = os.path.splitext(files[0])
-    out_file = basename + ".compiled" + ext
+
+    if not out_file:
+        basename, ext = os.path.splitext(files[0])
+        out_file = basename + ".compiled" + ext
 
     with open(out_file, mode='w') as out:
         variables = {}
@@ -88,10 +90,12 @@ def postprocess(files):
                         in_comment = False
                     continue
 
-                # Import statement: add the file at the beginning of th
+                # Import statement: add the file to additionally processed
+                # files unless it's disabled
                 match = import_rx.match(line)
                 if match:
-                    imported_files += [match['file']]
+                    if process_imports:
+                        imported_files += [match['file']]
                     continue
 
                 # Opening brace of variable declaration block
@@ -183,8 +187,11 @@ if __name__ == "__main__":
 Postprocessor for removing @import statements and variables from CSS files.
 
 Combines all files into a new *.compiled.css file. The basename is taken
-implicitly from the first argument.""")
-    parser.add_argument('files', nargs='+', help='input CSS file(s)')
+implicitly from the first argument. The -o option can override the output
+filename.""")
+    parser.add_argument('files', nargs='+', help="input CSS file(s)")
+    parser.add_argument('--no-import', help="ignore @import statements", action='store_true')
+    parser.add_argument('-o', '--output', help="output file", default='')
     args = parser.parse_args()
 
-    exit(postprocess(args.files))
+    exit(postprocess(args.files, not args.no_import, args.output))
