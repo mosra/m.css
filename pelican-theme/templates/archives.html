@@ -23,6 +23,10 @@
 <!-- content -->
 {{ article.content }}
 <!-- /content -->
+        {% else %}
+<!-- summary -->
+{{ article.summary|indent(10) }}
+<!-- /summary -->
         {% endif %}
         <footer>
           {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}

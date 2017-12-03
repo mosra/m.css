@@ -18,6 +18,7 @@
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
         {{ header()|indent(8) }}
+        {{ article.summary|indent(10) }}
         <footer>
           {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
           {{ footer()|indent(10) }}
