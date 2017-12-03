@@ -59,17 +59,21 @@ subdir of your m.css submodule), then you tell it to put the static contents of
 the theme into a ``static/`` directory in the root of your webserver; the
 :py:`M_CSS_FILES` variable is a list of CSS files that the theme needs. You can
 put there any files you need, but there need to be at least the files mentioned
-on the `CSS themes <{filename}/css/themes.rst>`_ page. Lastly, the theme uses
-some Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
+on the `CSS themes <{filename}/css/themes.rst>`_ page. The :py:`M_THEME_COLOR`
+specifies color used for the :html:`<meta name="theme-color" />` tag
+corresponding to given theme; if not set, it's simply not present. Lastly, the
+theme uses some Jinja2 filters from the `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_
 plugin, so that plugin needs to be loaded as well.
 
 .. code:: py
 
     THEME = 'm.css/pelican-theme'
     THEME_STATIC_DIR = 'static'
-    M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600,600i%7CSource+Sans+Pro:400,400i,600&amp;subset=latin-ext',
-                   '/static/m-dark.css']
     DIRECT_TEMPLATES = ['index']
+
+    M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
+                   '/static/m-dark.css']
+    M_THEME_COLOR = '#22272e'
 
     PLUGIN_PATHS += ['m.css/pelican-plugins']
     PLUGINS += ['m.htmlsanity']
@@ -78,6 +82,15 @@ Here you can take advantage of the ``pelicanconf.py`` and ``publishconf.py``
 distinction --- use ``m-dark.css`` for local development and override the
 :py:`M_CSS_FILES` to use the smaller, faster and more compatible ``m-dark.compiled.css``
 for publishing.
+
+If you would want to use the light theme instead, the configuration is this
+(again with ``m-light.css`` possibly replaced with ``m-light.compiled.css``):
+
+.. code:: py
+
+    M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
+                   '/static/m-light.css']
+    M_THEME_COLOR = '#cb4b16'
 
 .. note-info::
 
@@ -111,14 +124,6 @@ can be either absolute or relative to :py:`SITEURL`.
 
     M_BLOG_NAME = 'Your Brand Blog'
     M_BLOG_URL = 'blog/'
-
-Theme color :html:`<meta>` tag used by `CSS themes`_ can be specified with
-the :py:`M_THEME_COLOR` variable. If not set, no theme color :html:`<meta>` tag
-is present. Example configuration for the builtin dark theme:
-
-.. code:: py
-
-    M_THEME_COLOR = '#22272e'
 
 `Top navbar`_
 -------------

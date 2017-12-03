@@ -107,8 +107,8 @@ together and it will create a ``*.compiled.css`` file in the same directory:
 
 .. code:: sh
 
-    # Creates a m-dark.compiled.css file
-    ./postprocess.py m-dark.css
+    cd css
+    ./postprocess.py m-dark.css # Creates a m-dark.compiled.css file
 
 If you want to modify the Pygments style, it's a bit more involved. You need to
 edit the ``*.py`` file instead of the ``*.css``:
