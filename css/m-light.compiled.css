@@ -36,7 +36,7 @@ body { margin: 0; }
   margin-left: -1rem;
   margin-right: -1rem;
 }
-.m-row:after { /* avoid rows floating around each other */
+.m-row:after {
   content: ' ';
   clear: both;
   display: table;
@@ -447,7 +447,7 @@ pre {
   background-color: #fbf0ec;
   border-radius: 0.2rem;
   overflow-x: auto;
-  margin-top: 0; /* stupid defaults */
+  margin-top: 0;
 }
 pre.m-console {
   background-color: #000000;
@@ -456,7 +456,7 @@ abbr {
   cursor: help;
   text-decoration: underline dotted;
 }
-sub, sup { /* https://gist.github.com/unruthless/413930 */
+sub, sup {
   font-size: 0.75rem;
   line-height: 0;
   position: relative;
@@ -470,7 +470,7 @@ a {
 a:hover, a:focus, a:active {
   color: #cb4b16;
 }
-a img { border: 0; } /* Why you so special, IE?! */
+a img { border: 0; }
 mark {
   padding: 0.0625rem;
   background-color: #e6e69c;
@@ -1304,7 +1304,7 @@ figure.m-figure:before {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: -1; /* so it doesn't make the contents inactive */
+  z-index: -1;
   border-style: solid;
   border-width: 0.125rem;
   border-radius: 0.2rem;
@@ -1326,7 +1326,7 @@ figure.m-figure > *:last-child {
   margin-bottom: 1rem;
 }
 figure.m-figure img {
-  position: relative; /* so it's above the border */
+  position: relative;
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
@@ -1338,7 +1338,7 @@ figure.m-figure figcaption {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   font-weight: normal;
-  font-size: 1.17rem; /* taken from webkit defaults for h3 */
+  font-size: 1.17rem;
 }
 figure.m-figure a img {
   margin-left: -1rem;
@@ -1373,7 +1373,7 @@ figure.m-code-figure:before, figure.m-console-figure:before {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: -1; /* so it doesn't make the contents inactive */
+  z-index: -1;
   border-style: solid;
   border-width: 0.125rem;
   border-radius: 0.2rem;
@@ -1388,13 +1388,13 @@ figure.m-code-figure.m-flat:before, figure.m-console-figure.m-flat:before {
   border-color: transparent;
 }
 figure.m-code-figure > pre:first-child, figure.m-console-figure > pre:first-child {
-  position: relative; /* so it's above the border */
+  position: relative;
   margin: -1rem -1rem 1rem -1rem;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 article section:target figure.m-code-figure, article section:target figure.m-console-figure {
-  z-index: 1; /* so the selection border isn't above figure border */
+  z-index: 1;
 }
 .m-imagegrid > div {
   background-color: #ffffff; /* to avoid section HL shining through */
@@ -1601,6 +1601,7 @@ pre.m-code.m-inverted > span.hll {
 }
 div.m-math {
   overflow-x: auto;
+  overflow-y: hidden;
   text-align: center;
 }
 div.m-math svg, svg.m-math { fill: #000000; }
@@ -1628,24 +1629,24 @@ figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
 }
 
 .m-console .hll { background-color: #ffffcc }
-.m-console .g-AnsiBlack { color: #000000 } /* Generic.AnsiBlack */
-.m-console .g-AnsiBlue { color: #3f3fd1 } /* Generic.AnsiBlue */
-.m-console .g-AnsiBrightBlack { color: #686868; font-weight: bold } /* Generic.AnsiBrightBlack */
-.m-console .g-AnsiBrightBlue { color: #5454ff; font-weight: bold } /* Generic.AnsiBrightBlue */
-.m-console .g-AnsiBrightCyan { color: #54ffff; font-weight: bold } /* Generic.AnsiBrightCyan */
-.m-console .g-AnsiBrightDefault { color: #ffffff; font-weight: bold } /* Generic.AnsiBrightDefault */
-.m-console .g-AnsiBrightGreen { color: #54ff54; font-weight: bold } /* Generic.AnsiBrightGreen */
-.m-console .g-AnsiBrightMagenta { color: #ff54ff; font-weight: bold } /* Generic.AnsiBrightMagenta */
-.m-console .g-AnsiBrightRed { color: #ff5454; font-weight: bold } /* Generic.AnsiBrightRed */
-.m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold } /* Generic.AnsiBrightWhite */
-.m-console .g-AnsiBrightYellow { color: #ffff54; font-weight: bold } /* Generic.AnsiBrightYellow */
-.m-console .g-AnsiCyan { color: #18b2b2 } /* Generic.AnsiCyan */
-.m-console .g-AnsiDefault { color: #b2b2b2 } /* Generic.AnsiDefault */
-.m-console .g-AnsiGreen { color: #18b218 } /* Generic.AnsiGreen */
-.m-console .g-AnsiMagenta { color: #b218b2 } /* Generic.AnsiMagenta */
-.m-console .g-AnsiRed { color: #b21818 } /* Generic.AnsiRed */
-.m-console .g-AnsiWhite { color: #b2b2b2 } /* Generic.AnsiWhite */
-.m-console .g-AnsiYellow { color: #b26818 } /* Generic.AnsiYellow */
-.m-console .go { color: #b2b2b2 } /* Generic.Output */
-.m-console .gp { color: #54ffff; font-weight: bold } /* Generic.Prompt */
-.m-console .w { color: #b2b2b2 } /* Text.Whitespace */
+.m-console .g-AnsiBlack { color: #000000 }
+.m-console .g-AnsiBlue { color: #3f3fd1 }
+.m-console .g-AnsiBrightBlack { color: #686868; font-weight: bold }
+.m-console .g-AnsiBrightBlue { color: #5454ff; font-weight: bold }
+.m-console .g-AnsiBrightCyan { color: #54ffff; font-weight: bold }
+.m-console .g-AnsiBrightDefault { color: #ffffff; font-weight: bold }
+.m-console .g-AnsiBrightGreen { color: #54ff54; font-weight: bold }
+.m-console .g-AnsiBrightMagenta { color: #ff54ff; font-weight: bold }
+.m-console .g-AnsiBrightRed { color: #ff5454; font-weight: bold }
+.m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold }
+.m-console .g-AnsiBrightYellow { color: #ffff54; font-weight: bold }
+.m-console .g-AnsiCyan { color: #18b2b2 }
+.m-console .g-AnsiDefault { color: #b2b2b2 }
+.m-console .g-AnsiGreen { color: #18b218 }
+.m-console .g-AnsiMagenta { color: #b218b2 }
+.m-console .g-AnsiRed { color: #b21818 }
+.m-console .g-AnsiWhite { color: #b2b2b2 }
+.m-console .g-AnsiYellow { color: #b26818 }
+.m-console .go { color: #b2b2b2 }
+.m-console .gp { color: #54ffff; font-weight: bold }
+.m-console .w { color: #b2b2b2 }
