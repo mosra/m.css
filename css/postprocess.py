@@ -129,7 +129,12 @@ def postprocess(files):
                 if in_variable_declarations:
                     out.write(":root {\n")
                     not_just_variable_declarations = True
-                out.write(line)
+
+                # Strip the trailing comment, if there, to save some bytes
+                if line.rstrip().endswith('*/'):
+                    out.write(line[:line.rindex('/*')])
+                else:
+                    out.write(line)
 
         # Now open the imported files and replace variables
         for file in imported_files + files[1:]:
@@ -163,8 +168,12 @@ def postprocess(files):
                         in_comment = True
                         continue
 
-                    # Something else, copy verbatim to the output
-                    out.write(line)
+                    # Something else, copy verbatim to the output. Strip the
+                    # trailing comment, if there, to save some bytes
+                    if line.rstrip().endswith('*/'):
+                        out.write(line[:line.rindex('/*')].rstrip() + '\n')
+                    else:
+                        out.write(line)
 
     return 0
 
