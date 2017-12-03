@@ -27,6 +27,7 @@
 import argparse
 import re
 import os
+import sys
 
 import_rx = re.compile("^@import url\\('(?P<file>[^']+)'\\);$")
 opening_brace_rx = re.compile("^\\s*:root\s*{\\s*$")
@@ -74,7 +75,7 @@ def postprocess(files):
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
 */
-""".format(' '.join(files)))
+""".format(' '.join(sys.argv[1:])))
 
         # Parse the top-level file
         with open(files[0]) as f:
