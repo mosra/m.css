@@ -148,7 +148,7 @@ it via ``pip`` or your distribution package manager:
 
 .. code:: sh
 
-    pip install Pygments
+    pip3 install Pygments
 
 The plugin overrides the builtin docutils
 `code directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#code>`_

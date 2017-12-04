@@ -64,7 +64,7 @@ To use the image grid feature (see below), in addition you need the
 
 .. code:: sh
 
-    pip install Pillow
+    pip3 install Pillow
 
 `Images, figures`_
 ==================

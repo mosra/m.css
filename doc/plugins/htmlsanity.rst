@@ -64,7 +64,7 @@ it with the above setting.
 
 .. code:: sh
 
-    pip install Pyphen
+    pip3 install Pyphen
 
 `What it does`_
 ===============

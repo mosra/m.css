@@ -70,7 +70,7 @@ On Ubuntu you need these:
 .. code:: sh
 
     sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
-    pip install pelican Pyphen Pillow
+    pip3 install pelican Pyphen Pillow
 
 Once you have all the dependencies, simply go to the ``site/`` subdirectory and
 start development server there. The live-reloading website will appear on

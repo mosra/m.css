@@ -44,14 +44,18 @@ set of useful plugins.
 `Quick start`_
 ==============
 
-Install Pelican either via ``pip`` or using your system package manager. Note
-that in order to use m.css `plugins <{filename}/plugins.rst>`_ later, you may
-want to install the Python 3 version.
+Install Pelican either via ``pip`` or using your system package manager.
+
+.. note-danger::
+
+    In order to use the m.css `theme <{filename}/pelican/theme.rst>`_ or
+    `plugins <{filename}/plugins.rst>`_ later, you need to install the Python 3
+    version of Pelican. Python 2 is not supported.
 
 .. code:: sh
 
     # You may need sudo here
-    pip install pelican
+    pip3 install pelican
 
 Note that using the m.css theme or Pelican plugins may require additional
 dependencies than just Pelican --- documentation of each lists the additional
