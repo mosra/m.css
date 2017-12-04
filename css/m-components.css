@@ -404,6 +404,31 @@ article > header .m-date-day {
   padding-bottom: 0.15rem;
   font-size: 1.25rem;
 }
+article > header .m-translations-lang {
+  display: block;
+  line-height: 95%;
+  font-size: 0.75rem;
+  font-weight: normal;
+  white-space: nowrap;
+}
+article > header .m-translations {
+  display: block;
+  width: 2.5rem;
+  float: right;
+  text-align: center;
+  line-height: 95%;
+  font-weight: bold;
+  padding-top: 0.2rem;
+  padding-bottom: 0.15rem;
+  font-size: 1.25rem;
+  border-left-style: solid;
+  border-left-width: 0.125rem;
+  border-color: var(--article-heading-color);
+  padding-left: 0.75rem;
+  margin-top: -0.1rem;
+  margin-right: 0.75rem;
+  margin-bottom: 0.25rem;
+}
 article > header p {
   color: var(--article-header-color);
   font-size: 1.125rem;
