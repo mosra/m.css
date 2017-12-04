@@ -5,6 +5,13 @@
       {{ month }} <span class="m-date-day">{{ day }}</span> {{year}}
     </time>
     {{ article.title }}
-  </a></h1>
+  </a>
+  {% if article.translations %}<nav class="m-translations"><!-- Read in: -->
+    {% for translation in article.translations %}
+        <li class="m-translations-lang"><a href="{{ SITEURL }}/{{ translation.url }}">{{ translation.lang }}</a></li>
+    {% endfor %}
+    </nav>
+  {% endif %}
+  </h1>
   {{ article.summary|indent(2) }}
 </header>
