@@ -6,4 +6,5 @@
     </time>
     {{ article.title }}
   </a></h1>
+  {% if article.metadata.summary is defined %}{{ article.summary|indent(2) }}{% endif %}
 </header>

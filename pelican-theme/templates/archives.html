@@ -23,7 +23,7 @@
 <!-- content -->
 {{ article.content }}
 <!-- /content -->
-        {% else %}
+        {% elif article.metadata.summary is not defined %}
 <!-- summary -->
 {{ article.summary|indent(10) }}
 <!-- /summary -->
