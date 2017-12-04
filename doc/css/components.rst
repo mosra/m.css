@@ -65,10 +65,11 @@ page. The colors are:
 
 Blocks, defined by :css:`.m-block`, wrap the content in a light frame and add a
 bolder colored bar on the left. Use in combination with one of the color styles
-above. Block caption should go into :html:`<h3>` and is colored in respect to
-the color style as well. Text and links always have the default color, except
-for :css:`.m-block.m-dim`. It's also possible to have a block without the
-border, just add :css:`.m-flat` class to it.
+above. Block caption should go into :html:`<h3>` (or :html:`<h4>`,
+:html:`<h5>`, :html:`<h6>`) and is colored in respect to the color style as
+well. Text and links always have the default color, except for
+:css:`.m-block.m-dim`. It's also possible to have a block without the border,
+just add :css:`.m-flat` class to it.
 
 It's recommended to use the :html:`<aside>` element to highlight the semantics,
 but the CSS class can be used on any block element.
@@ -142,6 +143,7 @@ but the CSS class can be used on any block element.
 Badges are blocks together with an avatar, containing for example info about
 the author of given article. Simply add :css:`.m-badge` to your colored block
 element and put an :html:`<img>` element with the avatar as the first child.
+Only :html:`<h3>` is supported for a badge.
 
 .. code-figure::
 
@@ -171,7 +173,8 @@ element and put an :html:`<img>` element with the avatar as the first child.
 Unlike blocks, notes are meant to wrap smaller bits of information. Use the
 :css:`.m-note` CSS class together with desired color class. A note is also
 slightly rounded and has everything colored, the background, the caption, text
-and also links. The :html:`<h3>` caption tag is optional.
+and also links. The :html:`<h3>` (:html:`<h4>`, :html:`<h5>`, :html:`<h6>`)
+caption tag is optional.
 
 Besides notes, there is a frame element defined by :css:`.m-frame`, which just
 wraps your content in a slightly rounded border. No color classes apply to a

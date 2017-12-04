@@ -782,17 +782,29 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
 
 /* Colored block */
 .m-block.m-default { border-left-color: var(--line-color); }
-.m-block.m-default h3 { color: var(--default-color); }
+.m-block.m-default h3, .m-block.m-default h4, .m-block.m-default h5, .m-block.m-default h6 {
+  color: var(--default-color);
+}
 .m-block.m-primary { border-left-color: var(--primary-color); }
-.m-block.m-primary h3 { color: var(--primary-color); }
+.m-block.m-primary h3, .m-block.m-primary h4, .m-block.m-primary h5, .m-block.m-primary h6 {
+  color: var(--primary-color);
+}
 .m-block.m-success { border-left-color: var(--success-color); }
-.m-block.m-success h3 { color: var(--success-color); }
+.m-block.m-success h3, .m-block.m-success h4, .m-block.m-success h5, .m-block.m-success h6 {
+  color: var(--success-color);
+}
 .m-block.m-warning { border-left-color: var(--warning-color); }
-.m-block.m-warning h3 { color: var(--warning-color); }
+.m-block.m-warning h3, .m-block.m-warning h4, .m-block.m-warning h5, .m-block.m-warning h6 {
+  color: var(--warning-color);
+}
 .m-block.m-danger { border-left-color: var(--danger-color); }
-.m-block.m-danger h3 { color: var(--danger-color); }
+.m-block.m-danger h3, .m-block.m-danger h4, .m-block.m-danger h5, .m-block.m-danger h6 {
+  color: var(--danger-color);
+}
 .m-block.m-info { border-left-color: var(--info-color); }
-.m-block.m-info h3 { color: var(--info-color); }
+.m-block.m-info h3, .m-block.m-info h4, .m-block.m-info h5, .m-block.m-info h6 {
+  color: var(--info-color);
+}
 .m-block.m-dim {
   border-left-color: var(--dim-color);
   color: var(--dim-color);
@@ -802,7 +814,9 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   color: var(--dim-link-active-color);
 }
 .m-block.m-flat { border-color: transparent; }
-.m-block.m-flat h3 { color: var(--default-color); }
+.m-block.m-flat h3, .m-block.m-flat h4, .m-block.m-flat h5. .m-block.m-flat h6 {
+  color: var(--default-color);
+}
 
 /* Colored note, table coloring */
 .m-note.m-default { background-color: var(--default-filled-background-color); }

@@ -35,48 +35,195 @@ Test
 Blocks
 ======
 
+Different :html:`<h*>` tags, the styling should be preserved across all sizes.
+
 .. raw:: html
 
     <div class="m-row">
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-default">
-          <h3>Default block</h3>
+          <h3>Default block h3</h3>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-default">
+          <h4>Default block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-default">
+          <h5>Default block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-default">
+          <h6>Default block h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-primary">
+          <h3>Primary block h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-primary">
-          <h3>Primary block</h3>
+          <h4>Primary block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-primary">
+          <h5>Primary block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-primary">
+          <h6>Primary block h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-success">
+          <h3>Success block h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-success">
-          <h3>Success block</h3>
+          <h4>Success block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-success">
+          <h5>Success block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-success">
+          <h6>Success block h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-warning">
+          <h3>Warning block h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-warning">
-          <h3>Warning block</h3>
+          <h4>Warning block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-warning">
+          <h5>Warning block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-warning">
+          <h6>Warning block h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-danger">
+          <h3>Danger block h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-danger">
-          <h3>Danger block</h3>
+          <h4>Danger block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-danger">
+          <h5>Danger block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-danger">
+          <h6>Danger block h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-info">
+          <h3>Info block h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-info">
-          <h3>Info block</h3>
+          <h4>Info block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-info">
+          <h5>Info block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-info">
+          <h6>Info block h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-dim">
+          <h3>Dim block h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-block m-dim">
-          <h3>Dim block</h3>
+          <h4>Dim block h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-dim">
+          <h5>Dim block h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-dim">
+          <h6>Dim block h6</h6>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. <a href="#">Link.</a>
         </div>
       </div>
@@ -109,54 +256,222 @@ Badge with lots of text and less text:
 Notes, frame
 ============
 
+Different :html:`<h*>` tags.
+
 .. raw:: html
 
     <div class="m-row">
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-default">
-          <h3>Default note</h3>
+          <h3>Default note h3</h3>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-default">
+          <h4>Default note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-default">
+          <h5>Default note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-default">
+          <h6>Default note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-primary">
+          <h3>Primary note h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-primary">
-          <h3>Primary note</h3>
+          <h4>Primary note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-primary">
+          <h5>Primary note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-primary">
+          <h6>Primary note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-success">
+          <h3>Success note h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-success">
-          <h3>Success note</h3>
+          <h4>Success note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-success">
+          <h5>Success note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-success">
+          <h6>Success note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-warning">
+          <h3>Warning note h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-warning">
-          <h3>Warning note</h3>
+          <h4>Warning note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-warning">
+          <h5>Warning note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-warning">
+          <h6>Warning note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-danger">
+          <h3>Danger note h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-danger">
-          <h3>Danger note</h3>
+          <h4>Danger note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-danger">
+          <h5>Danger note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-danger">
+          <h6>Danger note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-info">
+          <h3>Info note h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-info">
-          <h3>Info note</h3>
+          <h4>Info note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-info">
+          <h5>Info note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-info">
+          <h6>Info note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-dim">
+          <h3>Dim note h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-note m-dim">
-          <h3>Dim note</h3>
+          <h4>Dim note h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-dim">
+          <h5>Dim note h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-dim">
+          <h6>Dim note h6</h6>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-frame">
+          <h3>Frame h3</h3>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <div class="m-frame">
-          <h3>Frame</h3>
+          <h4>Frame h4</h4>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-frame">
+          <h5>Frame h5</h5>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-frame">
+          <h6>Frame h6</h6>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="#">Link.</a>
         </div>
       </div>

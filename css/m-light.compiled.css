@@ -1094,17 +1094,29 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   border-color: #ffffff;
 }
 .m-block.m-default { border-left-color: #f7e3db; }
-.m-block.m-default h3 { color: #000000; }
+.m-block.m-default h3, .m-block.m-default h4, .m-block.m-default h5, .m-block.m-default h6 {
+  color: #000000;
+}
 .m-block.m-primary { border-left-color: #cb4b16; }
-.m-block.m-primary h3 { color: #cb4b16; }
+.m-block.m-primary h3, .m-block.m-primary h4, .m-block.m-primary h5, .m-block.m-primary h6 {
+  color: #cb4b16;
+}
 .m-block.m-success { border-left-color: #31c25d; }
-.m-block.m-success h3 { color: #31c25d; }
+.m-block.m-success h3, .m-block.m-success h4, .m-block.m-success h5, .m-block.m-success h6 {
+  color: #31c25d;
+}
 .m-block.m-warning { border-left-color: #c7cf2f; }
-.m-block.m-warning h3 { color: #c7cf2f; }
+.m-block.m-warning h3, .m-block.m-warning h4, .m-block.m-warning h5, .m-block.m-warning h6 {
+  color: #c7cf2f;
+}
 .m-block.m-danger { border-left-color: #f60000; }
-.m-block.m-danger h3 { color: #f60000; }
+.m-block.m-danger h3, .m-block.m-danger h4, .m-block.m-danger h5, .m-block.m-danger h6 {
+  color: #f60000;
+}
 .m-block.m-info { border-left-color: #2e7dc5; }
-.m-block.m-info h3 { color: #2e7dc5; }
+.m-block.m-info h3, .m-block.m-info h4, .m-block.m-info h5, .m-block.m-info h6 {
+  color: #2e7dc5;
+}
 .m-block.m-dim {
   border-left-color: #bdbdbd;
   color: #bdbdbd;
@@ -1114,7 +1126,9 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   color: #949494;
 }
 .m-block.m-flat { border-color: transparent; }
-.m-block.m-flat h3 { color: #000000; }
+.m-block.m-flat h3, .m-block.m-flat h4, .m-block.m-flat h5. .m-block.m-flat h6 {
+  color: #000000;
+}
 .m-note.m-default { background-color: #fbf0ec; }
 .m-note.m-default, table.m-table tr.m-default td, table.m-table td.m-default,
                    table.m-table tr.m-default th, table.m-table th.m-default {
