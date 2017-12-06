@@ -6,6 +6,8 @@
 
     Preformatted text.
 
+Paragraph \n with \n explicit \n line \n breaks.
+
 @subsection subsection Page subsection
 
 -   Unordered

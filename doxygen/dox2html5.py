@@ -410,6 +410,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             has_block_elements = True
             out.parsed += '<pre class="m-code">{}</pre>'.format(html.escape(i.text))
 
+        elif i.tag == 'linebreak':
+            # Strip all whitespace before the linebreak, as it is of no use
+            out.parsed = out.parsed.rstrip() + '<br/>'
+
         elif i.tag == 'programlisting':
             # If it seems to be a standalone code paragraph, don't wrap it in
             # <p> and use <pre>:
@@ -616,9 +620,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # is done by the caller.
             out.parsed += html.escape(i.tail.lstrip())
 
-        # Otherwise strip only if requested by the called
+        # Otherwise strip if requested by the caller or if this is right after
+        # a line break
         elif i.tail:
-            out.parsed += html.escape(i.tail.strip() if trim else i.tail)
+            tail: str = html.escape(i.tail)
+            if trim:
+                tail = tail.strip()
+            elif out.parsed.endswith('<br/>'):
+                tail = tail.lstrip()
+            out.parsed += tail
 
     # Brief description always needs to be single paragraph because we're
     # sending it out without enclosing <p>.
