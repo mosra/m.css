@@ -17,6 +17,6 @@ class Doxyfile(unittest.TestCase):
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
-            'PROJECT_NAME': 'My Project',
+            'PROJECT_NAME': 'My Pet Project',
             'XML_OUTPUT': 'xml'
         })

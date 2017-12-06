@@ -1485,7 +1485,7 @@ def parse_index_xml(state: State, xml):
 
     return parsed
 
-def parse_doxyfile(state: State, doxyfile):
+def parse_doxyfile(state: State, doxyfile, config = None):
     logging.info("Parsing configuration from {}".format(doxyfile))
 
     comment_re = re.compile(r"""^\s*(#.*)?$""")
@@ -1497,7 +1497,7 @@ def parse_doxyfile(state: State, doxyfile):
     # user-provided Doxygen can append to them. They are later converted to
     # string or kept as a list based on type, so all have to be a list of
     # strings now.
-    config = {
+    if not config: config = {
         'PROJECT_NAME': ['My Project'],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
@@ -1557,7 +1557,7 @@ def parse_doxyfile(state: State, doxyfile):
 
                 # Another file included, parse it
                 if key == '@INCLUDE':
-                    parse_doxyfile(state, os.path.join(os.path.dirname(doxyfile), ' '.join(value)))
+                    parse_doxyfile(state, os.path.join(os.path.dirname(doxyfile), ' '.join(value)), config)
                     assert not backslash
                 else:
                     config[key] = value
