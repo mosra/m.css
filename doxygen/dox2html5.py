@@ -361,7 +361,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 description = parse_desc(state, param.find('parameterdescription'))
                 if i.attrib['kind'] == 'param':
                     out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
-                elif i.attrib['kind'] == 'templateparam':
+                else:
+                    assert i.attrib['kind'] == 'templateparam'
                     out.templates[name.text] = description
 
         elif i.tag == 'variablelist':
@@ -371,7 +372,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             for var in i:
                 if var.tag == 'varlistentry':
                     out.parsed += '<dt>{}</dt>'.format(parse_type(state, var.find('term')).strip())
-                elif var.tag == 'listitem':
+                else:
+                    assert var.tag == 'listitem'
                     out.parsed += '<dd>{}</dd>'.format(parse_desc(state, var))
 
             out.parsed += '</dl>'
