@@ -302,17 +302,14 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             has_block_elements = True
             out.parsed += '<blockquote>{}</blockquote>'.format(parse_desc(state, i))
 
-        elif i.tag == 'itemizedlist':
+        elif i.tag in ['itemizedlist', 'orderedlist']:
             has_block_elements = True
-            out.parsed += '<ul>{}</ul>'.format(parse_desc(state, i))
-
-        elif i.tag == 'orderedlist':
-            has_block_elements = True
-            out.parsed += '<ol>{}</ol>'.format(parse_desc(state, i))
-
-        elif i.tag == 'listitem':
-            has_block_elements = True
-            out.parsed += '<li>{}</li>'.format(parse_desc(state, i))
+            tag = 'ul' if i.tag == 'itemizedlist' else 'ol'
+            out.parsed += '<{}>'.format(tag)
+            for li in i:
+                assert li.tag == 'listitem'
+                out.parsed += '<li>{}</li>'.format(parse_desc(state, li))
+            out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'simplesect':
             # Return value is separated from the text flow
