@@ -30,7 +30,7 @@ m.css
 :cover: {filename}/static/cover.jpg
 :summary: A no-nonsense, no-JavaScript CSS framework and Pelican theme for
     content-oriented websites
-:navbar_brand_hidden: true
+:navbar_brand_hidden: True
 :landing:
     .. container:: m-row
 
