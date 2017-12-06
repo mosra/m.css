@@ -28,6 +28,23 @@ But not when it is in (@code{.js} alert('www'); @endcode) parentheses.
 
 
 @endcode
+
+Look:
+
+@snippet snippet.cpp 0
+
+A paragraph following a one line snippet should not be merged with it.
+
+@snippet snippet.cpp 0
+<p>
+
+This one also not.
+
+@snippet snippet.cpp 1
+
+And this should not produce a warning.
+
+Another paragraph.
 */
 
 /** @page warnings Code that produces warnings

@@ -1,4 +1,5 @@
 INPUT                   = input.dox
+EXAMPLE_PATH            = .
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
