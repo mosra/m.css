@@ -319,8 +319,14 @@ def parse_desc_internal(state: State, element: ET.Element, trim = True):
 
         elif i.tag == 'programlisting':
             # Seems to be a standalone code paragraph, don't wrap it in <p>
-            # and use <pre>
-            if element.tag == 'para' and (not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and len([listing for listing in element]) == 1:
+            # and use <pre>:
+            # - is either alone in the paragraph, with no text or other
+            #   elements around
+            # - or is a code snippet (filename instead of just .ext). Doxygen
+            #   unfortunately doesn't put @snippet in its own paragraph even
+            #   if it's separated by blank lines. It does so for @include and
+            #   related, though.
+            if element.tag == 'para' and (((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and len([listing for listing in element]) == 1) or ('filename' in i.attrib and not i.attrib['filename'].startswith('.'))):
                 code_block = True
 
             # Looks like inline code, but has multiple code lines, so it's
@@ -336,7 +342,6 @@ def parse_desc_internal(state: State, element: ET.Element, trim = True):
                 # Doxygen doesn't add a space before <programlisting> if it's
                 # inline, add it manually in case there should be a space
                 # before it. However, it does add a space after it always.
-                # TODO: could this be used to detect the problematic case?
                 if out.parsed and not out.parsed[-1].isspace() and not out.parsed[-1] in '([{':
                     out.parsed += ' '
 

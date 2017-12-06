@@ -379,7 +379,10 @@ distinguished from code blocks using the following rules:
 
 -   Code that is delimited from surrounding paragraphs with an empty line is
     considered as block.
--   Code that is not alone in a paragraph is considered as inline.
+-   Code that is coming from ``@include``, ``@snippet`` and related commands
+    that paste external file content is always considered as block.
+-   Code that is coming from ``@code`` and is not alone in a paragraph is
+    considered as inline.
 -   For compatibility reasons, if code that is detected as inline consists of
     more than one line, it's rendered as code block and a warning is printed to
     output.
@@ -424,26 +427,9 @@ aliases in the original ``Doxyfile``:
 
 .. block-warning:: Doxygen limitations
 
-    Due to Doxygen limitations, sometimes a single-line code block coming from
-    ``@skipline`` and related commands is detected as inline code and prepended
-    to the immediately following paragraph. In order to prevent that, add a
-    stray :html:`<p>` tag right
-    after the block:
-
-    .. code:: c++
-
-        /**
-        Text paragraph before a code block.
-
-        @skipline foo
-        <p>
-
-        Next text paragraph after a code block.
-        */
-
-    Besides that, it's not possible to use inline code highlighting in
-    ``@brief`` description. Code placed there is moved by Doxygen to the
-    detailed description.
+    It's not possible to use inline code highlighting in ``@brief``
+    description. Code placed there is moved by Doxygen to the detailed
+    description.
 
 .. block-warning:: Doxygen patches
 
