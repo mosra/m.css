@@ -252,6 +252,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 tag = 'h3'
             elif i.attrib['level'] == '3':
                 tag = 'h4'
+            elif i.attrib['level'] == '4':
+                tag = 'h5'
             else: # pragma: no cover
                 assert False
             logging.warning("Prefer @section over Markdown heading for properly generated TOC")
