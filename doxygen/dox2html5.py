@@ -628,7 +628,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     # Strip superfluous <p> for simple elments (list items, parameter and
     # return value description, table cells), but only if there is just a
     # single paragraph
-    elif (element.tag in ['listitem', 'parameterdescription', 'entry'] or (element.tag == 'simplesect' and element.attrib['kind'] == 'return')) and not has_block_elements and paragraph_count == 1:
+    elif (element.tag in ['listitem', 'parameterdescription', 'entry'] or (element.tag == 'simplesect' and element.attrib['kind'] == 'return')) and not has_block_elements and paragraph_count == 1 and out.parsed:
         assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
         out.parsed = out.parsed[3:-4]
 
