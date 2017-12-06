@@ -16,6 +16,9 @@ Paragraph following the sections.
 
 @xrefitem old "Old stuff" "Just old" This is old.
 
+> A blockquote
+Text right after that blockquote should be a new paragraph.
+
 */
 
 /** @page other Other page
