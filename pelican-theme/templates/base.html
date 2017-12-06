@@ -71,6 +71,7 @@
 </main>
 <footer><nav>
   <div class="m-container">
+    {% if M_LINKS_FOOTER1 or M_LINKS_FOOTER2 or M_LINKS_FOOTER3 or M_LINKS_FOOTER4 %}
     <div class="m-row">
       <div class="m-col-s-3 m-col-t-6">
         {% if M_LINKS_FOOTER1 %}
@@ -127,7 +128,7 @@
           <li>{% if title %}<a href="{{ link|format_siteurl }}">{{ title }}</a>{% else %}&nbsp;{% endif %}</li>
           {% endif %}{% endfor %}
         </ul>
-        {% else %}
+        {% elif M_LINKS_FOOTER4 is not defined %}
         <h3><a href="{{ M_BLOG_URL|format_siteurl }}">Blog</a></h3>
         <ul>
           {% for cat, null in categories %}
@@ -137,6 +138,7 @@
         {% endif %}
       </div>
     </div>
+    {% endif %}
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         {% if M_FINE_PRINT %}

@@ -174,8 +174,10 @@ Similarly to the top navbar, :py:`M_LINKS_FOOTER1`, :py:`M_LINKS_FOOTER2`,
 in the footer navigation. The links are arranged in four columns, which get
 reduced to just two columns on small screens. Omitting :py:`M_LINKS_FOOTER4`
 will fill the last column with a *Blog* entry, linking to the Archives page and
-listing all blog categories; omitting any of the remaining variables will make
-given column empty.
+listing all blog categories; you can disable that entry by setting
+:py:`M_LINKS_FOOTER4 = []`. Omitting any of the remaining variables will make
+given column empty, omitting all variables will not render the navigation at
+all.
 
 The variables are lists of 2-tuples, containing link title and URL. First item
 is used for column header, if link URL of the first item is empty, given column
