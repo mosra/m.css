@@ -32,6 +32,8 @@
   --font: 'Libre Baskerville', serif;
   --code-font: 'Source Code Pro', monospace;
   --font-size: 14px;
+  --paragraph-indent: 1.5rem;
+  --paragraph-align: justify;
   --link-decoration: underline;
   --link-decoration-nav: none;
   --link-decoration-heading: none;

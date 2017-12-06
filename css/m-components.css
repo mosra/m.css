@@ -54,8 +54,8 @@ ul ol, ul ul, ol ol, ol ul {
   margin-bottom: 0;
 }
 main p {
-  text-indent: 1.5rem;
-  text-align: justify;
+  text-indent: var(--paragraph-indent);
+  text-align: var(--paragraph-align);
 }
 main p.m-noindent {
   text-indent: 0;
@@ -600,7 +600,7 @@ ul[class*='m-block-bar-'] li:not(:last-child)::after, ol[class*='m-block-bar-'] 
 p.m-poem {
   text-indent: 0;
   text-align: left;
-  margin-left: 1.5rem;
+  margin-left: var(--paragraph-indent);
 }
 p.m-transition {
   color: var(--line-color);
