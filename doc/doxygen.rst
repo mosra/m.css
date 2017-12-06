@@ -478,6 +478,44 @@ aliases in the original ``Doxyfile``:
     description. Code placed there is moved by Doxygen to the detailed
     description.
 
+    It's not possible to put a ``@code`` block (delimited by blank lines) to a
+    Markdown list. A workaround is to use explicit HTML markup instead. See
+    `Text content`_ for more information about list behavior.
+
+    .. code-figure::
+
+        .. code:: c++
+
+            /**
+            <ul>
+            <li>
+                A paragraph.
+
+                @code{.cpp}
+                #include <os>
+                @endcode
+            </li>
+            <li>
+                Another paragraph.
+
+                Yet another
+            </li>
+            </ul>
+            */
+
+        .. raw:: html
+
+            <ul>
+              <li>
+                <p>A paragraph.</p>
+                <pre class="m-code"><span class="cp">#include</span> <span class="cpf">&lt;os&gt;</span><span class="cp"></span></pre>
+              </li>
+              <li>
+                <p>Another paragraph.</p>
+                <p>Yet another</p>
+              </li>
+            </ul>
+
 .. block-warning:: Doxygen patches
 
     Note that proper language detection for code snippets requires Doxygen with

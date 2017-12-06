@@ -45,6 +45,25 @@ This one also not.
 And this should not produce a warning.
 
 Another paragraph.
+
+Code block inside a list (has to be done using HTML):
+
+<ul>
+<li>
+    A paragraph.
+
+    @code{.cpp}
+    #include <os>
+    @endcode
+</li>
+<li>
+    Another paragraph.
+
+    Yet another
+</li>
+<li>A single paragraph, rendered without the wrapping tag</li>
+</ul>
+
 */
 
 /** @page warnings Code that produces warnings
@@ -63,4 +82,13 @@ code=that is a part of a paragraph.
 @code{.whatthehell}
 Code that has unrecognizable format.
 @endcode
+
+Improper code block inside a list that needs to be extracted out:
+
+-   A paragraph.
+    @code{.cpp}
+    #include <os>
+    // hello again
+    @endcode
+
 */

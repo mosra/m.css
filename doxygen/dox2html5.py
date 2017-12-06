@@ -413,6 +413,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             #
             # Specialization of similar paragraph cleanup code above.
             if code_block:
+                out.is_reasonable_paragraph = False
                 has_block_elements = True
                 out.parsed = out.parsed.rstrip()
                 if not out.parsed:
