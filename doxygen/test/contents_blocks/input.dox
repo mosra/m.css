@@ -19,6 +19,40 @@ Paragraph following the sections.
 > A blockquote
 Text right after that blockquote should be a new paragraph.
 
+-   A simple
+-   List
+    -#  With one line
+    -#  for each
+-   item, so paragraphs are removed
+
+.
+
+-   A simple
+-   List
+
+    -#  With the sublist delimited
+    -#  by blank lines
+
+-   should behave the same as above
+
+.
+
+-   A new list
+
+    of multiple
+
+    paragraphs.
+
+-   Another item
+
+    <p></p>
+
+    -   A sub list
+
+        Another paragraph
+
+A paragraph after that list.
+
 */
 
 /** @page other Other page

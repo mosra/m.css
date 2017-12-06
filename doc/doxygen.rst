@@ -306,6 +306,53 @@ modifications:
     added after ``::`` and ``_`` in long symbols in link titles and after ``/``
     in URLs.
 
+Single-paragraph list items, function parameter description and return value
+documentation is stripped from the enclosing :html:`<p>` tag to make the output
+more compact. If multiple paragraphs are present, nothing is stripped. In case
+of lists, they are then rendered in an inflated form. However, in order to
+achieve even spacing also with single-paragraph items, it's needed use some
+explicit markup. Adding :html:`<p></p>` to a single-paragraph item will make
+sure the enclosing :html:`<p>` is not stripped.
+
+.. code-figure::
+
+    .. code:: c++
+
+        /**
+        -   A list
+
+            of multiple
+
+            paragraphs.
+
+        -   Another item
+
+            <p></p>
+
+            -   A sub list
+
+                Another paragraph
+        */
+
+    .. raw:: html
+
+        <ul>
+          <li>
+            <p>A list</p>
+            <p>of multiple</p>
+            <p>paragraphs.</p>
+          </li>
+          <li>
+            <p>Another item</p>
+            <ul>
+              <li>
+                <p>A sub list</p>
+                <p>Another paragraph</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
 `Pages, sections and table of contents`_
 ========================================
 
