@@ -6,5 +6,19 @@
     </time>
     {{ article.title }}
   </a></h1>
+  {# Display summary only if:
+    - we're on article listing page and the article is not expanded (it's
+      expanded only if it's first on the first page only on the index/archive
+      page and only if it doesn't say it should be collapsed)
+    - the article is expanded but doesn't say the summary should be hidden #}
+  {% if (articles_page and
+         (page_name not in ['index', 'archives'] or
+          not loop.first or
+          articles_page.number != 1 or
+          (article.collapse_first is defined and article.collapse_first == 'True') or
+          (article.collapse_first is not defined and M_COLLAPSE_FIRST_ARTICLE))) or
+        (article.hide_summary is defined and article.hide_summary != 'True') or
+        (article.hide_summary is not defined and not M_HIDE_ARTICLE_SUMMARY) %}
   {{ article.summary|indent(2) }}
+  {% endif %}
 </header>

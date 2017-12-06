@@ -18,7 +18,9 @@
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
         {{ header()|indent(8) }}
-        {% if loop.first and articles_page.number == 1 %}
+        {% if loop.first and articles_page.number == 1 and
+              ((article.collapse_first is defined and article.collapse_first != 'True') or
+               (article.collapse_first is not defined and not M_COLLAPSE_FIRST_ARTICLE)) %}
         <div class="m-clearfix-l"></div>
 <!-- content -->
 {{ article.content }}

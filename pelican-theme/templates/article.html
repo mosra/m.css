@@ -49,6 +49,8 @@
           </div>
         </div>
       </div>
+      {% if (article.hide_summary is defined and article.hide_summary != 'True') or
+            (article.hide_summary is not defined and not M_HIDE_ARTICLE_SUMMARY) %}
       <div class="m-container">
         <div class="m-row">
           <div class="m-col-m-10 m-push-m-1 m-nopady">
@@ -56,6 +58,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
     </header>
     <div class="m-container m-container-inflatable">
       <div class="m-row">
