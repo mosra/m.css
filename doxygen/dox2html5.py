@@ -1375,6 +1375,7 @@ def parse_xml(state: State, xml: str):
         elif (compounddef_child.tag not in ['compoundname',
                                             'briefdescription',
                                             'detaileddescription',
+                                            'innerpage', # doesn't add anything to output
                                             'location',
                                             'includes',
                                             'includedby',
