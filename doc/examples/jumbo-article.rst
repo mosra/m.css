@@ -22,16 +22,16 @@
     DEALINGS IN THE SOFTWARE.
 ..
 
-An Article --- a jumbo one
+An article --- a jumbo one
 ##########################
 
 .. role:: language-la
     :class: language-la
 
 :cover: {filename}/static/ship.jpg
-:date: 2017-09-08
+:date: 2017-09-08 1:00
 :category: Examples
-:tags: Example, Article, Jumbo
+:tags: Jumbo
 :author: An Author
 :slug: jumbo-article
 :summary: Article summary paragraph. :language-la:`Lorem ipsum dolor sit amet,

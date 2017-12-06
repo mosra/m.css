@@ -445,12 +445,13 @@ title and subtitle that's then rendered in a different font size. Example:
 
 .. code:: rst
 
-    An Article --- a jumbo one
+    An article --- a jumbo one
     ##########################
 
     :cover: {filename}/static/ship.jpg
-    :slug: jumbo-article
     :summary: Article summary paragraph.
+
+    Article contents.
 
 Sidebar with tag, category and author list shown in the classic article layout
 on the right is moved to the bottom for jumbo articles.

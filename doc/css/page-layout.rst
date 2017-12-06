@@ -460,11 +460,11 @@ font. Example markup and corresponding rendering:
 
         <article>
           <header>
-            <h1><a href="#" rel="bookmark" title="Permalink to An Article">
+            <h1><a href="#" rel="bookmark" title="Permalink to An article">
               <time class="m-date" datetime="2017-09-08T00:00:00+02:00">
               Sep <span class="m-date-day">8</span> 2017
               </time>
-              An Article
+              An article
             </a></h1>
             <p>Article summary paragraph. Lorem ipsum dolor sit amet, consectetur
             adipiscing elit. Aenean id elit posuere, consectetur magna congue, sagittis
@@ -485,11 +485,11 @@ font. Example markup and corresponding rendering:
 
         <article>
           <header>
-            <h1><a href="#" rel="bookmark" title="Permalink to An Article">
+            <h1><a href="#" rel="bookmark" title="Permalink to An article">
               <time class="m-date" datetime="2017-09-08T00:00:00+02:00">
               Sep <span class="m-date-day">8</span> 2017
               </time>
-              An Article
+              An article
             </a></h1>
             <p>Article summary paragraph. Lorem ipsum dolor sit amet, consectetur
             adipiscing elit. Aenean id elit posuere, consectetur magna congue, sagittis
@@ -550,7 +550,7 @@ such as `image grid <{filename}/css/components.rst#image-grid>`_ possible.
               <div class="m-row">
                 <div class="m-col-t-12 m-col-s-10 m-push-s-1 m-col-m-8 m-push-m-2">
                   <h1><a href="#" rel="bookmark" title="Permalink to An Ar­ti­cle — a jum­bo one">
-                    An Article
+                    An article
                   </a></h1>
                   <h2>a jumbo one</h2>
                 </div>
