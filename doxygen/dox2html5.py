@@ -232,13 +232,16 @@ def parse_desc_internal(state: State, element: ET.Element, trim = True):
 
             # Omit superfluous <p> for simple elments (list items, brief,
             # parameter and return value description)
-            if not parsed.write_start_tag or element.tag in ['listitem', 'briefdescription', 'parameterdescription'] or element.tag == 'simplesect' and element.attrib['kind'] == 'return':
+            if element.tag in ['listitem', 'briefdescription', 'parameterdescription'] or (element.tag == 'simplesect' and element.attrib['kind'] == 'return'):
+                # Not expecting any funny thing from there (this will bite back
+                # in the future)
+                assert parsed.write_start_tag and parsed.write_close_tag
                 out.parsed += parsed.parsed
+            # Otherwise behave like requested
             elif parsed.parsed:
-                if parsed.write_close_tag:
-                    out.parsed += '<p>{}</p>'.format(parsed.parsed)
-                else:
-                    out.parsed += '<p>{}'.format(parsed.parsed)
+                if parsed.write_start_tag: out.parsed += '<p>'
+                out.parsed += parsed.parsed
+                if parsed.write_close_tag: out.parsed += '</p>'
 
         elif i.tag == 'blockquote':
             out.parsed += '<blockquote>{}</blockquote>'.format(parse_desc(state, i))
