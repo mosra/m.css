@@ -65,6 +65,9 @@ def slugify(text: str) -> str:
     return slugify_hyphens_rx.sub('-', slugify_nonalnum_rx.sub('', text.lower()).strip())
 
 def add_wbr(text: str) -> str:
+    # Stuff contains HTML code, do not touch!
+    if '<' in text: return text
+
     if '::' in text: # C++ names
         return text.replace('::', '::<wbr/>')
     elif '_' in text: # VERY_LONG_UPPER_CASE macro names
