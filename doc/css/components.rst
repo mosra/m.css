@@ -562,6 +562,10 @@ classes from above:
       </tbody>
     </table></div>
 
+Similarly to `lists <{filename}/css/typography.rst#lists-diaries>`_, if using
+:html:`<p>` elements inside :html:`<td>`, they are neither indented nor
+justified.
+
 `Images`_
 =========
 
@@ -1008,7 +1012,8 @@ the ``depth`` value returned on stderr can be taken as a base for the
 Similarly to `typography elements <{filename}/css/typography.rst#padding>`_;
 blocks, notes, frames, tables, images, figures, image grids, code and math
 blocks and code figures have :css:`1rem` padding after, except when they are
-the last element, to avoid excessive spacing.
+the last element, to avoid excessive spacing. The list special casing applies
+here as well.
 
 `Responsive utilities`_
 =======================

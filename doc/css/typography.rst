@@ -49,11 +49,10 @@ great by default.
 
 Each :html:`<p>` element inside :html:`<main>` has the first line indented, is
 justified and is separated from the following content by some padding. The
-:html:`<blockquote>` elements are, in addition, indented with a distinctive
-line on the left. Because the indentation may look distracting for manually
-wrapped line blocks, assign :css:`.m-poem` to such paragraph to indent all
-lines the same way. To remove the indentation and justification altogether, use
-:css:`.m-noindent`.
+:html:`<blockquote>` elements are indented with a distinctive line on the left.
+Because the indentation may look distracting for manually wrapped line blocks,
+assign :css:`.m-poem` to such paragraph to indent all lines the same way. To
+remove the indentation and justification altogether, use :css:`.m-noindent`.
 
 .. code-figure::
 
@@ -64,8 +63,9 @@ lines the same way. To remove the indentation and justification altogether, use
         aliquet nec consectetur in, mattis ac diam. Aliquam placerat justo ut purus
         interdum, ac placerat lacus consequat.</p>
 
-        <blockquote>Ut dictum enim posuere metus porta, et aliquam ex condimentum.
-        Proin sagittis nisi leo, ac pellentesque purus bibendum sit amet.</blockquote>
+        <blockquote><p>Ut dictum enim posuere metus porta, et aliquam ex condimentum.
+        Proin sagittis nisi leo, ac pellentesque purus bibendum sit
+        amet.</p></blockquote>
 
         <p class="m-poem">
         Curabitur<br/>
@@ -84,8 +84,9 @@ lines the same way. To remove the indentation and justification altogether, use
         aliquet nec consectetur in, mattis ac diam. Aliquam placerat justo ut purus
         interdum, ac placerat lacus consequat.</p>
 
-        <blockquote>Ut dictum enim posuere metus porta, et aliquam ex condimentum.
-        Proin sagittis nisi leo, ac pellentesque purus bibendum sit amet.</blockquote>
+        <blockquote><p>Ut dictum enim posuere metus porta, et aliquam ex condimentum.
+        Proin sagittis nisi leo, ac pellentesque purus bibendum sit
+        amet.</p></blockquote>
 
         <p class="m-poem">
         Curabitur<br/>
@@ -196,6 +197,45 @@ definitions.
           <dt>23:34:13</dt>
           <dd>Finally put my pants on. Too late.</dd>
         </dl>
+
+The lists are compact by default, wrap item content in :html:`<p>` to make them
+inflated. Paragraphs in list items are neither indented nor justified.
+
+.. code-figure::
+
+    .. code:: html
+
+        <ul>
+          <li>
+            <p>Item 1, first paragraph.</p>
+            <p>Item 1, second paragraph.</p>
+          </li>
+          <li>
+            <p>Item 2</p>
+            <ol>
+              <li><p>An item</p></li>
+              <li><p>Another item</p></li>
+            </ol>
+          </li>
+          <li><p>Item 3</p></li>
+        </ul>
+
+    .. raw:: html
+
+        <ul>
+          <li>
+            <p>Item 1, first paragraph.</p>
+            <p>Item 1, second paragraph.</p>
+          </li>
+          <li>
+            <p>Item 2</p>
+            <ol>
+              <li><p>An item</p></li>
+              <li><p>Another item</p></li>
+            </ol>
+          </li>
+          <li><p>Item 3</p></li>
+        </ul>
 
 `Headings`_
 ===========
@@ -337,3 +377,6 @@ for aligning and floating blocks in a similar way.
 Block elements :html:`<p>`, :html:`<ol>`, :html:`<ul>`, :html:`<dl>`,
 :html:`<blockqote>`, :html:`<pre>` and :html:`<hr>` by default have :css:`1rem`
 padding after, except when they are the last child, to avoid excessive spacing.
+A special case is lists --- components directly inside :html:`<li>` elements
+have :css:`1rem` padding after, except when the :html:`<li>` is last, to
+achieve consistent spacing for inflated lists.

@@ -32,6 +32,9 @@ Test
 .. role:: html(code)
     :language: html
 
+.. contents::
+    :class: m-block m-default
+
 Blocks
 ======
 
@@ -752,6 +755,32 @@ Tables
       </tbody>
     </table>
 
+Table with paragraphs
+---------------------
+
+.. raw:: html
+
+    <table class="m-table">
+      <tr>
+        <td>
+          <p>A paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit.</p>
+          <p>A second paragraph.</p>
+        </td>
+        <td>
+          <p>Another.</p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <p>Another. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit.</p>
+        </td>
+        <td>
+          <p>A paragraph.</p>
+          <p>A second paragraph.</p>
+        </td>
+      </tr>
+    </table>
+
 Images
 ======
 
@@ -957,3 +986,24 @@ Console figure:
     output</pre>
         And a description of that illegal crackery that's done above.
     </figure>
+
+List with components inside
+===========================
+
+.. raw:: html
+
+    <ul>
+      <li>
+        <p>A paragraph.</p>
+        <div class="m-note m-info">An info note.</div>
+      </li>
+      <li>
+        <a class="m-button m-primary">A button</a>
+      </li>
+      <li>
+        <p>Next item.</p>
+        <p>Next item next paragraph.</p>
+      </li>
+    </ul>
+
+    <p>Paragraph after.</p>

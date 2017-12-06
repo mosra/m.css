@@ -419,7 +419,7 @@ main p {
   text-indent: 1.5rem;
   text-align: justify;
 }
-main p.m-noindent {
+main p.m-noindent, li p, table.m-table td p {
   text-indent: 0;
   text-align: left;
 }
@@ -1639,6 +1639,24 @@ hr:last-child, article:last-child, article section:last-child,
 .m-note:last-child, .m-frame:last-child, .m-block:last-child, .m-button:last-child,
 table.m-table:last-child, img.m-image:last-child, div.m-image:last-child,
 figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
+  margin-bottom: 0;
+}
+li > p:last-child, li > blockquote:last-child, li > pre:last-child,
+li > figure.m-code-figure:last-child, li > figure.m-console-figure:last-child,
+li > .m-note:last-child, li > .m-frame:last-child, li > .m-block:last-child,
+li > .m-button:last-child, li > div.m-scroll:last-child,
+li > table.m-table:last-child, li > div.m-image:last-child,
+li > img.m-image:last-child, li > figure.m-figure:last-child,
+li > div.m-math:last-child {
+  margin-bottom: 1rem;
+}
+li > p:last-child, li:last-child > blockquote:last-child, li:last-child > pre:last-child,
+li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-console-figure:last-child,
+li:last-child > .m-note:last-child, li:last-child > .m-frame:last-child, li:last-child > .m-block:last-child,
+li:last-child > .m-button:last-child, li:last-child > div.m-scroll:last-child,
+li:last-child > table.m-table:last-child, li:last-child > div.m-image:last-child,
+li:last-child > img.m-image:last-child, li:last-child > figure.m-figure:last-child,
+li:last-child > div.m-math:last-child {
   margin-bottom: 0;
 }
 
