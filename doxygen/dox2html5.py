@@ -508,8 +508,13 @@ def parse_desc_internal(state: State, element: ET.Element, trim = True):
         if element.tag == 'para' and not out.write_close_tag and i.tail and i.tail.strip():
             out.parsed += '<p>'
             out.write_close_tag = True
+            # There is usually some whitespace in between, get rid of it as
+            # this is a start of a new paragraph. Stripping of the whole thing
+            # is done by the caller.
+            out.parsed += html.escape(i.tail.lstrip())
 
-        if i.tail:
+        # Otherwise strip only if requested by the called
+        elif i.tail:
             out.parsed += html.escape(i.tail.strip() if trim else i.tail)
 
     return out
