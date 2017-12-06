@@ -306,13 +306,13 @@ modifications:
     added after ``::`` and ``_`` in long symbols in link titles and after ``/``
     in URLs.
 
-Single-paragraph list items, function parameter description and return value
-documentation is stripped from the enclosing :html:`<p>` tag to make the output
-more compact. If multiple paragraphs are present, nothing is stripped. In case
-of lists, they are then rendered in an inflated form. However, in order to
-achieve even spacing also with single-paragraph items, it's needed use some
-explicit markup. Adding :html:`<p></p>` to a single-paragraph item will make
-sure the enclosing :html:`<p>` is not stripped.
+Single-paragraph list items, function parameter description, table cell content
+and return value documentation is stripped from the enclosing :html:`<p>` tag
+to make the output more compact. If multiple paragraphs are present, nothing is
+stripped. In case of lists, they are then rendered in an inflated form.
+However, in order to achieve even spacing also with single-paragraph items,
+it's needed use some explicit markup. Adding :html:`<p></p>` to a
+single-paragraph item will make sure the enclosing :html:`<p>` is not stripped.
 
 .. code-figure::
 

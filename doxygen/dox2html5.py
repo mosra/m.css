@@ -180,7 +180,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <simplesect> and <xrefsect>
         # - <verbatim>
         # - <variablelist>, <itemizedlist>, <orderedlist>
-        # - <image>
+        # - <image>, <table>
         # - block <formula>
         # - <programlisting> (complex block/inline autodetection involved, so
         #   the check is deferred to later in the loop)
@@ -198,7 +198,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # I.e., not wrapping "A paragraph" in a <p>, but only if it's
         # immediately followed by another and it's the first paragraph in a
         # list item. We check that using the immediate_parent variable.
-        if (i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image'] or (i.tag == 'simplesect' and i.attrib['kind'] != 'return') or (i.tag == 'formula' and i.text.startswith('\[ ') and i.text.endswith(' \]'))) and element.tag == 'para' and out.write_paragraph_close_tag:
+        if (i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image', 'table'] or (i.tag == 'simplesect' and i.attrib['kind'] != 'return') or (i.tag == 'formula' and i.text.startswith('\[ ') and i.text.endswith(' \]'))) and element.tag == 'para' and out.write_paragraph_close_tag:
             out.is_reasonable_paragraph = False
             out.parsed = out.parsed.rstrip()
             if not out.parsed:
@@ -310,6 +310,31 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 assert li.tag == 'listitem'
                 out.parsed += '<li>{}</li>'.format(parse_desc(state, li))
             out.parsed += '</{}>'.format(tag)
+
+        elif i.tag == 'table':
+            has_block_elements = True
+            out.parsed += '<table class="m-table">'
+            inside_tbody = False
+
+            row: ET.Element
+            for row in i:
+                assert row.tag == 'row'
+                is_header_row = True
+                row_data = ''
+                for entry in row:
+                    assert entry.tag == 'entry'
+                    is_header = entry.attrib['thead'] == 'yes'
+                    is_header_row = is_header_row and is_header
+                    row_data += '<{0}>{1}</{0}>'.format('th' if is_header else 'td', parse_desc(state, entry))
+                if is_header_row:
+                    assert not inside_tbody # Assume there's only one header row
+                    out.parsed += '<thead><tr>{}</tr></thead><tbody>'.format(row_data)
+                    inside_tbody = True
+                else:
+                    out.parsed += '<tr>{}</tr>'.format(row_data)
+
+            if inside_tbody: out.parsed += '</tbody>'
+            out.parsed += '</table>'
 
         elif i.tag == 'simplesect':
             # Return value is separated from the text flow
@@ -601,8 +626,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed = out.parsed[3:-4]
 
     # Strip superfluous <p> for simple elments (list items, parameter and
-    # return value description), but only if there is just a single paragraph
-    elif (element.tag in ['listitem', 'parameterdescription'] or (element.tag == 'simplesect' and element.attrib['kind'] == 'return')) and not has_block_elements and paragraph_count == 1:
+    # return value description, table cells), but only if there is just a
+    # single paragraph
+    elif (element.tag in ['listitem', 'parameterdescription', 'entry'] or (element.tag == 'simplesect' and element.attrib['kind'] == 'return')) and not has_block_elements and paragraph_count == 1:
         assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
         out.parsed = out.parsed[3:-4]
 

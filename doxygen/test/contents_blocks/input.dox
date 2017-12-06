@@ -53,6 +53,12 @@ Text right after that blockquote should be a new paragraph.
 
 A paragraph after that list.
 
+Table header    | Another       | Third
+--------------- | ------------- | -----
+Cell            | Another cell  | 3rd
+Next row        | Yup           | This
+is a table      | *really*      | yes.
+
 */
 
 /** @page other Other page
