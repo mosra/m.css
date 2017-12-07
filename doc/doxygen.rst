@@ -449,9 +449,6 @@ Filename suffix     Detected language
 ``.h``              C++ (instead of C)
 ``.h.cmake``        C++ (instead of CMake), as this extension is often used for
                     C++ headers that are preprocessed with CMake
-``.h.nostrip``      C++. Useful for embedding code snippets with Doxygen
-                    comment block, as Doxygen would strip them with plain
-                    ``.h``.
 ``.glsl``           GLSL. For some reason, stock Pygments detect only
                     ``.vert``, ``.frag`` and ``.geo`` extensions as GLSL.
 ``.conf``           INI (key-value configuration files)
