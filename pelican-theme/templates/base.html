@@ -33,31 +33,35 @@
         <div class="m-row">
           <ol class="m-col-t-6 m-col-m-none">
             {% for title, link, slug, sub in M_LINKS_NAVBAR1 %}
+            {% if not sub %}
+            <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+            {% else %}
             <li>
               <a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
-              {% if sub %}
               <ol>
                 {% for title, link, slug in sub %}
                 <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                 {% endfor %}
               </ol>
-              {% endif %}
             </li>
+            {% endif %}
             {% endfor %}
           </ol>
           {% set start = M_LINKS_NAVBAR1|length + 1 %}
           <ol class="m-col-t-6 m-col-m-none" start="{{ start }}">
             {% for title, link, slug, sub in M_LINKS_NAVBAR2 %}
+            {% if not sub %}
+            <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+            {% else %}
             <li>
               <a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a>
-              {% if sub %}
               <ol>
                 {% for title, link, slug in sub %}
                 <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
                 {% endfor %}
               </ol>
-              {% endif %}
             </li>
+            {% endif %}
             {% endfor %}
           </ol>
         </div>
