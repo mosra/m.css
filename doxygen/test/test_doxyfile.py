@@ -10,7 +10,6 @@ class Doxyfile(unittest.TestCase):
             'HTML_EXTRA_FILES': ['css', 'another.png', 'hello'],
             'HTML_EXTRA_STYLESHEET': ['a.css', 'b.css'],
             'HTML_OUTPUT': 'html',
-            'IMAGE_PATH': [],
             'M_CLASS_TREE_EXPAND_LEVELS': 1,
             'M_EXPAND_INNER_TYPES': 0,
             'M_FILE_TREE_EXPAND_LEVELS': 1,

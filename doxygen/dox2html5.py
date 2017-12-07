@@ -541,24 +541,19 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'image':
             has_block_elements = True
             name = i.attrib['name']
-            path = None
 
             if i.attrib['type'] == 'html':
-                # Discover the real path of the image
-                for candidate in state.doxyfile['IMAGE_PATH']:
-                    path = os.path.join(state.basedir, candidate, name)
-                    if os.path.exists(path):
-                        state.images += [path]
-                        break
+                path = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], name)
+                if os.path.exists(path):
+                    state.images += [path]
                 else:
-                    logging.warning("Image {} was not found in any IMAGE_PATH".format(name))
+                    logging.warning("Image {} was not found in XML_OUTPUT".format(name))
 
-                alt = i.text
-                if not alt:
-                    alt = 'Image'
-                    logging.warning("Image {} has no alt text".format(name))
-
-                out.parsed += '<img class="m-image" src="{}" alt="{}" />'.format(name, html.escape(alt))
+                caption = i.text
+                if caption:
+                    out.parsed += '<figure class="m-figure"><img src="{}" alt="Image" /><figcaption>{}</figcaption></figure>'.format(name, html.escape(caption))
+                else:
+                    out.parsed += '<img class="m-image" src="{}" alt="Image" />'.format(name)
 
         # Either block or inline because DOXYGEN!!! WHAT!!!
         elif i.tag == 'formula':
@@ -1541,7 +1536,6 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
         'HTML_OUTPUT': ['html'],
-        'IMAGE_PATH': [],
         'HTML_EXTRA_STYLESHEET': [
             'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
             '../css/m-dark+doxygen.compiled.css'],
@@ -1636,7 +1630,6 @@ def parse_doxyfile(state: State, doxyfile, config = None):
 
     # List values that we want. Drop empty lines.
     for i in ['TAGFILES',
-              'IMAGE_PATH',
               'HTML_EXTRA_STYLESHEET',
               'HTML_EXTRA_FILES']:
         if i in config:

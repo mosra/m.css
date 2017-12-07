@@ -1,15 +1,19 @@
 /** @mainpage
 
-@image html tiny.png Alt text
+Image:
+
+@image html tiny.png
+
+Figure:
+
+@image html tiny.png Caption
 
 */
 
 /** @page warnings Images that produce warnings
 
-@image html nonexistent.png Image that doesn't exist.
+Image that doesn't exist:
 
-Image without alt text:
-
-@image html tiny.png
+@image html nonexistent.png
 
 */

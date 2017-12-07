@@ -210,8 +210,6 @@ Variable                        Description
 :ini:`HTML_OUTPUT`              The output will be written here
 :ini:`TAGFILES`                 Used to discover what base URL to prepend to
                                 external references
-:ini:`IMAGE_PATHS`              Used to discover where Doxygen gets the image
-                                files
 :ini:`HTML_EXTRA_STYLESHEET`    List of CSS files to include. Relative paths
                                 are also searched relative to the
                                 ``dox2html5.py`` script. See below for more
@@ -292,8 +290,8 @@ place of ``m-light+doxygen.compiled.css``:
 See the `CSS files`_ section below for more information about customizing the
 CSS files.
 
-`Text content`_
-===============
+`Content`_
+==========
 
 Brief and detailed description is parsed as-is with the following
 modifications:
@@ -352,6 +350,14 @@ single-paragraph item will make sure the enclosing :html:`<p>` is not stripped.
             </ul>
           </li>
         </ul>
+
+To match the stock HTML output, images that are marked with ``html`` target are
+used. If image name is present, the image is rendered as a figure with caption.
+
+.. block-warning:: Doxygen patches
+
+    Current stable release of Doxygen has broken copying of images for the XML
+    output. You need to apply :gh:`doxygen/doxygen#629` in order to fix that.
 
 `Pages, sections and table of contents`_
 ========================================
