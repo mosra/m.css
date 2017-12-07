@@ -69,14 +69,14 @@ def add_wbr(text: str) -> str:
     if '<' in text: return text
 
     if '::' in text: # C++ names
-        return text.replace('::', '::<wbr/>')
+        return text.replace('::', '::<wbr />')
     elif '_' in text: # VERY_LONG_UPPER_CASE macro names
-        return text.replace('_', '_<wbr/>')
+        return text.replace('_', '_<wbr />')
 
     # These characters are quite common, so at least check that there is no
     # space (which may hint that the text is actually some human language):
     elif '/' in text and not ' ' in text: # URLs
-        return text.replace('/', '/<wbr/>')
+        return text.replace('/', '/<wbr />')
     else:
         return text
 
@@ -412,7 +412,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         elif i.tag == 'linebreak':
             # Strip all whitespace before the linebreak, as it is of no use
-            out.parsed = out.parsed.rstrip() + '<br/>'
+            out.parsed = out.parsed.rstrip() + '<br />'
 
         elif i.tag == 'programlisting':
             # If it seems to be a standalone code paragraph, don't wrap it in
@@ -626,7 +626,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             tail: str = html.escape(i.tail)
             if trim:
                 tail = tail.strip()
-            elif out.parsed.endswith('<br/>'):
+            elif out.parsed.endswith('<br />'):
                 tail = tail.lstrip()
             out.parsed += tail
 
@@ -1405,7 +1405,7 @@ def parse_xml(state: State, xml: str):
                     compound.prefix_wbr += '_{}'.format(index+1)
             compound.prefix_wbr += '&gt;'
 
-        compound.prefix_wbr += '::<wbr/>'
+        compound.prefix_wbr += '::<wbr />'
 
     parsed = Empty()
     parsed.version = root.attrib['version']
