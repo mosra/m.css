@@ -290,6 +290,36 @@ place of ``m-light+doxygen.compiled.css``:
 See the `CSS files`_ section below for more information about customizing the
 CSS files.
 
+`Command-line options`_
+=======================
+
+.. code:: shell-session
+
+    ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
+                   [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
+                   [--no-doxygen] [--debug]
+                   doxyfile
+
+Arguments:
+
+-   ``doxyfile`` --- where the Doxyfile is
+
+Options:
+
+-   ``-h``, ``--help`` --- show this help message and exit
+-   ``--templates TEMPLATES`` --- template directory. Defaults to the
+    ``templates/`` subdirectory if not set.
+-   ``--wildcard WILDCARD`` --- only process files matching the wildcard.
+    Useful for debugging to speed up / restrict the processing to a subset of
+    files. Defaults to ``*.xml`` if not set.
+-   ``--index-pages INDEX_PAGES [INDEX_PAGES ...]`` --- index page templates.
+    By default, if not set, the index pages are matching stock Doxygen, i.e.
+    ``annotated.html``, ``files.html``, ``namespaces.html`` and ``pages.html``.
+    See `Navigation page templates`_ section below for more information.
+-   ``--no-doxygen`` --- don't run Doxygen before. By default Doxygen is run
+    before the script to refresh the generated XML output.
+-   ``--debug`` --- verbose debug output. Useful for debugging.
+
 `Content`_
 ==========
 
@@ -351,6 +381,9 @@ single-paragraph item will make sure the enclosing :html:`<p>` is not stripped.
           </li>
         </ul>
 
+`Images and figures`_
+---------------------
+
 To match the stock HTML output, images that are marked with ``html`` target are
 used. If image name is present, the image is rendered as a figure with caption.
 
@@ -360,7 +393,7 @@ used. If image name is present, the image is rendered as a figure with caption.
     output. You need to apply :gh:`doxygen/doxygen#629` in order to fix that.
 
 `Pages, sections and table of contents`_
-========================================
+----------------------------------------
 
 Table of contents is unconditionally generated for all compound documentation
 pages and includes both ``@section`` blocks in the detailed documentation as
@@ -380,7 +413,7 @@ Table of contents for pages is generated only if they specify
     :gh:`doxygen/doxygen#624` applied.
 
 `C++ support`_
-==============
+--------------
 
 .. block-warning:: Doxygen patches
 
@@ -390,7 +423,7 @@ Table of contents for pages is generated only if they specify
     :gh:`doxygen/doxygen#627`.
 
 `Code highlighting`_
-====================
+--------------------
 
 Every code snippet should be annotated with language-specific extension like in
 the example below. If not, the theme will assume C++ and emit a warning on
@@ -486,7 +519,7 @@ aliases in the original ``Doxyfile``:
 
     It's not possible to put a ``@code`` block (delimited by blank lines) to a
     Markdown list. A workaround is to use explicit HTML markup instead. See
-    `Text content`_ for more information about list behavior.
+    `Content`_ for more information about list behavior.
 
     .. code-figure::
 
@@ -529,36 +562,6 @@ aliases in the original ``Doxyfile``:
     C++ highlighting. Using ANSI color escape codes in terminal output require
     Doxygen with :gh:`doxygen/doxygen#623` applied, otherwise the codes will be
     present in the rendered output in their raw form.
-
-`Command-line options`_
-=======================
-
-::
-
-    ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
-                   [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
-                   [--no-doxygen] [--debug]
-                   doxyfile
-
-Arguments:
-
--   ``doxyfile`` --- where the Doxyfile is
-
-Options:
-
--   ``-h``, ``--help`` --- show this help message and exit
--   ``--templates TEMPLATES`` --- template directory. Defaults to the
-    ``templates/`` subdirectory if not set.
--   ``--wildcard WILDCARD`` --- only process files matching the wildcard.
-    Useful for debugging to speed up / restrict the processing to a subset of
-    files. Defaults to ``*.xml`` if not set.
--   ``--index-pages INDEX_PAGES [INDEX_PAGES ...]`` --- index page templates.
-    By default, if not set, the index pages are matching stock Doxygen, i.e.
-    ``annotated.html``, ``files.html``, ``namespaces.html`` and ``pages.html``.
-    See `Navigation page templates`_ section below for more information.
--   ``--no-doxygen`` --- don't run Doxygen before. By default Doxygen is run
-    before the script to refresh the generated XML output.
--   ``--debug`` --- verbose debug output. Useful for debugging.
 
 `Customizing the template`_
 ===========================
