@@ -25,6 +25,9 @@
 Doxygen theme
 #############
 
+:summary: A modern, mobile-friendly drop-in replacement for the stock Doxygen
+    HTML output, generated from Doxygen-produced XML files
+
 .. role:: cpp(code)
     :language: cpp
 .. role:: html(code)
@@ -38,10 +41,10 @@ Doxygen theme
 .. role:: sh(code)
     :language: sh
 
-A drop-in replacement for the stock `Doxygen <http://www.doxygen.org>`_ HTML
-output, generated from Doxygen-produced XML files. Generated filenames and URLs
-are fully compatible with the stock output to avoid broken links once you
-switch.
+A modern, mobile-friendly drop-in replacement for the stock
+`Doxygen <http://www.doxygen.org>`_ HTML output, generated from
+Doxygen-produced XML files. Generated filenames and URLs are fully compatible
+with the stock output to avoid broken links once you switch.
 
 .. contents::
     :class: m-block m-default

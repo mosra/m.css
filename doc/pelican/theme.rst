@@ -430,7 +430,7 @@ actual content instead of just a boring list of article summaries.
 
 Article pages show a list of sections and tags in a right sidebar. By default,
 list of authors is not displayed as there is usually just one author. If you
-want to display the authors as well, enable it using the :py:`SHOW_AUTHOR_LIST`
+want to display the authors as well, enable it using the :py:`M_SHOW_AUTHOR_LIST`
 option in the configuration:
 
 .. code:: py
