@@ -1650,7 +1650,7 @@ li > img.m-image:last-child, li > figure.m-figure:last-child,
 li > div.m-math:last-child {
   margin-bottom: 1rem;
 }
-li > p:last-child, li:last-child > blockquote:last-child, li:last-child > pre:last-child,
+li:last-child > p:last-child, li:last-child > blockquote:last-child, li:last-child > pre:last-child,
 li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-console-figure:last-child,
 li:last-child > .m-note:last-child, li:last-child > .m-frame:last-child, li:last-child > .m-block:last-child,
 li:last-child > .m-button:last-child, li:last-child > div.m-scroll:last-child,
