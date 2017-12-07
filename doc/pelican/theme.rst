@@ -75,8 +75,8 @@ plugin, so that plugin needs to be loaded as well.
                    '/static/m-dark.css']
     M_THEME_COLOR = '#22272e'
 
-    PLUGIN_PATHS += ['m.css/pelican-plugins']
-    PLUGINS += ['m.htmlsanity']
+    PLUGIN_PATHS = ['m.css/pelican-plugins']
+    PLUGINS = ['m.htmlsanity']
 
 Here you can take advantage of the ``pelicanconf.py`` and ``publishconf.py``
 distinction --- use ``m-dark.css`` for local development and override the
