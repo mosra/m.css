@@ -26,8 +26,8 @@ Test
 ####
 
 :save_as: doxygen/test/index.html
-:breadcrumb: {filename}/doxygen.rst Doxygen
-:css: {filename}/static/m-doxygen.css
+:breadcrumb: {filename}/doxygen.rst Doxygen theme
+:css: {filename}/static/m-dark.doxygen.compiled.css
 
 Lists
 =====
