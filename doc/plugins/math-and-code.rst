@@ -66,6 +66,16 @@ package manager, for example on Ubuntu:
 
     sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
 
+.. block-warning:: Note for macOS users
+
+    On macOS 10.11 and up, if you use MacTex, there's some additional setup
+    needed `as detailed here <https://tex.stackexchange.com/a/249967>`_ --- you
+    need to update your :sh:`$PATH` so the binaries are properly found:
+
+    .. code:: sh
+
+        export PATH=$PATH:/Library/TeX/Distributions/.DefaultTeX/Contents/Programs/texbin
+
 .. note-success::
 
     This plugin makes use of the ``latex2svg.py`` utility from :gh:`tuxu/latex2svg`,
