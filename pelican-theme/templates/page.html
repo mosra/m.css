@@ -46,7 +46,7 @@
   <div class="m-row">
     <div class="m-col-l-10 m-push-l-1 m-nopadb">
 <!-- header -->
-{{ page.header|expand_links(page) -}}
+{{ page.header|trim|expand_links(page) }}
 <!-- /header -->
     </div>
   </div>
@@ -58,7 +58,7 @@
     <div id="m-landing-cover">
       <div class="m-container">
 <!-- landing -->
-{{ page.landing|expand_links(page) -}}
+{{ page.landing|trim|expand_links(page) }}
 <!-- /landing -->
       </div>
     </div>
@@ -82,7 +82,7 @@
         </h1>
         {% endif %}
 <!-- content -->
-{{ page.content -}}
+{{ page.content|trim }}
 <!-- /content -->
       </div>
     </div>
@@ -93,7 +93,7 @@
   <div class="m-row">
     <div class="m-col-l-10 m-push-l-1 m-nopadt">
 <!-- footer -->
-{{ page.footer|expand_links(page) -}}
+{{ page.footer|trim|expand_links(page) }}
 <!-- /footer -->
     </div>
   </div>

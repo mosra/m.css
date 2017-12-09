@@ -32,7 +32,7 @@
                (article.collapse_first is not defined and not M_COLLAPSE_FIRST_ARTICLE)) %}
         <div class="m-clearfix-l"></div>
 <!-- content -->
-{{ article.content }}
+{{ article.content|trim }}
 <!-- /content -->
         {% endif %}
         <footer>

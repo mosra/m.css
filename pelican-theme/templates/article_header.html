@@ -19,6 +19,6 @@
           (article.collapse_first is not defined and M_COLLAPSE_FIRST_ARTICLE))) or
         (article.hide_summary is defined and article.hide_summary != 'True') or
         (article.hide_summary is not defined and not M_HIDE_ARTICLE_SUMMARY) %}
-  {{ article.summary|indent(2) }}
+  {{ article.summary|trim|indent(2) }}
   {% endif %}
 </header>

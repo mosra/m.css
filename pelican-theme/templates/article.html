@@ -52,7 +52,7 @@
       <div class="m-container">
         <div class="m-row">
           <div class="m-col-m-10 m-push-m-1 m-nopady">
-            {{ article.summary|indent(12) }}
+            {{ article.summary|trim|indent(12) }}
           </div>
         </div>
       </div>
@@ -62,7 +62,7 @@
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopady">
 <!-- content -->
-{{ article.content -}}
+{{ article.content|trim }}
 <!-- /content -->
         </div>
       </div>
@@ -82,7 +82,7 @@
       {{ header()|indent(6) }}
       <div class="m-clearfix-l"></div>
 <!-- content -->
-{{ article.content -}}
+{{ article.content|trim }}
 <!-- /content -->
       <footer>
         {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
