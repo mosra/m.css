@@ -2,23 +2,26 @@
 
 {% block head %}
   {{- super() -}}
-  {% if articles_page.has_previous() %}
+  {% if articles_page and articles_page.has_previous() %}
   <link rel="prev" href="{{ articles_previous_page.url|format_siteurl }}" />
   {% endif %}
-  {% if articles_page.has_next() %}
+  {% if articles_page and articles_page.has_next() %}
   <link rel="next" href="{{ articles_next_page.url|format_siteurl }}" />
   {% endif %}
 {% endblock head %}
 
 {% block content %}
     <div class="m-col-m-10">
-      {% block content_title %}
-      {% endblock content_title %}
-      {% for article in articles_page.object_list %}
+      {% if articles_page %}
+      {% set article_list = articles_page.object_list %}
+      {% else %}
+      {% set article_list = articles %}
+      {% endif %}
+      {% for article in article_list %}
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
         {{ header()|indent(8) }}
-        {% if loop.first and articles_page.number == 1 and
+        {% if loop.first and (not articles_page or articles_page.number == 1) and
               ((article.collapse_first is defined and article.collapse_first != 'True') or
                (article.collapse_first is not defined and not M_COLLAPSE_FIRST_ARTICLE)) %}
         <div class="m-clearfix-l"></div>
@@ -30,12 +33,12 @@
           {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
           {{ footer()|indent(10) }}
         </footer>
-        {% if not loop.first or articles_page.number != 1 %}
+        {% if not loop.first or (articles_page and articles_page.number != 1) %}
         <div class="m-clearfix-l"></div>
         {% endif %}
       </article>
       {% endfor %}
-      {% if articles_page.has_other_pages() %}
+      {% if articles_page and articles_page.has_other_pages() %}
       {% macro pagination() %}{% include 'pagination.html' %}{% endmacro %}
       {{ pagination()|indent(6) }}
       {% endif %}
