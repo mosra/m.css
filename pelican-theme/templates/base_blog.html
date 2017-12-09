@@ -48,11 +48,14 @@
     <nav class="m-navpanel m-col-m-2">
       <h3>Cate&shy;gories</h3>
       <ol class="m-block-bar-m">
+        {% if not categories %}
+        <li><em class="m-text m-dim">(none yet)</em></li>
+        {% endif %}
         {% for cat, null in categories %}
         <li><a href="{{ cat.url|format_siteurl }}">{{ cat|hyphenate }}</a></li>
         {% endfor %}
       </ol>
-      {% if M_SHOW_AUTHOR_LIST %}
+      {% if M_SHOW_AUTHOR_LIST and authors %}
       <h3>Authors</h3>
       <ol class="m-block-bar-m">
         {% for author, null in authors %}
@@ -60,6 +63,7 @@
         {% endfor %}
       </ol>
       {% endif %}
+      {% if tags %}
       <h3>Tag cloud</h3>
       <ul class="m-tagcloud">
         {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}
@@ -67,6 +71,7 @@
         <li class="m-tag-{{ (5*(articles|length)/max_articles_per_tag)|round(0, 'ceil')|int }}"><a href="{{ tag.url|format_siteurl }}">{{ tag }}</a></li>
         {% endfor %}
       </ul>
+      {% endif %}
     </nav>
   </div>
 </div>
