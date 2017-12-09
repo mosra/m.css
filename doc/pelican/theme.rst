@@ -140,7 +140,8 @@ logo/text is a link that leads to :py:`SITTEURL`.
 in the top navbar. On narrow screens, the navbar is divided into two columns,
 links from the first variable are in the left column while links from the
 second variable are in the right column. Omit the second variable if you want
-the links to be in a single column.
+the links to be in a single column. Omitting both variables will cause the
+hamburger menu link on small screen sizes to not even be present.
 
 Both variables have the same format --- a list of 4-tuples, where first item is
 link title, second the URL, third page slug of the corresponding page (used
