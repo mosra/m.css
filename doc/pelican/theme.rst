@@ -98,13 +98,6 @@ If you would want to use the light theme instead, the configuration is this
     and plugins are prefixed with ``M_``. Configuration variables without
     prefix are builtin Pelican options.
 
-.. note-warning::
-
-    The above configuration should be enough to produce a (mostly empty)
-    version of your website using the theme without any errors during
-    processing. If that's not the case, please :gh:`report a bug <mosra/m.css/issues/new>`.
-    Thank you!
-
 `Configuration`_
 ================
 
