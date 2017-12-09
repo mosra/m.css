@@ -31,7 +31,7 @@
       <a id="m-navbar-hide" href="#" title="Hide navigation" class="m-col-t-3 m-hide-m m-text-right"></a>
       <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
         <div class="m-row">
-          <ol class="m-col-t-6 m-col-m-none">
+          <ol class="{% if M_LINKS_NAVBAR2 %}m-col-t-6{% else %}m-col-t-12{% endif %} m-col-m-none">
             {% for title, link, slug, sub in M_LINKS_NAVBAR1 %}
             {% if not sub %}
             <li><a href="{{ link|format_siteurl }}"{% if (page and page.highlight == slug) or slug == page_slug %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
@@ -47,6 +47,7 @@
             {% endif %}
             {% endfor %}
           </ol>
+          {% if M_LINKS_NAVBAR2 %}
           {% set start = M_LINKS_NAVBAR1|length + 1 %}
           <ol class="m-col-t-6 m-col-m-none" start="{{ start }}">
             {% for title, link, slug, sub in M_LINKS_NAVBAR2 %}
@@ -64,6 +65,7 @@
             {% endif %}
             {% endfor %}
           </ol>
+          {% endif %}
         </div>
       </div>
     </div>
