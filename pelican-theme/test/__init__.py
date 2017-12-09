@@ -58,3 +58,25 @@ class BaseTestCase(MinimalTestCase):
             'SLUGIFY_SOURCE': 'basename'
         }
         MinimalTestCase.run_pelican(self, {**implicit_settings, **settings})
+
+class BlogTestCase(BaseTestCase):
+    def run_pelican(self, settings):
+        implicit_settings = {
+            'DATE_FORMATS': {'en': ('en_US.UTF-8', '%b %d, %Y')},
+            'M_FINE_PRINT': None,
+            'PAGE_PATHS': ['pages'], # doesn't exist
+            'ARTICLE_PATHS': ['.'],
+            'AUTHOR_SAVE_AS': 'author-{slug}.html',
+            'AUTHOR_URL': 'author-{slug}.html',
+            'CATEGORY_SAVE_AS': 'category-{slug}.html',
+            'CATEGORY_URL': 'category-{slug}.html',
+            'TAG_SAVE_AS': 'tag-{slug}.html',
+            'TAG_URL': 'tag-{slug}.html',
+
+            # No m.css stuff to test there
+            'CATEGORY_FEED_ATOM': None,
+            'AUTHOR_FEED_ATOM': None,
+            'AUTHOR_FEED_RSS': None,
+            'TRANSLATION_FEED_ATOM': None
+        }
+        BaseTestCase.run_pelican(self, {**implicit_settings, **settings})
