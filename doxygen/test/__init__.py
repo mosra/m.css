@@ -24,9 +24,11 @@ class IntegrationTestCase(unittest.TestCase):
     def run_dox2html5(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
         run(os.path.join(self.path, 'Doxyfile'), templates=templates, wildcard=wildcard, index_pages=index_pages)
 
-    def expected_actual_contents(self, file):
-        with open(os.path.join(self.path, file)) as f:
-            expected = f.read().strip()
-        with open(os.path.join(self.path, 'html', file)) as f:
-            actual = f.read().strip()
-        return expected, actual
+    def actual_expected_contents(self, actual, expected = None):
+        if not expected: expected = actual
+
+        with open(os.path.join(self.path, expected)) as f:
+            expected_contents = f.read().strip()
+        with open(os.path.join(self.path, 'html', actual)) as f:
+            actual_contents = f.read().strip()
+        return actual_contents, expected_contents

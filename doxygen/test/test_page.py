@@ -6,7 +6,7 @@ class Order(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(index_pages=['pages'], wildcard='index.xml')
-        self.assertEqual(*self.expected_actual_contents('pages.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
 
 class DuplicatedBrief(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -14,5 +14,5 @@ class DuplicatedBrief(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='page-*.xml')
-        self.assertEqual(*self.expected_actual_contents('page-a.html'))
-        self.assertEqual(*self.expected_actual_contents('page-b.html'))
+        self.assertEqual(*self.actual_expected_contents('page-a.html'))
+        self.assertEqual(*self.actual_expected_contents('page-b.html'))

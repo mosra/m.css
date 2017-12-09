@@ -8,11 +8,11 @@ class Typography(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.expected_actual_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
         self.run_dox2html5(wildcard='warnings.xml')
-        self.assertEqual(*self.expected_actual_contents('warnings.html'))
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class Blocks(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -20,11 +20,11 @@ class Blocks(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.expected_actual_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_xrefpages(self):
         self.run_dox2html5(wildcard='todo.xml')
-        self.assertEqual(*self.expected_actual_contents('todo.html'))
+        self.assertEqual(*self.actual_expected_contents('todo.html'))
 
 class Code(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -32,11 +32,11 @@ class Code(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.expected_actual_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
         self.run_dox2html5(wildcard='warnings.xml')
-        self.assertEqual(*self.expected_actual_contents('warnings.html'))
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class Image(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -44,12 +44,12 @@ class Image(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.expected_actual_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'tiny.png')))
 
     def test_warnings(self):
         self.run_dox2html5(wildcard='warnings.xml')
-        self.assertEqual(*self.expected_actual_contents('warnings.html'))
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class Math(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -57,7 +57,7 @@ class Math(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.expected_actual_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class Tagfile(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -65,4 +65,4 @@ class Tagfile(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.expected_actual_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index.html'))
