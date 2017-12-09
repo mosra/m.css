@@ -38,9 +38,7 @@
             <div class="m-row">
               <div class="m-col-t-12 m-col-s-10 m-push-s-1 m-col-m-8 m-push-m-2">
                 {% set title = article.title.split(' — ') %}
-                <h1><a href="{{ article.url|format_siteurl }}" rel="bookmark" title="Permalink to {{ article.title }}">
-                  {{ title[0] }}
-                </a></h1>
+                <h1><a href="{{ article.url|format_siteurl }}" rel="bookmark" title="Permalink to {{ article.title }}">{{ title[0] }}</a></h1>
                 {% if title|length >= 2 %}
                 <h2>{{ title[1] }}</h2>
                 {% endif %}
