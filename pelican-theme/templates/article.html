@@ -12,8 +12,10 @@
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta property="og:url" content="{{ article.url|format_siteurl }}" />
   <meta name="twitter:url" content="{{ article.url|format_siteurl }}" />
+  {% if article.summary %}
   <meta property="og:description" content="{{ article.summary|striptags }}" />
   <meta name="twitter:description" content="{{ article.summary|striptags }}" />
+  {% endif %}
   {% if article.cover %}
   <meta property="og:image" content="{{ article.cover|expand_link(article) }}" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -32,8 +34,10 @@
         <div id="m-jumbo-cover">
           <div class="m-container">
             <div class="m-row">
-              <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-left">{{ article.locale_date }}</div>
+              <div class="{% if article.authors %}m-col-t-6 m-col-s-5{% else %}m-col-t-12 m-col-s-10{% endif %} m-push-s-1 m-text-left">{{ article.locale_date }}</div>
+              {% if article.authors %}
               <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-right">{% for author in article.authors %}<a href="{{ author.url|format_siteurl }}">{{ author }}</a>{% endfor %}</div>
+              {% endif %}
             </div>
             <div class="m-row">
               <div class="m-col-t-12 m-col-s-10 m-push-s-1 m-col-m-8 m-push-m-2">
@@ -47,8 +51,9 @@
           </div>
         </div>
       </div>
-      {% if (article.hide_summary is defined and article.hide_summary != 'True') or
-            (article.hide_summary is not defined and not M_HIDE_ARTICLE_SUMMARY) %}
+      {% if article.summary and
+            ((article.hide_summary is defined and article.hide_summary != 'True') or
+             (article.hide_summary is not defined and not M_HIDE_ARTICLE_SUMMARY)) %}
       <div class="m-container">
         <div class="m-row">
           <div class="m-col-m-10 m-push-m-1 m-nopady">
@@ -58,6 +63,7 @@
       </div>
       {% endif %}
     </header>
+    {% if article.content %}
     <div class="m-container m-container-inflatable">
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopady">
@@ -67,6 +73,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
     <footer class="m-container">
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopadb">
@@ -81,9 +88,11 @@
       {% macro header() %}{% include "article_header.html" %}{% endmacro %}
       {{ header()|indent(6) }}
       <div class="m-clearfix-l"></div>
+      {% if article.content %}
 <!-- content -->
 {{ article.content|trim }}
 <!-- /content -->
+      {% endif %}
       <footer>
         {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
         {{ footer()|indent(8) }}
