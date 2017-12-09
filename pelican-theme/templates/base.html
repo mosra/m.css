@@ -25,7 +25,7 @@
     <div class="m-row">
       <a href="{{ SITEURL }}/" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m{% if page and page.landing and page.cover and page.navbar_brand_hidden == 'True' %} m-navbar-brand-hidden{% endif %}">
         {%- if M_SITE_LOGO %}<img src="{{ M_SITE_LOGO }}" />{% endif -%}
-        {{- M_SITE_LOGO_TEXT -}}
+        {{- M_SITE_LOGO_TEXT or SITENAME -}}
       </a>
       <a id="m-navbar-show" href="#navigation" title="Show navigation" class="m-col-t-3 m-hide-m m-text-right"></a>
       <a id="m-navbar-hide" href="#" title="Hide navigation" class="m-col-t-3 m-hide-m m-text-right"></a>

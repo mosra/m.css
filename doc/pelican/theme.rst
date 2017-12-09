@@ -115,7 +115,9 @@ of the website with pages is treated differently from the "blog" part with
 articles and there are two additional configuration options :py:`M_BLOG_URL` and
 :py:`M_BLOG_NAME` that control how various parts of the theme link to the blog
 and how blog pages are named in the :html:`<title>` element. The :py:`M_BLOG_URL`
-can be either absolute or relative to :py:`SITEURL`.
+can be either absolute or relative to :py:`SITEURL`. If :py:`M_BLOG_NAME` /
+:py:`M_BLOG_URL` are not set, the theme assumes they are the same as
+:py:`SITENAME` / :py:`SITEURL`.
 
 .. code:: py
 
@@ -130,8 +132,9 @@ can be either absolute or relative to :py:`SITEURL`.
 
 :py:`M_SITE_LOGO` is an image file that will be used as a brand logo on left
 side of the navbar, :py:`M_SITE_LOGO_TEXT` is brand logo text. Specifying just
-one of these does the expected thing. The brand logo/text is a link that leads
-to :py:`SITTEURL`.
+one of these does the expected thing, if neither of them is specified, the
+theme will use :py:`SITENAME` in place of :py:`M_SITE_LOGO_TEXT`. The brand
+logo/text is a link that leads to :py:`SITTEURL`.
 
 :py:`M_LINKS_NAVBAR1` and :py:`M_LINKS_NAVBAR2` variables contain links to put
 in the top navbar. On narrow screens, the navbar is divided into two columns,
