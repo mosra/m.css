@@ -190,7 +190,18 @@ the same way as in the `top navbar`_. A tuple entry with empty title (i.e.,
 
 Footer fine print can be specified via :py:`M_FINE_PRINT`. Contents of the
 variable are processed as :abbr:`reST <reStructuredText>`, so you can use all
-the formatting and linking capabilities in there.
+the formatting and linking capabilities in there. If :py:`M_FINE_PRINT` is not
+specified, the theme will use the following instead. Set
+:py:`M_FINE_PRINT = None` to disable rendering of the fine print completely.
+
+.. code:: py
+
+    M_FINE_PRINT = SITENAME + """. Powered by `Pelican <https://getpelican.com>`_
+        and `m.css <http://mcss.mosra.cz>`_."""
+
+If :py:`M_FINE_PRINT` is set to :py:`None` and none of :py:`M_LINKS_FOOTER1`,
+:py:`M_LINKS_FOOTER2`, :py:`M_LINKS_FOOTER3`, :py:`M_LINKS_FOOTER4` is set, the
+footer is not rendered at all.
 
 Example configuration, again matching example markup from the
 `CSS page layout <{filename}/css/page-layout.rst#footer-navigation>`__

@@ -73,6 +73,7 @@
 {% block main %}
 {% endblock %}
 </main>
+{% if M_LINKS_FOOTER1 or M_LINKS_FOOTER2 or M_LINKS_FOOTER3 or M_LINKS_FOOTER4 or not M_FINE_PRINT is defined or M_FINE_PRINT %}
 <footer><nav>
   <div class="m-container">
     {% if M_LINKS_FOOTER1 or M_LINKS_FOOTER2 or M_LINKS_FOOTER3 or M_LINKS_FOOTER4 %}
@@ -143,14 +144,15 @@
       </div>
     </div>
     {% endif %}
+    {% if not M_FINE_PRINT is defined or M_FINE_PRINT %}
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
-        {% if M_FINE_PRINT %}
-        {{ M_FINE_PRINT|render_rst|indent(10) }}
-        {% endif %}
+        {{ (M_FINE_PRINT or SITENAME + ". Powered by `Pelican <https://getpelican.com>`_ and `m.css <http://mcss.mosra.cz>`_.")|render_rst|indent(8) }}
       </div>
     </div>
+    {% endif %}
   </div>
 </nav></footer>
+{% endif %}
 </body>
 </html>
