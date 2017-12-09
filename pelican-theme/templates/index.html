@@ -12,8 +12,12 @@
 
 {% block content %}
     <div class="m-col-m-10">
-      {% block content_title %}
-      {% endblock content_title %}
+      {% if not articles_page.object_list %}
+      <div class="m-note m-success">
+        <h3>Congratulations!</h3>
+        The m.css theme is alive and kicking! Now, feed it some articles so it doesn't feel so empty :)
+      </div>
+      {% endif %}
       {% for article in articles_page.object_list %}
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}

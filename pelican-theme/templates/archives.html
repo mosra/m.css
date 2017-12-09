@@ -17,6 +17,12 @@
       {% else %}
       {% set article_list = articles %}
       {% endif %}
+      {% if not article_list %}
+      <div class="m-note m-success">
+        <h3>Congratulations!</h3>
+        The m.css theme is alive and kicking! Now, feed it some articles so it doesn't feel so empty :)
+      </div>
+      {% endif %}
       {% for article in article_list %}
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
