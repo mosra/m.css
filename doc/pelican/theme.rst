@@ -464,7 +464,9 @@ title and subtitle that's then rendered in a different font size. Example:
     Article contents.
 
 Sidebar with tag, category and author list shown in the classic article layout
-on the right is moved to the bottom for jumbo articles.
+on the right is moved to the bottom for jumbo articles. In case you need to
+invert text color on cover, add a :rst:`:class:` field containing the
+``m-inverted`` CSS class.
 
 .. note-info::
 
