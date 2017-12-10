@@ -547,13 +547,27 @@ article-specific setting has a precedence.
 ====================
 
 With the default configuration above the index page is just a list of articles
-with the first being expanded, the same is for the archives page. If you want
-to have a custom index page (for example a `landing page <#landing-pages>`_),
-remove :py:`'index'` from the :py:`DIRECT_TEMPLATES` setting:
+with the first being expanded; the archives page is basically the same. If you
+want to have a custom index page (for example a `landing page <#landing-pages>`_),
+remove :py:`'index'` from the :py:`DIRECT_TEMPLATES` setting and keep just
+:py:`'archives'` for the blog front page. Also you may want to enable
+pagination for the archives, as that's not enabled by default:
 
 .. code:: py
 
-    DIRECT_TEMPLATES = []
+    # Defaults to ['index', 'categories', 'authors', 'archives']
+    DIRECT_TEMPLATES = ['archives']
+
+    # Defaults to ['index']
+    PAGINATED_DIRECT_TEMPLATES = ['archives']
+
+.. note-warning::
+
+    The m.css Pelican theme doesn't provide per-year, per-month or per-day
+    archive pages or category, tag, author *list* pages at the moment ---
+    that's why the above :py:`DIRECT_TEMPLATES` setting omits them. List of
+    categories and tags is available in a sidebar from any article or article
+    listing page.
 
 Every category, tag and author has its own page that lists corresponding
 articles in a way similar to the index or archives page, but without the first
@@ -568,13 +582,6 @@ Index, archive and all category/tag/author pages are paginated based on the
 :py:`DEFAULT_PAGINATION` setting --- on the bottom of each page there are link
 to prev and next page, besides that there's :html:`<link rel="prev">` and
 :html:`<link rel="next">` that provides the same as a hint to search engines.
-
-.. note-warning::
-
-    The m.css Pelican theme doesn't provide per-year, per-month or per-day
-    archive pages or category, tag, author *list* pages at the moment. List of
-    categories and tags is available in a sidebar from any article or article
-    listing page.
 
 `Theme properties`_
 ===================
