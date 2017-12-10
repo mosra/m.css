@@ -292,8 +292,8 @@ cover image spanning the whole window width. Put cover image URL into a
 :abbr:`reST <reStructuredText>`-processed content that appears on top of the
 cover image. Contents of the :rst:`:landing:` are put into a
 :html:`<div class="m-container">`, you are expected to fully take care of rows
-and columns in it. The :rst:`:navbar_brand_hidden:` field controls visibility
-of the navbar brand link. Set it to :py:`True` to hide it, default (if not
+and columns in it. The :rst:`:hide_navbar_brand:` field controls visibility of
+the navbar brand link. Set it to :py:`True` to hide it, default (if not
 present) is :py:`False`.
 
 .. block-warning:: Configuration
@@ -318,7 +318,7 @@ destination and URL.
     :save_as: index.html
     :url:
     :cover: {filename}/static/cover.jpg
-    :navbar_brand_hidden: True
+    :hide_navbar_brand: True
     :landing:
         .. container:: m-row
 

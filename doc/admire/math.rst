@@ -33,7 +33,6 @@ m.css math
 :url: admire/math/
 :cover: {filename}/static/cover-math.jpg
 :summary: The fastest possible math rendering for the modern web
-:navbar_brand_hidden: False
 :footer:
     .. note-dim::
 
