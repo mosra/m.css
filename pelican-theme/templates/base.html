@@ -7,15 +7,17 @@
   {% for href in M_CSS_FILES %}
   <link rel="stylesheet" href="{{ href|format_siteurl|e }}" />
   {% endfor %}
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  {% if M_THEME_COLOR %}
-  <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
-  {% endif %}
+  {% block head_links %}
+  {% endblock head_links %}
   {% if FEED_ALL_ATOM_URL %}
   <link href="{{ FEED_ALL_ATOM_URL|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }}" />
   {% endif %}
   {% if CATEGORY_FEED_ATOM_URL and category %}
   <link href="{{ CATEGORY_FEED_ATOM_URL|format(category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} | {{ category }}" />
+  {% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% if M_THEME_COLOR %}
+  <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
   {% endif %}
   {% endblock head %}
 </head>

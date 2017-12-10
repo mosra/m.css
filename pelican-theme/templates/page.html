@@ -34,6 +34,10 @@
   <meta name="twitter:card" content="summary" />
   {% endif %}
   <meta property="og:type" content="website" />
+{% endblock %}
+
+{% block head_links %}
+  {{- super() -}}
   {% if page.css %}
   {% set styles = page.css.strip().split('\n') %}
   {% for style in styles %}
