@@ -371,9 +371,17 @@ above:
 
 You can use :rst:`:description:` field to populate :html:`<meta name="description">`,
 which can be then shown in search engine results. Other than that, the field
-does not appear anywhere on the rendered page. For sharing pages on Twitter,
-Facebook and elsewhere, both `Open Graph <http://ogp.me/>`_ and
-`Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_
+does not appear anywhere on the rendered page. It's recommended to add it to
+:py:`FORMATTED_FIELDS` so you can make use of the
+`advanced typography features <{filename}/plugins/htmlsanity.rst#typography>`_
+like smart quotes etc. in it:
+
+.. code:: py
+
+    FORMATTED_FIELDS += ['description']
+
+For sharing pages on Twitter, Facebook and elsewhere, both `Open Graph <http://ogp.me/>`_
+and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_
 :html:`<meta>` tags are supported:
 
 -   Page title is mapped to ``og:title`` / ``twitter:title``
