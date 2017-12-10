@@ -48,7 +48,7 @@ except ImportError:
     pyphen = None
 
 settings = {}
-words_re = re.compile("""\w+""", re.UNICODE|re.X)
+words_re = re.compile(r'\w+', re.UNICODE|re.X)
 
 # TODO: remove when 3.8 with https://github.com/getpelican/pelican/pull/2256
 # is released
