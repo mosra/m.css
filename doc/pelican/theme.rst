@@ -381,6 +381,12 @@ above:
 
         FORMATTED_FIELDS += ['header', 'footer']
 
+.. note-warning::
+
+    The :rst:`:header:` field is not supported on `landing pages`_. In case
+    both :rst:`:landing:` and :rst:`:header:` is present, :rst:`:header:` is
+    ignored.
+
 `(Social) meta tags for pages`_
 -------------------------------
 

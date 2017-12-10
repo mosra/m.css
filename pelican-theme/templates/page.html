@@ -47,7 +47,7 @@
 {% endblock %}
 
 {% block main %}
-{% if page.header %}
+{% if not page.landing and page.header %}
 <div class="m-container m-container-inflatable">
   <div class="m-row">
     <div class="m-col-l-10 m-push-l-1 m-nopadb">
