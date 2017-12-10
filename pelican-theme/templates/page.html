@@ -22,8 +22,10 @@
   <meta name="twitter:title" content="{{ page.title }}" />
   <meta property="og:url" content="{{ page.url|format_siteurl }}" />
   <meta name="twitter:url" content="{{ page.url|format_siteurl }}" />
+  {% if page.summary %}
   <meta property="og:description" content="{{ page.summary|striptags }}" />
   <meta name="twitter:description" content="{{ page.summary|striptags }}" />
+  {% endif %}
   {% if page.cover %}
   <meta property="og:image" content="{{ page.cover|expand_link(page) }}" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -68,8 +70,8 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         {% if not page.landing %}
+        {% if page.breadcrumb %}
         <h1>
-          {% if page.breadcrumb %}
           <span class="m-breadcrumb">
             {% set breadcrumbs = page.breadcrumb.strip().split('\n') %}
             {% for i in breadcrumbs %}
@@ -77,13 +79,17 @@
             <a href="{{ url|expand_link(page) }}">{{ title }}</a> &raquo;
             {% endfor %}
           </span>
-          {% endif %}
           {{ page.title }}
         </h1>
+        {% else %}
+        <h1>{{ page.title }}</h1>
         {% endif %}
+        {% endif %}
+        {% if page.content %}
 <!-- content -->
 {{ page.content|trim }}
 <!-- /content -->
+        {% endif %}
       </div>
     </div>
   </div>
