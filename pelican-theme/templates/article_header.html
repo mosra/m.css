@@ -1,5 +1,5 @@
 <header>
-  <h1><a href="{{ article.url|format_siteurl }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">
+  <h1><a href="{{ article.url|format_siteurl|e }}" rel="bookmark" title="Permalink to {{ article.title }}">
     <time class="m-date" datetime="{{ article.date.isoformat() }}">
       {% set month, day, year = article.date.strftime('%b %d %Y').split(' ') %}
       {{ month }} <span class="m-date-day">{{ day }}</span> {{year}}

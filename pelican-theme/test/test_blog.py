@@ -396,3 +396,34 @@ class CollapseFirstBothHideSummaryBoth(BlogTestCase):
         # Both classic and jumbo article should have summary shown
         self.assertEqual(*self.actual_expected_contents('article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
+
+class HtmlEscape(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'html_escape', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_BLOG_NAME': '<&> in blog name',
+            'M_BLOG_URL': 'archives.html?and&in&url=""',
+            'ARTICLE_URL': '{slug}.html?and&in&url=""',
+            'AUTHOR_URL': 'author-{slug}.html?and&in&url=""',
+            'CATEGORY_URL': 'category-{slug}.html?and&in&url=""',
+            'TAG_URL': 'tag-{slug}.html?and&in&url=""',
+            'M_LINKS_FOOTER2': [('An <&> in link', '#')],
+            'M_SHOW_AUTHOR_LIST': True,
+            'DEFAULT_PAGINATION': 1,
+            'PAGINATION_PATTERNS':
+                [(1, 'index.html?and&in&url=""', '{name}.html'),
+                 (2, 'index{number}.html?and&in&url=""', '{name}{number}.html')],
+            'DIRECT_TEMPLATES': ['index', 'archives'],
+            'PAGINATED_DIRECT_TEMPLATES': ['index', 'archives'],
+            'FORMATTED_FIELDS': ['summary', 'description']
+        })
+
+        # Verify that everything is properly escaped everywhere
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('index2.html'))
+        self.assertEqual(*self.actual_expected_contents('archives.html', 'index.html'))
+        self.assertEqual(*self.actual_expected_contents('archives2.html', 'index2.html'))
+        self.assertEqual(*self.actual_expected_contents('article.html'))
+        self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))

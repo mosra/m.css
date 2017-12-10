@@ -151,3 +151,42 @@ class DisableBlogLinks(BaseTestCase):
 
         # There should be just the first column
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class HtmlEscape(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'html_escape', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'SITENAME': 'A <&> site',
+            'M_BLOG_NAME': 'A <&> blog',
+            'M_BLOG_URL': 'archives.html?and&in&url=""',
+            'M_SITE_LOGO': 'image.png?and&in&url=""',
+            'M_SITE_LOGO_TEXT': '<&>',
+            'M_LINKS_NAVBAR1': [
+                ('An <&> item', 'item.html?and&in&url=""', '', [
+                    ('A <&> subitem', 'sub.html?and&in&url=""', '')]),
+                ('Another <&> item', 'item.html?and&in&url=""', '', [])],
+            'M_LINKS_NAVBAR2': [
+                ('An <&> item', 'item.html?and&in&url=""', '', [
+                    ('A <&> subitem', 'sub.html?and&in&url=""', '')]),
+                ('Another <&> item', 'item.html?and&in&url=""', '', [])],
+            'M_LINKS_FOOTER1': [
+                ('An <&> item', 'item.html?and&in&url=""'),
+                ('A <&> subitem', 'sub.html?and&in&url=""')],
+            'M_LINKS_FOOTER2': [
+                ('An <&> item', 'item.html?and&in&url=""'),
+                ('A <&> subitem', 'sub.html?and&in&url=""')],
+            'M_LINKS_FOOTER3': [
+                ('An <&> item', 'item.html?and&in&url=""'),
+                ('A <&> subitem', 'sub.html?and&in&url=""')],
+            'M_LINKS_FOOTER4': [
+                ('An <&> item', 'item.html?and&in&url=""'),
+                ('A <&> subitem', 'sub.html?and&in&url=""')],
+            'M_FINE_PRINT': 'An <&> in fine print.',
+            'CATEGORY_URL': 'tag-{slug}.html?and&in&url=""'
+        })
+
+        # Verify that everything is properly escaped everywhere
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('archives.html', 'index.html'))
