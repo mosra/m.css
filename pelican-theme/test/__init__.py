@@ -59,6 +59,18 @@ class BaseTestCase(MinimalTestCase):
         }
         MinimalTestCase.run_pelican(self, {**implicit_settings, **settings})
 
+class PageTestCase(BaseTestCase):
+    def run_pelican(self, settings):
+        implicit_settings = {
+            'M_FINE_PRINT': None,
+            'PAGE_PATHS': ['.'],
+            'PAGE_SAVE_AS': '{slug}.html',
+            'PAGE_URL': '{slug}.html',
+            'ARTICLE_PATHS': ['articles'], # doesn't exist
+            'DIRECT_TEMPLATES': []
+        }
+        BaseTestCase.run_pelican(self, {**implicit_settings, **settings})
+
 class BlogTestCase(BaseTestCase):
     def run_pelican(self, settings):
         implicit_settings = {
