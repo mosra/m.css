@@ -18,8 +18,8 @@
       {% endif %}
       {% if not article_list %}
       <div class="m-note m-success">
-        <h3>Congratulations!</h3>
-        The m.css theme is alive and kicking! Now, feed it some articles so it doesn't feel so empty :)
+        <h3>{{ "Congratulations!"|hyphenate(lang='en') }}</h3>
+        {{ "The m.css theme is alive and kicking! Now, feed it some articles so it doesn't feel so empty :)"|hyphenate(lang='en') }}
       </div>
       {% endif %}
       {% for article in article_list %}
