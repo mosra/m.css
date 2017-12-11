@@ -46,8 +46,11 @@ or a full product/project/portfolio website where the blog is only a side dish.
 `Quick start`_
 ==============
 
-The easiest way to start is putting the :gh:`whole Git repository <mosra/m.css>`
-of m.css into your project, for example as a submodule:
+Following the `Pelican quick start guide <{filename}/pelican.rst#quick-start>`_,
+it's assumed you already have at least Python 3.4 and the Python 3 version of
+Pelican installed. The easiest way to start is putting the
+:gh:`whole Git repository <mosra/m.css>` of m.css into your project, for
+example as a submodule:
 
 .. code:: sh
 

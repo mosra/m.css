@@ -50,7 +50,9 @@ Install Pelican either via ``pip`` or using your system package manager.
 
     In order to use the m.css `theme <{filename}/pelican/theme.rst>`_ or
     `plugins <{filename}/plugins.rst>`_ later, you need to install the Python 3
-    version of Pelican. Python 2 is not supported.
+    version of Pelican. Most of the plugins work with Python 3.4, while some
+    (such as the `math plugin <{filename}/plugins/math-and-code.rst#math>`_)
+    need 3.5. Python 2 is not supported.
 
 .. code:: sh
 
