@@ -54,7 +54,7 @@
         <li><em class="m-text m-dim">(none yet)</em></li>
         {% endif %}
         {% for cat, null in categories %}
-        <li><a href="{{ cat.url|format_siteurl|e }}">{{ cat|hyphenate|e }}</a></li>
+        <li><a href="{{ cat.url|format_siteurl|e }}">{{ cat|e|hyphenate }}</a></li>
         {% endfor %}
       </ol>
       {% if M_SHOW_AUTHOR_LIST and authors %}
