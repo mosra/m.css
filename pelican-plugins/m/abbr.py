@@ -28,8 +28,8 @@ from docutils.parsers import rst
 
 def abbr(name, rawtext, text, lineno, inliner, options={}, content=[]):
     abbr, title = parse_link(text)
-    if not title:
-        return [nodes.abbreviation(abbr, abbr)], []
+    if not abbr:
+        return [nodes.abbreviation(title, title)], []
     return [nodes.abbreviation(abbr, abbr, title=title)], []
 
 def register():
