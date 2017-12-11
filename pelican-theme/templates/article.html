@@ -5,7 +5,7 @@
 {% block head %}
   {{- super() -}}
   {% if article.description %}
-  <meta name="description" content="{{ article.description|striptags|e }}" />
+  <meta name="description" content="{{ article.description|dehyphenate|striptags|e }}" />
   {% endif %}
   <meta name="keywords" content="{{ article.tags|join(', ')|e }}" />
   <meta property="og:title" content="{{ article.title }}" />
@@ -13,8 +13,8 @@
   <meta property="og:url" content="{{ article.url|format_siteurl|e }}" />
   <meta name="twitter:url" content="{{ article.url|format_siteurl|e }}" />
   {% if article.summary %}
-  <meta property="og:description" content="{{ article.summary|striptags|e }}" />
-  <meta name="twitter:description" content="{{ article.summary|striptags|e }}" />
+  <meta property="og:description" content="{{ article.summary|dehyphenate|striptags|e }}" />
+  <meta name="twitter:description" content="{{ article.summary|dehyphenate|striptags|e }}" />
   {% endif %}
   {% if article.cover %}
   <meta property="og:image" content="{{ article.cover|expand_link(article)|e }}" />

@@ -16,15 +16,15 @@
 {% block head %}
   {{- super() -}}
   {% if page.description %}
-  <meta name="description" content="{{ page.description|striptags|e }}" />
+  <meta name="description" content="{{ page.description|dehyphenate|striptags|e }}" />
   {% endif %}
   <meta property="og:title" content="{{ page.title }}" />
   <meta name="twitter:title" content="{{ page.title }}" />
   <meta property="og:url" content="{{ page.url|format_siteurl|e }}" />
   <meta name="twitter:url" content="{{ page.url|format_siteurl|e }}" />
   {% if page.summary %}
-  <meta property="og:description" content="{{ page.summary|striptags|e }}" />
-  <meta name="twitter:description" content="{{ page.summary|striptags|e }}" />
+  <meta property="og:description" content="{{ page.summary|dehyphenate|striptags|e }}" />
+  <meta name="twitter:description" content="{{ page.summary|dehyphenate|striptags|e }}" />
   {% endif %}
   {% if page.cover %}
   <meta property="og:image" content="{{ page.cover|expand_link(page)|e }}" />
