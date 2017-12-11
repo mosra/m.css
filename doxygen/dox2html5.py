@@ -45,7 +45,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
 sys.path.append("../pelican-plugins")
-import m.latex2svg
+import latex2svg
 import m.math
 import ansilexer
 
@@ -558,7 +558,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'formula':
             # Inline formula
             if i.text.startswith('$ ') and i.text.endswith(' $'):
-                rendered = m.latex2svg.latex2svg('${}$'.format(i.text[2:-2]), params=m.math.latex2svg_params)
+                rendered = latex2svg.latex2svg('${}$'.format(i.text[2:-2]), params=m.math.latex2svg_params)
 
                 # CSS classes and styling for proper vertical alignment. Depth is relative
                 # to font size, describes how below the line the text is. Scaling it back
@@ -570,7 +570,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             else:
                 assert i.text.startswith('\[ ') and i.text.endswith(' \]')
                 has_block_elements = True
-                rendered = m.latex2svg.latex2svg('$${}$$'.format(i.text[3:-3]), params=m.math.latex2svg_params)
+                rendered = latex2svg.latex2svg('$${}$$'.format(i.text[3:-3]), params=m.math.latex2svg_params)
                 out.parsed += '<div class="m-math">{}</div>'.format(m.math._patch(i.text, rendered, ''))
 
         # Inline elements

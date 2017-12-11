@@ -31,7 +31,7 @@ from docutils.parsers.rst.roles import set_classes
 
 import pelican.signals
 
-from . import latex2svg
+import latex2svg
 
 latex2svg_params = latex2svg.default_params.copy()
 latex2svg_params.update({
