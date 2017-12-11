@@ -197,7 +197,11 @@ class ImageGrid(rst.Directive):
                 if 'FNumber' in exif:
                     caption += ["F{}".format(float(float(exif['FNumber'][0])/float(exif['FNumber'][1])))]
                 if 'ExposureTime' in exif:
-                    caption += ["{}/{} s".format(exif['ExposureTime'][0], exif['ExposureTime'][1])]
+                    numerator, denominator = exif['ExposureTime']
+                    if int(numerator) > int(denominator):
+                        caption += ["{} s".format(float(numerator)/float(denominator))]
+                    else:
+                        caption += ["{}/{} s".format(numerator, denominator)]
                 if 'ISOSpeedRatings' in exif:
                     caption += ["ISO {}".format(exif['ISOSpeedRatings'])]
                 caption = ', '.join(caption)

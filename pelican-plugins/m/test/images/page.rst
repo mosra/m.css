@@ -63,3 +63,4 @@ Image grid with a PNG file and a JPEG with sparse EXIF data:
 
     {filename}/tiny.png
     {filename}/sparseexif.jpg
+    {filename}/longexposure.jpg
