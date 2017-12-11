@@ -838,7 +838,7 @@ file or use it directly from your Git clone of m.css. Example usage:
 
 .. code:: sh
 
-    ls -C --color=always | pygmentize -l pelican-plugins/m/ansilexer.py:AnsiLexer -x -f html -O nowrap
+    ls -C --color=always | pygmentize -l pelican-plugins/ansilexer.py:AnsiLexer -x -f html -O nowrap
 
 Wrap the HTML output in either :html:`<pre class="m-console">` for a block
 listing or :html:`<code class="m-console">` for inline listing. The output
@@ -909,7 +909,7 @@ is simple:
 
 .. code:: sh
 
-    echo "$$ a^2 = b^2 + c^2 $$" | python pelican-plugins/m/latex2svg.py > formula.svg
+    echo "\$\$ a^2 = b^2 + c^2 \$\$" | python pelican-plugins/latex2svg.py > formula.svg
 
 The ``formula.svg`` file will then contain the rendered formula, which with
 some minor patching (removing the XML preamble etc.) can be pasted directly
