@@ -82,7 +82,7 @@
           <h2><a href="#pro-types">Protected types</a></h3>
           <dl class="m-dox">
             <dt>
-              <span class="m-dox-wrap-bumper">enum class <a href="#a78bd618022079b3efbf1db104e058c8a" class="m-dox">Bar</a> { </span><span class="m-dox-wrap"> }</span>
+              <span class="m-dox-wrap-bumper">enum <a href="#a78bd618022079b3efbf1db104e058c8a" class="m-dox">Bar</a> { </span><span class="m-dox-wrap"> }</span>
             </dt>
             <dd>Enum.</dd>
             <dt>
@@ -90,8 +90,7 @@
             </dt>
             <dd>Typedef.</dd>
             <dt>
-              <div class="m-dox-template">template&lt;class V, bool = false&gt;</div>
-              using <a href="#a6b37f78f11b281740b9daf07f695c0fa" class="m-dox">Foo</a> = Buuu&lt;V, false&gt;
+              using <a href="#a94438a80326daae3500ce76ff0048c5e" class="m-dox">Foo</a> = Buuu&lt;U, false&gt;
             </dt>
             <dd>Template alias.</dd>
           </dl>
@@ -120,7 +119,7 @@
               <div class="m-dox-template">
                 template&lt;class T, class U, class _3&gt;
               </div>
-              enum class Template&lt;T, U, _3&gt;::<wbr /><a href="#a78bd618022079b3efbf1db104e058c8a" class="m-dox-self">Bar</a> <span class="m-label m-warning">protected</span>
+              enum Template&lt;T, U, _3&gt;::<wbr /><a href="#a78bd618022079b3efbf1db104e058c8a" class="m-dox-self">Bar</a> <span class="m-label m-warning">protected</span>
             </h3>
             <p>Enum.</p>
 <p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details.</p>
@@ -138,27 +137,15 @@
             <p>Typedef.</p>
 <p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details.</p>
           </div></section>
-          <section class="m-dox-details" id="a6b37f78f11b281740b9daf07f695c0fa"><div>
+          <section class="m-dox-details" id="a94438a80326daae3500ce76ff0048c5e"><div>
             <h3>
               <div class="m-dox-template">
                 template&lt;class T, class U, class _3&gt;
-                template&lt;class V, bool = false&gt;
               </div>
-              using Template&lt;T, U, _3&gt;::<wbr /><a href="#a6b37f78f11b281740b9daf07f695c0fa" class="m-dox-self">Foo</a> = Buuu&lt;V, false&gt; <span class="m-label m-warning">protected</span>
+              using Template&lt;T, U, _3&gt;::<wbr /><a href="#a94438a80326daae3500ce76ff0048c5e" class="m-dox-self">Foo</a> = Buuu&lt;U, false&gt; <span class="m-label m-warning">protected</span>
             </h3>
             <p>Template alias.</p>
-            <table class="m-table m-fullwidth m-flat">
-              <thead>
-                <tr><th colspan="2">Template parameters</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="width: 1%">V</td>
-                  <td>Well, this is V as well</td>
-                </tr>
-              </tbody>
-            </table>
-<p>Should include both template lists, with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details.</p>
+<p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details. Template parameters are tested in <code>cpp_template_aliases</code> test as they need newer Doxygen.</p>
           </div></section>
         </section>
         <section>

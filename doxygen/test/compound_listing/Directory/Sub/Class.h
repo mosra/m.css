@@ -29,7 +29,7 @@ class Class {
         typedef void(*Deleter)(int, void*);
 
         /** @brief A enum value */
-        enum E: int { FooBar = 3 };
+        enum E { FooBar = 3 };
 
         /** @brief A public static var */
         constexpr static int Size = 0;
@@ -66,7 +66,7 @@ class Class {
         using Type = double;
 
         /** @brief Protected enum */
-        enum class Boolean {
+        enum Boolean {
             True, False, FileNotFound
         };
 
@@ -88,7 +88,7 @@ class Class {
         /** @{ @name Group full of non-public stuff which should be marked as such */
 
         /** @brief Protected flag in a group */
-        enum class Flag {};
+        enum Flag {};
 
         /** @brief Protected alias in a group */
         using Main = void;
@@ -121,7 +121,7 @@ class Class {
 /** @relatedalso Class
  * @brief An enum
  */
-enum class Enum: int {};
+enum Enum {};
 
 /** @relatedalso Class
  * @brief A typedef

@@ -6,6 +6,9 @@ import xml.etree.ElementTree as ET
 
 from dox2html5 import run, default_templates, default_wildcard, default_index_pages
 
+def doxygen_version():
+    return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip()
+
 class IntegrationTestCase(unittest.TestCase):
     def __init__(self, path, dir, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)

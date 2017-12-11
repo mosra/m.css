@@ -14,7 +14,7 @@ struct Struct {};
 union Union {};
 
 /** @brief An enum */
-enum class Enum: int {};
+enum Enum {};
 
 /** @brief A typedef */
 typedef int Int;
@@ -31,7 +31,7 @@ void foo();
 /** @{ @name A group */
 
 /** @brief Flag in a group */
-enum class Flag {};
+enum Flag {};
 
 /** @brief Alias in a group */
 using Main = void;

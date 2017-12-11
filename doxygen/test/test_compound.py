@@ -48,10 +48,6 @@ class Listing(IntegrationTestCase):
         self.run_dox2html5(wildcard='union*Bar*.xml')
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'unionRoot_1_1Directory_1_1Sub_1_1Class_1_1Bar.html')))
 
-    def test_page_toc(self):
-        self.run_dox2html5(wildcard='page-toc.xml')
-        self.assertEqual(*self.actual_expected_contents('page-toc.html'))
-
     def test_page_no_toc(self):
         self.run_dox2html5(wildcard='page-no-toc.xml')
         self.assertEqual(*self.actual_expected_contents('page-no-toc.html'))
