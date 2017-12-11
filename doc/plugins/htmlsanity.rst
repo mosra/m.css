@@ -348,7 +348,7 @@ from passed text. The ``enable`` argument works the same as with the
 
     <html>
       <head>
-        <meta name="description" content="{{ article.summary|dehyphenate|striptags }}" />
+        <meta name="description" content="{{ article.summary|dehyphenate|striptags|e }}" />
       </head>
       ...
 
