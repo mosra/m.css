@@ -20,8 +20,10 @@ Code contribution
     larger Pelican theme, plugin code or CSS contribution should be reflected
     there. Documentation and website content is written in reStructuredText and
     resides in `doc/ <doc>`_ subdirectory. Please verify that all your changes
-    there do not break the website build; see the `README <README.rst>`_ for
-    a guide how to build it.
+    there do not break the website build; see `Building the site`_ below for a
+    guide how to build it.
+-   Python code and Jinja2 templates should be accompanied by tests. See
+    `Running tests`_ below for a guide.
 -   Best way to contribute is by using GitHub `pull requests <https://github.com/mosra/m.css/pulls>`_
     --- fork the repository and make pull request from feature branch. You can
     also send patches via e-mail or contact me any other way.
@@ -40,6 +42,79 @@ Code contribution
 
             Permission is hereby granted, free of charge, to any person obtaining a
             ...
+
+Building the site
+=================
+
+The m.css website makes use of all the m.css features, which means that it also
+needs all the possible dependencies, combined. Sorry in advance :)
+
+On ArchLinux:
+
+.. code:: sh
+
+    sudo pacman -S texlive-most pelican python-pillow
+    cower -d python-pyphen # Build the python-pyphen package from AUR
+
+On Ubuntu you need these:
+
+.. code:: sh
+
+    sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
+    pip3 install pelican Pyphen Pillow
+
+Once you have all the dependencies, simply go to the ``site/`` subdirectory and
+start development server there. The live-reloading website will appear on
+http://localhost:8000.
+
+.. code:: sh
+
+    cd site
+    make devserver
+
+Publishing the website with ``make publish`` depends on a few patches that are
+not in any stable Pelican release yet (most importantly
+https://github.com/getpelican/pelican/pull/2246), in order to have them,
+install Pelican from my local fork instead:
+
+.. code:: sh
+
+    pip install git+https://github.com/mosra/pelican.git@mosra-master
+
+Running tests
+=============
+
+Each bigger lump of Python code or Jinja2 template markup has tests. There are
+no visual tests for the CSS style at the moment. Run tests:
+
+.. code:: sh
+
+    cd pelican-theme
+    python -m unittest
+
+    cd pelican-plugins
+    python -m unittest
+
+    cd doxygen
+    python -m unittest
+
+Code coverage needs `coverage.py <https://coverage.readthedocs.io/>`_. There is
+no possibility of getting code coverage for Jinja2 templates, though.
+
+.. code:: sh
+
+    cd doxygen
+    coverage run -m unittest ; coverage html
+    # open htmlcov/index.html in your browser
+
+    cd pelican-plugins
+    coverage run -m unittest ; coverage html
+    # open htmlcov/index.html in your browser
+
+Test organization: files named ``test_something.py`` take their input from
+``something[_name]`` directories, ``name`` corresponds to given test class. In
+case of Doxygen, comment-out the line that removes the ``html`` directory in
+``__init__.py`` to see all test output files.
 
 Contact
 =======
