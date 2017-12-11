@@ -4,9 +4,11 @@ m.css
 *A no-nonsense, no-JavaScript CSS framework and Pelican theme for
 content-oriented websites.*
 
+.. image:: https://travis-ci.org/mosra/m.css.svg?branch=master
+    :target: https://travis-ci.org/mosra/m.css
 .. image:: https://badges.gitter.im/mosra/m.css.svg
-   :alt: Join the chat at https://gitter.im/mosra/m.css
-   :target: https://gitter.im/mosra/m.css?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+    :alt: Join the chat at https://gitter.im/mosra/m.css
+    :target: https://gitter.im/mosra/m.css?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 Do you *hate* contemporary web development like I do? Do you also feel that
 it's not right for a web page to take *seconds* and *megabytes* to render? Do
