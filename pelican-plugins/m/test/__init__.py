@@ -41,7 +41,8 @@ class PluginTestCase(unittest.TestCase):
             'DIRECT_TEMPLATES': [],
             'SLUGIFY_SOURCE': 'basename'
         }
-        settings = read_settings(path=None, override={**implicit_settings, **settings})
+        implicit_settings.update(settings)
+        settings = read_settings(path=None, override=implicit_settings)
         pelican = Pelican(settings=settings)
         pelican.run()
 

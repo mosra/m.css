@@ -30,7 +30,8 @@ class MinimalTestCase(unittest.TestCase):
             'ARTICLE_EXCLUDES': [os.path.join(self.path, 'output')],
             'FEED_ALL_ATOM': None, # Don't render feeds, we're not testing them *ever*
         }
-        settings = read_settings(path=None, override={**implicit_settings, **settings})
+        implicit_settings.update(settings)
+        settings = read_settings(path=None, override=implicit_settings)
         pelican = Pelican(settings=settings)
         pelican.run()
 
@@ -57,7 +58,8 @@ class BaseTestCase(MinimalTestCase):
             'DIRECT_TEMPLATES': ['index', 'archives'],
             'SLUGIFY_SOURCE': 'basename'
         }
-        MinimalTestCase.run_pelican(self, {**implicit_settings, **settings})
+        implicit_settings.update(settings)
+        MinimalTestCase.run_pelican(self, implicit_settings)
 
 class PageTestCase(BaseTestCase):
     def run_pelican(self, settings):
@@ -69,7 +71,8 @@ class PageTestCase(BaseTestCase):
             'ARTICLE_PATHS': ['articles'], # doesn't exist
             'DIRECT_TEMPLATES': []
         }
-        BaseTestCase.run_pelican(self, {**implicit_settings, **settings})
+        implicit_settings.update(settings)
+        BaseTestCase.run_pelican(self, implicit_settings)
 
 class BlogTestCase(BaseTestCase):
     def run_pelican(self, settings):
@@ -91,4 +94,5 @@ class BlogTestCase(BaseTestCase):
             'AUTHOR_FEED_RSS': None,
             'TRANSLATION_FEED_ATOM': None
         }
-        BaseTestCase.run_pelican(self, {**implicit_settings, **settings})
+        implicit_settings.update(settings)
+        BaseTestCase.run_pelican(self, implicit_settings)
