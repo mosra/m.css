@@ -57,8 +57,9 @@ Image grid:
     {filename}/flowers.jpg
     {filename}/ship.jpg
 
-Image grid with a PNG file:
+Image grid with a PNG file and a JPEG with sparse EXIF data:
 
 .. image-grid::
 
     {filename}/tiny.png
+    {filename}/sparseexif.jpg

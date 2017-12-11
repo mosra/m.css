@@ -191,8 +191,16 @@ class ImageGrid(rst.Directive):
                     for k, v in im._getexif().items()
                     if k in PIL.ExifTags.TAGS and len(str(v)) < 256
                 }
-                # Can't use just *exif['ExposureTime'] on Py3.4
-                caption = "F{}, {}/{} s, ISO {}".format(float(exif['FNumber'][0])/float(exif['FNumber'][1]), exif['ExposureTime'][0], exif['ExposureTime'][1], exif['ISOSpeedRatings'])
+
+                # Not all info might be present
+                caption = []
+                if 'FNumber' in exif:
+                    caption += ["F{}".format(float(float(exif['FNumber'][0])/float(exif['FNumber'][1])))]
+                if 'ExposureTime' in exif:
+                    caption += ["{}/{} s".format(exif['ExposureTime'][0], exif['ExposureTime'][1])]
+                if 'ISOSpeedRatings' in exif:
+                    caption += ["ISO {}".format(exif['ISOSpeedRatings'])]
+                caption = ', '.join(caption)
 
             # It's not (e.g. a PNG file), empty caption
             else: caption = ""

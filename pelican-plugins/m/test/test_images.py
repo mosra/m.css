@@ -31,7 +31,17 @@ class Images(PluginTestCase):
     def test(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.images'],
-            'STATIC_PATHS': ['tiny.png', 'ship.jpg', 'flowers.jpg']
+            'STATIC_PATHS': ['tiny.png', 'ship.jpg', 'flowers.jpg', 'sparseexif.jpg']
         })
+
+        #
+        # Modifying EXIF in files for testing:
+        #
+        #   # Prints out all EXIF info
+        #   identify -format '%[EXIF:*]' file.jpg
+        #
+        #   # Removes *everything* and adds a new value (order is important)
+        #   exiftool -all= -exif:FNumber=28/10 file.jpg
+        #
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
