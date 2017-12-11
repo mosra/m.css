@@ -248,7 +248,7 @@ Variable                            Description
                                     are shown. If not set, ``1`` is used.
 :ini:`M_EXPAND_INNER_TYPES`         Whether to expand inner types (e.g. a class
                                     inside a class) in the symbol tree. If not
-                                    set, ``0`` is used.
+                                    set, ``NO`` is used.
 =================================== =======================================
 
 Note that namespace, directory and page lists are always fully expanded as

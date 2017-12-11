@@ -1542,7 +1542,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
 
         'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
-        'M_EXPAND_INNER_TYPES': ['0'],
+        'M_EXPAND_INNER_TYPES': ['NO'],
         'M_THEME_COLOR': ['#22272e']
     }
 
@@ -1623,9 +1623,12 @@ def parse_doxyfile(state: State, doxyfile, config = None):
 
     # Int values that we want
     for i in ['M_CLASS_TREE_EXPAND_LEVELS',
-              'M_FILE_TREE_EXPAND_LEVELS',
-              'M_EXPAND_INNER_TYPES']:
+              'M_FILE_TREE_EXPAND_LEVELS']:
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
+
+    # Boolean values that we want
+    for i in ['M_EXPAND_INNER_TYPES']:
+        if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
 
     # List values that we want. Drop empty lines.
     for i in ['TAGFILES',

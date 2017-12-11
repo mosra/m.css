@@ -11,7 +11,7 @@ class Doxyfile(unittest.TestCase):
             'HTML_EXTRA_STYLESHEET': ['a.css', 'b.css'],
             'HTML_OUTPUT': 'html',
             'M_CLASS_TREE_EXPAND_LEVELS': 1,
-            'M_EXPAND_INNER_TYPES': 0,
+            'M_EXPAND_INNER_TYPES': False,
             'M_FILE_TREE_EXPAND_LEVELS': 1,
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
