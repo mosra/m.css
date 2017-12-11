@@ -47,7 +47,7 @@ from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find
 sys.path.append("../pelican-plugins")
 import m.latex2svg
 import m.math
-import m.ansilexer
+import ansilexer
 
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
@@ -503,7 +503,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                        # Pygments knows only .vert, .frag, .geo
                        ('.glsl', 'glsl'),
                        ('.conf', 'ini'),
-                       ('.ansi', m.ansilexer.AnsiLexer)]
+                       ('.ansi', ansilexer.AnsiLexer)]
             for key, v in mapping:
                 if not filename.endswith(key): continue
 
@@ -525,7 +525,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Style console sessions differently
             if (isinstance(lexer, BashSessionLexer) or
-                isinstance(lexer, m.ansilexer.AnsiLexer)):
+                isinstance(lexer, ansilexer.AnsiLexer)):
                 class_ = 'm-console'
             else:
                 class_ = 'm-code'

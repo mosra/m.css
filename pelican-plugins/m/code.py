@@ -40,7 +40,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from . import ansilexer
+import ansilexer
 
 def _highlight(code, language, options):
     # Use our own lexer for ANSI
