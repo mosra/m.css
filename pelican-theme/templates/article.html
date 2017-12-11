@@ -7,7 +7,9 @@
   {% if article.description %}
   <meta name="description" content="{{ article.description|dehyphenate|striptags|e }}" />
   {% endif %}
+  {% if article.tags %}
   <meta name="keywords" content="{{ article.tags|join(', ')|e }}" />
+  {% endif %}
   <meta property="og:title" content="{{ article.title }}" />
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta property="og:url" content="{{ article.url|format_siteurl|e }}" />
