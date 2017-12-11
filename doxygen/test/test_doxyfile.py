@@ -13,6 +13,7 @@ class Doxyfile(unittest.TestCase):
             'M_CLASS_TREE_EXPAND_LEVELS': 1,
             'M_EXPAND_INNER_TYPES': False,
             'M_FILE_TREE_EXPAND_LEVELS': 1,
+            'M_SHOW_DOXYGEN_VERSION': True,
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',

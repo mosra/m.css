@@ -249,6 +249,9 @@ Variable                            Description
 :ini:`M_EXPAND_INNER_TYPES`         Whether to expand inner types (e.g. a class
                                     inside a class) in the symbol tree. If not
                                     set, ``NO`` is used.
+:ini:`M_SHOW_DOXYGEN_VERSION`       Show Doxygen version in the footer. If not
+                                    set, ``YES`` is used; useful to disable for
+                                    output verification.
 =================================== =======================================
 
 Note that namespace, directory and page lists are always fully expanded as

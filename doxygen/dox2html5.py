@@ -1543,7 +1543,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
         'M_EXPAND_INNER_TYPES': ['NO'],
-        'M_THEME_COLOR': ['#22272e']
+        'M_THEME_COLOR': ['#22272e'],
+        'M_SHOW_DOXYGEN_VERSION': ['YES']
     }
 
     def parse_value(var):
@@ -1627,7 +1628,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
 
     # Boolean values that we want
-    for i in ['M_EXPAND_INNER_TYPES']:
+    for i in ['M_EXPAND_INNER_TYPES',
+              'M_SHOW_DOXYGEN_VERSION']:
         if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
 
     # List values that we want. Drop empty lines.
