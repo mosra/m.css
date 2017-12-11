@@ -371,6 +371,27 @@ class SaneHtmlTranslator(HTMLTranslator):
             ('colwidths-given' not in node.parent.parent['classes'])):
             return
 
+    # Verbatim copied, removing the 'head' class from <th>
+    def visit_entry(self, node):
+        atts = {'class': []}
+        if node.parent.parent.parent.stubs[node.parent.column]:
+            # "stubs" list is an attribute of the tgroup element
+            atts['class'].append('stub')
+        if atts['class'] or isinstance(node.parent.parent, nodes.thead):
+            tagname = 'th'
+            atts['class'] = ' '.join(atts['class'])
+        else:
+            tagname = 'td'
+            del atts['class']
+        node.parent.column += 1
+        if 'morerows' in node:
+            atts['rowspan'] = node['morerows'] + 1
+        if 'morecols' in node:
+            atts['colspan'] = node['morecols'] + 1
+            node.parent.column += node['morecols']
+        self.body.append(self.starttag(node, tagname, '', **atts))
+        self.context.append('</%s>\n' % tagname.lower())
+
     # Don't put comments into the HTML output
     def visit_comment(self, node,
                       sub=re.compile('-(?=-)').sub):
@@ -511,6 +532,43 @@ class SaneHtmlTranslator(HTMLTranslator):
             self.body_pre_docinfo.extend(self.body)
             self.html_title.extend(self.body)
             del self.body[:]
+
+    # <ul>, <ol>, <dl> -- verbatim copied, removing "simple" class. For <ol>
+    # also removing the enumtype
+    def visit_bullet_list(self, node):
+        atts = {}
+        old_compact_simple = self.compact_simple
+        self.context.append((self.compact_simple, self.compact_p))
+        self.compact_p = None
+        self.compact_simple = self.is_compactable(node)
+        self.body.append(self.starttag(node, 'ul', **atts))
+
+    def depart_bullet_list(self, node):
+        self.compact_simple, self.compact_p = self.context.pop()
+        self.body.append('</ul>\n')
+
+    def visit_enumerated_list(self, node):
+        atts = {}
+        if 'start' in node:
+            atts['start'] = node['start']
+        self.body.append(self.starttag(node, 'ol', **atts))
+
+    def depart_enumerated_list(self, node):
+        self.body.append('</ol>\n')
+
+    def visit_definition_list(self, node):
+        classes = node.setdefault('classes', [])
+        self.body.append(self.starttag(node, 'dl'))
+
+    def depart_definition_list(self, node):
+        self.body.append('</dl>\n')
+
+    # no class="docutils" in <hr>
+    def visit_transition(self, node):
+        self.body.append(self.emptytag(node, 'hr'))
+
+    def depart_transition(self, node):
+        pass
 
 class _SaneFieldBodyTranslator(SaneHtmlTranslator):
     """
