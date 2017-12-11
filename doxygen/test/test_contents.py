@@ -23,6 +23,7 @@
 #
 
 import os
+import shutil
 import unittest
 
 from distutils.version import LooseVersion
@@ -104,6 +105,8 @@ class Math(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'math', *args, **kwargs)
 
+    @unittest.skipUnless(shutil.which('latex'),
+                         "Math rendering requires LaTeX installed")
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
