@@ -108,10 +108,8 @@ class HtmlEscape(PageTestCase):
         self.assertEqual(*self.actual_expected_contents('landing.html'))
         self.assertEqual(*self.actual_expected_contents('breadcrumb.html'))
 
-    # This is broken in Pelican until https://github.com/getpelican/pelican/issues/2260
-    # so we test in a separate xfail test case
     @unittest.skipUnless(LooseVersion(pelican.__version__) > LooseVersion("3.7.1"),
-                         "Pelican doesn't produce expected results in this version")
+                         "https://github.com/getpelican/pelican/pull/2260")
     def test_content(self):
         self.run_pelican({
             'SITENAME': "<&> in site name",
