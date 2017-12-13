@@ -28,6 +28,18 @@ spaces. But not when it is in (@code{.cpp} std::exit(2); @endcode) parentheses.
 // this is a new block
 @endcode
 
+@todo However, code block after an xrefitem is delimited properly by Doxygen:
+
+@code{.cpp}
+// code?
+@endcode
+
+> And code block after a blockquote as well:
+
+@code{.cpp}
+// another block
+@endcode
+
 @attention Inline code after a note should not be treated as block, though:
 
 The @code{.cpp} constexpr @endcode functions are pure.

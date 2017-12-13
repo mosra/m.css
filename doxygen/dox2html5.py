@@ -258,7 +258,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     # there's no text after and it's the last thing in the
                     # paragraph (Doxygen ALSO doesn't separate end of a section
                     # and begin of a code block by a paragraph even if there is
-                    # a blank line.)
+                    # a blank line. But it does so for xrefitems such as @todo.
+                    # I don't even.)
                     (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
                 ):
                     end_previous_paragraph = True
