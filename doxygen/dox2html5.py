@@ -141,7 +141,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.params = {}
     out.return_value = None
 
-    # DOXYGEN <PARA> PATCHING 1/5
+    # DOXYGEN <PARA> PATCHING 1/4
     #
     # In the optimistic case, when parsing the <para> element, the parsed
     # content is treated as single reasonable paragraph and the caller is told
@@ -167,7 +167,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
     i: ET.Element
     for i in element:
-        # DOXYGEN <PARA> PATCHING 2/5
+        # State used later
+        code_block = None
+        formula_block = None
+
+        # DOXYGEN <PARA> PATCHING 2/4
         #
         # Upon encountering a block element nested in <para>, we need to act.
         # If there was any content before, we close the paragraph. If there
@@ -180,16 +184,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Those elements are:
         # - <heading>
         # - <blockquote>
-        # - <simplesect> and <xrefsect>
+        # - <simplesect> (if not describing return type) and <xrefsect>
         # - <verbatim>
         # - <variablelist>, <itemizedlist>, <orderedlist>
         # - <image>, <table>
-        # - block <formula>
-        # - <programlisting> (complex block/inline autodetection involved, so
-        #   the check is deferred to later in the loop)
+        # - <formula> (if block)
+        # - <programlisting> (if block)
         #
-        # Note that <parameterlist> and <simplesect kind="return"> are
-        # extracted out of the text flow, so these are removed from this check.
+        # <parameterlist> and <simplesect kind="return"> are extracted out of
+        # the text flow, so these are removed from this check.
         #
         # In addition, there's special handling to achieve things like this:
         #   <ul>
@@ -201,16 +204,62 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # I.e., not wrapping "A paragraph" in a <p>, but only if it's
         # immediately followed by another and it's the first paragraph in a
         # list item. We check that using the immediate_parent variable.
-        if (i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image', 'table'] or (i.tag == 'simplesect' and i.attrib['kind'] != 'return') or (i.tag == 'formula' and i.text.startswith('\[ ') and i.text.endswith(' \]'))) and element.tag == 'para' and out.write_paragraph_close_tag:
-            out.is_reasonable_paragraph = False
-            out.parsed = out.parsed.rstrip()
-            if not out.parsed:
-                out.write_paragraph_start_tag = False
-            elif immediate_parent and immediate_parent.tag == 'listitem' and i.tag in ['itemizedlist', 'orderedlist']:
-                out.write_paragraph_start_tag = False
-            else:
-                out.parsed += '</p>'
-            out.write_paragraph_close_tag = False
+        if element.tag == 'para':
+            end_previous_paragraph = False
+
+            # Straightforward elements
+            if i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image', 'table']:
+                end_previous_paragraph = True
+
+            # <simplesect> describing return type is cut out of text flow, so
+            # it doesn't contribute
+            elif i.tag == 'simplesect' and i.attrib['kind'] != 'return':
+                end_previous_paragraph = True
+
+            # <formula> can be both, depending on what's inside
+            elif i.tag == 'formula':
+                if i.text.startswith('\[ ') and i.text.endswith(' \]'):
+                    end_previous_paragraph = True
+                    formula_block = True
+                else:
+                    assert i.text.startswith('$ ') and i.text.endswith(' $')
+                    formula_block = False
+
+            # <programlisting> is autodetected to be either block or inline
+            elif i.tag == 'programlisting':
+                # If it seems to be a standalone code paragraph, don't wrap it
+                # in <p> and use <pre>:
+                # - is either alone in the paragraph, with no text or other
+                #   elements around
+                # - or is a code snippet (filename instead of just .ext).
+                #   Doxygen unfortunately doesn't put @snippet in its own
+                #   paragraph even if it's separated by blank lines. It does so
+                #   for @include and related, though.
+                if ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and len([listing for listing in element]) == 1) or ('filename' in i.attrib and not i.attrib['filename'].startswith('.')):
+                    end_previous_paragraph = True
+                    code_block = True
+
+                # Looks like inline code, but has multiple code lines, so it's
+                # suspicious. Use code block, but warn.
+                elif len([codeline for codeline in i]) > 1:
+                    end_previous_paragraph = True
+                    code_block = True
+                    logging.warning("Inline code has multiple lines, fallback to a code block")
+
+                # Otherwise wrap it in <p> and use <code>
+                else:
+                    code_block = False
+
+            if end_previous_paragraph:
+                out.is_reasonable_paragraph = False
+                out.parsed = out.parsed.rstrip()
+                if not out.parsed:
+                    out.write_paragraph_start_tag = False
+                elif immediate_parent and immediate_parent.tag == 'listitem' and i.tag in ['itemizedlist', 'orderedlist']:
+                    out.write_paragraph_start_tag = False
+                elif out.write_paragraph_close_tag:
+                    out.parsed += '</p>'
+                out.write_paragraph_close_tag = False
 
         # Block elements
         if i.tag in ['sect1', 'sect2', 'sect3']:
@@ -247,6 +296,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<{0}><a href="#{1}">{2}</a></{0}>'.format(tag, id, title)
 
         elif i.tag == 'heading':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
             if i.attrib['level'] == '1':
@@ -266,7 +316,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag != 'para' # should be top-level block element
             paragraph_count += 1
 
-            # DOXYGEN <PARA> PATCHING 3/5
+            # DOXYGEN <PARA> PATCHING 3/4
             #
             # Parse contents of the paragraph, don't trim whitespace around
             # nested elements but trim it at the begin and end of the paragraph
@@ -278,7 +328,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # and assume they are not scattered all over the place (ugh).
             #
             # There's also the patching of nested lists that results in the
-            # immediate_parent variable in the section 2/5 -- we pass the
+            # immediate_parent variable in the section 2/4 -- we pass the
             # parent only if this is the first paragraph inside it.
             parsed = parse_desc_internal(state, i, element if paragraph_count == 1 and not has_block_elements else None, False)
             parsed.parsed = parsed.parsed.strip()
@@ -302,10 +352,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert not parsed.section
 
         elif i.tag == 'blockquote':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
             out.parsed += '<blockquote>{}</blockquote>'.format(parse_desc(state, i))
 
         elif i.tag in ['itemizedlist', 'orderedlist']:
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
             tag = 'ul' if i.tag == 'itemizedlist' else 'ol'
             out.parsed += '<{}>'.format(tag)
@@ -315,6 +367,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'table':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
             out.parsed += '<table class="m-table">'
             inside_tbody = False
@@ -340,6 +393,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</table>'
 
         elif i.tag == 'simplesect':
+            assert element.tag == 'para' # is inside a paragraph :/
+
             # Return value is separated from the text flow
             if i.attrib['kind'] == 'return':
                 assert not out.return_value
@@ -359,6 +414,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.parsed += '</aside>'
 
         elif i.tag == 'xrefsect':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
             id = i.attrib['id']
@@ -374,6 +430,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 color, file, match.group(2), i.find('xreftitle').text, parse_desc(state, i.find('xrefdescription')))
 
         elif i.tag == 'parameterlist':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
             out.param_kind = i.attrib['kind']
@@ -394,6 +451,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     out.templates[name.text] = description
 
         elif i.tag == 'variablelist':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
             out.parsed += '<dl class="m-dox">'
 
@@ -407,53 +465,22 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</dl>'
 
         elif i.tag == 'verbatim':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
             out.parsed += '<pre class="m-code">{}</pre>'.format(html.escape(i.text))
 
-        elif i.tag == 'linebreak':
-            # Strip all whitespace before the linebreak, as it is of no use
-            out.parsed = out.parsed.rstrip() + '<br />'
-
         elif i.tag == 'programlisting':
-            # If it seems to be a standalone code paragraph, don't wrap it in
-            # <p> and use <pre>:
-            # - is either alone in the paragraph, with no text or other
-            #   elements around
-            # - or is a code snippet (filename instead of just .ext). Doxygen
-            #   unfortunately doesn't put @snippet in its own paragraph even
-            #   if it's separated by blank lines. It does so for @include and
-            #   related, though.
-            if element.tag == 'para' and (((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and len([listing for listing in element]) == 1) or ('filename' in i.attrib and not i.attrib['filename'].startswith('.'))):
-                code_block = True
+            assert element.tag == 'para' # is inside a paragraph :/
 
-            # Looks like inline code, but has multiple code lines, so it's
-            # suspicious. Use code block, but warn.
-            elif len([codeline for codeline in i]) > 1:
-                code_block = True
-                logging.warning("Inline code has multiple lines, fallback to a code block")
+            # We should have decided about block/inline above
+            assert code_block is not None
 
-            # Otherwise wrap it in <p> and use <code>
-            else:
-                code_block = False
-
-                # Doxygen doesn't add a space before <programlisting> if it's
-                # inline, add it manually in case there should be a space
-                # before it. However, it does add a space after it always.
+            # Doxygen doesn't add a space before <programlisting> if it's
+            # inline, add it manually in case there should be a space before
+            # it. However, it does add a space after it always.
+            if not code_block:
                 if out.parsed and not out.parsed[-1].isspace() and not out.parsed[-1] in '([{':
                     out.parsed += ' '
-
-            # DOXYGEN <PARA> PATCHING 4/5
-            #
-            # Specialization of similar paragraph cleanup code above.
-            if code_block:
-                out.is_reasonable_paragraph = False
-                has_block_elements = True
-                out.parsed = out.parsed.rstrip()
-                if not out.parsed:
-                    out.write_paragraph_start_tag = False
-                else:
-                    out.parsed += '</p>'
-                out.write_paragraph_close_tag = False
 
             # Hammer unhighlighted code out of the block
             # TODO: preserve links
@@ -538,9 +565,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<{0} class="{1}">{2}</{0}>'.format('pre' if code_block else 'code', class_, highlighted)
 
         elif i.tag == 'image':
+            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
-            name = i.attrib['name']
 
+            name = i.attrib['name']
             if i.attrib['type'] == 'html':
                 path = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], name)
                 if os.path.exists(path):
@@ -556,8 +584,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Either block or inline because DOXYGEN!!! WHAT!!!
         elif i.tag == 'formula':
-            # Inline formula
-            if i.text.startswith('$ ') and i.text.endswith(' $'):
+            assert element.tag == 'para' # is inside a paragraph :/
+
+            # We should have decided about block/inline above
+            assert formula_block is not None
+            if formula_block:
+                has_block_elements = True
+                rendered = latex2svg.latex2svg('$${}$$'.format(i.text[3:-3]), params=m.math.latex2svg_params)
+                out.parsed += '<div class="m-math">{}</div>'.format(m.math._patch(i.text, rendered, ''))
+            else:
                 rendered = latex2svg.latex2svg('${}$'.format(i.text[2:-2]), params=m.math.latex2svg_params)
 
                 # CSS classes and styling for proper vertical alignment. Depth is relative
@@ -566,14 +601,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 attribs = ' class="m-math" style="vertical-align: -{:.1f}pt;"'.format(rendered['depth']*12*1.25)
                 out.parsed += m.math._patch(i.text, rendered, attribs)
 
-            # Block formula
-            else:
-                assert i.text.startswith('\[ ') and i.text.endswith(' \]')
-                has_block_elements = True
-                rendered = latex2svg.latex2svg('$${}$$'.format(i.text[3:-3]), params=m.math.latex2svg_params)
-                out.parsed += '<div class="m-math">{}</div>'.format(m.math._patch(i.text, rendered, ''))
-
         # Inline elements
+        elif i.tag == 'linebreak':
+            # Strip all whitespace before the linebreak, as it is of no use
+            out.parsed = out.parsed.rstrip() + '<br />'
+
         elif i.tag == 'anchor':
             out.parsed += '<a name="{}"></a>'.format(extract_id(i))
 
@@ -600,7 +632,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         else: # pragma: no cover
             logging.warning("Ignoring <{}> in desc".format(i.tag))
 
-        # DOXYGEN <PARA> PATCHING 5/5
+        # DOXYGEN <PARA> PATCHING 4/4
         #
         # Besides putting notes and blockquotes and shit inside paragraphs,
         # Doxygen also doesn't attempt to open a new <para> for the ACTUAL NEW
