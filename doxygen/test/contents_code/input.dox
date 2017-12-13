@@ -21,6 +21,17 @@ spaces. But not when it is in (@code{.cpp} std::exit(2); @endcode) parentheses.
 
 @endcode
 
+@note Code block after a note doesn't start a new paragraph in the XML but
+    should be treated as a block:
+
+@code{.cpp}
+// this is a new block
+@endcode
+
+@attention Inline code after a note should not be treated as block, though:
+
+The @code{.cpp} constexpr @endcode functions are pure.
+
 Code block inside a list (has to be done using HTML):
 
 <ul>

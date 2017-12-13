@@ -170,15 +170,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     previous_section = None
 
     i: ET.Element
-    for i in element:
+    for index, i in enumerate(element):
         # State used later
         code_block = None
         formula_block = None
 
         # A section was left open, but there's nothing to continue it, close
         # it. Expect that there was nothing after that would mess with us.
+        # Don't reset it back to None just yet, as inline/block code
+        # autodetection needs it.
         if previous_section and i.tag != 'simplesect':
-            previous_section = None
             assert not out.write_paragraph_close_tag
             out.parsed = out.parsed.rstrip() + '</aside>'
 
@@ -238,15 +239,28 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # <programlisting> is autodetected to be either block or inline
             elif i.tag == 'programlisting':
+                element_children_count = len([listing for listing in element])
+
                 # If it seems to be a standalone code paragraph, don't wrap it
                 # in <p> and use <pre>:
-                # - is either alone in the paragraph, with no text or other
-                #   elements around
-                # - or is a code snippet (filename instead of just .ext).
-                #   Doxygen unfortunately doesn't put @snippet in its own
-                #   paragraph even if it's separated by blank lines. It does so
-                #   for @include and related, though.
-                if ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and len([listing for listing in element]) == 1) or ('filename' in i.attrib and not i.attrib['filename'].startswith('.')):
+                if (
+                    # It's either alone in the paragraph, with no text or other
+                    # elements around, or
+                    ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and element_children_count == 1) or
+
+                    # is a code snippet, i.e. filename instead of just .ext
+                    # (Doxygen unfortunately doesn't put @snippet in its own
+                    # paragraph even if it's separated by blank lines. It does
+                    # so for @include and related, though.)
+                    ('filename' in i.attrib and not i.attrib['filename'].startswith('.')) or
+
+                    # or is code right after a note/attention/... section,
+                    # there's no text after and it's the last thing in the
+                    # paragraph (Doxygen ALSO doesn't separate end of a section
+                    # and begin of a code block by a paragraph even if there is
+                    # a blank line.)
+                    (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
+                ):
                     end_previous_paragraph = True
                     code_block = True
 
@@ -663,6 +677,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Something new :O
         else: # pragma: no cover
             logging.warning("Ignoring <{}> in desc".format(i.tag))
+
+        # Now we can reset previous_section to None, nobody needs it anymore.
+        # Of course we're resetting it only in case nothing else (such as the
+        # <simplesect> tag) could affect it in this iteration.
+        if i.tag != 'simplesect' and previous_section:
+            previous_section = None
 
         # DOXYGEN <PARA> PATCHING 4/4
         #
