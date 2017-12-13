@@ -59,6 +59,19 @@ Cell            | Another cell  | 3rd
 Next row        |               | This
 is a table      | *really*      | yes.
 
+@attention
+    Attention, first paragraph.
+@attention
+    Attention, second paragraph.
+@attention
+    Attention, third paragraph.
+@note
+    A note, not merged with the above.
+
+@xrefitem old "Old stuff" "Just old" This is not merged.
+
+@xrefitem old "Old stuff" "Just old" With this. Only on the listing page.
+
 */
 
 /** @page other Other page

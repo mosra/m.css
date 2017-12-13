@@ -1,4 +1,4 @@
-INPUT                   = input.dox
+INPUT                   = input.dox File.h
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO

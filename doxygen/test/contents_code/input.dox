@@ -39,6 +39,15 @@ Code block inside a list (has to be done using HTML):
 <li>A single paragraph, rendered without the wrapping tag</li>
 </ul>
 
+@note
+    Code block inside a note:
+@note
+    @code{.cpp}
+    // code block
+    @endcode
+@note
+    Another paragraph of that note.
+
 */
 
 /** @page warnings Code that produces warnings

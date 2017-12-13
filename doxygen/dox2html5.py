@@ -165,11 +165,22 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     paragraph_count = 0
     has_block_elements = False
 
+    # So we are able to merge content of adjacent sections. Tuple of (tag,
+    # kind), set only if there is no i.tail, reset in the next iteration.
+    previous_section = None
+
     i: ET.Element
     for i in element:
         # State used later
         code_block = None
         formula_block = None
+
+        # A section was left open, but there's nothing to continue it, close
+        # it. Expect that there was nothing after that would mess with us.
+        if previous_section and i.tag != 'simplesect':
+            previous_section = None
+            assert not out.write_paragraph_close_tag
+            out.parsed = out.parsed.rstrip() + '</aside>'
 
         # DOXYGEN <PARA> PATCHING 2/4
         #
@@ -401,22 +412,43 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.return_value = parse_desc(state, i)
             else:
                 has_block_elements = True
-                if i.attrib['kind'] == 'see':
-                    out.parsed += '<aside class="m-note m-default"><h4>See also</h4>'
-                elif i.attrib['kind'] == 'note':
-                    out.parsed += '<aside class="m-note m-info"><h4>Note</h4>'
-                elif i.attrib['kind'] == 'attention':
-                    out.parsed += '<aside class="m-note m-warning"><h4>Attention</h4>'
-                else: # pragma: no cover
-                    out.parsed += '<aside class="m-note">'
-                    logging.warning("ignoring {} kind of <simplesect>".format(i.attrib['kind']))
+
+                # There was a section open, but it differs from this one, close
+                # it
+                if previous_section and previous_section != i.attrib['kind']:
+                    out.parsed = out.parsed.rstrip() + '</aside>'
+
+                # Not continuing with a section from before, put a header in
+                if not previous_section or previous_section != i.attrib['kind']:
+                    if i.attrib['kind'] == 'see':
+                        out.parsed += '<aside class="m-note m-default"><h4>See also</h4>'
+                    elif i.attrib['kind'] == 'note':
+                        out.parsed += '<aside class="m-note m-info"><h4>Note</h4>'
+                    elif i.attrib['kind'] == 'attention':
+                        out.parsed += '<aside class="m-note m-warning"><h4>Attention</h4>'
+                    else: # pragma: no cover
+                        out.parsed += '<aside class="m-note">'
+                        logging.warning("ignoring {} kind of <simplesect>".format(i.attrib['kind']))
+
                 out.parsed += parse_desc(state, i)
-                out.parsed += '</aside>'
+
+                # There's something after, close it
+                if i.tail and i.tail.strip():
+                    out.parsed += '</aside>'
+                    previous_section = None
+
+                # Otherwise put the responsibility on the next iteration, maybe
+                # there are more paragraphs that should be merged
+                else:
+                    previous_section = i.attrib['kind']
 
         elif i.tag == 'xrefsect':
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
+            # Not merging these, as every has usually a different ID each. (And
+            # apparently Doxygen is able to merge them *but only if* they
+            # describe some symbol, not on a page.)
             id = i.attrib['id']
             match = xref_id_rx.match(id)
             file = match.group(1)
@@ -655,6 +687,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             elif out.parsed.endswith('<br />'):
                 tail = tail.lstrip()
             out.parsed += tail
+
+    # A section was left open in the last iteration, close it. Expect that
+    # there was nothing after that would mess with us.
+    if previous_section:
+        assert not out.write_paragraph_close_tag
+        out.parsed = out.parsed.rstrip() + '</aside>'
 
     # Brief description always needs to be single paragraph because we're
     # sending it out without enclosing <p>.

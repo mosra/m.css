@@ -54,6 +54,13 @@ class Blocks(IntegrationTestCase):
         self.run_dox2html5(wildcard='todo.xml')
         self.assertEqual(*self.actual_expected_contents('todo.html'))
 
+    def test_builtin_xrefitem_merging(self):
+        # Multiple xrefitems should be merged into one here
+        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_dox2html5(wildcard='old.xml')
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(*self.actual_expected_contents('old.html'))
+
 class Code(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'code', *args, **kwargs)
