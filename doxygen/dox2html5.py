@@ -287,6 +287,19 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     out.parsed += '</p>'
                 out.write_paragraph_close_tag = False
 
+            # There might be *inline* elements that need to start a *new*
+            # paragraph, on the other hand. OF COURSE DOXYGEN DOESN'T DO THAT
+            # EITHER. There's a similar block of code that handles case with
+            # non-empty i.tail() at the end of the loop iteration.
+            if not out.write_paragraph_close_tag and (i.tag in ['linebreak', 'anchor', 'computeroutput', 'emphasis', 'bold', 'ref', 'ulink'] or (i.tag == 'formula' and not formula_block) or (i.tag == 'programlisting' and not code_block)):
+                # Assume sanity -- we are *either* closing a paragraph because
+                # a new block element appeared after inline stuff *or* opening
+                # a paragraph because there's inline text after a block
+                # element and that is mutually exclusive.
+                assert not end_previous_paragraph
+                out.parsed += '<p>'
+                out.write_paragraph_close_tag = True
+
         # Block elements
         if i.tag in ['sect1', 'sect2', 'sect3']:
             assert element.tag != 'para' # should be top-level block element

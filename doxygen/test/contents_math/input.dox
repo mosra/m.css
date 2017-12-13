@@ -8,4 +8,10 @@ Here's a block formula:
 
 And @f$ \hat q @f$ is how quaternion is denoted.
 
+@f[
+    a^2 + b^2 = c^2
+@f]
+
+@f$ c^2 @f$ should be part of a new paragraph, not stuck out of it.
+
 */

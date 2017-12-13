@@ -72,6 +72,10 @@ is a table      | *really*      | yes.
 
 @xrefitem old "Old stuff" "Just old" With this. Only on the listing page.
 
+@warning Non-text item after a note/whatever should be part of a paragraph:
+
+_This is_ inside a paragraph.
+
 */
 
 /** @page other Other page

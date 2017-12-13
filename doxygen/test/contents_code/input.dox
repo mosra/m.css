@@ -44,6 +44,10 @@ spaces. But not when it is in (@code{.cpp} std::exit(2); @endcode) parentheses.
 
 The @code{.cpp} constexpr @endcode functions are pure.
 
+@warning Inline code right after a block should be part of a paragraph:
+
+@code{.cpp} inline @endcode variables are a thing?
+
 Code block inside a list (has to be done using HTML):
 
 <ul>
