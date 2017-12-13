@@ -441,6 +441,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.parsed += '<aside class="m-note m-info"><h4>Note</h4>'
                     elif i.attrib['kind'] == 'attention':
                         out.parsed += '<aside class="m-note m-warning"><h4>Attention</h4>'
+                    elif i.attrib['kind'] == 'warning':
+                        out.parsed += '<aside class="m-note m-danger"><h4>Warning</h4>'
                     else: # pragma: no cover
                         out.parsed += '<aside class="m-note">'
                         logging.warning("ignoring {} kind of <simplesect>".format(i.attrib['kind']))
