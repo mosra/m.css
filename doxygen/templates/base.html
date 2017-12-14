@@ -6,6 +6,8 @@
   {% for css in HTML_EXTRA_STYLESHEET %}
   <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
   {% endfor %}
+  {% block header_links %}
+  {% endblock %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
 </head>

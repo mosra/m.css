@@ -141,6 +141,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.params = {}
     out.return_value = None
     out.add_css_class = None
+    out.footer_navigation = False
 
     # DOXYGEN <PARA> PATCHING 1/4
     #
@@ -412,6 +413,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # resetting here explicitly.
             add_css_class = parsed.add_css_class
 
+            # Bubble up also the footer navigation
+            if parsed.footer_navigation: out.footer_navigation = True
+
             # Assert we didn't miss anything important
             assert not parsed.section
 
@@ -600,6 +604,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # paragraph:
             else:
                 add_inline_css_class = i.attrib['{http://mcss.mosra.cz/doxygen/}class']
+
+        # Enabling footer navigation in a page
+        elif i.tag == '{http://mcss.mosra.cz/doxygen/}footernavigation':
+            out.footer_navigation = True
 
         # Either block or inline
         elif i.tag == 'programlisting':
@@ -856,7 +864,7 @@ def parse_toplevel_desc(state: State, element: ET.Element):
     assert not parsed.return_value
     if parsed.params:
         logging.warning("Use @tparam instead of @param for documenting class templates, @param is ignored")
-    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '')
+    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation)
 
 def parse_typedef_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
@@ -1224,7 +1232,8 @@ def parse_xml(state: State, xml: str):
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    compound.description, templates, compound.sections = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
+    compound.description, templates, compound.sections, footer_navigation = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
+    compound.footer_navigation = None
     compound.dirs = []
     compound.files = []
     compound.namespaces = []
@@ -1270,6 +1279,30 @@ def parse_xml(state: State, xml: str):
         # Drop TOC for pages, if not requested
         if compounddef.find('tableofcontents') is None:
             compound.sections = []
+
+        # Enable footer navigation, if requested
+        if footer_navigation:
+            up = state.compounds[compound.id].parent
+
+            # Go through all parent children and
+            if up:
+                up = state.compounds[up]
+
+                prev = None
+                next = None
+                prev_child = None
+                for child in up.children:
+                    if child == compound.id:
+                        if prev_child: prev = state.compounds[prev_child]
+                    elif prev_child == compound.id:
+                        next = state.compounds[child]
+                        break
+
+                    prev_child = child
+
+                compound.footer_navigation = ((prev.url, prev.name) if prev else None,
+                                              (up.url, up.name),
+                                              (next.url, next.name) if next else None)
 
         if compound.brief:
             # Remove duplicated brief in pages. Doxygen sometimes adds a period

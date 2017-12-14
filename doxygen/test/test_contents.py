@@ -139,3 +139,8 @@ class Custom(IntegrationTestCase):
     def test_math(self):
         self.run_dox2html5(wildcard='math.xml')
         self.assertEqual(*self.actual_expected_contents('math.html'))
+
+    def test_footer_navigation(self):
+        self.run_dox2html5(wildcard='subpage*.xml')
+        self.assertEqual(*self.actual_expected_contents('subpage1.html'))
+        self.assertEqual(*self.actual_expected_contents('subpage2.html'))

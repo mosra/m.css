@@ -568,8 +568,8 @@ aliases in the original ``Doxyfile``:
     Doxygen with :gh:`doxygen/doxygen#623` applied, otherwise the codes will be
     present in the rendered output in their raw form.
 
-`Custom styling`_
------------------
+`Theme-specific commands`_
+--------------------------
 
 It's possible to insert custom m.css classes into the Doxygen output. Add the
 following to your ``Doxyfile-mcss``:
@@ -581,7 +581,8 @@ following to your ``Doxyfile-mcss``:
         "m_enddiv=@xmlonly</mcss:div>@endxmlonly" \
         "m_span{1}=@xmlonly<mcss:span xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
         "m_endspan=@xmlonly</mcss:span>@endxmlonly" \
-        "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly"
+        "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
+        "m_footernavigation=@xmlonly<mcss:footernavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" />@endxmlonly"
 
 If you need backwards compatibility with stock Doxygen HTML output, just make
 the aliases empty in your original ``Doxyfile``. Note that you can rename the
@@ -594,7 +595,8 @@ aliases however you want to fit your naming scheme.
         "m_enddiv=" \
         "m_span{1}=" \
         "m_endspan=" \
-        "m_class{1}="
+        "m_class{1}=" \
+        "m_footernavigation="
 
 With ``@m_div`` and ``@m_span`` it's possible to wrap individual paragraphs or
 inline text in :html:`<div>` / :html:`<span>` and add CSS classes to them.
@@ -644,6 +646,12 @@ formula. Example usage:
         :class: m-danger
 
     See the red :math-danger:`\Sigma` character.
+
+The ``@m_footernavigation`` command is similar to ``@tableofcontents``, but
+across pages --- if a page is a subpage of some other page and this command is
+present in page detailed description, it will cause the footer of the rendered
+page to contain a link to previous, parent and next page according to defined
+page order.
 
 `Customizing the template`_
 ===========================
@@ -764,7 +772,9 @@ Property                                Description
 :py:`compound.has_template_details`     If there is a detailed documentation
                                         of template parameters
 :py:`compound.sections`                 Sections of detailed description. See
-                                        `Section properties`_ for details.
+                                        `Navigation properties`_ for details.
+:py:`compound.footer_navigation`        Footer navigation of a page. See
+                                        `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
 :py:`compound.dirs`                     List of directories in this compound.
@@ -858,8 +868,8 @@ Property                                Description
                                         result will be saved
 ======================================= =======================================
 
-`Section properties`_
-`````````````````````
+`Navigation properties`_
+````````````````````````
 
 The :py:`compound.sections` property defines a Table of Contents for given
 detailed description. It's a list of :py:`(id, title, children)` tuples, where
@@ -867,6 +877,13 @@ detailed description. It's a list of :py:`(id, title, children)` tuples, where
 a recursive list of nested sections. If the list is empty, given detailed
 description either has no sections or the TOC was not explicitly requested via
 ``@tableofcontents`` in case of pages.
+
+The :py:`compound.footer_navigation` property defines footer navigation
+requested by the ``@m_footernavigation`` `theme-specific command <#theme-specific-commands>`_.
+If available, it's a tuple of :py:`(prev, up, next)` where each item is a tuple
+of :py:`(url, title)` for a page that's either previous in the defined order,
+one level up or next. For starting/ending page the :py:`prev`/:py:`next` is
+:py:`None`.
 
 `Directory properties`_
 ```````````````````````
