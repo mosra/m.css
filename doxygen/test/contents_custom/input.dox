@@ -1,9 +1,9 @@
 /** @mainpage
 
-@m_div{m-note m-dim m-text-center} This paragraph is rendered in a dim note,
+@m_div{m-note m-dim m-text-center} This paragraph *is* rendered in a dim note,
 centered. @m_enddiv
 
-This paragraph contains a @m_span{m-text m-danger} red text @m_endspan in
+This paragraph contains a @m_span{m-text m-danger} *red* text @m_endspan in
 a normal text flow and then @m_class{m-text m-em m-small} **small strong italics**,
 @m_class{m-text m-info} *blue italics* and @m_class{m-text m-big} https://mcss.mosra.cz
 (big-ass link).

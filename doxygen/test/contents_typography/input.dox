@@ -28,8 +28,9 @@ Paragraph \n with \n explicit \n line \n breaks.
 
 @anchor an-anchor
 
-This is a `typewriter text`, *emphasis* and **bold**. http://google.com and
-[URL](http://google.com). En-dash -- and em-dash ---. Reference to a
+This is a `typewriter text`, *emphasis* and **bold**. <em>Emphasis with
+<tt>typewriter</tt> and <strong>bold</strong> nested.</em> http://google.com
+and [URL](http://google.com). En-dash -- and em-dash ---. Reference to a
 @ref subsection.
 
 */
