@@ -759,8 +759,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i).strip())
 
         # WHAT THE HELL WHY IS THIS NOT AN XML ENTITY
-        elif i.tag == 'ndash': out.parsed += '&ndash;'
-        elif i.tag == 'mdash': out.parsed += '&mdash;'
+        elif i.tag in ['mdash', 'ndash', 'laquo', 'raquo']:
+            out.parsed += '&{};'.format(i.tag)
 
         # Something new :O
         else: # pragma: no cover
