@@ -584,7 +584,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
-            out.parsed += '<div class="{}">{}</div>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_desc(state, i))
+            out.parsed += '<div class="{}">{}</div>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i).strip())
 
         # Adding a custom CSS class to the immediately following block/inline
         # element
@@ -733,17 +733,17 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<a name="{}"></a>'.format(extract_id(i))
 
         elif i.tag == 'computeroutput':
-            out.parsed += '<code>{}</code>'.format(parse_inline_desc(state, i))
+            out.parsed += '<code>{}</code>'.format(parse_inline_desc(state, i).strip())
 
         elif i.tag == 'emphasis':
             out.parsed += '<em{}>{}</em>'.format(
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
-                parse_inline_desc(state, i))
+                parse_inline_desc(state, i).strip())
 
         elif i.tag == 'bold':
             out.parsed += '<strong{}>{}</strong>'.format(
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
-                parse_inline_desc(state, i))
+                parse_inline_desc(state, i).strip())
 
         elif i.tag == 'ref':
             out.parsed += parse_ref(state, i)
@@ -752,11 +752,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<a href="{}"{}>{}</a>'.format(
                 html.escape(i.attrib['url']),
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
-                add_wbr(parse_inline_desc(state, i)))
+                add_wbr(parse_inline_desc(state, i).strip()))
 
         # <span> with custom CSS classes
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}span':
-            out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i))
+            out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i).strip())
 
         # WHAT THE HELL WHY IS THIS NOT AN XML ENTITY
         elif i.tag == 'ndash': out.parsed += '&ndash;'
@@ -885,7 +885,7 @@ def parse_inline_desc(state: State, element: ET.Element) -> str:
     if element is None: return ''
 
     # Verify that we didn't ignore any important info by accident
-    parsed = parse_desc_internal(state, element)
+    parsed = parse_desc_internal(state, element, trim=False)
     assert not parsed.templates and not parsed.params and not parsed.return_value
     assert not parsed.section
     return parsed.parsed
