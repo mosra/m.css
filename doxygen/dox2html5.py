@@ -531,6 +531,25 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             has_block_elements = True
             out.parsed += '<pre class="m-code">{}</pre>'.format(html.escape(i.text))
 
+        elif i.tag == 'image':
+            assert element.tag == 'para' # is inside a paragraph :/
+            has_block_elements = True
+
+            name = i.attrib['name']
+            if i.attrib['type'] == 'html':
+                path = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], name)
+                if os.path.exists(path):
+                    state.images += [path]
+                else:
+                    logging.warning("Image {} was not found in XML_OUTPUT".format(name))
+
+                caption = i.text
+                if caption:
+                    out.parsed += '<figure class="m-figure"><img src="{}" alt="Image" /><figcaption>{}</figcaption></figure>'.format(name, html.escape(caption))
+                else:
+                    out.parsed += '<img class="m-image" src="{}" alt="Image" />'.format(name)
+
+        # Either block or inline
         elif i.tag == 'programlisting':
             assert element.tag == 'para' # is inside a paragraph :/
 
@@ -626,25 +645,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             highlighted = highlighted.rstrip() if code_block else highlighted.strip()
             out.parsed += '<{0} class="{1}">{2}</{0}>'.format('pre' if code_block else 'code', class_, highlighted)
 
-        elif i.tag == 'image':
-            assert element.tag == 'para' # is inside a paragraph :/
-            has_block_elements = True
-
-            name = i.attrib['name']
-            if i.attrib['type'] == 'html':
-                path = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], name)
-                if os.path.exists(path):
-                    state.images += [path]
-                else:
-                    logging.warning("Image {} was not found in XML_OUTPUT".format(name))
-
-                caption = i.text
-                if caption:
-                    out.parsed += '<figure class="m-figure"><img src="{}" alt="Image" /><figcaption>{}</figcaption></figure>'.format(name, html.escape(caption))
-                else:
-                    out.parsed += '<img class="m-image" src="{}" alt="Image" />'.format(name)
-
-        # Either block or inline because DOXYGEN!!! WHAT!!!
+        # Either block or inline
         elif i.tag == 'formula':
             assert element.tag == 'para' # is inside a paragraph :/
 
