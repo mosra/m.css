@@ -134,12 +134,13 @@ def parse_type(state: State, type: ET.Element) -> str:
     # Remove spacing inside <> and before & and *
     return fix_type_spacing(out)
 
-def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.Element = None, trim = True):
+def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.Element = None, trim = True, add_css_class = None):
     out = Empty()
     out.section = None
     out.templates = {}
     out.params = {}
     out.return_value = None
+    out.add_css_class = None
 
     # DOXYGEN <PARA> PATCHING 1/4
     #
@@ -160,6 +161,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     if element.text:
         out.parsed = html.escape(element.text.strip() if trim else element.text)
 
+        # There's some inline text at the start, *do not* add any CSS class to
+        # the first child element
+        add_css_class = None
+
     # Needed later for deciding whether we can strip the surrounding <p> from
     # the content
     paragraph_count = 0
@@ -168,6 +173,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     # So we are able to merge content of adjacent sections. Tuple of (tag,
     # kind), set only if there is no i.tail, reset in the next iteration.
     previous_section = None
+
+    # A CSS class to be added inline (not propagated outside of the paragraph)
+    add_inline_css_class = None
 
     i: ET.Element
     for index, i in enumerate(element):
@@ -200,6 +208,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <verbatim>
         # - <variablelist>, <itemizedlist>, <orderedlist>
         # - <image>, <table>
+        # - <mcss:div>
         # - <formula> (if block)
         # - <programlisting> (if block)
         #
@@ -220,7 +229,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image', 'table']:
+            if i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -362,21 +371,28 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # itself. Also, some paragraphs are actually block content and we
             # might not want to write the start/closing tag.
             #
-            # Also, to make things even funnier, parameter and return value
-            # description come from inside of some paragraph, so bubble them up
-            # and assume they are not scattered all over the place (ugh).
-            #
             # There's also the patching of nested lists that results in the
             # immediate_parent variable in the section 2/4 -- we pass the
             # parent only if this is the first paragraph inside it.
-            parsed = parse_desc_internal(state, i, element if paragraph_count == 1 and not has_block_elements else None, False)
+            parsed = parse_desc_internal(state, i,
+                immediate_parent=element if paragraph_count == 1 and not has_block_elements else None,
+                trim=False,
+                add_css_class=add_css_class)
             parsed.parsed = parsed.parsed.strip()
             if not parsed.is_reasonable_paragraph:
                 has_block_elements = True
             if parsed.parsed:
-                if parsed.write_paragraph_start_tag: out.parsed += '<p>'
+                if parsed.write_paragraph_start_tag:
+                    # If there is some inline content at the beginning, assume
+                    # the CSS class was meant to be added to the paragraph
+                    # itself, not into a nested (block) element.
+                    out.parsed += '<p{}>'.format(' class="{}"'.format(add_css_class) if add_css_class else '')
                 out.parsed += parsed.parsed
                 if parsed.write_paragraph_close_tag: out.parsed += '</p>'
+
+            # Also, to make things even funnier, parameter and return value
+            # description come from inside of some paragraph, so bubble them up
+            # and assume they are not scattered all over the place (ugh).
             if parsed.templates:
                 assert not out.templates
                 out.templates = parsed.templates
@@ -386,6 +402,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             if parsed.return_value:
                 assert not out.return_value
                 out.return_value = parsed.return_value
+
+            # The same is (of course) with bubbling up the <mcss:class>
+            # element. Reset the current value with the value coming from
+            # inside -- it's either reset back to None or scheduled to be used
+            # in the next iteration. In order to make this work, the resetting
+            # code at the end of the loop iteration resets it to None only if
+            # this is not a paragraph or the <mcss:class> element -- so we are
+            # resetting here explicitly.
+            add_css_class = parsed.add_css_class
 
             # Assert we didn't miss anything important
             assert not parsed.section
@@ -399,7 +424,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
             tag = 'ul' if i.tag == 'itemizedlist' else 'ol'
-            out.parsed += '<{}>'.format(tag)
+            out.parsed += '<{}{}>'.format(tag,
+                ' class="{}"'.format(add_css_class) if add_css_class else '')
             for li in i:
                 assert li.tag == 'listitem'
                 out.parsed += '<li>{}</li>'.format(parse_desc(state, li))
@@ -408,7 +434,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'table':
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
-            out.parsed += '<table class="m-table">'
+            out.parsed += '<table class="m-table{}">'.format(
+                ' ' + add_css_class if add_css_class else '')
             inside_tbody = False
 
             row: ET.Element
@@ -545,9 +572,34 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
                 caption = i.text
                 if caption:
-                    out.parsed += '<figure class="m-figure"><img src="{}" alt="Image" /><figcaption>{}</figcaption></figure>'.format(name, html.escape(caption))
+                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="Image" /><figcaption>{}</figcaption></figure>'.format(
+                        ' ' + add_css_class if add_css_class else '',
+                        name, html.escape(caption))
                 else:
-                    out.parsed += '<img class="m-image" src="{}" alt="Image" />'.format(name)
+                    out.parsed += '<img class="m-image{}" src="{}" alt="Image" />'.format(
+                        ' ' + add_css_class if add_css_class else '', name)
+
+        # Custom <div> with CSS classes (for making dim notes etc)
+        elif i.tag == '{http://mcss.mosra.cz/doxygen/}div':
+            assert element.tag == 'para' # is inside a paragraph :/
+            has_block_elements = True
+
+            out.parsed += '<div class="{}">{}</div>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_desc(state, i))
+
+        # Adding a custom CSS class to the immediately following block/inline
+        # element
+        elif i.tag == '{http://mcss.mosra.cz/doxygen/}class':
+            assert element.tag == 'para' # is inside a paragraph :/
+
+            # Bubble up in case we are alone in a paragraph, as that's meant to
+            # affect the next paragraph content.
+            if len([listing for listing in element]) == 1:
+                out.add_css_class = i.attrib['{http://mcss.mosra.cz/doxygen/}class']
+
+            # Otherwise this is meant to only affect inline elements in this
+            # paragraph:
+            else:
+                add_inline_css_class = i.attrib['{http://mcss.mosra.cz/doxygen/}class']
 
         # Either block or inline
         elif i.tag == 'programlisting':
@@ -643,7 +695,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # Strip whitespace around if inline code, strip only trailing
             # whitespace if a block
             highlighted = highlighted.rstrip() if code_block else highlighted.strip()
-            out.parsed += '<{0} class="{1}">{2}</{0}>'.format('pre' if code_block else 'code', class_, highlighted)
+            out.parsed += '<{0} class="{1}{2}">{3}</{0}>'.format(
+                'pre' if code_block else 'code',
+                class_,
+                ' ' + add_css_class if code_block and add_css_class else '',
+                highlighted)
 
         # Either block or inline
         elif i.tag == 'formula':
@@ -654,14 +710,18 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             if formula_block:
                 has_block_elements = True
                 rendered = latex2svg.latex2svg('$${}$$'.format(i.text[3:-3]), params=m.math.latex2svg_params)
-                out.parsed += '<div class="m-math">{}</div>'.format(m.math._patch(i.text, rendered, ''))
+                out.parsed += '<div class="m-math{}">{}</div>'.format(
+                    ' ' + add_css_class if add_css_class else '',
+                    m.math._patch(i.text, rendered, ''))
             else:
                 rendered = latex2svg.latex2svg('${}$'.format(i.text[2:-2]), params=m.math.latex2svg_params)
 
                 # CSS classes and styling for proper vertical alignment. Depth is relative
                 # to font size, describes how below the line the text is. Scaling it back
                 # to 12pt font, scaled by 125% as set above in the config.
-                attribs = ' class="m-math" style="vertical-align: -{:.1f}pt;"'.format(rendered['depth']*12*1.25)
+                attribs = ' class="m-math{}" style="vertical-align: -{:.1f}pt;"'.format(
+                    ' ' + add_inline_css_class if add_inline_css_class else '',
+                    rendered['depth']*12*1.25)
                 out.parsed += m.math._patch(i.text, rendered, attribs)
 
         # Inline elements
@@ -676,16 +736,27 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<code>{}</code>'.format(parse_inline_desc(state, i))
 
         elif i.tag == 'emphasis':
-            out.parsed += '<em>{}</em>'.format(parse_inline_desc(state, i))
+            out.parsed += '<em{}>{}</em>'.format(
+                ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
+                parse_inline_desc(state, i))
 
         elif i.tag == 'bold':
-            out.parsed += '<strong>{}</strong>'.format(parse_inline_desc(state, i))
+            out.parsed += '<strong{}>{}</strong>'.format(
+                ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
+                parse_inline_desc(state, i))
 
         elif i.tag == 'ref':
             out.parsed += parse_ref(state, i)
 
         elif i.tag == 'ulink':
-            out.parsed += '<a href="{}">{}</a>'.format(html.escape(i.attrib['url']), add_wbr(parse_inline_desc(state, i)))
+            out.parsed += '<a href="{}"{}>{}</a>'.format(
+                html.escape(i.attrib['url']),
+                ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
+                add_wbr(parse_inline_desc(state, i)))
+
+        # <span> with custom CSS classes
+        elif i.tag == '{http://mcss.mosra.cz/doxygen/}span':
+            out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i))
 
         # WHAT THE HELL WHY IS THIS NOT AN XML ENTITY
         elif i.tag == 'ndash': out.parsed += '&ndash;'
@@ -700,6 +771,20 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # <simplesect> tag) could affect it in this iteration.
         if i.tag != 'simplesect' and previous_section:
             previous_section = None
+
+        # A custom inline CSS class was used (or was meant to be used) in this
+        # iteration, reset it so it's not added again in the next iteration. If
+        # this is a <mcss:class> element, it was added just now, don't reset
+        # it.
+        if i.tag != '{http://mcss.mosra.cz/doxygen/}class' and add_inline_css_class:
+            add_inline_css_class = None
+
+        # A custom block CSS class was used (or was meant to be used) in this
+        # iteration, reset it so it's not added again in the next iteration. If
+        # this is a paragraph, it might be added just now from within the
+        # nested content, don't reset it.
+        if i.tag != 'para' and add_css_class:
+            add_css_class = None
 
         # DOXYGEN <PARA> PATCHING 4/4
         #

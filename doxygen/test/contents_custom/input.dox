@@ -1,0 +1,61 @@
+/** @mainpage
+
+@m_div{m-note m-dim m-text-center} This paragraph is rendered in a dim note,
+centered. @m_enddiv
+
+This paragraph contains a @m_span{m-text m-danger} red text @m_endspan in
+a normal text flow and then @m_class{m-text m-em m-small} **small strong italics**,
+@m_class{m-text m-info} *blue italics* and @m_class{m-text m-big} https://mcss.mosra.cz
+(big-ass link).
+
+A paragraph that is not affected by the inline classes from above.
+
+@m_class{m-text m-strong m-noindent}
+
+Bold, non-indented paragraph.
+
+@m_class{m-text m-primary}
+
+__Bold text that should not have__ the same class as the paragraph.
+
+A paragraph that doesn't have any class applied. Next, a full-width image:
+
+@m_class{m-fullwidth}
+
+@image html ship-small.jpg
+
+@m_class{m-flat}
+
+@image html ship-small.jpg A flat figure
+
+A fullwidth table:
+
+@m_class{m-fullwidth}
+
+Table header    | Another
+--------------- | -------
+Cell            | Another cell
+Next row        | Last.
+
+An unstyled list:
+
+@m_class{m-unstyled}
+
+-   First item without a dot
+-   Second item without a dot
+
+*/
+
+/** @page math Math
+
+A green formula:
+
+@m_class{m-success}
+
+@f[
+    \pi^2
+@f]
+
+A yellow @m_class{m-warning} @f$ \Sigma @f$ inline formula.
+
+*/

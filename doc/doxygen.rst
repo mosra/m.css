@@ -568,6 +568,83 @@ aliases in the original ``Doxyfile``:
     Doxygen with :gh:`doxygen/doxygen#623` applied, otherwise the codes will be
     present in the rendered output in their raw form.
 
+`Custom styling`_
+-----------------
+
+It's possible to insert custom m.css classes into the Doxygen output. Add the
+following to your ``Doxyfile-mcss``:
+
+.. code:: ini
+
+    ALIASES += \
+        "m_div{1}=@xmlonly<mcss:div xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
+        "m_enddiv=@xmlonly</mcss:div>@endxmlonly" \
+        "m_span{1}=@xmlonly<mcss:span xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
+        "m_endspan=@xmlonly</mcss:span>@endxmlonly" \
+        "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly"
+
+If you need backwards compatibility with stock Doxygen HTML output, just make
+the aliases empty in your original ``Doxyfile``. Note that you can rename the
+aliases however you want to fit your naming scheme.
+
+.. code:: ini
+
+    ALIASES += \
+        "m_div{1}=" \
+        "m_enddiv=" \
+        "m_span{1}=" \
+        "m_endspan=" \
+        "m_class{1}="
+
+With ``@m_div`` and ``@m_span`` it's possible to wrap individual paragraphs or
+inline text in :html:`<div>` / :html:`<span>` and add CSS classes to them.
+Example usage and corresponding rendered HTML output:
+
+.. code-figure::
+
+    .. code:: c++
+
+        /**
+        @div{m-note m-dim m-text-center} This paragraph is rendered in a dim
+        note, centered. @enddiv
+
+        This text contains a @span{m-text m-success} green @endspan word.
+        */
+
+    .. note-dim::
+        :class: m-text-center
+
+        This paragraph is rendered in a dim note, centered.
+
+    .. role:: success
+        :class: m-text m-success
+
+    This text contains a :success:`green` word.
+
+.. note-warning::
+
+    Note that due to Doxygen XML output limitations it's not possible to wrap
+    multiple paragraphs this way, attempt to do that will result in an invalid
+    XML file that can't be processed. Similarly, if you forget a closing
+    ``@enddiv`` / ``@endspan`` or misplace them, the result will be an invalid
+    XML file.
+
+With ``@m_class`` it's possible to add CSS classes to the immediately following
+paragraph, image, table, list or math formula block. When used inline, it
+affects the immediately following emphasis, strong text, link or inline math
+formula. Example usage:
+
+.. code-figure::
+
+    .. code:: c++
+
+        /** See the red @m_class{m-danger} @f$ \Sigma @f$ character. */
+
+    .. role:: math-danger(math)
+        :class: m-danger
+
+    See the red :math-danger:`\Sigma` character.
+
 `Customizing the template`_
 ===========================
 

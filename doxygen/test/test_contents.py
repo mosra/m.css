@@ -125,3 +125,17 @@ class Tagfile(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class Custom(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'custom', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+    @unittest.skipUnless(shutil.which('latex'),
+                         "Math rendering requires LaTeX installed")
+    def test_math(self):
+        self.run_dox2html5(wildcard='math.xml')
+        self.assertEqual(*self.actual_expected_contents('math.html'))
