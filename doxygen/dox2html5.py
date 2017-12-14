@@ -105,7 +105,7 @@ def parse_ref(state: State, element: ET.Element) -> str:
     else:
         class_ = 'm-dox'
 
-    return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(html.escape(element.text)))
+    return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
 def extract_id(element: ET.Element) -> str:
     id = element.attrib['id']
