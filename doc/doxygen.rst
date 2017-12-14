@@ -518,7 +518,9 @@ aliases in the original ``Doxyfile``:
 
     It's not possible to use inline code highlighting in ``@brief``
     description. Code placed there is moved by Doxygen to the detailed
-    description.
+    description. Similarly, it's not possible to use it in an ``@xrefitem``
+    (``@todo``, ``@bug``...) paragraph --- code placed there is moved to a
+    paragraph after (but it works as expected for ``@note`` and similar).
 
     It's not possible to put a ``@code`` block (delimited by blank lines) to a
     Markdown list. A workaround is to use explicit HTML markup instead. See
