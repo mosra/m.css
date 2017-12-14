@@ -31,6 +31,9 @@ ul.m-dox li.m-dox-expansible > a:first-child, ul.m-dox li.m-dox-collapsible > a:
 a.m-dox, a.m-dox-self {
   font-weight: bold;
 }
+.m-thin a.m-dox, .m-thin a.m-dox-self {
+  font-weight: normal;
+}
 ul.m-dox li.m-dox-expansible > a:first-child,
 ul.m-dox li.m-dox-collapsible > a:first-child,
 ul.m-dox li.m-dox-expansible > a:first-child:hover,
