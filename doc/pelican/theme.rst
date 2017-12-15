@@ -402,7 +402,7 @@ and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-ca
 :html:`<meta>` tags are supported:
 
 -   Page title is mapped to ``og:title`` / ``twitter:title``
--   Page URL is mapped to ``og:url`` / ``twitter:url``
+-   Page URL is mapped to ``og:url``
 -   The :rst:`:summary:` field is mapped to ``og:description`` /
     ``twitter:description``. Note that if the page doesn't have explicit
     summary, Pelican takes it from the first few sentences of the content and
@@ -501,7 +501,7 @@ article. `Open Graph`_ and `Twitter Card`_ :html:`<meta>` tags are also
 supported in a similar way:
 
 -   Article title is mapped to ``og:title`` / ``twitter:title``
--   Pernament article URL is mapped to ``og:url`` / ``twitter:url``
+-   Article URL is mapped to ``og:url``
 -   The :rst:`:summary:` field is mapped to ``og:description`` /
     ``twitter:description``. Note that if the article doesn't have explicit
     summary, Pelican takes it from the first few sentences of the content and

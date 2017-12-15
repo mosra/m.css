@@ -13,7 +13,6 @@
   <meta property="og:title" content="{{ article.title }}" />
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta property="og:url" content="{{ article.url|format_siteurl|e }}" />
-  <meta name="twitter:url" content="{{ article.url|format_siteurl|e }}" />
   {% if article.summary %}
   <meta property="og:description" content="{{ article.summary|dehyphenate|striptags|e }}" />
   <meta name="twitter:description" content="{{ article.summary|dehyphenate|striptags|e }}" />
