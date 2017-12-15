@@ -769,6 +769,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # WHAT THE HELL WHY IS THIS NOT AN XML ENTITY
         elif i.tag in ['mdash', 'ndash', 'laquo', 'raquo']:
             out.parsed += '&{};'.format(i.tag)
+        elif i.tag == 'nonbreakablespace':
+            out.parsed += '&nbsp;'
 
         # Something new :O
         else: # pragma: no cover

@@ -32,8 +32,8 @@ This is a `typewriter text`, *emphasis* and **bold**. <em>Emphasis with
 <tt>typewriter</tt> and <strong>bold</strong> nested.</em> http://google.com
 and [URL](http://google.com). En-dash -- and em-dash ---. Reference to a
 @ref subsection. Named reference with special characters in title:
-@ref warnings "&raquo; Warnings &laquo;". Reference with escaped characters in
-title: @ref an-anchor "<anchor>".
+@ref warnings "&raquo; Warnings &laquo;". Reference with escaped characters
+in&nbsp;title: @ref an-anchor "<anchor>".
 
 */
 
