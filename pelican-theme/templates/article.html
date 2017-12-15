@@ -20,8 +20,8 @@
   {% endif %}
   {% if article.cover %}
   <meta property="og:image" content="{{ article.cover|expand_link(article)|e }}" />
-  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="{{ article.cover|expand_link(article)|e }}" />
+  <meta name="twitter:card" content="summary_large_image" />
   {% else %}
   <meta name="twitter:card" content="summary" />
   {% endif %}
