@@ -232,13 +232,19 @@ In addition, the m.css Doxygen theme recognizes the following extra options:
 Variable                            Description
 =================================== =======================================
 :ini:`M_THEME_COLOR`                Color for :html:`<meta name="theme-color"/>`,
-                                    corresponding to the CSS style. See below
-                                    for more information.
+                                    corresponding to the CSS style. If empty,
+                                    no :html:`<meta>` tag is rendered. See
+                                    below for more information.
 :ini:`M_PAGE_HEADER`                HTML code to put at the top of every page.
                                     Useful for example to link to different
                                     versions of the same documentation. The
                                     ``{filename}`` placeholder is replaced with
                                     current file name.
+:ini:`M_PAGE_FINE_PRINT`            HTML code to put into the footer. If not
+                                    set, a default generic text is used. The
+                                    ``{doxygen_version}`` placeholder is
+                                    replaced with Doxygen version that
+                                    generated the input XML files.
 :ini:`M_CLASS_TREE_EXPAND_LEVELS`   How many levels of the class tree to
                                     expand. ``0`` means only the top-level
                                     symbols are shown. If not set, ``1`` is

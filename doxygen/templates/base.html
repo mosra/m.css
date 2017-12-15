@@ -9,7 +9,9 @@
   {% block header_links %}
   {% endblock %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% if M_THEME_COLOR %}
   <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
+  {% endif %}
 </head>
 <body>
 <header><nav id="navigation">
@@ -50,7 +52,11 @@
   <div class="m-container">
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
+        {% if M_PAGE_FINE_PRINT %}
+        {{ M_PAGE_FINE_PRINT|replace('{doxygen_version}', DOXYGEN_VERSION) }}
+        {% else %}
         <p>{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}. Created by <a href="http://doxygen.org/">Doxygen</a>{% if M_SHOW_DOXYGEN_VERSION %} {{ DOXYGEN_VERSION }}{% endif %} and <a href="http://mcss.mosra.cz/">m.css</a>.</p>
+        {% endif %}
       </div>
     </div>
   </div>

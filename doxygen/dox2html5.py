@@ -1846,6 +1846,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
               'HTML_OUTPUT',
               'XML_OUTPUT',
               'M_PAGE_HEADER',
+              'M_PAGE_FINE_PRINT',
               'M_THEME_COLOR']:
         if i in config: state.doxyfile[i] = ' '.join(config[i])
 
