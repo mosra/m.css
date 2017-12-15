@@ -419,7 +419,7 @@ main p {
   text-indent: 1.5rem;
   text-align: justify;
 }
-main p.m-noindent, li p, table.m-table td p {
+main p.m-noindent, li > p, dd > p, table.m-table td > p {
   text-indent: 0;
   text-align: left;
 }

@@ -58,7 +58,7 @@ main p {
   text-align: var(--paragraph-align);
 }
 /* Remove indentation and justification where it doesn't make sense */
-main p.m-noindent, li p, table.m-table td p {
+main p.m-noindent, li > p, dd > p, table.m-table td > p {
   text-indent: 0;
   text-align: left;
 }
