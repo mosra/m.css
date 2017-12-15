@@ -33,7 +33,7 @@ from dox2html5 import run, default_templates, default_wildcard, default_index_pa
 def doxygen_version():
     return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip()
 
-class IntegrationTestCase(unittest.TestCase):
+class BaseTestCase(unittest.TestCase):
     def __init__(self, path, dir, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
         # Source files for test_something.py are in something_{dir}/ subdirectory
@@ -43,9 +43,6 @@ class IntegrationTestCase(unittest.TestCase):
         self.maxDiff = None
 
     def setUp(self):
-        if os.path.exists(os.path.join(self.path, 'xml')): shutil.rmtree(os.path.join(self.path, 'xml'))
-        subprocess.run(['doxygen'], cwd=self.path)
-
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
 
     def run_dox2html5(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
@@ -59,3 +56,10 @@ class IntegrationTestCase(unittest.TestCase):
         with open(os.path.join(self.path, 'html', actual)) as f:
             actual_contents = f.read().strip()
         return actual_contents, expected_contents
+
+class IntegrationTestCase(BaseTestCase):
+    def setUp(self):
+        if os.path.exists(os.path.join(self.path, 'xml')): shutil.rmtree(os.path.join(self.path, 'xml'))
+        subprocess.run(['doxygen'], cwd=self.path)
+
+        if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
