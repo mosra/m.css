@@ -14,3 +14,7 @@ HTML_EXTRA_FILES = \
 # Adding
 HTML_EXTRA_STYLESHEET = a.css
 HTML_EXTRA_STYLESHEET += b.css
+
+# Escaping
+M_PAGE_HEADER = 'this is "quotes" \'apostrophes\''
+M_PAGE_FINE_PRINT = "this is \"quotes\""

@@ -1749,8 +1749,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     logging.info("Parsing configuration from {}".format(doxyfile))
 
     comment_re = re.compile(r"""^\s*(#.*)?$""")
-    variable_re = re.compile(r"""^\s*(?P<key>[A-Z0-9_@]+)\s*=\s*(?P<quote>"?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
-    variable_continuation_re = re.compile(r"""^\s*(?P<key>[A-Z_]+)\s*\+=\s*(?P<quote>"?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
+    variable_re = re.compile(r"""^\s*(?P<key>[A-Z0-9_@]+)\s*=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
+    variable_continuation_re = re.compile(r"""^\s*(?P<key>[A-Z_]+)\s*\+=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
     continuation_re = re.compile(r"""^\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
     # Defaults so we don't fail with minimal Doxyfiles and also that the
@@ -1788,7 +1788,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         else:
             backslash = False
 
-        return [i.replace('\\"', '"') for i in out], backslash
+        return [i.replace('\\"', '"').replace('\\\'', '\'') for i in out], backslash
 
     with open(doxyfile) as f:
         continued_line = None
