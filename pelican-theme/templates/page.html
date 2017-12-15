@@ -13,6 +13,16 @@
 {% endif %}
 {% endblock %}
 
+{% block head_links %}
+  {{- super() -}}
+  {% if page.css %}
+  {% set styles = page.css.strip().split('\n') %}
+  {% for style in styles %}
+  <link rel="stylesheet" href="{{ style|expand_link(page)|e }}" />
+  {% endfor %}
+  {% endif %}
+{% endblock %}
+
 {% block head %}
   {{- super() -}}
   {% if page.description %}
@@ -34,16 +44,6 @@
   <meta name="twitter:card" content="summary" />
   {% endif %}
   <meta property="og:type" content="website" />
-{% endblock %}
-
-{% block head_links %}
-  {{- super() -}}
-  {% if page.css %}
-  {% set styles = page.css.strip().split('\n') %}
-  {% for style in styles %}
-  <link rel="stylesheet" href="{{ style|expand_link(page)|e }}" />
-  {% endfor %}
-  {% endif %}
 {% endblock %}
 
 {% block main %}
