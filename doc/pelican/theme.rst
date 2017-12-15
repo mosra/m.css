@@ -415,7 +415,7 @@ and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-ca
     landscape.
 -   ``twitter:card`` is set to ``summary_large_image`` if :rst:`:cover:` is
     present and to ``summary`` otherwise
--   ``og:type`` is set to ``website``
+-   ``og:type`` is set to ``page``
 
 Example overriding the index page with essential properties for nice-looking
 social links:
