@@ -29,9 +29,6 @@ M_SITE_LOGO_TEXT = 'm.css'
 SITENAME = 'm.css'
 SITEURL = ''
 
-M_BLOG_NAME = 'm.css example articles'
-M_BLOG_URL = 'examples/'
-
 STATIC_URL = '{path}'
 
 PATH = 'content'
@@ -50,6 +47,14 @@ CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
+
+M_BLOG_NAME = "m.css example articles"
+M_BLOG_URL = 'examples/'
+
+M_SOCIAL_TWITTER_SITE = '@czmosra'
+M_SOCIAL_TWITTER_SITE_ID = 1537427036
+M_SOCIAL_IMAGE = 'static/site.jpg'
+M_SOCIAL_BLOG_SUMMARY = 'Example articles for the m.css Pelican theme'
 
 M_LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
                    ('CSS', 'css/', 'css', [
@@ -139,16 +144,18 @@ M_HTMLSANITY_HYPHENATION = True
 M_DOX_TAGFILES = [
     ('../doc/doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::'])]
 
-DIRECT_TEMPLATES = []
+DIRECT_TEMPLATES = ['archives']
 
 PAGE_URL = '{slug}/'
 PAGE_SAVE_AS = '{slug}/index.html'
+ARCHIVES_URL = 'examples/'
+ARCHIVES_SAVE_AS = 'examples/index.html'
 ARTICLE_URL = '{category}/{slug}/'
 ARTICLE_SAVE_AS = '{category}/{slug}/index.html'
 AUTHOR_URL = 'author/{slug}/'
 AUTHOR_SAVE_AS = 'author/{slug}/index.html'
-CATEGORY_URL = '{slug}/'
-CATEGORY_SAVE_AS = '{slug}/index.html'
+CATEGORY_URL = 'examples/' # Aliases with the archives page
+CATEGORY_SAVE_AS = '' # The archives page is used instead
 TAG_URL = 'tag/{slug}/'
 TAG_SAVE_AS = 'tag/{slug}/index.html'
 
