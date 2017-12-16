@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{% if page and page.lang %}{{ page.lang }}{% elif article and article.lang %}{{ article.lang }}{% else %}{{ DEFAULT_LANG }}{%endif %}" prefix="og: http://ogp.me/ns#">
+<html lang="{% if page and page.lang %}{{ page.lang }}{% elif article and article.lang %}{{ article.lang }}{% else %}{{ DEFAULT_LANG }}{%endif %}"{% if not M_DISABLE_SOCIAL_META_TAGS %} prefix="og: http://ogp.me/ns#"{% endif %}>
 <head>
   <meta charset="UTF-8" />
   <title>{% block title %}{{ SITENAME|e }}{% endblock title %}</title>
@@ -20,6 +20,7 @@
   {% endif %}
   {% block meta %}
   {% endblock meta %}
+  {% if not M_DISABLE_SOCIAL_META_TAGS %}
   {% if M_SOCIAL_TWITTER_SITE %}
   <meta name="twitter:site" content="{{ M_SOCIAL_TWITTER_SITE }}" />
   {% endif %}
@@ -28,6 +29,7 @@
   {% endif %}
   {% block social %}
   {% endblock social %}
+  {% endif %}
 </head>
 <body>
 <header><nav id="navigation"{% if page and page.landing and page.cover %} class="m-navbar-landing"{% endif %}{% if article and article.cover %} class="m-navbar-jumbo"{% endif %}>

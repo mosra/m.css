@@ -303,6 +303,9 @@ Example configuration to give sane defaults to all social meta tags:
     `Facebook Debugger <https://developers.facebook.com/tools/debug/>`_ or
     `Twitter Card Validator <https://cards-dev.twitter.com/validator>`_.
 
+It's possible to disable rendering of all social meta tags (for example for
+testing purposes) by setting :py:`M_DISABLE_SOCIAL_META_TAGS` to :py:`True`.
+
 `Pages`_
 ========
 
