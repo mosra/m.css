@@ -14,13 +14,13 @@
 {% endblock %}
 
 {% block head_links %}
-  {{- super() -}}
   {% if page.css %}
   {% set styles = page.css.strip().split('\n') %}
   {% for style in styles %}
   <link rel="stylesheet" href="{{ style|expand_link(page)|e }}" />
   {% endfor %}
   {% endif %}
+  <link rel="canonical" href="{{ page.url|format_siteurl|e }}" />
 {% endblock %}
 
 {% block head %}
