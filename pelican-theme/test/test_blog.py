@@ -240,6 +240,9 @@ class HideSummaryArticle(BlogTestCase):
         self.assertEqual(*self.actual_expected_contents('article.html', '../blog_hide_summary_global/article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html', '../blog_hide_summary_global/article-jumbo.html'))
 
+        # Category (and other listing) has always just the summary
+        self.assertEqual(*self.actual_expected_contents('category-misc.html', '../blog_hide_summary_global/category-misc.html'))
+
 class HideSummaryBoth(BlogTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'hide_summary_both', *args, **kwargs)
@@ -257,6 +260,9 @@ class HideSummaryBoth(BlogTestCase):
         # Both classic and jumbo article should have summary shown
         self.assertEqual(*self.actual_expected_contents('article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
+
+        # Category (and other listing) has always just the summary
+        self.assertEqual(*self.actual_expected_contents('category-misc.html'))
 
 class CollapseFirstGlobalHideSummaryGlobal(BlogTestCase):
     def __init__(self, *args, **kwargs):
