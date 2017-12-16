@@ -36,6 +36,7 @@ class Page(PageTestCase):
 
     def test(self):
         self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': False,
             'FORMATTED_FIELDS': ['summary', 'description']
         })
 
@@ -47,7 +48,10 @@ class Minimal(PageTestCase):
         super().__init__(__file__, 'minimal', *args, **kwargs)
 
     def test(self):
-        self.run_pelican({})
+        self.run_pelican({
+            # There shouldn't be empty meta tags
+            'M_DISABLE_SOCIAL_META_TAGS': False,
+        })
 
         # The content and summary meta tag shouldn't be there at all
         self.assertEqual(*self.actual_expected_contents('page.html'))
@@ -57,7 +61,10 @@ class Breadcrumb(PageTestCase):
         super().__init__(__file__, 'breadcrumb', *args, **kwargs)
 
     def test(self):
-        self.run_pelican({})
+        self.run_pelican({
+            # Breadcrumb should not be exposed in social meta tags
+            'M_DISABLE_SOCIAL_META_TAGS': False,
+        })
 
         # Internal links should work and guide the user from one page to
         # another
@@ -93,7 +100,9 @@ class Landing(PageTestCase):
     def test(self):
         self.run_pelican({
             'STATIC_PATHS': ['ship.jpg'],
-            'FORMATTED_FIELDS': ['landing']
+            'FORMATTED_FIELDS': ['landing'],
+            # Verify that the image is propagated to social meta tags
+            'M_DISABLE_SOCIAL_META_TAGS': False,
         })
 
         # The landing field should have the links expanded, header should not
@@ -123,6 +132,8 @@ class HtmlEscape(PageTestCase):
             'SITENAME': "<&> in site name",
             'FORMATTED_FIELDS': ['summary', 'description', 'landing', 'header', 'footer'],
             'PAGE_URL': '{slug}.html?and&in&url=""',
+            # The social meta tags should be escaped properly as well
+            'M_DISABLE_SOCIAL_META_TAGS': False,
         })
 
         # Verify that everything is properly escaped everywhere. The landing
@@ -139,6 +150,8 @@ class HtmlEscape(PageTestCase):
             'SITENAME': "<&> in site name",
             'FORMATTED_FIELDS': ['summary', 'description', 'landing', 'header', 'footer'],
             'PAGE_URL': '{slug}.html?and&in&url=""',
+            # The social meta tags should be escaped properly as well
+            'M_DISABLE_SOCIAL_META_TAGS': False,
         })
 
         # Verify that also the Pelican-produced content has correctly escaped
@@ -155,7 +168,8 @@ class GlobalSocialMeta(PageTestCase):
             'M_SOCIAL_TWITTER_SITE': '@czmosra',
             'M_SOCIAL_TWITTER_SITE_ID': '1537427036',
             'M_SOCIAL_IMAGE': 'http://your.brand/static/site.png',
-            'M_SOCIAL_BLOG_SUMMARY': 'This is also not displayed anywhere.'
+            'M_SOCIAL_BLOG_SUMMARY': 'This is also not displayed anywhere.',
+            'M_DISABLE_SOCIAL_META_TAGS': False,
         })
 
         # Verify that the social meta tags are present

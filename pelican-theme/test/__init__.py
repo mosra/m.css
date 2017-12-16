@@ -75,7 +75,7 @@ class BaseTestCase(MinimalTestCase):
             'PLUGIN_PATHS': ['../pelican-plugins'],
             'PLUGINS': ['m.htmlsanity'],
             'THEME_STATIC_DIR': 'static',
-            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
+            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i',
                'static/m-dark.css'],
             # i.e., not rendering the category, tag and author lists as they
             # are not supported anyway
@@ -89,6 +89,7 @@ class PageTestCase(BaseTestCase):
     def run_pelican(self, settings):
         implicit_settings = {
             'M_FINE_PRINT': None,
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'PAGE_PATHS': ['.'],
             'PAGE_SAVE_AS': '{slug}.html',
             'PAGE_URL': '{slug}.html',
@@ -103,6 +104,7 @@ class BlogTestCase(BaseTestCase):
         implicit_settings = {
             'DATE_FORMATS': {'en': ('en_US.UTF-8', '%b %d, %Y')},
             'M_FINE_PRINT': None,
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'PAGE_PATHS': ['pages'], # doesn't exist
             'ARTICLE_PATHS': ['.'],
             'AUTHOR_SAVE_AS': 'author-{slug}.html',

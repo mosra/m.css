@@ -30,6 +30,7 @@ class Blog(BlogTestCase):
 
     def test(self):
         self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': False,
             'AUTHOR': "Implicit Author",
             'STATIC_PATHS': ['ship.jpg'],
             'M_BLOG_URL': 'archives.html',
@@ -55,7 +56,10 @@ class Minimal(BlogTestCase):
         super().__init__(__file__, 'minimal', *args, **kwargs)
 
     def test(self):
-        self.run_pelican({})
+        self.run_pelican({
+            # There shouldn't be empty meta tags
+            'M_DISABLE_SOCIAL_META_TAGS': False,
+        })
 
         # The summary, content blocks should not be there at all, no mention of
         # authors. Index and archive page should be exactly the same. Header
@@ -124,7 +128,10 @@ class Pagination(BlogTestCase):
                 [(1, 'index.html', '{name}.html'),
                  (2, 'index{number}.html', '{name}{number}.html')],
             'DIRECT_TEMPLATES': ['index', 'archives'],
-            'PAGINATED_DIRECT_TEMPLATES': ['index', 'archives']
+            'PAGINATED_DIRECT_TEMPLATES': ['index', 'archives'],
+
+            # verify that og:url doesn't take pagination into account
+            'M_DISABLE_SOCIAL_META_TAGS': False
         })
 
         # Every page should contain just one article, only the first page
@@ -142,7 +149,10 @@ class Pagination(BlogTestCase):
     def test_categories(self):
         self.run_pelican({
             'DEFAULT_PAGINATION': 1,
-            'DIRECT_TEMPLATES': []
+            'DIRECT_TEMPLATES': [],
+
+            # verify that og:url doesn't take pagination into account
+            'M_DISABLE_SOCIAL_META_TAGS': False
         })
 
         # Test the category pages as well (same as author/tag). Couldn't test
@@ -443,6 +453,7 @@ class HtmlEscape(BlogTestCase):
             'TAG_URL': 'tag-{slug}.html?and&in&url=""',
             'M_LINKS_FOOTER2': [('An <&> in link', '#')],
             'M_SHOW_AUTHOR_LIST': True,
+            'M_DISABLE_SOCIAL_META_TAGS': False, # to verify escaping in these
             'DEFAULT_PAGINATION': 1,
             'PAGINATION_PATTERNS':
                 [(1, 'index.html?and&in&url=""', '{name}.html'),
@@ -474,7 +485,8 @@ class GlobalSocialMeta(BlogTestCase):
             'M_SOCIAL_TWITTER_SITE': '@czmosra',
             'M_SOCIAL_TWITTER_SITE_ID': '1537427036',
             'M_SOCIAL_IMAGE': 'http://your.brand/static/site.png',
-            'M_SOCIAL_BLOG_SUMMARY': 'This is also not displayed anywhere.'
+            'M_SOCIAL_BLOG_SUMMARY': 'This is also not displayed anywhere.',
+            'M_DISABLE_SOCIAL_META_TAGS': False
         })
 
         # Verify that the social meta tags are present in all pages

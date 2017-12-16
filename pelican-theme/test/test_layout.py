@@ -101,7 +101,7 @@ class Minimal(MinimalTestCase):
             'PLUGIN_PATHS': ['../pelican-plugins'],
             'PLUGINS': ['m.htmlsanity'],
             'THEME_STATIC_DIR': 'static',
-            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
+            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i',
                'static/m-dark.css'],
             'M_THEME_COLOR': '#22272e'})
 
@@ -128,10 +128,12 @@ class OneColumnNavbar(BaseTestCase):
 
     def test(self):
         self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'M_LINKS_NAVBAR1': [
                 ('Features', '#', 'features', []),
                 ('A long item caption that really should not wrap on small screen', '#', '', []),
-                ('Blog', 'archives.html', '[blog]', [])]
+                ('Blog', 'archives.html', '[blog]', [])],
+            'M_FINE_PRINT': None
         })
 
         # The navbar should be full 12 columns
@@ -143,6 +145,7 @@ class NoFooter(BaseTestCase):
 
     def test(self):
         self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'M_FINE_PRINT': None
         })
 
@@ -155,6 +158,7 @@ class DisableFinePrint(BaseTestCase):
 
     def test(self):
         self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'M_LINKS_FOOTER1': [('Your Brand', 'index.html')],
             'M_FINE_PRINT': None
         })
@@ -169,6 +173,7 @@ class DisableBlogLinks(BaseTestCase):
 
     def test(self):
         self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'M_LINKS_FOOTER1': [('Your Brand', 'index.html')],
             'M_LINKS_FOOTER4': None,
         })
