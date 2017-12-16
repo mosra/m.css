@@ -59,9 +59,10 @@ class PluginTestCase(unittest.TestCase):
             'THEME': '../pelican-theme',
             'PLUGIN_PATHS': ['.'],
             'THEME_STATIC_DIR': 'static',
-            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
+            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i',
                'static/m-dark.css'],
             'M_FINE_PRINT': None,
+            'M_DISABLE_SOCIAL_META_TAGS': True,
             'DIRECT_TEMPLATES': [],
             'SLUGIFY_SOURCE': 'basename'
         }

@@ -1,8 +1,6 @@
 m.code
 ######
 
-:summary: no.
-
 .. role:: cpp(code)
     :language: c++
 

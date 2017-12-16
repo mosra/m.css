@@ -30,6 +30,9 @@ class Content(PluginTestCase):
 
     def test(self):
         self.run_pelican({
+            # Need Source Code Pro for code
+            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
+                            'static/m-dark.css'],
             'PLUGINS': ['m.htmlsanity']
         })
 
@@ -42,17 +45,19 @@ class Typography(PluginTestCase):
 
     def test(self):
         self.run_pelican({
-            # Need extended Latin characters for Czech text
+            # Need code font + extended Latin characters for Czech text
             'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&subset=latin-ext',
                             'static/m-dark.css'],
             'PLUGINS': ['m.htmlsanity'],
             'M_HTMLSANITY_HYPHENATION': True,
             'M_HTMLSANITY_SMART_QUOTES': True,
             'M_FINE_PRINT': "The footer should be hyphenated as well. \"And with smart quotes.\"",
+            'M_DISABLE_SOCIAL_META_TAGS': False,
             'M_SHOW_AUTHOR_LIST': True,
             'DATE_FORMATS': {'en': ('en_US.UTF-8', '%b %d, %Y'),
                              'cs': ('en_US.UTF-8', '%b %d, %Y')},
             'PAGE_LANG_SAVE_AS': '{slug}.html',
+            'PAGE_LANG_URL': '{slug}.html',
             'ARTICLE_SAVE_AS': 'article-{slug}.html',
             'ARTICLE_URL': 'article-{slug}.html',
             'ARTICLE_LANG_SAVE_AS': 'article-{slug}.html',
@@ -91,13 +96,14 @@ class TypographyGlobalLang(PluginTestCase):
     def test(self):
         self.run_pelican({
             # Need extended Latin characters for Czech text
-            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&subset=latin-ext',
+            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i&subset=latin-ext',
                             'static/m-dark.css'],
             'PLUGINS': ['m.htmlsanity'],
             'DEFAULT_LANG': 'cs',
             'M_HTMLSANITY_HYPHENATION': True,
             'M_HTMLSANITY_SMART_QUOTES': True,
-            'M_FINE_PRINT': "Patička má dělení slov také. \"A chytré uvozovky.\""
+            'M_FINE_PRINT': "Patička má dělení slov také. \"A chytré uvozovky.\"",
+            'M_DISABLE_SOCIAL_META_TAGS': False,
         })
 
         # The <html> lang element should be set correctly and the &shy; should

@@ -1,8 +1,6 @@
 m.components
 ############
 
-:summary: no.
-
 .. block-default:: Default block
 
     Text.
