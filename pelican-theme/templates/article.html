@@ -6,11 +6,15 @@
   <link rel="canonical" href="{{ article.url|format_siteurl|e }}" />
 {% endblock %}
 
-{% block social %}
-  {{- super() -}}
+{% block meta %}
   {% if article.description %}
   <meta name="description" content="{{ article.description|dehyphenate|striptags|e }}" />
   {% endif %}
+{% endblock %}
+
+{% block social %}
+  {{- super() -}}
+  {# this has to be here otherwise the spacing is all wrong #}
   <meta property="og:title" content="{{ article.title }}" />
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta property="og:url" content="{{ article.url|format_siteurl|e }}" />
