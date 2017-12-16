@@ -9,6 +9,14 @@
   {% endif %}
 {% endblock %}
 
+{% block social %}
+  {{- super() -}}
+  {% block social_title_url %}
+  {% endblock social_title_url %}
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:type" content="website" />
+{% endblock %}
+
 {% block content %}
     <div class="m-col-m-10">
       {% block content_title %}

@@ -2,6 +2,12 @@
 
 {% block title %}{{ category|e }} | {{ M_BLOG_NAME|e }}{% endblock %}
 
+{% block social_title_url %}
+  <meta property="og:title" content="{{ category|e }}" />
+  <meta name="twitter:title" content="{{ category|e }}" />
+  <meta property="og:url" content="{{ category.url|format_siteurl|e }}" />
+{% endblock %}
+
 {% block content_title %}
       <div class="m-info m-note">
         Showing only posts in <em>{{ category|e }}</em>. <a href="{{ M_BLOG_URL|format_siteurl|e }}">Show all posts.</a>
