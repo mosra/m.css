@@ -184,7 +184,6 @@ class HtmlEscape(BaseTestCase):
         self.run_pelican({
             'SITENAME': 'A <&> site',
             'M_BLOG_NAME': 'A <&> blog',
-            'M_BLOG_URL': 'archives.html?and&in&url=""',
             'M_SITE_LOGO': 'image.png?and&in&url=""',
             'M_SITE_LOGO_TEXT': '<&>',
             'M_LINKS_NAVBAR1': [

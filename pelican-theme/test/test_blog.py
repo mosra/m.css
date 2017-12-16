@@ -36,9 +36,10 @@ class Blog(BlogTestCase):
             'FORMATTED_FIELDS': ['summary', 'description']
         })
 
-        # The archives and index page should be exactly the same
+        # The archives and index page should be exactly the same, except for
+        # og:url that points to the file itself
         self.assertEqual(*self.actual_expected_contents('index.html'))
-        self.assertEqual(*self.actual_expected_contents('archives.html', 'index.html'))
+        self.assertEqual(*self.actual_expected_contents('archives.html'))
 
         # Default and jumbo article rendering
         self.assertEqual(*self.actual_expected_contents('article.html'))
@@ -448,7 +449,11 @@ class HtmlEscape(BlogTestCase):
         # Verify that everything is properly escaped everywhere
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertEqual(*self.actual_expected_contents('index2.html'))
-        self.assertEqual(*self.actual_expected_contents('archives.html', 'index.html'))
-        self.assertEqual(*self.actual_expected_contents('archives2.html', 'index2.html'))
+
+        # Archives are almost the same as index, except for og:url pointing to
+        # M_BLOG_URL instead of SITEURL
+        self.assertEqual(*self.actual_expected_contents('archives.html'))
+        self.assertEqual(*self.actual_expected_contents('archives2.html'))
+
         self.assertEqual(*self.actual_expected_contents('article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))

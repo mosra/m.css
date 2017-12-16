@@ -11,6 +11,18 @@
   {% endif %}
 {% endblock %}
 
+{% block social %}
+  {{- super() -}}
+  {# this has to be here otherwise the spacing is all wrong. fuck. #}
+  <meta property="og:title" content="{{ M_BLOG_NAME|e }}" />
+  <meta name="twitter:title" content="{{ M_BLOG_NAME|e }}" />
+  {% block social_url %}
+  <meta property="og:url" content="{{ M_BLOG_URL|format_siteurl|e }}" />
+  {% endblock %}
+  <meta name="twitter:card" content="summary" />
+  <meta property="og:type" content="website" />
+{% endblock %}
+
 {% block content %}
     <div class="m-col-m-10">
       {% if articles_page %}
