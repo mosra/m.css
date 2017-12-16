@@ -23,8 +23,7 @@
   <link rel="canonical" href="{{ page.url|format_siteurl|e }}" />
 {% endblock %}
 
-{% block head %}
-  {{- super() -}}
+{% block social %}
   {% if page.description %}
   <meta name="description" content="{{ page.description|dehyphenate|striptags|e }}" />
   {% endif %}

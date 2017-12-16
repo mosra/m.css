@@ -6,8 +6,7 @@
   <link rel="canonical" href="{{ article.url|format_siteurl|e }}" />
 {% endblock %}
 
-{% block head %}
-  {{- super() -}}
+{% block social %}
   {% if article.description %}
   <meta name="description" content="{{ article.description|dehyphenate|striptags|e }}" />
   {% endif %}
