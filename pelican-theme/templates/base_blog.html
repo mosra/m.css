@@ -2,8 +2,6 @@
 {% if not M_BLOG_NAME %}{% set M_BLOG_NAME = SITENAME %}{% endif %}
 {% extends 'base.html' %}
 
-{% block title %}{{ M_BLOG_NAME|e }}{% endblock %}
-
 {% block main %}
 {% if article and article.cover %}
 {% else %}
