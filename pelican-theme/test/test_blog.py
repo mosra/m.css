@@ -427,6 +427,7 @@ class HtmlEscape(BlogTestCase):
 
     def test(self):
         self.run_pelican({
+            'SITENAME': '<&> in site name',
             'M_BLOG_NAME': '<&> in blog name',
             'M_BLOG_URL': 'archives.html?and&in&url=""',
             'ARTICLE_URL': '{slug}.html?and&in&url=""',

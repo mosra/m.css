@@ -24,6 +24,7 @@
 {% endblock %}
 
 {% block social %}
+  <meta property="og:site_name" content="{{ SITENAME|e }}" />
   {% if page.description %}
   <meta name="description" content="{{ page.description|dehyphenate|striptags|e }}" />
   {% endif %}
