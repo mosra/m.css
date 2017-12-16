@@ -26,7 +26,11 @@
   <meta property="og:image" content="{{ article.cover|expand_link(article)|e }}" />
   <meta name="twitter:image" content="{{ article.cover|expand_link(article)|e }}" />
   <meta name="twitter:card" content="summary_large_image" />
-  {% else %}
+  {% elif M_SOCIAL_IMAGE %}
+  <meta property="og:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
+  <meta name="twitter:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
+  {% endif %}
+  {% if not article.cover %}
   <meta name="twitter:card" content="summary" />
   {% endif %}
   <meta property="og:type" content="article" />

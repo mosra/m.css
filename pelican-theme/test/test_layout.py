@@ -213,3 +213,24 @@ class HtmlEscape(BaseTestCase):
         # Verify that everything is properly escaped everywhere
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertEqual(*self.actual_expected_contents('archives.html', 'index.html'))
+
+class GlobalSocialMeta(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'global_social_meta', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'SITEURL': 'http://your.brand',
+            'M_BLOG_NAME': 'Your Brand Blog',
+            'M_BLOG_URL': 'http://blog.your.brand/',
+            'M_BLOG_DESCRIPTION': 'Your Brand provides everything you\'ll ever need.',
+            'M_SOCIAL_TWITTER_SITE': '@czmosra',
+            'M_SOCIAL_TWITTER_SITE_ID': '1537427036',
+            'M_SOCIAL_IMAGE': 'http://your.brand/static/site.png',
+            'M_SOCIAL_BLOG_SUMMARY': 'This is The Brand.'
+        })
+
+        # Verify that the social meta tags are present. Archives should have a
+        # different og:url but nothing else.
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('archives.html'))

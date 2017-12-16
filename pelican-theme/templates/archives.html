@@ -11,6 +11,12 @@
   {% endif %}
 {% endblock %}
 
+{% block meta %}
+  {% if M_BLOG_DESCRIPTION %}
+  <meta name="description" content="{{ M_BLOG_DESCRIPTION|e }}" />
+  {% endif %}
+{% endblock %}
+
 {% block social %}
   {{- super() -}}
   {# this has to be here otherwise the spacing is all wrong. fuck. #}
@@ -19,6 +25,14 @@
   {% block social_url %}
   <meta property="og:url" content="{{ M_BLOG_URL|format_siteurl|e }}" />
   {% endblock %}
+  {% if M_SOCIAL_BLOG_SUMMARY %}
+  <meta property="og:description" content="{{ M_SOCIAL_BLOG_SUMMARY|e }}" />
+  <meta name="twitter:description" content="{{ M_SOCIAL_BLOG_SUMMARY|e }}" />
+  {% endif %}
+  {% if M_SOCIAL_IMAGE %}
+  <meta property="og:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
+  <meta name="twitter:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
+  {% endif %}
   <meta name="twitter:card" content="summary" />
   <meta property="og:type" content="website" />
 {% endblock %}

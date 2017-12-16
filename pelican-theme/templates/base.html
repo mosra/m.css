@@ -20,6 +20,12 @@
   {% endif %}
   {% block meta %}
   {% endblock meta %}
+  {% if M_SOCIAL_TWITTER_SITE %}
+  <meta name="twitter:site" content="{{ M_SOCIAL_TWITTER_SITE }}" />
+  {% endif %}
+  {% if M_SOCIAL_TWITTER_SITE_ID %}
+  <meta name="twitter:site:id" content="{{ M_SOCIAL_TWITTER_SITE_ID }}" />
+  {% endif %}
   {% block social %}
   {% endblock social %}
 </head>

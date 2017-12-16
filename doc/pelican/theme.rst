@@ -34,6 +34,7 @@ Theme
 
 .. role:: rst(code)
     :language: rst
+.. |x| unicode:: U+2715 .. nicer multiply sign
 
 The second largest offering of m.css is a full-featured theme for the
 `Pelican static site generator <https://getpelican.com/>`_. The theme is
@@ -223,6 +224,85 @@ documentation, populating the last column implicitly:
     reserved.
     """
 
+`(Social) meta tags`_
+---------------------
+
+The :rst:`M_BLOG_DESCRIPTION` setting, if available, is used to populate
+:html:`<meta name="description">` on the index / archive page, which can be
+then shown in search engine results. For sharing pages on Twitter, Facebook and
+elsewhere, it's possible to configure site-wide `Open Graph <http://ogp.me/>`_
+and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_
+:html:`<meta>` tags:
+
+-   ``og:site_name`` is set to :py:`M_SOCIAL_SITE_NAME`, if available
+-   ``twitter:site`` / ``twitter:site:id`` is set to :py:`M_SOCIAL_TWITTER_SITE`
+    / :py:`M_SOCIAL_TWITTER_SITE_ID``, if available
+-   Global ``og:title`` / ``twitter:title`` is set to :py:`M_BLOG_NAME` on
+    index and archive pages and to category/author/tag name on particular
+    filtering pages. This is overriden by particular pages and articles.
+-   Global ``og:url`` is set to :py:`M_BLOG_URL` on index and archive pages and
+    to category/author/tag URL on particular filtering pages. Pagination is
+    *not* included in the URL. This is overriden by particular pages and
+    articles.
+-   Global ``og:image`` / ``twitter:image`` is set to the
+    :py:`M_SOCIAL_IMAGE` setting, if available. The image is expected to be
+    smaller and square; Pelican internal linking capabilities are *not*
+    supported in this setting. This can be overriden by particular pages and
+    articles.
+-   Global ``twitter:card`` is set to ``summary``. This is further affected by
+    metadata of particular pages and articles.
+-   Global ``og:description`` / ``twitter:description`` is set to
+    :py:`M_SOCIAL_BLOG_SUMMARY` on index and archive pages.
+-   Global ``og:type`` is set to ``website``. This is overriden by particular
+    pages and articles.
+
+See `(Social) meta tags for pages`_ and `(Social) meta tags for articles`_
+sections below for page- and article-specific :html:`<meta>` tags.
+
+.. note-danger::
+
+    The :html:`<meta name="keywords">` tag is not supported, as it doesn't
+    have any effect on search engine results at all.
+
+Example configuration to give sane defaults to all social meta tags:
+
+.. code:: py
+
+    M_BLOG_NAME = "Your Brand Blog"
+    M_BLOG_URL = 'http://blog.your.brand/'
+    M_BLOG_DESCRIPTION = "Your Brand is the brand that provides all that\'s needed."
+
+    M_SOCIAL_TWITTER_SITE = '@your.brand'
+    M_SOCIAL_TWITTER_SITE_ID = 1234567890
+    M_SOCIAL_IMAGE = 'http://your.brand/static/site.png'
+    M_SOCIAL_BLOG_SUMMARY = "This is the brand you need"
+
+.. block-success:: Recommended sizes for global site image
+
+    The theme assumes that the global site image is smaller and square in order
+    to appear just as a small thumbnail next to a link, not as large cover
+    image above it --- the reasoning beind is that there's no point in annoying
+    the users by decorating the global site links with the exact same large
+    image.
+
+    For Twitter, this is controlled explicitly by setting ``twitter:card``
+    to ``summary`` instead of ``summary_large_image``, but in case of Facebook,
+    it's needed to rely on their autodetection.
+    `Their documentation <https://developers.facebook.com/docs/sharing/best-practices/#images>`_
+    says that images smaller than 600\ |x|\ 315 px are displayed as small
+    thumbnails. Square image of size 256\ |x|\ 256 px is known to work well.
+
+    Note that the assumptions are different for pages and articles with
+    explicit cover images, see `(Social) meta tags for pages`_ below for
+    details.
+
+.. note-info::
+
+    You can see how links for default pages will display by pasting
+    URL of the `article listing page <{category}examples>`_ into either
+    `Facebook Debugger <https://developers.facebook.com/tools/debug/>`_ or
+    `Twitter Card Validator <https://cards-dev.twitter.com/validator>`_.
+
 `Pages`_
 ========
 
@@ -386,10 +466,13 @@ above:
 `(Social) meta tags for pages`_
 -------------------------------
 
-You can use :rst:`:description:` field to populate :html:`<meta name="description">`,
-which can be then shown in search engine results. Other than that, the field
-does not appear anywhere on the rendered page. It's recommended to add it to
-:py:`FORMATTED_FIELDS` so you can make use of the
+Every page has :html:`<link rel="canonical">` pointing to its URL to avoid
+duplicates in search engines when using GET parameters. In addition to the
+global meta tags described in `(Social) meta tags`_ above, you can use the
+:rst:`:description:` field to populate :html:`<meta name="description">`. Other
+than that, the field does not appear anywhere on the rendered page. If such
+field is not set, the description :html:`<meta>` tag is not rendered at all.
+It's recommended to add it to :py:`FORMATTED_FIELDS` so you can make use of the
 `advanced typography features <{filename}/plugins/htmlsanity.rst#typography>`_
 like smart quotes etc. in it:
 
@@ -397,9 +480,8 @@ like smart quotes etc. in it:
 
     FORMATTED_FIELDS += ['description']
 
-For sharing pages on Twitter, Facebook and elsewhere, both `Open Graph <http://ogp.me/>`_
-and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_
-:html:`<meta>` tags are supported:
+The global `Open Graph`_ and `Twitter Card`_ :html:`<meta>` tags are
+specialized for pages like this:
 
 -   Page title is mapped to ``og:title`` / ``twitter:title``
 -   Page URL is mapped to ``og:url``
@@ -409,10 +491,10 @@ and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-ca
     that may not be what you want. This is also different from the
     :rst:`:description:` field mentioned above and, unlike with articles,
     :rst:`:summary:` doesn't appear anywhere on the rendered page.
--   The :rst:`:cover:` field (e.g. the one used on `landing pages <#landing-pages>`_),
-    if present, is mapped to ``og:image`` / ``twitter:image``. The exact same
-    file is used without any resizing or cropping and is assumed to be in
-    landscape.
+-   The :rst:`:cover:` field (e.g. the one used on `landing pages`_), if
+    present, is mapped to ``og:image`` / ``twitter:image``, overriding the
+    global :py:`M_SOCIAL_IMAGE` setting. The exact same file is used without
+    any resizing or cropping and is assumed to be in landscape.
 -   ``twitter:card`` is set to ``summary_large_image`` if :rst:`:cover:` is
     present and to ``summary`` otherwise
 -   ``og:type`` is set to ``page``
@@ -430,12 +512,26 @@ social links:
     :cover: {filename}/static/cover.jpg
     :summary: This is the brand you need.
 
-.. note-success::
+.. block-success:: Recommended sizes for cover images
 
-    You can see how page links will display by pasting
-    URL of the `index page <{filename}/index.rst>`_ into either
-    `Facebook Debugger <https://developers.facebook.com/tools/debug/>`_ or
-    `Twitter Card Validator <https://cards-dev.twitter.com/validator>`_.
+    Unlike the global site image described in `(Social) meta tags`_,
+    page-specific cover images are assumed to be larger and in landscape to
+    display large on top of the link, as they should act to promote the
+    particular content instead of being just a decoration.
+
+    `Facebook recommendations for the cover image <https://developers.facebook.com/docs/sharing/best-practices/#images>`_
+    say that the image should have 1.91:1 aspect ratio and be ideally at least
+    1200\ |x|\ 630 px large, while `Twitter recommends <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_ 2:1 aspect ratio and at
+    most 4096\ |x|\ 4096 px. In case of Twitter, the large image display is
+    controlled explicitly by having ``twitter:card`` set to ``summary_large_image``,
+    but for Facebook one needs to rely on their autodetection. Make sure the
+    image is at least 600\ |x|\ 315 px to avoid fallback to a small thumbnail.
+
+.. note-info::
+
+    You can see how page links will display by pasting URL of the
+    `index page <{filename}/index.rst>`_ into either `Facebook Debugger`_ or
+    `Twitter Card Validator`_.
 
 `Articles`_
 ===========
@@ -494,11 +590,16 @@ invert text color on cover, add a :rst:`:class:` field containing the
 `(Social) meta tags for articles`_
 ----------------------------------
 
-Like with pages, you can use :rst:`:description:` field to populate
-:html:`<meta name="description">`, which can be then shown in search engine
-results. Other than that, the field doesn't appear anywhere in the rendered
-article. `Open Graph`_ and `Twitter Card`_ :html:`<meta>` tags are also
-supported in a similar way:
+Every article has :html:`<link rel="canonical">` pointing to its URL to avoid
+duplicates in search engines when using GET parameters. In addition to the
+global meta tags described in `(Social) meta tags`_ above, you can use the
+:rst:`:description:` field to populate :html:`<meta name="description">`. Other
+than that, the field doesn't appear anywhere in the rendered article.  If such
+field is not set, the description :html:`<meta>` tag is not rendered at all.
+Again, it's recommended to add it to :py:`FORMATTED_FIELDS`.
+
+The global `Open Graph`_ and `Twitter Card`_ :html:`<meta>` tags are
+specialized for articles like this:
 
 -   Article title is mapped to ``og:title`` / ``twitter:title``
 -   Article URL is mapped to ``og:url``
@@ -507,15 +608,16 @@ supported in a similar way:
     summary, Pelican takes it from the first few sentences of the content and
     that may not be what you want. This is also different from the
     :rst:`:description:` field mentioned above.
--   The :rst:`:cover:` field from `jumbo articles <#jumbo-articles>`_, if
-    present, is mapped to ``og:image`` / ``twitter:image``. The exact same
-    file is used without any resizing or cropping and is assumed to be in
-    landscape.
+-   The :rst:`:cover:` field from `jumbo articles`_, if present, is mapped to
+    ``og:image`` / ``twitter:image``, overriding the global :py:`M_SOCIAL_IMAGE`
+    setting. The exact same file is used without any resizing or cropping and
+    is assumed to be in landscape. See `(Social) meta tags for pages`_ above
+    for image size recommendations.
 -   ``twitter:card`` is set to ``summary_large_image`` if :rst:`:cover:` is
     present and to ``summary`` otherwise
 -   ``og:type`` is set to ``article``
 
-.. note-success::
+.. note-info::
 
     You can see how article links will display by pasting
     URL of e.g. the `jumbo article`_ into either `Facebook Debugger`_ or

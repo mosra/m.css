@@ -13,6 +13,10 @@
   {{- super() -}}
   {% block social_title_url %}
   {% endblock social_title_url %}
+  {% if M_SOCIAL_IMAGE %}
+  <meta property="og:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
+  <meta name="twitter:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
+  {% endif %}
   <meta name="twitter:card" content="summary" />
   <meta property="og:type" content="website" />
 {% endblock %}

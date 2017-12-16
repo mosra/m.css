@@ -463,3 +463,22 @@ class HtmlEscape(BlogTestCase):
 
         self.assertEqual(*self.actual_expected_contents('article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
+
+class GlobalSocialMeta(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'global_social_meta', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_BLOG_DESCRIPTION': 'This is not displayed anywhere.',
+            'M_SOCIAL_TWITTER_SITE': '@czmosra',
+            'M_SOCIAL_TWITTER_SITE_ID': '1537427036',
+            'M_SOCIAL_IMAGE': 'http://your.brand/static/site.png',
+            'M_SOCIAL_BLOG_SUMMARY': 'This is also not displayed anywhere.'
+        })
+
+        # Verify that the social meta tags are present in all pages
+        self.assertEqual(*self.actual_expected_contents('article.html'))
+        self.assertEqual(*self.actual_expected_contents('category-a-category.html'))
+        self.assertEqual(*self.actual_expected_contents('author-the-author.html'))
+        self.assertEqual(*self.actual_expected_contents('tag-a-tag.html'))

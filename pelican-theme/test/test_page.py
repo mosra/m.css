@@ -144,3 +144,19 @@ class HtmlEscape(PageTestCase):
         # Verify that also the Pelican-produced content has correctly escaped
         # everything.
         self.assertEqual(*self.actual_expected_contents('content.html'))
+
+class GlobalSocialMeta(PageTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'global_social_meta', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_BLOG_DESCRIPTION': 'This is not displayed anywhere.',
+            'M_SOCIAL_TWITTER_SITE': '@czmosra',
+            'M_SOCIAL_TWITTER_SITE_ID': '1537427036',
+            'M_SOCIAL_IMAGE': 'http://your.brand/static/site.png',
+            'M_SOCIAL_BLOG_SUMMARY': 'This is also not displayed anywhere.'
+        })
+
+        # Verify that the social meta tags are present
+        self.assertEqual(*self.actual_expected_contents('page.html'))
