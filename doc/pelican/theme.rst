@@ -277,6 +277,8 @@ Example configuration to give sane defaults to all social meta tags:
     M_SOCIAL_IMAGE = 'http://your.brand/static/site.png'
     M_SOCIAL_BLOG_SUMMARY = "This is the brand you need"
 
+.. _global-site-image:
+
 .. block-success:: Recommended sizes for global site image
 
     The theme assumes that the global site image is smaller and square in order
@@ -517,7 +519,7 @@ social links:
 
 .. block-success:: Recommended sizes for cover images
 
-    Unlike the global site image described in `(Social) meta tags`_,
+    Unlike the global site image described in `(Social) meta tags <#global-site-image>`_,
     page-specific cover images are assumed to be larger and in landscape to
     display large on top of the link, as they should act to promote the
     particular content instead of being just a decoration.
