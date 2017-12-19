@@ -72,6 +72,28 @@ def extract_document_language(document):
 
     return language
 
+def can_apply_typography(txtnode):
+    # Exclude:
+    #  - literals and spans inside literals
+    #  - raw code (such as SVG)
+    #  - field names
+    #  - bibliographic elements (author, date, ... fields)
+    if isinstance(txtnode.parent, nodes.literal) or \
+       isinstance(txtnode.parent.parent, nodes.literal) or \
+       isinstance(txtnode.parent, nodes.raw) or \
+       isinstance(txtnode.parent, nodes.field_name) or \
+       isinstance(txtnode.parent, nodes.Bibliographic):
+        return False
+
+    # From fields include only the ones that are in FORMATTED_FIELDS
+    if isinstance(txtnode.parent.parent, nodes.field_body):
+        field_name_index = txtnode.parent.parent.parent.first_child_matching_class(nodes.field_name)
+        if txtnode.parent.parent.parent[field_name_index][0] in settings['FORMATTED_FIELDS']:
+            return True
+        return False
+
+    return True
+
 class SmartQuotes(docutils.transforms.universal.SmartQuotes):
     """Smart quote transform
 
@@ -109,15 +131,14 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
                 continue
 
             # list of text nodes in the "text block":
-            # Patched here to exclude text spans inside literal nodes.
-            # Hopefully two nesting levels are enough.
-            txtnodes = [txtnode for txtnode in node.traverse(nodes.Text)
-                        if not isinstance(txtnode.parent,
-                                          nodes.option_string) and
-                           not isinstance(txtnode.parent,
-                                          nodes.literal) and
-                           not isinstance(txtnode.parent.parent,
-                                          nodes.literal)]
+            # Patched here to exclude more stuff.
+            txtnodes = []
+            for txtnode in node.traverse(nodes.Text):
+                if not can_apply_typography(txtnode): continue
+                # Don't convert -- in option strings
+                if isinstance(txtnode.parent, nodes.option_string): continue
+
+                txtnodes += [txtnode]
 
             # language: use typographical quotes for language "lang"
             lang = node.get_language_code(document_language)
@@ -169,27 +190,14 @@ class Pyphen(Transform):
 
         # Go through all text words and hyphenate them
         for node in self.document.traverse(nodes.TextElement):
-            # Skip preformatted text blocks, special elements and field names
-            if isinstance(node, (nodes.FixedTextElement, nodes.Special, nodes.field_name)):
+            # Skip preformatted text blocks and special elements
+            if isinstance(node, (nodes.FixedTextElement, nodes.Special)):
                 continue
 
             for txtnode in node.traverse(nodes.Text):
-                # Exclude:
-                #  - document title
-                #  - literals and spans inside literals
-                #  - raw code (such as SVG)
-                if isinstance(txtnode.parent, nodes.title) or \
-                   isinstance(txtnode.parent, nodes.literal) or \
-                   isinstance(txtnode.parent.parent, nodes.literal) or \
-                   isinstance(txtnode.parent, nodes.raw):
-                    continue
-
-                # From fields include only the ones that are in
-                # FORMATTED_FIELDS
-                if isinstance(txtnode.parent.parent, nodes.field_body):
-                    field_name_index = txtnode.parent.parent.parent.first_child_matching_class(nodes.field_name)
-                    if txtnode.parent.parent.parent[field_name_index][0] not in settings['FORMATTED_FIELDS']:
-                        continue
+                if not can_apply_typography(txtnode): continue
+                # Don't hyphenate document title
+                if isinstance(txtnode.parent, nodes.title): continue
 
                 # Useful for debugging, don't remove ;)
                 #print(repr(txtnode.parent), repr(txtnode.parent.parent), repr(txtnode.parent.parent.parent))

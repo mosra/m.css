@@ -112,8 +112,9 @@ French-style quotes.
 
 This plugin contains a patched version of
 `smart_quotes option <http://docutils.sourceforge.net/docs/user/smartquotes.html>`_
-from Docutils, which is based off SmartyPants, but with proper language awareness
-on top. See for yourself:
+from Docutils, which is based off SmartyPants, but with proper language
+awareness on top. It is applied to whole document contents and fields that are
+included in the :py:`FORMATTED_FIELDS`. See for yourself:
 
 .. code-figure::
 
