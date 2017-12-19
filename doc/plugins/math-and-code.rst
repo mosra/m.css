@@ -50,10 +50,10 @@ rendering directly from your :abbr:`reST <reStructuredText>` sources.
 `Math`_
 =======
 
-Download the `m/math.py and m/latex2svg.py <{filename}/plugins.rst>`_ files,
-put them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and
-add :py:`m.math` package to your :py:`PLUGINS` in ``pelicanconf.py``. This
-plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+Download the `m/math.py and latex2svg.py <{filename}/plugins.rst>`_ files, put
+them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+:py:`m.math` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
+assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. note-danger::
 
@@ -149,10 +149,10 @@ want to add additional CSS classes, derive a custom role from it.
 `Code`_
 =======
 
-Download the `m/code.py <{filename}/plugins.rst>`_ file, put it including the
-``m/`` directory into one of your :py:`PLUGIN_PATHS` and add :py:`m.code`
-package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin assumes
-presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+Download the `m/code.py and ansilexer.py <{filename}/plugins.rst>`_ files, put
+them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+:py:`m.code` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
+assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. code:: python
 

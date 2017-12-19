@@ -43,8 +43,8 @@ and restart Pelican. Download the plugins below or
 -   :gh:`m.htmlsanity <mosra/m.css$master/pelican-plugins/m/htmlsanity.py>`
 -   :gh:`m.components <mosra/m.css$master/pelican-plugins/m/components.py>`
 -   :gh:`m.images <mosra/m.css$master/pelican-plugins/m/images.py>`
--   :gh:`m.math  <mosra/m.css$master/pelican-plugins/m/math.py>` (needs also :gh:`latex2svg <mosra/m.css$master/pelican-plugins/m/latex2svg.py>`),
-    :gh:`m.code <mosra/m.css$master/pelican-plugins/m/code.py>`
+-   :gh:`m.math  <mosra/m.css$master/pelican-plugins/m/math.py>` (needs also :gh:`latex2svg <mosra/m.css$master/pelican-plugins/latex2svg.py>`),
+    :gh:`m.code <mosra/m.css$master/pelican-plugins/m/code.py>` (needs also :gh:`ansilexer <mosra/m.css$master/pelican-plugins/ansilexer.py>`)
 -   :gh:`m.gh <mosra/m.css$master/pelican-plugins/m/gh.py>`,
     :gh:`m.dox <mosra/m.css$master/pelican-plugins/m/dox.py>`,
     :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
