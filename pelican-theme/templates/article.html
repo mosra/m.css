@@ -14,7 +14,12 @@
 
 {% block social %}
   {{- super() -}}
-  {# this has to be here otherwise the spacing is all wrong #}
+  {% if article.author and article.author.twitter %}
+  <meta name="twitter:creator" content="{{ article.author.twitter }}" />
+  {% endif %}
+  {% if article.author and article.author.twitter_id %}
+  <meta name="twitter:creator:id" content="{{ article.author.twitter_id }}" />
+  {% endif %}
   <meta property="og:title" content="{{ article.title }}" />
   <meta name="twitter:title" content="{{ article.title }}" />
   <meta property="og:url" content="{{ article.url|format_siteurl|e }}" />
@@ -26,6 +31,9 @@
   <meta property="og:image" content="{{ article.cover|expand_link(article)|e }}" />
   <meta name="twitter:image" content="{{ article.cover|expand_link(article)|e }}" />
   <meta name="twitter:card" content="summary_large_image" />
+  {% elif article.category.image %}
+  <meta property="og:image" content="{{ article.category.image|expand_link(article)|e }}" />
+  <meta name="twitter:image" content="{{ article.category.image|expand_link(article)|e }}" />
   {% elif M_SOCIAL_IMAGE %}
   <meta property="og:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
   <meta name="twitter:image" content="{{ M_SOCIAL_IMAGE|format_siteurl|e }}" />
@@ -35,6 +43,8 @@
   {% endif %}
   <meta property="og:type" content="article" />
 {% endblock %}
+
+{% macro badges() %}{% include "article_badges.html" %}{% endmacro %}
 
 {% block content %}
   {% if article.cover %}
@@ -80,6 +90,9 @@
 <!-- content -->
 {{ article.content|trim }}
 <!-- /content -->
+          {% if article.category.badge or (article.author and article.author.badge) %}
+          {{ badges()|indent(10) }}
+          {% endif %}
         </div>
       </div>
     </div>
@@ -102,6 +115,9 @@
 <!-- content -->
 {{ article.content|trim }}
 <!-- /content -->
+      {% endif %}
+      {% if article.category.badge or (article.author and article.author.badge) %}
+      {{ badges()|indent(6) }}
       {% endif %}
       <footer>
         {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}

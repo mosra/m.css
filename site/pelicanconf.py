@@ -33,6 +33,7 @@ STATIC_URL = '{path}'
 
 PATH = 'content'
 ARTICLE_PATHS = ['examples']
+ARTICLE_EXCLUDES = ['examples/authors', 'examples/categories', 'examples/tags']
 PAGE_PATHS = ['']
 
 TIMEZONE = 'Europe/Prague'
@@ -56,6 +57,10 @@ M_SOCIAL_TWITTER_SITE_ID = 1537427036
 M_SOCIAL_IMAGE = 'static/site.jpg'
 M_SOCIAL_BLOG_SUMMARY = 'Example articles for the m.css Pelican theme'
 
+M_METADATA_AUTHOR_PATH = 'examples/authors'
+M_METADATA_CATEGORY_PATH = 'examples/categories'
+M_METADATA_TAG_PATH = 'examples/tags'
+
 M_LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
                    ('CSS', 'css/', 'css', [
                         ('Grid system', 'css/grid/', 'css/grid'),
@@ -72,7 +77,8 @@ M_LINKS_NAVBAR2 = [('Pelican plugins', 'plugins/', 'plugins', [
                         ('Components', 'plugins/components/', 'plugins/components'),
                         ('Images', 'plugins/images/', 'plugins/images'),
                         ('Math and code', 'plugins/math-and-code/', 'plugins/math-and-code'),
-                        ('Links', 'plugins/links/', 'plugins/links')]),
+                        ('Links', 'plugins/links/', 'plugins/links'),
+                        ('Metadata', 'plugins/metadata/', 'plugins/metadata')]),
                    ('Doxygen theme', 'doxygen/', 'doxygen', []),
                    ('GitHub', 'https://github.com/mosra/m.css', '', [])]
 
@@ -101,7 +107,8 @@ M_LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
                    ('Components', 'plugins/components/'),
                    ('Images', 'plugins/images/'),
                    ('Math and code', 'plugins/math-and-code/'),
-                   ('Links', 'plugins/links/')]
+                   ('Links', 'plugins/links/'),
+                   ('Metadata', 'plugins/metadata/')]
 
 M_FINE_PRINT = """
 m.css. Copyright © Vladimír Vondruš 2017. Site powered by `Pelican <https://getpelican.com>`_
@@ -125,7 +132,8 @@ PLUGINS = ['m.abbr',
            'm.gh',
            'm.htmlsanity',
            'm.images',
-           'm.math']
+           'm.math',
+           'm.metadata']
 
 THEME = '../pelican-theme'
 THEME_STATIC_DIR = 'static'
@@ -137,7 +145,7 @@ M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i
 #M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
                #'/static/m-light.css']
 
-FORMATTED_FIELDS = ['summary', 'landing', 'header', 'footer']
+FORMATTED_FIELDS = ['summary', 'landing', 'header', 'footer', 'description', 'badge']
 
 M_HTMLSANITY_SMART_QUOTES = True
 M_HTMLSANITY_HYPHENATION = True
@@ -154,8 +162,8 @@ ARTICLE_URL = '{category}/{slug}/'
 ARTICLE_SAVE_AS = '{category}/{slug}/index.html'
 AUTHOR_URL = 'author/{slug}/'
 AUTHOR_SAVE_AS = 'author/{slug}/index.html'
-CATEGORY_URL = 'examples/' # Aliases with the archives page
-CATEGORY_SAVE_AS = '' # The archives page is used instead
+CATEGORY_URL = 'category/{slug}/'
+CATEGORY_SAVE_AS = 'category/{slug}/index.html'
 TAG_URL = 'tag/{slug}/'
 TAG_SAVE_AS = 'tag/{slug}/index.html'
 

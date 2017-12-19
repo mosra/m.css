@@ -50,6 +50,7 @@ and restart Pelican. Download the plugins below or
     :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
     :gh:`m.abbr <mosra/m.css$master/pelican-plugins/m/abbr.py>`,
     :gh:`m.filesize <mosra/m.css$master/pelican-plugins/m/filesize.py>`
+-   :gh:`m.metadata <mosra/m.css$master/pelican-plugins/m/metadata.py>`
 
 Click on the headings below to get to know more. Note that particular plugins
 can have additional dependencies besides just Pelican, see documentation of
@@ -90,3 +91,11 @@ entered directly in your :abbr:`reST <reStructuredText>` sources.
 The :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.abbr` and :py:`m.fiilesize`
 plugins make it easy for you to link to GitHub projects, issues or PRs, to
 Doxygen documentation and do more useful things.
+
+`Metadata » <{filename}/plugins/metadata.rst>`_
+===============================================
+
+With the :py:`m.metadata` plugin it's possible to assign additional description
+and images to authors, categories and tags. The information can then appear on
+article listing page, as a badge under the article or be added to social meta
+tags.

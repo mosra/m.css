@@ -563,6 +563,12 @@ option in the configuration:
 
     M_SHOW_AUTHOR_LIST = True
 
+.. note-success::
+
+    The theme is able to recognize additional description and images for
+    authors, categories and tags from the
+    `Metadata plugin <{filename}/plugins/metadata.rst>`_, if you enable it.
+
 `Jumbo articles`_
 -----------------
 
@@ -621,6 +627,11 @@ specialized for articles like this:
 -   ``twitter:card`` is set to ``summary_large_image`` if :rst:`:cover:` is
     present and to ``summary`` otherwise
 -   ``og:type`` is set to ``article``
+
+.. note-success::
+
+    Additional social meta tags (such as author or category info) are be
+    exposed by the `Metadata plugin <{filename}/plugins/metadata.rst>`_.
 
 .. note-info::
 
