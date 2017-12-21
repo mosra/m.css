@@ -168,7 +168,7 @@ around:
 
     .. class:: m-text m-text-right m-dim m-em
 
-    --  `Discrete Fourier transform § Periodicity <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Periodicity>`_, Wikipedia
+    --- `Discrete Fourier transform § Periodicity <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Periodicity>`_, Wikipedia
 
 And now, finally, some inline math. Note the vertical alignment, consistent
 line spacing and that nothing gets relayouted during page load:

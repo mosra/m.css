@@ -58,7 +58,7 @@ for.
 .. note-info::
 
     Well, while m.css itself doesn't *need* JavaScript, it doesn't prevent
-    *you* from using it -- put in as many jQueries as you want.
+    *you* from using it --- put in as many jQueries as you want.
 
 Why no CSS preprocessors?
 =========================
