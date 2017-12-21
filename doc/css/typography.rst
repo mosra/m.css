@@ -304,6 +304,12 @@ fancy transition, use :css:`.m-transition` on a paragraph.
         accumsan ante sit amet iaculis. Phasellus rhoncus hendrerit leo vitae lacinia.
         Maecenas iaculis dui ex, eu interdum lacus ornare sit amet.</p>
 
+.. note-info::
+
+    Transitions can be conveniently created with a :rst:`.. transition::`
+    directive in your :abbr:`reST <reStructuredText>` markup using the
+    `Pelican Components plugin <{filename}/plugins/components.rst#transitions>`_.
+
 `Preformatted blocks`_
 ======================
 

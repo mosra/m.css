@@ -137,6 +137,12 @@ but the CSS class can be used on any block element.
           </div>
         </div>
 
+.. note-info::
+
+    The `Pelican Components plugin <{filename}/plugins/components.rst#blocks-notes-frame>`__
+    is able to produce blocks conveniently using :rst:`.. block-::` directives
+    in your :abbr:`reST <reStructuredText>` markup.
+
 `Badges`_
 =========
 
@@ -166,6 +172,11 @@ Only :html:`<h3>` is supported for a badge.
           <a href="https://twitter.com/czmosra">on Twitter</a> if you want to
           get notified when he gets a better avatar.</p>
         </div>
+
+.. note-info::
+
+    The `Pelican Metadata plugin <{filename}/plugins/metadata.rst>`_  is able
+    to automatically render author and category badges for articles.
 
 `Notes, frame`_
 ===============
@@ -245,6 +256,12 @@ semantic purposes, but the CSS classes can be used on any block element.
           </div>
         </div>
 
+.. note-info::
+
+    Notes and frames can be created conveniently using :rst:`.. note-::` and
+    :rst:`.. frame::` directives in your :abbr:`reST <reStructuredText>` markup
+    using the `Pelican Components plugin <{filename}/plugins/components.rst#blocks-notes-frame>`__.
+
 `Text`_
 =======
 
@@ -284,6 +301,12 @@ paragraph or inline text.
             <p class="m-text m-dim m-noindent">Dim text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra imperdiet tortor sed vehicula. <a href="#">Link.</a></p>
           </div>
         </div>
+
+.. note-info::
+
+    Colored text paragraphs can be conveniently created using :rst:`.. text-::`
+    directives in your :abbr:`reST <reStructuredText>` markup using the
+    `Pelican Components plugin <{filename}/plugins/components.rst#text>`__.
 
 Apply :css:`.m-small` or :css:`.m-big` CSS class together with :css:`.m-text`
 to make the text appear smaller or larger.
@@ -388,6 +411,12 @@ class inside the :html:`<a>` to achieve the following effect:
             <div class="m-small">Any platform, 5 kB.</div>
           </a>
         </div>
+
+.. note-info::
+
+    Buttons can be conveniently created using :rst:`.. button-::` directives in
+    your :abbr:`reST <reStructuredText>` markup using the
+    `Pelican Components plugin <{filename}/plugins/components.rst#button-links>`__.
 
 `Labels`_
 =========
@@ -603,6 +632,12 @@ not the surrounding area:
           <a href="{filename}/static/flowers.jpg"><img src="{filename}/static/flowers-small.jpg" /></a>
         </div>
 
+.. note-info::
+
+    Images can be conveniently created with an :rst:`.. image::` directive in
+    your :abbr:`reST <reStructuredText>` markup using the
+    `Pelican Images plugin <{filename}/plugins/images.rst>`_.
+
 `Figures`_
 ==========
 
@@ -635,6 +670,12 @@ the border is distracting, apply the :css:`.m-flat` class to hide it.
           <figcaption>A Ship</figcaption>
           <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
         </figure>
+
+.. note-info::
+
+    Figures can be conveniently created with a :rst:`.. figure::` directive in
+    your :abbr:`reST <reStructuredText>` markup using the
+    `Pelican Images plugin <{filename}/plugins/images.rst>`_.
 
 `Image grid`_
 =============
@@ -737,10 +778,10 @@ Then, percentage width :math:`p_i` of each image is calculated as:
 
     p_i = W \cfrac{w_i}{h_i} \cdot 100 \%
 
-.. note-info::
+.. note-success::
 
-    The image width calculation is quite annoying to do manually, that's why
-    m.css provides a `Pelican plugin <{filename}/plugins/images.rst#image-grid>`_
+    The image width calculation is quite annoying to do manually and so there's
+    an :rst:`.. image-grid::` directive in the `Pelican Image plugin <{filename}/plugins/images.rst#image-grid>`_
     that does the hard work for you.
 
 `Code`_
@@ -821,10 +862,10 @@ instead of :html:`<pre>`:
 
 .. note-success::
 
-    To make your life easier, m.css provides a
-    `Pelican plugin <{filename}/plugins/math-and-code.rst#code>`__ that
-    integrates Pygments code highlighting as a :abbr:`reST <reStructuredText>`
-    directive.
+    To make your life easier, the `Pelican Code plugin <{filename}/plugins/math-and-code.rst#code>`__
+    integrates Pygments code highlighting as a :rst:`.. code::`
+    :abbr:`reST <reStructuredText>` directive and a :rst:`:code:` inline text
+    role.
 
 `Colored terminal output`_
 ==========================
@@ -858,7 +899,7 @@ might then look similarly to this:
 
 .. note-success::
 
-    The Pelican plugin mentioned above is able to do
+    The Pelican Code plugin mentioned above is able to do
     `colored console highlighting as well <{filename}/plugins/math-and-code.rst#colored-terminal-output>`_.
 
 `Code figure`_
@@ -898,6 +939,12 @@ bit of a figure inception shown here):
 It's also possible to have matching border for a console output. Just use
 :css:`.m-console-figure` instead of :css:`.m-code-figure` on the :html:`<figure>`
 element.
+
+.. note-info::
+
+    Code figures can be conveniently created with a :rst:`.. code-figure::`
+    directive in your :abbr:`reST <reStructuredText>` markup using the
+    `Pelican Components plugin <{filename}/plugins/components.rst#code-figure>`_.
 
 `Math`_
 =======
@@ -1000,11 +1047,13 @@ the ``depth`` value returned on stderr can be taken as a base for the
           </g>
         </svg> character.</p>
 
-.. note-warning::
+.. note-success::
 
-    Producing SVG manually using command-line tools is no fun, so m.css
-    provides a `Pelican plugin <{filename}/plugins/math-and-code.rst#math>`__
-    that integrates LaTeX math directly into your markup. Check it out!
+    Producing SVG manually using command-line tools is no fun. That's why the
+    :rst:`.. math::` directive and :rst:`:math:` inline text role in the
+    `Pelican Math plugin <{filename}/plugins/math-and-code.rst#math>`__
+    integrates LaTeX math directly into your :abbr:`reST <reStructuredText>`
+    markup for convenient content authoring.
 
 `Padding`_
 ==========
