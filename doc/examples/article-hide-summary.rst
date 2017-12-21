@@ -32,7 +32,6 @@ Article with hidden summary
 :category: Examples
 :tags: Special
 :author: An Author
-:slug: article-hide-summary
 :hide_summary: True
 
 Implicit article summary paragraph. :language-la:`Lorem ipsum dolor sit amet,

@@ -31,7 +31,6 @@ An article
 :date: 2017-09-08 0:00
 :category: Examples
 :author: An Author
-:slug: article
 :summary: Article summary paragraph. :language-la:`Lorem ipsum dolor sit amet,
     consectetur adipiscing elit. Aenean id elit posuere, consectetur magna
     congue, sagittis est.`

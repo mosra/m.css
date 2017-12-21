@@ -33,7 +33,6 @@ Article with hidden summary --- a jumbo one
 :category: Examples
 :tags: Jumbo, Special
 :author: An Author
-:slug: jumbo-article-hide-summary
 :hide_summary: True
 
 Implicit article summary paragraph. :language-la:`Lorem ipsum dolor sit amet,

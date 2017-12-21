@@ -33,7 +33,6 @@ An article --- a jumbo one
 :category: Examples
 :tags: Jumbo
 :author: An Author
-:slug: jumbo-article
 :summary: Article summary paragraph. :language-la:`Lorem ipsum dolor sit amet,
     consectetur adipiscing elit. Aenean id elit posuere, consectetur magna
     congue, sagittis est.`
