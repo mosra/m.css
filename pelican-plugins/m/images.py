@@ -185,7 +185,7 @@ class ImageGrid(rst.Directive):
             im = PIL.Image.open(absuri)
 
             # Get EXIF info, if it's there
-            if hasattr(im, '_getexif'):
+            if hasattr(im, '_getexif') and im._getexif() is not None:
                 exif = {
                     PIL.ExifTags.TAGS[k]: v
                     for k, v in im._getexif().items()
