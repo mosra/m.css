@@ -39,7 +39,12 @@ PAGE_PATHS = ['']
 TIMEZONE = 'Europe/Prague'
 
 DEFAULT_LANG = 'en'
-DATE_FORMATS = {'en': ('en_US.UTF-8', '%b %d, %Y')}
+
+import platform
+if platform.system() == 'Windows':
+    DATE_FORMATS = {'en': ('usa', '%b %d, %Y')}
+else:
+    DATE_FORMATS = {'en': ('en_US.UTF-8', '%b %d, %Y')}
 
 # Feed generation is usually not desired when developing
 FEED_ATOM = None
