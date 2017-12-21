@@ -31,7 +31,12 @@ class Images(PluginTestCase):
     def test(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.images'],
-            'STATIC_PATHS': ['tiny.png', 'ship.jpg', 'flowers.jpg', 'sparseexif.jpg', 'longexposure.jpg']
+            'STATIC_PATHS': ['tiny.png',
+                             'ship.jpg',
+                             'flowers.jpg',
+                             'sparseexif.jpg',
+                             'noexif.jpg',
+                             'longexposure.jpg']
         })
 
         #

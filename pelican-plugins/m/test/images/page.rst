@@ -57,10 +57,12 @@ Image grid:
     {filename}/flowers.jpg
     {filename}/ship.jpg
 
-Image grid with a PNG file and a JPEG with sparse EXIF data:
+Image grid with a PNG file, JPEG with sparse EXIF data, JPEG with no EXIF data
+and long exposure (>1 second):
 
 .. image-grid::
 
     {filename}/tiny.png
     {filename}/sparseexif.jpg
+    {filename}/noexif.jpg
     {filename}/longexposure.jpg
