@@ -78,12 +78,14 @@
   --footer-link-color: #191919;
   --footer-link-active-color: #494949;
 
+  /* Cover image */
+  --cover-image-background-color: #666666;
+
   /* Article */
   --article-header-color: #7a7a7a;
   --article-footer-color: #969696;
   --article-heading-color: #cb4b16;
   --article-heading-active-color: #802f0e;
-  --article-jumbo-cover-background-color: #666666;
 
   /* Right navigation panel */
   --navpanel-link-color: #292929;
