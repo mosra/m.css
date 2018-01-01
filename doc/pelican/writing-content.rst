@@ -436,6 +436,10 @@ info about `inline markup <http://docutils.sourceforge.net/docs/ref/rst/restruct
 -   Sometimes you need to put raw HTML code onto your page (for example to
     embed a third-party widget). Use the `raw <http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through>`_
     directive to achieve that.
+-   For including larger portions of raw HTML code or bigger code snippets
+    there's the `include <http://docutils.sourceforge.net/docs/ref/rst/directives.html#including-an-external-document-fragment>`_
+    directive, you can also specify just a portion of the file either by line
+    numbers or text match.
 -   The `contents <http://docutils.sourceforge.net/docs/ref/rst/directives.html#contents>`_
     directive will automatically make a Table of Contents list out of headings
     in your document. Very useful for navigation in large pages and articles.
