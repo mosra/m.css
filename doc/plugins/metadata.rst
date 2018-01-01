@@ -43,6 +43,9 @@ Metadata
 
 Assigns additional description and images to categories, authors and tags.
 
+.. contents::
+    :class: m-block m-default
+
 `How to use`_
 =============
 
