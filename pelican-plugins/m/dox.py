@@ -73,7 +73,6 @@ def init(pelicanobj):
 
                 # Linking to namespaces, structs and classes
                 if child.attrib['kind'] in ['class', 'struct', 'namespace']:
-                    symbol_mapping[child.find('name').text] = path + child.find('filename').text
                     name = child.find('name').text
                     link = path + child.find('filename').text
                     symbol_mapping[name] = link
