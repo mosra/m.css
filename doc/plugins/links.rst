@@ -153,13 +153,18 @@ work. Example configuration:
 
 Use the :rst:`:dox:` interpreted text role for linking to documented symbols.
 All link targets understood by Doxygen's ``@ref`` or ``@link`` commands are
-understood by this plugin as well. In order to save you some typing, the
-leading namespace(s) mentioned in the :py:`M_DOX_TAGFILES` setting can be
-omitted when linking to given symbol. If a symbol can't be found, a warning is
-printed to output and the link text is rendered in monospace font.
+understood by this plugin as well, in addition it's possible to link to the
+documentation index page by specifying the tag file basename w/o extension as
+link target. In order to save you some typing, the leading namespace(s)
+mentioned in the :py:`M_DOX_TAGFILES` setting can be omitted when linking to
+given symbol.
 
-Link text is equal to link target in all cases. It's possible to specify
-alternate link text using the :rst:`:dox:`link text <link-target>`` syntax.
+Link text is equal to link target in all cases except for pages and sections,
+where page/section title is extracted from the tagfile. It's possible to
+specify custom link title using the :rst:`:dox:`link title <link-target>``
+syntax. If a symbol can't be found, a warning is printed to output and link
+target is rendered in monospace font (or, if custom link title is specified,
+just the title is rendered, as normal text).
 
 .. code-figure::
 
@@ -169,11 +174,13 @@ alternate link text using the :rst:`:dox:`link text <link-target>`` syntax.
         -   Class link: :dox:`Interconnect::Emitter`
         -   Page link: :dox:`building-corrade`
         -   :dox:`Custom link title <testsuite>`
+        -   :dox:`Link to documentation index page <corrade>`
 
     -   Function link: :dox:`Utility::Directory::mkpath()`
     -   Class link: :dox:`Interconnect::Emitter`
     -   Page link: :dox:`building-corrade`
     -   :dox:`Custom link title <testsuite>`
+    -   :dox:`Link to documentation index page <corrade>`
 
 `Abbreviations`_
 ================
