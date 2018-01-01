@@ -352,7 +352,7 @@ the fold", *not* the cover image.
 .. code:: html
 
     <main><article>
-      <div id="m-landing-image" style="background-image: url('ship.jpg');">
+      <div id="m-landing-image" style="background-image: url('landing.jpg');">
         <div id="m-landing-cover">
           <div class="m-container">
             <!-- content displayed over the cover image -->
@@ -378,6 +378,35 @@ similarly with the hamburger menu on small screen sizes.
 .. note-info::
 
     You can see landing page in action `on the main page <{filename}/index.rst>`_.
+
+`Pages with cover image`_
+-------------------------
+
+If you just want slide a cover image under content of your page and don't need
+to have control over what content is over the image and what under, simply put
+the following markup in front of your page content --- an outer
+:css:`#m-cover-image` element with background image and an inner empty
+:html:`<div>` that takes care of the fade out gradient over it.
+
+.. code:: html
+    :class: m-inverted
+    :hl_lines: 2 3 4
+
+    <main>
+      <div id="m-cover-image" style="background-image: url('cover.jpg');">
+        <div></div>
+      </div>
+      <article>
+        <div class="m-container">
+          <!-- the whole content of your page goes here -->
+        </div>
+      </article>
+    </main>
+
+.. note-info::
+
+    Real-world example of a page with cover image can be seen on the
+    `Magnum Engine website <http://magnum.graphics/features/>`_.
 
 `Breadcrumb navigation`_
 ------------------------

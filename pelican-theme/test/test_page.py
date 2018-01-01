@@ -111,6 +111,20 @@ class Landing(PageTestCase):
         self.assertEqual(*self.actual_expected_contents('page.html'))
         self.assertEqual(*self.actual_expected_contents('hide-navbar-brand.html'))
 
+class Cover(PageTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'cover', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'STATIC_PATHS': ['ship.jpg'],
+            # Verify that the image is propagated to social meta tags
+            'M_DISABLE_SOCIAL_META_TAGS': False,
+        })
+
+        # Header and footer should be shown and should not break the layout
+        self.assertEqual(*self.actual_expected_contents('page.html'))
+
 class TitleSitenameAlias(PageTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'title_sitename_alias', *args, **kwargs)

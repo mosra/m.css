@@ -425,6 +425,20 @@ destination and URL.
 
     You can see the landing page in action on the `main project page <{filename}/index.rst>`_.
 
+`Pages with cover image`_
+-------------------------
+
+Besides full-blown landing pages that give you control over the whole layout,
+you can add cover images to regular pages by just specifying the :rst:`:cover:`
+field but omitting the :rst:`:landing:` field. See corresponding section
+`in the CSS page layout docs <{filename}/css/page-layout.rst#pages-with-cover-image>`_
+for details about how the cover image affects page layout.
+
+.. note-info::
+
+    Real-world example of a page with cover image can be seen on the
+    `Magnum Engine website <http://magnum.graphics/features/extensions/>`_.
+
 `Page header and footer`_
 -------------------------
 
@@ -466,7 +480,7 @@ above:
 
     The :rst:`:header:` field is not supported on `landing pages`_. In case
     both :rst:`:landing:` and :rst:`:header:` is present, :rst:`:header:` is
-    ignored.
+    ignored. However, it works as expected if just :rst:`:cover:` is present.
 
 `(Social) meta tags for pages`_
 -------------------------------

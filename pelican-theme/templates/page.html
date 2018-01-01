@@ -53,7 +53,11 @@
 {% endblock %}
 
 {% block main %}
-{% if not page.landing and page.header %}
+{% if not page.landing %}
+{% if page.cover %}
+<div id="m-cover-image" style="background-image: url('{{ page.cover|expand_link(page)|e }}');"><div></div></div>
+{% endif %}
+{% if page.header %}
 <div class="m-container m-container-inflatable">
   <div class="m-row">
     <div class="m-col-l-10 m-push-l-1 m-nopadb">
@@ -63,6 +67,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endif %}
 <article>
   {% if page.landing %}

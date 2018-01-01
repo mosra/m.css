@@ -438,7 +438,7 @@ article section > h4 a, article section > h5 a, article section > h6 a {
 }
 
 /* Landing page, jumbo article */
-#m-landing-image, article#m-jumbo > header #m-jumbo-image {
+#m-landing-image, #m-cover-image, article#m-jumbo > header #m-jumbo-image {
   background-size: cover;
   background-color: var(--cover-image-background-color);
   background-position: center center;
@@ -448,6 +448,10 @@ article section > h4 a, article section > h5 a, article section > h6 a {
 }
 #m-landing-image {
   color: #ffffff;
+}
+#m-cover-image {
+  height: 30rem;
+  margin-bottom: -26rem;
 }
 #m-landing-cover {
   padding-bottom: 10rem;
@@ -461,7 +465,7 @@ article#m-jumbo > header #m-jumbo-image {
   height: 60vh;
   margin-bottom: 1rem;
 }
-#m-landing-cover, article#m-jumbo > header #m-jumbo-cover {
+#m-landing-cover, #m-cover-image > div, article#m-jumbo > header #m-jumbo-cover {
   background: linear-gradient(transparent 0%, transparent 50%, var(--background-color) 100%);
   width: 100%;
   height: 100%;
