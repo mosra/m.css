@@ -112,6 +112,7 @@ a:hover, a:focus, a:active {
   color: var(--link-active-color);
 }
 a img { border: 0; } /* Why you so special, IE?! */
+svg a { cursor: pointer; } /* And why YOU, CHROME?! */
 mark {
   padding: 0.0625rem;
   background-color: var(--mark-background-color);
