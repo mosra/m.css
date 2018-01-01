@@ -52,8 +52,14 @@ with the stock output to avoid broken links once you switch.
 `Basic usage`_
 ==============
 
-Everything you need is a Python script and a bunch of template files. You can
-get that by cloning :gh:`the m.css GitHub repository <mosra/m.css$master/doxygen>`
+.. note-warning::
+
+    The script depends on features released in Doxygen 1.8.14 (December 2017).
+    It may work reasonably well with older versions, but I can't guarantee
+    that. Upgrade to the latest version to have the best experience.
+
+Everything you need apart from Doxygen itself is a Python script and a bunch of
+template files. You can get that by cloning :gh:`the m.css GitHub repository <mosra/m.css$master/doxygen>`
 and looking into the ``doxygen/`` directory:
 
 .. code:: sh
@@ -399,11 +405,6 @@ single-paragraph item will make sure the enclosing :html:`<p>` is not stripped.
 To match the stock HTML output, images that are marked with ``html`` target are
 used. If image name is present, the image is rendered as a figure with caption.
 
-.. block-warning:: Doxygen patches
-
-    Current stable release of Doxygen has broken copying of images for the XML
-    output. You need to apply :gh:`doxygen/doxygen#629` in order to fix that.
-
 `Pages, sections and table of contents`_
 ----------------------------------------
 
@@ -416,23 +417,6 @@ the ``@section`` command instead.
 
 Table of contents for pages is generated only if they specify
 ``@tableofcontents`` in their documentation block.
-
-.. block-warning:: Doxygen patches
-
-    Note that recognition of the ``@tableofcontents`` command requires Doxygen
-    with :gh:`doxygen/doxygen#625` applied. Brief description of pages is
-    ignored and not extracted to the page index unless Doxygen has
-    :gh:`doxygen/doxygen#624` applied.
-
-`C++ support`_
---------------
-
-.. block-warning:: Doxygen patches
-
-    In order to properly detect template parameters for type aliases (the
-    :cpp:`using` keyword), Doxygen with :gh:`doxygen/doxygen#626` applied is
-    required. Rendering underlying enum types and enum strongness then requires
-    :gh:`doxygen/doxygen#627`.
 
 `Code highlighting`_
 --------------------
@@ -565,14 +549,6 @@ aliases in the original ``Doxyfile``:
                 <p>Yet another</p>
               </li>
             </ul>
-
-.. block-warning:: Doxygen patches
-
-    Note that proper language detection for code snippets requires Doxygen with
-    :gh:`doxygen/doxygen#621` applied, otherwise all snippets will fall back to
-    C++ highlighting. Using ANSI color escape codes in terminal output require
-    Doxygen with :gh:`doxygen/doxygen#623` applied, otherwise the codes will be
-    present in the rendered output in their raw form.
 
 `Theme-specific commands`_
 --------------------------
