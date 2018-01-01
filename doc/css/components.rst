@@ -598,10 +598,10 @@ justified.
 `Images`_
 =========
 
-Putting :css:`.m-image` class onto the :html:`<img>` tag makes it centered,
-slightly rounded and sets its max width to 100%. Adding :css:`.m-fullwidth` on
-the image element works as expected. For accessibility reasons it's a good
-practice to include the ``alt`` attribute.
+Putting :css:`.m-image` class onto an :html:`<img>` / :html:`<svg>` tag makes
+the image centered, slightly rounded and sets its max width to 100%. Adding
+:css:`.m-fullwidth` on the image element works as expected. For accessibility
+reasons it's a good practice to include the ``alt`` attribute.
 
 .. code-figure::
 

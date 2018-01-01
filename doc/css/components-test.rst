@@ -812,6 +812,34 @@ Image, fullwidth, link (yes, it should be pixelated):
       <a href="http://blog.mosra.cz/"><img src="{filename}/static/flowers-small.jpg" /></a>
     </div>
 
+SVG image:
+
+.. raw:: html
+
+    <svg class="m-image" width="80" height="80">
+      <text x="16" y="40" style="text-anchor: middle; fill: #ff0000">Hello</text>
+    </svg>
+
+SVG image, fullwidth, with link inside:
+
+.. raw:: html
+
+    <svg width="80" height="80" class="m-image m-fullwidth">
+      <a xlink:href="#"><text x="16" y="40" style="text-anchor: middle; fill: #ff0000">Hello</text></a>
+    </svg>
+
+SVG image, fullwidth, with link outside:
+
+.. raw:: html
+
+    <div class="m-image m-fullwidth">
+      <a href="#">
+        <svg width="80" height="80">
+          <text x="16" y="40" style="text-anchor: middle; fill: #ff0000">Hello</text>
+        </svg>
+      </a>
+    </div>
+
 Figures
 =======
 
