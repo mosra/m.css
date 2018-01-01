@@ -28,6 +28,7 @@ from docutils import nodes, utils
 from docutils.parsers import rst
 from pelican import signals
 import xml.etree.ElementTree as ET
+import os
 
 import logging
 
@@ -35,15 +36,17 @@ logger = logging.getLogger(__name__)
 
 symbol_mapping = {}
 symbol_prefixes = ['']
+tagfile_basenames = []
 
 def init(pelicanobj):
-    global symbol_mapping, symbol_prefixes
+    global symbol_mapping, symbol_prefixes, tagfile_basenames
 
     tagfiles = pelicanobj.settings.get('M_DOX_TAGFILES', [])
 
     # Pre-round to populate subclasses
 
     for tagfile, path, prefixes in tagfiles:
+        tagfile_basenames += [(os.path.splitext(os.path.basename(tagfile))[0], path)]
         symbol_prefixes += prefixes
 
         tree = ET.parse(tagfile)
@@ -97,6 +100,17 @@ def init(pelicanobj):
 
 def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     title, target = parse_link(text)
+
+    # Try linking to the whole docs first
+    for basename, url in tagfile_basenames:
+        if basename == target:
+            if not title:
+                # TODO: extract title from index page in the tagfile
+                logger.warning("Link to main page `{}` requires a title".format(target))
+                title = target
+
+            node = nodes.reference(rawtext, title, refuri=url, **options)
+            return [node], []
 
     for prefix in symbol_prefixes:
         if prefix + target in symbol_mapping:

@@ -29,6 +29,7 @@
 <li>Page link: <a href="http://doc.magnum.graphics/corrade/building-corrade.html">Downloading and building</a></li>
 <li><a href="http://doc.magnum.graphics/corrade/testsuite.html">Custom link title</a></li>
 <li><a href="http://doc.magnum.graphics/corrade/corrade-cmake.html">Page link with custom title</a></li>
+<li><a href="http://doc.magnum.graphics/corrade/">Link to index page</a></li>
 </ul>
 <p>These should produce warnings:</p>
 <ul>
@@ -36,6 +37,8 @@
 <li><span>Link to nonexistent name with custom title will be just text</span></li>
 <li>Link to a section that doesn't have a title will keep the ID (this <em>may</em>
 break on tagfile update, watch out): <a href="http://doc.magnum.graphics/corrade/corrade-cmake.html#corrade-cmake-add-test">corrade-cmake-add-test</a></li>
+<li>Link to index page without title will have the tag file basename:
+<a href="http://doc.magnum.graphics/corrade/">corrade</a></li>
 </ul>
 <!-- /content -->
       </div>
