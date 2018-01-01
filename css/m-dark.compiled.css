@@ -444,7 +444,7 @@ pre {
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
   color: #e6e6e6;
-  background-color: #22272e;
+  background-color: #282e36;
   border-radius: 0.2rem;
   overflow-x: auto;
   margin-top: 0;
@@ -471,6 +471,7 @@ a:hover, a:focus, a:active {
   color: #a5c9ea;
 }
 a img { border: 0; }
+svg a { cursor: pointer; }
 mark {
   padding: 0.0625rem;
   background-color: #c7cf2f;
@@ -481,7 +482,7 @@ code {
   font-size: 0.9rem;
   padding: 0.125rem;
   color: #e6e6e6;
-  background-color: #22272e;
+  background-color: #282e36;
 }
 code.m-console {
   background-color: #000000;
@@ -492,24 +493,24 @@ body > header > nav {
   min-height: 3rem;
 }
 body > header > nav.m-navbar-landing,
-body > header > nav.m-navbar-jumbo {
+body > header > nav.m-navbar-cover {
   background-color: transparent;
   position: relative;
 }
 body > header > nav.m-navbar-landing {
   opacity: 0.8;
 }
-body > header > nav.m-navbar-jumbo {
+body > header > nav.m-navbar-cover {
   background-color: rgba(34, 39, 46, 0.25);
   opacity: 1;
 }
 body > header > nav.m-navbar-landing:hover,
-body > header > nav.m-navbar-jumbo:hover {
+body > header > nav.m-navbar-cover:hover {
   background-color: rgba(34, 39, 46, 0.75);
   opacity: 1;
 }
 body> header > nav.m-navbar-landing:target,
-body> header > nav.m-navbar-jumbo:target {
+body> header > nav.m-navbar-cover:target {
   background-color: #22272e;
   opacity: 1;
 }
@@ -589,11 +590,11 @@ body > header > nav #m-navbar-collapse li a:active {
   background-color: #292f37;
 }
 body > header > nav.m-navbar-landing #m-navbar-collapse li a:hover,
-body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:hover,
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:hover,
 body > header > nav.m-navbar-landing #m-navbar-collapse li a:focus,
-body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:focus,
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:focus,
 body > header > nav.m-navbar-landing #m-navbar-collapse li a:active,
-body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:active {
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:active {
   background-color: rgba(41, 47, 55, 0.5);
 }
 body > header > nav #m-navbar-hide {
@@ -778,34 +779,34 @@ article h1 a, article > header h1 a, article section > h2 a, article section > h
 article section > h4 a, article section > h5 a, article section > h6 a {
   text-decoration: none;
 }
-#m-landing-image {
+#m-landing-image, #m-cover-image, article#m-jumbo > header #m-jumbo-image {
   background-size: cover;
   background-color: #222222;
   background-position: center center;
   background-repeat: no-repeat;
   margin-top: -4rem;
   padding-top: 5rem;
+}
+#m-landing-image {
   color: #ffffff;
 }
+#m-cover-image {
+  height: 30rem;
+  margin-bottom: -26rem;
+}
 #m-landing-cover {
-  padding-bottom: 7rem;
-  margin-bottom: -3rem;
+  padding-bottom: 10rem;
+  margin-bottom: -6rem;
 }
 article#m-jumbo {
   margin-top: -1rem;
 }
 article#m-jumbo > header #m-jumbo-image {
-  background-size: cover;
-  background-color: #222222;
-  background-position: center center;
-  background-repeat: no-repeat;
   font-size: 2.5vh;
   height: 60vh;
-  margin-top: -4rem;
   margin-bottom: 1rem;
-  padding-top: 5rem;
 }
-article#m-jumbo > header #m-jumbo-cover, #m-landing-cover {
+#m-landing-cover, #m-cover-image > div, article#m-jumbo > header #m-jumbo-cover {
   background: linear-gradient(transparent 0%, transparent 50%, #2f363f 100%);
   width: 100%;
   height: 100%;
@@ -956,6 +957,9 @@ dl.m-diary dd {
 .m-note {
   border-radius: 0.2rem;
   padding: 1rem;
+}
+.m-note pre, .m-note code {
+  background-color: rgba(34, 39, 46, 0.5);
 }
 .m-frame {
   background-color: #2f363f;
@@ -1288,7 +1292,7 @@ a.m-button.m-info:hover, a.m-button.m-info:focus, a.m-button.m-info:active {
 a.m-button.m-dim:hover, a.m-button.m-dim:focus, a.m-button.m-dim:active {
   background-color: #acacac;
 }
-img.m-image {
+img.m-image, svg.m-image {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -1296,11 +1300,11 @@ img.m-image {
 div.m-image {
   text-align: center;
 }
-img.m-image, div.m-image img {
+img.m-image, svg.m-image, div.m-image img {
   max-width: 100%;
   border-radius: 0.2rem;
 }
-div.m-image.m-fullwidth img {
+div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
   width: 100%;
 }
 figure.m-figure {
@@ -1393,7 +1397,7 @@ figure.m-code-figure:before, figure.m-console-figure:before {
   border-radius: 0.2rem;
 }
 figure.m-code-figure:before {
-  border-color: #22272e;
+  border-color: #282e36;
 }
 figure.m-console-figure:before {
   border-color: #000000;
@@ -1409,6 +1413,24 @@ figure.m-code-figure > pre:first-child, figure.m-console-figure > pre:first-chil
 }
 article section:target figure.m-code-figure, article section:target figure.m-console-figure {
   z-index: 1;
+}
+figure.m-figure.m-default:before { border-color: #34424d; }
+figure.m-figure.m-default figcaption { color: #dcdcdc; }
+figure.m-figure.m-primary:before { border-color: #a5c2db; }
+figure.m-figure.m-primary figcaption { color: #a5c9ea; }
+figure.m-figure.m-success:before { border-color: #2a703f; }
+figure.m-figure.m-success figcaption { color: #3bd267; }
+figure.m-figure.m-warning:before { border-color: #6d702a; }
+figure.m-figure.m-warning figcaption { color: #c7cf2f; }
+figure.m-figure.m-danger:before { border-color: #702b2a; }
+figure.m-figure.m-danger figcaption { color: #cd3431; }
+figure.m-figure.m-info:before { border-color: #2a4f70; }
+figure.m-figure.m-info figcaption { color: #2f83cc; }
+figure.m-figure.m-dim:before { border-color: #2d3236; }
+figure.m-figure.m-dim { color: #747474; }
+figure.m-figure.m-dim a { color: #acacac; }
+figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
+  color: #747474;
 }
 .m-imagegrid > div {
   background-color: #2f363f; /* to avoid section HL shining through */
@@ -1629,7 +1651,7 @@ div.m-math.m-dim svg, svg.m-math.m-dim { fill: #747474; }
 p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,
 hr, article, article > header, article section,
 .m-note, .m-frame, .m-block, .m-button,
-div.m-scroll, table.m-table, div.m-image, img.m-image,
+div.m-scroll, table.m-table, div.m-image, img.m-image, svg.m-image,
 figure.m-figure, .m-imagegrid, div.m-math {
   margin-bottom: 1rem;
 }
@@ -1637,25 +1659,27 @@ p:last-child, ul:last-child, ol:last-child, dl:last-child, blockquote:last-child
 pre:last-child, figure.m-code-figure:last-child, figure.m-console-figure:last-child,
 hr:last-child, article:last-child, article section:last-child,
 .m-note:last-child, .m-frame:last-child, .m-block:last-child, .m-button:last-child,
-table.m-table:last-child, img.m-image:last-child, div.m-image:last-child,
-figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
+table.m-table:last-child, img.m-image:last-child, svg.m-image:last-child,
+div.m-image:last-child, figure.m-figure:last-child, .m-imagegrid:last-child,
+div.m-math:last-child {
   margin-bottom: 0;
 }
 li > p:last-child, li > blockquote:last-child, li > pre:last-child,
 li > figure.m-code-figure:last-child, li > figure.m-console-figure:last-child,
 li > .m-note:last-child, li > .m-frame:last-child, li > .m-block:last-child,
 li > .m-button:last-child, li > div.m-scroll:last-child,
-li > table.m-table:last-child, li > div.m-image:last-child,
-li > img.m-image:last-child, li > figure.m-figure:last-child,
-li > div.m-math:last-child {
+li > table.m-table:last-child,
+li > img.m-image:last-child, li > svg.m-image:last-child, li > div.m-image:last-child,
+li > figure.m-figure:last-child, li > div.m-math:last-child {
   margin-bottom: 1rem;
 }
 li:last-child > p:last-child, li:last-child > blockquote:last-child, li:last-child > pre:last-child,
 li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-console-figure:last-child,
 li:last-child > .m-note:last-child, li:last-child > .m-frame:last-child, li:last-child > .m-block:last-child,
 li:last-child > .m-button:last-child, li:last-child > div.m-scroll:last-child,
-li:last-child > table.m-table:last-child, li:last-child > div.m-image:last-child,
-li:last-child > img.m-image:last-child, li:last-child > figure.m-figure:last-child,
+li:last-child > table.m-table:last-child,
+li:last-child > img.m-image:last-child, li:last-child > svg.m-image:last-child,
+li:last-child > div.m-image:last-child, li:last-child > figure.m-figure:last-child,
 li:last-child > div.m-math:last-child {
   margin-bottom: 0;
 }

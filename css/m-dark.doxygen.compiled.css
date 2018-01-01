@@ -140,13 +140,13 @@ article section.m-dox-details > div::before {
   border-style: solid;
   border-width: 0.125rem;
   border-radius: 0.2rem;
-  border-color: #22272e;
+  border-color: #282e36;
 }
 article section.m-dox-details > div > h3:first-child {
   position: relative;
   margin: -1rem -1rem 1rem -1rem;
   padding: 0.5rem 1rem;
-  background-color: #22272e;
+  background-color: #282e36;
   border-top-left-radius: 0.2rem;
   border-top-right-radius: 0.2rem;
   border-bottom-left-radius: 0;
