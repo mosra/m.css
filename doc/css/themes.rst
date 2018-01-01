@@ -43,9 +43,9 @@ theme file is also an self-contained entry point for the whole m.css framework
 
 .. block-warning:: Browser support
 
-    Note that :abbr:`some older browsers have problems <IE and Edge, I'm looking at you>`
-    with CSS variables and :css:`@import` statements. Because of that, the
-    builtin themes provide a ``*.compiled.css`` version that contains a
+    Note that :abbr:`some browsers <IE and Edge, I'm looking at you>` have
+    problems with CSS variables and :css:`@import` statements. Because of that,
+    the builtin themes provide a ``*.compiled.css`` version that contains a
     preprocessed version without CSS variables or :css:`import` statements;
     which also make it smaller in total. This compiled version includes also
     the Pygments code highlighting style, all combined in one file.
@@ -95,10 +95,18 @@ If you want to see this theme live, go to http://blog.mosra.cz.
 `Make your own`_
 ================
 
-Making your own theme is a matter of taking one of the above files and
-modifying it to your liking. The project also bundles a Python script for
-*post*\ processing the CSS files into a ``*.compiled.css`` file without
-:css:`@import` statements and variables, if you need. Download it here:
+Making your own theme is usually just a matter of modifying CSS variables in
+the top-level file. To give an example, a portion of the ``m-dark.css`` file
+looks like this:
+
+.. include:: ../../../css/m-dark.css
+    :code: css
+    :start-line: 29
+    :end-line: 53
+
+The project also bundles a Python script for *post*\ processing the CSS files
+into a single ``*.compiled.css`` file without :css:`@import` statements or
+variables, if you need. Download it here:
 
 -   :gh:`postprocess.py <mosra/m.css$master/css/postprocess.py>`
 
