@@ -57,6 +57,7 @@
   --code-color: #5b5b5b;
   --code-inverted-color: rgba(91, 91, 91, 0.33);
   --code-background-color: #fbf0ec;
+  --code-note-background-color: rgba(251, 240, 236, 0.5);
   --console-background-color: #000000;
 
   /* Header */

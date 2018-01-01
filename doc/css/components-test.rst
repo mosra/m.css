@@ -1034,6 +1034,62 @@ Without link or caption:
       </div>
     </div>
 
+`Code in colored notes`_
+========================
+
+.. raw:: html
+
+    <div class="m-row">
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-default">
+          <p>Inline <code>code</code> in default note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-primary">
+          <p>Inline <code>code</code> in primary note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-success">
+          <p>Inline <code>code</code> in success note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-warning">
+          <p>Inline <code>code</code> in warning note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-danger">
+          <p>Inline <code>code</code> in danger note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-info">
+          <p>Inline <code>code</code> in info note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-6 m-col-s-12">
+        <div class="m-note m-dim">
+          <p>Inline <code>code</code> in dim note.</p>
+          <pre>and block code</pre>
+        </div>
+      </div>
+    </div>
+
 `Code figure`_
 ==============
 
