@@ -652,6 +652,8 @@ wrapped in some tag as well (for example a :html:`<span>`). The
 Figure always expects at least the caption to be present. If you want just an
 image, use the plain image tag. If you have a lot of figures on the page and
 the border is distracting, apply the :css:`.m-flat` class to hide it.
+Optionally you can color the figure border and caption by adding one of the
+`CSS color classes <#colors>`_ to the :html:`<figure>` element.
 
 .. code-figure::
 

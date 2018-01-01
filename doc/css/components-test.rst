@@ -918,6 +918,64 @@ instead of extending the border and there should be proper padding on bottom):
       <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
     </figure>
 
+Figures of varying colors:
+
+.. raw:: html
+
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-default">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Default figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-primary">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Primary figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-success">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Success figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-warning">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Warning figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-danger">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Danger figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-info">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Info figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <figure class="m-figure m-dim">
+          <img src="{filename}/static/ship-small.jpg" />
+          <figcaption>Dim figure</figcaption>
+          <span>Text.</span>
+        </figure>
+      </div>
+    </div>
+
 Image grid
 ==========
 

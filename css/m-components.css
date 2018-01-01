@@ -1118,6 +1118,26 @@ article section:target figure.m-code-figure, article section:target figure.m-con
   z-index: 1; /* so the selection border isn't above figure border */
 }
 
+/* Colored figure */
+figure.m-figure.m-default:before { border-color: var(--default-filled-background-color); }
+figure.m-figure.m-default figcaption { color: var(--default-color); }
+figure.m-figure.m-primary:before { border-color: var(--primary-filled-background-color); }
+figure.m-figure.m-primary figcaption { color: var(--primary-color); }
+figure.m-figure.m-success:before { border-color: var(--success-filled-background-color); }
+figure.m-figure.m-success figcaption { color: var(--success-color); }
+figure.m-figure.m-warning:before { border-color: var(--warning-filled-background-color); }
+figure.m-figure.m-warning figcaption { color: var(--warning-color); }
+figure.m-figure.m-danger:before { border-color: var(--danger-filled-background-color); }
+figure.m-figure.m-danger figcaption { color: var(--danger-color); }
+figure.m-figure.m-info:before { border-color: var(--info-filled-background-color); }
+figure.m-figure.m-info figcaption { color: var(--info-color); }
+figure.m-figure.m-dim:before { border-color: var(--dim-filled-background-color); }
+figure.m-figure.m-dim { color: var(--dim-color); }
+figure.m-figure.m-dim a { color: var(--dim-link-color); }
+figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
+  color: var(--dim-link-active-color);
+}
+
 /* Image grid */
 .m-imagegrid > div {
   background-color: var(--background-color); /* to avoid section HL shining through */
