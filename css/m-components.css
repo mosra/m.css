@@ -461,7 +461,7 @@ article#m-jumbo > header #m-jumbo-image {
   height: 60vh;
   margin-bottom: 1rem;
 }
-article#m-jumbo > header #m-jumbo-cover, #m-landing-cover {
+#m-landing-cover, article#m-jumbo > header #m-jumbo-cover {
   background: linear-gradient(transparent 0%, transparent 50%, var(--background-color) 100%);
   width: 100%;
   height: 100%;
