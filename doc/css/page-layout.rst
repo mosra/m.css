@@ -591,7 +591,7 @@ such as `image grid <{filename}/css/components.rst#image-grid>`_ possible.
 
 Similarly to `landing pages <#landing-pages>`_, the cover image of the jumbo
 article always spans the whole screen width and goes below the top navbar. If
-you want the navbar to be semi-transparent, put :css:`.m-navbar-jumbo` on the
+you want the navbar to be semi-transparent, put :css:`.m-navbar-cover` on the
 :html:`<nav>` element. Compared to `landing pages <#landing-pages>`_ the navbar
 retains semi-transparent background at all times.
 

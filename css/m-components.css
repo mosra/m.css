@@ -136,24 +136,24 @@ body > header > nav {
   min-height: 3rem;
 }
 body > header > nav.m-navbar-landing,
-body > header > nav.m-navbar-jumbo {
+body > header > nav.m-navbar-cover {
   background-color: transparent;
   position: relative;
 }
 body > header > nav.m-navbar-landing {
   opacity: 0.8;
 }
-body > header > nav.m-navbar-jumbo {
+body > header > nav.m-navbar-cover {
   background-color: var(--header-background-color-jumbo);
   opacity: 1;
 }
 body > header > nav.m-navbar-landing:hover,
-body > header > nav.m-navbar-jumbo:hover {
+body > header > nav.m-navbar-cover:hover {
   background-color: var(--header-background-color-landing);
   opacity: 1;
 }
 body> header > nav.m-navbar-landing:target,
-body> header > nav.m-navbar-jumbo:target {
+body> header > nav.m-navbar-cover:target {
   background-color: var(--header-background-color);
   opacity: 1;
 }
@@ -233,11 +233,11 @@ body > header > nav #m-navbar-collapse li a:active {
   background-color: var(--header-link-active-background-color);
 }
 body > header > nav.m-navbar-landing #m-navbar-collapse li a:hover,
-body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:hover,
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:hover,
 body > header > nav.m-navbar-landing #m-navbar-collapse li a:focus,
-body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:focus,
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:focus,
 body > header > nav.m-navbar-landing #m-navbar-collapse li a:active,
-body > header > nav.m-navbar-jumbo #m-navbar-collapse li a:active {
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:active {
   background-color: var(--header-link-active-background-color-semi);
 }
 
