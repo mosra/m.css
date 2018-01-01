@@ -45,6 +45,11 @@ Page layout
 Besides separate components, m.css provides a fully-fledged whole page layout,
 including top navigation bar, footer navigation, article styling and more.
 
+.. note-success::
+
+    The whole CSS page layout functionality is also available through a
+    `m.css Pelican theme <{filename}/pelican/theme.rst>`_. Check it out!
+
 .. contents::
     :class: m-block m-default
 
