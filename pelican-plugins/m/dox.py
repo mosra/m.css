@@ -58,10 +58,6 @@ def init(pelicanobj):
                     link = path + child.find('filename').text + '.html'
                     symbol_mapping[child.find('name').text] = (child.find('title').text, link)
 
-                    # Page sections
-                    for section in child.findall('docanchor'):
-                        symbol_mapping[section.text] = (section.attrib.get('title', ''), link + '#' + section.text)
-
                 # Linking to files
                 if child.attrib['kind'] == 'file':
                     link = path + child.find('filename').text + ".html"
@@ -97,6 +93,10 @@ def init(pelicanobj):
 
                             for value in member.findall('enumvalue'):
                                 symbol_mapping[enumeration + '::' + value.text] = (None, link + '#' + value.attrib['anchor'])
+
+                # Sections
+                for section in child.findall('docanchor'):
+                    symbol_mapping[section.text] = (section.attrib.get('title', ''), link + '#' + section.text)
 
 def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     title, target = parse_link(text)

@@ -7,6 +7,7 @@ m.dox
 -   :dox:`Custom link title <testsuite>`
 -   :dox:`Page link with custom title <corrade-cmake>`
 -   :dox:`Link to index page <corrade>`
+-   :dox:`Link to class documentation section <TestSuite-Tester-command-line>`
 
 These should produce warnings:
 
