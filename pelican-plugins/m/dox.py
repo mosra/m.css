@@ -117,8 +117,12 @@ def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     #msg = inliner.reporter.warning(
         #'Doxygen symbol %s not found' % target, line=lineno)
     #prb = inliner.problematic(rawtext, rawtext, msg)
-    logger.warning('Doxygen symbol `%s` not found, rendering as monospace' % target)
-    node = nodes.literal(rawtext, title if title else target, **options)
+    if title:
+        logger.warning("Doxygen symbol `{}` not found, rendering just link title".format(target))
+        node = nodes.inline(rawtext, title, **options)
+    else:
+        logger.warning("Doxygen symbol `{}` not found, rendering as monospace".format(target))
+        node = nodes.literal(rawtext, target, **options)
     return [node], []
 
 def register():

@@ -9,5 +9,7 @@ m.dox
 
 These should produce warnings:
 
+-   Link to nonexistent name will be rendered as code: :dox:`nonExistent()`
+-   :dox:`Link to nonexistent name with custom title will be just text <nonExistent()>`
 -   Link to a section that doesn't have a title will keep the ID (this *may*
     break on tagfile update, watch out): :dox:`corrade-cmake-add-test`
