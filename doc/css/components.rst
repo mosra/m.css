@@ -352,40 +352,38 @@ without using those particular tags.
 
 To highlight important links such as file download, you can style them as
 buttons. Use :css:`.m-button` CSS class together with desired color class on an
-:html:`<a>` tag. The button is by default displayed as inline block, either
-wrap it in :css:`.m-text-center` etc. :html:`<div>` to make it centered or
-apply a :css:`.m-fullwidth` class to it to display it as a full-width block
-with center-aligned label.
+:html:`<a>` tag. The button is by default centered, apply a :css:`.m-fullwidth`
+class to it to display it as a full-width block with center-aligned label.
 
 .. code-figure::
 
     .. code:: html
 
-        <a class="m-button m-success" href="#">Success button</a>
+        <div class="m-button m-success m-fullwidth"><a href="#">Success button</a></div>
 
     .. raw:: html
 
         <div class="m-row">
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-default m-fullwidth" href="#">Default button</a>
+            <div class="m-button m-default m-fullwidth"><a href="#">Default button</a></div>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-primary m-fullwidth" href="#">Primary button</a>
+            <div class="m-button m-primary m-fullwidth"><a href="#">Primary button</a></div>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-success m-fullwidth" href="#">Success button</a>
+            <div class="m-button m-success m-fullwidth"><a href="#">Success button</a></div>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-warning m-fullwidth" href="#">Warning button</a>
+            <div class="m-button m-warning m-fullwidth"><a href="#">Warning button</a></div>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-danger m-fullwidth" href="#">Danger button</a>
+            <div class="m-button m-danger m-fullwidth"><a href="#">Danger button</a></div>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-info m-fullwidth" href="#">Info button</a>
+            <div class="m-button m-info m-fullwidth"><a href="#">Info button</a></div>
           </div>
           <div class="m-col-m-3 m-col-s-6">
-            <a class="m-button m-dim m-fullwidth" href="#">Dim button</a>
+            <div class="m-button m-dim m-fullwidth"><a href="#">Dim button</a></div>
           </div>
         </div>
 
@@ -396,8 +394,8 @@ class inside the :html:`<a>` to achieve the following effect:
 
     .. code:: html
 
-        <div class="m-text-center">
-          <a class="m-button m-primary" href="#">
+        <div class="m-button m-primary">
+          <a href="#">
             <div class="m-big">Download the thing</div>
             <div class="m-small">Any platform, 5 kB.</div>
           </a>
@@ -405,8 +403,8 @@ class inside the :html:`<a>` to achieve the following effect:
 
     .. raw:: html
 
-        <div class="m-text-center">
-          <a class="m-button m-primary" href="#">
+        <div class="m-button m-primary">
+          <a href="#">
             <div class="m-big">Download the thing</div>
             <div class="m-small">Any platform, 5 kB.</div>
           </a>

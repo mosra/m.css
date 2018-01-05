@@ -1140,7 +1140,7 @@ List with components inside
         <div class="m-note m-info">An info note.</div>
       </li>
       <li>
-        <a class="m-button m-primary">A button</a>
+        <div class="m-button m-primary"><a href="#">A button</a></div>
       </li>
       <li>
         <p>Next item.</p>

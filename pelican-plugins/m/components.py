@@ -233,8 +233,7 @@ class Button(rst.Directive):
         set_classes(self.options)
 
         text = '\n'.join(self.content)
-        ref_node = nodes.reference(text, '', refuri=self.arguments[0], **self.options)
-        ref_node['classes'] += ['m-button', self.style_class]
+        ref_node = nodes.reference(text, '', refuri=self.arguments[0])
 
         if self.content:
             node = nodes.Element()          # anonymous container for parsing
@@ -266,7 +265,11 @@ class Button(rst.Directive):
                 description['classes'] += ['m-small']
                 ref_node += description
 
-        return [ref_node]
+        wrapper_node = nodes.container(**self.options)
+        wrapper_node['classes'] += ['m-button', self.style_class]
+        wrapper_node += ref_node
+
+        return [wrapper_node]
 
 class DefaultButton(Button):
     style_class = 'm-default'
