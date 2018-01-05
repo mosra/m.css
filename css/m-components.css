@@ -1403,7 +1403,7 @@ p:last-child, ul:last-child, ol:last-child, dl:last-child, blockquote:last-child
 pre:last-child, figure.m-code-figure:last-child, figure.m-console-figure:last-child,
 hr:last-child, article:last-child, article section:last-child,
 .m-note:last-child, .m-frame:last-child, .m-block:last-child,
-div.m-button:last-child, table.m-table:last-child,
+div.m-button:last-child, div.m-scroll:last-child, table.m-table:last-child,
 img.m-image:last-child, svg.m-image:last-child, div.m-image:last-child,
 figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
   margin-bottom: 0;
