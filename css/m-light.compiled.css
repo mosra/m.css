@@ -1012,7 +1012,10 @@ dl.m-diary dd {
   border-radius: 2rem;
   float: left;
 }
-a.m-button {
+div.m-button {
+  text-align: center;
+}
+div.m-button a {
   display: inline-block;
   border-radius: 0.2rem;
   padding-top: 0.75rem;
@@ -1020,19 +1023,18 @@ a.m-button {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   text-decoration: none;
-  text-align: center;
   font-size: 1.17rem;
 }
-a.m-button.m-fullwidth {
+div.m-button.m-fullwidth a {
   display: block;
   padding-left: 0;
   padding-right: 0;
 }
-a.m-button .m-big:first-child {
+div.m-button a .m-big:first-child {
   font-size: 1.37rem;
   font-weight: bold;
 }
-a.m-button .m-small:last-child {
+div.m-button a .m-small:last-child {
   font-size: 0.854rem;
 }
 .m-label {
@@ -1280,33 +1282,33 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
 .m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
   color: #949494;
 }
-a.m-button, .m-label { color: #ffffff; }
-a.m-button.m-default, .m-label:not(.m-flat).m-default { background-color: #000000; }
-a.m-button.m-primary, .m-label:not(.m-flat).m-primary { background-color: #cb4b16; }
-a.m-button.m-success, .m-label:not(.m-flat).m-success { background-color: #31c25d; }
-a.m-button.m-warning, .m-label:not(.m-flat).m-warning { background-color: #c7cf2f; }
-a.m-button.m-danger, .m-label:not(.m-flat).m-danger { background-color: #f60000; }
-a.m-button.m-info, .m-label:not(.m-flat).m-info { background-color: #2e7dc5; }
-a.m-button.m-dim, .m-label:not(.m-flat).m-dim { background-color: #bdbdbd; }
-a.m-button.m-default:hover, a.m-button.m-default:focus, a.m-button.m-default:active {
+div.m-button a, .m-label { color: #ffffff; }
+div.m-button.m-default a, .m-label:not(.m-flat).m-default { background-color: #000000; }
+div.m-button.m-primary a, .m-label:not(.m-flat).m-primary { background-color: #cb4b16; }
+div.m-button.m-success a, .m-label:not(.m-flat).m-success { background-color: #31c25d; }
+div.m-button.m-warning a, .m-label:not(.m-flat).m-warning { background-color: #c7cf2f; }
+div.m-button.m-danger a, .m-label:not(.m-flat).m-danger { background-color: #f60000; }
+div.m-button.m-info a, .m-label:not(.m-flat).m-info { background-color: #2e7dc5; }
+div.m-button.m-dim a, .m-label:not(.m-flat).m-dim { background-color: #bdbdbd; }
+div.m-button.m-default a:hover, div.m-button.m-default a:focus, div.m-button.m-default a:active {
   background-color: #cb4b16;
 }
-a.m-button.m-primary:hover, a.m-button.m-primary:focus, a.m-button.m-primary:active {
+div.m-button.m-primary a:hover, div.m-button.m-primary a:focus, div.m-button.m-primary a:active {
   background-color: #000000;
 }
-a.m-button.m-success:hover, a.m-button.m-success:focus, a.m-button.m-success:active {
+div.m-button.m-success a:hover, div.m-button.m-success a:focus, div.m-button.m-success a:active {
   background-color: #dcf6e3;
 }
-a.m-button.m-warning:hover, a.m-button.m-warning:focus, a.m-button.m-warning:active {
+div.m-button.m-warning a:hover, div.m-button.m-warning a:focus, div.m-button.m-warning a:active {
   background-color: #f6f6dc;
 }
-a.m-button.m-danger:hover, a.m-button.m-danger:focus, a.m-button.m-danger:active {
+div.m-button.m-danger a:hover, div.m-button.m-danger a:focus, div.m-button.m-danger a:active {
   background-color: #f6dddc;
 }
-a.m-button.m-info:hover, a.m-button.m-info:focus, a.m-button.m-info:active {
+div.m-button.m-info a:hover, div.m-button.m-info a:focus, div.m-button.m-info a:active {
   background-color: #c6ddf2;
 }
-a.m-button.m-dim:hover, a.m-button.m-dim:focus, a.m-button.m-dim:active {
+div.m-button.m-dim a:hover, div.m-button.m-dim a:focus, div.m-button.m-dim a:active {
   background-color: #c0c0c0;
 }
 img.m-image, svg.m-image {
@@ -1667,7 +1669,7 @@ div.m-math.m-info svg, svg.m-math.m-info { fill: #2e7dc5; }
 div.m-math.m-dim svg, svg.m-math.m-dim { fill: #bdbdbd; }
 p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,
 hr, article, article > header, article section,
-.m-note, .m-frame, .m-block, .m-button,
+.m-note, .m-frame, .m-block, div.m-button,
 div.m-scroll, table.m-table, div.m-image, img.m-image, svg.m-image,
 figure.m-figure, .m-imagegrid, div.m-math {
   margin-bottom: 1rem;
@@ -1675,17 +1677,16 @@ figure.m-figure, .m-imagegrid, div.m-math {
 p:last-child, ul:last-child, ol:last-child, dl:last-child, blockquote:last-child,
 pre:last-child, figure.m-code-figure:last-child, figure.m-console-figure:last-child,
 hr:last-child, article:last-child, article section:last-child,
-.m-note:last-child, .m-frame:last-child, .m-block:last-child, .m-button:last-child,
-table.m-table:last-child, img.m-image:last-child, svg.m-image:last-child,
-div.m-image:last-child, figure.m-figure:last-child, .m-imagegrid:last-child,
-div.m-math:last-child {
+.m-note:last-child, .m-frame:last-child, .m-block:last-child,
+div.m-button:last-child, div.m-scroll:last-child, table.m-table:last-child,
+img.m-image:last-child, svg.m-image:last-child, div.m-image:last-child,
+figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
   margin-bottom: 0;
 }
 li > p:last-child, li > blockquote:last-child, li > pre:last-child,
 li > figure.m-code-figure:last-child, li > figure.m-console-figure:last-child,
 li > .m-note:last-child, li > .m-frame:last-child, li > .m-block:last-child,
-li > .m-button:last-child, li > div.m-scroll:last-child,
-li > table.m-table:last-child,
+li > div.m-button:last-child, li > div.m-scroll:last-child, li > table.m-table:last-child,
 li > img.m-image:last-child, li > svg.m-image:last-child, li > div.m-image:last-child,
 li > figure.m-figure:last-child, li > div.m-math:last-child {
   margin-bottom: 1rem;
@@ -1693,11 +1694,10 @@ li > figure.m-figure:last-child, li > div.m-math:last-child {
 li:last-child > p:last-child, li:last-child > blockquote:last-child, li:last-child > pre:last-child,
 li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-console-figure:last-child,
 li:last-child > .m-note:last-child, li:last-child > .m-frame:last-child, li:last-child > .m-block:last-child,
-li:last-child > .m-button:last-child, li:last-child > div.m-scroll:last-child,
-li:last-child > table.m-table:last-child,
-li:last-child > img.m-image:last-child, li:last-child > svg.m-image:last-child,
-li:last-child > div.m-image:last-child, li:last-child > figure.m-figure:last-child,
-li:last-child > div.m-math:last-child {
+li:last-child > div.m-button:last-child, li:last-child > div.m-scroll:last-child,
+li:last-child > table.m-table:last-child, li:last-child > img.m-image:last-child,
+li:last-child > svg.m-image:last-child, li:last-child > div.m-image:last-child,
+li:last-child > figure.m-figure:last-child, li:last-child > div.m-math:last-child {
   margin-bottom: 0;
 }
 
