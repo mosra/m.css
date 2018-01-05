@@ -781,7 +781,7 @@ article section > h4 a, article section > h5 a, article section > h6 a {
 }
 #m-landing-image, #m-cover-image, article#m-jumbo > header #m-jumbo-image {
   background-size: cover;
-  background-color: #222222;
+  background-color: #0f1217;
   background-position: center center;
   background-repeat: no-repeat;
   margin-top: -4rem;
@@ -794,17 +794,19 @@ article section > h4 a, article section > h5 a, article section > h6 a {
   height: 30rem;
   margin-bottom: -26rem;
 }
+#m-landing-cover h1 {
+  font-size: 2.8rem;
+  margin-top: -0.5rem;
+  padding-left: 1.5rem;
+  padding-bottom: 1rem;
+  text-transform: lowercase;
+}
 #m-landing-cover {
   padding-bottom: 10rem;
   margin-bottom: -6rem;
 }
 article#m-jumbo {
   margin-top: -1rem;
-}
-article#m-jumbo > header #m-jumbo-image {
-  font-size: 2.5vh;
-  height: 60vh;
-  margin-bottom: 1rem;
 }
 #m-landing-cover, #m-cover-image > div, article#m-jumbo > header #m-jumbo-cover {
   background: linear-gradient(transparent 0%, transparent 50%, #2f363f 100%);
@@ -815,14 +817,29 @@ article#m-jumbo > header h1, article#m-jumbo > header h2 {
   text-align: center;
   font-weight: bold;
 }
-article#m-jumbo > header h1 {
-  font-size: 10vh;
-}
-article#m-jumbo > header h2 {
-  font-size: 3vh;
-}
 article#m-jumbo > header a {
   text-decoration: none;
+}
+article#m-jumbo > header #m-jumbo-cover {
+  padding-bottom: 5rem;
+}
+article#m-jumbo > header #m-jumbo-image {
+  font-size: 2.5vmin;
+  margin-bottom: -3rem;
+}
+article#m-jumbo > header h1 {
+  font-size: 10vmin;
+}
+article#m-jumbo > header h2 {
+  font-size: 3vmin;
+}
+@media screen and (max-height: 640px) , screen and (max-width: 640px) {
+  article#m-jumbo > header h1 {
+    font-size: 3rem;
+  }
+  article#m-jumbo > header #m-jumbo-image, article#m-jumbo > header h2 {
+    font-size: 1rem;
+  }
 }
 article#m-jumbo > header, article#m-jumbo > header h1, article#m-jumbo > header a {
   color: #ffffff;
