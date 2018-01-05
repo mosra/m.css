@@ -59,6 +59,7 @@ class State:
         self.compounds: Dict[str, Any] = {}
         self.doxyfile: Dict[str, str] = {}
         self.images: List[str] = []
+        self.current = ''
 
 def slugify(text: str) -> str:
     # Maybe some Unicode normalization would be nice here?
@@ -89,7 +90,7 @@ def parse_ref(state: State, element: ET.Element) -> str:
         i = id.rindex('_1')
         url = id[:i] + '.html' + '#' + id[i+2:]
     else: # pragma: no cover
-        logging.critical("unknown <ref> kind {}".format(element.attrib['kindref']))
+        logging.critical("{}: unknown <ref> kind {}".format(state.current, element.attrib['kindref']))
         assert False
 
     if 'external' in element.attrib:
@@ -99,7 +100,7 @@ def parse_ref(state: State, element: ET.Element) -> str:
                 url = os.path.join(baseurl, url)
                 break
         else: # pragma: no cover
-            logging.critical("tagfile {} not specified in Doxyfile".format(element.attrib['external']))
+            logging.critical("{}: tagfile {} not specified in Doxyfile".format(state.current, element.attrib['external']))
             assert False
         class_ = 'm-dox-external'
     else:
@@ -127,7 +128,7 @@ def parse_type(state: State, type: ET.Element) -> str:
         elif i.tag == 'anchor':
             out += '<a name="{}"></a>'.format(extract_id(i))
         else: # pragma: no cover
-            logging.warning("ignoring {} in <type>".format(i.tag))
+            logging.warning("{}: ignoring {} in <type>".format(state.current, i.tag))
 
         if i.tail: out += html.escape(i.tail)
 
@@ -280,7 +281,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 elif len([codeline for codeline in i]) > 1:
                     end_previous_paragraph = True
                     code_block = True
-                    logging.warning("Inline code has multiple lines, fallback to a code block")
+                    logging.warning("{}: inline code has multiple lines, fallback to a code block".format(state.current))
 
                 # Otherwise wrap it in <p> and use <code>
                 else:
@@ -358,7 +359,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 tag = 'h5'
             else: # pragma: no cover
                 assert False
-            logging.warning("Prefer @section over Markdown heading for properly generated TOC")
+            logging.warning("{}: prefer @section over Markdown heading for properly generated TOC".format(state.current))
             out.parsed += '<{0}>{1}</{0}>'.format(tag, html.escape(i.text))
 
         elif i.tag == 'para':
@@ -489,7 +490,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.parsed += '<aside class="m-note m-danger"><h4>Warning</h4>'
                     else: # pragma: no cover
                         out.parsed += '<aside class="m-note">'
-                        logging.warning("ignoring {} kind of <simplesect>".format(i.attrib['kind']))
+                        logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))
 
                 out.parsed += parse_desc(state, i)
 
@@ -572,7 +573,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 if os.path.exists(path):
                     state.images += [path]
                 else:
-                    logging.warning("Image {} was not found in XML_OUTPUT".format(name))
+                    logging.warning("{}: image {} was not found in XML_OUTPUT".format(state.current, name))
 
                 caption = i.text
                 if caption:
@@ -647,7 +648,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                             # (i.e., also ignoring false positives)
                             code += token.text
                         else: # pragma: no cover
-                            logging.warning("Unknown {} in a code block ".format(token.tag))
+                            logging.warning("{}: unknown {} in a code block ".format(state.current, token.tag))
 
                         if token.tail: code += token.tail
 
@@ -660,7 +661,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             if not code_block: code = code.strip()
 
             if not 'filename' in i.attrib:
-                logging.warning("No filename attribute in <programlisting>, assuming C++")
+                logging.warning("{}: no filename attribute in <programlisting>, assuming C++".format(state.current))
                 filename = 'file.cpp'
             else:
                 filename = i.attrib['filename']
@@ -687,7 +688,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # `.ext`
                 lexer = find_lexer_class_for_filename("code" + filename)
                 if not lexer:
-                    logging.warning("Unrecognized language of {} in <programlisting>, highlighting disabled".format(filename))
+                    logging.warning("{}: unrecognized language of {} in <programlisting>, highlighting disabled".format(state.current, filename))
                     lexer = TextLexer()
                 else: lexer = lexer()
 
@@ -774,7 +775,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Something new :O
         else: # pragma: no cover
-            logging.warning("Ignoring <{}> in desc".format(i.tag))
+            logging.warning("{}: ignoring <{}> in desc".format(state.current, i.tag))
 
         # Now we can reset previous_section to None, nobody needs it anymore.
         # Of course we're resetting it only in case nothing else (such as the
@@ -865,7 +866,7 @@ def parse_toplevel_desc(state: State, element: ET.Element):
     parsed = parse_desc_internal(state, element)
     assert not parsed.return_value
     if parsed.params:
-        logging.warning("Use @tparam instead of @param for documenting class templates, @param is ignored")
+        logging.warning("{}: use @tparam instead of @param for documenting class templates, @param is ignored".format(state.current))
     return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation)
 
 def parse_typedef_desc(state: State, element: ET.Element):
@@ -925,7 +926,7 @@ def parse_enum(state: State, element: ET.Element):
         # There can be an implicit initializer for enum value
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
         if ''.join(enumvalue.find('briefdescription').itertext()).strip():
-            logging.warning("Ignoring brief description of enum value {}::{}".format(enum.name, value.name))
+            logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
         value.description = parse_desc(state, enumvalue.find('detaileddescription'))
         if value.description: enum.has_value_details = True
         enum.values += [value]
@@ -966,7 +967,7 @@ def parse_template_params(state: State, element: ET.Element, description):
 
     # Some param description got unused
     if description:
-        logging.warning("Template parameter description doesn't match parameter names: {}".format(repr(description)))
+        logging.warning("{}: template parameter description doesn't match parameter names: {}".format(state.current, repr(description)))
 
     return has_template_details, templates
 
@@ -1071,7 +1072,7 @@ def parse_func(state: State, element: ET.Element):
         func.params += [param]
 
     # Some param description got unused
-    if params: logging.warning("Function parameter description doesn't match parameter names: {}".format(repr(params)))
+    if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
     func.has_details = func.description or func.has_template_details or func.has_param_details or func.return_value
     return func if func.brief or func.has_details else None
@@ -1121,7 +1122,7 @@ def parse_define(state: State, element: ET.Element):
             define.params += [(name.text, description)]
 
     # Some param description got unused
-    if params: logging.warning("Define parameter description doesn't match parameter names: {}".format(repr(params)))
+    if params: logging.warning("{}: define parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
     define.has_details = define.description or define.return_value
     return define if define.brief or define.has_details else None
@@ -1207,7 +1208,9 @@ def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas
     m.math.counter = 0
 
-    logging.info("Parsing {}".format(os.path.basename(xml)))
+    state.current = os.path.basename(xml)
+
+    logging.debug("Parsing {}".format(state.current))
 
     tree = ET.parse(xml)
     root = tree.getroot()
@@ -1540,7 +1543,7 @@ def parse_xml(state: State, xml: str):
                             compound.related += [('define', define)]
                             if define.has_details: compound.has_define_details = True
                     else: # pragma: no cover
-                        logging.warning("unknown related <memberdef> kind {}".format(memberdef.attrib['kind']))
+                        logging.warning("{}: unknown related <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 
             elif compounddef_child.attrib['kind'] == 'user-defined':
                 list = []
@@ -1573,7 +1576,7 @@ def parse_xml(state: State, xml: str):
                             list += [('define', define)]
                             if define.has_details: compound.has_define_details = True
                     else: # pragma: no cover
-                        logging.warning("unknown user-defined <memberdef> kind {}".format(memberdef.attrib['kind']))
+                        logging.warning("{}: unknown user-defined <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 
                 if list:
                     group = Empty()
@@ -1588,7 +1591,7 @@ def parse_xml(state: State, xml: str):
                                                           'private-static-attrib',
                                                           'private-attrib',
                                                           'friend']: # pragma: no cover
-                logging.warning("unknown <sectiondef> kind {}".format(compounddef_child.attrib['kind']))
+                logging.warning("{}: unknown <sectiondef> kind {}".format(state.current, compounddef_child.attrib['kind']))
 
         elif compounddef_child.tag == 'templateparamlist':
             compound.has_template_details, compound.templates = parse_template_params(state, compounddef_child, templates)
@@ -1607,7 +1610,7 @@ def parse_xml(state: State, xml: str):
                                             'listofallmembers',
                                             'tableofcontents'] and
             not (compounddef.attrib['kind'] == 'page' and compounddef_child.tag == 'title')): # pragma: no cover
-            logging.warning("Ignoring <{}> in <compounddef>".format(compounddef_child.tag))
+            logging.warning("{}: ignoring <{}> in <compounddef>".format(state.current, compounddef_child.tag))
 
     # Decide about the prefix (it may contain template parameters, so we
     # had to wait until everything is parsed)
@@ -1639,7 +1642,7 @@ def parse_xml(state: State, xml: str):
     return parsed
 
 def parse_index_xml(state: State, xml):
-    logging.info("Parsing {}".format(os.path.basename(xml)))
+    logging.debug("Parsing {}".format(os.path.basename(xml)))
 
     tree = ET.parse(xml)
     root = tree.getroot()
@@ -1746,7 +1749,7 @@ def parse_index_xml(state: State, xml):
     return parsed
 
 def parse_doxyfile(state: State, doxyfile, config = None):
-    logging.info("Parsing configuration from {}".format(doxyfile))
+    logging.debug("Parsing configuration from {}".format(doxyfile))
 
     comment_re = re.compile(r"""^\s*(#.*)?$""")
     variable_re = re.compile(r"""^\s*(?P<key>[A-Z0-9_@]+)\s*=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
@@ -1837,7 +1840,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
                 # only because coverage.py can't handle continue
                 continue # pragma: no cover
 
-            logging.warning("Umatchable line in Doxyfile: {}".format(line)) # pragma: no cover
+            logging.warning("{}: unmatchable line {}".format(doxyfile, line)) # pragma: no cover
 
     # String values that we want
     for i in ['PROJECT_NAME',
@@ -1900,7 +1903,6 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     #   linking pages
     # - get URLs of namespace, classe, file docs and pages so we can link to
     #   them from breadcrumb navigation
-    logging.info("Parsing metadata from {} files".format(len(xml_files_metadata)))
     file: str
     for file in xml_files_metadata:
         extract_metadata(state, file)
@@ -1940,7 +1942,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     # Copy all referenced files, skip absolute URLs
     for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES']:
         if urllib.parse.urlparse(i).netloc: continue
-        logging.info("copying {} to output".format(i))
+        logging.debug("copying {} to output".format(i))
         shutil.copy(i, os.path.join(html_output, os.path.basename(i)))
 
 if __name__ == '__main__': # pragma: no cover
