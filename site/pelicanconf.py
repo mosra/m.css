@@ -116,12 +116,11 @@ M_LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
                    ('Metadata', 'plugins/metadata/')]
 
 M_FINE_PRINT = """
-m.css. Copyright © Vladimír Vondruš 2017--2018. Site powered by
-`Pelican <https://getpelican.com>`_ and m.css (yes, I am eating my own dog
-food). Both the code and site content is
-`available on GitHub under MIT <https://github.com/mosra/m.css>`_. Contact the
-author via `e-mail <mosra@centrum.cz>`_, :abbr:`Jabber <mosra@jabbim.cz>`,
-`Twitter <https://twitter.com/czmosra>`_ or smoke signals.
+| m.css. Copyright © `Vladimír Vondruš <http://mosra.cz>`_, 2017--2018. Site
+  powered by `Pelican <https://getpelican.com>`_ and m.css.
+| Code and content is `available on GitHub under MIT <https://github.com/mosra/m.css>`_.
+  Contact the author via `Gitter <https://gitter.im/mosra/m.css>`_,
+  `e-mail <mosra@centrum.cz>`_ or `Twitter <https://twitter.com/czmosra>`_.
 """
 
 DEFAULT_PAGINATION = 10
