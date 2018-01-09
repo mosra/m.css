@@ -1371,6 +1371,10 @@ figure.m-figure img {
   border-top-right-radius: 0.2rem;
   max-width: 100%;
 }
+figure.m-figure.m-flat img {
+  border-bottom-left-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+}
 figure.m-figure figcaption {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;

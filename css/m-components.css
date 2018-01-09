@@ -1073,6 +1073,10 @@ figure.m-figure img {
   border-top-right-radius: var(--border-radius);
   max-width: 100%;
 }
+figure.m-figure.m-flat img {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
 figure.m-figure figcaption {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
