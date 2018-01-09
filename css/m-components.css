@@ -1069,8 +1069,8 @@ figure.m-figure img {
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
-  border-top-left-radius: 0.2rem;
-  border-top-right-radius: 0.2rem;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
   max-width: 100%;
 }
 figure.m-figure figcaption {
