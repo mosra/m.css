@@ -38,7 +38,7 @@ m.css
 
             .. raw:: html
 
-                <h1>m.css</h1>
+                <h1>m<span class="m-thin">.css</span></h1>
 
     .. container:: m-row
 
