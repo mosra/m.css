@@ -31,3 +31,11 @@ class Layout(BaseTestCase):
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class LayoutMinimal(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'minimal', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
