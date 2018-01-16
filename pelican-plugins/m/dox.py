@@ -73,7 +73,7 @@ def init(pelicanobj):
                 # Linking to namespaces, structs and classes
                 if child.attrib['kind'] in ['class', 'struct', 'namespace']:
                     name = child.find('name').text
-                    link = path + child.find('filename').text
+                    link = path + child.findtext('filename') # <filename> can be empty (cppreference tag file)
                     symbol_mapping[name] = (None, link)
                     for member in child.findall('member'):
                         if not 'kind' in member.attrib: continue
@@ -84,7 +84,8 @@ def init(pelicanobj):
 
                         # Functions
                         if member.attrib['kind'] == 'function':
-                            symbol_mapping[name + '::' + member.find('name').text + "()"] = (None, link + '#' + member.find('anchor').text)
+                            # <filename> can be empty (cppreference tag file)
+                            symbol_mapping[name + '::' + member.find('name').text + "()"] = (None, link + '#' + member.findtext('anchor'))
 
                         # Enums with values
                         if member.attrib['kind'] == 'enumeration':
