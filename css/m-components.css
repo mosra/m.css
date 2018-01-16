@@ -978,7 +978,7 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
 }
 
 /* Colored button, label */
-div.m-button a, .m-label { color: var(--background-color); }
+div.m-button a, .m-label { color: var(--button-background-color); }
 div.m-button.m-default a, .m-label:not(.m-flat).m-default { background-color: var(--default-color); }
 div.m-button.m-primary a, .m-label:not(.m-flat).m-primary { background-color: var(--primary-color); }
 div.m-button.m-success a, .m-label:not(.m-flat).m-success { background-color: var(--success-color); }
