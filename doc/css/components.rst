@@ -352,8 +352,10 @@ without using those particular tags.
 
 To highlight important links such as file download, you can style them as
 buttons. Use :css:`.m-button` CSS class together with desired color class on an
-:html:`<a>` tag. The button is by default centered, apply a :css:`.m-fullwidth`
-class to it to display it as a full-width block with center-aligned label.
+:html:`<a>` tag. Use :css:`.m-flat` instead of a color class to make the button
+flat. It is then styled similarly to a link, but with bigger padding around.
+The button is by default centered, apply a :css:`.m-fullwidth` class to it to
+display it as a full-width block with center-aligned label.
 
 .. code-figure::
 
@@ -384,6 +386,9 @@ class to it to display it as a full-width block with center-aligned label.
           </div>
           <div class="m-col-m-3 m-col-s-6">
             <div class="m-button m-dim m-fullwidth"><a href="#">Dim button</a></div>
+          </div>
+          <div class="m-col-m-3 m-col-s-6">
+            <div class="m-button m-flat m-fullwidth"><a href="#">Flat button</a></div>
           </div>
         </div>
 

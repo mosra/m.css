@@ -72,3 +72,7 @@ m.components
     First text.
 
     Second text.
+
+.. button-flat:: #
+
+    Flat button

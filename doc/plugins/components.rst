@@ -235,11 +235,12 @@ emphasis or strong text:
 `Button links`_
 ===============
 
-Use :rst:`.. button-default::`, :rst:`.. button-primary::` etc. directives to
-create a `button link <{filename}/css/components.rst#button-links>`_. Directive
-argument is the URL, directive contents are button title. Use the :rst:`:class:`
-option to specify additional CSS classes. Use two paragraphs of content to
-create a button with title and description.
+Use :rst:`.. button-default::`, :rst:`.. button-primary::` etc. or
+:rst:`.. button-flat::` directives to create a
+`button link <{filename}/css/components.rst#button-links>`_. Directive argument
+is the URL, directive contents are button title. Use the :rst:`:class:` option
+to specify additional CSS classes. Use two paragraphs of content to create a
+button with title and description.
 
 .. code-figure::
 

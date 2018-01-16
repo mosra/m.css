@@ -292,6 +292,9 @@ class InfoButton(Button):
 class DimButton(Button):
     style_class = 'm-dim'
 
+class FlatButton(Button):
+    style_class = 'm-flat'
+
 def register():
     rst.directives.register_directive('transition', Transition)
 
@@ -331,3 +334,4 @@ def register():
     rst.directives.register_directive('button-danger', DangerButton)
     rst.directives.register_directive('button-info', InfoButton)
     rst.directives.register_directive('button-dim', DimButton)
+    rst.directives.register_directive('button-flat', FlatButton)
