@@ -35,6 +35,7 @@ class Layout(BaseTestCase):
             'SITENAME': 'Your Brand',
             'M_BLOG_NAME': 'Your Brand Blog',
             'M_SITE_LOGO_TEXT': 'Your.brand',
+            'M_FAVICON': ('favicon.ico', 'image/x-icon'),
             'M_LINKS_NAVBAR1': [
                 ('Features', 'features.html', 'features', []),
                 ('Showcase', '#', 'showcase', [
@@ -191,6 +192,7 @@ class HtmlEscape(BaseTestCase):
             'M_BLOG_NAME': 'A <&> blog',
             'M_SITE_LOGO': 'image.png?and&in&url=""',
             'M_SITE_LOGO_TEXT': '<&>',
+            'M_FAVICON': ('favicon.ico?and&in&url=""', 'huh&what'),
             'M_LINKS_NAVBAR1': [
                 ('An <&> item', 'item.html?and&in&url=""', '', [
                     ('A <&> subitem', 'sub.html?and&in&url=""', '')]),

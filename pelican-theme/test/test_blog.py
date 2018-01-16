@@ -34,6 +34,8 @@ class Blog(BlogTestCase):
             'AUTHOR': "Implicit Author",
             'STATIC_PATHS': ['ship.jpg'],
             'M_BLOG_URL': 'archives.html',
+            'M_FAVICON': ('favicon.png', 'image/png'),
+            'M_BLOG_FAVICON': ('favicon-blog.ico', 'image/x-icon'),
             'FORMATTED_FIELDS': ['summary', 'description']
         })
 
@@ -447,6 +449,7 @@ class HtmlEscape(BlogTestCase):
             'SITENAME': '<&> in site name',
             'M_BLOG_NAME': '<&> in blog name',
             'M_BLOG_URL': 'archives.html?and&in&url=""',
+            'M_BLOG_FAVICON': ('favicon.ico?and&in&url=""', 'huh&what'),
             'ARTICLE_URL': '{slug}.html?and&in&url=""',
             'AUTHOR_URL': 'author-{slug}.html?and&in&url=""',
             'CATEGORY_URL': 'category-{slug}.html?and&in&url=""',
@@ -510,3 +513,15 @@ class ArchivedArticle(BlogTestCase):
 
         self.assertEqual(*self.actual_expected_contents('article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
+
+class GlobalFavicon(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'global_favicon', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_FAVICON': ('favicon.png', 'image/png'),
+            'M_DISABLE_SOCIAL_META_TAGS': True
+        })
+
+        self.assertEqual(*self.actual_expected_contents('index.html'))

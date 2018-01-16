@@ -3,6 +3,7 @@
 {% block title %}{{ M_BLOG_NAME|e }}{% endblock %}
 
 {% block head_links %}
+  {{- super() -}}
   {% if articles_page and articles_page.has_previous() %}
   <link rel="prev" href="{{ articles_previous_page.url|format_siteurl|e }}" />
   {% endif %}

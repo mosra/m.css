@@ -148,6 +148,7 @@ class HtmlEscape(PageTestCase):
             'PAGE_URL': '{slug}.html?and&in&url=""',
             # The social meta tags should be escaped properly as well
             'M_DISABLE_SOCIAL_META_TAGS': False,
+            'M_FAVICON': ('favicon.ico?and&in&url=""', 'huh&what')
         })
 
         # Verify that everything is properly escaped everywhere. The landing
@@ -166,6 +167,7 @@ class HtmlEscape(PageTestCase):
             'PAGE_URL': '{slug}.html?and&in&url=""',
             # The social meta tags should be escaped properly as well
             'M_DISABLE_SOCIAL_META_TAGS': False,
+            'M_FAVICON': ('favicon.ico?and&in&url=""', 'huh&what')
         })
 
         # Verify that also the Pelican-produced content has correctly escaped

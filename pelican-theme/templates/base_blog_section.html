@@ -1,6 +1,7 @@
 {% extends "base_blog.html" %}
 
 {% block head_links %}
+  {{- super() -}}
   {% if articles_page.has_previous() %}
   <link rel="prev" href="{{ articles_previous_page.url|format_siteurl|e }}" />
   {% endif %}

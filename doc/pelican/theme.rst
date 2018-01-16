@@ -124,6 +124,19 @@ can be either absolute or relative to :py:`SITEURL`. If :py:`M_BLOG_NAME` /
     M_BLOG_NAME = 'Your Brand Blog'
     M_BLOG_URL = 'blog/'
 
+The :py:`M_FAVICON` setting, if present, is used to specify contents of the
+:html:`<link rel="icon">` tag. It's a tuple of :py:`(url, type)` where
+:py:`url` is favicon URL and :py:`type` is its corresponding MIME type. If
+:py:`M_BLOG_FAVICON` is specified, it's overriding :py:`M_FAVICON` on blog-like
+pages (articles, article listing... basically everything except pages). If
+:py:`M_BLOG_FAVICON` is not specified, :py:`M_FAVICON` is used everywhere; if
+neither is specified no :html:`<link>` tag is rendered. Example configuration:
+
+.. code:: py
+
+    M_FAVICON = ('favicon.ico', 'image/x-ico')
+    M_BLOG_FAVICON = ('favicon-blog.png', 'image/png')
+
 `Top navbar`_
 -------------
 

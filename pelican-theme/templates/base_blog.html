@@ -2,6 +2,14 @@
 {% if not M_BLOG_NAME %}{% set M_BLOG_NAME = SITENAME %}{% endif %}
 {% extends 'base.html' %}
 
+{% block head_links %}
+  {% if M_BLOG_FAVICON %}
+  <link rel="icon" href="{{ M_BLOG_FAVICON[0]|format_siteurl|e }}" type="{{ M_BLOG_FAVICON[1]|e }}" />
+  {% elif M_FAVICON %}
+  <link rel="icon" href="{{ M_FAVICON[0]|format_siteurl|e }}" type="{{ M_FAVICON[1]|e }}" />
+  {% endif %}
+{% endblock %}
+
 {% block social %}
   <meta property="og:site_name" content="{{ M_BLOG_NAME|e }}" />
 {% endblock %}

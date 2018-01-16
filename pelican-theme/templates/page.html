@@ -20,6 +20,9 @@
   <link rel="stylesheet" href="{{ style|expand_link(page)|e }}" />
   {% endfor %}
   {% endif %}
+  {% if M_FAVICON %}
+  <link rel="icon" href="{{ M_FAVICON[0]|format_siteurl|e }}" type="{{ M_FAVICON[1]|e }}" />
+  {% endif %}
   <link rel="canonical" href="{{ page.url|format_siteurl|e }}" />
 {% endblock %}
 
