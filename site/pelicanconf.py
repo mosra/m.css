@@ -57,6 +57,8 @@ AUTHOR_FEED_RSS = None
 M_BLOG_NAME = "m.css example articles"
 M_BLOG_URL = 'examples/'
 
+M_FAVICON = ('favicon.ico', 'image/x-icon')
+
 M_SOCIAL_TWITTER_SITE = '@czmosra'
 M_SOCIAL_TWITTER_SITE_ID = 1537427036
 M_SOCIAL_IMAGE = 'static/site.jpg'
@@ -126,6 +128,7 @@ M_FINE_PRINT = """
 DEFAULT_PAGINATION = 10
 
 STATIC_PATHS = ['static']
+EXTRA_PATH_METADATA = {'static/favicon.ico': {'path': 'favicon.ico'}}
 
 PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = ['m.abbr',
