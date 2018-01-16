@@ -1,4 +1,3 @@
-{% set navbar_current = 'pages' %}
 {% extends 'base.html' %}
 
 {% block title %}{% if 1 in compound.breadcrumb or compound.breadcrumb[-1][0] != PROJECT_NAME %}{% set j = joiner(' &raquo; ') %}{% for name, _ in compound.breadcrumb %}{{ j() }}{{ name }}{% endfor %} | {{ super() }}{% else %}{{ super() }}{% endif %}{% endblock %}

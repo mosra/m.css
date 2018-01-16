@@ -1204,6 +1204,38 @@ def build_tree(state: State):
         # Other compounds are not in any index pages or breadcrumb, so leaf
         # name not needed
 
+    # Assign names and URLs to menu items
+    predefined = {
+        'pages': ("Pages", 'pages.html'),
+        'namespaces': ("Namespaces", 'namespaces.html'),
+        'annotated': ("Classes", 'annotated.html'),
+        'files': ("Files", 'files.html')
+    }
+
+    def find(id):
+        # If predefined, return those
+        if id in predefined:
+            return predefined[id]
+
+        # Otherwise search in symbols
+        found = state.compounds[id]
+        return found.name, found.url
+
+    i: str
+    for var in 'M_LINKS_NAVBAR1', 'M_LINKS_NAVBAR2':
+        navbar_links = []
+        for i in state.doxyfile[var]:
+            links = i.split()
+            assert len(links)
+            sublinks = []
+            for sublink in links[1:]:
+                title, url = find(sublink)
+                sublinks += [(title, url, sublink)]
+            title, url = find(links[0])
+            navbar_links += [(title, url, links[0], sublinks)]
+
+        state.doxyfile[var] = navbar_links
+
 def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas
     m.math.counter = 0
@@ -1774,6 +1806,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
         'M_EXPAND_INNER_TYPES': ['NO'],
         'M_THEME_COLOR': ['#22272e'],
+        'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
+        'M_LINKS_NAVBAR2': ['annotated', 'files'],
         'M_PAGE_FINE_PRINT': ['[default]']
     }
 
@@ -1865,7 +1899,9 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     # List values that we want. Drop empty lines.
     for i in ['TAGFILES',
               'HTML_EXTRA_STYLESHEET',
-              'HTML_EXTRA_FILES']:
+              'HTML_EXTRA_FILES',
+              'M_LINKS_NAVBAR1',
+              'M_LINKS_NAVBAR2']:
         if i in config:
             state.doxyfile[i] = [line for line in config[i] if line]
 

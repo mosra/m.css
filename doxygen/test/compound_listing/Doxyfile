@@ -12,3 +12,4 @@ M_CLASS_TREE_EXPAND_LEVELS = 5
 M_EXPAND_INNER_TYPES    = YES
 M_PAGE_FINE_PRINT       =
 M_THEME_COLOR           =
+# Keeping navbar enabled so we can test for highlighted items

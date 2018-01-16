@@ -32,9 +32,10 @@ class Listing(IntegrationTestCase):
         super().__init__(__file__, 'listing', *args, **kwargs)
 
     def test_index_pages(self):
-        self.run_dox2html5(wildcard='index.xml', index_pages=['annotated', 'namespaces'])
+        self.run_dox2html5(wildcard='index.xml', index_pages=['annotated', 'namespaces', 'pages'])
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
         self.assertEqual(*self.actual_expected_contents('namespaces.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
 
     def test_index_pages_custom_expand_level(self):
         self.run_dox2html5(wildcard='index.xml', index_pages=['files'])

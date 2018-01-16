@@ -29,12 +29,20 @@ class Layout(BaseTestCase):
         super().__init__(__file__, '', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.run_dox2html5(wildcard='index.xml')
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
 
 class LayoutMinimal(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'minimal', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class LayoutNavbarSingleColumn(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'navbar_single_column', *args, **kwargs)
 
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')

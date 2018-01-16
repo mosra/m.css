@@ -57,3 +57,12 @@ class Toc(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='page-toc.xml')
         self.assertEqual(*self.actual_expected_contents('page-toc.html'))
+
+class InNavbar(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'in_navbar', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='page*.xml')
+        self.assertEqual(*self.actual_expected_contents('page-in-navbar.html'))
+        self.assertEqual(*self.actual_expected_contents('page-b.html'))

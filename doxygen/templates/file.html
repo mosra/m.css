@@ -1,4 +1,3 @@
-{% set navbar_current = 'files' %}
 {% extends 'base-reference.html' %}
 
 {% block title %}{% set j = joiner('/') %}{% for name, _ in compound.breadcrumb %}{{ j() }}{{ name }}{% endfor %} file | {{ super() }}{% endblock %}
