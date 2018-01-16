@@ -87,6 +87,9 @@
     <div class="m-container m-container-inflatable">
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopady">
+          {% if article.archived == 'True' and M_ARCHIVED_ARTICLE_BADGE %}
+          {{ M_ARCHIVED_ARTICLE_BADGE|render_rst|replace('{year}', article.date.year)|indent(8) }}
+          {% endif %}
 <!-- content -->
 {{ article.content|trim }}
 <!-- /content -->
@@ -111,6 +114,9 @@
       {% macro header() %}{% include "article_header.html" %}{% endmacro %}
       {{ header()|indent(6) }}
       <div class="m-clearfix-l"></div>
+      {% if article.archived == 'True' and M_ARCHIVED_ARTICLE_BADGE %}
+      {{ M_ARCHIVED_ARTICLE_BADGE|render_rst|replace('{year}', article.date.year)|indent(6) }}
+      {% endif %}
       {% if article.content %}
 <!-- content -->
 {{ article.content|trim }}

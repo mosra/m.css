@@ -494,3 +494,19 @@ class GlobalSocialMeta(BlogTestCase):
         self.assertEqual(*self.actual_expected_contents('category-a-category.html'))
         self.assertEqual(*self.actual_expected_contents('author-the-author.html'))
         self.assertEqual(*self.actual_expected_contents('tag-a-tag.html'))
+
+class ArchivedArticle(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'archived_article', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_ARCHIVED_ARTICLE_BADGE': """
+.. container:: m-note m-warning
+
+    This article is from {year}. **It's old.** Deal with it.
+"""
+        })
+
+        self.assertEqual(*self.actual_expected_contents('article.html'))
+        self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))

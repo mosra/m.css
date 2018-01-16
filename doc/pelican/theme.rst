@@ -612,6 +612,26 @@ invert text color on cover, add a :rst:`:class:` field containing the
     `a normal article <{filename}/examples/article.rst>`_ and a
     `jumbo article <{filename}/examples/jumbo-article.rst>`_.
 
+`Archived articles`_
+--------------------
+
+It's possible to mark articles and archived by setting the :rst:`:archived:`
+field to :py:`True`. In addition to that, you can display an arbitrary
+formatted block on the article page on top of article contents right below the
+summary. The content of the block is controlled by the
+:py:`M_ARCHIVED_ARTICLE_BADGE` setting, containinig
+:abbr:`reST <reStructuredText>`-formatted markup. The ``{year}`` placeholder,
+if present, is replaced with the article year. If the setting is not present,
+no block is rendered at all. Example setting:
+
+.. code:: py
+
+    M_ARCHIVED_ARTICLE_BADGE = """
+    .. container:: m-note m-warning
+
+        This article is from {year}. **It's old.** Deal with it.
+    """
+
 `(Social) meta tags for articles`_
 ----------------------------------
 
