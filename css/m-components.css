@@ -303,7 +303,6 @@ body > header > nav:target #m-navbar-hide {
     z-index: 99999;
     position: absolute;
     visibility: hidden;
-    min-width: 7.5rem;
   }
   body > header > nav #m-navbar-collapse li:hover ol {
     visibility: visible;
