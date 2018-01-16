@@ -1150,7 +1150,7 @@ def extract_metadata(state: State, xml):
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
     compound.has_details = compound.brief or compounddef.find('detaileddescription')
     compound.children = []
-    compound.parent = None # is filled in by build_tree()
+    compound.parent = None # is filled in by postprocess_state()
 
     if compound.kind in ['class', 'struct', 'union']:
         # Fix type spacing
@@ -1177,7 +1177,7 @@ def extract_metadata(state: State, xml):
 
     state.compounds[compound.id] = compound
 
-def build_tree(state: State):
+def postprocess_state(state: State):
     for _, compound in state.compounds.items():
         for child in compound.children:
             if child in state.compounds:
@@ -1942,7 +1942,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     for file in xml_files_metadata:
         extract_metadata(state, file)
 
-    build_tree(state)
+    postprocess_state(state)
 
     for file in xml_files:
         if os.path.basename(file) == 'index.xml':
