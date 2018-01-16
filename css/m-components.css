@@ -708,8 +708,8 @@ div.m-button a {
 }
 div.m-button.m-fullwidth a {
   display: block;
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 div.m-button a .m-big:first-child {
   font-size: 1.37rem;
