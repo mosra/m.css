@@ -247,7 +247,8 @@ Variable                            Description
                                     ``{filename}`` placeholder is replaced with
                                     current file name.
 :ini:`M_PAGE_FINE_PRINT`            HTML code to put into the footer. If not
-                                    set, a default generic text is used. The
+                                    set, a default generic text is used. If
+                                    empty, no footer is rendered at all. The
                                     ``{doxygen_version}`` placeholder is
                                     replaced with Doxygen version that
                                     generated the input XML files.

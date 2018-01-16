@@ -1774,6 +1774,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
         'M_EXPAND_INNER_TYPES': ['NO'],
         'M_THEME_COLOR': ['#22272e'],
+        'M_PAGE_FINE_PRINT': ['[default]'],
         'M_SHOW_DOXYGEN_VERSION': ['YES']
     }
 
