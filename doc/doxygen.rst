@@ -244,10 +244,13 @@ In addition, the m.css Doxygen theme recognizes the following extra options:
 =================================== =======================================
 Variable                            Description
 =================================== =======================================
-:ini:`M_THEME_COLOR`                Color for :html:`<meta name="theme-color"/>`,
+:ini:`M_THEME_COLOR`                Color for :html:`<meta name="theme-color" />`,
                                     corresponding to the CSS style. If empty,
                                     no :html:`<meta>` tag is rendered. See
                                     `Theme selection`_ for more information.
+:ini:`M_FAVICON`                    Favicon URL, used to populate
+                                    :html:`<link rel="icon" />`. If empty, no
+                                    :html:`<link>` tag is rendered.
 :ini:`M_LINKS_NAVBAR1`              Left navbar column links. See
                                     `Navbar links`_ for more information.
 :ini:`M_LINKS_NAVBAR2`              Right navbar column links. See
@@ -767,6 +770,9 @@ type, so either strings, booleans, or lists of strings. The exceptions are:
     active menu item) and :py:`sub` is a list optionally containing sub-menu
     items. The sub-menu items are in a similarly formed tuple,
     :py:`(title, url, id)`.
+-   The :py:`M_FAVICON` is converted to a tuple of :py:`(url, type)` where
+    :py:`url` is the favicon URL and :py:`type` is favicon MIME type to
+    populate the ``type`` attribute of :html:`<link rel="favicon" />`.
 
  and in addition the following variables:
 

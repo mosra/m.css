@@ -6,6 +6,9 @@
   {% for css in HTML_EXTRA_STYLESHEET %}
   <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
   {% endfor %}
+  {% if M_FAVICON %}
+  <link rel="icon" href="{{ M_FAVICON[0] }}" type="{{ M_FAVICON[1] }}" />
+  {% endif %}
   {% block header_links %}
   {% endblock %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

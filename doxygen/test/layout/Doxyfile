@@ -4,6 +4,7 @@ PROJECT_NAME = "A project"
 PROJECT_BRIEF = "is cool"
 
 M_THEME_COLOR = 00ffff
+M_FAVICON = favicon.png
 M_PAGE_HEADER = "<p><a href=\"{filename}\">A self link</a>.</p>"
 M_PAGE_FINE_PRINT = "<p><a href=\"http://doxygen.org\">Doxygen</a> version {doxygen_version}.</p>"
 M_LINKS_NAVBAR1 = "files pages namespaces" \

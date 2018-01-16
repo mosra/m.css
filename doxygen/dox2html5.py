@@ -31,6 +31,7 @@ import re
 import html
 import os
 import glob
+import mimetypes
 import shutil
 import subprocess
 import urllib.parse
@@ -1236,6 +1237,10 @@ def postprocess_state(state: State):
 
         state.doxyfile[var] = navbar_links
 
+    # Guess MIME type of the favicon
+    if state.doxyfile['M_FAVICON']:
+        state.doxyfile['M_FAVICON'] = (state.doxyfile['M_FAVICON'], mimetypes.guess_type(state.doxyfile['M_FAVICON'])[0])
+
 def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas
     m.math.counter = 0
@@ -1806,6 +1811,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
         'M_EXPAND_INNER_TYPES': ['NO'],
         'M_THEME_COLOR': ['#22272e'],
+        'M_FAVICON': [],
         'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
         'M_LINKS_NAVBAR2': ['annotated', 'files'],
         'M_PAGE_FINE_PRINT': ['[default]']
@@ -1884,7 +1890,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
               'XML_OUTPUT',
               'M_PAGE_HEADER',
               'M_PAGE_FINE_PRINT',
-              'M_THEME_COLOR']:
+              'M_THEME_COLOR',
+              'M_FAVICON']:
         if i in config: state.doxyfile[i] = ' '.join(config[i])
 
     # Int values that we want
