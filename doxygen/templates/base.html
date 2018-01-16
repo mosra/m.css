@@ -54,7 +54,7 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         {% if M_PAGE_FINE_PRINT == '[default]' %}
-        <p>{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}. Created by <a href="http://doxygen.org/">Doxygen</a>{% if M_SHOW_DOXYGEN_VERSION %} {{ DOXYGEN_VERSION }}{% endif %} and <a href="http://mcss.mosra.cz/">m.css</a>.</p>
+        <p>{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}. Created by <a href="http://doxygen.org/">Doxygen</a> {{ DOXYGEN_VERSION }} and <a href="http://mcss.mosra.cz/">m.css</a>.</p>
         {% else %}
         {{ M_PAGE_FINE_PRINT|replace('{doxygen_version}', DOXYGEN_VERSION) }}
         {% endif %}

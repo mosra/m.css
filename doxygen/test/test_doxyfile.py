@@ -39,7 +39,6 @@ class Doxyfile(unittest.TestCase):
             'M_FILE_TREE_EXPAND_LEVELS': 1,
             'M_PAGE_FINE_PRINT': 'this is "quotes"',
             'M_PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
-            'M_SHOW_DOXYGEN_VERSION': True,
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
