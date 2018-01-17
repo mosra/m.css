@@ -515,6 +515,21 @@ article#m-jumbo.m-inverted > header a:hover, article#m-jumbo.m-inverted > header
   color: #0f0f0f;
 }
 
+/* News list on landing pages */
+.m-landing-news h3 a {
+  color: var(--color);
+  text-decoration: none;
+  text-transform: var(--nav-heading-case);
+}
+.m-landing-news h3 a:hover, .m-landing-news h3 a:hover, .m-landing-news h3 a:focus, .m-landing-news h3 a:active {
+  color: var(--article-heading-color);
+}
+.m-landing-news time {
+  display: inline-block;
+  margin-left: 1rem;
+  float: right;
+}
+
 /* Article pagination */
 .m-article-pagination {
   text-align: center;

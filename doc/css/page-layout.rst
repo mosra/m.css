@@ -698,3 +698,44 @@ and save vertical space. For a tag cloud, mark the :html:`<ul>` with
             </ul>
           </div>
         </nav>
+
+`News list on index page`_
+--------------------------
+
+Sometimes you may want just a small list of news items tucked to the bottom of
+an index page that's otherwise full of other content. Mark a block with
+:css:`.m-landing-news` and put a list of articles in it. The :html:`<h3>` can
+be used to link to the blog front page; if you use the :html:`<time>` tag for
+specifying article dates, it will be aligned to the right. Example:
+
+.. code-figure::
+
+    .. code:: html
+
+        <div class="m-row">
+          <div class="m-col-m-8 m-push-m-2">
+            <div class="m-landing-news m-note m-default">
+              <h3><a href="#">Latest news on our blog &raquo;</a></h3>
+              <ul class="m-unstyled">
+                <li><time class="m-text m-dim" datetime="2018-01-16T00:00:00+00:00">Jan 16, 2018</time><a href="article2.html">The latest article</a></li>
+                <li><time class="m-text m-dim" datetime="2017-12-09T00:00:00+00:00">Dec 09, 2017</time><a href="article.html">A slightly older article</a></li>
+              </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    .. raw:: html
+
+        <div class="m-row">
+          <div class="m-col-m-8 m-push-m-2">
+            <div class="m-landing-news m-note m-default">
+              <h3><a href="#">Latest news on our blog &raquo;</a></h3>
+              <ul class="m-unstyled">
+                <li><time class="m-text m-dim" datetime="2018-01-16T00:00:00+00:00">Jan 16, 2018</time><a href="article2.html">The latest article</a></li>
+                <li><time class="m-text m-dim" datetime="2017-12-09T00:00:00+00:00">Dec 09, 2017</time><a href="article.html">A slightly older article</a></li>
+              </ul>
+              </div>
+            </div>
+          </div>
+        </div>

@@ -495,6 +495,26 @@ above:
     both :rst:`:landing:` and :rst:`:header:` is present, :rst:`:header:` is
     ignored. However, it works as expected if just :rst:`:cover:` is present.
 
+`News on index page`_
+---------------------
+
+If you override the index page to a custom landing page, by default you lose
+the list of latest articles. That might cause the website to appear stale when
+you update just the blog. In order to fix that, it's possible to show a block
+with latest articles on the index page using the :py:`M_NEWS_ON_INDEX` setting.
+It's a tuple of :py:`(title, count)` where :py:`title` is the block header
+title that acts as a link to :py:`M_BLOG_URL` and :py:`count` is the max number
+of articles shown. Example configuration:
+
+.. code:: py
+
+    M_NEWS_ON_INDEX = ("Latest news on our blog", 3)
+
+.. note-success::
+
+    You can see how this block looks on the Magnum Engine main page:
+    http://magnum.graphics
+
 `(Social) meta tags for pages`_
 -------------------------------
 

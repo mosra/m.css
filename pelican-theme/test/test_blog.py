@@ -525,3 +525,15 @@ class GlobalFavicon(BlogTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class NewsOnIndex(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'news_on_index', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_BLOG_URL': 'http://our.blog/',
+            'M_NEWS_ON_INDEX': ("Latest rants on our blog", 2)
+        })
+
+        self.assertEqual(*self.actual_expected_contents('index.html'))
