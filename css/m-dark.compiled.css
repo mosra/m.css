@@ -656,7 +656,6 @@ body > header > nav:target #m-navbar-hide {
     z-index: 99999;
     position: absolute;
     visibility: hidden;
-    min-width: 7.5rem;
   }
   body > header > nav #m-navbar-collapse li:hover ol {
     visibility: visible;
@@ -853,6 +852,19 @@ article#m-jumbo.m-inverted > header, article#m-jumbo.m-inverted > header h1, art
 article#m-jumbo.m-inverted > header a:hover, article#m-jumbo.m-inverted > header a:focus, article#m-jumbo.m-inverted > header a:active {
   color: #0f0f0f;
 }
+.m-landing-news h3 a {
+  color: #dcdcdc;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.m-landing-news h3 a:hover, .m-landing-news h3 a:hover, .m-landing-news h3 a:focus, .m-landing-news h3 a:active {
+  color: #a5c9ea;
+}
+.m-landing-news time {
+  display: inline-block;
+  margin-left: 1rem;
+  float: right;
+}
 .m-article-pagination {
   text-align: center;
   padding: 1rem;
@@ -899,6 +911,15 @@ div.m-scroll {
 }
 .m-text-right, .m-text-right.m-noindent, table.m-table th.m-text-right, .m-text-right p {
   text-align: right;
+}
+.m-text-top, table.m-table th.m-text-top, table.m-table td.m-text-top {
+  vertical-align: top;
+}
+.m-text-middle, table.m-table th.m-text-middle, table.m-table td.m-text-middle {
+  vertical-align: middle;
+}
+.m-text-bottom, table.m-table th.m-text-bottom, table.m-table td.m-text-bottom {
+  vertical-align: bottom;
 }
 .m-text.m-small {
   font-size: 85.4%;
@@ -1027,8 +1048,8 @@ div.m-button a {
 }
 div.m-button.m-fullwidth a {
   display: block;
-  padding-left: 0;
-  padding-right: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 div.m-button a .m-big:first-child {
   font-size: 1.37rem;
@@ -1054,6 +1075,9 @@ table.m-table {
   border-collapse: collapse;
   margin-left: auto;
   margin-right: auto;
+}
+table.m-table.m-big {
+  margin-top: 1.75rem;
 }
 div.m-scroll > table.m-table:last-child {
   margin-bottom: 0.0625rem;
@@ -1086,18 +1110,35 @@ table.m-table tfoot th, table.m-table tfoot td {
 table.m-table th, table.m-table td {
   padding: 0.5rem;
 }
+table.m-table.m-big th, table.m-table.m-big td {
+  padding: 0.75rem 1rem;
+}
 table.m-table th {
   text-align: left;
 }
-table.m-table td.m-default, th.m-default,
-table.m-table td.m-primary, th.m-primary,
-table.m-table td.m-success, th.m-success,
-table.m-table td.m-warning, th.m-warning,
-table.m-table td.m-danger, th.m-danger,
-table.m-table td.m-info, th.m-info,
-table.m-table td.m-dim, th.m-dim {
+table.m-table th.m-thin {
+  font-weight: normal;
+}
+table.m-table td.m-default, table.m-table th.m-default,
+table.m-table td.m-primary, table.m-table th.m-primary,
+table.m-table td.m-success, table.m-table th.m-success,
+table.m-table td.m-warning, table.m-table th.m-warning,
+table.m-table td.m-danger, table.m-table th.m-danger,
+table.m-table td.m-info, table.m-table th.m-info,
+table.m-table td.m-dim, table.m-table th.m-dim {
   padding-left: 0.4375rem;
   padding-right: 0.4375rem;
+  border-left-width: 0.0625rem;
+}
+table.m-table.m-big td.m-default, table.m-table.m-big th.m-default,
+table.m-table.m-big td.m-primary, table.m-table.m-big th.m-primary,
+table.m-table.m-big td.m-success, table.m-table.m-big th.m-success,
+table.m-table.m-big td.m-warning, table.m-table.m-big th.m-warning,
+table.m-table.m-big td.m-danger, table.m-table.m-big th.m-danger,
+table.m-table.m-big td.m-info, table.m-table.m-big th.m-info,
+table.m-table.m-big td.m-dim, table.m-table.m-big th.m-dim {
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
   border-left-width: 0.0625rem;
 }
 table.m-table tr.m-default td, table.m-table td.m-default,
@@ -1282,7 +1323,11 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
 .m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
   color: #747474;
 }
-div.m-button a, .m-label { color: #2f363f; }
+div.m-button a, .m-label { color: #22272e; }
+div.m-button.m-flat a { color: #dcdcdc; }
+div.m-button.m-flat a:hover, div.m-button.m-default a:focus, div.m-button.m-default a:active {
+  color: #a5c9ea;
+}
 div.m-button.m-default a, .m-label:not(.m-flat).m-default { background-color: #dcdcdc; }
 div.m-button.m-primary a, .m-label:not(.m-flat).m-primary { background-color: #a5c9ea; }
 div.m-button.m-success a, .m-label:not(.m-flat).m-success { background-color: #3bd267; }
