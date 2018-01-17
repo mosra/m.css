@@ -801,13 +801,13 @@ table.m-table th {
 table.m-table th.m-thin {
   font-weight: normal;
 }
-table.m-table td.m-default, th.m-default,
-table.m-table td.m-primary, th.m-primary,
-table.m-table td.m-success, th.m-success,
-table.m-table td.m-warning, th.m-warning,
-table.m-table td.m-danger, th.m-danger,
-table.m-table td.m-info, th.m-info,
-table.m-table td.m-dim, th.m-dim {
+table.m-table td.m-default, table.m-table th.m-default,
+table.m-table td.m-primary, table.m-table th.m-primary,
+table.m-table td.m-success, table.m-table th.m-success,
+table.m-table td.m-warning, table.m-table th.m-warning,
+table.m-table td.m-danger, table.m-table th.m-danger,
+table.m-table td.m-info, table.m-table th.m-info,
+table.m-table td.m-dim, table.m-table th.m-dim {
   padding-left: 0.4375rem;
   padding-right: 0.4375rem;
   border-left-width: 0.0625rem;
