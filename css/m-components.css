@@ -798,6 +798,9 @@ table.m-table th, table.m-table td {
 table.m-table th {
   text-align: left;
 }
+table.m-table th.m-thin {
+  font-weight: normal;
+}
 table.m-table td.m-default, th.m-default,
 table.m-table td.m-primary, th.m-primary,
 table.m-table td.m-success, th.m-success,

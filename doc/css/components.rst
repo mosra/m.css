@@ -520,9 +520,10 @@ bold, all :html:`<th>` and :html:`<td>` are aligned to left while table
         </table>
 
 Rows are highlighted on hover, if you want to disable that, put :css:`.m-flat`
-CSS class on the :html:`<table>` element. Similarly to other components, you
-can color particular :html:`<tr>` or :html:`<td>` elements using the color
-classes from above:
+CSS class on the :html:`<table>` element. You can also put :css:`.m-thin` onto
+:html:`<th>` elements to remove the bold styling. Similarly to other
+components, you can color particular :html:`<tr>` or :html:`<td>` elements
+using the color classes from above:
 
 .. raw:: html
 
