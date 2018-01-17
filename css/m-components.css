@@ -764,6 +764,9 @@ table.m-table {
   margin-left: auto;
   margin-right: auto;
 }
+table.m-table.m-big {
+  margin-top: 1.75rem;
+}
 div.m-scroll > table.m-table:last-child {
   margin-bottom: 0.0625rem;
 }
@@ -795,6 +798,9 @@ table.m-table tfoot th, table.m-table tfoot td {
 table.m-table th, table.m-table td {
   padding: 0.5rem;
 }
+table.m-table.m-big th, table.m-table.m-big td {
+  padding: 0.75rem 1rem;
+}
 table.m-table th {
   text-align: left;
 }
@@ -810,6 +816,18 @@ table.m-table td.m-info, table.m-table th.m-info,
 table.m-table td.m-dim, table.m-table th.m-dim {
   padding-left: 0.4375rem;
   padding-right: 0.4375rem;
+  border-left-width: 0.0625rem;
+/*   border-right-width: 0.0625rem; causes horizontal scrollbar */
+}
+table.m-table.m-big td.m-default, table.m-table.m-big th.m-default,
+table.m-table.m-big td.m-primary, table.m-table.m-big th.m-primary,
+table.m-table.m-big td.m-success, table.m-table.m-big th.m-success,
+table.m-table.m-big td.m-warning, table.m-table.m-big th.m-warning,
+table.m-table.m-big td.m-danger, table.m-table.m-big th.m-danger,
+table.m-table.m-big td.m-info, table.m-table.m-big th.m-info,
+table.m-table.m-big td.m-dim, table.m-table.m-big th.m-dim {
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
   border-left-width: 0.0625rem;
 /*   border-right-width: 0.0625rem; causes horizontal scrollbar */
 }

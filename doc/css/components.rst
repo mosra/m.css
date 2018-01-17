@@ -595,6 +595,9 @@ using the color classes from above:
       </tbody>
     </table></div>
 
+Mark the table with :html:`.m-big` to inflate it with more spacing, for example
+when designing a high-level product category overview.
+
 Similarly to `lists <{filename}/css/typography.rst#lists-diaries>`_, if using
 :html:`<p>` elements inside :html:`<td>`, they are neither indented nor
 justified.

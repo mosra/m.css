@@ -781,6 +781,50 @@ Table with paragraphs
       </tr>
     </table>
 
+`"Big" tables`_
+---------------
+
+.. raw:: html
+
+   <table class="m-table m-flat m-big">
+      <thead>
+        <tr>
+          <th></th>
+          <th class="m-text-center m-text m-big m-thin">Community<br />edition</th>
+          <th class="m-text-center m-text m-big"><div class="m-text m-success">Premium<br />support</div></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="m-text-right"><span class="m-text m-dim">Support</span></td>
+          <td class="m-text-center">Community-based</td>
+          <td class="m-text-center"><strong class="m-text m-success">Guaranteed<br />response time</strong></td>
+        </tr>
+        <tr>
+          <td class="m-text-right"><span class="m-text m-dim">Commercial use</span></td>
+          <td class="m-text-center"><strong>Yes</strong><br /><span class="m-text m-small m-dim">MIT license</span></td>
+          <td class="m-text-center"><div class="m-text m-success"><strong>Yes</strong><br /><span class="m-text m-small m-dim">MIT license</span></div></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="m-text-right m-text-middle"><span class="m-text m-dim">Price</span></td>
+          <td><div class="m-button m-flat m-fullwidth">
+            <a href="#">
+              <div class="m-big">Free</div>
+              <div class="m-small">Get started</div>
+            </a>
+          </div></td>
+          <td><div class="m-button m-success m-fullwidth">
+            <a href="#">
+              <div class="m-big">Contact us</div>
+              <div class="m-small">big.boss@the.brand</div>
+            </a>
+          </div></td>
+        </tr>
+      </tfoot>
+    </table>
+
 Images
 ======
 
