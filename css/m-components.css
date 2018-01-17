@@ -584,6 +584,15 @@ div.m-scroll {
 .m-text-right, .m-text-right.m-noindent, table.m-table th.m-text-right, .m-text-right p {
   text-align: right;
 }
+.m-text-top, table.m-table th.m-text-top, table.m-table td.m-text-top {
+  vertical-align: top;
+}
+.m-text-middle, table.m-table th.m-text-middle, table.m-table td.m-text-middle {
+  vertical-align: middle;
+}
+.m-text-bottom, table.m-table th.m-text-bottom, table.m-table td.m-text-bottom {
+  vertical-align: bottom;
+}
 .m-text.m-small {
   font-size: 85.4%;
 }

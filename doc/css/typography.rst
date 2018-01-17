@@ -373,9 +373,10 @@ will have negative margin to make its contents aligned with surrounding text.
 =================
 
 Use :css:`.m-text-left`, :css:`.m-text-right` or :css:`.m-text-center` to
-align text inside its parent element. See
-`Floating around <{filename}/css/grid.rst#floating-around>`_ in the grid system
-for aligning and floating blocks in a similar way.
+align text inside its parent element. Use :css:`.m-text-top`,
+:css:`.m-text-middle` and :css:`.m-text-bottom` to align text vertically for
+example in a table cell. See `Floating around <{filename}/css/grid.rst#floating-around>`_
+in the grid system for aligning and floating blocks in a similar way.
 
 `Padding`_
 ==========
