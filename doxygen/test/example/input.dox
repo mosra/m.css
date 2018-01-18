@@ -14,4 +14,5 @@ See here:
 @example path-prefix/CMakeLists.txt @m_examplenavigation{example,path-prefix/} @m_footernavigation
 @example path-prefix/configure.h.cmake @m_examplenavigation{example,path-prefix/} @m_footernavigation
 @example path-prefix/main.cpp @m_examplenavigation{example,path-prefix/} @m_footernavigation
+@example a.txt
 */

@@ -40,3 +40,4 @@ class Example(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('path-prefix_2CMakeLists_8txt-example.html'))
         self.assertEqual(*self.actual_expected_contents('path-prefix_2configure_8h_8cmake-example.html'))
         self.assertEqual(*self.actual_expected_contents('path-prefix_2main_8cpp-example.html'))
+        self.assertEqual(*self.actual_expected_contents('a_8txt-example.html'))
