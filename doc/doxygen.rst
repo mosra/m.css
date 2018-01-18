@@ -362,7 +362,7 @@ top-level *Namespaces* item and links to two subdirectories as sub-items of the
 `Command-line options`_
 =======================
 
-.. code:: shell-session
+.. code:: sh
 
     ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
                    [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
