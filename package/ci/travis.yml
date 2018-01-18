@@ -6,15 +6,15 @@ matrix:
     - python: 3.4
       env:
       - WITH_DOXYGEN=OFF
-      addons:
-        apt:
-          packages:
+      - JOBID=py34
     - python: 3.5
       env:
       - WITH_DOXYGEN=OFF
+      - JOBID=py35
     - python: 3.6
       env:
       - WITH_DOXYGEN=ON
+      - JOBID=py36
 
 install:
   # 2.10 has some weird behavior, putting a lot of empty lines into the output
