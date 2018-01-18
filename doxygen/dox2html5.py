@@ -1273,13 +1273,15 @@ def parse_xml(state: State, xml: str):
     assert compounddef.tag == 'compounddef'
     assert len([i for i in root]) == 1
 
-    # Ignoring private structs/classes, unnamed namespaces, files and
-    # directories that have absolute location (i.e., outside of the
-    # main source tree)
+    # Ignoring private structs/classes and unnamed namespaces
     if ((compounddef.attrib['kind'] in ['struct', 'class', 'union'] and compounddef.attrib['prot'] == 'private') or
-        (compounddef.attrib['kind'] == 'namespace' and '@' in compounddef.find('compoundname').text) or
-        (compounddef.attrib['kind'] in ['dir', 'file'] and os.path.isabs(compounddef.find('location').attrib['file']))):
-        logging.debug("only private things in {}, skipping".format(os.path.basename(xml)))
+        (compounddef.attrib['kind'] == 'namespace' and '@' in compounddef.find('compoundname').text)):
+        logging.debug("{}: only private things, skipping".format(state.current))
+        return None
+
+    # Ignoring dirs/files w/o any description
+    if compounddef.attrib['kind'] in ['dir', 'file'] and not compounddef.find('briefdescription') and not compounddef.find('detaileddescription'):
+        logging.debug("{}: file/dir documentation empty, skipping".format(state.current))
         return None
 
     compound = Empty()
