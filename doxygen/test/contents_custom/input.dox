@@ -8,6 +8,8 @@ a normal text flow and then @m_class{m-text m-em m-small} **small strong italics
 @m_class{m-text m-info} *blue italics* and @m_class{m-text m-big} https://mcss.mosra.cz
 (big-ass link).
 
+@m_div{m-button m-primary} <a href="#">@m_div{m-big} A button @m_enddiv @m_div{m-small} @m_span{m-text m-em} with @m_endspan @m_class{m-text m-em} **subtitle** @m_enddiv </a> @m_enddiv
+
 A paragraph that is not affected by the inline classes from above.
 
 @m_class{m-text m-strong m-noindent}

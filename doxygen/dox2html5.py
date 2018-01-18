@@ -590,7 +590,6 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Custom <div> with CSS classes (for making dim notes etc)
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}div':
-            assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
             out.parsed += '<div class="{}">{}</div>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i).strip())
@@ -598,8 +597,6 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Adding a custom CSS class to the immediately following block/inline
         # element
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}class':
-            assert element.tag == 'para' # is inside a paragraph :/
-
             # Bubble up in case we are alone in a paragraph, as that's meant to
             # affect the next paragraph content.
             if len([listing for listing in element]) == 1:
