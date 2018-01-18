@@ -129,3 +129,12 @@ class Ignored(IntegrationTestCase):
     def test_empty_class_doc_not_generated(self):
         self.run_dox2html5(index_pages=[], wildcard='classBrief.xml')
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classBrief.html')))
+
+class Warnings(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'warnings', *args, **kwargs)
+
+    def test(self):
+        # Should warn that an export macro is present in the XML
+        self.run_dox2html5(wildcard='namespaceMagnum.xml')
+        self.assertEqual(*self.actual_expected_contents('namespaceMagnum.html'))
