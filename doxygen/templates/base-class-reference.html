@@ -60,6 +60,12 @@
             <li>
               Reference
               <ul>
+                {% if compound.base_classes %}
+                <li><a href="#base-classes">Base classes</a></li>
+                {% endif %}
+                {% if compound.derived_classes %}
+                <li><a href="#derived-classes">Derived classes</a></li>
+                {% endif %}
                 {% if compound.public_types %}
                 <li><a href="#pub-types">Public types</a></li>
                 {% endif %}
@@ -109,6 +115,26 @@
         {% endif %}
         {% if compound.description %}
 {{ compound.description }}
+        {% endif %}
+        {% if compound.base_classes %}
+        <section id="base-classes">
+          <h2><a href="#base-classes">Base classes</a></h3>
+          <dl class="m-dox">
+            {% for class in compound.base_classes %}
+{{ entry_class(class) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+        {% if compound.derived_classes %}
+        <section id="derived-classes">
+          <h2><a href="#derived-classes">Derived classes</a></h3>
+          <dl class="m-dox">
+            {% for class in compound.derived_classes %}
+{{ entry_class(class) }}
+            {% endfor %}
+          </dl>
+        </section>
         {% endif %}
         {% if compound.public_types %}
         <section id="pub-types">

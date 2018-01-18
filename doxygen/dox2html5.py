@@ -1298,6 +1298,8 @@ def parse_xml(state: State, xml: str):
     compound.files = []
     compound.namespaces = []
     compound.classes = []
+    compound.base_classes = []
+    compound.derived_classes = []
     compound.enums = []
     compound.typedefs = []
     compound.funcs = []
@@ -1434,6 +1436,48 @@ def parse_xml(state: State, xml: str):
                     else:
                         assert compound.kind in ['namespace', 'file']
                         compound.classes += [class_]
+
+        # Base class (if it links to anywhere)
+        elif compounddef_child.tag == 'basecompoundref':
+            assert compound.kind in ['class', 'struct', 'union']
+
+            if 'refid' in compounddef_child.attrib:
+                id = compounddef_child.attrib['refid']
+
+                # Add it only if it's not private and we have documentation for it
+                if not compounddef_child.attrib['prot'] == 'private' and id in state.compounds and state.compounds[id].has_details:
+                    symbol = state.compounds[id]
+
+                    class_ = Empty()
+                    class_.kind = symbol.kind
+                    class_.url = symbol.url
+                    class_.name = symbol.leaf_name
+                    class_.brief = symbol.brief
+                    class_.templates = symbol.templates
+                    class_.is_protected = compounddef_child.attrib['prot'] == 'protected'
+                    class_.is_virtual = compounddef_child.attrib['virt'] == 'virtual'
+
+                    compound.base_classes += [class_]
+
+        # Derived class (if it links to anywhere)
+        elif compounddef_child.tag == 'derivedcompoundref':
+            assert compound.kind in ['class', 'struct', 'union']
+
+            if 'refid' in compounddef_child.attrib:
+                id = compounddef_child.attrib['refid']
+
+                # Add it only if it's not private and we have documentation for it
+                if not compounddef_child.attrib['prot'] == 'private' and id in state.compounds and state.compounds[id].has_details:
+                    symbol = state.compounds[id]
+
+                    class_ = Empty()
+                    class_.kind = symbol.kind
+                    class_.url = symbol.url
+                    class_.name = symbol.leaf_name
+                    class_.brief = symbol.brief
+                    class_.templates = symbol.templates
+
+                    compound.derived_classes += [class_]
 
         # Other, grouped in sections
         elif compounddef_child.tag == 'sectiondef':

@@ -48,3 +48,14 @@ class TemplateAlias(IntegrationTestCase):
         self.run_dox2html5(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('structTemplate.html'))
+
+class Derived(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'derived', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('classA.html'))
+        self.assertEqual(*self.actual_expected_contents('classPrivateBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classProtectedBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classVirtualBase.html'))
