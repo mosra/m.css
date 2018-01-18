@@ -720,6 +720,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'formula':
             assert element.tag == 'para' # is inside a paragraph :/
 
+            logging.debug("{}: rendering math: {}".format(state.current, i.text))
+
             # We should have decided about block/inline above
             assert formula_block is not None
             if formula_block:

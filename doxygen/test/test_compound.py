@@ -51,11 +51,6 @@ class Listing(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('Class_8h.html'))
 
-    @unittest.expectedFailure
-    def test_empty_file_doc_not_generated(self):
-        self.run_dox2html5(wildcard='Root_8h.xml')
-        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'Root_8h.html')))
-
     def test_namespace(self):
         self.run_dox2html5(wildcard='namespaceRoot_1_1Directory.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceRoot_1_1Directory.html'))
@@ -67,11 +62,6 @@ class Listing(IntegrationTestCase):
     def test_class(self):
         self.run_dox2html5(wildcard='classRoot_1_1Directory_1_1Sub_1_1Class.xml')
         self.assertEqual(*self.actual_expected_contents('classRoot_1_1Directory_1_1Sub_1_1Class.html'))
-
-    @unittest.expectedFailure
-    def test_empty_class_doc_not_generated(self):
-        self.run_dox2html5(wildcard='union*Bar*.xml')
-        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'unionRoot_1_1Directory_1_1Sub_1_1Class_1_1Bar.html')))
 
     def test_page_no_toc(self):
         self.run_dox2html5(wildcard='page-no-toc.xml')
@@ -120,3 +110,22 @@ class Detailed(IntegrationTestCase):
     def test_define(self):
         self.run_dox2html5(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+class Ignored(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'ignored', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(index_pages=[], wildcard='*.xml')
+
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'classA.html')))
+
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classA_1_1PrivateClass.html')))
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'File_8cpp.html')))
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'input_8h.html')))
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'namespace_0D0.html')))
+
+    @unittest.expectedFailure
+    def test_empty_class_doc_not_generated(self):
+        self.run_dox2html5(index_pages=[], wildcard='classBrief.xml')
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classBrief.html')))
