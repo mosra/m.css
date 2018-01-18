@@ -58,6 +58,7 @@ class State:
     def __init__(self):
         self.basedir = ''
         self.compounds: Dict[str, Any] = {}
+        self.examples: List[Any] = []
         self.doxyfile: Dict[str, str] = {}
         self.images: List[str] = []
         self.current = ''
@@ -144,6 +145,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.return_value = None
     out.add_css_class = None
     out.footer_navigation = False
+    out.example_navigation = None
 
     # DOXYGEN <PARA> PATCHING 1/4
     #
@@ -415,8 +417,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # resetting here explicitly.
             add_css_class = parsed.add_css_class
 
-            # Bubble up also the footer navigation
+            # Bubble up also footer / example navigation
             if parsed.footer_navigation: out.footer_navigation = True
+            if parsed.example_navigation: out.example_navigation = parsed.example_navigation
 
             # Assert we didn't miss anything important
             assert not parsed.section
@@ -610,6 +613,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Enabling footer navigation in a page
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}footernavigation':
             out.footer_navigation = True
+
+        # Enabling navigation for an example
+        elif i.tag == '{http://mcss.mosra.cz/doxygen/}examplenavigation':
+            out.example_navigation = (i.attrib['{http://mcss.mosra.cz/doxygen/}page'],
+                                      i.attrib['{http://mcss.mosra.cz/doxygen/}prefix'])
 
         # Either block or inline
         elif i.tag == 'programlisting':
@@ -868,7 +876,7 @@ def parse_toplevel_desc(state: State, element: ET.Element):
     assert not parsed.return_value
     if parsed.params:
         logging.warning("{}: use @tparam instead of @param for documenting class templates, @param is ignored".format(state.current))
-    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation)
+    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation)
 
 def parse_typedef_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
@@ -1129,15 +1137,24 @@ def parse_define(state: State, element: ET.Element):
     return define if define.brief or define.has_details else None
 
 def extract_metadata(state: State, xml):
-    # index.xml will be parsed later in parse_index_xml()
-    if os.path.basename(xml) == 'index.xml': return
-
     logging.debug("Extracting metadata from {}".format(os.path.basename(xml)))
 
     tree = ET.parse(xml)
     root = tree.getroot()
 
+    # We need just list of all example files in correct order, nothing else
+    if os.path.basename(xml) == 'index.xml':
+        for i in root:
+            if i.attrib['kind'] == 'example':
+                compound = Empty()
+                compound.id = i.attrib['refid']
+                compound.url = compound.id + '.html'
+                compound.name = i.find('name').text
+                state.examples += [compound]
+        return
+
     compounddef: ET.Element = root.find('compounddef')
+
     if compounddef.attrib['kind'] not in ['namespace', 'class', 'struct', 'union', 'dir', 'file', 'page']:
         logging.debug("No useful info in {}, skipping".format(os.path.basename(xml)))
         return
@@ -1274,7 +1291,8 @@ def parse_xml(state: State, xml: str):
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    compound.description, templates, compound.sections, footer_navigation = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
+    compound.description, templates, compound.sections, footer_navigation, example_navigation = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
+    compound.example_navigation = None
     compound.footer_navigation = None
     compound.dirs = []
     compound.files = []
@@ -1305,7 +1323,8 @@ def parse_xml(state: State, xml: str):
     compound.has_var_details = False
     compound.has_define_details = False
 
-    # Build breadcrumb
+    # Build breadcrumb. Breadcrumb for example pages is built after everything
+    # is parsed.
     if compound.kind in ['namespace', 'struct', 'class', 'union', 'file', 'dir', 'page']:
         # Gather parent compounds
         path_reverse = [compound.id]
@@ -1326,7 +1345,7 @@ def parse_xml(state: State, xml: str):
         if footer_navigation:
             up = state.compounds[compound.id].parent
 
-            # Go through all parent children and
+            # Go through all parent children and find previous and next
             if up:
                 up = state.compounds[up]
 
@@ -1667,6 +1686,53 @@ def parse_xml(state: State, xml: str):
             compound.prefix_wbr += '&gt;'
 
         compound.prefix_wbr += '::<wbr />'
+
+    # Example pages
+    if compound.kind == 'example':
+        # Build breadcrumb navigation
+        if example_navigation:
+            if not compound.name.startswith(example_navigation[1]):
+                logging.critical("{}: example filename is not prefixed with {}".format(state.current, example_navigation[1]))
+                assert False
+
+            prefix_length = len(example_navigation[1])
+
+            path_reverse = [example_navigation[0]]
+            while path_reverse[-1] in state.compounds and state.compounds[path_reverse[-1]].parent:
+                path_reverse += [state.compounds[path_reverse[-1]].parent]
+
+            # Fill breadcrumb with leaf names and URLs
+            compound.breadcrumb = []
+            for i in reversed(path_reverse):
+                compound.breadcrumb += [(state.compounds[i].leaf_name, state.compounds[i].url)]
+
+            # Add example filename as leaf item
+            compound.breadcrumb += [(compound.name[prefix_length:], compound.id + '.html')]
+
+            # Enable footer navigation, if requested
+            if footer_navigation:
+                up = state.compounds[example_navigation[0]]
+
+                prev = None
+                next = None
+                prev_child = None
+                for example in state.examples:
+                    if example.id == compound.id:
+                        if prev_child: prev = prev_child
+                    elif prev_child and prev_child.id == compound.id:
+                        if example.name.startswith(example_navigation[1]):
+                            next = example
+                        break
+
+                    if example.name.startswith(example_navigation[1]):
+                        prev_child = example
+
+                compound.footer_navigation = ((prev.url, prev.name[prefix_length:]) if prev else None,
+                                              (up.url, up.name),
+                                              (next.url, next.name[prefix_length:]) if next else None)
+
+        else:
+            compound.breadcrumb = [(compound.name, compound.id + '.html')]
 
     parsed = Empty()
     parsed.version = root.attrib['version']

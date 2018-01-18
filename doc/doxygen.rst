@@ -615,7 +615,8 @@ following to your ``Doxyfile-mcss``:
         "m_span{1}=@xmlonly<mcss:span xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\">@endxmlonly" \
         "m_endspan=@xmlonly</mcss:span>@endxmlonly" \
         "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
-        "m_footernavigation=@xmlonly<mcss:footernavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" />@endxmlonly"
+        "m_footernavigation=@xmlonly<mcss:footernavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" />@endxmlonly" \
+        "m_examplenavigation{2}=@xmlonly<mcss:examplenavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:page=\"\1\" mcss:prefix=\"\2\" />@endxmlonly"
 
 If you need backwards compatibility with stock Doxygen HTML output, just make
 the aliases empty in your original ``Doxyfile``. Note that you can rename the
@@ -629,7 +630,8 @@ aliases however you want to fit your naming scheme.
         "m_span{1}=" \
         "m_endspan=" \
         "m_class{1}=" \
-        "m_footernavigation="
+        "m_footernavigation=" \
+        "m_examplenavigation{2}"
 
 With ``@m_div`` and ``@m_span`` it's possible to wrap individual paragraphs or
 inline text in :html:`<div>` / :html:`<span>` and add CSS classes to them.
@@ -685,6 +687,28 @@ across pages --- if a page is a subpage of some other page and this command is
 present in page detailed description, it will cause the footer of the rendered
 page to contain a link to previous, parent and next page according to defined
 page order.
+
+The ``@m_examplenavigation`` command is able to put breadcrumb navigation to
+parent page(s) of ``@example`` listings in order to make it easier for users to
+return back from example source code to a tutorial page, for example. When used
+in combination with ``@m_footernavigation``, navigation to parent page and to
+prev/next file of the same example is put at the bottom of the page. The
+``@m_examplenavigation`` command takes two arguments, first is the parent page
+for this example (used to build the breadcrumb and footer navigation), second
+is example path prefix (which is then stripped from page title and is also used
+to discover which example files belong together). Example usage --- the
+``@m_examplenavigation`` and ``@m_footernavigation`` commands are simply
+appended the an existing ``@example`` command.
+
+.. code-figure::
+
+    .. code:: c++
+
+        /**
+        @example helloworld/CMakeLists.txt @m_examplenavigation{example,helloworld/} @m_footernavigation
+        @example helloworld/configure.h.cmake @m_examplenavigation{example,helloworld/} @m_footernavigation
+        @example helloworld/main.cpp @m_examplenavigation{example,helloworld/} @m_footernavigation
+        */
 
 `Customizing the template`_
 ===========================

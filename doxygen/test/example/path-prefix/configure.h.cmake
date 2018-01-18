@@ -1,0 +1,1 @@
+#cmakedefine SAY_HELLO
