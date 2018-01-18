@@ -1740,7 +1740,7 @@ def parse_xml(state: State, xml: str):
     if compound.kind == 'example':
         # Build breadcrumb navigation
         if example_navigation:
-            if not compound.name.startswith(example_navigation[1]):
+            if not compound.name.startswith(example_navigation[1]): # pragma: no cover
                 logging.critical("{}: example filename is not prefixed with {}".format(state.current, example_navigation[1]))
                 assert False
 
