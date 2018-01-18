@@ -94,7 +94,8 @@ M_LINKS_FOOTER1 = [('m.css', '/'),
                    ('GitHub', 'https://github.com/mosra/m.css'),
                    ('Gitter', 'https://gitter.im/mosra/m.css'),
                    ('E-mail', 'mailto:mosra@centrum.cz'),
-                   ('Twitter', 'https://twitter.com/czmosra')]
+                   ('Twitter', 'https://twitter.com/czmosra'),
+                   ('Build Status', 'build-status/')]
 
 M_LINKS_FOOTER2 = [('CSS', 'css/'),
                    ('Grid system', 'css/grid/'),
