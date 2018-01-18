@@ -66,3 +66,12 @@ class InNavbar(IntegrationTestCase):
         self.run_dox2html5(wildcard='page*.xml')
         self.assertEqual(*self.actual_expected_contents('page-in-navbar.html'))
         self.assertEqual(*self.actual_expected_contents('page-b.html'))
+
+class FooterNavigation(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'footernavigation', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='subpage*.xml')
+        self.assertEqual(*self.actual_expected_contents('subpage1.html'))
+        self.assertEqual(*self.actual_expected_contents('subpage2.html'))
