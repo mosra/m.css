@@ -110,14 +110,16 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
     PLUGINS += ['m.gl']
 
 Use the :rst:`:glfn:` interpreted text role for linking to functions,
-:rst:`:glext:` for linking to extensions and :rst:`:glfnext:` for linking to
-extension functions. In the link target the leading ``gl`` prefix of functions
-and the leading ``GL_`` prefix of extensions is prepended automatically.
+:rst:`:glext:` for linking to OpenGL / OpenGL ES extensions, :rst:`:webglext:`
+for linking to WebGL extensions and :rst:`:glfnext:` for linking to extension
+functions. In the link target the leading ``gl`` prefix of functions and the
+leading ``GL_`` prefix of extensions is prepended automatically.
 
 Link text is equal to full function name including the ``gl`` prefix and
 ``()`` for functions, equal to extension name or equal to extension function
-link, including the vendor suffix. For :rst:`:glfn:` and :rst:`:glext:` it's
-possible to specify alternate link text using the well-known syntax.
+link, including the vendor suffix. For :rst:`:glfn:`, :rst:`:glext:` and
+:rst:`:webglext:` it's possible to specify alternate link text using the
+well-known syntax.
 
 .. code-figure::
 
@@ -125,11 +127,13 @@ possible to specify alternate link text using the well-known syntax.
 
         -   Function link: :glfn:`DispatchCompute`
         -   Extension link: :glext:`ARB_direct_state_access`
+        -   WebGL extension link: :webglext:`OES_texture_float`
         -   Extension function link: :glfnext:`SpecializeShader <ARB_gl_spirv>`
         -   :glfn:`Custom link title <DrawElementsIndirect>`
 
     -   Function link: :glfn:`DispatchCompute`
     -   Extension link: :glext:`ARB_direct_state_access`
+    -   WebGL extension link: :webglext:`OES_texture_float`
     -   Extension function link: :glfnext:`SpecializeShader <ARB_gl_spirv>`
     -   :glfn:`Custom link title <DrawElementsIndirect>`
 
