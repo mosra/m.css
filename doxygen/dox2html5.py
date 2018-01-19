@@ -33,6 +33,7 @@ import os
 import glob
 import mimetypes
 import shutil
+import struct
 import subprocess
 import urllib.parse
 import logging
@@ -49,6 +50,67 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pe
 import latex2svg
 import m.math
 import ansilexer
+
+class Trie:
+    #  root  |     |   header       | values |    child    |
+    # offset | ... | size | value # |  ...   | offsets ... |
+    #  32b   |     |  8b  |    8b   | n*16b  |   8b + 24b  |
+    root_offset_struct = struct.Struct('<I')
+    header_struct = struct.Struct('<BB')
+    value_struct = struct.Struct('<H')
+    child_struct = struct.Struct('<I')
+    child_char_struct = struct.Struct('<c')
+
+    def __init__(self):
+        self.values = []
+        self.children = {}
+
+    def insert(self, path: str, value):
+        if not path:
+            self.values += [value]
+            return
+
+        char = path[0]
+        if not char in self.children:
+            self.children[char] = Trie()
+        self.children[char].insert(path[1:], value)
+
+    # Returns offset of the serialized thing in `output`
+    def _serialize(self, output: bytearray) -> int:
+        # Serialize all children first
+        child_offsets = []
+        for char, child in self.children.items():
+            offset = child._serialize(output)
+            child_offsets += [(char, offset)]
+
+        # Serialize this node
+        size = 2 + 2*len(self.values) + 4*len(child_offsets)
+
+        serialized = bytearray()
+        serialized += self.header_struct.pack(size, len(self.values))
+        for v in self.values:
+            serialized += self.value_struct.pack(v)
+
+        # Serialize child offsets
+        for char, abs_offset in child_offsets:
+            assert abs_offset < 2**24
+
+            # write them over each other because that's the only way to pack
+            # a 24 bit field
+            offset = len(serialized)
+            serialized += self.child_struct.pack(abs_offset)
+            self.child_char_struct.pack_into(serialized, offset + 3, char.encode('utf-8'))
+
+        assert size == len(serialized)
+
+        offset = len(output)
+        output += serialized
+        return offset
+
+    def serialize(self) -> bytearray:
+        output = bytearray(b'\x00\x00\x00\x00')
+        self.root_offset_struct.pack_into(output, 0, self._serialize(output))
+        return output
 
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
