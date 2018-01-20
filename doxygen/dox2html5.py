@@ -71,6 +71,7 @@ class Trie:
             return
 
         char = path[0]
+        assert not char.isupper() # to avoid unnecessary duplicates
         if not char in self.children:
             self.children[char] = Trie()
         self.children[char].insert(path[1:], value)
