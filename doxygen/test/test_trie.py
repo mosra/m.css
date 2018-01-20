@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #
 #   This file is part of m.css.
 #
@@ -22,6 +24,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import argparse
 import unittest
 
 from dox2html5 import Trie
@@ -145,3 +148,11 @@ range [2]
 |       ax [10]
 """)
         self.assertEqual(len(serialized), 514)
+
+if __name__ == '__main__': # pragma: no cover
+    parser = argparse.ArgumentParser()
+    parser.add_argument('file', help="file to pretty-print")
+    args = parser.parse_args()
+
+    with open(args.file, 'rb') as f:
+        print(pretty_print(f.read()))
