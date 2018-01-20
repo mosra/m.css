@@ -29,9 +29,9 @@ import unittest
 import sys
 from types import SimpleNamespace as Empty
 
-from dox2html5 import Trie
+from dox2html5 import Trie, ResultMap, serialize_search_data, search_data_header_struct
 
-def _pretty_print(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged) -> str:
+def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged) -> str:
     # Visualize where the trees were merged
     if show_merged and base_offset in hashtable: return ' #'
 
@@ -65,7 +65,7 @@ def _pretty_print(serialized: bytearray, hashtable, stats, base_offset, indent, 
         child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00ffffff
         stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
         offset += Trie.child_struct.size
-        out += _pretty_print(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
+        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
         child_count += 1
 
     stats.max_node_children = max(child_count, stats.max_node_children)
@@ -73,7 +73,7 @@ def _pretty_print(serialized: bytearray, hashtable, stats, base_offset, indent, 
     hashtable[base_offset] = True
     return out
 
-def pretty_print(serialized: bytes, show_merged=False):
+def pretty_print_trie(serialized: bytes, show_merged=False):
     hashtable = {}
 
     stats = Empty()
@@ -84,7 +84,7 @@ def pretty_print(serialized: bytes, show_merged=False):
     stats.max_node_value_index = 0
     stats.max_node_child_offset = 0
 
-    out = _pretty_print(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged)
+    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged)
     stats = """
 node count:             {}
 max node size:          {} bytes
@@ -94,13 +94,38 @@ max node value index:   {}
 max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_size, stats.max_node_values, stats.max_node_children, stats.max_node_value_index, stats.max_node_child_offset)
     return out, stats
 
-class Serialization(unittest.TestCase):
+def pretty_print_map(serialized: bytes):
+    # The first item gives out offset of first value, which can be used to
+    # calculate total value count
+    offset = ResultMap.offset_struct.unpack_from(serialized, 0)[0] & 0x00ffffff
+    size = int(offset/4 - 1)
+
+    out = ''
+    for i in range(size):
+        if i: out += '\n'
+        flags = ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0]
+        next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
+        name, _, url = serialized[offset:next_offset].partition(b'\0')
+        out += "{}: {} [{}] -> {}".format(i, name.decode('utf-8'), flags, url.decode('utf-8'))
+        offset = next_offset
+    return out
+
+def pretty_print(serialized: bytes, show_merged=False):
+    magic, version, map_offset = search_data_header_struct.unpack_from(serialized)
+    assert magic == b'MCS'
+    assert version == 0
+
+    pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged)
+    pretty_map = pretty_print_map(serialized[map_offset:])
+    return pretty_trie + '\n' + pretty_map, stats
+
+class TrieSerialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.maxDiff = None
 
     def compare(self, serialized: bytes, expected: str):
-        pretty = pretty_print(serialized)[0]
+        pretty = pretty_print_trie(serialized)[0]
         #print(pretty)
         self.assertEqual(pretty, expected.strip())
 
@@ -181,6 +206,87 @@ range [2]
 |       ax [10]
 """)
         self.assertEqual(len(serialized), 340)
+
+class MapSerialization(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
+
+    def compare(self, serialized: bytes, expected: str):
+        pretty = pretty_print_map(serialized)
+        #print(pretty)
+        self.assertEqual(pretty, expected.strip())
+
+    def test_empty(self):
+        map = ResultMap()
+
+        serialized = map.serialize()
+        self.compare(serialized, "")
+        self.assertEqual(len(serialized), 4)
+
+    def test_single(self):
+        map = ResultMap()
+        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", 11), 0)
+
+        serialized = map.serialize()
+        self.compare(serialized, """
+0: Magnum [11] -> namespaceMagnum.html
+""")
+        self.assertEqual(len(serialized), 35)
+
+    def test_multiple(self):
+        map = ResultMap()
+
+        self.assertEqual(map.add("Math", "namespaceMath.html"), 0)
+        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", 42), 1)
+        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", 255), 2)
+        self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875"), 3)
+        self.assertEqual(map.add("Math::max()", "namespaceMath.html#abcdef2875"), 4)
+
+        serialized = map.serialize()
+        self.compare(serialized, """
+0: Math [0] -> namespaceMath.html
+1: Math::Vector [42] -> classMath_1_1Vector.html
+2: Math::Range [255] -> classMath_1_1Range.html
+3: Math::min() [0] -> namespaceMath.html#abcdef2875
+4: Math::max() [0] -> namespaceMath.html#abcdef2875
+""")
+        self.assertEqual(len(serialized), 201)
+
+class Serialization(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
+
+    def compare(self, serialized: bytes, expected: str):
+        pretty = pretty_print(serialized)[0]
+        #print(pretty)
+        self.assertEqual(pretty, expected.strip())
+
+    def test(self):
+        trie = Trie()
+        map = ResultMap()
+
+        trie.insert("math", map.add("Math", "namespaceMath.html"))
+        index = map.add("Math::Vector", "classMath_1_1Vector.html", 42)
+        trie.insert("math::vector", index)
+        trie.insert("vector", index)
+        index = map.add("Math::Range", "classMath_1_1Range.html", 255)
+        trie.insert("math::range", index)
+        trie.insert("range", index)
+
+        serialized = serialize_search_data(trie, map)
+        self.compare(serialized, """
+math [0]
+|   ::vector [1]
+|     range [2]
+vector [1]
+range [2]
+0: Math [0] -> namespaceMath.html
+1: Math::Vector [42] -> classMath_1_1Vector.html
+2: Math::Range [255] -> classMath_1_1Range.html
+""")
+        self.assertEqual(len(serialized), 241)
 
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()

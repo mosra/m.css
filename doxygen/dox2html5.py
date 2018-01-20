@@ -121,6 +121,54 @@ class Trie:
         self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output))
         return output
 
+class ResultMap:
+    # item 1 flags | item 2 flags |     | item N flags | file |   item 1      |
+    #   + offset   |   + offset   | ... |   + offset   | size | name + url    | ...
+    #    8 + 24b   |    8 + 24b   |     |    8 + 24b   |  32b | (0-delimited) |
+    offset_struct = struct.Struct('<I')
+    flags_struct = struct.Struct('<B')
+
+    def __init__(self):
+        self.entries = []
+
+    def add(self, name, url, flags = 0) -> int:
+        self.entries += [(name, url, flags)]
+        return len(self.entries) - 1
+
+    def serialize(self) -> bytearray:
+        output = bytearray()
+
+        # Write the offset array. Starting offset for items is after the offset
+        # array and the file size
+        offset = (len(self.entries) + 1)*4
+        for name, url, flags in self.entries:
+            assert offset < 2**24
+            output += self.offset_struct.pack(offset)
+            self.flags_struct.pack_into(output, len(output) - 1, flags)
+
+            # include the 0-delimiter
+            offset += len(name) + len(url) + 1
+
+        # Write file size
+        output += self.offset_struct.pack(offset)
+
+        # Write the entries themselves
+        for name, url, _ in self.entries:
+            output += name.encode('utf-8')
+            output += b'\0'
+            output += url.encode('utf-8')
+
+        assert len(output) == offset
+        return output
+
+search_data_header_struct = struct.Struct('<3sBI')
+
+def serialize_search_data(trie: Trie, map: ResultMap) -> bytearray:
+    serialized_trie = trie.serialize()
+    serialized_map = map.serialize()
+    # magic header, version, offset of result map
+    return search_data_header_struct.pack(b'MCS', 0, len(serialized_trie) + 8) + serialized_trie + serialized_map
+
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
 slugify_hyphens_rx = re.compile(r"""[-\s]+""")
