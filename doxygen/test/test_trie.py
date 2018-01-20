@@ -29,7 +29,10 @@ import unittest
 
 from dox2html5 import Trie
 
-def _pretty_print(serialized: bytearray, base_offset, indent, draw_pipe) -> str:
+def _pretty_print(serialized: bytearray, hashtable, base_offset, indent, draw_pipe, show_merged) -> str:
+    # Visualize where the trees were merged
+    if show_merged and base_offset in hashtable: return ' #'
+
     out = ''
     size, value_count = Trie.header_struct.unpack_from(serialized, base_offset)
     offset = base_offset + Trie.header_struct.size
@@ -53,13 +56,15 @@ def _pretty_print(serialized: bytearray, base_offset, indent, draw_pipe) -> str:
         out += Trie.child_char_struct.unpack_from(serialized, offset + 3)[0].decode('utf-8')
         child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00ffffff
         offset += Trie.child_struct.size
-        out += _pretty_print(serialized, child_offset, indent + ('|' if draw_pipe else ' '), False)
+        out += _pretty_print(serialized, hashtable, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
         newline = True
 
+    hashtable[base_offset] = True
     return out
 
-def pretty_print(serialized: bytes) -> str:
-    return _pretty_print(serialized, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', False)
+def pretty_print(serialized: bytes, show_merged=False) -> str:
+    hashtable = {}
+    return _pretty_print(serialized, hashtable, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged)
 
 class Serialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -147,12 +152,13 @@ range [2]
 |    ::min [9]
 |       ax [10]
 """)
-        self.assertEqual(len(serialized), 514)
+        self.assertEqual(len(serialized), 340)
 
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help="file to pretty-print")
+    parser.add_argument('--show-merged', help="show merged subtrees", action='store_true')
     args = parser.parse_args()
 
     with open(args.file, 'rb') as f:
-        print(pretty_print(f.read()))
+        print(pretty_print(f.read(), show_merged=args.show_merged))

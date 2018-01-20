@@ -76,11 +76,11 @@ class Trie:
         self.children[char].insert(path[1:], value)
 
     # Returns offset of the serialized thing in `output`
-    def _serialize(self, output: bytearray) -> int:
+    def _serialize(self, hashtable, output: bytearray) -> int:
         # Serialize all children first
         child_offsets = []
         for char, child in self.children.items():
-            offset = child._serialize(output)
+            offset = child._serialize(hashtable, output)
             child_offsets += [(char, offset)]
 
         # Serialize this node
@@ -103,13 +103,22 @@ class Trie:
 
         assert size == len(serialized)
 
-        offset = len(output)
-        output += serialized
-        return offset
+        # Subtree merging: if this exact tree is already in the table, return
+        # its offset. Otherwise add it and return the new offset.
+        # TODO: why hashable = bytes(output[base_offset:] + serialized) didn't work?
+        hashable = bytes(serialized)
+        if hashable in hashtable:
+            return hashtable[hashable]
+        else:
+            offset = len(output)
+            output += serialized
+            hashtable[hashable] = offset
+            return offset
 
     def serialize(self) -> bytearray:
         output = bytearray(b'\x00\x00\x00\x00')
-        self.root_offset_struct.pack_into(output, 0, self._serialize(output))
+        hashtable = {}
+        self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output))
         return output
 
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+)$""")
