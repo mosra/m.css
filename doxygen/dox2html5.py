@@ -52,9 +52,9 @@ import m.math
 import ansilexer
 
 class Trie:
-    #  root  |     |   header       | values |    child    |
-    # offset | ... | size | value # |  ...   | offsets ... |
-    #  32b   |     |  8b  |    8b   | n*16b  |   8b + 24b  |
+    #  root  |     |     header       | values |    child    |
+    # offset | ... | size/2 | value # |  ...   | offsets ... |
+    #  32b   |     |   8b   |    8b   | n*16b  |   8b + 24b  |
     root_offset_struct = struct.Struct('<I')
     header_struct = struct.Struct('<BB')
     value_struct = struct.Struct('<H')
@@ -85,10 +85,9 @@ class Trie:
             child_offsets += [(char, offset)]
 
         # Serialize this node
-        size = 2 + 2*len(self.values) + 4*len(child_offsets)
-
+        size = int(2 + 2*len(self.values) + 4*len(child_offsets))
         serialized = bytearray()
-        serialized += self.header_struct.pack(size, len(self.values))
+        serialized += self.header_struct.pack(int(size/2), len(self.values))
         for v in self.values:
             serialized += self.value_struct.pack(v)
 

@@ -55,9 +55,9 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
         out += ']'
 
     # print children
-    if base_offset + size - offset > 4: draw_pipe = True
+    if base_offset + size*2 - offset > 4: draw_pipe = True
     child_count = 0
-    while offset < base_offset + size:
+    while offset < base_offset + size*2:
         if child_count or value_count:
             out += '\n'
             out += indent
@@ -91,7 +91,7 @@ max node size:          {} bytes
 max node values:        {}
 max node children:      {}
 max node value index:   {}
-max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_size, stats.max_node_values, stats.max_node_children, stats.max_node_value_index, stats.max_node_child_offset)
+max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_size*2, stats.max_node_values, stats.max_node_children, stats.max_node_value_index, stats.max_node_child_offset)
     return out, stats
 
 def pretty_print_map(serialized: bytes):
@@ -114,6 +114,7 @@ def pretty_print(serialized: bytes, show_merged=False):
     magic, version, map_offset = search_data_header_struct.unpack_from(serialized)
     assert magic == b'MCS'
     assert version == 0
+    assert not search_data_header_struct.size % 4
 
     pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged)
     pretty_map = pretty_print_map(serialized[map_offset:])
