@@ -26,15 +26,21 @@
 
 import argparse
 import unittest
+import sys
+from types import SimpleNamespace as Empty
 
 from dox2html5 import Trie
 
-def _pretty_print(serialized: bytearray, hashtable, base_offset, indent, draw_pipe, show_merged) -> str:
+def _pretty_print(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged) -> str:
     # Visualize where the trees were merged
     if show_merged and base_offset in hashtable: return ' #'
 
+    stats.node_count += 1
+
     out = ''
     size, value_count = Trie.header_struct.unpack_from(serialized, base_offset)
+    stats.max_node_size = max(size, stats.max_node_size)
+    stats.max_node_values = max(value_count, stats.max_node_values)
     offset = base_offset + Trie.header_struct.size
 
     # print values, if any
@@ -42,29 +48,51 @@ def _pretty_print(serialized: bytearray, hashtable, base_offset, indent, draw_pi
         out += ' ['
         for i in range(value_count):
             if i: out += ', '
-            out += str(Trie.value_struct.unpack_from(serialized, offset)[0])
+            value = Trie.value_struct.unpack_from(serialized, offset)[0]
+            stats.max_node_value_index = max(value, stats.max_node_value_index)
+            out += str(value)
             offset += Trie.value_struct.size
         out += ']'
 
     # print children
     if base_offset + size - offset > 4: draw_pipe = True
-    newline = False
+    child_count = 0
     while offset < base_offset + size:
-        if newline or value_count:
+        if child_count or value_count:
             out += '\n'
             out += indent
         out += Trie.child_char_struct.unpack_from(serialized, offset + 3)[0].decode('utf-8')
         child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00ffffff
+        stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
         offset += Trie.child_struct.size
-        out += _pretty_print(serialized, hashtable, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
-        newline = True
+        out += _pretty_print(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
+        child_count += 1
+
+    stats.max_node_children = max(child_count, stats.max_node_children)
 
     hashtable[base_offset] = True
     return out
 
-def pretty_print(serialized: bytes, show_merged=False) -> str:
+def pretty_print(serialized: bytes, show_merged=False):
     hashtable = {}
-    return _pretty_print(serialized, hashtable, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged)
+
+    stats = Empty()
+    stats.node_count = 0
+    stats.max_node_size = 0
+    stats.max_node_values = 0
+    stats.max_node_children = 0
+    stats.max_node_value_index = 0
+    stats.max_node_child_offset = 0
+
+    out = _pretty_print(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged)
+    stats = """
+node count:             {}
+max node size:          {} bytes
+max node values:        {}
+max node children:      {}
+max node value index:   {}
+max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_size, stats.max_node_values, stats.max_node_children, stats.max_node_value_index, stats.max_node_child_offset)
+    return out, stats
 
 class Serialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -72,7 +100,7 @@ class Serialization(unittest.TestCase):
         self.maxDiff = None
 
     def compare(self, serialized: bytes, expected: str):
-        pretty = pretty_print(serialized)
+        pretty = pretty_print(serialized)[0]
         #print(pretty)
         self.assertEqual(pretty, expected.strip())
 
@@ -158,7 +186,10 @@ if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help="file to pretty-print")
     parser.add_argument('--show-merged', help="show merged subtrees", action='store_true')
+    parser.add_argument('--show-stats', help="show stats", action='store_true')
     args = parser.parse_args()
 
     with open(args.file, 'rb') as f:
-        print(pretty_print(f.read(), show_merged=args.show_merged))
+        out, stats = pretty_print(f.read(), show_merged=args.show_merged)
+        print(out)
+        if args.show_stats: print(stats, file=sys.stderr)
