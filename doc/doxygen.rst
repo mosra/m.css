@@ -859,6 +859,12 @@ Property                                Description
 :py:`compound.classes`                  List of classes in this compound. Set
                                         only for files and namespaces. See
                                         `Class properties`_ for details.
+:py:`compound.base_classes`             List of base classes in this compound.
+                                        Set only for classes. See
+                                        `Class properties`_ for details.
+:py:`compound.derived_classes`          List of derived classes in this
+                                        compound. Set only for classes. See
+                                        `Class properties`_ for details.
 :py:`compound.enums`                    List of enums in this compound. Set
                                         only for files and namespaces. See
                                         `Enum properties`_ for details.
@@ -1016,14 +1022,18 @@ item has the following properties:
 =========================== ===================================================
 Property                    Description
 =========================== ===================================================
-:py:`class_.kind`           One of :py:`'class'`, :py:`'struct'`, :py:`'union'`
-:py:`class_.url`            URL of the file containing detailed class docs
-:py:`class_.name`           Class name. Fully qualified in case it's in a file
+:py:`class.kind`            One of :py:`'class'`, :py:`'struct'`, :py:`'union'`
+:py:`class.url`             URL of the file containing detailed class docs
+:py:`class.name`            Class name. Fully qualified in case it's in a file
                             documentation, just the leaf name if in a namespace
                             documentation.
-:py:`class_.templates`      Template specification. See `Template properties`_
+:py:`class.templates`       Template specification. See `Template properties`_
                             for details.
-:py:`class_.brief`          Brief description. Can be empty. [1]_
+:py:`class.brief`           Brief description. Can be empty. [1]_
+:py:`class.is_protected`    Whether this is a protected base class. Set only
+                            for base classes.
+:py:`class.is_virtual`      Whether this is a virtual base class. Set only for
+                            base classes.
 =========================== ===================================================
 
 `Enum properties`_
