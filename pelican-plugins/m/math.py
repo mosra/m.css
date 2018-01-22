@@ -24,7 +24,7 @@
 
 import re
 
-from docutils import nodes
+from docutils import nodes, utils
 from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
@@ -64,6 +64,8 @@ unique_dst = r"""\g<name>='\g<ref>eq{counter}-\g<id>'"""
 
 counter = 0
 
+render_as_code = False
+
 def _patch(formula, out, attribs):
     global counter
     counter += 1
@@ -77,6 +79,14 @@ class Math(rst.Directive):
     def run(self):
         set_classes(self.options)
         self.assert_has_content()
+
+        # Fallback rendering as code requested
+        if render_as_code:
+            content = nodes.raw('', '\n'.join(self.content), format='html')
+            pre = nodes.literal_block('')
+            pre.append(content)
+            return [pre]
+
         # join lines, separate blocks
         content = '\n'.join(self.content).split('\n\n')
         _nodes = []
@@ -104,6 +114,19 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     i = rawtext.find('`')
     text = rawtext.split('`')[1]
 
+    # Fallback rendering as code requested
+    if render_as_code:
+        set_classes(options)
+        classes = []
+        if 'classes' in options:
+            classes += options['classes']
+            del options['classes']
+
+        content = nodes.raw('', utils.unescape(text), format='html')
+        node = nodes.literal(rawtext, '', **options)
+        node.append(content)
+        return [node], []
+
     # Apply classes to the <svg> element instead of some outer <span>
     set_classes(options)
     classes = 'm-math'
@@ -121,7 +144,12 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.raw(rawtext, _patch(text, out, attribs), format='html', **options)
     return [node], []
 
+def configure_pelican(pelicanobj):
+    global render_as_code
+    render_as_code = pelicanobj.settings.get('M_MATH_RENDER_AS_CODE', False)
+
 def register():
+    pelican.signals.initialized.connect(configure_pelican)
     pelican.signals.content_object_init.connect(new_page)
     rst.directives.register_directive('math', Math)
     rst.roles.register_canonical_role('math', math)

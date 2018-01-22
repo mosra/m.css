@@ -42,3 +42,11 @@ class Math(PluginTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
+
+    def test_code_fallback(self):
+        self.run_pelican({
+            'PLUGINS': ['m.htmlsanity', 'm.math'],
+            'M_MATH_RENDER_AS_CODE': True
+        })
+
+        self.assertEqual(*self.actual_expected_contents('page.html', 'page-code-fallback.html'))
