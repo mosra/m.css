@@ -3,6 +3,8 @@ m.code
 
 .. role:: cpp(code)
     :language: c++
+.. role:: tex(code)
+    :language: tex
 
 .. code:: c++
 
@@ -26,3 +28,5 @@ Inline code is here: :cpp:`constexpr`
 .. code:: whatthefuck
 
     // this language is not highlighted
+
+Properly preserve backslashes: :tex:`\frac{a}{b}`
