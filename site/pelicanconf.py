@@ -22,6 +22,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import shutil
+import logging
+
 AUTHOR = 'Vladimír Vondruš'
 
 M_SITE_LOGO_TEXT = 'm.css'
@@ -160,6 +163,10 @@ M_HTMLSANITY_SMART_QUOTES = True
 M_HTMLSANITY_HYPHENATION = True
 M_DOX_TAGFILES = [
     ('../doc/doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::'])]
+
+if not shutil.which('latex'):
+    logging.warning("LaTeX not found, fallback to rendering math as code")
+    M_MATH_RENDER_AS_CODE = True
 
 DIRECT_TEMPLATES = ['archives']
 
