@@ -30,6 +30,8 @@ Doxygen theme
 
 .. role:: cpp(code)
     :language: cpp
+.. role:: css(code)
+    :language: css
 .. role:: html(code)
     :language: html
 .. role:: ini(code)
