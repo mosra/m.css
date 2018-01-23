@@ -179,4 +179,117 @@ article section.m-dox-details:target > div {
   border-left-color: var(--article-heading-color);
 }
 
+a.m-dox-search-icon {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+a.m-dox-search-icon svg {
+  height: 0.9rem;
+  fill: var(--header-link-color);
+}
+body > header > nav #m-navbar-collapse a.m-dox-search-icon svg {
+  vertical-align: -5%;
+}
+a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-icon:active svg {
+  fill: var(--header-link-active-color);
+}
+.m-dox-search {
+  display: none;
+  z-index: 10;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: var(--header-background-color-landing);
+}
+.m-dox-search:target {
+  display: block;
+}
+.m-dox-search > a {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.m-dox-search-header {
+  margin-top: 2.5rem;
+  padding: 0.5rem 1rem;
+  height: 2rem;
+}
+.m-dox-search-header > div:first-child {
+  float: right;
+}
+.m-dox-search-content {
+  background-color: var(--header-background-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+}
+.m-dox-search input {
+  width: 100%;
+  height: 3rem;
+  font-size: 1.2rem;
+  border-width: 0;
+  color: var(--color);
+  background-color: var(--default-filled-background-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  padding: 0 1rem; /* putting it on all sides cuts text off in FF */
+}
+.m-dox-search #search-notfound {
+  display: none;
+}
+.m-dox-search ul#search-results {
+  list-style-type: none;
+  padding-left: 0;
+  /* Size breakdown:
+      2.5   margin of .m-dox-search-header from top
+      2     height of .m-dox-search-header
+      1     padding around .m-dox-search-header (twice 0.5rem)
+      1     padding of .m-dox-search-content from top
+      3     height of the input field
+      1     margin under input
+      1     padding of .m-dox-search-content from bottom
+      1     margin under .m-dox-search-content
+     ------
+     12.5   total */
+  max-height: calc(100vh - 12.5rem);
+  overflow-y: auto;
+  display: none;
+}
+.m-dox-search ul#search-results li a {
+  display: block;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-decoration: none;
+  width: 100%;
+  line-height: 1.5rem;
+  color: var(--color);
+}
+.m-dox-search ul#search-results li a > div {
+  white-space: nowrap;
+  overflow: hidden;
+  /* This is here in order to cut the text off at the left side. Besides this
+     there's special patching needed for punctuation characters, see search.js
+     for details. */
+  direction: rtl;
+}
+.m-dox-search ul#search-results li#search-current a {
+  background-color: var(--default-filled-background-color);
+}
+.m-dox-search-typed {
+  color: var(--link-color);
+}
+
+/* WELL THANK YOU WEBKIT! FOR SURE I WANTED ALL THAT SHIT HERE! */
+.m-dox-search input[type="search"] { -webkit-appearance: textfield; }
+.m-dox-search input[type="search"]::-webkit-search-decoration,
+.m-dox-search input[type="search"]::-webkit-search-cancel-button,
+.m-dox-search input[type="search"]::-webkit-search-results-button,
+.m-dox-search input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
 /* kate: indent-width 2; */

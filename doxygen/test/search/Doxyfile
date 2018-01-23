@@ -1,11 +1,12 @@
-INPUT                   = File.h File.cpp
+INPUT                   = Dir UndocumentedDir input.dox
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
 GENERATE_XML            = YES
+EXAMPLE_PATH            = .
 
 M_PAGE_FINE_PRINT       =
 M_THEME_COLOR           =
 M_LINKS_NAVBAR1         =
 M_LINKS_NAVBAR2         =
-M_SEARCH_DISABLED       = YES
+M_SEARCH_DOWNLOAD_BINARY = YES

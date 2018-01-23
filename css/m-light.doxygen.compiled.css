@@ -175,3 +175,99 @@ article section.m-dox-details:target > div {
   border-left-width: 0.25rem;
   border-left-color: #cb4b16;
 }
+a.m-dox-search-icon {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+a.m-dox-search-icon svg {
+  height: 0.9rem;
+  fill: #000000;
+}
+body > header > nav #m-navbar-collapse a.m-dox-search-icon svg {
+  vertical-align: -5%;
+}
+a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-icon:active svg {
+  fill: #cb4b16;
+}
+.m-dox-search {
+  display: none;
+  z-index: 10;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+.m-dox-search:target {
+  display: block;
+}
+.m-dox-search > a {
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.m-dox-search-header {
+  margin-top: 2.5rem;
+  padding: 0.5rem 1rem;
+  height: 2rem;
+}
+.m-dox-search-header > div:first-child {
+  float: right;
+}
+.m-dox-search-content {
+  background-color: #ffffff;
+  border-radius: 0.2rem;
+  padding: 1rem;
+}
+.m-dox-search input {
+  width: 100%;
+  height: 3rem;
+  font-size: 1.2rem;
+  border-width: 0;
+  color: #000000;
+  background-color: #fbf0ec;
+  border-radius: 0.2rem;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+.m-dox-search #search-notfound {
+  display: none;
+}
+.m-dox-search ul#search-results {
+  list-style-type: none;
+  padding-left: 0;
+  max-height: calc(100vh - 12.5rem);
+  overflow-y: auto;
+  display: none;
+}
+.m-dox-search ul#search-results li a {
+  display: block;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-decoration: none;
+  width: 100%;
+  line-height: 1.5rem;
+  color: #000000;
+}
+.m-dox-search ul#search-results li a > div {
+  white-space: nowrap;
+  overflow: hidden;
+  direction: rtl;
+}
+.m-dox-search ul#search-results li#search-current a {
+  background-color: #fbf0ec;
+}
+.m-dox-search-typed {
+  color: #ea7944;
+}
+.m-dox-search input[type="search"] { -webkit-appearance: textfield; }
+.m-dox-search input[type="search"]::-webkit-search-decoration,
+.m-dox-search input[type="search"]::-webkit-search-cancel-button,
+.m-dox-search input[type="search"]::-webkit-search-results-button,
+.m-dox-search input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}

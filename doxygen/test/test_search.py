@@ -25,11 +25,14 @@
 #
 
 import argparse
-import unittest
+import os
 import sys
+import unittest
 from types import SimpleNamespace as Empty
 
 from dox2html5 import Trie, ResultMap, serialize_search_data, search_data_header_struct
+
+from test import IntegrationTestCase
 
 def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged) -> str:
     # Visualize where the trees were merged
@@ -288,6 +291,59 @@ range [2]
 2: Math::Range [255] -> classMath_1_1Range.html
 """)
         self.assertEqual(len(serialized), 241)
+
+class Search(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, '', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(index_pages=[], wildcard='*.xml')
+
+        with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
+            search_data_pretty = pretty_print(f.read())[0]
+        #print(search_data_pretty)
+        self.assertEqual(search_data_pretty, """
+namespace [0]
+|        ::class [1]
+|          |    ::foo() [6, 7, 8, 9]
+|          enum [11]
+|          |   ::value [10]
+|          typedef [12]
+|          variable [13]
+class [1]
+|    ::foo() [6, 7, 8, 9]
+a page [2]
+subpage [3]
+dir [4]
+|  /file.h [5]
+file.h [5]
+|oo() [6, 7, 8, 9]
+enum [11]
+|   ::value [10]
+value [10]
+| riable [13]
+typedef [12]
+macro [14]
+|    _function() [15]
+|             _with_params() [16]
+0: Namespace [0] -> namespaceNamespace.html
+1: Namespace::Class [0] -> classNamespace_1_1Class.html
+2: A page [0] -> page.html
+3: Subpage [0] -> subpage.html
+4: Dir [0] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
+5: Dir/File.h [0] -> File_8h.html
+6: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
+7: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
+8: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
+9: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#ac03e8437172963981197eb393e0550d3
+10: Namespace::Enum::Value [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
+11: Namespace::Enum [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
+12: Namespace::Typedef [0] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
+13: Namespace::Variable [0] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
+14: MACRO [0] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
+15: MACRO_FUNCTION() [0] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
+16: MACRO_FUNCTION_WITH_PARAMS() [0] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
+""".strip())
 
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()

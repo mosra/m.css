@@ -27,6 +27,12 @@ import unittest
 from dox2html5 import parse_doxyfile, State
 
 class Doxyfile(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        unittest.TestCase.__init__(self, *args, **kwargs)
+
+        # Display ALL THE DIFFS
+        self.maxDiff = None
+
     def test(self):
         state = State()
         parse_doxyfile(state, 'test/doxyfile/Doxyfile')
@@ -42,6 +48,11 @@ class Doxyfile(unittest.TestCase):
             'M_LINKS_NAVBAR2': ['annotated', 'files'],
             'M_PAGE_FINE_PRINT': 'this is "quotes"',
             'M_PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
+            'M_SEARCH_DISABLED': False,
+            'M_SEARCH_DOWNLOAD_BINARY': False,
+            'M_SEARCH_EXTERNAL_URL': '',
+            'M_SEARCH_HELP': 'Search for symbols, headers, pages or example source files. '
+                             'You can omit any prefix from the symbol or file path.',
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',

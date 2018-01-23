@@ -26,6 +26,7 @@
 
 import xml.etree.ElementTree as ET
 import argparse
+import base64
 import sys
 import re
 import html
@@ -177,10 +178,13 @@ class State:
     def __init__(self):
         self.basedir = ''
         self.compounds: Dict[str, Any] = {}
+        self.search: List[Any] = []
         self.examples: List[Any] = []
         self.doxyfile: Dict[str, str] = {}
         self.images: List[str] = []
         self.current = ''
+        self.current_prefix = []
+        self.current_url = ''
 
 def slugify(text: str) -> str:
     # Maybe some Unicode normalization would be nice here?
@@ -1085,11 +1089,18 @@ def parse_enum(state: State, element: ET.Element):
         if ''.join(enumvalue.find('briefdescription').itertext()).strip():
             logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
         value.description = parse_desc(state, enumvalue.find('detaileddescription'))
-        if value.description: enum.has_value_details = True
+        if value.description:
+            enum.has_value_details = True
+            if not state.doxyfile['M_SEARCH_DISABLED']:
+                state.search += [(state.current_url + '#' + value.id, state.current_prefix + [enum.name], value.name)]
         enum.values += [value]
 
     enum.has_details = enum.description or enum.has_value_details
-    return enum if enum.brief or enum.has_details or enum.has_value_details else None
+    if enum.brief or enum.has_details or enum.has_value_details:
+        if not state.doxyfile['M_SEARCH_DISABLED']:
+            state.search += [(state.current_url + '#' + enum.id, state.current_prefix, enum.name)]
+        return enum
+    return None
 
 def parse_template_params(state: State, element: ET.Element, description):
     if element is None: return False, None
@@ -1143,7 +1154,10 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
     typedef.has_details = typedef.description or typedef.has_template_details
-    return typedef if typedef.brief or typedef.has_details else None
+    if typedef.brief or typedef.has_details:
+        state.search += [(state.current_url + '#' + typedef.id, state.current_prefix, typedef.name)]
+        return typedef
+    return None
 
 def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'function'
@@ -1234,7 +1248,11 @@ def parse_func(state: State, element: ET.Element):
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
     func.has_details = func.description or func.has_template_details or func.has_param_details or func.return_value
-    return func if func.brief or func.has_details else None
+    if func.brief or func.has_details:
+        if not state.doxyfile['M_SEARCH_DISABLED']:
+            state.search += [(state.current_url + '#' + func.id, state.current_prefix, func.name + '()')]
+        return func
+    return None
 
 def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
@@ -1255,7 +1273,11 @@ def parse_var(state: State, element: ET.Element):
     var.description = parse_var_desc(state, element)
 
     var.has_details = not not var.description
-    return var if var.brief or var.has_details else None
+    if var.brief or var.has_details:
+        if not state.doxyfile['M_SEARCH_DISABLED']:
+            state.search += [(state.current_url + '#' + var.id, state.current_prefix, var.name)]
+        return var
+    return None
 
 def parse_define(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'define'
@@ -1284,7 +1306,11 @@ def parse_define(state: State, element: ET.Element):
     if params: logging.warning("{}: define parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
     define.has_details = define.description or define.return_value
-    return define if define.brief or define.has_details else None
+    if define.brief or define.has_details:
+        if not state.doxyfile['M_SEARCH_DISABLED']:
+            state.search += [(state.current_url + '#' + define.id, [], define.name + ('' if define.params is None else '()'))]
+        return define
+    return None
 
 def extract_metadata(state: State, xml):
     logging.debug("Extracting metadata from {}".format(os.path.basename(xml)))
@@ -1423,6 +1449,61 @@ def postprocess_state(state: State):
     if state.doxyfile['M_FAVICON']:
         state.doxyfile['M_FAVICON'] = (state.doxyfile['M_FAVICON'], mimetypes.guess_type(state.doxyfile['M_FAVICON'])[0])
 
+def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap):
+    compound = state.compounds[id]
+    if not compound.brief and not compound.has_details: return 0
+
+    # Add current item name to prefix list
+    prefixed_name = prefix + [compound.leaf_name]
+
+    # Calculate fully-qualified name
+    if compound.kind in ['namespace', 'struct', 'class', 'union']:
+        joiner = '::'
+    elif compound.kind in ['file', 'dir']:
+        joiner = '/'
+    else:
+        joiner = ''
+
+    # If just a leaf name, add it once
+    if not joiner:
+        # TODO: escape elsewhere so i don't have to unescape here
+        name = html.unescape(compound.leaf_name)
+        trie.insert(name.lower(), map.add(name, compound.url))
+
+    # Otherwise add it multiple times with all possible prefixes
+    else:
+        # TODO: escape elsewhere so i don't have to unescape here
+        index = map.add(html.unescape(joiner.join(prefixed_name)), compound.url)
+        for i in range(len(prefixed_name)):
+            trie.insert(html.unescape(joiner.join(prefixed_name[i:])).lower(), index)
+
+    for i in compound.children:
+        if i in state.compounds:
+            _build_search_data(state, prefixed_name, i, trie, map)
+
+def build_search_data(state: State) -> bytearray:
+    trie = Trie()
+    map = ResultMap()
+
+    for id, compound in state.compounds.items():
+        if compound.parent: continue # start from the root
+        _build_search_data(state, [], id, trie, map)
+
+    for url, prefix, name in state.search:
+        # Add current item name to prefix list
+        prefixed_name = prefix + [name]
+
+        # TODO: escape elsewhere so i don't have to unescape here
+        index = map.add(html.unescape('::'.join(prefixed_name)), url)
+        for i in range(len(prefixed_name)):
+            trie.insert(html.unescape('::'.join(prefixed_name[i:])).lower(), index)
+
+    return serialize_search_data(trie, map)
+
+def base85encode_search_data(data: bytearray) -> bytearray:
+    return (b"/* Generated by http://mcss.mosra.cz/doxygen/. Do not edit. */\n" +
+            b"Search.load('" + base64.b85encode(data, True) + b"');\n")
+
 def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas
     m.math.counter = 0
@@ -1461,6 +1542,8 @@ def parse_xml(state: State, xml: str):
     # Compound name is page filename, so we have to use title there. The same
     # is for groups.
     compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] else compounddef.find('compoundname').text
+    # Compound URL is ID, except for index page
+    compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
@@ -1511,6 +1594,14 @@ def parse_xml(state: State, xml: str):
         compound.breadcrumb = []
         for i in reversed(path_reverse):
             compound.breadcrumb += [(state.compounds[i].leaf_name, state.compounds[i].url)]
+
+        # Save current prefix for search
+        state.current_prefix = [name for name, _ in compound.breadcrumb]
+    else:
+        state.current_prefix = []
+
+    # Save current compound URL for search data building
+    state.current_url = compound.url
 
     if compound.kind == 'page':
         # Drop TOC for pages, if not requested
@@ -1969,11 +2060,6 @@ def parse_xml(state: State, xml: str):
 
     parsed = Empty()
     parsed.version = root.attrib['version']
-
-    # Decide about save as filename. Pages mess this up, because index page has
-    # "indexpage" as a name so we have to use the compound name instead
-    parsed.save_as = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
-
     parsed.compound = compound
     return parsed
 
@@ -2117,7 +2203,11 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_FAVICON': [],
         'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
         'M_LINKS_NAVBAR2': ['annotated', 'files'],
-        'M_PAGE_FINE_PRINT': ['[default]']
+        'M_PAGE_FINE_PRINT': ['[default]'],
+        'M_SEARCH_DISABLED': ['NO'],
+        'M_SEARCH_DOWNLOAD_BINARY': ['NO'],
+        'M_SEARCH_HELP': ['Search for symbols, headers, pages or example source files. You can omit any prefix from the symbol or file path.'],
+        'M_SEARCH_EXTERNAL_URL': ['']
     }
 
     def parse_value(var):
@@ -2194,7 +2284,9 @@ def parse_doxyfile(state: State, doxyfile, config = None):
               'M_PAGE_HEADER',
               'M_PAGE_FINE_PRINT',
               'M_THEME_COLOR',
-              'M_FAVICON']:
+              'M_FAVICON',
+              'M_SEARCH_HELP',
+              'M_SEARCH_EXTERNAL_URL']:
         if i in config: state.doxyfile[i] = ' '.join(config[i])
 
     # Int values that we want
@@ -2203,7 +2295,9 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
 
     # Boolean values that we want
-    for i in ['M_EXPAND_INNER_TYPES']:
+    for i in ['M_EXPAND_INNER_TYPES',
+              'M_SEARCH_DISABLED',
+              'M_SEARCH_DOWNLOAD_BINARY']:
         if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
 
     # List values that we want. Drop empty lines.
@@ -2277,10 +2371,10 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             template = env.get_template('{}.html'.format(parsed.compound.kind))
             rendered = template.render(compound=parsed.compound,
                 DOXYGEN_VERSION=parsed.version,
-                FILENAME=parsed.save_as,
+                FILENAME=parsed.compound.url,
                 **state.doxyfile)
 
-            output = os.path.join(html_output, parsed.save_as)
+            output = os.path.join(html_output, parsed.compound.url)
             with open(output, 'w') as f:
                 f.write(rendered)
 
@@ -2302,8 +2396,18 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         with open(output, 'w') as f:
             f.write(rendered)
 
+    if not state.doxyfile['M_SEARCH_DISABLED']:
+        data = build_search_data(state)
+
+        if state.doxyfile['M_SEARCH_DOWNLOAD_BINARY']:
+            with open(os.path.join(html_output, "searchdata.bin"), 'wb') as f:
+                f.write(data)
+        else:
+            with open(os.path.join(html_output, "searchdata.js"), 'wb') as f:
+                f.write(base85encode_search_data(data))
+
     # Copy all referenced files
-    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES']:
+    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 

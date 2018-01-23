@@ -22,6 +22,8 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os
+
 from test import BaseTestCase
 
 class Layout(BaseTestCase):
@@ -31,6 +33,9 @@ class Layout(BaseTestCase):
     def test(self):
         self.run_dox2html5(wildcard='index.xml')
         self.assertEqual(*self.actual_expected_contents('pages.html'))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'm-dark+doxygen.compiled.css')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'search.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.js')))
 
 class LayoutMinimal(BaseTestCase):
     def __init__(self, *args, **kwargs):
@@ -47,3 +52,12 @@ class LayoutNavbarSingleColumn(BaseTestCase):
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class LayoutSearchBinary(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'search_binary', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.bin')))

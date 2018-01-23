@@ -1,2 +1,4 @@
 test/*/html/
 test/*/xml/
+test/js-test-data/
+coverage/
