@@ -45,7 +45,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
-sys.path.append("../pelican-plugins")
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pelican-plugins'))
 import latex2svg
 import m.math
 import ansilexer
@@ -2056,7 +2056,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
 
 default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
-default_templates = 'templates/'
+default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/')
 
 def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
     state = State()
@@ -2141,9 +2141,19 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         with open(output, 'w') as f:
             f.write(rendered)
 
-    # Copy all referenced files, skip absolute URLs
+    # Copy all referenced files
     for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES']:
+        # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
+
+        # If file is found relative to the Doxyfile, use that
+        if os.path.exists(os.path.join(state.basedir, i)):
+            i = os.path.join(state.basedir, i)
+
+        # Otherwise use path relative to script directory
+        else:
+            i = os.path.join(os.path.dirname(os.path.realpath(__file__)), i)
+
         logging.debug("copying {} to output".format(i))
         shutil.copy(i, os.path.join(html_output, os.path.basename(i)))
 
