@@ -19,7 +19,7 @@ matrix:
 install:
   # 2.10 has some weird behavior, putting a lot of empty lines into the output
   - pip install jinja2==2.9.6
-  - pip install pelican Pyphen Pillow
+  - pip install pelican Pyphen Pillow coverage codecov
 
   # Needed for doxygen binaries
   - mkdir -p $HOME/bin && export PATH=$HOME/bin:$PATH
@@ -29,14 +29,14 @@ install:
 
 script:
   # Test the theme
-  - cd $TRAVIS_BUILD_DIR/pelican-theme && python -m unittest
+  - cd $TRAVIS_BUILD_DIR/pelican-theme && coverage run -m unittest && cp .coverage ../.coverage.theme
 
   # Test plugins. Math plugin is not tested as dvisvgm on 14.04 is unusable.
-  - cd $TRAVIS_BUILD_DIR/pelican-plugins && python -m unittest
+  - cd $TRAVIS_BUILD_DIR/pelican-plugins && coverage run -m unittest && cp .coverage ../.coverage.plugins
 
   # Test doxygen theme. Math rendering is not tested as dvisvgm on 14.04 is
   # unusable.
-  - if [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR/doxygen && python -m unittest; fi
+  - if [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR/doxygen && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
 # Cache the downloaded doxygen
 cache:
@@ -50,3 +50,6 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
+
+after_success:
+  - cd $TRAVIS_BUILD_DIR && coverage combine && codecov
