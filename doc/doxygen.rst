@@ -1254,7 +1254,9 @@ Each item has the following properties:
 Property                    Description
 =========================== ===================================================
 :py:`param.name`            Parameter name (if not anonymous)
-:py:`param.type`            Parameter type, together with name and array
+:py:`param.type`            Parameter type, together with array specification
+                            [6]_
+:py:`param.type_name`       Parameter type, together with name and array
                             specification [6]_
 :py:`param.default`         Default parameter value, if any [6]_
 :py:`param.description`     Optional parameter description. If set,

@@ -1272,13 +1272,16 @@ def parse_func(state: State, element: ET.Element):
         if array is not None:
             if name is not None:
                 if param.type.endswith(')'):
-                    param.type = param.type[:-1] + name.text + ')' + array.text
+                    param.type_name = param.type[:-1] + name.text + ')' + array.text
                 else:
-                    param.type = param.type + ' ' + name.text + array.text
+                    param.type_name = param.type + ' ' + name.text + array.text
             else:
-                param.type += array.text
+                param.type_name = param.type + array.text
+            param.type += array.text
         elif name is not None:
-            param.type += ' ' + name.text
+            param.type_name = param.type + ' ' + name.text
+        else:
+            param.type_name = param.type
 
         param.default = parse_type(state, p.find('defval'))
         if param.name in params:

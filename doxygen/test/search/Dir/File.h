@@ -20,7 +20,7 @@ class Class {
         void foo() &&; /**< @overload */
 
         /** @brief Function with arguments */
-        void foo(const Enum&, Typedef);
+        void foo(const Enum& first, Typedef second);
 };
 
 /** @brief A variable */
