@@ -30,7 +30,7 @@ import sys
 import unittest
 from types import SimpleNamespace as Empty
 
-from dox2html5 import Trie, ResultMap, serialize_search_data, search_data_header_struct
+from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
 
 from test import IntegrationTestCase
 
@@ -106,10 +106,14 @@ def pretty_print_map(serialized: bytes):
     out = ''
     for i in range(size):
         if i: out += '\n'
-        flags = ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0]
+        flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
+        extra = [str(int(flags.value))]
+        if flags & ResultFlag.HAS_SUFFIX:
+            extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
+            offset += 1
         next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
         name, _, url = serialized[offset:next_offset].partition(b'\0')
-        out += "{}: {} [{}] -> {}".format(i, name.decode('utf-8'), flags, url.decode('utf-8'))
+        out += "{}: {} [{}] -> {}".format(i, name.decode('utf-8'), ', '.join(extra), url.decode('utf-8'))
         offset = next_offset
     return out
 
@@ -230,32 +234,32 @@ class MapSerialization(unittest.TestCase):
 
     def test_single(self):
         map = ResultMap()
-        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", 11), 0)
+        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", suffix_length=11), 0)
 
         serialized = map.serialize()
         self.compare(serialized, """
-0: Magnum [11] -> namespaceMagnum.html
+0: Magnum [1, suffix_length=11] -> namespaceMagnum.html
 """)
-        self.assertEqual(len(serialized), 35)
+        self.assertEqual(len(serialized), 36)
 
     def test_multiple(self):
         map = ResultMap()
 
         self.assertEqual(map.add("Math", "namespaceMath.html"), 0)
-        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", 42), 1)
-        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", 255), 2)
+        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html"), 1)
+        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html"), 2)
         self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875"), 3)
-        self.assertEqual(map.add("Math::max()", "namespaceMath.html#abcdef2875"), 4)
+        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef2875", suffix_length=8), 4)
 
         serialized = map.serialize()
         self.compare(serialized, """
 0: Math [0] -> namespaceMath.html
-1: Math::Vector [42] -> classMath_1_1Vector.html
-2: Math::Range [255] -> classMath_1_1Range.html
+1: Math::Vector [0] -> classMath_1_1Vector.html
+2: Math::Range [0] -> classMath_1_1Range.html
 3: Math::min() [0] -> namespaceMath.html#abcdef2875
-4: Math::max() [0] -> namespaceMath.html#abcdef2875
+4: Math::max(int, int) [1, suffix_length=8] -> namespaceMath.html#abcdef2875
 """)
-        self.assertEqual(len(serialized), 201)
+        self.assertEqual(len(serialized), 210)
 
 class Serialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -272,10 +276,10 @@ class Serialization(unittest.TestCase):
         map = ResultMap()
 
         trie.insert("math", map.add("Math", "namespaceMath.html"))
-        index = map.add("Math::Vector", "classMath_1_1Vector.html", 42)
+        index = map.add("Math::Vector", "classMath_1_1Vector.html")
         trie.insert("math::vector", index)
         trie.insert("vector", index)
-        index = map.add("Math::Range", "classMath_1_1Range.html", 255)
+        index = map.add("Math::Range", "classMath_1_1Range.html")
         trie.insert("math::range", index)
         trie.insert("range", index)
 
@@ -287,8 +291,8 @@ math [0]
 vector [1]
 range [2]
 0: Math [0] -> namespaceMath.html
-1: Math::Vector [42] -> classMath_1_1Vector.html
-2: Math::Range [255] -> classMath_1_1Range.html
+1: Math::Vector [0] -> classMath_1_1Vector.html
+2: Math::Range [0] -> classMath_1_1Range.html
 """)
         self.assertEqual(len(serialized), 241)
 
@@ -329,20 +333,20 @@ macro [14]
 0: Namespace [0] -> namespaceNamespace.html
 1: Namespace::Class [0] -> classNamespace_1_1Class.html
 2: A page [0] -> page.html
-3: Subpage [0] -> subpage.html
-4: Dir [0] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
+3: A page » Subpage [0] -> subpage.html
+4: Dir/ [1, suffix_length=1] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
 5: Dir/File.h [0] -> File_8h.html
 6: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
-7: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
-8: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
-9: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#ac03e8437172963981197eb393e0550d3
+7: Namespace::Class::foo() const [1, suffix_length=6] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
+8: Namespace::Class::foo() && [1, suffix_length=3] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
+9: Namespace::Class::foo(with, arguments) [1, suffix_length=15] -> classNamespace_1_1Class.html#ac03e8437172963981197eb393e0550d3
 10: Namespace::Enum::Value [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
 11: Namespace::Enum [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
 12: Namespace::Typedef [0] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
 13: Namespace::Variable [0] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
 14: MACRO [0] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
 15: MACRO_FUNCTION() [0] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
-16: MACRO_FUNCTION_WITH_PARAMS() [0] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
+16: MACRO_FUNCTION_WITH_PARAMS(params) [1, suffix_length=6] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover

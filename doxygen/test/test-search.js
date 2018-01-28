@@ -65,7 +65,7 @@ const { StringDecoder } = require('string_decoder');
 /* Verify that base85-decoded file is equivalent to the binary */
 {
     let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.ok(binary.byteLength, 531);
+    assert.equal(binary.byteLength, 630);
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
@@ -100,7 +100,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.symbolCount, 6);
+    assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
 
     /* Blow up */
@@ -108,43 +108,43 @@ const { StringDecoder } = require('string_decoder');
         { name: 'Math',
           url: 'namespaceMath.html',
           suffixLength: 3 },
-        { name: 'Math::min()',
+        { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 10 },
+          suffixLength: 18 },
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
           suffixLength: 11 },
-        { name: 'Math::Vector::min()',
+        { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          suffixLength: 18 },
+          suffixLength: 24 },
         { name: 'Math::Range',
           url: 'classMath_1_1Range.html',
           suffixLength: 10 },
-        { name: 'Math::Range::min()',
+        { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          suffixLength: 17 },
-        { name: 'Math::min()',
+          suffixLength: 23 },
+        { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 4 },
-        { name: 'Math::Vector::min()',
+          suffixLength: 12 },
+        { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          suffixLength: 4 },
-        { name: 'Math::Range::min()',
+          suffixLength: 10 },
+        { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          suffixLength: 4 } ];
+          suffixLength: 10 }];
     assert.deepEqual(Search.search('m'), resultsForM);
 
     /* Add more characters */
     assert.deepEqual(Search.search('min'), [
-        { name: 'Math::min()',
+        { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 2 },
-        { name: 'Math::Vector::min()',
+          suffixLength: 10 },
+        { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          suffixLength: 2 },
-        { name: 'Math::Range::min()',
+          suffixLength: 8 },
+        { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          suffixLength: 2 } ]);
+          suffixLength: 8 }]);
 
     /* Go back, get the same thing */
     assert.deepEqual(Search.search('m'), resultsForM);
@@ -154,9 +154,9 @@ const { StringDecoder } = require('string_decoder');
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
           suffixLength: 3 },
-        { name: 'Math::Vector::min()',
+        { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          suffixLength: 10 }];
+          suffixLength: 16 }];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 
     /* Uppercase things and spaces */
@@ -164,21 +164,27 @@ const { StringDecoder } = require('string_decoder');
 
     /* Not found */
     assert.deepEqual(Search.search('pizza'), []);
+
+    /* UTF-8 decoding */
+    assert.deepEqual(Search.search('su'), [
+        { name: 'Page » Subpage',
+          url: 'subpage.html',
+          suffixLength: 5 }]);
 }
 
 /* Search, limiting the results to 3 */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.symbolCount, 6);
+    assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [
         { name: 'Math',
           url: 'namespaceMath.html',
           suffixLength: 3 },
-        { name: 'Math::min()',
+        { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 10 },
+          suffixLength: 18 },
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
           suffixLength: 11 }]);
@@ -188,18 +194,18 @@ const { StringDecoder } = require('string_decoder');
 {
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.symbolCount, 6);
+    assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [
-        { name: 'Math::min()',
+        { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 2 },
-        { name: 'Math::Vector::min()',
+          suffixLength: 10 },
+        { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          suffixLength: 2 },
-        { name: 'Math::Range::min()',
+          suffixLength: 8 },
+        { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          suffixLength: 2 } ]);
+          suffixLength: 8 }]);
 }
 
 /* Not testing Search.download() because the xmlhttprequest npm package is *crap* */

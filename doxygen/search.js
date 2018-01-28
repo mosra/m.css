@@ -228,8 +228,16 @@ var Search = {
         /* Populate the results with all values associated with this node */
         for(let i = 0; i != valueCount; ++i) {
             let index = this.trie.getUint16(offset + (i + 1)*2, true);
-            //let flags = this.map.getUint8(index*4 + 3); /* not used yet */
+            let flags = this.map.getUint8(index*4 + 3);
             let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
+
+            /* The result has a suffix, extract its length */
+            let resultSuffixLength = 0;
+            if(flags & 0x01) {
+                resultSuffixLength = this.map.getUint8(resultOffset);
+                ++resultOffset;
+            }
+
             let nextResultOffset = this.map.getUint32((index + 1)*4, true) & 0x00ffffff;
 
             let name = '';
@@ -251,7 +259,11 @@ var Search = {
                 url += String.fromCharCode(this.map.getUint8(j));
             }
 
-            results.push({name: name, url: url, suffixLength: suffixLength});
+            /* Properly decode UTF-8 in the name
+               http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html */
+            results.push({name: decodeURIComponent(escape(name)),
+                          url: url,
+                          suffixLength: suffixLength + resultSuffixLength});
 
             /* 'nuff said. */
             /* TODO: remove once proper barriers are in */

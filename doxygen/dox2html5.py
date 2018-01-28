@@ -38,6 +38,7 @@ import struct
 import subprocess
 import urllib.parse
 import logging
+from enum import Flag
 from types import SimpleNamespace as Empty
 from typing import Tuple, Dict, Any, List
 
@@ -122,18 +123,43 @@ class Trie:
         self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output))
         return output
 
+class ResultFlag(Flag):
+    HAS_SUFFIX = 1
+
 class ResultMap:
-    # item 1 flags | item 2 flags |     | item N flags | file |   item 1      |
-    #   + offset   |   + offset   | ... |   + offset   | size | name + url    | ...
-    #    8 + 24b   |    8 + 24b   |     |    8 + 24b   |  32b | (0-delimited) |
+    # item 1 flags | item 2 flags |     | item N flags | file | item 1 |
+    #   + offset   |   + offset   | ... |   + offset   | size |  data  | ...
+    #    8 + 24b   |    8 + 24b   |     |    8 + 24b   |  32b |        |
+    #
+    # basic item (flags & 0x1 == 0):
+    #
+    # name | \0 | URL
+    #      |    |
+    #      | 8b |
+    #
+    # function item (flags & 0x1 == 1):
+    #
+    # suffix | name | \0 | URL
+    # length |      |    |
+    #   8b   |      | 8b |
+    #
     offset_struct = struct.Struct('<I')
     flags_struct = struct.Struct('<B')
+    suffix_length_struct = struct.Struct('<B')
 
     def __init__(self):
         self.entries = []
 
-    def add(self, name, url, flags = 0) -> int:
-        self.entries += [(name, url, flags)]
+    def add(self, name, url, suffix_length=0, flags=ResultFlag(0)) -> int:
+        if suffix_length: flags |= ResultFlag.HAS_SUFFIX
+
+        entry = Empty()
+        entry.name = name
+        entry.url = url
+        entry.flags = flags
+        entry.suffix_length = suffix_length
+
+        self.entries += [entry]
         return len(self.entries) - 1
 
     def serialize(self) -> bytearray:
@@ -142,22 +168,29 @@ class ResultMap:
         # Write the offset array. Starting offset for items is after the offset
         # array and the file size
         offset = (len(self.entries) + 1)*4
-        for name, url, flags in self.entries:
+        for e in self.entries:
             assert offset < 2**24
             output += self.offset_struct.pack(offset)
-            self.flags_struct.pack_into(output, len(output) - 1, flags)
+            self.flags_struct.pack_into(output, len(output) - 1, e.flags.value)
 
-            # include the 0-delimiter
-            offset += len(name) + len(url) + 1
+            # Extra field for suffix length
+            if e.flags & ResultFlag.HAS_SUFFIX:
+                offset += len(e.name.encode('utf-8')) + len(e.url.encode('utf-8')) + 2
+
+            # Just the 0-delimiter
+            else:
+                offset += len(e.name.encode('utf-8')) + len(e.url.encode('utf-8')) + 1
 
         # Write file size
         output += self.offset_struct.pack(offset)
 
         # Write the entries themselves
-        for name, url, _ in self.entries:
-            output += name.encode('utf-8')
+        for e in self.entries:
+            if e.flags & ResultFlag.HAS_SUFFIX:
+                output += self.suffix_length_struct.pack(e.suffix_length)
+            output += e.name.encode('utf-8')
             output += b'\0'
-            output += url.encode('utf-8')
+            output += e.url.encode('utf-8')
 
         assert len(output) == offset
         return output
@@ -1092,13 +1125,21 @@ def parse_enum(state: State, element: ET.Element):
         if value.description:
             enum.has_value_details = True
             if not state.doxyfile['M_SEARCH_DISABLED']:
-                state.search += [(state.current_url + '#' + value.id, state.current_prefix + [enum.name], value.name)]
+                result = Empty()
+                result.url = state.current_url + '#' + value.id
+                result.prefix = state.current_prefix + [enum.name]
+                result.name = value.name
+                state.search += [result]
         enum.values += [value]
 
     enum.has_details = enum.description or enum.has_value_details
     if enum.brief or enum.has_details or enum.has_value_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
-            state.search += [(state.current_url + '#' + enum.id, state.current_prefix, enum.name)]
+            result = Empty()
+            result.url = state.current_url + '#' + enum.id
+            result.prefix = state.current_prefix
+            result.name = enum.name
+            state.search += [result]
         return enum
     return None
 
@@ -1155,7 +1196,11 @@ def parse_typedef(state: State, element: ET.Element):
 
     typedef.has_details = typedef.description or typedef.has_template_details
     if typedef.brief or typedef.has_details:
-        state.search += [(state.current_url + '#' + typedef.id, state.current_prefix, typedef.name)]
+        result = Empty()
+        result.url = state.current_url + '#' + typedef.id
+        result.prefix = state.current_prefix
+        result.name = typedef.name
+        state.search += [result]
         return typedef
     return None
 
@@ -1250,7 +1295,13 @@ def parse_func(state: State, element: ET.Element):
     func.has_details = func.description or func.has_template_details or func.has_param_details or func.return_value
     if func.brief or func.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
-            state.search += [(state.current_url + '#' + func.id, state.current_prefix, func.name + '()')]
+            result = Empty()
+            result.url = state.current_url + '#' + func.id
+            result.prefix = state.current_prefix
+            result.name = func.name
+            result.params = [param.type for param in func.params]
+            result.suffix = func.suffix
+            state.search += [result]
         return func
     return None
 
@@ -1275,7 +1326,11 @@ def parse_var(state: State, element: ET.Element):
     var.has_details = not not var.description
     if var.brief or var.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
-            state.search += [(state.current_url + '#' + var.id, state.current_prefix, var.name)]
+            result = Empty()
+            result.url = state.current_url + '#' + var.id
+            result.prefix = state.current_prefix
+            result.name = var.name
+            state.search += [result]
         return var
     return None
 
@@ -1308,7 +1363,12 @@ def parse_define(state: State, element: ET.Element):
     define.has_details = define.description or define.return_value
     if define.brief or define.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
-            state.search += [(state.current_url + '#' + define.id, [], define.name + ('' if define.params is None else '()'))]
+            result = Empty()
+            result.url = state.current_url + '#' + define.id
+            result.prefix = []
+            result.name = define.name
+            result.params = None if define.params is None else [param[0] for param in define.params]
+            state.search += [result]
         return define
     return None
 
@@ -1456,25 +1516,36 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
 
     # Add current item name to prefix list
     prefixed_name = prefix + [compound.leaf_name]
+    prefixed_result_name = prefix + [compound.leaf_name]
+    suffix_length = 0
 
     # Calculate fully-qualified name
     if compound.kind in ['namespace', 'struct', 'class', 'union']:
-        joiner = '::'
+        joiner = result_joiner = '::'
     elif compound.kind in ['file', 'dir']:
-        joiner = '/'
-    else:
+        joiner = result_joiner = '/'
+    elif compound.kind in ['page', 'group']:
         joiner = ''
+        result_joiner = ' » '
+    else: assert False # pragma: no cover
+
+    # Show dirs with / at the end
+    if compound.kind == 'dir':
+        prefixed_result_name += ['']
+        suffix_length = 1
 
     # If just a leaf name, add it once
     if not joiner:
+        result_name = result_joiner.join(prefixed_result_name)
+
         # TODO: escape elsewhere so i don't have to unescape here
-        name = html.unescape(compound.leaf_name)
-        trie.insert(name.lower(), map.add(name, compound.url))
+        index = map.add(html.unescape(result_name), compound.url)
+        trie.insert(html.unescape(compound.leaf_name).lower(), index)
 
     # Otherwise add it multiple times with all possible prefixes
     else:
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(joiner.join(prefixed_name)), compound.url)
+        index = map.add(html.unescape(result_joiner.join(prefixed_result_name)), compound.url, suffix_length=suffix_length)
         for i in range(len(prefixed_name)):
             trie.insert(html.unescape(joiner.join(prefixed_name[i:])).lower(), index)
 
@@ -1490,12 +1561,25 @@ def build_search_data(state: State) -> bytearray:
         if compound.parent: continue # start from the root
         _build_search_data(state, [], id, trie, map)
 
-    for url, prefix, name in state.search:
-        # Add current item name to prefix list
-        prefixed_name = prefix + [name]
+    # TODO: examples?
+
+    for result in state.search:
+        name_with_args = result.name
+        name = result.name
+        suffix_length = 0
+        if hasattr(result, 'params') and result.params is not None:
+            name_with_args += '(' + ', '.join(result.params) + ')'
+            name += '()'
+            suffix_length += len(', '.join(result.params))
+        if hasattr(result, 'suffix') and result.suffix:
+            name_with_args += result.suffix
+            # TODO: escape elsewhere so i don't have to unescape here
+            suffix_length += len(html.unescape(result.suffix))
 
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape('::'.join(prefixed_name)), url)
+        index = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length)
+
+        prefixed_name = result.prefix + [name]
         for i in range(len(prefixed_name)):
             trie.insert(html.unescape('::'.join(prefixed_name[i:])).lower(), index)
 
