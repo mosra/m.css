@@ -1563,14 +1563,19 @@ def build_search_data(state: State) -> bytearray:
 
     # TODO: examples?
 
+    strip_tags_re = re.compile('<.*?>')
+    def strip_tags(text):
+        return strip_tags_re.sub('', text)
+
     for result in state.search:
         name_with_args = result.name
         name = result.name
         suffix_length = 0
         if hasattr(result, 'params') and result.params is not None:
-            name_with_args += '(' + ', '.join(result.params) + ')'
+            params = strip_tags(', '.join(result.params))
+            name_with_args += '(' + params + ')'
             name += '()'
-            suffix_length += len(', '.join(result.params))
+            suffix_length += len(html.unescape(params))
         if hasattr(result, 'suffix') and result.suffix:
             name_with_args += result.suffix
             # TODO: escape elsewhere so i don't have to unescape here

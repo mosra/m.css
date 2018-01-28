@@ -339,7 +339,7 @@ macro [14]
 6: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
 7: Namespace::Class::foo() const [1, suffix_length=6] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
 8: Namespace::Class::foo() && [1, suffix_length=3] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
-9: Namespace::Class::foo(with, arguments) [1, suffix_length=15] -> classNamespace_1_1Class.html#ac03e8437172963981197eb393e0550d3
+9: Namespace::Class::foo(const Enum&, Typedef) [1, suffix_length=20] -> classNamespace_1_1Class.html#abd560769b0863ca5d64905e8e0fc231b
 10: Namespace::Enum::Value [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
 11: Namespace::Enum [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
 12: Namespace::Typedef [0] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
