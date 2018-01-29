@@ -1465,7 +1465,7 @@ def parse_xml(state: State, xml: str):
                             assert compounddef_child.attrib['prot'] == 'protected'
                             compound.protected_types += [('class', class_)]
                     else:
-                        assert compound.kind in ['namespace', 'file']
+                        assert compound.kind in ['namespace', 'group', 'file']
                         compound.classes += [class_]
 
         # Base class (if it links to anywhere)
