@@ -141,6 +141,8 @@ just open generated ``index.html`` to see the result.
 
 -   Detailed description is put first and foremost on a page, *before* the
     member listing
+-   Files, directories and symbols that don't have any documentation are not
+    present in the output at all.
 -   Table of contents is generated for compound references as well, containing
     all sections of detailed description together with anchors to member
     listings.
@@ -182,7 +184,7 @@ amount of generated content for no added value.
     this unnecessary)
 -   Verbatim listing of parsed headers, "Includes" and "Included By" lists are
     not present (use your IDE or GitHub instead)
--   Undocumented or private members and content of anonymous namespaces are
+-   Undocumented or private members and contents of anonymous namespaces are
     ignored (if things are undocumented or intentionally hidden, why put them
     in the documentation)
 -   Brief description for enum values is ignored (only the detailed description
@@ -331,13 +333,26 @@ CSS files.
 The :ini:`M_LINKS_NAVBAR1` and :ini:`M_LINKS_NAVBAR2` options define which
 links are shown on the top navbar, split into left and right column on small
 screen sizes. These options take a whitespace-separated list of compound IDs
-and additionally the special ``pages``, ``namespaces``,  ``annotated``,
-``files`` IDs. By default the variables are defined like following:
+and additionally the special ``pages``, ``modules``, ``namespaces``,
+``annotated``, ``files`` IDs. By default the variables are defined like
+following:
 
 .. code:: ini
 
     M_LINKS_NAVBAR1 = pages namespaces
     M_LINKS_NAVBAR2 = annotated files
+
+.. note-info::
+
+    The theme by default assumes that the project is grouping symbols in
+    namespaces. If you use modules (``@addtogroup`` and related commands) and
+    you want to show their index in the navbar, add ``modules`` to one of
+    the :ini:`M_LINKS_NAVBAR*` options, for example:
+
+    .. code:: ini
+
+        M_LINKS_NAVBAR1 = pages modules
+        M_LINKS_NAVBAR2 = annotated files
 
 Titles for the links are taken implicitly. Empty :ini:`M_LINKS_NAVBAR2` will
 cause the navigation appear in a single column, setting both empty will cause
@@ -385,7 +400,8 @@ Options:
     files. Defaults to ``*.xml`` if not set.
 -   ``--index-pages INDEX_PAGES [INDEX_PAGES ...]`` --- index page templates.
     By default, if not set, the index pages are matching stock Doxygen, i.e.
-    ``annotated.html``, ``files.html``, ``namespaces.html`` and ``pages.html``.
+    ``annotated.html``, ``files.html``, ``modules.html``, ``namespaces.html``
+    and ``pages.html``.
     See `Navigation page templates`_ section below for more information.
 -   ``--no-doxygen`` --- don't run Doxygen before. By default Doxygen is run
     before the script to refresh the generated XML output.
@@ -778,6 +794,8 @@ Filename                Use
                         ``*.html``
 ``namespace.html``      Namespace documentation, read fron ``namespace*.xml``
                         and saved as ``namespace*.html``
+``group.html``          Module documentation, read fron ``group_*.xml``
+                        and saved as ``group_*.html``
 ``page.html``           Page, read from ``*.xml``/``indexpage.xml`` and saved
                         as ``*.html``/``index.html``
 ``struct.html``         Struct documentation, read from ``struct*.xml`` and
@@ -832,9 +850,10 @@ Property                                Description
 ======================================= =======================================
 :py:`compound.kind`                     One of :py:`'class'`, :py:`'dir'`,
                                         :py:`'example'`, :py:`'file'`,
-                                        :py:`'namespace'`, :py:`'page'`,
-                                        :py:`'struct'`, :py:`'union'`, used to
-                                        choose a template file from above
+                                        :py:`'group'`, :py:`'namespace'`,
+                                        :py:`'page'`, :py:`'struct'`,
+                                        :py:`'union'`, used to choose a
+                                        template file from above
 :py:`compound.id`                       Unique compound identifier, usually
                                         corresponding to output file name
 :py:`compound.name`                     Compound name
@@ -849,6 +868,9 @@ Property                                Description
                                         `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
+:py:`compound.modules`                  List of submodules in this compound.
+                                        Set only for modules. See
+                                        `Module properties`_ for details.
 :py:`compound.dirs`                     List of directories in this compound.
                                         Set only for directories. See
                                         `Directory properties`_ for details.
@@ -962,6 +984,22 @@ If available, it's a tuple of :py:`(prev, up, next)` where each item is a tuple
 of :py:`(url, title)` for a page that's either previous in the defined order,
 one level up or next. For starting/ending page the :py:`prev`/:py:`next` is
 :py:`None`.
+
+`Module properties`_
+````````````````````
+
+The :py:`compound.modules` property contains a list of modules, where every
+item has the following properties:
+
+.. class:: m-table m-fullwidth
+
+=========================== ===================================================
+Property                    Description
+=========================== ===================================================
+:py:`module.url`            URL of the file containing detailed module docs
+:py:`module.name`           Module name (just the leaf)
+:py:`module.brief`          Brief description. Can be empty. [1]_
+=========================== ===================================================
 
 `Directory properties`_
 ```````````````````````
@@ -1325,13 +1363,13 @@ Filename                Use
 ======================= =======================================================
 ``annotated.html``      Class listing
 ``files.html``          File and directory listing
+``modules.html``        Module listing
 ``namespaces.html``     Namespace listing
 ``pages.html``          Page listing
 ======================= =======================================================
 
-By default it's those four pages, but you can configure any other pages via
-the ``--index-pages`` option as mentioned in the `Command-line options`_
-section.
+By default it's those five pages, but you can configure any other pages via the
+``--index-pages`` option as mentioned in the `Command-line options`_ section.
 
 Each template is passed a subset of the ``Doxyfile`` configuration values from
 the above table and in addition the :py:`FILENAME` and :py:`DOXYGEN_VERSION`
@@ -1346,6 +1384,7 @@ Property                    Description
 :py:`index.symbols`         List of all namespaces + classes
 :py:`index.files`           List of all dirs + files
 :py:`index.pages`           List of all pages
+:py:`index.modules`         List of all modules
 =========================== ===================================================
 
 The form of each list entry is the same:
@@ -1356,8 +1395,9 @@ The form of each list entry is the same:
 Property                        Description
 =============================== ===============================================
 :py:`i.kind`                    Entry kind (one of :py:`'namespace'`,
-                                :py:`'class'`, :py:`'struct'`, :py:`'union'`,
-                                :py:`'dir'`, :py:`'file'`, :py:`'page'`)
+                                :py:`'group'`, :py:`'class'`, :py:`'struct'`,
+                                :py:`'union'`, :py:`'dir'`, :py:`'file'`,
+                                :py:`'page'`)
 :py:`i.name`                    Name
 :py:`i.url`                     URL of the file with detailed documentation
 :py:`i.brief`                   Brief documentation

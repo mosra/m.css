@@ -138,3 +138,14 @@ class Warnings(IntegrationTestCase):
         # Should warn that an export macro is present in the XML
         self.run_dox2html5(wildcard='namespaceMagnum.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceMagnum.html'))
+
+class Modules(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'modules', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('group__group.html'))
+        self.assertEqual(*self.actual_expected_contents('group__group2.html'))
+        self.assertEqual(*self.actual_expected_contents('group__subgroup.html'))
+        self.assertEqual(*self.actual_expected_contents('modules.html'))

@@ -2,6 +2,7 @@
 
 {% set prefix = compound.prefix_wbr %}
 
+{% macro entry_module(module) %}{% include 'entry-module.html' %}{% endmacro %}
 {% macro entry_dir(dir) %}{% include 'entry-dir.html' %}{% endmacro %}
 {% macro entry_file(file) %}{% include 'entry-file.html' %}{% endmacro %}
 {% macro entry_namespace(namespace) %}{% include 'entry-namespace.html' %}{% endmacro %}
@@ -24,7 +25,7 @@
         {% if compound.brief %}
         <p>{{ compound.brief }}</p>
         {% endif %}
-        {% if compound.sections or compound.dirs or compound.files or compound.namespaces or compound.classes or compound.typedefs or compound.funcs or compound.vars or compound.defines or compound.groups %}
+        {% if compound.sections or compound.modules or compound.dirs or compound.files or compound.namespaces or compound.classes or compound.typedefs or compound.funcs or compound.vars or compound.defines or compound.groups %}
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -43,6 +44,9 @@
             <li>
               Reference
               <ul>
+                {% if compound.modules %}
+                <li><a href="#groups">Modules</a></li>
+                {% endif %}
                 {% if compound.dirs %}
                 <li><a href="#subdirs">Directories</a></li>
                 {% endif %}
@@ -81,6 +85,16 @@
 {% if compound.description %}
 {{ compound.description }}
 {% endif %}
+        {% if compound.modules %}
+        <section id="groups">
+          <h2><a href="#groups">Modules</a></h3>
+          <dl class="m-dox">
+            {% for module in compound.modules %}
+{{ entry_module(module) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
         {% if compound.dirs %}
         <section id="subdirs">
           <h2><a href="#subdirs">Directories</a></h3>

@@ -1161,18 +1161,21 @@ def extract_metadata(state: State, xml):
 
     compounddef: ET.Element = root.find('compounddef')
 
-    if compounddef.attrib['kind'] not in ['namespace', 'class', 'struct', 'union', 'dir', 'file', 'page']:
+    if compounddef.attrib['kind'] not in ['namespace', 'group', 'class', 'struct', 'union', 'dir', 'file', 'page']:
         logging.debug("No useful info in {}, skipping".format(os.path.basename(xml)))
         return
 
     compound = Empty()
     compound.id  = compounddef.attrib['id']
     compound.kind = compounddef.attrib['kind']
-    # Compound name is page filename, so we have to use title there
-    compound.name = html.escape(compounddef.find('title').text if compound.kind == 'page' else compounddef.find('compoundname').text)
+    # Compound name is page filename, so we have to use title there. The same
+    # is for groups.
+    compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] else compounddef.find('compoundname').text)
     compound.url = compound.id + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    compound.has_details = compound.brief or compounddef.find('detaileddescription')
+    # Groups are explicitly created so they *have details*, other things need
+    # to have at least some documentation
+    compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')
     compound.children = []
     compound.parent = None # is filled in by postprocess_state()
 
@@ -1198,6 +1201,9 @@ def extract_metadata(state: State, xml):
     elif compounddef.attrib['kind'] == 'page':
         for i in compounddef.findall('innerpage'):
             compound.children += [i.attrib['refid']]
+    elif compounddef.attrib['kind'] == 'group':
+        for i in compounddef.findall('innergroup'):
+            compound.children += [i.attrib['refid']]
 
     state.compounds[compound.id] = compound
 
@@ -1209,7 +1215,7 @@ def postprocess_state(state: State):
 
     # Strip name of parent symbols from names to get leaf names
     for _, compound in state.compounds.items():
-        if not compound.parent or compound.kind in ['file', 'page']:
+        if not compound.parent or compound.kind in ['file', 'page', 'group']:
             compound.leaf_name = compound.name
             continue
 
@@ -1232,6 +1238,7 @@ def postprocess_state(state: State):
     predefined = {
         'pages': ("Pages", 'pages.html'),
         'namespaces': ("Namespaces", 'namespaces.html'),
+        'modules': ("Modules", 'modules.html'),
         'annotated': ("Classes", 'annotated.html'),
         'files': ("Files", 'files.html')
     }
@@ -1294,14 +1301,16 @@ def parse_xml(state: State, xml: str):
     compound = Empty()
     compound.kind = compounddef.attrib['kind']
     compound.id = compounddef.attrib['id']
-    # Compound name is page filename, so we have to use title there
-    compound.name = compounddef.find('title').text if compound.kind == 'page' else compounddef.find('compoundname').text
+    # Compound name is page filename, so we have to use title there. The same
+    # is for groups.
+    compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] else compounddef.find('compoundname').text
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
     compound.description, templates, compound.sections, footer_navigation, example_navigation = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
     compound.example_navigation = None
     compound.footer_navigation = None
+    compound.modules = []
     compound.dirs = []
     compound.files = []
     compound.namespaces = []
@@ -1335,7 +1344,7 @@ def parse_xml(state: State, xml: str):
 
     # Build breadcrumb. Breadcrumb for example pages is built after everything
     # is parsed.
-    if compound.kind in ['namespace', 'struct', 'class', 'union', 'file', 'dir', 'page']:
+    if compound.kind in ['namespace', 'group', 'struct', 'class', 'union', 'file', 'dir', 'page']:
         # Gather parent compounds
         path_reverse = [compound.id]
         while path_reverse[-1] in state.compounds and state.compounds[path_reverse[-1]].parent:
@@ -1486,6 +1495,17 @@ def parse_xml(state: State, xml: str):
                     class_.templates = symbol.templates
 
                     compound.derived_classes += [class_]
+
+        # Module (*not* member group)
+        elif compounddef_child.tag == 'innergroup':
+            assert compound.kind == 'group'
+
+            group = state.compounds[compounddef_child.attrib['refid']]
+            g = Empty()
+            g.url = group.url
+            g.name = group.leaf_name
+            g.brief = group.brief
+            compound.modules += [g]
 
         # Other, grouped in sections
         elif compounddef_child.tag == 'sectiondef':
@@ -1717,7 +1737,7 @@ def parse_xml(state: State, xml: str):
                                             'collaborationgraph',
                                             'listofallmembers',
                                             'tableofcontents'] and
-            not (compounddef.attrib['kind'] == 'page' and compounddef_child.tag == 'title')): # pragma: no cover
+            not (compounddef.attrib['kind'] in ['page', 'group'] and compounddef_child.tag == 'title')): # pragma: no cover
             logging.warning("{}: ignoring <{}> in <compounddef>".format(state.current, compounddef_child.tag))
 
     # Decide about the prefix (it may contain template parameters, so we
@@ -1804,12 +1824,13 @@ def parse_index_xml(state: State, xml):
     assert root.tag == 'doxygenindex'
 
     # Top-level symbols, files and pages. Separated to nestable (namespaces,
-    # dirs) and non-nestable so we have these listed first.
+    # groups, dirs) and non-nestable so we have these listed first.
     top_level_namespaces = []
     top_level_classes = []
     top_level_dirs = []
     top_level_files = []
     top_level_pages = []
+    top_level_modules = []
 
     # Non-top-level symbols, files and pages, assigned later
     orphans_nestable = {}
@@ -1842,6 +1863,8 @@ def parse_index_xml(state: State, xml):
         if not compound.parent:
             if compound.kind == 'namespace':
                 top_level_namespaces += [entry]
+            elif compound.kind == 'group':
+                top_level_modules += [entry]
             elif compound.kind in ['class', 'struct', 'union']:
                 top_level_classes += [entry]
             elif compound.kind == 'dir':
@@ -1856,7 +1879,7 @@ def parse_index_xml(state: State, xml):
 
         # Otherwise put it into orphan map
         else:
-            if compound.kind in ['namespace', 'dir']:
+            if compound.kind in ['namespace', 'group', 'dir']:
                 if not compound.parent in orphans_nestable:
                     orphans_nestable[compound.parent] = []
                 orphans_nestable[compound.parent] += [entry]
@@ -1882,6 +1905,7 @@ def parse_index_xml(state: State, xml):
     parsed.index.symbols = top_level_namespaces + top_level_classes
     parsed.index.files = top_level_dirs + top_level_files
     parsed.index.pages = top_level_pages
+    parsed.index.modules = top_level_modules
 
     # Assign nestable children to their parents first, if the parents exist
     for parent, children in orphans_nestable.items():
@@ -2030,7 +2054,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         if i in config:
             state.doxyfile[i] = [line for line in config[i] if line]
 
-default_index_pages = ['pages', 'files', 'namespaces', 'annotated']
+default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
 default_templates = 'templates/'
 
