@@ -346,6 +346,12 @@ function selectResult(event) {
 /* istanbul ignore next */
 function showSearch() {
     window.location.hash = '#search';
+
+    /* Prevent accidental scrolling of the body, prevent page layout jumps */
+    let scrolledBodyWidth = document.body.offsetWidth;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = (document.body.offsetWidth - scrolledBodyWidth) + 'px';
+
     document.getElementById('search-input').value = '';
     document.getElementById('search-input').focus();
     document.getElementById('search-results').style.display = 'none';
@@ -358,6 +364,11 @@ function showSearch() {
 function hideSearch() {
     window.location.hash = '#!';
     window.history.pushState('', '', window.location.pathname);
+
+    /* Restore scrollbar, prevent page layout jumps */
+    document.body.style.overflow = 'auto';
+    document.body.style.paddingRight = '0';
+
     return false;
 }
 
