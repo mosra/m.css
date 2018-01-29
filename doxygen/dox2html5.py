@@ -1346,7 +1346,8 @@ def extract_metadata(state: State, xml):
     # Compound name is page filename, so we have to use title there. The same
     # is for groups.
     compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text)
-    compound.url = compound.id + '.html'
+    # Compound URL is ID, except for index page
+    compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
     # Groups are explicitly created so they *have details*, other things need
     # to have at least some documentation
@@ -2120,9 +2121,9 @@ def parse_index_xml(state: State, xml):
                 top_level_files += [entry]
             else:
                 assert compound.kind == 'page'
-                # Ignore index page in page listing
-                if entry.id == 'indexpage': continue
-                top_level_pages += [entry]
+                # Ignore index page in page listing, add it later only if it
+                # has children
+                if entry.id != 'indexpage': top_level_pages += [entry]
 
         # Otherwise put it into orphan map
         else:
@@ -2171,6 +2172,10 @@ def parse_index_xml(state: State, xml):
     # Add children to their parents, if the parents exist
     for parent, children in orphans.items():
         if parent in entries: entries[parent].children += children
+
+    # Add the index page if it has children
+    if 'indexpage' in entries and entries['indexpage'].children:
+        parsed.index.pages = [entries['indexpage']] + parsed.index.pages
 
     return parsed
 

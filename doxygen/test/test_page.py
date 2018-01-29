@@ -91,3 +91,12 @@ class EmptyTitle(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='untitled.xml')
         self.assertEqual(*self.actual_expected_contents('untitled.html'))
+
+class SubpageOfIndex(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'subpage_of_index', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('page.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
