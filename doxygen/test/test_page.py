@@ -75,3 +75,11 @@ class FooterNavigation(IntegrationTestCase):
         self.run_dox2html5(wildcard='subpage*.xml')
         self.assertEqual(*self.actual_expected_contents('subpage1.html'))
         self.assertEqual(*self.actual_expected_contents('subpage2.html'))
+
+class EmptyIndex(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'empty_index', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))

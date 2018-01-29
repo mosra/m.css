@@ -2099,6 +2099,24 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             with open(output, 'w') as f:
                 f.write(rendered)
 
+    # Empty index page in case no mainpage documentation was provided so
+    # there's at least some entrypoint. Doxygen version is not set in this
+    # case, as this is totally without Doxygen involvement.
+    if not os.path.join(xml_input, 'indexpage.xml') in xml_files_metadata:
+        compound = Empty()
+        compound.kind = 'page'
+        compound.name = state.doxyfile['PROJECT_NAME']
+        compound.description = ''
+        compound.breadcrumb = [(state.doxyfile['PROJECT_NAME'], 'index.html')]
+        template = env.get_template('page.html')
+        rendered = template.render(compound=compound,
+            DOXYGEN_VERSION='0',
+            FILENAME='index.html',
+            **state.doxyfile)
+        output = os.path.join(html_output, 'index.html')
+        with open(output, 'w') as f:
+            f.write(rendered)
+
     # Copy all referenced files, skip absolute URLs
     for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES']:
         if urllib.parse.urlparse(i).netloc: continue
