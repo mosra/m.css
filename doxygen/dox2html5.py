@@ -248,12 +248,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # <formula> can be both, depending on what's inside
             elif i.tag == 'formula':
-                if i.text.startswith('\[ ') and i.text.endswith(' \]'):
+                if i.text.startswith('$') and i.text.endswith('$'):
+                    formula_block = False
+                else:
                     end_previous_paragraph = True
                     formula_block = True
-                else:
-                    assert i.text.startswith('$ ') and i.text.endswith(' $')
-                    formula_block = False
 
             # <programlisting> is autodetected to be either block or inline
             elif i.tag == 'programlisting':
@@ -731,17 +730,18 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             logging.debug("{}: rendering math: {}".format(state.current, i.text))
 
+            # Assume that Doxygen wrapped the formula properly to distinguish
+            # between inline, block or special environment
+            rendered = latex2svg.latex2svg('{}'.format(i.text), params=m.math.latex2svg_params)
+
             # We should have decided about block/inline above
             assert formula_block is not None
             if formula_block:
                 has_block_elements = True
-                rendered = latex2svg.latex2svg('$${}$$'.format(i.text[3:-3]), params=m.math.latex2svg_params)
                 out.parsed += '<div class="m-math{}">{}</div>'.format(
                     ' ' + add_css_class if add_css_class else '',
                     m.math._patch(i.text, rendered, ''))
             else:
-                rendered = latex2svg.latex2svg('${}$'.format(i.text[2:-2]), params=m.math.latex2svg_params)
-
                 # CSS classes and styling for proper vertical alignment. Depth is relative
                 # to font size, describes how below the line the text is. Scaling it back
                 # to 12pt font, scaled by 125% as set above in the config.
