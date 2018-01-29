@@ -65,7 +65,10 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
             out += '\n'
             out += indent
         out += Trie.child_char_struct.unpack_from(serialized, offset + 3)[0].decode('utf-8')
-        child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00ffffff
+        if Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000:
+            out += '$\n'
+            out += indent + ' '
+        child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x007fffff
         stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
         offset += Trie.child_struct.size
         out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
@@ -159,7 +162,7 @@ magnum [1337, 21]
         trie = Trie()
 
         trie.insert("math", 0)
-        trie.insert("math::vector", 1)
+        trie.insert("math::vector", 1, lookahead_barriers=[4])
         trie.insert("vector", 1)
         trie.insert("math::range", 2)
         trie.insert("range", 2)
@@ -171,8 +174,8 @@ magnum [1337, 21]
         trie.insert("math::minmax", 5)
         trie.insert("minmax", 5)
 
-        trie.insert("math::vector::minmax", 6)
-        trie.insert("vector::minmax", 6)
+        trie.insert("math::vector::minmax", 6, lookahead_barriers=[4, 12])
+        trie.insert("vector::minmax", 6, lookahead_barriers=[6])
         trie.insert("minmax", 6)
         trie.insert("math::vector::min", 7)
         trie.insert("vector::min", 7)
@@ -181,8 +184,8 @@ magnum [1337, 21]
         trie.insert("vector::max", 8)
         trie.insert("max", 8)
 
-        trie.insert("math::range::min", 9)
-        trie.insert("range::min", 9)
+        trie.insert("math::range::min", 9, lookahead_barriers=[4, 11])
+        trie.insert("range::min", 9, lookahead_barriers=[5])
         trie.insert("min", 9)
 
         trie.insert("math::range::max", 10)
@@ -192,12 +195,15 @@ magnum [1337, 21]
         serialized = trie.serialize()
         self.compare(serialized, """
 math [0]
-||| ::vector [1]
-|||   |     ::min [7]
+||| :$
+|||  :vector [1]
+|||   |     :$
+|||   |      :min [7]
 |||   |        | max [6]
 |||   |        ax [8]
 |||   range [2]
-|||   |    ::min [9]
+|||   |    :$
+|||   |     :min [9]
 |||   |       ax [10]
 |||   min [3]
 |||   || max [5]
@@ -206,11 +212,13 @@ math [0]
 |in [3, 7, 9]
 || max [5, 6]
 vector [1]
-|     ::min [7]
+|     :$
+|      :min [7]
 |        | max [6]
 |        ax [8]
 range [2]
-|    ::min [9]
+|    :$
+|     :min [9]
 |       ax [10]
 """)
         self.assertEqual(len(serialized), 340)
@@ -308,22 +316,28 @@ class Search(IntegrationTestCase):
         #print(search_data_pretty)
         self.assertEqual(search_data_pretty, """
 namespace [0]
-|        ::class [1]
-|          |    ::foo() [6, 7, 8, 9]
+|        :$
+|         :class [1]
+|          |    :$
+|          |     :foo() [6, 7, 8, 9]
 |          enum [11]
-|          |   ::value [10]
+|          |   :$
+|          |    :value [10]
 |          typedef [12]
 |          variable [13]
 class [1]
-|    ::foo() [6, 7, 8, 9]
+|    :$
+|     :foo() [6, 7, 8, 9]
 a page [2]
 subpage [3]
 dir [4]
-|  /file.h [5]
+|  /$
+|   file.h [5]
 file.h [5]
 |oo() [6, 7, 8, 9]
 enum [11]
-|   ::value [10]
+|   :$
+|    :value [10]
 value [10]
 | riable [13]
 typedef [12]

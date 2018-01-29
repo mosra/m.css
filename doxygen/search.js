@@ -192,7 +192,7 @@ var Search = {
                 if(String.fromCharCode(this.trie.getUint8(childOffset + j*4 + 3)) != searchString[foundPrefix])
                     continue;
 
-                this.searchStack.push(this.trie.getUint32(childOffset + j*4, true) & 0x00ffffff);
+                this.searchStack.push(this.trie.getUint32(childOffset + j*4, true) & 0x007fffff);
                 found = true;
                 break;
             }
@@ -276,9 +276,15 @@ var Search = {
         let relChildOffset = 2 + this.trie.getUint8(offset + 1)*2;
         let childCount = (nodeSize - relChildOffset)/4;
         let childOffset = offset + relChildOffset;
-        for(let j = 0; j != childCount; ++j)
-            if(this.gatherResults(this.trie.getUint32(childOffset + j*4, true) & 0x00ffffff, suffixLength + 1, results))
+        for(let j = 0; j != childCount; ++j) {
+            let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);
+
+            /* Lookahead barrier, don't dig deeper */
+            if(offsetBarrier & 0x00800000) continue;
+
+            if(this.gatherResults(offsetBarrier & 0x007fffff, suffixLength + 1, results))
                 return true;
+        }
 
         /* Still hungry. */
         return false;

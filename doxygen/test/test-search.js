@@ -110,21 +110,6 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 18 },
-        { name: 'Math::Vector',
-          url: 'classMath_1_1Vector.html',
-          suffixLength: 11 },
-        { name: 'Math::Vector::min() const',
-          url: 'classMath_1_1Vector.html#min',
-          suffixLength: 24 },
-        { name: 'Math::Range',
-          url: 'classMath_1_1Range.html',
-          suffixLength: 10 },
-        { name: 'Math::Range::min() const',
-          url: 'classMath_1_1Range.html#min',
-          suffixLength: 23 },
-        { name: 'Math::min(int, int)',
-          url: 'namespaceMath.html#min',
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
@@ -153,10 +138,7 @@ const { StringDecoder } = require('string_decoder');
     let resultsForVec = [
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
-          suffixLength: 3 },
-        { name: 'Math::Vector::min() const',
-          url: 'classMath_1_1Vector.html#min',
-          suffixLength: 16 }];
+          suffixLength: 3 }];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 
     /* Uppercase things and spaces */
@@ -184,10 +166,10 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          suffixLength: 18 },
-        { name: 'Math::Vector',
-          url: 'classMath_1_1Vector.html',
-          suffixLength: 11 }]);
+          suffixLength: 12 },
+        { name: 'Math::Vector::min() const',
+          url: 'classMath_1_1Vector.html#min',
+          suffixLength: 10 }]);
 }
 
 /* Search loaded from a base85-encoded file should work properly */

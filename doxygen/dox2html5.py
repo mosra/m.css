@@ -54,9 +54,9 @@ import m.math
 import ansilexer
 
 class Trie:
-    #  root  |     |     header       | values |    child    |
-    # offset | ... | size/2 | value # |  ...   | offsets ... |
-    #  32b   |     |   8b   |    8b   | n*16b  |   8b + 24b  |
+    #  root  |     |     header       | values | child 1 | child 1 | child 1 |
+    # offset | ... | size/2 | value # |  ...   |   char  | barrier | offset  | ...
+    #  32b   |     |   8b   |    8b   | n*16b  |   8b    |    1b   |   23b   |
     root_offset_struct = struct.Struct('<I')
     header_struct = struct.Struct('<BB')
     value_struct = struct.Struct('<H')
@@ -67,7 +67,7 @@ class Trie:
         self.values = []
         self.children = {}
 
-    def insert(self, path: str, value):
+    def insert(self, path: str, value, lookahead_barriers=[]):
         if not path:
             self.values += [value]
             return
@@ -75,16 +75,19 @@ class Trie:
         char = path[0]
         assert not char.isupper() # to avoid unnecessary duplicates
         if not char in self.children:
-            self.children[char] = Trie()
-        self.children[char].insert(path[1:], value)
+            self.children[char] = (False, Trie())
+        if lookahead_barriers and lookahead_barriers[0] == 0:
+            lookahead_barriers = lookahead_barriers[1:]
+            self.children[char] = (True, self.children[char][1])
+        self.children[char][1].insert(path[1:], value, [b - 1 for b in lookahead_barriers])
 
     # Returns offset of the serialized thing in `output`
     def _serialize(self, hashtable, output: bytearray) -> int:
         # Serialize all children first
         child_offsets = []
         for char, child in self.children.items():
-            offset = child._serialize(hashtable, output)
-            child_offsets += [(char, offset)]
+            offset = child[1]._serialize(hashtable, output)
+            child_offsets += [(char, child[0], offset)]
 
         # Serialize this node
         size = int(2 + 2*len(self.values) + 4*len(child_offsets))
@@ -94,13 +97,13 @@ class Trie:
             serialized += self.value_struct.pack(v)
 
         # Serialize child offsets
-        for char, abs_offset in child_offsets:
-            assert abs_offset < 2**24
+        for char, lookahead_barrier, abs_offset in child_offsets:
+            assert abs_offset < 2**23
 
             # write them over each other because that's the only way to pack
             # a 24 bit field
             offset = len(serialized)
-            serialized += self.child_struct.pack(abs_offset)
+            serialized += self.child_struct.pack(abs_offset | ((1 if lookahead_barrier else 0) << 23))
             self.child_char_struct.pack_into(serialized, offset + 3, char.encode('utf-8'))
 
         assert size == len(serialized)
@@ -1550,7 +1553,14 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
         # TODO: escape elsewhere so i don't have to unescape here
         index = map.add(html.unescape(result_joiner.join(prefixed_result_name)), compound.url, suffix_length=suffix_length)
         for i in range(len(prefixed_name)):
-            trie.insert(html.unescape(joiner.join(prefixed_name[i:])).lower(), index)
+            lookahead_barriers = []
+            name = ''
+            for j in prefixed_name[i:]:
+                if name:
+                    lookahead_barriers += [len(name)]
+                    name += joiner
+                name += html.unescape(j)
+            trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers)
 
     for i in compound.children:
         if i in state.compounds:
@@ -1589,7 +1599,14 @@ def build_search_data(state: State) -> bytearray:
 
         prefixed_name = result.prefix + [name]
         for i in range(len(prefixed_name)):
-            trie.insert(html.unescape('::'.join(prefixed_name[i:])).lower(), index)
+            lookahead_barriers = []
+            name = ''
+            for j in prefixed_name[i:]:
+                if name:
+                    lookahead_barriers += [len(name)]
+                    name += '::'
+                name += html.unescape(j)
+            trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers)
 
     return serialize_search_data(trie, map)
 
