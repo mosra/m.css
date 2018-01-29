@@ -136,6 +136,12 @@ merged and reordered.
 */
 template<class A, class B> void bar(int a, int b);
 
+/**
+@brief Function with one description for all params
+@param x, y, z Coordinates in 3D space
+*/
+void thisIsAShittyWayToPassAVectorButWhatever(float x, float y, float z);
+
 }
 
 namespace Eno {

@@ -543,18 +543,24 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert out.param_kind in ['param', 'templateparam']
             for param in i:
                 # This is an overcomplicated shit, so check sanity
+                # http://www.stack.nl/~dimitri/doxygen/manual/commands.html#cmdparam
                 assert param.tag == 'parameteritem'
                 assert len(param.findall('parameternamelist')) == 1
-                assert param.find('parameternamelist').find('parametertype') is None
-                assert len(param.find('parameternamelist').findall('parametername')) == 1
 
-                name = param.find('parameternamelist').find('parametername')
+                # This is only for PHP, ignore for now
+                param_names = param.find('parameternamelist')
+                assert param_names.find('parametertype') is None
+
                 description = parse_desc(state, param.find('parameterdescription'))
-                if i.attrib['kind'] == 'param':
-                    out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
-                else:
-                    assert i.attrib['kind'] == 'templateparam'
-                    out.templates[name.text] = description
+
+                # Gather all names (so e.g. `@param x, y, z` is turned into
+                # three params sharing the same description)
+                for name in param_names.findall('parametername'):
+                    if i.attrib['kind'] == 'param':
+                        out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
+                    else:
+                        assert i.attrib['kind'] == 'templateparam'
+                        out.templates[name.text] = description
 
         elif i.tag == 'variablelist':
             assert element.tag == 'para' # is inside a paragraph :/
