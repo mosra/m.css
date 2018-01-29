@@ -36,11 +36,13 @@
           <dl class="m-dox">
             <dt>
               <div class="m-dox-template">template&lt;class T&gt;</div>
-              <span class="m-dox-wrap-bumper">auto <a href="#ae88691fe7f08f83578b05daa67e78887" class="m-dox">foo</a>(</span><span class="m-dox-wrap">int a,
+              <span class="m-dox-wrap-bumper">auto <a href="#a438de3b4c677344081baef1ec352f691" class="m-dox">foo</a>(</span><span class="m-dox-wrap">int a,
               std::string b,
               char(&amp;things)[5],
               bool,
-              char(&amp;)[42]) -&gt; int</span>
+              char(&amp;)[42],
+              int stuff[],
+              double[1337]) -&gt; int</span>
             </dt>
             <dd>Function with <em>everything</em></dd>
             <dt>
@@ -63,16 +65,18 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-dox-details" id="ae88691fe7f08f83578b05daa67e78887"><div>
+          <section class="m-dox-details" id="a438de3b4c677344081baef1ec352f691"><div>
             <h3>
               <div class="m-dox-template">
                 template&lt;class T&gt;
               </div>
-              <span class="m-dox-wrap-bumper">int Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#ae88691fe7f08f83578b05daa67e78887" class="m-dox-self">foo</a>(</span><span class="m-dox-wrap">int a,
+              <span class="m-dox-wrap-bumper">int Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#a438de3b4c677344081baef1ec352f691" class="m-dox-self">foo</a>(</span><span class="m-dox-wrap">int a,
               std::string b,
               char(&amp;things)[5],
               bool,
-              char(&amp;)[42])</span></span>
+              char(&amp;)[42],
+              int stuff[],
+              double[1337])</span></span>
             </h3>
             <p>Function with <em>everything</em></p>
             <table class="m-table m-fullwidth m-flat">
@@ -100,6 +104,10 @@
                 <tr>
                   <td>things</td>
                   <td>And an array!</td>
+                </tr>
+                <tr>
+                  <td>stuff</td>
+                  <td>Another array</td>
                 </tr>
               </tbody>
               <tfoot>

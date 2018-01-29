@@ -1072,8 +1072,10 @@ def parse_func(state: State, element: ET.Element):
         array = p.find('array')
         if array is not None:
             if name is not None:
-                assert param.type.endswith(')')
-                param.type = param.type[:-1] + name.text + ')' + array.text
+                if param.type.endswith(')'):
+                    param.type = param.type[:-1] + name.text + ')' + array.text
+                else:
+                    param.type = param.type + ' ' + name.text + array.text
             else:
                 param.type += array.text
         elif name is not None:

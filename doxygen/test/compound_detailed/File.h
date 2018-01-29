@@ -99,11 +99,12 @@ namespace Foo {
 @param a        That's a for you
 @param b        Well, a string
 @param things   And an array!
+@param stuff    Another array
 @return It returns!
 
 Ooooh, more text!
 */
-template<class T> int foo(int a, std::string b, char(&things)[5], bool, char(&)[42]);
+template<class T> int foo(int a, std::string b, char(&things)[5], bool, char(&)[42], int stuff[], double[1337]);
 
 /**
 @brief Input and output
