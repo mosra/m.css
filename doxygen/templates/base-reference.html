@@ -41,6 +41,7 @@
             <li><a href="#{{ id }}">{{ name }}</a></li>
             {% endif %}
             {% endfor %}
+            {% if compound.modules or compound.dirs or compound.files or compound.namespaces or compound.classes or compound.typedefs or compound.funcs or compound.vars or compound.defines or compound.groups %}
             <li>
               Reference
               <ul>
@@ -79,6 +80,7 @@
                 {% endfor %}
               </ul>
             </li>
+            {% endif %}
           </ul>
         </div>
         {% endif %}

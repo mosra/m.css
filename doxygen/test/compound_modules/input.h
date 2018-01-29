@@ -21,13 +21,9 @@ void bar();
 @defgroup subgroup A subgroup
 @brief Subgroup brief description
 @ingroup group
-@{ */
 
-/**
-@brief Returns 5 every 5 runs or something
+@section subgroup-description Description
 
-Did I pass the interview now?
+Subgroup description. There are **no members**, so there should be also no
+Reference section in the TOC.
 */
-int fizzbuzz();
-
-/*@}*/
