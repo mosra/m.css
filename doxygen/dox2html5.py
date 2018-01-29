@@ -214,7 +214,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <heading>
         # - <blockquote>
         # - <simplesect> (if not describing return type) and <xrefsect>
-        # - <verbatim>
+        # - <verbatim>, <preformatted> (those are the same thing!)
         # - <variablelist>, <itemizedlist>, <orderedlist>
         # - <image>, <table>
         # - <mcss:div>
@@ -238,7 +238,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
+            if i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -566,10 +566,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             out.parsed += '</dl>'
 
-        elif i.tag == 'verbatim':
+        elif i.tag in ['verbatim', 'preformatted']:
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
-            out.parsed += '<pre class="m-code">{}</pre>'.format(html.escape(i.text))
+            out.parsed += '<pre>{}</pre>'.format(html.escape(i.text))
 
         elif i.tag == 'image':
             assert element.tag == 'para' # is inside a paragraph :/

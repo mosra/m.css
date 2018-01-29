@@ -8,6 +8,10 @@
 
 Paragraph \n with \n explicit \n line \n breaks.
 
+<pre>Differently
+  preformatted
+text.</pre>
+
 @subsection subsection Page subsection
 
 -   Unordered
