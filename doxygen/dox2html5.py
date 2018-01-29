@@ -573,7 +573,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag in ['verbatim', 'preformatted']:
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
-            out.parsed += '<pre>{}</pre>'.format(html.escape(i.text))
+            out.parsed += '<pre>{}</pre>'.format(html.escape(i.text or ''))
 
         elif i.tag == 'image':
             assert element.tag == 'para' # is inside a paragraph :/
@@ -759,17 +759,20 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<a name="{}"></a>'.format(extract_id(i))
 
         elif i.tag == 'computeroutput':
-            out.parsed += '<code>{}</code>'.format(parse_inline_desc(state, i).strip())
+            content = parse_inline_desc(state, i).strip()
+            if content: out.parsed += '<code>{}</code>'.format(content)
 
         elif i.tag == 'emphasis':
-            out.parsed += '<em{}>{}</em>'.format(
+            content = parse_inline_desc(state, i).strip()
+            if content: out.parsed += '<em{}>{}</em>'.format(
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
-                parse_inline_desc(state, i).strip())
+                content)
 
         elif i.tag == 'bold':
-            out.parsed += '<strong{}>{}</strong>'.format(
+            content = parse_inline_desc(state, i).strip()
+            if content: out.parsed += '<strong{}>{}</strong>'.format(
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
-                parse_inline_desc(state, i).strip())
+                content)
 
         elif i.tag == 'ref':
             out.parsed += parse_ref(state, i)

@@ -39,6 +39,8 @@ and [URL](http://google.com). En-dash -- and em-dash ---. Reference to a
 @ref warnings "&raquo; Warnings &laquo;". Reference with escaped characters
 in&nbsp;title: @ref an-anchor "<anchor>".
 
+Empty elements: <em></em> <tt></tt> <strong></strong> <pre></pre>
+
 */
 
 /** @page warnings Content that produces warnings
