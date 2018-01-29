@@ -1258,8 +1258,11 @@ def postprocess_state(state: State):
         # Strip parent dir from dir name
         elif compound.kind == 'dir':
             prefix = state.compounds[compound.parent].name + '/'
-            assert compound.name.startswith(prefix)
-            compound.leaf_name = compound.name[len(prefix):]
+            if compound.name.startswith(prefix):
+                compound.leaf_name = compound.name[len(prefix):]
+            else: # pragma: no cover
+                logging.warning("{}: potential issue: directory {} parent is not a prefix: {}".format(state.current, compound.name, prefix))
+                compound.leaf_name = compound.name
 
         # Other compounds are not in any index pages or breadcrumb, so leaf
         # name not needed
