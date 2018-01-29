@@ -61,25 +61,28 @@ class Trie:
     header_struct = struct.Struct('<BB')
     value_struct = struct.Struct('<H')
     child_struct = struct.Struct('<I')
-    child_char_struct = struct.Struct('<c')
+    child_char_struct = struct.Struct('<B')
 
     def __init__(self):
         self.values = []
         self.children = {}
 
-    def insert(self, path: str, value, lookahead_barriers=[]):
+    def _insert(self, path: bytes, value, lookahead_barriers):
         if not path:
             self.values += [value]
             return
 
         char = path[0]
-        assert not char.isupper() # to avoid unnecessary duplicates
         if not char in self.children:
             self.children[char] = (False, Trie())
         if lookahead_barriers and lookahead_barriers[0] == 0:
             lookahead_barriers = lookahead_barriers[1:]
             self.children[char] = (True, self.children[char][1])
-        self.children[char][1].insert(path[1:], value, [b - 1 for b in lookahead_barriers])
+        self.children[char][1]._insert(path[1:], value, [b - 1 for b in lookahead_barriers])
+
+    def insert(self, path: str, value, lookahead_barriers=[]):
+        assert not path.isupper() # to avoid unnecessary duplicates
+        self._insert(path.encode('utf-8'), value, lookahead_barriers)
 
     # Returns offset of the serialized thing in `output`
     def _serialize(self, hashtable, output: bytearray) -> int:
@@ -104,7 +107,7 @@ class Trie:
             # a 24 bit field
             offset = len(serialized)
             serialized += self.child_struct.pack(abs_offset | ((1 if lookahead_barrier else 0) << 23))
-            self.child_char_struct.pack_into(serialized, offset + 3, char.encode('utf-8'))
+            self.child_char_struct.pack_into(serialized, offset + 3, char)
 
         assert size == len(serialized)
 

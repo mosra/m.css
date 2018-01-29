@@ -41,6 +41,11 @@ const { StringDecoder } = require('string_decoder');
     assert.equal(Search.escapeForRtl("NS::Class<int>"), "NS&lrm;:&lrm;:Class&lt;int&lrm;&gt;&lrm;");
 }
 
+/* UTF-8 en/decoding */
+{
+    assert.equal(Search.fromUtf8(Search.toUtf8("hýždě bříza")), "hýždě bříza");
+}
+
 /* Simple base85 decoding */
 {
     let b85 = 'Xk~0{Zy-ZbL0VZLcW-iRWFa9T';
@@ -150,7 +155,7 @@ const { StringDecoder } = require('string_decoder');
 
     /* UTF-8 decoding */
     assert.deepEqual(Search.search('su'), [
-        { name: 'Page » Subpage',
+        { name: Search.toUtf8('Page » Subpage'),
           url: 'subpage.html',
           suffixLength: 5 }]);
 }
@@ -191,6 +196,29 @@ const { StringDecoder } = require('string_decoder');
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
           suffixLength: 8 }]);
+}
+
+/* Search, Unicode */
+{
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
+    assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
+    assert.equal(Search.dataSize, 0.1);
+    assert.equal(Search.symbolCount, 2);
+    assert.deepEqual(Search.search('h'), [
+        { name: Search.toUtf8('Hýždě'),
+          url: '#a',
+          suffixLength: 7 },
+        { name: Search.toUtf8('Hárá'),
+          url: '#b',
+          suffixLength: 5 }]);
+    assert.deepEqual(Search.search('hý'), [
+        { name: Search.toUtf8('Hýždě'),
+          url: '#a',
+          suffixLength: 5 }]);
+    assert.deepEqual(Search.search('há'), [
+        { name: Search.toUtf8('Hárá'),
+          url: '#b',
+          suffixLength: 3 }]);
 }
 
 /* Not testing Search.download() because the xmlhttprequest npm package is *crap* */

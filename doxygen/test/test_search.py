@@ -64,10 +64,15 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
         if child_count or value_count:
             out += '\n'
             out += indent
-        out += Trie.child_char_struct.unpack_from(serialized, offset + 3)[0].decode('utf-8')
+        char = Trie.child_char_struct.unpack_from(serialized, offset + 3)[0]
+        if char <= 127:
+            out += chr(char)
+        else:
+            out += hex(char)
         if Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000:
-            out += '$\n'
-            out += indent + ' '
+            out += '$'
+        if char > 127 or Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000:
+            out += '\n' + indent + ' '
         child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x007fffff
         stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
         offset += Trie.child_struct.size
@@ -222,6 +227,28 @@ range [2]
 |       ax [10]
 """)
         self.assertEqual(len(serialized), 340)
+
+    def test_unicode(self):
+        trie = Trie()
+
+        trie.insert("hýždě", 0)
+        trie.insert("hárá", 1)
+
+        serialized = trie.serialize()
+        self.compare(serialized, """
+h0xc3
+  0xbd
+   0xc5
+  | 0xbe
+  |  d0xc4
+  |    0x9b
+  |      [0]
+  0xa1
+   r0xc3
+  |  0xa1
+  |    [1]
+""")
+        self.assertEqual(len(serialized), 82)
 
 class MapSerialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):

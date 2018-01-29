@@ -159,9 +159,15 @@ var Search = {
         return this.init(this.base85decode(base85string));
     },
 
+    /* http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html */
+    toUtf8: function(string) { return unescape(encodeURIComponent(string)); },
+    fromUtf8: function(string) { return decodeURIComponent(escape(string)); },
+
+    /* Returns the values in UTF-8, but input is in whatever shitty 16bit
+       encoding JS has */
     search: function(searchString) {
-        /* Normalize the search string first */
-        searchString = searchString.toLowerCase().trim();
+        /* Normalize the search string first, convert to UTF-8 */
+        searchString = this.toUtf8(searchString.toLowerCase().trim());
 
         /* TODO: maybe i could make use of InputEvent.data and others here */
 
@@ -260,9 +266,8 @@ var Search = {
                 url += String.fromCharCode(this.map.getUint8(j));
             }
 
-            /* Properly decode UTF-8 in the name
-               http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html */
-            results.push({name: decodeURIComponent(escape(name)),
+            /* Keeping in UTF-8, as we need that for proper slicing */
+            results.push({name: name,
                           url: url,
                           suffixLength: suffixLength + resultSuffixLength});
 
@@ -305,8 +310,9 @@ var Search = {
     },
 
     renderResults: /* istanbul ignore next */ function(value, results) {
-        /* Normalize the value length so the slicing works properly */
-        value = value.trim();
+        /* Normalize the value and encode as UTF-8 so the slicing works
+           properly */
+        value = this.toUtf8(value.trim());
 
         if(!value.length) {
             document.getElementById('search-help').style.display = 'block';
@@ -323,7 +329,7 @@ var Search = {
 
             var list = '';
             for(let i = 0; i != results.length; ++i) {
-                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '</div></a></li>';
+                list += this.fromUtf8('<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '</div></a></li>');
             }
             document.getElementById('search-results').innerHTML = list;
             document.getElementById('search-current').scrollIntoView(true);
