@@ -2117,7 +2117,10 @@ if __name__ == '__main__': # pragma: no cover
     else:
         logging.basicConfig(level=logging.INFO)
 
-    if not args.no_doxygen:
-        subprocess.run(["doxygen", args.doxyfile], cwd=os.path.dirname(args.doxyfile))
+    # Make the Doxyfile path absolute, otherwise everything gets messed up
+    doxyfile = os.path.abspath(args.doxyfile)
 
-    run(args.doxyfile, args.templates, args.wildcard, args.index_pages)
+    if not args.no_doxygen:
+        subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile))
+
+    run(doxyfile, os.path.abspath(args.templates), args.wildcard, args.index_pages)
