@@ -83,3 +83,11 @@ class EmptyIndex(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class EmptyTitle(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'empty_title', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='untitled.xml')
+        self.assertEqual(*self.actual_expected_contents('untitled.html'))

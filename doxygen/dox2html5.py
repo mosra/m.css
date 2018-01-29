@@ -1345,7 +1345,7 @@ def extract_metadata(state: State, xml):
     compound.kind = compounddef.attrib['kind']
     # Compound name is page filename, so we have to use title there. The same
     # is for groups.
-    compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] else compounddef.find('compoundname').text)
+    compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text)
     compound.url = compound.id + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
     # Groups are explicitly created so they *have details*, other things need
@@ -1541,7 +1541,7 @@ def parse_xml(state: State, xml: str):
     compound.id = compounddef.attrib['id']
     # Compound name is page filename, so we have to use title there. The same
     # is for groups.
-    compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] else compounddef.find('compoundname').text
+    compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text
     # Compound URL is ID, except for index page
     compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
     compound.has_template_details = False
