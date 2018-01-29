@@ -1147,7 +1147,12 @@ def parse_define(state: State, element: ET.Element):
 def extract_metadata(state: State, xml):
     logging.debug("Extracting metadata from {}".format(os.path.basename(xml)))
 
-    tree = ET.parse(xml)
+    try:
+        tree = ET.parse(xml)
+    except ET.ParseError as e:
+        logging.error("{}: XML parse error, skipping: {}".format(os.path.basename(xml), e))
+        return
+
     root = tree.getroot()
 
     # We need just list of all example files in correct order, nothing else
@@ -1281,7 +1286,12 @@ def parse_xml(state: State, xml: str):
 
     logging.debug("Parsing {}".format(state.current))
 
-    tree = ET.parse(xml)
+    try:
+        tree = ET.parse(xml)
+    except ET.ParseError as e:
+        logging.error("{}: XML parse error, skipping: {}".format(state.current, e))
+        return
+
     root = tree.getroot()
     assert root.tag == 'doxygen'
 

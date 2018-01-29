@@ -28,7 +28,7 @@ import unittest
 
 from distutils.version import LooseVersion
 
-from test import IntegrationTestCase, doxygen_version
+from test import BaseTestCase, IntegrationTestCase, doxygen_version
 
 class Typography(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -139,3 +139,13 @@ class Custom(IntegrationTestCase):
     def test_math(self):
         self.run_dox2html5(wildcard='math.xml')
         self.assertEqual(*self.actual_expected_contents('math.html'))
+
+class ParseError(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'parse_error', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='broken.xml')
+
+        # The index file should be generated, no abort
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'index.html')))
