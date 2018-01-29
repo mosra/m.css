@@ -478,6 +478,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             if i.attrib['kind'] == 'return':
                 assert not out.return_value
                 out.return_value = parse_desc(state, i)
+            # Ignore the RCS strings for now
+            elif i.attrib['kind'] == 'rcs':
+                logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))
             else:
                 has_block_elements = True
 

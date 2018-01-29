@@ -76,6 +76,8 @@ is a table      | *really*      | yes.
 
 _This is_ inside a paragraph.
 
+$Author: this is ignored $
+
 */
 
 /** @page other Other page
