@@ -400,17 +400,17 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 if parsed.write_paragraph_close_tag: out.parsed += '</p>'
 
             # Also, to make things even funnier, parameter and return value
-            # description come from inside of some paragraph, so bubble them up
-            # and assume they are not scattered all over the place (ugh).
+            # description come from inside of some paragraph, so bubble them
+            # up. Unfortunately they can be scattered around, so merge them.
             if parsed.templates:
-                assert not out.templates
-                out.templates = parsed.templates
+                out.templates.update(parsed.templates)
             if parsed.params:
-                assert not out.params
-                out.params = parsed.params
+                out.params.update(parsed.params)
             if parsed.return_value:
-                assert not out.return_value
-                out.return_value = parsed.return_value
+                if out.return_value:
+                    logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
+                else:
+                    out.return_value = parsed.return_value
 
             # The same is (of course) with bubbling up the <mcss:class>
             # element. Reset the current value with the value coming from
@@ -477,7 +477,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # Return value is separated from the text flow
             if i.attrib['kind'] == 'return':
                 if out.return_value:
-                    logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, parse_desc(state, i)))
+                    logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
                 else:
                     out.return_value = parse_desc(state, i)
             # Ignore the RCS strings for now

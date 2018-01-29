@@ -119,6 +119,22 @@ constexpr void bar(int in, int& out, void* shit) noexcept;
 */
 int justReturn();
 
+/**
+@brief A function with scattered docs
+
+@param a    First parameter docs
+
+@tparam B   Second template parameter docs
+
+This is a function that has the docs all scattered around. They should get
+merged and reordered.
+
+@tparam A   First template parameter docs
+
+@param b    Second parameter docs
+*/
+template<class A, class B> void bar(int a, int b);
+
 }
 
 namespace Eno {
@@ -179,6 +195,10 @@ enum Enum {
 @param wrong This parameter is not here
 @return Returns nothing.
 @return Returns nothing, but second time. This is ignored.
+
+Function details.
+
+@return Returns nothing, third time, in a different paragraph. Ignored as well.
 */
 void bar();
 
