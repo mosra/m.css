@@ -476,8 +476,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Return value is separated from the text flow
             if i.attrib['kind'] == 'return':
-                assert not out.return_value
-                out.return_value = parse_desc(state, i)
+                if out.return_value:
+                    logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, parse_desc(state, i)))
+                else:
+                    out.return_value = parse_desc(state, i)
             # Ignore the RCS strings for now
             elif i.attrib['kind'] == 'rcs':
                 logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))

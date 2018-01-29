@@ -177,6 +177,8 @@ enum Enum {
 /**
 @brief Wrong
 @param wrong This parameter is not here
+@return Returns nothing.
+@return Returns nothing, but second time. This is ignored.
 */
 void bar();
 
