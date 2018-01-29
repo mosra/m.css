@@ -448,6 +448,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             has_block_elements = True
             out.parsed += '<table class="m-table{}">'.format(
                 ' ' + add_css_class if add_css_class else '')
+            thead_written = False
             inside_tbody = False
 
             row: ET.Element
@@ -460,12 +461,23 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     is_header = entry.attrib['thead'] == 'yes'
                     is_header_row = is_header_row and is_header
                     row_data += '<{0}>{1}</{0}>'.format('th' if is_header else 'td', parse_desc(state, entry))
+
+                # Table head is opened upon encountering first header row
+                # and closed upon encountering first body row (in case it was
+                # ever opened). Encountering header row inside body again will
+                # not do anything special.
                 if is_header_row:
-                    assert not inside_tbody # Assume there's only one header row
-                    out.parsed += '<thead><tr>{}</tr></thead><tbody>'.format(row_data)
-                    inside_tbody = True
+                    if not thead_written:
+                        out.parsed += '<thead>'
+                        thead_written = True
                 else:
-                    out.parsed += '<tr>{}</tr>'.format(row_data)
+                    if thead_written and not inside_tbody:
+                        out.parsed += '</thead>'
+                    if not inside_tbody:
+                        out.parsed += '<tbody>'
+                        inside_tbody = True
+
+                out.parsed += '<tr>{}</tr>'.format(row_data)
 
             if inside_tbody: out.parsed += '</tbody>'
             out.parsed += '</table>'

@@ -59,6 +59,21 @@ Cell            | Another cell  | 3rd
 Next row        |               | This
 is a table      | *really*      | yes.
 
+<table>
+  <tr>
+    <th>Table</th>
+    <th>with</th>
+  </tr>
+  <tr>
+    <th>two</th>
+    <th>row</th>
+  </tr>
+  <tr>
+    <td>table</td>
+    <td>header</td>
+  </tr>
+</table>
+
 @attention
     Attention, first paragraph.
 @attention
