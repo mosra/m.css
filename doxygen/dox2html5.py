@@ -196,7 +196,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # it. Expect that there was nothing after that would mess with us.
         # Don't reset it back to None just yet, as inline/block code
         # autodetection needs it.
-        if previous_section and i.tag != 'simplesect':
+        if previous_section and (i.tag != 'simplesect' or i.attrib['kind'] == 'return'):
             assert not out.write_paragraph_close_tag
             out.parsed = out.parsed.rstrip() + '</aside>'
 
@@ -818,7 +818,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Now we can reset previous_section to None, nobody needs it anymore.
         # Of course we're resetting it only in case nothing else (such as the
         # <simplesect> tag) could affect it in this iteration.
-        if i.tag != 'simplesect' and previous_section:
+        if (i.tag != 'simplesect' or i.attrib['kind'] == 'return') and previous_section:
             previous_section = None
 
         # A custom inline CSS class was used (or was meant to be used) in this
