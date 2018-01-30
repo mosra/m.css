@@ -85,6 +85,13 @@ class Class {
         /** @brief A protected variable */
         std::string logger;
 
+        /** @{ */ /* Group w/o a name */
+
+        /** @brief A member that gets ignored because the group has no name */
+        int member;
+
+        /*@}*/
+
         /** @{ @name Group full of non-public stuff which should be marked as such */
 
         /** @brief Protected flag in a group */

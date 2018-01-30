@@ -1745,12 +1745,16 @@ def parse_xml(state: State, xml: str):
                         logging.warning("{}: unknown user-defined <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 
                 if list:
-                    group = Empty()
-                    group.name = compounddef_child.find('header').text
-                    group.id = slugify(group.name)
-                    group.description = parse_desc(state, compounddef_child.find('description'))
-                    group.members = list
-                    compound.groups += [group]
+                    header = compounddef_child.find('header')
+                    if header is None:
+                        logging.error("{}: member groups without @name are not supported, ignoring".format(state.current))
+                    else:
+                        group = Empty()
+                        group.name = header.text
+                        group.id = slugify(group.name)
+                        group.description = parse_desc(state, compounddef_child.find('description'))
+                        group.members = list
+                        compound.groups += [group]
 
             elif compounddef_child.attrib['kind'] not in ['private-type',
                                                           'private-static-func',
