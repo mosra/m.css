@@ -34,9 +34,10 @@ from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data, search
 
 from test import IntegrationTestCase
 
-def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged) -> str:
+def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged, show_lookahead_barriers, color_map) -> str:
     # Visualize where the trees were merged
-    if show_merged and base_offset in hashtable: return ' #'
+    if show_merged and base_offset in hashtable:
+        return color_map['red'] + '#' + color_map['reset']
 
     stats.node_count += 1
 
@@ -48,35 +49,35 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
 
     # print values, if any
     if value_count:
-        out += ' ['
+        out += color_map['blue'] + ' ['
         for i in range(value_count):
-            if i: out += ', '
+            if i: out += color_map['blue']+', '
             value = Trie.value_struct.unpack_from(serialized, offset)[0]
             stats.max_node_value_index = max(value, stats.max_node_value_index)
-            out += str(value)
+            out += color_map['cyan'] + str(value)
             offset += Trie.value_struct.size
-        out += ']'
+        out += color_map['blue'] + ']'
 
     # print children
     if base_offset + size*2 - offset > 4: draw_pipe = True
     child_count = 0
     while offset < base_offset + size*2:
         if child_count or value_count:
-            out += '\n'
-            out += indent
+            out += color_map['reset'] + '\n'
+            out += color_map['blue'] + indent + color_map['white']
         char = Trie.child_char_struct.unpack_from(serialized, offset + 3)[0]
         if char <= 127:
             out += chr(char)
         else:
-            out += hex(char)
-        if Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000:
-            out += '$'
-        if char > 127 or Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000:
-            out += '\n' + indent + ' '
+            out += color_map['reset'] + hex(char)
+        if (show_lookahead_barriers and Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000):
+            out += color_map['green'] + '$'
+        if char > 127 or (show_lookahead_barriers and Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000):
+            out += color_map['reset'] + '\n' + color_map['blue'] + indent + ' ' + color_map['white']
         child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x007fffff
         stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
         offset += Trie.child_struct.size
-        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged)
+        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
         child_count += 1
 
     stats.max_node_children = max(child_count, stats.max_node_children)
@@ -84,7 +85,25 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
     hashtable[base_offset] = True
     return out
 
-def pretty_print_trie(serialized: bytes, show_merged=False):
+color_map_colors = {'blue': '\033[0;34m',
+                    'white': '\033[1;39m',
+                    'red': '\033[1;31m',
+                    'green': '\033[1;32m',
+                    'cyan': '\033[1;36m',
+                    'yellow': '\033[1;33m',
+                    'reset': '\033[0m'}
+
+color_map_dummy = {'blue': '',
+                   'white': '',
+                   'red': '',
+                   'green': '',
+                   'cyan': '',
+                   'yellow': '',
+                   'reset': ''}
+
+def pretty_print_trie(serialized: bytes, show_merged=False, show_lookahead_barriers=True, colors=False):
+    color_map = color_map_colors if colors else color_map_dummy
+
     hashtable = {}
 
     stats = Empty()
@@ -95,7 +114,8 @@ def pretty_print_trie(serialized: bytes, show_merged=False):
     stats.max_node_value_index = 0
     stats.max_node_child_offset = 0
 
-    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged)
+    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
+    if out: out = color_map['white'] + out
     stats = """
 node count:             {}
 max node size:          {} bytes
@@ -105,7 +125,9 @@ max node value index:   {}
 max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_size*2, stats.max_node_values, stats.max_node_children, stats.max_node_value_index, stats.max_node_child_offset)
     return out, stats
 
-def pretty_print_map(serialized: bytes):
+def pretty_print_map(serialized: bytes, colors=False):
+    color_map = color_map_colors if colors else color_map_dummy
+
     # The first item gives out offset of first value, which can be used to
     # calculate total value count
     offset = ResultMap.offset_struct.unpack_from(serialized, 0)[0] & 0x00ffffff
@@ -121,18 +143,18 @@ def pretty_print_map(serialized: bytes):
             offset += 1
         next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
         name, _, url = serialized[offset:next_offset].partition(b'\0')
-        out += "{}: {} [{}] -> {}".format(i, name.decode('utf-8'), ', '.join(extra), url.decode('utf-8'))
+        out += color_map['cyan'] + str(i) + color_map['blue'] + ': ' + color_map['white'] + name.decode('utf-8') + color_map['blue'] + ' [' + color_map['yellow'] + (color_map['blue'] + ', ' + color_map['yellow']).join(extra) + color_map['blue'] + '] -> ' + color_map['reset'] + url.decode('utf-8')
         offset = next_offset
     return out
 
-def pretty_print(serialized: bytes, show_merged=False):
+def pretty_print(serialized: bytes, show_merged=False, show_lookahead_barriers=True, colors=False):
     magic, version, map_offset = search_data_header_struct.unpack_from(serialized)
     assert magic == b'MCS'
     assert version == 0
     assert not search_data_header_struct.size % 4
 
-    pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged)
-    pretty_map = pretty_print_map(serialized[map_offset:])
+    pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, colors=colors)
+    pretty_map = pretty_print_map(serialized[map_offset:], colors=colors)
     return pretty_trie + '\n' + pretty_map, stats
 
 class TrieSerialization(unittest.TestCase):
@@ -394,10 +416,12 @@ if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help="file to pretty-print")
     parser.add_argument('--show-merged', help="show merged subtrees", action='store_true')
+    parser.add_argument('--show-lookahead-barriers', help="show lookahead barriers", action='store_true')
+    parser.add_argument('--colors', help="colored output", action='store_true')
     parser.add_argument('--show-stats', help="show stats", action='store_true')
     args = parser.parse_args()
 
     with open(args.file, 'rb') as f:
-        out, stats = pretty_print(f.read(), show_merged=args.show_merged)
+        out, stats = pretty_print(f.read(), show_merged=args.show_merged, show_lookahead_barriers=args.show_lookahead_barriers, colors=args.colors)
         print(out)
         if args.show_stats: print(stats, file=sys.stderr)
