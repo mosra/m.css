@@ -258,6 +258,15 @@ a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-ico
   overflow: hidden;
   direction: rtl;
 }
+.m-dox-search ul#search-results li a .m-label {
+  float: right;
+  line-height: 1rem;
+  margin-top: 0.1rem;
+  margin-left: 0.25rem;
+}
+.m-dox-search ul#search-results li a .m-label.m-flat {
+  margin-right: -0.75rem;
+}
 .m-dox-search ul#search-results li#search-current a {
   background-color: #fbf0ec;
 }
