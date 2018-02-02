@@ -30,7 +30,7 @@ import sys
 import pathlib
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from dox2html5 import Trie, ResultMap, serialize_search_data
+from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'
 
@@ -46,25 +46,25 @@ with open(basedir/'empty.bin', 'wb') as f:
 trie = Trie()
 map = ResultMap()
 
-trie.insert("math", map.add("Math", "namespaceMath.html"))
-index = map.add("Math::min(int, int)", "namespaceMath.html#min", suffix_length=8)
+trie.insert("math", map.add("Math", "namespaceMath.html", flags=ResultFlag.NAMESPACE))
+index = map.add("Math::min(int, int)", "namespaceMath.html#min", suffix_length=8, flags=ResultFlag.FUNC)
 trie.insert("math::min()", index, lookahead_barriers=[4])
 trie.insert("min()", index)
-index = map.add("Math::Vector", "classMath_1_1Vector.html")
+index = map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS)
 trie.insert("math::vector", index)
 trie.insert("vector", index)
-index = map.add("Math::Vector::min() const", "classMath_1_1Vector.html#min", suffix_length=6)
+index = map.add("Math::Vector::min() const", "classMath_1_1Vector.html#min", suffix_length=6, flags=ResultFlag.FUNC)
 trie.insert("math::vector::min()", index, lookahead_barriers=[4, 12])
 trie.insert("vector::min()", index, lookahead_barriers=[6])
 trie.insert("min()", index)
-index = map.add("Math::Range", "classMath_1_1Range.html")
+index = map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS)
 trie.insert("math::range", index)
 trie.insert("range", index)
-index = map.add("Math::Range::min() const", "classMath_1_1Range.html#min", suffix_length=6)
+index = map.add("Math::Range::min() const", "classMath_1_1Range.html#min", suffix_length=6, flags=ResultFlag.FUNC)
 trie.insert("math::range::min()", index, lookahead_barriers=[4, 11])
 trie.insert("range::min()", index, lookahead_barriers=[5])
 trie.insert("min()", index)
-trie.insert("subpage", map.add("Page » Subpage", "subpage.html"))
+trie.insert("subpage", map.add("Page » Subpage", "subpage.html", flags=ResultFlag.PAGE))
 
 with open(basedir/'searchdata.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map))

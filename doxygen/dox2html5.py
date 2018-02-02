@@ -130,7 +130,23 @@ class Trie:
         return output
 
 class ResultFlag(Flag):
-    HAS_SUFFIX = 1
+    HAS_SUFFIX = 1 << 0
+
+    _TYPE = 0xf << 4
+    NAMESPACE = 1 << 4
+    CLASS = 2 << 4
+    STRUCT = 3 << 4
+    UNION = 4 << 4
+    TYPEDEF = 5 << 4
+    FUNC = 6 << 4
+    VAR = 7 << 4
+    ENUM = 8 << 4
+    ENUM_VALUE = 9 << 4
+    DEFINE = 10 << 4
+    GROUP = 11 << 4
+    PAGE = 12 << 4
+    DIR = 13 << 4
+    FILE = 14 << 4
 
 class ResultMap:
     # item 1 flags | item 2 flags |     | item N flags | file | item 1 |
@@ -1132,6 +1148,7 @@ def parse_enum(state: State, element: ET.Element):
             enum.has_value_details = True
             if not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
+                result.flags = ResultFlag.ENUM_VALUE
                 result.url = state.current_url + '#' + value.id
                 result.prefix = state.current_prefix + [enum.name]
                 result.name = value.name
@@ -1142,6 +1159,7 @@ def parse_enum(state: State, element: ET.Element):
     if enum.brief or enum.has_details or enum.has_value_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
+            result.flags = ResultFlag.ENUM
             result.url = state.current_url + '#' + enum.id
             result.prefix = state.current_prefix
             result.name = enum.name
@@ -1203,6 +1221,7 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.has_details = typedef.description or typedef.has_template_details
     if typedef.brief or typedef.has_details:
         result = Empty()
+        result.flags = ResultFlag.TYPEDEF
         result.url = state.current_url + '#' + typedef.id
         result.prefix = state.current_prefix
         result.name = typedef.name
@@ -1305,6 +1324,7 @@ def parse_func(state: State, element: ET.Element):
     if func.brief or func.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
+            result.flags = ResultFlag.FUNC
             result.url = state.current_url + '#' + func.id
             result.prefix = state.current_prefix
             result.name = func.name
@@ -1336,6 +1356,7 @@ def parse_var(state: State, element: ET.Element):
     if var.brief or var.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
+            result.flags = ResultFlag.VAR
             result.url = state.current_url + '#' + var.id
             result.prefix = state.current_prefix
             result.name = var.name
@@ -1373,6 +1394,7 @@ def parse_define(state: State, element: ET.Element):
     if define.brief or define.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
+            result.flags = ResultFlag.DEFINE
             result.url = state.current_url + '#' + define.id
             result.prefix = []
             result.name = define.name
@@ -1528,6 +1550,24 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
     prefixed_result_name = prefix + [compound.leaf_name]
     suffix_length = 0
 
+    if compound.kind == 'namespace':
+        kind = ResultFlag.NAMESPACE
+    elif compound.kind == 'struct':
+        kind = ResultFlag.STRUCT
+    elif compound.kind == 'class':
+        kind = ResultFlag.CLASS
+    elif compound.kind == 'union':
+        kind = ResultFlag.UNION
+    elif compound.kind == 'dir':
+        kind = ResultFlag.DIR
+    elif compound.kind == 'file':
+        kind = ResultFlag.FILE
+    elif compound.kind == 'page':
+        kind = ResultFlag.PAGE
+    elif compound.kind == 'group':
+        kind = ResultFlag.GROUP
+    else: assert False # pragma: no cover
+
     # Calculate fully-qualified name
     if compound.kind in ['namespace', 'struct', 'class', 'union']:
         joiner = result_joiner = '::'
@@ -1548,13 +1588,13 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
         result_name = result_joiner.join(prefixed_result_name)
 
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(result_name), compound.url)
+        index = map.add(html.unescape(result_name), compound.url, flags=kind)
         trie.insert(html.unescape(compound.leaf_name).lower(), index)
 
     # Otherwise add it multiple times with all possible prefixes
     else:
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(result_joiner.join(prefixed_result_name)), compound.url, suffix_length=suffix_length)
+        index = map.add(html.unescape(result_joiner.join(prefixed_result_name)), compound.url, suffix_length=suffix_length, flags=kind)
         for i in range(len(prefixed_name)):
             lookahead_barriers = []
             name = ''
@@ -1598,7 +1638,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             suffix_length += len(html.unescape(result.suffix))
 
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length)
+        index = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length, flags=result.flags)
 
         prefixed_name = result.prefix + [name]
         for i in range(len(prefixed_name)):

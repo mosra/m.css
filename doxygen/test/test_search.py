@@ -137,10 +137,12 @@ def pretty_print_map(serialized: bytes, colors=False):
     for i in range(size):
         if i: out += '\n'
         flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
-        extra = [str(int(flags.value))]
+        extra = []
         if flags & ResultFlag.HAS_SUFFIX:
             extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
             offset += 1
+        if flags & ResultFlag._TYPE:
+            extra += ['type={}'.format((flags & ResultFlag._TYPE).name)]
         next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
         name, _, url = serialized[offset:next_offset].partition(b'\0')
         out += color_map['cyan'] + str(i) + color_map['blue'] + ': ' + color_map['white'] + name.decode('utf-8') + color_map['blue'] + ' [' + color_map['yellow'] + (color_map['blue'] + ', ' + color_map['yellow']).join(extra) + color_map['blue'] + '] -> ' + color_map['reset'] + url.decode('utf-8')
@@ -291,30 +293,30 @@ class MapSerialization(unittest.TestCase):
 
     def test_single(self):
         map = ResultMap()
-        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", suffix_length=11), 0)
+        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", suffix_length=11, flags=ResultFlag.NAMESPACE), 0)
 
         serialized = map.serialize()
         self.compare(serialized, """
-0: Magnum [1, suffix_length=11] -> namespaceMagnum.html
+0: Magnum [suffix_length=11, type=NAMESPACE] -> namespaceMagnum.html
 """)
         self.assertEqual(len(serialized), 36)
 
     def test_multiple(self):
         map = ResultMap()
 
-        self.assertEqual(map.add("Math", "namespaceMath.html"), 0)
-        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html"), 1)
-        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html"), 2)
-        self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875"), 3)
-        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef2875", suffix_length=8), 4)
+        self.assertEqual(map.add("Math", "namespaceMath.html", flags=ResultFlag.NAMESPACE), 0)
+        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS), 1)
+        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS), 2)
+        self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875", flags=ResultFlag.FUNC), 3)
+        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef2875", suffix_length=8, flags=ResultFlag.FUNC), 4)
 
         serialized = map.serialize()
         self.compare(serialized, """
-0: Math [0] -> namespaceMath.html
-1: Math::Vector [0] -> classMath_1_1Vector.html
-2: Math::Range [0] -> classMath_1_1Range.html
-3: Math::min() [0] -> namespaceMath.html#abcdef2875
-4: Math::max(int, int) [1, suffix_length=8] -> namespaceMath.html#abcdef2875
+0: Math [type=NAMESPACE] -> namespaceMath.html
+1: Math::Vector [type=CLASS] -> classMath_1_1Vector.html
+2: Math::Range [type=CLASS] -> classMath_1_1Range.html
+3: Math::min() [type=FUNC] -> namespaceMath.html#abcdef2875
+4: Math::max(int, int) [suffix_length=8, type=FUNC] -> namespaceMath.html#abcdef2875
 """)
         self.assertEqual(len(serialized), 210)
 
@@ -332,11 +334,11 @@ class Serialization(unittest.TestCase):
         trie = Trie()
         map = ResultMap()
 
-        trie.insert("math", map.add("Math", "namespaceMath.html"))
-        index = map.add("Math::Vector", "classMath_1_1Vector.html")
+        trie.insert("math", map.add("Math", "namespaceMath.html", flags=ResultFlag.NAMESPACE))
+        index = map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS)
         trie.insert("math::vector", index)
         trie.insert("vector", index)
-        index = map.add("Math::Range", "classMath_1_1Range.html")
+        index = map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS)
         trie.insert("math::range", index)
         trie.insert("range", index)
 
@@ -347,9 +349,9 @@ math [0]
 |     range [2]
 vector [1]
 range [2]
-0: Math [0] -> namespaceMath.html
-1: Math::Vector [0] -> classMath_1_1Vector.html
-2: Math::Range [0] -> classMath_1_1Range.html
+0: Math [type=NAMESPACE] -> namespaceMath.html
+1: Math::Vector [type=CLASS] -> classMath_1_1Vector.html
+2: Math::Range [type=CLASS] -> classMath_1_1Range.html
 """)
         self.assertEqual(len(serialized), 241)
 
@@ -364,52 +366,60 @@ class Search(IntegrationTestCase):
             search_data_pretty = pretty_print(f.read())[0]
         #print(search_data_pretty)
         self.assertEqual(search_data_pretty, """
-namespace [0]
+a group [0]
+| page [5]
+namespace [1]
 |        :$
-|         :class [1]
+|         :class [2]
 |          |    :$
-|          |     :foo() [6, 7, 8, 9]
-|          enum [11]
+|          |     :foo() [9, 10, 11, 12]
+|          struct [3]
+|          union [4]
+|          enum [14]
 |          |   :$
-|          |    :value [10]
-|          typedef [12]
-|          variable [13]
-class [1]
+|          |    :value [13]
+|          typedef [15]
+|          variable [16]
+class [2]
 |    :$
-|     :foo() [6, 7, 8, 9]
-a page [2]
-subpage [3]
-dir [4]
+|     :foo() [9, 10, 11, 12]
+struct [3]
+|ubpage [6]
+union [4]
+dir [7]
 |  /$
-|   file.h [5]
-file.h [5]
-|oo() [6, 7, 8, 9]
-enum [11]
+|   file.h [8]
+file.h [8]
+|oo() [9, 10, 11, 12]
+enum [14]
 |   :$
-|    :value [10]
-value [10]
-| riable [13]
-typedef [12]
-macro [14]
-|    _function() [15]
-|             _with_params() [16]
-0: Namespace [0] -> namespaceNamespace.html
-1: Namespace::Class [0] -> classNamespace_1_1Class.html
-2: A page [0] -> page.html
-3: A page » Subpage [0] -> subpage.html
-4: Dir/ [1, suffix_length=1] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
-5: Dir/File.h [0] -> File_8h.html
-6: Namespace::Class::foo() [0] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
-7: Namespace::Class::foo() const [1, suffix_length=6] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
-8: Namespace::Class::foo() && [1, suffix_length=3] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
-9: Namespace::Class::foo(const Enum&, Typedef) [1, suffix_length=20] -> classNamespace_1_1Class.html#aba8d57a830d4d79f86d58d92298677fa
-10: Namespace::Enum::Value [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
-11: Namespace::Enum [0] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
-12: Namespace::Typedef [0] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
-13: Namespace::Variable [0] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
-14: MACRO [0] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
-15: MACRO_FUNCTION() [0] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
-16: MACRO_FUNCTION_WITH_PARAMS(params) [1, suffix_length=6] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
+|    :value [13]
+value [13]
+| riable [16]
+typedef [15]
+macro [17]
+|    _function() [18]
+|             _with_params() [19]
+0: A group [type=GROUP] -> group__group.html
+1: Namespace [type=NAMESPACE] -> namespaceNamespace.html
+2: Namespace::Class [type=CLASS] -> classNamespace_1_1Class.html
+3: Namespace::Struct [type=STRUCT] -> structNamespace_1_1Struct.html
+4: Namespace::Union [type=UNION] -> unionNamespace_1_1Union.html
+5: A page [type=PAGE] -> page.html
+6: A page » Subpage [type=PAGE] -> subpage.html
+7: Dir/ [suffix_length=1, type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
+8: Dir/File.h [type=FILE] -> File_8h.html
+9: Namespace::Class::foo() [type=FUNC] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
+10: Namespace::Class::foo() const [suffix_length=6, type=FUNC] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
+11: Namespace::Class::foo() && [suffix_length=3, type=FUNC] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
+12: Namespace::Class::foo(const Enum&, Typedef) [suffix_length=20, type=FUNC] -> classNamespace_1_1Class.html#aba8d57a830d4d79f86d58d92298677fa
+13: Namespace::Enum::Value [type=ENUM_VALUE] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
+14: Namespace::Enum [type=ENUM] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
+15: Namespace::Typedef [type=TYPEDEF] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
+16: Namespace::Variable [type=VAR] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
+17: MACRO [type=DEFINE] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
+18: MACRO_FUNCTION() [type=DEFINE] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
+19: MACRO_FUNCTION_WITH_PARAMS(params) [suffix_length=6, type=DEFINE] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover

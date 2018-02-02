@@ -34,6 +34,18 @@ enum class Enum {
     Value = 15  /**< Enum value */
 };
 
+/** @defgroup group A group
+ * @{
+ */
+
+/** @brief An union */
+union Union {};
+
+/** @brief A struct */
+struct Struct {};
+
+/*@}*/
+
 }
 
 /** @brief A macro */

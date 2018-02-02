@@ -269,6 +269,7 @@ var Search = {
             /* Keeping in UTF-8, as we need that for proper slicing */
             results.push({name: name,
                           url: url,
+                          flags: flags,
                           suffixLength: suffixLength + resultSuffixLength});
 
             /* 'nuff said. */
@@ -327,9 +328,70 @@ var Search = {
             document.getElementById('search-results').style.display = 'block';
             document.getElementById('search-notfound').style.display = 'none';
 
-            var list = '';
+            let list = '';
             for(let i = 0; i != results.length; ++i) {
-                list += this.fromUtf8('<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '</div></a></li>');
+                let type = '';
+                let color = '';
+                switch(results[i].flags >> 4) {
+                    case 1:
+                        type = 'namespace';
+                        color = 'm-primary';
+                        break;
+                    case 2:
+                        type = 'class';
+                        color = 'm-primary';
+                        break;
+                    case 3:
+                        type = 'struct';
+                        color = 'm-primary';
+                        break;
+                    case 4:
+                        type = 'union';
+                        color = 'm-primary';
+                        break;
+                    case 5:
+                        type = 'typedef';
+                        color = 'm-primary';
+                        break;
+                    case 6:
+                        type = 'func';
+                        color = 'm-info';
+                        break;
+                    case 7:
+                        type = 'var';
+                        color = 'm-default';
+                        break;
+                    case 8:
+                        type = 'enum';
+                        color = 'm-primary';
+                        break;
+                    case 9:
+                        type = 'enum val';
+                        color = 'm-default';
+                        break;
+                    case 10:
+                        type = 'define';
+                        color = 'm-info';
+                        break;
+                    case 11:
+                        type = 'group';
+                        color = 'm-success';
+                        break;
+                    case 12:
+                        type = 'page';
+                        color = 'm-success';
+                        break;
+                    case 13:
+                        type = 'dir';
+                        color = 'm-warning';
+                        break;
+                    case 14:
+                        type = 'file';
+                        color = 'm-warning';
+                        break;
+                }
+
+                list += this.fromUtf8('<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div class="m-label m-flat ' + color + '">' + type + '</div><div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '</div></a></li>');
             }
             document.getElementById('search-results').innerHTML = list;
             document.getElementById('search-current').scrollIntoView(true);
