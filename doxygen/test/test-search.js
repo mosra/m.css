@@ -151,7 +151,7 @@ const { StringDecoder } = require('string_decoder');
     let resultsForVec = [
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
-          flags: 32,
+          flags: 32|2, /* Deprecated */
           suffixLength: 3 }];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 

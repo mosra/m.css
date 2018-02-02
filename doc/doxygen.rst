@@ -916,6 +916,8 @@ Property                                Description
 :py:`compound.footer_navigation`        Footer navigation of a page. See
                                         `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
+:py:`compound.is_deprecated`            Whether the compound is deprecated. Not
+                                        set for pages. [7]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
 :py:`compound.modules`                  List of submodules in this compound.
                                         Set only for modules. See
@@ -1046,6 +1048,7 @@ Property                    Description
 :py:`module.url`            URL of the file containing detailed module docs
 :py:`module.name`           Module name (just the leaf)
 :py:`module.brief`          Brief description. Can be empty. [1]_
+:py:`module.is_deprecated`  Whether the module is deprecated. [7]_
 =========================== ===================================================
 
 `Directory properties`_
@@ -1062,6 +1065,7 @@ Property                    Description
 :py:`dir.url`               URL of the file containing detailed directory docs
 :py:`dir.name`              Directory name (just the leaf)
 :py:`dir.brief`             Brief description. Can be empty. [1]_
+:py:`dir.is_deprecated`     Whether the directory is deprecated. [7]_
 =========================== ===================================================
 
 `File properties`_
@@ -1078,6 +1082,7 @@ Property                    Description
 :py:`file.url`              URL of the file containing detailed file docs
 :py:`file.name`             File name (just the leaf)
 :py:`file.brief`            Brief description. Can be empty. [1]_
+:py:`file.is_deprecated`    Whether the file is deprecated. [7]_
 =========================== ===================================================
 
 `Namespace properties`_
@@ -1088,15 +1093,17 @@ every item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`namespace.url`         URL of the file containing detailed namespace docs
-:py:`namespace.name`        Namespace name. Fully qualified in case it's in a
-                            file documentation, just the leaf name if in a
-                            namespace documentation.
-:py:`namespace.brief`       Brief description. Can be empty. [1]_
-=========================== ===================================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`namespace.url`             URL of the file containing detailed namespace
+                                docs
+:py:`namespace.name`            Namespace name. Fully qualified in case it's in
+                                a file documentation, just the leaf name if in
+                                a namespace documentation.
+:py:`namespace.brief`           Brief description. Can be empty. [1]_
+:py:`namespace.is_deprecated`   Whether the namespace is deprecated. [7]_
+=============================== ===============================================
 
 `Class properties`_
 ```````````````````
@@ -1117,6 +1124,7 @@ Property                    Description
 :py:`class.templates`       Template specification. See `Template properties`_
                             for details.
 :py:`class.brief`           Brief description. Can be empty. [1]_
+:py:`class.is_deprecated`   Whether the class is deprecated. [7]_
 :py:`class.is_protected`    Whether this is a protected base class. Set only
                             for base classes.
 :py:`class.is_virtual`      Whether this is a virtual base class. Set only for
@@ -1142,6 +1150,7 @@ Property                        Description
 :py:`enum.description`          Detailed description. Can be empty. [2]_
 :py:`enum.has_details`          If there is enough content for the full
                                 description block [5]_
+:py:`enum.is_deprecated`        Whether the enum is deprecated. [7]_
 :py:`enum.is_protected`         If the enum is :cpp:`protected`. Set only for
                                 member types.
 :py:`enum.values`               List of enum values
@@ -1158,6 +1167,7 @@ Property                    Description
 :py:`value.id`              Identifier hash [3]_
 :py:`value.name`            Value name [4]_
 :py:`value.initializer`     Value initializer. Can be empty. [1]_
+:py:`value.is_deprecated`   Whether the value is deprecated. [7]_
 :py:`value.description`     Detailed description. Can be empty. [2]_
 =========================== ===================================================
 
@@ -1183,6 +1193,7 @@ Property                    Description
                             :cpp:`using`. . See `Template properties`_ for
                             details.
 :py:`typedef.brief`         Brief description. Can be empty. [1]_
+:py:`typedef.is_deprecated` Whether the typedef is deprecated. [7]_
 :py:`typedef.description`   Detailed description. Can be empty. [2]_
 :py:`typedef.has_details`   If there is enough content for the full description
                             block [4]_
@@ -1229,6 +1240,7 @@ Property                        Description
                                 :cpp:`virtual`\ ity and :cpp:`delete`\ d /
                                 :cpp:`default`\ ed functions is removed from
                                 the suffix and available via other properties.
+:py:`func.is_deprecated`        Whether the function is deprecated. [7]_
 :py:`func.is_protected`         If the function is :cpp:`protected`. Set only
                                 for member functions.
 :py:`func.is_private`           If the function is :cpp:`private`. Set only for
@@ -1284,6 +1296,7 @@ Property                    Description
 :py:`var.description`       Detailed description. Can be empty. [2]_
 :py:`var.has_details`       If there is enough content for the full description
                             block [5]_
+:py:`var.is_deprecated`     Whether the variable is deprecated. [7]_
 :py:`var.is_static`         If the variable is :cpp:`static`. Set only for
                             member variables.
 :py:`var.is_protected`      If the variable is :cpp:`protected`. Set only for
@@ -1310,6 +1323,7 @@ Property                        Description
 :py:`define.return_value`       Return value description. Can be empty.
 :py:`define.brief`              Brief description. Can be empty. [1]_
 :py:`define.description`        Detailed description. Can be empty. [2]_
+:py:`define.is_deprecated`      Whether the define is deprecated. [7]_
 :py:`define.has_details`        If there is enough content for the full
                                 description block [5]_
 =============================== ===============================================
@@ -1397,6 +1411,8 @@ Property                Description
     the brief listing on top of the page to avoid unnecessary repetition.
 .. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
     contains links to related documentation
+.. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given
+    symbol contain the ``@deprecated`` command and to :py:`False` otherwise
 
 `Navigation page templates`_
 ----------------------------
@@ -1450,6 +1466,7 @@ Property                        Description
 :py:`i.name`                    Name
 :py:`i.url`                     URL of the file with detailed documentation
 :py:`i.brief`                   Brief documentation
+:py:`i.is_deprecated`           Whether the entry is deprecated. [7]_
 :py:`i.has_nestable_children`   If the list has nestable children (i.e., dirs
                                 or namespaces)
 :py:`i.children`                Recursive list of child entries

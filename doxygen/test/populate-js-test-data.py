@@ -50,7 +50,7 @@ trie.insert("math", map.add("Math", "namespaceMath.html", flags=ResultFlag.NAMES
 index = map.add("Math::min(int, int)", "namespaceMath.html#min", suffix_length=8, flags=ResultFlag.FUNC)
 trie.insert("math::min()", index, lookahead_barriers=[4])
 trie.insert("min()", index)
-index = map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS)
+index = map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS|ResultFlag.IS_DEPRECATED)
 trie.insert("math::vector", index)
 trie.insert("vector", index)
 index = map.add("Math::Vector::min() const", "classMath_1_1Vector.html#min", suffix_length=6, flags=ResultFlag.FUNC)

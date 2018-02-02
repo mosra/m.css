@@ -149,3 +149,39 @@ class Modules(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('group__group2.html'))
         self.assertEqual(*self.actual_expected_contents('group__subgroup.html'))
         self.assertEqual(*self.actual_expected_contents('modules.html'))
+
+class Deprecated(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'deprecated', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        # Test that the [deprecated] label is in all places where it should ne
+
+        # Class tree
+        self.assertEqual(*self.actual_expected_contents('annotated.html'))
+
+        # Member namespace and define listing
+        self.assertEqual(*self.actual_expected_contents('DeprecatedFile_8h.html'))
+
+        # Member file and directory listing
+        self.assertEqual(*self.actual_expected_contents('dir_da5033def2d0db76e9883b31b76b3d0c.html'))
+
+        # File and directory tree
+        self.assertEqual(*self.actual_expected_contents('files.html'))
+
+        # Member module listing
+        self.assertEqual(*self.actual_expected_contents('group__group.html'))
+
+        # Module tree
+        self.assertEqual(*self.actual_expected_contents('modules.html'))
+
+        # Member namespace, class, function, variable, typedef and enum listing
+        self.assertEqual(*self.actual_expected_contents('namespaceDeprecatedNamespace.html'))
+
+        # Namespace tree
+        self.assertEqual(*self.actual_expected_contents('namespaces.html'))
+
+        # Base and derived class listing
+        self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1BaseDeprecatedClass.html'))
+        self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1DeprecatedClass.html'))

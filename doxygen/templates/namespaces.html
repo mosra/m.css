@@ -7,13 +7,15 @@
           {% for i in index.symbols|selectattr('kind', 'equalto', 'namespace') recursive %}
           {% if i.has_nestable_children %}
           <li class="m-dox-collapsible">
-            <a href="#" onclick="return toggle(this)">{{ i.kind }}</a> <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span>
+            <a href="#" onclick="return toggle(this)">{{ i.kind }}</a> <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %}
+
+            {# the above is here to preserve the newline #}
             <ul class="m-dox">
 {{ loop(i.children|selectattr('kind', 'equalto', 'namespace'))|indent(4, true) }}
             </ul>
           </li>
           {% else %}
-          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span></li>
+          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %}</li>
           {% endif %}
           {% endfor %}
         </ul>
