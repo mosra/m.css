@@ -365,66 +365,70 @@ class Search(IntegrationTestCase):
         #print(search_data_pretty)
         self.assertEqual(search_data_pretty, """
 deprecatednamespace [0]
-|         |        :$
-|         |         :deprecatedclass [1]
-|         |          |         struct [2]
-|         |          |         union [3]
-|         |          |         enum [20]
-|         |          |         |   :$
-|         |          |         |    :value [19]
-|         |          |         typedef [23]
-|         |          |         variable [24]
-|         |          |         foo() [25]
-|         |          enum [22]
-|         |          |   :$
-|         |          |    :deprecatedvalue [21]
-|         class [1]
-|         struct [2]
-|         union [3]
-|          list [5]
-|         dir [13]
-|         |  /$
-|         |   deprecatedfile.h [14]
-|         file.h [14]
-|         |oo() [25]
-|         enum [20]
-|         |   :$
-|         |    :value [19]
-|         value [21]
-|         | riable [24]
-|         typedef [23]
-|         _macro() [30]
+||        |        :$
+||        |         :deprecatedclass [1]
+||        |          |         struct [2]
+||        |          |         union [3]
+||        |          |         enum [22]
+||        |          |         |   :$
+||        |          |         |    :value [21]
+||        |          |         typedef [25]
+||        |          |         variable [26]
+||        |          |         foo() [27]
+||        |          enum [24]
+||        |          |   :$
+||        |          |    :deprecatedvalue [23]
+||        class [1]
+||        struct [2]
+||        union [3]
+||         list [5]
+||        dir [15]
+||        |  /$
+||        |   deprecatedfile.h [16]
+||        file.h [16]
+||        |oo() [27]
+||        enum [22]
+||        |   :$
+||        |    :value [21]
+||        value [23]
+||        | riable [26]
+||        typedef [25]
+||        _macro() [32]
+|ir [13]
+|| /$
+||  file.h [14]
 a group [4, 10]
 | page [11]
 namespace [6]
 |        :$
 |         :class [7]
 |          |    :$
-|          |     :foo() [15, 16, 17, 18]
+|          |     :foo() [17, 18, 19, 20]
 |          struct [8]
 |          union [9]
-|          enum [27]
+|          enum [29]
 |          |   :$
-|          |    :value [26]
-|          typedef [28]
-|          variable [29]
+|          |    :value [28]
+|          typedef [30]
+|          variable [31]
 class [7]
 |    :$
-|     :foo() [15, 16, 17, 18]
+|     :foo() [17, 18, 19, 20]
 struct [8]
 |ubpage [12]
 union [9]
-foo() [15, 16, 17, 18]
-value [19, 26]
-| riable [29]
-enum [22, 27]
+file.h [14]
+|oo() [17, 18, 19, 20]
+value [21, 28]
+| riable [31]
+enum [24, 29]
 |   :$
-|    :deprecatedvalue [21]
-|     value [26]
-typedef [28]
-macro [31]
-|    _function() [32]
-|             _with_params() [33]
+|    :deprecatedvalue [23]
+|     value [28]
+typedef [30]
+macro [33]
+|    _function() [34]
+|             _with_params() [35]
 0: DeprecatedNamespace [deprecated, type=NAMESPACE] -> namespaceDeprecatedNamespace.html
 1: DeprecatedNamespace::DeprecatedClass [deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
 2: DeprecatedNamespace::DeprecatedStruct [deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
@@ -438,27 +442,29 @@ macro [31]
 10: A group [type=GROUP] -> group__deprecated-group.html
 11: A page [type=PAGE] -> page.html
 12: A page » Subpage [type=PAGE] -> subpage.html
-13: DeprecatedDir [deprecated, type=DIR] -> dir_c6c97faf5a6cbd0f62c27843ce3af4d0.html
-14: DeprecatedDir/DeprecatedFile.h [deprecated, type=FILE] -> DeprecatedFile_8h.html
-15: Namespace::Class::foo() [type=FUNC] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
-16: Namespace::Class::foo() const [suffix_length=6, type=FUNC] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
-17: Namespace::Class::foo() && [deleted, suffix_length=3, type=FUNC] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
-18: Namespace::Class::foo(const Enum&, Typedef) [suffix_length=20, type=FUNC] -> classNamespace_1_1Class.html#aba8d57a830d4d79f86d58d92298677fa
-19: DeprecatedNamespace::DeprecatedEnum::Value [type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47a689202409e48743b914713f96d93947c
-20: DeprecatedNamespace::DeprecatedEnum [deprecated, type=ENUM] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47
-21: DeprecatedNamespace::Enum::DeprecatedValue [deprecated, type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ac59010e983270c330b8625b5433961b9a4b5b0e9709902228c33df7e5e377e596
-22: DeprecatedNamespace::Enum [type=ENUM] -> namespaceDeprecatedNamespace.html#ac59010e983270c330b8625b5433961b9
-23: DeprecatedNamespace::DeprecatedTypedef [deprecated, type=TYPEDEF] -> namespaceDeprecatedNamespace.html#af503ad3ff194a4c2512aff16df771164
-24: DeprecatedNamespace::DeprecatedVariable [deprecated, type=VAR] -> namespaceDeprecatedNamespace.html#ae934297fc39624409333eefbfeabf5e5
-25: DeprecatedNamespace::deprecatedFoo(int, bool, double) [deprecated, suffix_length=17, type=FUNC] -> namespaceDeprecatedNamespace.html#a9a1b3fc71d294b548095985acc0d5092
-26: Namespace::Enum::Value [type=ENUM_VALUE] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
-27: Namespace::Enum [type=ENUM] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
-28: Namespace::Typedef [type=TYPEDEF] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
-29: Namespace::Variable [type=VAR] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
-30: DEPRECATED_MACRO(a, b, c) [deprecated, suffix_length=7, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
-31: MACRO [type=DEFINE] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
-32: MACRO_FUNCTION() [type=DEFINE] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
-33: MACRO_FUNCTION_WITH_PARAMS(params) [suffix_length=6, type=DEFINE] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
+13: Dir [type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
+14: Dir/File.h [type=FILE] -> File_8h.html
+15: DeprecatedDir [deprecated, type=DIR] -> dir_c6c97faf5a6cbd0f62c27843ce3af4d0.html
+16: DeprecatedDir/DeprecatedFile.h [deprecated, type=FILE] -> DeprecatedFile_8h.html
+17: Namespace::Class::foo() [type=FUNC] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
+18: Namespace::Class::foo() const [suffix_length=6, type=FUNC] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
+19: Namespace::Class::foo() && [deleted, suffix_length=3, type=FUNC] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
+20: Namespace::Class::foo(const Enum&, Typedef) [suffix_length=20, type=FUNC] -> classNamespace_1_1Class.html#aba8d57a830d4d79f86d58d92298677fa
+21: DeprecatedNamespace::DeprecatedEnum::Value [type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47a689202409e48743b914713f96d93947c
+22: DeprecatedNamespace::DeprecatedEnum [deprecated, type=ENUM] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47
+23: DeprecatedNamespace::Enum::DeprecatedValue [deprecated, type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ac59010e983270c330b8625b5433961b9a4b5b0e9709902228c33df7e5e377e596
+24: DeprecatedNamespace::Enum [type=ENUM] -> namespaceDeprecatedNamespace.html#ac59010e983270c330b8625b5433961b9
+25: DeprecatedNamespace::DeprecatedTypedef [deprecated, type=TYPEDEF] -> namespaceDeprecatedNamespace.html#af503ad3ff194a4c2512aff16df771164
+26: DeprecatedNamespace::DeprecatedVariable [deprecated, type=VAR] -> namespaceDeprecatedNamespace.html#ae934297fc39624409333eefbfeabf5e5
+27: DeprecatedNamespace::deprecatedFoo(int, bool, double) [deprecated, suffix_length=17, type=FUNC] -> namespaceDeprecatedNamespace.html#a9a1b3fc71d294b548095985acc0d5092
+28: Namespace::Enum::Value [type=ENUM_VALUE] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
+29: Namespace::Enum [type=ENUM] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
+30: Namespace::Typedef [type=TYPEDEF] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
+31: Namespace::Variable [type=VAR] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
+32: DEPRECATED_MACRO(a, b, c) [deprecated, suffix_length=7, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
+33: MACRO [type=DEFINE] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
+34: MACRO_FUNCTION() [type=DEFINE] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
+35: MACRO_FUNCTION_WITH_PARAMS(params) [suffix_length=6, type=DEFINE] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover

@@ -1,4 +1,4 @@
-/** @dir Dir
+/** @dir /Dir
  * @brief A directory
  */
 
