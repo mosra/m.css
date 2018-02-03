@@ -107,10 +107,10 @@ inside:
 
 .. code:: ini
 
-    @INCLUDE               = Doxyfile
-    GENERATE_HTML          = NO
-    GENERATE_XML           = YES
-    XML_PROGRAMLISTING     = NO
+    @INCLUDE                = Doxyfile
+    GENERATE_HTML           = NO
+    GENERATE_XML            = YES
+    XML_PROGRAMLISTING      = NO
 
 This will derive the configuration from the original ``Doxyfile``, disables
 builtin Doxygen HTML output and enables XML output instead, with some unneeded
@@ -141,13 +141,15 @@ just open generated ``index.html`` to see the result.
 `Important differences to stock HTML output`_
 ---------------------------------------------
 
+-   Vastly improved search capabilities with immediate feedback
 -   Detailed description is put first and foremost on a page, *before* the
     member listing
 -   Files, directories and symbols that don't have any documentation are not
-    present in the output at all.
+    present in the output at all. This is done in order to encourage good
+    documentation practices.
 -   Table of contents is generated for compound references as well, containing
     all sections of detailed description together with anchors to member
-    listings.
+    listings
 -   Private members and anonymous namespaces are always ignored, however
     private virtual functions are listed in case they are documented
     (`why? <http://www.gotw.ca/publications/mill18.htm>`_)
@@ -165,9 +167,11 @@ just open generated ``index.html`` to see the result.
     with :cpp:`using`). However, the detailed documentation is kept in the
     original form.
 -   Function and macro parameters and enum values are vertically aligned in
-    the member listing for better readability.
+    the member listing for better readability
 -   Default class template parameters are not needlessly repeated in each
     member detailed docs
+-   Deprecation markers are propagated to member and compound listing pages and
+    search results; :cpp:`delete`\ d functions are marked in search as well
 
 `Intentionally unsupported features`_
 -------------------------------------
@@ -183,17 +187,14 @@ amount of generated content for no added value.
     little added value)
 -   Alphabetical list of symbols and alphabetical list of all members of a
     class is not created (the API *should be* organized in a way that makes
-    this unnecessary)
+    this unnecessary, there's also search for this)
 -   Verbatim listing of parsed headers, "Includes" and "Included By" lists are
     not present (use your IDE or GitHub instead)
--   Undocumented or private members and contents of anonymous namespaces are
-    ignored (if things are undocumented or intentionally hidden, why put them
-    in the documentation)
 -   Brief description for enum values is ignored (only the detailed description
     is used, as the brief description was never used anywhere else than next to
     the detailed description)
--   Initializers of defines and variables are unconditionally ignored (look in
-    the sources, if you *really* need that)
+-   Initializers of defines and variables are unconditionally ignored (one can
+    always look in the sources, if really needed)
 -   No section with list of examples or linking from function/class
     documentation to related example code (he example code should be
     accompanied with corresponding tutorial page instead)
@@ -405,7 +406,7 @@ directly on it.
 
 However, due to `restrictions of Chromium-based browsers <https://bugs.chromium.org/p/chromium/issues/detail?id=40787&q=ajax%20local&colspec=ID%20Stars%20Pri%20Area%20Feature%20Type%20Status%20Summary%20Modified%20Owner%20Mstone%20OS>`_,
 it's not possible to download data using :js:`XMLHttpRequest` when served from
-local file-system. Because of that, the search defaults to producing a
+a local file-system. Because of that, the search defaults to producing a
 Base85-encoded representation of the search binary and loading that
 asynchronously as a plain JavaScript file. This results in the search data
 being 25% larger, but since this is for serving from a local filesystem, it's
@@ -430,7 +431,8 @@ the search to a subdomain:
 
     ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
                    [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
-                   [--no-doxygen] [--debug]
+                   [--no-doxygen] [--search-no-subtree-merging]
+                   [--search-no-lookahead-barriers] [--debug]
                    doxyfile
 
 Arguments:
@@ -452,6 +454,10 @@ Options:
     See `Navigation page templates`_ section below for more information.
 -   ``--no-doxygen`` --- don't run Doxygen before. By default Doxygen is run
     before the script to refresh the generated XML output.
+-   ``--search-no-subtree-merging`` --- don't optimize search data size by
+    merging subtrees
+-   ``--search-no-lookahead-barriers`` --- don't insert search lookahead
+    barriers that improve search result relevance
 -   ``--debug`` --- verbose debug output. Useful for debugging.
 
 `Content`_
@@ -1381,6 +1387,8 @@ is a corresponding type of object described above.
 The :py:`compound.groups` contains a list of user-defined groups. Each item has
 the following properties:
 
+.. class:: m-table m-fullwidth
+
 ======================= =======================================================
 Property                Description
 ======================= =======================================================
@@ -1394,25 +1402,6 @@ Property                Description
                         :py:`'define'` and :py:`member` is a corresponding type
                         of object described above.
 ======================= =======================================================
-
-.. [1] :py:`i.brief` is a single-line paragraph without the enclosing :html:`<p>`
-    element, rendered as HTML. Can be empty in case of function overloads.
-.. [2] :py:`i.description` is HTML code with the full description, containing
-    paragraphs, notes, code blocks, images etc. Can be empty in case just the
-    brief description is present.
-.. [3] :py:`i.id` is a hash used to link to the member on the page, usually
-    appearing after ``#`` in page URL
-.. [4] :py:`i.name` is just the member name, not qualified. Prepend
-    :py:`compound.prefix_wbr` to it to get the fully qualified name.
-.. [5] :py:`compound.has_*_details` and :py:`i.has_details` are :py:`True` if
-    there is detailed description, function/template/macro parameter
-    documentation or enum value listing that makes it worth to render the full
-    description block. If :py:`False`, the member should be included only in
-    the brief listing on top of the page to avoid unnecessary repetition.
-.. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
-    contains links to related documentation
-.. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given
-    symbol contain the ``@deprecated`` command and to :py:`False` otherwise
 
 `Navigation page templates`_
 ----------------------------
@@ -1474,3 +1463,24 @@ Property                        Description
 
 Each list is ordered in a way that all namespaces are before all classes and
 all directories are before all files.
+
+---------------------------
+
+.. [1] :py:`i.brief` is a single-line paragraph without the enclosing :html:`<p>`
+    element, rendered as HTML. Can be empty in case of function overloads.
+.. [2] :py:`i.description` is HTML code with the full description, containing
+    paragraphs, notes, code blocks, images etc. Can be empty in case just the
+    brief description is present.
+.. [3] :py:`i.id` is a hash used to link to the member on the page, usually
+    appearing after ``#`` in page URL
+.. [4] :py:`i.name` is just the member name, not qualified. Prepend
+    :py:`compound.prefix_wbr` to it to get the fully qualified name.
+.. [5] :py:`compound.has_*_details` and :py:`i.has_details` are :py:`True` if
+    there is detailed description, function/template/macro parameter
+    documentation or enum value listing that makes it worth to render the full
+    description block. If :py:`False`, the member should be included only in
+    the brief listing on top of the page to avoid unnecessary repetition.
+.. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
+    contains links to related documentation
+.. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given
+    symbol contain the ``@deprecated`` command and to :py:`False` otherwise
