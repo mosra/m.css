@@ -407,7 +407,7 @@ macro [17]
 4: Namespace::Union [type=UNION] -> unionNamespace_1_1Union.html
 5: A page [type=PAGE] -> page.html
 6: A page » Subpage [type=PAGE] -> subpage.html
-7: Dir/ [suffix_length=1, type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
+7: Dir [type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
 8: Dir/File.h [type=FILE] -> File_8h.html
 9: Namespace::Class::foo() [type=FUNC] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
 10: Namespace::Class::foo() const [suffix_length=6, type=FUNC] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a

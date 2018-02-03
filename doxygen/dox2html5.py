@@ -1547,8 +1547,6 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
 
     # Add current item name to prefix list
     prefixed_name = prefix + [compound.leaf_name]
-    prefixed_result_name = prefix + [compound.leaf_name]
-    suffix_length = 0
 
     if compound.kind == 'namespace':
         kind = ResultFlag.NAMESPACE
@@ -1578,14 +1576,9 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
         result_joiner = ' » '
     else: assert False # pragma: no cover
 
-    # Show dirs with / at the end
-    if compound.kind == 'dir':
-        prefixed_result_name += ['']
-        suffix_length = 1
-
     # If just a leaf name, add it once
     if not joiner:
-        result_name = result_joiner.join(prefixed_result_name)
+        result_name = result_joiner.join(prefixed_name)
 
         # TODO: escape elsewhere so i don't have to unescape here
         index = map.add(html.unescape(result_name), compound.url, flags=kind)
@@ -1594,7 +1587,7 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
     # Otherwise add it multiple times with all possible prefixes
     else:
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(result_joiner.join(prefixed_result_name)), compound.url, suffix_length=suffix_length, flags=kind)
+        index = map.add(html.unescape(result_joiner.join(prefixed_name)), compound.url, flags=kind)
         for i in range(len(prefixed_name)):
             lookahead_barriers = []
             name = ''
