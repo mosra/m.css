@@ -188,9 +188,8 @@ var Search = {
         for(; foundPrefix != searchString.length; ++foundPrefix) {
             /* Calculate offset and count of children */
             let offset = this.searchStack[this.searchStack.length - 1];
-            let nodeSize = this.trie.getUint8(offset)*2;
-            let relChildOffset = 2 + this.trie.getUint8(offset + 1)*2;
-            let childCount = (nodeSize - relChildOffset)/4;
+            let relChildOffset = 2 + this.trie.getUint8(offset)*2;
+            let childCount = this.trie.getUint8(offset + 1);
 
             /* Go through all children and find the next offset */
             let childOffset = offset + relChildOffset;
@@ -230,10 +229,10 @@ var Search = {
     },
 
     gatherResults: function(offset, suffixLength, results) {
-        let valueCount = this.trie.getUint8(offset + 1);
+        let resultCount = this.trie.getUint8(offset);
 
         /* Populate the results with all values associated with this node */
-        for(let i = 0; i != valueCount; ++i) {
+        for(let i = 0; i != resultCount; ++i) {
             let index = this.trie.getUint16(offset + (i + 1)*2, true);
             let flags = this.map.getUint8(index*4 + 3);
             let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
@@ -279,9 +278,8 @@ var Search = {
 
         /* Dig deeper. If the child already has enough, return. */
         /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
-        let nodeSize = this.trie.getUint8(offset)*2;
-        let relChildOffset = 2 + this.trie.getUint8(offset + 1)*2;
-        let childCount = (nodeSize - relChildOffset)/4;
+        let relChildOffset = 2 + this.trie.getUint8(offset)*2;
+        let childCount = this.trie.getUint8(offset + 1);
         let childOffset = offset + relChildOffset;
         for(let j = 0; j != childCount; ++j) {
             let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);

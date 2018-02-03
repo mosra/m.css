@@ -34,7 +34,7 @@ from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data, search
 
 from test import IntegrationTestCase
 
-def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, draw_pipe, show_merged, show_lookahead_barriers, color_map) -> str:
+def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, show_merged, show_lookahead_barriers, color_map) -> str:
     # Visualize where the trees were merged
     if show_merged and base_offset in hashtable:
         return color_map['red'] + '#' + color_map['reset']
@@ -42,27 +42,25 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
     stats.node_count += 1
 
     out = ''
-    size, value_count = Trie.header_struct.unpack_from(serialized, base_offset)
-    stats.max_node_size = max(size, stats.max_node_size)
-    stats.max_node_values = max(value_count, stats.max_node_values)
+    result_count, child_count = Trie.header_struct.unpack_from(serialized, base_offset)
+    stats.max_node_results = max(result_count, stats.max_node_results)
+    stats.max_node_children = max(child_count, stats.max_node_children)
     offset = base_offset + Trie.header_struct.size
 
-    # print values, if any
-    if value_count:
+    # print results, if any
+    if result_count:
         out += color_map['blue'] + ' ['
-        for i in range(value_count):
+        for i in range(result_count):
             if i: out += color_map['blue']+', '
-            value = Trie.value_struct.unpack_from(serialized, offset)[0]
-            stats.max_node_value_index = max(value, stats.max_node_value_index)
-            out += color_map['cyan'] + str(value)
-            offset += Trie.value_struct.size
+            result = Trie.result_struct.unpack_from(serialized, offset)[0]
+            stats.max_node_result_index = max(result, stats.max_node_result_index)
+            out += color_map['cyan'] + str(result)
+            offset += Trie.result_struct.size
         out += color_map['blue'] + ']'
 
-    # print children
-    if base_offset + size*2 - offset > 4: draw_pipe = True
-    child_count = 0
-    while offset < base_offset + size*2:
-        if child_count or value_count:
+    # print children, if any
+    for i in range(child_count):
+        if result_count or i:
             out += color_map['reset'] + '\n'
             out += color_map['blue'] + indent + color_map['white']
         char = Trie.child_char_struct.unpack_from(serialized, offset + 3)[0]
@@ -77,10 +75,8 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
         child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x007fffff
         stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
         offset += Trie.child_struct.size
-        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if draw_pipe else ' '), draw_pipe=False, show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
+        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if child_count > 1 else ' '), show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
         child_count += 1
-
-    stats.max_node_children = max(child_count, stats.max_node_children)
 
     hashtable[base_offset] = True
     return out
@@ -108,21 +104,19 @@ def pretty_print_trie(serialized: bytes, show_merged=False, show_lookahead_barri
 
     stats = Empty()
     stats.node_count = 0
-    stats.max_node_size = 0
-    stats.max_node_values = 0
+    stats.max_node_results = 0
     stats.max_node_children = 0
-    stats.max_node_value_index = 0
+    stats.max_node_result_index = 0
     stats.max_node_child_offset = 0
 
-    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', draw_pipe=False, show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
+    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
     if out: out = color_map['white'] + out
     stats = """
 node count:             {}
-max node size:          {} bytes
-max node values:        {}
+max node results:       {}
 max node children:      {}
-max node value index:   {}
-max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_size*2, stats.max_node_values, stats.max_node_children, stats.max_node_value_index, stats.max_node_child_offset)
+max node result index:  {}
+max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_results, stats.max_node_children, stats.max_node_result_index, stats.max_node_child_offset)
     return out, stats
 
 def pretty_print_map(serialized: bytes, colors=False):
