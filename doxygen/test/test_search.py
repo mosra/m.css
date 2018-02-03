@@ -138,8 +138,10 @@ def pretty_print_map(serialized: bytes, colors=False):
         if i: out += '\n'
         flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
         extra = []
-        if flags & ResultFlag.IS_DEPRECATED:
+        if flags & ResultFlag.DEPRECATED:
             extra += ['deprecated']
+        if flags & ResultFlag.DELETED:
+            extra += ['deleted']
         if flags & ResultFlag.HAS_SUFFIX:
             extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
             offset += 1
@@ -310,7 +312,7 @@ class MapSerialization(unittest.TestCase):
         self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS), 1)
         self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS), 2)
         self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875", flags=ResultFlag.FUNC), 3)
-        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef2875", suffix_length=8, flags=ResultFlag.FUNC), 4)
+        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef2875", suffix_length=8, flags=ResultFlag.FUNC|ResultFlag.DEPRECATED|ResultFlag.DELETED), 4)
 
         serialized = map.serialize()
         self.compare(serialized, """
@@ -318,7 +320,7 @@ class MapSerialization(unittest.TestCase):
 1: Math::Vector [type=CLASS] -> classMath_1_1Vector.html
 2: Math::Range [type=CLASS] -> classMath_1_1Range.html
 3: Math::min() [type=FUNC] -> namespaceMath.html#abcdef2875
-4: Math::max(int, int) [suffix_length=8, type=FUNC] -> namespaceMath.html#abcdef2875
+4: Math::max(int, int) [deprecated, deleted, suffix_length=8, type=FUNC] -> namespaceMath.html#abcdef2875
 """)
         self.assertEqual(len(serialized), 210)
 
@@ -446,7 +448,7 @@ macro [31]
 14: DeprecatedDir/DeprecatedFile.h [deprecated, type=FILE] -> DeprecatedFile_8h.html
 15: Namespace::Class::foo() [type=FUNC] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
 16: Namespace::Class::foo() const [suffix_length=6, type=FUNC] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
-17: Namespace::Class::foo() && [suffix_length=3, type=FUNC] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
+17: Namespace::Class::foo() && [deleted, suffix_length=3, type=FUNC] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
 18: Namespace::Class::foo(const Enum&, Typedef) [suffix_length=20, type=FUNC] -> classNamespace_1_1Class.html#aba8d57a830d4d79f86d58d92298677fa
 19: DeprecatedNamespace::DeprecatedEnum::Value [type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47a689202409e48743b914713f96d93947c
 20: DeprecatedNamespace::DeprecatedEnum [deprecated, type=ENUM] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47

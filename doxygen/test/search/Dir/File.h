@@ -17,7 +17,7 @@ class Class {
 
         void foo() const; /**< @overload */
 
-        void foo() &&; /**< @overload */
+        void foo() && = delete; /**< @overload */
 
         /** @brief Function with arguments */
         void foo(const Enum& first, Typedef second);

@@ -131,7 +131,8 @@ class Trie:
 
 class ResultFlag(Flag):
     HAS_SUFFIX = 1 << 0
-    IS_DEPRECATED = 1 << 1
+    DEPRECATED = 1 << 1
+    DELETED = 1 << 2
 
     _TYPE = 0xf << 4
     NAMESPACE = 1 << 4
@@ -1167,7 +1168,7 @@ def parse_enum(state: State, element: ET.Element):
             enum.has_value_details = True
             if not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
-                result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.IS_DEPRECATED if value.is_deprecated else ResultFlag(0))
+                result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
                 result.url = state.current_url + '#' + value.id
                 result.prefix = state.current_prefix + [enum.name]
                 result.name = value.name
@@ -1178,7 +1179,7 @@ def parse_enum(state: State, element: ET.Element):
     if enum.brief or enum.has_details or enum.has_value_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.ENUM|(ResultFlag.IS_DEPRECATED if enum.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.ENUM|(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0))
             result.url = state.current_url + '#' + enum.id
             result.prefix = state.current_prefix
             result.name = enum.name
@@ -1240,7 +1241,7 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.has_details = typedef.description or typedef.has_template_details
     if typedef.brief or typedef.has_details:
         result = Empty()
-        result.flags = ResultFlag.TYPEDEF|(ResultFlag.IS_DEPRECATED if typedef.is_deprecated else ResultFlag(0))
+        result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
         result.url = state.current_url + '#' + typedef.id
         result.prefix = state.current_prefix
         result.name = typedef.name
@@ -1343,7 +1344,7 @@ def parse_func(state: State, element: ET.Element):
     if func.brief or func.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.FUNC|(ResultFlag.IS_DEPRECATED if func.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.FUNC|(ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0))
             result.url = state.current_url + '#' + func.id
             result.prefix = state.current_prefix
             result.name = func.name
@@ -1375,7 +1376,7 @@ def parse_var(state: State, element: ET.Element):
     if var.brief or var.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.VAR|(ResultFlag.IS_DEPRECATED if var.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.VAR|(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0))
             result.url = state.current_url + '#' + var.id
             result.prefix = state.current_prefix
             result.name = var.name
@@ -1413,7 +1414,7 @@ def parse_define(state: State, element: ET.Element):
     if define.brief or define.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.DEFINE|(ResultFlag.IS_DEPRECATED if define.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.DEFINE|(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0))
             result.url = state.current_url + '#' + define.id
             result.prefix = []
             result.name = define.name
@@ -1615,7 +1616,7 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
     # Otherwise add it multiple times with all possible prefixes
     else:
         # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(result_joiner.join(prefixed_name)), compound.url, flags=kind|(ResultFlag.IS_DEPRECATED if compound.is_deprecated else ResultFlag(0)))
+        index = map.add(html.unescape(result_joiner.join(prefixed_name)), compound.url, flags=kind|(ResultFlag.DEPRECATED if compound.is_deprecated else ResultFlag(0)))
         for i in range(len(prefixed_name)):
             lookahead_barriers = []
             name = ''

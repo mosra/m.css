@@ -125,7 +125,7 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 10 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 97,
+          flags: 101,
           suffixLength: 10 }];
     assert.deepEqual(Search.search('m'), resultsForM);
 
@@ -141,7 +141,7 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 97,
+          flags: 101,
           suffixLength: 8 }]);
 
     /* Go back, get the same thing */
@@ -209,7 +209,7 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 97,
+          flags: 101,
           suffixLength: 8 }]);
 }
 
