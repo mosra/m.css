@@ -222,77 +222,78 @@ var Search = {
             return [];
         }
 
-        /* Otherwise recursively gather the results */
+        /* Otherwise gather the results */
         let results = [];
-        this.gatherResults(this.searchStack[this.searchStack.length - 1], 0, results);
-        return results;
-    },
+        let leaves = [[this.searchStack[this.searchStack.length - 1], 0]];
+        while(leaves.length) {
+            /* Pop offset from the queue */
+            let current = leaves.shift();
+            let offset = current[0];
+            let suffixLength = current[1];
 
-    gatherResults: function(offset, suffixLength, results) {
-        let resultCount = this.trie.getUint8(offset);
+            /* Populate the results with all values associated with this node */
+            let resultCount = this.trie.getUint8(offset);
+            for(let i = 0; i != resultCount; ++i) {
+                let index = this.trie.getUint16(offset + (i + 1)*2, true);
+                let flags = this.map.getUint8(index*4 + 3);
+                let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
 
-        /* Populate the results with all values associated with this node */
-        for(let i = 0; i != resultCount; ++i) {
-            let index = this.trie.getUint16(offset + (i + 1)*2, true);
-            let flags = this.map.getUint8(index*4 + 3);
-            let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
-
-            /* The result has a suffix, extract its length */
-            let resultSuffixLength = 0;
-            if(flags & 0x01) {
-                resultSuffixLength = this.map.getUint8(resultOffset);
-                ++resultOffset;
-            }
-
-            let nextResultOffset = this.map.getUint32((index + 1)*4, true) & 0x00ffffff;
-
-            let name = '';
-            let j = resultOffset;
-            for(; j != nextResultOffset; ++j) {
-                let c = this.map.getUint8(j);
-
-                /* End of null-delimited name */
-                if(!c) {
-                    ++j;
-                    break; /* null-delimited */
+                /* The result has a suffix, extract its length */
+                let resultSuffixLength = 0;
+                if(flags & 0x01) {
+                    resultSuffixLength = this.map.getUint8(resultOffset);
+                    ++resultOffset;
                 }
 
-                name += String.fromCharCode(c); /* eheh. IS THIS FAST?! */
+                let nextResultOffset = this.map.getUint32((index + 1)*4, true) & 0x00ffffff;
+
+                let name = '';
+                let j = resultOffset;
+                for(; j != nextResultOffset; ++j) {
+                    let c = this.map.getUint8(j);
+
+                    /* End of null-delimited name */
+                    if(!c) {
+                        ++j;
+                        break; /* null-delimited */
+                    }
+
+                    name += String.fromCharCode(c); /* eheh. IS THIS FAST?! */
+                }
+
+                let url = '';
+                for(; j != nextResultOffset; ++j) {
+                    url += String.fromCharCode(this.map.getUint8(j));
+                }
+
+                /* Keeping in UTF-8, as we need that for proper slicing */
+                results.push({name: name,
+                              url: url,
+                              flags: flags,
+                              suffixLength: suffixLength + resultSuffixLength});
+
+                /* 'nuff said. */
+                /* TODO: remove once proper barriers are in */
+                if(results.length >= this.maxResults) return results;
             }
 
-            let url = '';
-            for(; j != nextResultOffset; ++j) {
-                url += String.fromCharCode(this.map.getUint8(j));
+            /* Dig deeper */
+            /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
+            let relChildOffset = 2 + this.trie.getUint8(offset)*2;
+            let childCount = this.trie.getUint8(offset + 1);
+            let childOffset = offset + relChildOffset;
+            for(let j = 0; j != childCount; ++j) {
+                let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);
+
+                /* Lookahead barrier, don't dig deeper */
+                if(offsetBarrier & 0x00800000) continue;
+
+                /* Append to the queue */
+                leaves.push([offsetBarrier & 0x007fffff, suffixLength + 1]);
             }
-
-            /* Keeping in UTF-8, as we need that for proper slicing */
-            results.push({name: name,
-                          url: url,
-                          flags: flags,
-                          suffixLength: suffixLength + resultSuffixLength});
-
-            /* 'nuff said. */
-            /* TODO: remove once proper barriers are in */
-            if(results.length >= this.maxResults) return true;
         }
 
-        /* Dig deeper. If the child already has enough, return. */
-        /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
-        let relChildOffset = 2 + this.trie.getUint8(offset)*2;
-        let childCount = this.trie.getUint8(offset + 1);
-        let childOffset = offset + relChildOffset;
-        for(let j = 0; j != childCount; ++j) {
-            let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);
-
-            /* Lookahead barrier, don't dig deeper */
-            if(offsetBarrier & 0x00800000) continue;
-
-            if(this.gatherResults(offsetBarrier & 0x007fffff, suffixLength + 1, results))
-                return true;
-        }
-
-        /* Still hungry. */
-        return false;
+        return results;
     },
 
     escapeForRtl: function(name) {

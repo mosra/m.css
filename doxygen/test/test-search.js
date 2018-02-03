@@ -220,14 +220,14 @@ const { StringDecoder } = require('string_decoder');
     assert.equal(Search.dataSize, 0.1);
     assert.equal(Search.symbolCount, 2);
     assert.deepEqual(Search.search('h'), [
-        { name: Search.toUtf8('Hýždě'),
-          url: '#a',
-          flags: 0,
-          suffixLength: 7 },
         { name: Search.toUtf8('Hárá'),
           url: '#b',
           flags: 0,
-          suffixLength: 5 }]);
+          suffixLength: 5 },
+        { name: Search.toUtf8('Hýždě'),
+          url: '#a',
+          flags: 0,
+          suffixLength: 7 }]);
     assert.deepEqual(Search.search('hý'), [
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
