@@ -3,6 +3,7 @@ QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
 GENERATE_XML            = YES
+XML_PROGRAMLISTING      = NO
 EXAMPLE_PATH            = .
 
 M_PAGE_FINE_PRINT       =
