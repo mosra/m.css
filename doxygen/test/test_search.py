@@ -146,7 +146,7 @@ def pretty_print_map(serialized: bytes, colors=False):
             extra += ['type={}'.format((flags & ResultFlag._TYPE).name)]
         next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
         name, _, url = serialized[offset:next_offset].partition(b'\0')
-        out += color_map['cyan'] + str(i) + color_map['blue'] + ': ' + color_map['white'] + name.decode('utf-8') + color_map['blue'] + ' [' + color_map['yellow'] + (color_map['blue'] + ', ' + color_map['yellow']).join(extra) + color_map['blue'] + '] -> ' + color_map['reset'] + url.decode('utf-8')
+        out += color_map['cyan'] + str(i) + color_map['blue'] + ': ' + color_map['white'] + name.decode('utf-8') + color_map['blue'] + ' [' + color_map['yellow'] + (color_map['blue'] + ', ' + color_map['yellow']).join(extra) + color_map['blue'] + '] ->' + (' ' + color_map['reset'] + url.decode('utf-8') if url else '')
         offset = next_offset
     return out
 
