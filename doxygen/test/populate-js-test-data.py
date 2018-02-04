@@ -57,14 +57,17 @@ index = map.add("Math::Vector::min() const", "classMath_1_1Vector.html#min", suf
 trie.insert("math::vector::min()", index, lookahead_barriers=[4, 12])
 trie.insert("vector::min()", index, lookahead_barriers=[6])
 trie.insert("min()", index)
-index = map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS)
-trie.insert("math::range", index)
-trie.insert("range", index)
+range_index = map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS)
+trie.insert("math::range", range_index)
+trie.insert("range", range_index)
 index = map.add("Math::Range::min() const", "classMath_1_1Range.html#min", suffix_length=6, flags=ResultFlag.FUNC|ResultFlag.DELETED)
 trie.insert("math::range::min()", index, lookahead_barriers=[4, 11])
 trie.insert("range::min()", index, lookahead_barriers=[5])
 trie.insert("min()", index)
 trie.insert("subpage", map.add("Page » Subpage", "subpage.html", flags=ResultFlag.PAGE))
+
+trie.insert("rectangle", map.add("Rectangle", "", alias=range_index))
+trie.insert("rect()", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))
 
 with open(basedir/'searchdata.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map))

@@ -132,6 +132,9 @@ def pretty_print_map(serialized: bytes, colors=False):
         if i: out += '\n'
         flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
         extra = []
+        if flags & ResultFlag._TYPE == ResultFlag.ALIAS:
+            extra += ['alias={}'.format(ResultMap.alias_struct.unpack_from(serialized, offset)[0])]
+            offset += ResultMap.alias_struct.size
         if flags & ResultFlag.HAS_PREFIX:
             extra += ['prefix={}[:{}]'.format(*ResultMap.prefix_struct.unpack_from(serialized, offset))]
             offset += ResultMap.prefix_struct.size
@@ -310,6 +313,8 @@ class MapSerialization(unittest.TestCase):
         self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS), 2)
         self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875", flags=ResultFlag.FUNC), 3)
         self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef1234", suffix_length=8, flags=ResultFlag.FUNC|ResultFlag.DEPRECATED|ResultFlag.DELETED), 4)
+        self.assertEqual(map.add("Rectangle", "", alias=2), 5)
+        self.assertEqual(map.add("Rectangle::Rect()", "", suffix_length=2, alias=2), 6)
 
         serialized = map.serialize()
         self.compare(serialized, """
@@ -318,8 +323,10 @@ class MapSerialization(unittest.TestCase):
 2: ::Range [prefix=0[:0], type=CLASS] -> classMath_1_1Range.html
 3: ::min() [prefix=0[:18], type=FUNC] -> #abcdef2875
 4: ::max(int, int) [prefix=0[:18], suffix_length=8, deprecated, deleted, type=FUNC] -> #abcdef1234
+5: Rectangle [alias=2] ->
+6: ::Rect() [alias=2, prefix=5[:0], suffix_length=2] ->
 """)
-        self.assertEqual(len(serialized), 170)
+        self.assertEqual(len(serialized), 203)
 
 class Serialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):

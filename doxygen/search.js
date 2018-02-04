@@ -264,6 +264,13 @@ var Search = {
         let flags = this.map.getUint8(index*4 + 3);
         let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
 
+        /* The result is an alias, parse the aliased prefix */
+        let aliasedIndex = null;
+        if((flags & 0xf0) == 0x00) {
+            aliasedIndex = this.map.getUint16(resultOffset, true);
+            resultOffset += 2;
+        }
+
         /* The result has a prefix, parse that first, recursively */
         let name = '';
         let url = '';
@@ -301,10 +308,25 @@ var Search = {
             name += String.fromCharCode(c); /* eheh. IS THIS FAST?! */
         }
 
-        /* Extract URL */
-        let max = Math.min(j + maxUrlPrefix, nextResultOffset);
-        for(; j != max; ++j) {
-            url += String.fromCharCode(this.map.getUint8(j));
+        /* The result is an alias and we're not deep inside resolving a prefix,
+           extract the aliased name and URL */
+        /* TODO: this abuses 0xffffff to guess how the call stack is deep and
+           that's just wrong, fix! */
+        if(aliasedIndex != null && maxUrlPrefix == 0xffffff) {
+            let alias = this.gatherResult(aliasedIndex, 0 /* ignored */, 0xffffff); /* should be enough haha */
+            name += ': ' + alias.name;
+            url = alias.url;
+            flags = alias.flags;
+
+            /* Result suffix length: add the whole aliased name + the `: ` */
+            resultSuffixLength += 2 + alias.name.length;
+
+        /* Otherwise extract URL from here */
+        } else {
+            let max = Math.min(j + maxUrlPrefix, nextResultOffset);
+            for(; j != max; ++j) {
+                url += String.fromCharCode(this.map.getUint8(j));
+            }
         }
 
         /* Keeping in UTF-8, as we need that for proper slicing (and concatenating) */

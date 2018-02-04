@@ -132,6 +132,7 @@ class ResultFlag(Flag):
     DELETED = 1 << 2
 
     _TYPE = 0xf << 4
+    ALIAS = 0 << 4
     NAMESPACE = 1 << 4
     CLASS = 2 << 4
     STRUCT = 3 << 4
@@ -176,21 +177,31 @@ class ResultMap:
     # id + len | length | suffix |    |
     # 16b + 8b |   8b   |        | 8b |
     #
+    # alias item (flags & 0xf0 == 0x00):
+    #
+    # alias |     | alias
+    #  id   | ... | name
+    #  16b  |     |
+    #
     offset_struct = struct.Struct('<I')
     flags_struct = struct.Struct('<B')
     prefix_struct = struct.Struct('<HB')
     suffix_length_struct = struct.Struct('<B')
+    alias_struct = struct.Struct('<H')
 
     def __init__(self):
         self.entries = []
 
-    def add(self, name, url, suffix_length=0, flags=ResultFlag(0)) -> int:
+    def add(self, name, url, alias=None, suffix_length=0, flags=ResultFlag(0)) -> int:
         if suffix_length: flags |= ResultFlag.HAS_SUFFIX
+        if alias is not None:
+            assert flags & ResultFlag._TYPE == ResultFlag.ALIAS
 
         entry = Empty()
         entry.name = name
         entry.url = url
         entry.flags = flags
+        entry.alias = alias
         entry.prefix = 0
         entry.prefix_length = 0
         entry.suffix_length = suffix_length
@@ -260,6 +271,7 @@ class ResultMap:
                     entry.name = e.name[len(self.entries[longest_prefix.results[0]].name):]
                     entry.url = e.url[max_prefix[1]:]
                     entry.flags = e.flags|ResultFlag.HAS_PREFIX
+                    entry.alias = e.alias
                     entry.prefix = max_prefix[0]
                     entry.prefix_length = max_prefix[1]
                     entry.suffix_length = e.suffix_length
@@ -278,6 +290,10 @@ class ResultMap:
             assert offset < 2**24
             output += self.offset_struct.pack(offset)
             self.flags_struct.pack_into(output, len(output) - 1, e.flags.value)
+
+            # The entry is an alias, extra field for alias index
+            if e.flags & ResultFlag._TYPE == ResultFlag.ALIAS:
+                offset += 2
 
             # Extra field for prefix index and length
             if e.flags & ResultFlag.HAS_PREFIX:
@@ -300,6 +316,10 @@ class ResultMap:
 
         # Write the entries themselves
         for e in self.entries:
+            if e.flags & ResultFlag._TYPE == ResultFlag.ALIAS:
+                assert not e.alias is None
+                assert not e.url
+                output += self.alias_struct.pack(e.alias)
             if e.flags & ResultFlag.HAS_PREFIX:
                 output += self.prefix_struct.pack(e.prefix, e.prefix_length)
             if e.flags & ResultFlag.HAS_SUFFIX:
