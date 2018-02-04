@@ -364,8 +364,10 @@ class Search(IntegrationTestCase):
         self.run_dox2html5(index_pages=[], wildcard='*.xml')
 
         with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
-            search_data_pretty = pretty_print(f.read())[0]
+            serialized = f.read()
+            search_data_pretty = pretty_print(serialized)[0]
         #print(search_data_pretty)
+        self.assertEqual(len(serialized), 3712)
         self.assertEqual(search_data_pretty, """
 deprecated list [0]
 ||        dir [1]
