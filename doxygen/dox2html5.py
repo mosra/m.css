@@ -1659,120 +1659,80 @@ def postprocess_state(state: State):
     if state.doxyfile['M_FAVICON']:
         state.doxyfile['M_FAVICON'] = (state.doxyfile['M_FAVICON'], mimetypes.guess_type(state.doxyfile['M_FAVICON'])[0])
 
-def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap, add_lookahead_barriers):
-    compound = state.compounds[id]
-    if not compound.brief and not compound.has_details: return 0
-
-    # Add current item name to prefix list
-    prefixed_name = prefix + [compound.leaf_name]
-
-    if compound.kind == 'namespace':
-        kind = ResultFlag.NAMESPACE
-    elif compound.kind == 'struct':
-        kind = ResultFlag.STRUCT
-    elif compound.kind == 'class':
-        kind = ResultFlag.CLASS
-    elif compound.kind == 'union':
-        kind = ResultFlag.UNION
-    elif compound.kind == 'dir':
-        kind = ResultFlag.DIR
-    elif compound.kind == 'file':
-        kind = ResultFlag.FILE
-    elif compound.kind == 'page':
-        kind = ResultFlag.PAGE
-    elif compound.kind == 'group':
-        kind = ResultFlag.GROUP
-    else: assert False # pragma: no cover
-
-    # Calculate fully-qualified name
-    if compound.kind in ['namespace', 'struct', 'class', 'union']:
-        joiner = result_joiner = '::'
-    elif compound.kind in ['file', 'dir']:
-        joiner = result_joiner = '/'
-    elif compound.kind in ['page', 'group']:
-        joiner = ''
-        result_joiner = ' » '
-    else: assert False # pragma: no cover
-
-    # If just a leaf name, add it once
-    if not joiner:
-        result_name = result_joiner.join(prefixed_name)
-
-        # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(result_name), compound.url, flags=kind)
-        trie.insert(html.unescape(compound.leaf_name).lower(), index)
-
-    # Otherwise add it multiple times with all possible prefixes
-    else:
-        # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape(result_joiner.join(prefixed_name)), compound.url, flags=kind|(ResultFlag.DEPRECATED if compound.is_deprecated else ResultFlag(0)))
-        for i in range(len(prefixed_name)):
-            lookahead_barriers = []
-            name = ''
-            for j in prefixed_name[i:]:
-                if name:
-                    lookahead_barriers += [len(name)]
-                    name += joiner
-                name += html.unescape(j)
-            trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
-
-    for i in compound.children:
-        if i in state.compounds:
-            _build_search_data(state, prefixed_name, i, trie, map, add_lookahead_barriers=add_lookahead_barriers)
-
 def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
     trie = Trie()
     map = ResultMap()
-
-    for id, compound in state.compounds.items():
-        if compound.parent: continue # start from the root
-        _build_search_data(state, [], id, trie, map, add_lookahead_barriers=add_lookahead_barriers)
-
-    # TODO: examples?
 
     strip_tags_re = re.compile('<.*?>')
     def strip_tags(text):
         return strip_tags_re.sub('', text)
 
     for result in state.search:
-        # Handle function arguments
-        name_with_args = result.name
-        name = result.name
-        suffix_length = 0
-        if hasattr(result, 'params') and result.params is not None:
-            params = strip_tags(', '.join(result.params))
-            name_with_args += '(' + params + ')'
-            suffix_length += len(html.unescape(params)) + 2
-        if hasattr(result, 'suffix') and result.suffix:
-            name_with_args += result.suffix
+        # Decide on prefix joiner. Defines are among the :: ones as well,
+        # because we need to add the function macros twice -- but they have no
+        # prefix, so it's okay.
+        if result.flags & ResultFlag._TYPE in [ResultFlag.NAMESPACE, ResultFlag.CLASS, ResultFlag.STRUCT, ResultFlag.UNION, ResultFlag.TYPEDEF, ResultFlag.FUNC, ResultFlag.VAR, ResultFlag.ENUM, ResultFlag.ENUM_VALUE, ResultFlag.DEFINE]:
+            joiner = result_joiner = '::'
+        elif result.flags & ResultFlag._TYPE in [ResultFlag.DIR, ResultFlag.FILE]:
+            joiner = result_joiner = '/'
+        elif result.flags & ResultFlag._TYPE in [ResultFlag.PAGE, ResultFlag.GROUP]:
+            joiner = ''
+            result_joiner = ' » '
+        else:
+            print(result.flags & ResultFlag._TYPE)
+            assert False # pragma: no cover
+
+        # If just a leaf name, add it once
+        if not joiner:
+            assert result_joiner
+            result_name = result_joiner.join(result.prefix + [result.name])
+
             # TODO: escape elsewhere so i don't have to unescape here
-            suffix_length += len(html.unescape(result.suffix))
+            index = map.add(html.unescape(result_name), result.url, flags=result.flags)
+            trie.insert(html.unescape(result.name).lower(), index)
 
-        # TODO: escape elsewhere so i don't have to unescape here
-        index = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length, flags=result.flags)
-
-        # Add functions and function macros the second time with () appended,
-        # everything is the same except for suffix length which is 2 chars
-        # shorter
-        if hasattr(result, 'params') and result.params is not None:
-            index_args = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url,
-                suffix_length=suffix_length - 2, flags=result.flags)
-
-        prefixed_name = result.prefix + [name]
-        for i in range(len(prefixed_name)):
-            lookahead_barriers = []
-            name = ''
-            for j in prefixed_name[i:]:
-                if name:
-                    lookahead_barriers += [len(name)]
-                    name += '::'
-                name += html.unescape(j)
-            trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
-
-            # Add functions and function macros the second time with ()
-            # appended, referencing the other result that expects () appended
+        # Otherwise add it multiple times with all possible prefixes
+        else:
+            # Handle function arguments
+            name_with_args = result.name
+            name = result.name
+            suffix_length = 0
             if hasattr(result, 'params') and result.params is not None:
-                trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
+                params = strip_tags(', '.join(result.params))
+                name_with_args += '(' + params + ')'
+                suffix_length += len(html.unescape(params)) + 2
+            if hasattr(result, 'suffix') and result.suffix:
+                name_with_args += result.suffix
+                # TODO: escape elsewhere so i don't have to unescape here
+                suffix_length += len(html.unescape(result.suffix))
+
+            # TODO: escape elsewhere so i don't have to unescape here
+            index = map.add(html.unescape(joiner.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length, flags=result.flags)
+
+            # Add functions and function macros the second time with () appended,
+            # everything is the same except for suffix length which is 2 chars
+            # shorter
+            if hasattr(result, 'params') and result.params is not None:
+                index_args = map.add(html.unescape(joiner.join(result.prefix + [name_with_args])), result.url,
+                    suffix_length=suffix_length - 2, flags=result.flags)
+
+            prefixed_name = result.prefix + [name]
+            for i in range(len(prefixed_name)):
+                lookahead_barriers = []
+                name = ''
+                for j in prefixed_name[i:]:
+                    if name:
+                        lookahead_barriers += [len(name)]
+                        name += joiner
+                    name += html.unescape(j)
+                trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
+
+                # Add functions and function macros the second time with ()
+                # appended, referencing the other result that expects () appended.
+                # The lookahead barrier is at the ( character to avoid the result
+                # being shown twice.
+                if hasattr(result, 'params') and result.params is not None:
+                    trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
 
     return serialize_search_data(trie, map, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
@@ -2339,6 +2299,34 @@ def parse_xml(state: State, xml: str):
 
         else:
             compound.breadcrumb = [(compound.name, compound.id + '.html')]
+
+    # Add the compound to search data, if it's documented
+    # TODO: add example sources there? how?
+    if not state.doxyfile['M_SEARCH_DISABLED'] and not compound.kind == 'example' and (compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')):
+        if compound.kind == 'namespace':
+            kind = ResultFlag.NAMESPACE
+        elif compound.kind == 'struct':
+            kind = ResultFlag.STRUCT
+        elif compound.kind == 'class':
+            kind = ResultFlag.CLASS
+        elif compound.kind == 'union':
+            kind = ResultFlag.UNION
+        elif compound.kind == 'dir':
+            kind = ResultFlag.DIR
+        elif compound.kind == 'file':
+            kind = ResultFlag.FILE
+        elif compound.kind == 'page':
+            kind = ResultFlag.PAGE
+        elif compound.kind == 'group':
+            kind = ResultFlag.GROUP
+        else: assert False # pragma: no cover
+
+        result = Empty()
+        result.flags = kind|(ResultFlag.DEPRECATED if compound.is_deprecated else ResultFlag(0))
+        result.url = compound.url
+        result.prefix = state.current_prefix[:-1]
+        result.name = state.current_prefix[-1]
+        state.search += [result]
 
     parsed = Empty()
     parsed.version = root.attrib['version']
