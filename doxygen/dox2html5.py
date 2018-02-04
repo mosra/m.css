@@ -2573,7 +2573,7 @@ default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/')
 
-def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
+def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
     state = State()
     state.basedir = os.path.dirname(doxyfile)
 
@@ -2582,6 +2582,10 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     xml_files_metadata = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, "*.xml"))]
     xml_files = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, wildcard))]
     html_output = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['HTML_OUTPUT'])
+
+    if sort_globbed_files:
+        xml_files_metadata.sort()
+        xml_files.sort()
 
     if not os.path.exists(html_output):
         os.makedirs(html_output)
@@ -2692,6 +2696,7 @@ if __name__ == '__main__': # pragma: no cover
     parser.add_argument('--search-no-subtree-merging', help="don't merge search data subtrees", action='store_true')
     parser.add_argument('--search-no-lookahead-barriers', help="don't insert search lookahead barriers", action='store_true')
     parser.add_argument('--search-no-prefix-merging', help="don't merge search result prefixes", action='store_true')
+    parser.add_argument('--sort-globbed-files', help="sort globbed files for better reproducibility", action='store_true')
     parser.add_argument('--debug', help="verbose debug output", action='store_true')
     args = parser.parse_args()
 

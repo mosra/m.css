@@ -367,107 +367,107 @@ class Search(IntegrationTestCase):
             search_data_pretty = pretty_print(f.read())[0]
         #print(search_data_pretty)
         self.assertEqual(search_data_pretty, """
-deprecatednamespace [0]
-||        |        :$
-||        |         :deprecatedclass [1]
-||        |          |         struct [2]
-||        |          |         union [3]
-||        |          |         enum [22]
-||        |          |         |   :$
-||        |          |         |    :value [21]
-||        |          |         typedef [25]
-||        |          |         variable [26]
-||        |          |         foo() [27]
-||        |          enum [24]
-||        |          |   :$
-||        |          |    :deprecatedvalue [23]
-||        class [1]
-||        struct [2]
-||        union [3]
-||         list [5]
-||        dir [15]
+deprecated list [0]
+||        dir [1]
 ||        |  /$
-||        |   deprecatedfile.h [16]
-||        file.h [16]
-||        |oo() [27]
-||        enum [22]
+||        |   deprecatedfile.h [2]
+||        file.h [2]
+||        |oo() [31]
+||        namespace [7]
+||        |        :$
+||        |         :deprecatedclass [8]
+||        |          |         struct [9]
+||        |          |         union [10]
+||        |          |         enum [26]
+||        |          |         |   :$
+||        |          |         |    :value [25]
+||        |          |         typedef [29]
+||        |          |         variable [30]
+||        |          |         foo() [31]
+||        |          enum [28]
+||        |          |   :$
+||        |          |    :deprecatedvalue [27]
+||        class [8]
+||        struct [9]
+||        union [10]
+||        _macro() [17]
+||        enum [26]
 ||        |   :$
-||        |    :value [21]
-||        value [23]
-||        | riable [26]
-||        typedef [25]
-||        _macro() [32]
-|ir [13]
+||        |    :value [25]
+||        value [27]
+||        | riable [30]
+||        typedef [29]
+|ir [3]
 || /$
-||  file.h [14]
-a group [4, 10]
-| page [11]
-namespace [6]
+||  file.h [4]
+file.h [4]
+|oo() [21, 22, 23, 24]
+a group [5, 6]
+| page [15]
+namespace [11]
 |        :$
-|         :class [7]
+|         :class [12]
 |          |    :$
-|          |     :foo() [17, 18, 19, 20]
-|          struct [8]
-|          union [9]
-|          enum [29]
+|          |     :foo() [21, 22, 23, 24]
+|          struct [13]
+|          union [14]
+|          enum [33]
 |          |   :$
-|          |    :value [28]
-|          typedef [30]
-|          variable [31]
-class [7]
+|          |    :value [32]
+|          typedef [34]
+|          variable [35]
+class [12]
 |    :$
-|     :foo() [17, 18, 19, 20]
-struct [8]
-|ubpage [12]
-union [9]
-file.h [14]
-|oo() [17, 18, 19, 20]
-value [21, 28]
-| riable [31]
-enum [24, 29]
+|     :foo() [21, 22, 23, 24]
+struct [13]
+|ubpage [16]
+union [14]
+macro [18]
+|    _function() [19]
+|             _with_params() [20]
+value [25, 32]
+| riable [35]
+enum [28, 33]
 |   :$
-|    :deprecatedvalue [23]
-|     value [28]
-typedef [30]
-macro [33]
-|    _function() [34]
-|             _with_params() [35]
-0: DeprecatedNamespace [deprecated, type=NAMESPACE] -> namespaceDeprecatedNamespace.html
-1: ::DeprecatedClass [prefix=0[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
-2: ::DeprecatedStruct [prefix=0[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
-3: ::DeprecatedUnion [prefix=0[:0], deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
-4: A group [type=GROUP] -> group__group.html
-5: Deprecated List [type=PAGE] -> deprecated.html
-6: Namespace [type=NAMESPACE] -> namespaceNamespace.html
-7: ::Class [prefix=6[:0], type=CLASS] -> classNamespace_1_1Class.html
-8: ::Struct [prefix=6[:0], type=STRUCT] -> structNamespace_1_1Struct.html
-9: ::Union [prefix=6[:0], type=UNION] -> unionNamespace_1_1Union.html
-10: A group [type=GROUP] -> group__deprecated-group.html
-11: A page [type=PAGE] -> page.html
-12:  » Subpage [prefix=11[:0], type=PAGE] -> subpage.html
-13: Dir [type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
-14: /File.h [prefix=13[:0], type=FILE] -> File_8h.html
-15: DeprecatedDir [deprecated, type=DIR] -> dir_c6c97faf5a6cbd0f62c27843ce3af4d0.html
-16: /DeprecatedFile.h [prefix=15[:0], deprecated, type=FILE] -> DeprecatedFile_8h.html
-17: ::foo() [prefix=7[:28], type=FUNC] -> #aaeba4096356215868370d6ea476bf5d9
-18:  const [prefix=17[:30], suffix_length=6, type=FUNC] -> c03c5b93907dda16763eabd26b25500a
-19:  && [prefix=17[:30], suffix_length=3, deleted, type=FUNC] -> 77803233441965cad057a6619e9a75fd
-20: ::foo(const Enum&, Typedef) [prefix=7[:28], suffix_length=20, type=FUNC] -> #aba8d57a830d4d79f86d58d92298677fa
-21: ::Value [prefix=22[:67], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
-22: ::DeprecatedEnum [prefix=0[:33], deprecated, type=ENUM] -> #ab1e37ddc1d65765f2a48485df4af7b47
-23: ::DeprecatedValue [prefix=24[:67], deprecated, type=ENUM_VALUE] -> a4b5b0e9709902228c33df7e5e377e596
-24: ::Enum [prefix=0[:33], type=ENUM] -> #ac59010e983270c330b8625b5433961b9
-25: ::DeprecatedTypedef [prefix=0[:33], deprecated, type=TYPEDEF] -> #af503ad3ff194a4c2512aff16df771164
-26: ::DeprecatedVariable [prefix=0[:33], deprecated, type=VAR] -> #ae934297fc39624409333eefbfeabf5e5
-27: ::deprecatedFoo(int, bool, double) [prefix=0[:33], suffix_length=17, deprecated, type=FUNC] -> #a9a1b3fc71d294b548095985acc0d5092
-28: ::Value [prefix=29[:57], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
-29: ::Enum [prefix=6[:23], type=ENUM] -> #add172b93283b1ab7612c3ca6cc5dcfea
-30: ::Typedef [prefix=6[:23], type=TYPEDEF] -> #abe2a245304bc2234927ef33175646e08
-31: ::Variable [prefix=6[:23], type=VAR] -> #ad3121960d8665ab045ca1bfa1480a86d
-32: DEPRECATED_MACRO(a, b, c) [suffix_length=7, deprecated, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
-33: MACRO [type=DEFINE] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
-34: _FUNCTION() [prefix=33[:14], type=DEFINE] -> 025158d6007b306645a8eb7c7a9237c1
-35: _FUNCTION_WITH_PARAMS(params) [prefix=33[:15], suffix_length=6, type=DEFINE] -> 8602bba5a72becb4f2dc544ce12c420
+|    :deprecatedvalue [27]
+|     value [32]
+typedef [34]
+0: Deprecated List [type=PAGE] -> deprecated.html
+1: DeprecatedDir [deprecated, type=DIR] -> dir_c6c97faf5a6cbd0f62c27843ce3af4d0.html
+2: /DeprecatedFile.h [prefix=1[:0], deprecated, type=FILE] -> DeprecatedFile_8h.html
+3: Dir [type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
+4: /File.h [prefix=3[:0], type=FILE] -> File_8h.html
+5: A group [type=GROUP] -> group__deprecated-group.html
+6: A group [type=GROUP] -> group__group.html
+7: DeprecatedNamespace [deprecated, type=NAMESPACE] -> namespaceDeprecatedNamespace.html
+8: ::DeprecatedClass [prefix=7[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
+9: ::DeprecatedStruct [prefix=7[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
+10: ::DeprecatedUnion [prefix=7[:0], deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
+11: Namespace [type=NAMESPACE] -> namespaceNamespace.html
+12: ::Class [prefix=11[:0], type=CLASS] -> classNamespace_1_1Class.html
+13: ::Struct [prefix=11[:0], type=STRUCT] -> structNamespace_1_1Struct.html
+14: ::Union [prefix=11[:0], type=UNION] -> unionNamespace_1_1Union.html
+15: A page [type=PAGE] -> page.html
+16:  » Subpage [prefix=15[:0], type=PAGE] -> subpage.html
+17: DEPRECATED_MACRO(a, b, c) [suffix_length=7, deprecated, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
+18: MACRO [type=DEFINE] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
+19: _FUNCTION() [prefix=18[:14], type=DEFINE] -> 025158d6007b306645a8eb7c7a9237c1
+20: _FUNCTION_WITH_PARAMS(params) [prefix=18[:15], suffix_length=6, type=DEFINE] -> 8602bba5a72becb4f2dc544ce12c420
+21: ::foo() [prefix=12[:28], type=FUNC] -> #aaeba4096356215868370d6ea476bf5d9
+22:  const [prefix=21[:30], suffix_length=6, type=FUNC] -> c03c5b93907dda16763eabd26b25500a
+23:  && [prefix=21[:30], suffix_length=3, deleted, type=FUNC] -> 77803233441965cad057a6619e9a75fd
+24: ::foo(const Enum&, Typedef) [prefix=12[:28], suffix_length=20, type=FUNC] -> #aba8d57a830d4d79f86d58d92298677fa
+25: ::Value [prefix=26[:67], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
+26: ::DeprecatedEnum [prefix=7[:33], deprecated, type=ENUM] -> #ab1e37ddc1d65765f2a48485df4af7b47
+27: ::DeprecatedValue [prefix=28[:67], deprecated, type=ENUM_VALUE] -> a4b5b0e9709902228c33df7e5e377e596
+28: ::Enum [prefix=7[:33], type=ENUM] -> #ac59010e983270c330b8625b5433961b9
+29: ::DeprecatedTypedef [prefix=7[:33], deprecated, type=TYPEDEF] -> #af503ad3ff194a4c2512aff16df771164
+30: ::DeprecatedVariable [prefix=7[:33], deprecated, type=VAR] -> #ae934297fc39624409333eefbfeabf5e5
+31: ::deprecatedFoo(int, bool, double) [prefix=7[:33], suffix_length=17, deprecated, type=FUNC] -> #a9a1b3fc71d294b548095985acc0d5092
+32: ::Value [prefix=33[:57], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
+33: ::Enum [prefix=11[:23], type=ENUM] -> #add172b93283b1ab7612c3ca6cc5dcfea
+34: ::Typedef [prefix=11[:23], type=TYPEDEF] -> #abe2a245304bc2234927ef33175646e08
+35: ::Variable [prefix=11[:23], type=VAR] -> #ad3121960d8665ab045ca1bfa1480a86d
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover
