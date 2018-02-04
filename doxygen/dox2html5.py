@@ -210,35 +210,50 @@ class ResultMap:
 
             # Create a new list with merged prefixes
             merged = []
-            for e in self.entries:
+            for index, e in enumerate(self.entries):
                 # Search in the trie and get the longest shared name prefix
                 # that is already fully contained in some other entry
                 current = trie
                 longest_prefix = None
                 for c in e.name.encode('utf-8'):
-                    # If current node has results, save it as the longest prefix
-                    if current.results:
-                        # well, the prefix would have 0 bytes
-                        assert current is not trie
-                        longest_prefix = current
-
                     for candidate, child in current.children.items():
                         if c == candidate:
                             current = child[1]
                             break
                     else: assert False
 
+                    # Allow self-reference only when referenced result suffix
+                    # is longer (otherwise cycles happen). This is for
+                    # functions that should appear when searching for foo (so
+                    # they get ordered properly based on the name lenght) and
+                    # also when searching for foo() (so everything that's not
+                    # a function gets filtered out). Such entries are
+                    # completely the same except for a different suffix length.
+                    if index in current.results:
+                        for i in current.results:
+                            if self.entries[i].suffix_length > self.entries[index].suffix_length:
+                                longest_prefix = current
+                                break
+                    elif current.results:
+                        longest_prefix = current
+
                 # Name prefix found, for all possible URLs find the one that
                 # shares the longest prefix
                 if longest_prefix:
                     max_prefix = (0, -1)
-                    for index in longest_prefix.results:
+                    for longest_index in longest_prefix.results:
+                        # Ignore self (function self-reference, see above)
+                        if longest_index == index: continue
+
                         prefix_length = 0
-                        for i in range(min(len(e.url), len(self.entries[index].url))):
-                            if e.url[i] != self.entries[index].url[i]: break
+                        for i in range(min(len(e.url), len(self.entries[longest_index].url))):
+                            if e.url[i] != self.entries[longest_index].url[i]: break
                             prefix_length += 1
                         if max_prefix[1] < prefix_length:
-                            max_prefix = (index, prefix_length)
+                            max_prefix = (longest_index, prefix_length)
+
+                    # Expect we found something
+                    assert max_prefix[1] != -1
 
                     # Save the entry with reference to the prefix
                     entry = Empty()
@@ -1720,14 +1735,14 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
         return strip_tags_re.sub('', text)
 
     for result in state.search:
+        # Handle function arguments
         name_with_args = result.name
         name = result.name
         suffix_length = 0
         if hasattr(result, 'params') and result.params is not None:
             params = strip_tags(', '.join(result.params))
             name_with_args += '(' + params + ')'
-            name += '()'
-            suffix_length += len(html.unescape(params))
+            suffix_length += len(html.unescape(params)) + 2
         if hasattr(result, 'suffix') and result.suffix:
             name_with_args += result.suffix
             # TODO: escape elsewhere so i don't have to unescape here
@@ -1735,6 +1750,13 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
 
         # TODO: escape elsewhere so i don't have to unescape here
         index = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length, flags=result.flags)
+
+        # Add functions and function macros the second time with () appended,
+        # everything is the same except for suffix length which is 2 chars
+        # shorter
+        if hasattr(result, 'params') and result.params is not None:
+            index_args = map.add(html.unescape('::'.join(result.prefix + [name_with_args])), result.url,
+                suffix_length=suffix_length - 2, flags=result.flags)
 
         prefixed_name = result.prefix + [name]
         for i in range(len(prefixed_name)):
@@ -1746,6 +1768,11 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
                     name += '::'
                 name += html.unescape(j)
             trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
+
+            # Add functions and function macros the second time with ()
+            # appended, referencing the other result that expects () appended
+            if hasattr(result, 'params') and result.params is not None:
+                trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
 
     return serialize_search_data(trie, map, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
