@@ -81,7 +81,6 @@ class Trie:
         self.children[char][1]._insert(path[1:], result, [b - 1 for b in lookahead_barriers])
 
     def insert(self, path: str, result, lookahead_barriers=[]):
-        assert not path.isupper() # to avoid unnecessary duplicates
         self._insert(path.encode('utf-8'), result, lookahead_barriers)
 
     # Returns offset of the serialized thing in `output`
@@ -128,6 +127,7 @@ class Trie:
 
 class ResultFlag(Flag):
     HAS_SUFFIX = 1 << 0
+    HAS_PREFIX = 1 << 3
     DEPRECATED = 1 << 1
     DELETED = 1 << 2
 
@@ -152,20 +152,34 @@ class ResultMap:
     #   + offset   |   + offset   | ... |   + offset   | size |  data  | ...
     #    8 + 24b   |    8 + 24b   |     |    8 + 24b   |  32b |        |
     #
-    # basic item (flags & 0x1 == 0):
+    # basic item (flags & 0b11 == 0b00):
     #
     # name | \0 | URL
     #      |    |
     #      | 8b |
     #
-    # function item (flags & 0x1 == 1):
+    # suffixed item (flags & 0b11 == 0b01):
     #
     # suffix | name | \0 | URL
     # length |      |    |
     #   8b   |      | 8b |
     #
+    # prefixed item (flags & 0xb11 == 0b10):
+    #
+    #  prefix  |  name  | \0 |  URL
+    # id + len | suffix |    | suffix
+    # 16b + 8b |        | 8b |
+    #
+    # prefixed & suffixed item (flags & 0xb11 == 0b11):
+    #
+    #  prefix  | suffix |  name  | \0 | URL
+    # id + len | length | suffix |    |
+    # 16b + 8b |   8b   |        | 8b |
+    #
     offset_struct = struct.Struct('<I')
     flags_struct = struct.Struct('<B')
+    prefix_struct = struct.Struct('<H')
+    prefix_length_struct = struct.Struct('<B')
     suffix_length_struct = struct.Struct('<B')
 
     def __init__(self):
@@ -178,13 +192,70 @@ class ResultMap:
         entry.name = name
         entry.url = url
         entry.flags = flags
+        entry.prefix = 0
+        entry.prefix_length = 0
         entry.suffix_length = suffix_length
 
         self.entries += [entry]
         return len(self.entries) - 1
 
-    def serialize(self) -> bytearray:
+    def serialize(self, merge_prefixes=True) -> bytearray:
         output = bytearray()
+
+        if merge_prefixes:
+            # Put all entry names into a trie to discover common prefixes
+            trie = Trie()
+            for index, e in enumerate(self.entries):
+                trie.insert(e.name, index)
+
+            # Create a new list with merged prefixes
+            merged = []
+            for e in self.entries:
+                # Search in the trie and get the longest shared name prefix
+                # that is already fully contained in some other entry
+                current = trie
+                longest_prefix = None
+                for c in e.name.encode('utf-8'):
+                    # If current node has results, save it as the longest prefix
+                    if current.results:
+                        # well, the prefix would have 0 bytes
+                        assert current is not trie
+                        longest_prefix = current
+
+                    for candidate, child in current.children.items():
+                        if c == candidate:
+                            current = child[1]
+                            break
+                    else: assert False
+
+                # Name prefix found, for all possible URLs find the one that
+                # shares the longest prefix
+                if longest_prefix:
+                    max_prefix = (0, -1)
+                    for index in longest_prefix.results:
+                        prefix_length = 0
+                        for i in range(min(len(e.url), len(self.entries[index].url))):
+                            if e.url[i] != self.entries[index].url[i]: break
+                            prefix_length += 1
+                        if max_prefix[1] < prefix_length:
+                            max_prefix = (index, prefix_length)
+
+                    # Save the entry with reference to the prefix
+                    entry = Empty()
+                    assert e.name.startswith(self.entries[longest_prefix.results[0]].name)
+                    entry.name = e.name[len(self.entries[longest_prefix.results[0]].name):]
+                    entry.url = e.url[max_prefix[1]:]
+                    entry.flags = e.flags|ResultFlag.HAS_PREFIX
+                    entry.prefix = max_prefix[0]
+                    entry.prefix_length = max_prefix[1]
+                    entry.suffix_length = e.suffix_length
+                    merged += [entry]
+
+                # No prefix found, copy the entry verbatim
+                else: merged += [e]
+
+            # Everything merged, replace the original list
+            self.entries = merged
 
         # Write the offset array. Starting offset for items is after the offset
         # array and the file size
@@ -194,19 +265,25 @@ class ResultMap:
             output += self.offset_struct.pack(offset)
             self.flags_struct.pack_into(output, len(output) - 1, e.flags.value)
 
+            # Extra field for prefix index and length
+            if e.flags & ResultFlag.HAS_PREFIX:
+                offset += 3
+
             # Extra field for suffix length
             if e.flags & ResultFlag.HAS_SUFFIX:
-                offset += len(e.name.encode('utf-8')) + len(e.url.encode('utf-8')) + 2
+                offset += 1
 
-            # Just the 0-delimiter
-            else:
-                offset += len(e.name.encode('utf-8')) + len(e.url.encode('utf-8')) + 1
+            # Length of name, URL and 0-delimiter
+            offset += len(e.name.encode('utf-8')) + len(e.url.encode('utf-8')) + 1
 
         # Write file size
         output += self.offset_struct.pack(offset)
 
         # Write the entries themselves
         for e in self.entries:
+            if e.flags & ResultFlag.HAS_PREFIX:
+                output += self.prefix_struct.pack(e.prefix)
+                output += self.prefix_length_struct.pack(e.prefix_length)
             if e.flags & ResultFlag.HAS_SUFFIX:
                 output += self.suffix_length_struct.pack(e.suffix_length)
             output += e.name.encode('utf-8')
@@ -218,9 +295,9 @@ class ResultMap:
 
 search_data_header_struct = struct.Struct('<3sBI')
 
-def serialize_search_data(trie: Trie, map: ResultMap, merge_subtrees=True) -> bytearray:
+def serialize_search_data(trie: Trie, map: ResultMap, merge_subtrees=True, merge_prefixes=True) -> bytearray:
     serialized_trie = trie.serialize(merge_subtrees=merge_subtrees)
-    serialized_map = map.serialize()
+    serialized_map = map.serialize(merge_prefixes=merge_prefixes)
     # magic header, version, offset of result map
     return search_data_header_struct.pack(b'MCS', 0, len(serialized_trie) + 8) + serialized_trie + serialized_map
 
@@ -1628,7 +1705,7 @@ def _build_search_data(state: State, prefix, id: str, trie: Trie, map: ResultMap
         if i in state.compounds:
             _build_search_data(state, prefixed_name, i, trie, map, add_lookahead_barriers=add_lookahead_barriers)
 
-def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True) -> bytearray:
+def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
     trie = Trie()
     map = ResultMap()
 
@@ -1670,7 +1747,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
                 name += html.unescape(j)
             trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
 
-    return serialize_search_data(trie, map, merge_subtrees=merge_subtrees)
+    return serialize_search_data(trie, map, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
 def base85encode_search_data(data: bytearray) -> bytearray:
     return (b"/* Generated by http://mcss.mosra.cz/doxygen/. Do not edit. */\n" +
@@ -2496,7 +2573,7 @@ default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/')
 
-def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True):
+def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
     state = State()
     state.basedir = os.path.dirname(doxyfile)
 
@@ -2580,7 +2657,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             f.write(rendered)
 
     if not state.doxyfile['M_SEARCH_DISABLED']:
-        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees)
+        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         if state.doxyfile['M_SEARCH_DOWNLOAD_BINARY']:
             with open(os.path.join(html_output, "searchdata.bin"), 'wb') as f:
@@ -2614,6 +2691,7 @@ if __name__ == '__main__': # pragma: no cover
     parser.add_argument('--no-doxygen', help="don't run Doxygen before", action='store_true')
     parser.add_argument('--search-no-subtree-merging', help="don't merge search data subtrees", action='store_true')
     parser.add_argument('--search-no-lookahead-barriers', help="don't insert search lookahead barriers", action='store_true')
+    parser.add_argument('--search-no-prefix-merging', help="don't merge search result prefixes", action='store_true')
     parser.add_argument('--debug', help="verbose debug output", action='store_true')
     args = parser.parse_args()
 
@@ -2628,4 +2706,4 @@ if __name__ == '__main__': # pragma: no cover
     if not args.no_doxygen:
         subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile))
 
-    run(doxyfile, os.path.abspath(args.templates), args.wildcard, args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers)
+    run(doxyfile, os.path.abspath(args.templates), args.wildcard, args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)

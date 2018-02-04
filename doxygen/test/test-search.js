@@ -70,7 +70,7 @@ const { StringDecoder } = require('string_decoder');
 /* Verify that base85-decoded file is equivalent to the binary */
 {
     let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.equal(binary.byteLength, 630);
+    assert.equal(binary.byteLength, 545);
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
@@ -105,7 +105,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 0.6);
+    assert.equal(Search.dataSize, 0.5);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
 
@@ -117,15 +117,15 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 10 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 101,
+          flags: 109,
           suffixLength: 10 }];
     assert.deepEqual(Search.search('m'), resultsForM);
 
@@ -133,15 +133,15 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('min'), [
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 10 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 101,
+          flags: 109,
           suffixLength: 8 }]);
 
     /* Go back, get the same thing */
@@ -151,7 +151,7 @@ const { StringDecoder } = require('string_decoder');
     let resultsForVec = [
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
-          flags: 32|2, /* Deprecated */
+          flags: 40|2, /* Deprecated */
           suffixLength: 3 }];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 
@@ -173,7 +173,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 0.6);
+    assert.equal(Search.dataSize, 0.5);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [
@@ -183,11 +183,11 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 10 }]);
 }
 
@@ -195,21 +195,21 @@ const { StringDecoder } = require('string_decoder');
 {
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.dataSize, 0.6);
+    assert.equal(Search.dataSize, 0.5);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 10 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 97,
+          flags: 105,
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 101,
+          flags: 109,
           suffixLength: 8 }]);
 }
 

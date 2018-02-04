@@ -132,13 +132,16 @@ def pretty_print_map(serialized: bytes, colors=False):
         if i: out += '\n'
         flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
         extra = []
+        if flags & ResultFlag.HAS_PREFIX:
+            extra += ['prefix={}[:{}]'.format(ResultMap.prefix_struct.unpack_from(serialized, offset)[0] & 0x00ffffff, ResultMap.prefix_length_struct.unpack_from(serialized, offset + 2)[0])]
+            offset += 3
+        if flags & ResultFlag.HAS_SUFFIX:
+            extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
+            offset += 1
         if flags & ResultFlag.DEPRECATED:
             extra += ['deprecated']
         if flags & ResultFlag.DELETED:
             extra += ['deleted']
-        if flags & ResultFlag.HAS_SUFFIX:
-            extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
-            offset += 1
         if flags & ResultFlag._TYPE:
             extra += ['type={}'.format((flags & ResultFlag._TYPE).name)]
         next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
@@ -306,17 +309,17 @@ class MapSerialization(unittest.TestCase):
         self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS), 1)
         self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS), 2)
         self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875", flags=ResultFlag.FUNC), 3)
-        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef2875", suffix_length=8, flags=ResultFlag.FUNC|ResultFlag.DEPRECATED|ResultFlag.DELETED), 4)
+        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef1234", suffix_length=8, flags=ResultFlag.FUNC|ResultFlag.DEPRECATED|ResultFlag.DELETED), 4)
 
         serialized = map.serialize()
         self.compare(serialized, """
 0: Math [type=NAMESPACE] -> namespaceMath.html
-1: Math::Vector [type=CLASS] -> classMath_1_1Vector.html
-2: Math::Range [type=CLASS] -> classMath_1_1Range.html
-3: Math::min() [type=FUNC] -> namespaceMath.html#abcdef2875
-4: Math::max(int, int) [deprecated, deleted, suffix_length=8, type=FUNC] -> namespaceMath.html#abcdef2875
+1: ::Vector [prefix=0[:0], type=CLASS] -> classMath_1_1Vector.html
+2: ::Range [prefix=0[:0], type=CLASS] -> classMath_1_1Range.html
+3: ::min() [prefix=0[:18], type=FUNC] -> #abcdef2875
+4: ::max(int, int) [prefix=0[:18], suffix_length=8, deprecated, deleted, type=FUNC] -> #abcdef1234
 """)
-        self.assertEqual(len(serialized), 210)
+        self.assertEqual(len(serialized), 170)
 
 class Serialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -348,10 +351,10 @@ math [0]
 vector [1]
 range [2]
 0: Math [type=NAMESPACE] -> namespaceMath.html
-1: Math::Vector [type=CLASS] -> classMath_1_1Vector.html
-2: Math::Range [type=CLASS] -> classMath_1_1Range.html
+1: ::Vector [prefix=0[:0], type=CLASS] -> classMath_1_1Vector.html
+2: ::Range [prefix=0[:0], type=CLASS] -> classMath_1_1Range.html
 """)
-        self.assertEqual(len(serialized), 241)
+        self.assertEqual(len(serialized), 239)
 
 class Search(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -430,41 +433,41 @@ macro [33]
 |    _function() [34]
 |             _with_params() [35]
 0: DeprecatedNamespace [deprecated, type=NAMESPACE] -> namespaceDeprecatedNamespace.html
-1: DeprecatedNamespace::DeprecatedClass [deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
-2: DeprecatedNamespace::DeprecatedStruct [deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
-3: DeprecatedNamespace::DeprecatedUnion [deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
+1: ::DeprecatedClass [prefix=0[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
+2: ::DeprecatedStruct [prefix=0[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
+3: ::DeprecatedUnion [prefix=0[:0], deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
 4: A group [type=GROUP] -> group__group.html
 5: Deprecated List [type=PAGE] -> deprecated.html
 6: Namespace [type=NAMESPACE] -> namespaceNamespace.html
-7: Namespace::Class [type=CLASS] -> classNamespace_1_1Class.html
-8: Namespace::Struct [type=STRUCT] -> structNamespace_1_1Struct.html
-9: Namespace::Union [type=UNION] -> unionNamespace_1_1Union.html
+7: ::Class [prefix=6[:0], type=CLASS] -> classNamespace_1_1Class.html
+8: ::Struct [prefix=6[:0], type=STRUCT] -> structNamespace_1_1Struct.html
+9: ::Union [prefix=6[:0], type=UNION] -> unionNamespace_1_1Union.html
 10: A group [type=GROUP] -> group__deprecated-group.html
 11: A page [type=PAGE] -> page.html
-12: A page » Subpage [type=PAGE] -> subpage.html
+12:  » Subpage [prefix=11[:0], type=PAGE] -> subpage.html
 13: Dir [type=DIR] -> dir_da5033def2d0db76e9883b31b76b3d0c.html
-14: Dir/File.h [type=FILE] -> File_8h.html
+14: /File.h [prefix=13[:0], type=FILE] -> File_8h.html
 15: DeprecatedDir [deprecated, type=DIR] -> dir_c6c97faf5a6cbd0f62c27843ce3af4d0.html
-16: DeprecatedDir/DeprecatedFile.h [deprecated, type=FILE] -> DeprecatedFile_8h.html
-17: Namespace::Class::foo() [type=FUNC] -> classNamespace_1_1Class.html#aaeba4096356215868370d6ea476bf5d9
-18: Namespace::Class::foo() const [suffix_length=6, type=FUNC] -> classNamespace_1_1Class.html#ac03c5b93907dda16763eabd26b25500a
-19: Namespace::Class::foo() && [deleted, suffix_length=3, type=FUNC] -> classNamespace_1_1Class.html#ac9e7e80d06281e30cfcc13171d117ade
-20: Namespace::Class::foo(const Enum&, Typedef) [suffix_length=20, type=FUNC] -> classNamespace_1_1Class.html#aba8d57a830d4d79f86d58d92298677fa
-21: DeprecatedNamespace::DeprecatedEnum::Value [type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47a689202409e48743b914713f96d93947c
-22: DeprecatedNamespace::DeprecatedEnum [deprecated, type=ENUM] -> namespaceDeprecatedNamespace.html#ab1e37ddc1d65765f2a48485df4af7b47
-23: DeprecatedNamespace::Enum::DeprecatedValue [deprecated, type=ENUM_VALUE] -> namespaceDeprecatedNamespace.html#ac59010e983270c330b8625b5433961b9a4b5b0e9709902228c33df7e5e377e596
-24: DeprecatedNamespace::Enum [type=ENUM] -> namespaceDeprecatedNamespace.html#ac59010e983270c330b8625b5433961b9
-25: DeprecatedNamespace::DeprecatedTypedef [deprecated, type=TYPEDEF] -> namespaceDeprecatedNamespace.html#af503ad3ff194a4c2512aff16df771164
-26: DeprecatedNamespace::DeprecatedVariable [deprecated, type=VAR] -> namespaceDeprecatedNamespace.html#ae934297fc39624409333eefbfeabf5e5
-27: DeprecatedNamespace::deprecatedFoo(int, bool, double) [deprecated, suffix_length=17, type=FUNC] -> namespaceDeprecatedNamespace.html#a9a1b3fc71d294b548095985acc0d5092
-28: Namespace::Enum::Value [type=ENUM_VALUE] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfeaa689202409e48743b914713f96d93947c
-29: Namespace::Enum [type=ENUM] -> namespaceNamespace.html#add172b93283b1ab7612c3ca6cc5dcfea
-30: Namespace::Typedef [type=TYPEDEF] -> namespaceNamespace.html#abe2a245304bc2234927ef33175646e08
-31: Namespace::Variable [type=VAR] -> namespaceNamespace.html#ad3121960d8665ab045ca1bfa1480a86d
-32: DEPRECATED_MACRO(a, b, c) [deprecated, suffix_length=7, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
+16: /DeprecatedFile.h [prefix=15[:0], deprecated, type=FILE] -> DeprecatedFile_8h.html
+17: ::foo() [prefix=7[:28], type=FUNC] -> #aaeba4096356215868370d6ea476bf5d9
+18:  const [prefix=17[:30], suffix_length=6, type=FUNC] -> c03c5b93907dda16763eabd26b25500a
+19:  && [prefix=17[:30], suffix_length=3, deleted, type=FUNC] -> c9e7e80d06281e30cfcc13171d117ade
+20: ::foo(const Enum&, Typedef) [prefix=7[:28], suffix_length=20, type=FUNC] -> #aba8d57a830d4d79f86d58d92298677fa
+21: ::Value [prefix=22[:67], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
+22: ::DeprecatedEnum [prefix=0[:33], deprecated, type=ENUM] -> #ab1e37ddc1d65765f2a48485df4af7b47
+23: ::DeprecatedValue [prefix=24[:67], deprecated, type=ENUM_VALUE] -> a4b5b0e9709902228c33df7e5e377e596
+24: ::Enum [prefix=0[:33], type=ENUM] -> #ac59010e983270c330b8625b5433961b9
+25: ::DeprecatedTypedef [prefix=0[:33], deprecated, type=TYPEDEF] -> #af503ad3ff194a4c2512aff16df771164
+26: ::DeprecatedVariable [prefix=0[:33], deprecated, type=VAR] -> #ae934297fc39624409333eefbfeabf5e5
+27: ::deprecatedFoo(int, bool, double) [prefix=0[:33], suffix_length=17, deprecated, type=FUNC] -> #a9a1b3fc71d294b548095985acc0d5092
+28: ::Value [prefix=29[:57], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
+29: ::Enum [prefix=6[:23], type=ENUM] -> #add172b93283b1ab7612c3ca6cc5dcfea
+30: ::Typedef [prefix=6[:23], type=TYPEDEF] -> #abe2a245304bc2234927ef33175646e08
+31: ::Variable [prefix=6[:23], type=VAR] -> #ad3121960d8665ab045ca1bfa1480a86d
+32: DEPRECATED_MACRO(a, b, c) [suffix_length=7, deprecated, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
 33: MACRO [type=DEFINE] -> File_8h.html#a824c99cb152a3c2e9111a2cb9c34891e
-34: MACRO_FUNCTION() [type=DEFINE] -> File_8h.html#a025158d6007b306645a8eb7c7a9237c1
-35: MACRO_FUNCTION_WITH_PARAMS(params) [suffix_length=6, type=DEFINE] -> File_8h.html#a88602bba5a72becb4f2dc544ce12c420
+34: _FUNCTION() [prefix=33[:14], type=DEFINE] -> 025158d6007b306645a8eb7c7a9237c1
+35: _FUNCTION_WITH_PARAMS(params) [prefix=33[:15], suffix_length=6, type=DEFINE] -> 8602bba5a72becb4f2dc544ce12c420
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover

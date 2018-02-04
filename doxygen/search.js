@@ -235,42 +235,7 @@ var Search = {
             let resultCount = this.trie.getUint8(offset);
             for(let i = 0; i != resultCount; ++i) {
                 let index = this.trie.getUint16(offset + (i + 1)*2, true);
-                let flags = this.map.getUint8(index*4 + 3);
-                let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
-
-                /* The result has a suffix, extract its length */
-                let resultSuffixLength = 0;
-                if(flags & 0x01) {
-                    resultSuffixLength = this.map.getUint8(resultOffset);
-                    ++resultOffset;
-                }
-
-                let nextResultOffset = this.map.getUint32((index + 1)*4, true) & 0x00ffffff;
-
-                let name = '';
-                let j = resultOffset;
-                for(; j != nextResultOffset; ++j) {
-                    let c = this.map.getUint8(j);
-
-                    /* End of null-delimited name */
-                    if(!c) {
-                        ++j;
-                        break; /* null-delimited */
-                    }
-
-                    name += String.fromCharCode(c); /* eheh. IS THIS FAST?! */
-                }
-
-                let url = '';
-                for(; j != nextResultOffset; ++j) {
-                    url += String.fromCharCode(this.map.getUint8(j));
-                }
-
-                /* Keeping in UTF-8, as we need that for proper slicing */
-                results.push({name: name,
-                              url: url,
-                              flags: flags,
-                              suffixLength: suffixLength + resultSuffixLength});
+                results.push(this.gatherResult(index, suffixLength, 0xffffff)); /* should be enough haha */
 
                 /* 'nuff said. */
                 if(results.length >= this.maxResults) return results;
@@ -293,6 +258,60 @@ var Search = {
         }
 
         return results;
+    },
+
+    gatherResult: function(index, suffixLength, maxUrlPrefix) {
+        let flags = this.map.getUint8(index*4 + 3);
+        let resultOffset = this.map.getUint32(index*4, true) & 0x00ffffff;
+
+        /* The result has a prefix, parse that first, recursively */
+        let name = '';
+        let url = '';
+        if(flags & (1 << 3)) {
+            let prefixIndex = this.map.getUint16(resultOffset, true);
+            let prefixUrlPrefixLength = Math.min(this.map.getUint8(resultOffset + 2), maxUrlPrefix);
+
+            let prefix = this.gatherResult(prefixIndex, 0 /*ignored*/, prefixUrlPrefixLength);
+            name = prefix.name;
+            url = prefix.url;
+
+            resultOffset += 3;
+        }
+
+        /* The result has a suffix, extract its length */
+        let resultSuffixLength = 0;
+        if(flags & (1 << 0)) {
+            resultSuffixLength = this.map.getUint8(resultOffset);
+            ++resultOffset;
+        }
+
+        let nextResultOffset = this.map.getUint32((index + 1)*4, true) & 0x00ffffff;
+
+        /* Extract name */
+        let j = resultOffset;
+        for(; j != nextResultOffset; ++j) {
+            let c = this.map.getUint8(j);
+
+            /* End of null-delimited name */
+            if(!c) {
+                ++j;
+                break; /* null-delimited */
+            }
+
+            name += String.fromCharCode(c); /* eheh. IS THIS FAST?! */
+        }
+
+        /* Extract URL */
+        let max = Math.min(j + maxUrlPrefix, nextResultOffset);
+        for(; j != max; ++j) {
+            url += String.fromCharCode(this.map.getUint8(j));
+        }
+
+        /* Keeping in UTF-8, as we need that for proper slicing (and concatenating) */
+        return {name: name,
+                url: url,
+                flags: flags,
+                suffixLength: suffixLength + resultSuffixLength};
     },
 
     escapeForRtl: function(name) {
