@@ -288,8 +288,13 @@ class ResultMap:
             if e.flags & ResultFlag.HAS_SUFFIX:
                 offset += 1
 
-            # Length of name, URL and 0-delimiter
-            offset += len(e.name.encode('utf-8')) + len(e.url.encode('utf-8')) + 1
+            # Length of the name
+            offset += len(e.name.encode('utf-8'))
+
+            # Length of the URL and 0-delimiter. If URL is empty, it's not
+            # added at all, then the 0-delimiter is also not needed.
+            if e.name and e.url:
+                 offset += len(e.url.encode('utf-8')) + 1
 
         # Write file size
         output += self.offset_struct.pack(offset)
@@ -302,8 +307,9 @@ class ResultMap:
             if e.flags & ResultFlag.HAS_SUFFIX:
                 output += self.suffix_length_struct.pack(e.suffix_length)
             output += e.name.encode('utf-8')
-            output += b'\0'
-            output += e.url.encode('utf-8')
+            if e.url:
+                output += b'\0'
+                output += e.url.encode('utf-8')
 
         assert len(output) == offset
         return output
