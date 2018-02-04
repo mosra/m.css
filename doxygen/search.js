@@ -273,7 +273,6 @@ var Search = {
                               suffixLength: suffixLength + resultSuffixLength});
 
                 /* 'nuff said. */
-                /* TODO: remove once proper barriers are in */
                 if(results.length >= this.maxResults) return results;
             }
 
