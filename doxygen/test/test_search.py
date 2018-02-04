@@ -451,7 +451,7 @@ macro [33]
 16: /DeprecatedFile.h [prefix=15[:0], deprecated, type=FILE] -> DeprecatedFile_8h.html
 17: ::foo() [prefix=7[:28], type=FUNC] -> #aaeba4096356215868370d6ea476bf5d9
 18:  const [prefix=17[:30], suffix_length=6, type=FUNC] -> c03c5b93907dda16763eabd26b25500a
-19:  && [prefix=17[:30], suffix_length=3, deleted, type=FUNC] -> c9e7e80d06281e30cfcc13171d117ade
+19:  && [prefix=17[:30], suffix_length=3, deleted, type=FUNC] -> 77803233441965cad057a6619e9a75fd
 20: ::foo(const Enum&, Typedef) [prefix=7[:28], suffix_length=20, type=FUNC] -> #aba8d57a830d4d79f86d58d92298677fa
 21: ::Value [prefix=22[:67], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
 22: ::DeprecatedEnum [prefix=0[:33], deprecated, type=ENUM] -> #ab1e37ddc1d65765f2a48485df4af7b47
