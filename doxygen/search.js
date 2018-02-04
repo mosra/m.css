@@ -63,7 +63,7 @@ var Search = {
         this.map = new DataView(buffer, mapOffset);
 
         /* Set initial properties */
-        this.dataSize = Math.round(buffer.byteLength/102.4)/10;
+        this.dataSize = buffer.byteLength;
         this.symbolCount = (this.map.getUint32(0, true) & 0x00ffffff)/4 - 1;
         this.maxResults = maxResults ? maxResults : 100;
         this.searchString = '';
@@ -72,7 +72,7 @@ var Search = {
         /* istanbul ignore if */
         if(typeof document !== 'undefined') {
             document.getElementById('search-symbolcount').innerHTML =
-                this.symbolCount + " symbols (" + this.dataSize + " kB)";
+                this.symbolCount + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
             document.getElementById('search-input').disabled = false;
             document.getElementById('search-input').placeholder = "Type something here …";
             document.getElementById('search-input').focus();
@@ -472,7 +472,7 @@ if(typeof document !== 'undefined') {
                 results.length + (results.length >= Search.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
         } else
             document.getElementById('search-symbolcount').innerHTML =
-                Search.symbolCount + " symbols (" + Search.dataSize + " kB)";
+                Search.symbolCount + " symbols (" + Math.round(Search.dataSize/102.4)/10 + " kB)";
     };
 
     document.onkeydown = function(event) {
