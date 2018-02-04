@@ -178,8 +178,7 @@ class ResultMap:
     #
     offset_struct = struct.Struct('<I')
     flags_struct = struct.Struct('<B')
-    prefix_struct = struct.Struct('<H')
-    prefix_length_struct = struct.Struct('<B')
+    prefix_struct = struct.Struct('<HB')
     suffix_length_struct = struct.Struct('<B')
 
     def __init__(self):
@@ -302,8 +301,7 @@ class ResultMap:
         # Write the entries themselves
         for e in self.entries:
             if e.flags & ResultFlag.HAS_PREFIX:
-                output += self.prefix_struct.pack(e.prefix)
-                output += self.prefix_length_struct.pack(e.prefix_length)
+                output += self.prefix_struct.pack(e.prefix, e.prefix_length)
             if e.flags & ResultFlag.HAS_SUFFIX:
                 output += self.suffix_length_struct.pack(e.suffix_length)
             output += e.name.encode('utf-8')

@@ -133,11 +133,11 @@ def pretty_print_map(serialized: bytes, colors=False):
         flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
         extra = []
         if flags & ResultFlag.HAS_PREFIX:
-            extra += ['prefix={}[:{}]'.format(ResultMap.prefix_struct.unpack_from(serialized, offset)[0] & 0x00ffffff, ResultMap.prefix_length_struct.unpack_from(serialized, offset + 2)[0])]
-            offset += 3
+            extra += ['prefix={}[:{}]'.format(*ResultMap.prefix_struct.unpack_from(serialized, offset))]
+            offset += ResultMap.prefix_struct.size
         if flags & ResultFlag.HAS_SUFFIX:
             extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
-            offset += 1
+            offset += ResultMap.suffix_length_struct.size
         if flags & ResultFlag.DEPRECATED:
             extra += ['deprecated']
         if flags & ResultFlag.DELETED:
