@@ -222,21 +222,21 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('h'), [
         { name: Search.toUtf8('Hárá'),
           url: '#b',
-          flags: 0,
+          flags: 192,
           suffixLength: 5 },
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
-          flags: 0,
+          flags: 192,
           suffixLength: 7 }]);
     assert.deepEqual(Search.search('hý'), [
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
-          flags: 0,
+          flags: 192,
           suffixLength: 5 }]);
     assert.deepEqual(Search.search('há'), [
         { name: Search.toUtf8('Hárá'),
           url: '#b',
-          flags: 0,
+          flags: 192,
           suffixLength: 3 }]);
 }
 

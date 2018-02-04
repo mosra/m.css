@@ -74,8 +74,8 @@ with open(basedir/'searchdata.b85', 'wb') as f:
 trie = Trie()
 map = ResultMap()
 
-trie.insert("hýždě", map.add("Hýždě", "#a"))
-trie.insert("hárá", map.add("Hárá", "#b"))
+trie.insert("hýždě", map.add("Hýždě", "#a", flags=ResultFlag.PAGE))
+trie.insert("hárá", map.add("Hárá", "#b", flags=ResultFlag.PAGE))
 
 with open(basedir/'unicode.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map))
