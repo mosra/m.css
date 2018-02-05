@@ -40,7 +40,7 @@ var Search = {
         let view = new DataView(buffer);
 
         /* The file is too short to contain at least the headers */
-        if(view.byteLength < 18) {
+        if(view.byteLength < 20) {
             console.error("Search data too short");
             return false;
         }
@@ -58,13 +58,13 @@ var Search = {
         }
 
         /* Separate the data into the trie and the result map */
-        let mapOffset = view.getUint32(4, true);
-        this.trie = new DataView(buffer, 8, mapOffset - 8);
+        let mapOffset = view.getUint32(6, true);
+        this.trie = new DataView(buffer, 10, mapOffset - 10);
         this.map = new DataView(buffer, mapOffset);
 
         /* Set initial properties */
         this.dataSize = buffer.byteLength;
-        this.symbolCount = (this.map.getUint32(0, true) & 0x00ffffff)/4 - 1;
+        this.symbolCount = view.getUint16(4, true);
         this.maxResults = maxResults ? maxResults : 100;
         this.searchString = '';
         this.searchStack = [this.trie.getUint32(0, true)];

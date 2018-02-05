@@ -70,7 +70,7 @@ const { StringDecoder } = require('string_decoder');
 /* Verify that base85-decoded file is equivalent to the binary */
 {
     let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.equal(binary.byteLength, 648);
+    assert.equal(binary.byteLength, 650);
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
@@ -105,8 +105,8 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 648);
-    assert.equal(Search.symbolCount, 9);
+    assert.equal(Search.dataSize, 650);
+    assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
 
     /* Blow up */
@@ -188,8 +188,8 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 648);
-    assert.equal(Search.symbolCount, 9);
+    assert.equal(Search.dataSize, 650);
+    assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [
         { name: 'Math',
@@ -210,8 +210,8 @@ const { StringDecoder } = require('string_decoder');
 {
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.dataSize, 648); /* some padding on the end, that's okay */
-    assert.equal(Search.symbolCount, 9);
+    assert.equal(Search.dataSize, 652); /* some padding on the end, that's okay */
+    assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [
         { name: 'Math::min(int, int)',
@@ -232,7 +232,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 122);
+    assert.equal(Search.dataSize, 124);
     assert.equal(Search.symbolCount, 2);
     assert.deepEqual(Search.search('h'), [
         { name: Search.toUtf8('Hárá'),

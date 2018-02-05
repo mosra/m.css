@@ -37,11 +37,11 @@ basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-dat
 with open(basedir/'short.bin', 'wb') as f:
     f.write(b'')
 with open(basedir/'wrong-magic.bin', 'wb') as f:
-    f.write(b'MOS\0              ')
+    f.write(b'MOS\0                ')
 with open(basedir/'wrong-version.bin', 'wb') as f:
-    f.write(b'MCS\1              ')
+    f.write(b'MCS\1                ')
 with open(basedir/'empty.bin', 'wb') as f:
-    f.write(serialize_search_data(Trie(), ResultMap()))
+    f.write(serialize_search_data(Trie(), ResultMap(), 0))
 
 trie = Trie()
 map = ResultMap()
@@ -70,9 +70,9 @@ trie.insert("rectangle", map.add("Rectangle", "", alias=range_index))
 trie.insert("rect()", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))
 
 with open(basedir/'searchdata.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map))
+    f.write(serialize_search_data(trie, map, 7))
 with open(basedir/'searchdata.b85', 'wb') as f:
-    f.write(base64.b85encode(serialize_search_data(trie, map), True))
+    f.write(base64.b85encode(serialize_search_data(trie, map, 7), True))
 
 trie = Trie()
 map = ResultMap()
@@ -81,4 +81,4 @@ trie.insert("hýždě", map.add("Hýždě", "#a", flags=ResultFlag.PAGE))
 trie.insert("hárá", map.add("Hárá", "#b", flags=ResultFlag.PAGE))
 
 with open(basedir/'unicode.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map))
+    f.write(serialize_search_data(trie, map, 2))

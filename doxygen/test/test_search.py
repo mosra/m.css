@@ -154,14 +154,13 @@ def pretty_print_map(serialized: bytes, colors=False):
     return out
 
 def pretty_print(serialized: bytes, show_merged=False, show_lookahead_barriers=True, colors=False):
-    magic, version, map_offset = search_data_header_struct.unpack_from(serialized)
+    magic, version, symbol_count, map_offset = search_data_header_struct.unpack_from(serialized)
     assert magic == b'MCS'
     assert version == 0
-    assert not search_data_header_struct.size % 4
 
     pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, colors=colors)
     pretty_map = pretty_print_map(serialized[map_offset:], colors=colors)
-    return pretty_trie + '\n' + pretty_map, stats
+    return '{} symbols\n'.format(symbol_count) + pretty_trie + '\n' + pretty_map, stats
 
 class TrieSerialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -350,8 +349,9 @@ class Serialization(unittest.TestCase):
         trie.insert("math::range", index)
         trie.insert("range", index)
 
-        serialized = serialize_search_data(trie, map)
+        serialized = serialize_search_data(trie, map, 3)
         self.compare(serialized, """
+3 symbols
 math [0]
 |   ::vector [1]
 |     range [2]
@@ -361,7 +361,7 @@ range [2]
 1: ::Vector [prefix=0[:0], type=CLASS] -> classMath_1_1Vector.html
 2: ::Range [prefix=0[:0], type=CLASS] -> classMath_1_1Range.html
 """)
-        self.assertEqual(len(serialized), 239)
+        self.assertEqual(len(serialized), 241)
 
 class Search(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -374,8 +374,9 @@ class Search(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 4570)
+        self.assertEqual(len(serialized), 4572)
         self.assertEqual(search_data_pretty, """
+36 symbols
 deprecated_macro [0]
 ||        |     ($
 ||        |      ) [1]
