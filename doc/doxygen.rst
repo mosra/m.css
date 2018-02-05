@@ -53,9 +53,9 @@ with the stock output to avoid broken links once you switch.
 .. note-success::
 
     Because a live example says more than a thousand words, go check out
-    http://doc.magnum.graphics first --- it contains docs for the Magnum
-    graphics engine generated with the latest ever-improving version of this
-    theme.
+    http://doc.magnum.graphics first --- it contains docs for the
+    `Magnum graphics engine <http://magnum.graphics>`_ generated with the
+    latest ever-improving version of this theme.
 
 .. contents::
     :class: m-block m-default
@@ -424,42 +424,6 @@ the search to a subdomain:
 
     M_SEARCH_EXTERNAL_URL = "https://google.com/search?q=site:doc.magnum.graphics+{query}"
 
-`Command-line options`_
-=======================
-
-.. code:: sh
-
-    ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
-                   [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
-                   [--no-doxygen] [--search-no-subtree-merging]
-                   [--search-no-lookahead-barriers] [--debug]
-                   doxyfile
-
-Arguments:
-
--   ``doxyfile`` --- where the Doxyfile is
-
-Options:
-
--   ``-h``, ``--help`` --- show this help message and exit
--   ``--templates TEMPLATES`` --- template directory. Defaults to the
-    ``templates/`` subdirectory if not set.
--   ``--wildcard WILDCARD`` --- only process files matching the wildcard.
-    Useful for debugging to speed up / restrict the processing to a subset of
-    files. Defaults to ``*.xml`` if not set.
--   ``--index-pages INDEX_PAGES [INDEX_PAGES ...]`` --- index page templates.
-    By default, if not set, the index pages are matching stock Doxygen, i.e.
-    ``annotated.html``, ``files.html``, ``modules.html``, ``namespaces.html``
-    and ``pages.html``.
-    See `Navigation page templates`_ section below for more information.
--   ``--no-doxygen`` --- don't run Doxygen before. By default Doxygen is run
-    before the script to refresh the generated XML output.
--   ``--search-no-subtree-merging`` --- don't optimize search data size by
-    merging subtrees
--   ``--search-no-lookahead-barriers`` --- don't insert search lookahead
-    barriers that improve search result relevance
--   ``--debug`` --- verbose debug output. Useful for debugging.
-
 `Content`_
 ==========
 
@@ -814,8 +778,50 @@ enum value is found when entering :cpp:`GL_DEPTH_TEST`:
      */
     enum class RendererFeature: GLenum {
         /** Depth test */
-        DepthTest = GL_DEPTH_TEST
+        DepthTest = GL_DEPTH_TEST,
+
+        ...
     };
+
+`Command-line options`_
+=======================
+
+.. code:: sh
+
+    ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
+                   [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
+                   [--no-doxygen] [--search-no-subtree-merging]
+                   [--search-no-lookahead-barriers]
+                   [--search-no-prefix-merging] [--sort-globbed-files]
+                   [--debug]
+                   doxyfile
+
+Arguments:
+
+-   ``doxyfile`` --- where the Doxyfile is
+
+Options:
+
+-   ``-h``, ``--help`` --- show this help message and exit
+-   ``--templates TEMPLATES`` --- template directory. Defaults to the
+    ``templates/`` subdirectory if not set.
+-   ``--wildcard WILDCARD`` --- only process files matching the wildcard.
+    Useful for debugging to speed up / restrict the processing to a subset of
+    files. Defaults to ``*.xml`` if not set.
+-   ``--index-pages INDEX_PAGES [INDEX_PAGES ...]`` --- index page templates.
+    By default, if not set, the index pages are matching stock Doxygen, i.e.
+    ``annotated.html``, ``files.html``, ``modules.html``, ``namespaces.html``
+    and ``pages.html``.
+    See `Navigation page templates`_ section below for more information.
+-   ``--no-doxygen`` --- don't run Doxygen before. By default Doxygen is run
+    before the script to refresh the generated XML output.
+-   ``--search-no-subtree-merging`` --- don't optimize search data size by
+    merging subtrees
+-   ``--search-no-lookahead-barriers`` --- don't insert search lookahead
+    barriers that improve search result relevance
+-   ``--search-no-prefix-merging`` --- don't merge search result prefixes
+-   ``--sort-globbed-files`` --- sort globbed files for better reproducibility
+-   ``--debug`` --- verbose debug output. Useful for debugging.
 
 `Customizing the template`_
 ===========================
