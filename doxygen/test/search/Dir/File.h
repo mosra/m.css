@@ -1,18 +1,34 @@
 /** @dir /Dir
  * @brief A directory
+ *
+ * @m_keywords{glDirectory() glDir() GL_DIR}
  */
 
 /** @file
  * @brief A file
+ *
+ * @m_keywords{glFile()}
  */
 
-/** @brief A namespace */
+/**
+ * @brief A namespace
+ *
+ * @m_keywords{glNamespace()}
+ */
 namespace Namespace {
 
-/** @brief A class */
+/**
+ * @brief A class
+ *
+ * @m_keywords{glClass()}
+ */
 class Class {
     public:
-        /** @brief Function without arguments */
+        /**
+         * @brief Function without arguments
+         *
+         * @m_keywords{glFoo()}
+         */
         void foo();
 
         void foo() const; /**< @overload */
@@ -23,32 +39,64 @@ class Class {
         void foo(const Enum& first, Typedef second);
 };
 
-/** @brief A variable */
+/**
+ * @brief A variable
+ *
+ * @m_keyword{min(),GLSL: min(),2}
+ */
 constexpr int Variable = 5;
 
-/** @brief A typedef */
+/**
+ * @brief A typedef
+ *
+ * @m_keywords{GL_TYPEDEF}
+ */
 typedef int Typedef;
 
-/** @brief An enum */
+/**
+ * @brief An enum
+ *
+ * @m_keywords{GL_ENUM}
+ * @m_enum_values_as_keywords
+ */
 enum class Enum {
-    Value = 15  /**< Enum value */
+    /**
+     * Enum value
+     *
+     * @m_keywords{GL_ENUM_VALUE_EXT}
+     */
+    Value = GL_ENUM_VALUE
 };
 
 /** @defgroup group A group
+ *
+ * @m_keywords{GL_GROUP}
  * @{
  */
 
-/** @brief An union */
+/**
+ * @brief An union
+ *
+ * @m_keywords{glUnion()}
+ */
 union Union {};
 
-/** @brief A struct */
+/**
+ * @brief A struct
+ *
+ * @m_keywords{glStruct()}
+ */
 struct Struct {};
 
 /*@}*/
 
 }
 
-/** @brief A macro */
+/**
+ * @brief A macro
+ *
+ * @m_keyword{glMacro(),,}
+ */
 #define MACRO
 
 /** @brief Macro function */

@@ -443,6 +443,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.add_css_class = None
     out.footer_navigation = False
     out.example_navigation = None
+    out.search_keywords = []
+    out.search_enum_values_as_keywords = False
     out.is_deprecated = False
 
     # DOXYGEN <PARA> PATCHING 1/4
@@ -714,9 +716,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # resetting here explicitly.
             add_css_class = parsed.add_css_class
 
-            # Bubble up also footer / example navigation, deprecation flag
+            # Bubble up also footer / example navigation, search keywords,
+            # deprecation flag
             if parsed.footer_navigation: out.footer_navigation = True
             if parsed.example_navigation: out.example_navigation = parsed.example_navigation
+            out.search_keywords += parsed.search_keywords
+            if parsed.search_enum_values_as_keywords: out.search_enum_values_as_keywords = True
             if parsed.is_deprecated: out.is_deprecated = True
 
             # Assert we didn't miss anything important
@@ -937,6 +942,26 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}examplenavigation':
             out.example_navigation = (i.attrib['{http://mcss.mosra.cz/doxygen/}page'],
                                       i.attrib['{http://mcss.mosra.cz/doxygen/}prefix'])
+
+        # Search-related stuff
+        elif i.tag == '{http://mcss.mosra.cz/doxygen/}search':
+            # Space-separated keyword list
+            if '{http://mcss.mosra.cz/doxygen/}keywords' in i.attrib:
+                out.search_keywords += [(keyword, '', 0) for keyword in i.attrib['{http://mcss.mosra.cz/doxygen/}keywords'].split(' ')]
+
+            # Keyword with custom result title
+            elif '{http://mcss.mosra.cz/doxygen/}keyword' in i.attrib:
+                out.search_keywords += [(
+                    i.attrib['{http://mcss.mosra.cz/doxygen/}keyword'],
+                    i.attrib['{http://mcss.mosra.cz/doxygen/}title'],
+                    int(i.attrib['{http://mcss.mosra.cz/doxygen/}suffix-length'] or '0'))]
+
+            # Add values of this enum as search keywords
+            elif '{http://mcss.mosra.cz/doxygen/}enum-values-as-keywords' in i.attrib:
+                out.search_enum_values_as_keywords = True
+
+            # Nothing else at the moment
+            else: assert False
 
         # Either block or inline
         elif i.tag == 'programlisting':
@@ -1193,14 +1218,14 @@ def parse_enum_desc(state: State, element: ET.Element) -> str:
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.templates and not parsed.params and not parsed.return_value
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.is_deprecated)
+    return (parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.is_deprecated)
 
 def parse_enum_value_desc(state: State, element: ET.Element) -> str:
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     assert not parsed.templates and not parsed.params and not parsed.return_value
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.is_deprecated)
+    return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_var_desc(state: State, element: ET.Element) -> str:
     # Verify that we didn't ignore any important info by accident
@@ -1208,7 +1233,7 @@ def parse_var_desc(state: State, element: ET.Element) -> str:
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.templates and not parsed.params and not parsed.return_value
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.is_deprecated)
+    return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_toplevel_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
@@ -1216,7 +1241,7 @@ def parse_toplevel_desc(state: State, element: ET.Element):
     assert not parsed.return_value
     if parsed.params:
         logging.warning("{}: use @tparam instead of @param for documenting class templates, @param is ignored".format(state.current))
-    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.is_deprecated)
+    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_typedef_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
@@ -1224,14 +1249,14 @@ def parse_typedef_desc(state: State, element: ET.Element):
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.params and not parsed.return_value
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.is_deprecated)
+    return (parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_func_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.is_deprecated)
+    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_define_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
@@ -1239,7 +1264,7 @@ def parse_define_desc(state: State, element: ET.Element):
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.templates
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.params, parsed.return_value, parsed.is_deprecated)
+    return (parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_inline_desc(state: State, element: ET.Element) -> str:
     if element is None: return ''
@@ -1259,7 +1284,7 @@ def parse_enum(state: State, element: ET.Element):
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
     enum.brief = parse_desc(state, element.find('briefdescription'))
-    enum.description, enum.is_deprecated = parse_enum_desc(state, element)
+    enum.description, search_keywords, search_enum_values_as_keywords, enum.is_deprecated = parse_enum_desc(state, element)
     enum.is_protected = element.attrib['prot'] == 'protected'
     enum.is_strong = False
     if 'strong' in element.attrib:
@@ -1276,7 +1301,7 @@ def parse_enum(state: State, element: ET.Element):
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
         if ''.join(enumvalue.find('briefdescription').itertext()).strip():
             logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
-        value.description, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
+        value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
         if value.description:
             enum.has_value_details = True
             if not state.doxyfile['M_SEARCH_DISABLED']:
@@ -1285,6 +1310,9 @@ def parse_enum(state: State, element: ET.Element):
                 result.url = state.current_url + '#' + value.id
                 result.prefix = state.current_prefix + [enum.name]
                 result.name = value.name
+                result.keywords = value_search_keywords
+                if search_enum_values_as_keywords and value.initializer.startswith('='):
+                    result.keywords += [(value.initializer[1:].lstrip(), '', 0)]
                 state.search += [result]
         enum.values += [value]
 
@@ -1296,6 +1324,7 @@ def parse_enum(state: State, element: ET.Element):
             result.url = state.current_url + '#' + enum.id
             result.prefix = state.current_prefix
             result.name = enum.name
+            result.keywords = search_keywords
             state.search += [result]
         return enum
     return None
@@ -1347,7 +1376,7 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.args = parse_type(state, element.find('argsstring'))
     typedef.name = element.find('name').text
     typedef.brief = parse_desc(state, element.find('briefdescription'))
-    typedef.description, templates, typedef.is_deprecated = parse_typedef_desc(state, element)
+    typedef.description, templates, search_keywords, typedef.is_deprecated = parse_typedef_desc(state, element)
     typedef.is_protected = element.attrib['prot'] == 'protected'
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
@@ -1358,6 +1387,7 @@ def parse_typedef(state: State, element: ET.Element):
         result.url = state.current_url + '#' + typedef.id
         result.prefix = state.current_prefix
         result.name = typedef.name
+        result.keywords = search_keywords
         state.search += [result]
         return typedef
     return None
@@ -1370,7 +1400,7 @@ def parse_func(state: State, element: ET.Element):
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
-    func.description, templates, params, func.return_value, func.is_deprecated = parse_func_desc(state, element)
+    func.description, templates, params, func.return_value, search_keywords, func.is_deprecated = parse_func_desc(state, element)
 
     # Extract function signature to prefix, suffix and various flags. Important
     # things affecting caller such as static or const (and rvalue overloads)
@@ -1461,6 +1491,7 @@ def parse_func(state: State, element: ET.Element):
             result.url = state.current_url + '#' + func.id
             result.prefix = state.current_prefix
             result.name = func.name
+            result.keywords = search_keywords
             result.params = [param.type for param in func.params]
             result.suffix = func.suffix
             state.search += [result]
@@ -1483,7 +1514,7 @@ def parse_var(state: State, element: ET.Element):
     var.is_private = element.attrib['prot'] == 'private'
     var.name = element.find('name').text
     var.brief = parse_desc(state, element.find('briefdescription'))
-    var.description, var.is_deprecated = parse_var_desc(state, element)
+    var.description, search_keywords, var.is_deprecated = parse_var_desc(state, element)
 
     var.has_details = not not var.description
     if var.brief or var.has_details:
@@ -1493,6 +1524,7 @@ def parse_var(state: State, element: ET.Element):
             result.url = state.current_url + '#' + var.id
             result.prefix = state.current_prefix
             result.name = var.name
+            result.keywords = search_keywords
             state.search += [result]
         return var
     return None
@@ -1504,8 +1536,7 @@ def parse_define(state: State, element: ET.Element):
     define.id = extract_id(element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
-    define.description, params, define.return_value, define.is_deprecated = parse_define_desc(state, element)
-
+    define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
     define.has_param_details = False
     define.params = None
     for p in element.findall('param'):
@@ -1531,6 +1562,7 @@ def parse_define(state: State, element: ET.Element):
             result.url = state.current_url + '#' + define.id
             result.prefix = []
             result.name = define.name
+            result.keywords = search_keywords
             result.params = None if define.params is None else [param[0] for param in define.params]
             state.search += [result]
         return define
@@ -1758,6 +1790,12 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
                 if hasattr(result, 'params') and result.params is not None:
                     trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
 
+        # Add keyword aliases for this symbol
+        for search, title, suffix_length in result.keywords:
+            if not title: title = search
+            keyword_index = map.add(title, '', alias=index, suffix_length=suffix_length)
+            trie.insert(search.lower(), keyword_index)
+
     return serialize_search_data(trie, map, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
 def base85encode_search_data(data: bytearray) -> bytearray:
@@ -1807,7 +1845,7 @@ def parse_xml(state: State, xml: str):
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    compound.description, templates, compound.sections, footer_navigation, example_navigation, compound.is_deprecated = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
+    compound.description, templates, compound.sections, footer_navigation, example_navigation, search_keywords, compound.is_deprecated = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
     compound.example_navigation = None
     compound.footer_navigation = None
     compound.modules = []
@@ -2350,6 +2388,7 @@ def parse_xml(state: State, xml: str):
         result.url = compound.url
         result.prefix = state.current_prefix[:-1]
         result.name = state.current_prefix[-1]
+        result.keywords = search_keywords
         state.search += [result]
 
     parsed = Empty()

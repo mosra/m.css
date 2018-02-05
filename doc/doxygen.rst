@@ -687,7 +687,10 @@ following to your ``Doxyfile-mcss``:
         "m_endspan=@xmlonly</mcss:span>@endxmlonly" \
         "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
         "m_footernavigation=@xmlonly<mcss:footernavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" />@endxmlonly" \
-        "m_examplenavigation{2}=@xmlonly<mcss:examplenavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:page=\"\1\" mcss:prefix=\"\2\" />@endxmlonly"
+        "m_examplenavigation{2}=@xmlonly<mcss:examplenavigation xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:page=\"\1\" mcss:prefix=\"\2\" />@endxmlonly" \
+        "m_keywords{1}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keywords=\"\1\" />@endxmlonly" \
+        "m_keyword{3}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keyword=\"\1\" mcss:title=\"\2\" mcss:suffix-length=\"\3\" />@endxmlonly" \
+        "m_enum_values_as_keywords=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:enum-values-as-keywords=\"true\" />@endxmlonly"
 
 If you need backwards compatibility with stock Doxygen HTML output, just make
 the aliases empty in your original ``Doxyfile``. Note that you can rename the
@@ -702,7 +705,10 @@ aliases however you want to fit your naming scheme.
         "m_endspan=" \
         "m_class{1}=" \
         "m_footernavigation=" \
-        "m_examplenavigation{2}"
+        "m_examplenavigation{2}" \
+        "m_keywords{1}=" \
+        "m_keyword{3}=" \
+        "m_enum_values_as_keywords="
 
 With ``@m_div`` and ``@m_span`` it's possible to wrap individual paragraphs or
 inline text in :html:`<div>` / :html:`<span>` and add CSS classes to them.
@@ -771,15 +777,45 @@ to discover which example files belong together). Example usage --- the
 ``@m_examplenavigation`` and ``@m_footernavigation`` commands are simply
 appended the an existing ``@example`` command.
 
-.. code-figure::
+.. code:: c++
 
-    .. code:: c++
+    /**
+    @example helloworld/CMakeLists.txt @m_examplenavigation{example,helloworld/} @m_footernavigation
+    @example helloworld/configure.h.cmake @m_examplenavigation{example,helloworld/} @m_footernavigation
+    @example helloworld/main.cpp @m_examplenavigation{example,helloworld/} @m_footernavigation
+    */
 
-        /**
-        @example helloworld/CMakeLists.txt @m_examplenavigation{example,helloworld/} @m_footernavigation
-        @example helloworld/configure.h.cmake @m_examplenavigation{example,helloworld/} @m_footernavigation
-        @example helloworld/main.cpp @m_examplenavigation{example,helloworld/} @m_footernavigation
-        */
+The purpose of ``@m_keywords``, ``@m_keyword`` and ``@m_enum_values_as_keywords``
+command is to add further search keywords to given documented symbols. Use
+``@m_keywords`` to enter whitespace-separated list of keywords. Use ``@m_keyword``
+if you need to enter a keyword containing spaces, the optional second and third
+parameter allow you to specify a different title and suffix length. The
+``@m_enum_values_as_keywords`` command will add initializers of given enum
+values as keywords for each corresponding value, it's ignored when not used in
+enum description block. In the following example, an OpenGL wrapper API adds GL
+API names as keywords for easier discoverability, so e.g. the
+:cpp:`Texture2D::setStorage()` function is also found when typing
+``glTexStorage2D()`` into the search field, or the :cpp:`Renderer::Feature::DepthTest`
+enum value is found when entering :cpp:`GL_DEPTH_TEST`:
+
+.. code:: c++
+
+    /**
+     * @brief Set texture storage
+     *
+     * @m_keywords{glTexStorage2D() glTextureStorage2D()}
+     */
+    Texture2D& Texture2D::setStorage(...);
+
+    /**
+     * @brief Renderer feature
+     *
+     * @m_enum_values_as_keywords
+     */
+    enum class RendererFeature: GLenum {
+        /** Depth test */
+        DepthTest = GL_DEPTH_TEST
+    };
 
 `Customizing the template`_
 ===========================
