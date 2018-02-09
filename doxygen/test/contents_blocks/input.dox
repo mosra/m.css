@@ -91,8 +91,28 @@ is a table      | *really*      | yes.
 
 _This is_ inside a paragraph.
 
-$Author: this is ignored $
+$Id: some strange RCS content $
 
+@author The Author
+@authors Another Author, That Intern We Forgot The Name Of
+@version 1.0rc3
+@since 1.0rc1
+@date 2018-02-09
+@pre A precondition.
+@post A postcondition.
+@copyright This is illegal to use.
+@invariant Everything is changing all the time.
+
+@remark What does a `remark` mean and how is it different from `note`, anyway?
+
+@par
+    Paragraph that goes to the remark section
+
+@par Paragraph title
+    Paragraph that goes separately
+
+@par
+    Paragraph that adds to the previous
 */
 
 /** @page other Other page

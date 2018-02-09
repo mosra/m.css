@@ -638,15 +638,18 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 tag = 'h3'
             elif element.tag == 'sect3':
                 tag = 'h4'
-            else: # pragma: no cover
-                assert False
-            id = extract_id(element)
-            title = html.escape(i.text)
+            elif not element.tag == 'simplesect':
+                assert False # pragma: no cover
 
-            # Populate section info
-            assert not out.section
-            out.section = (id, title, [])
-            out.parsed += '<{0}><a href="#{1}">{2}</a></{0}>'.format(tag, id, title)
+            # simplesect titles are handled directly inside simplesect
+            if not element.tag == 'simplesect':
+                id = extract_id(element)
+                title = html.escape(i.text)
+
+                # Populate section info
+                assert not out.section
+                out.section = (id, title, [])
+                out.parsed += '<{0}><a href="#{1}">{2}</a></{0}>'.format(tag, id, title)
 
         elif i.tag == 'heading':
             assert element.tag == 'para' # is inside a paragraph :/
@@ -794,19 +797,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
                 else:
                     out.return_value = parse_desc(state, i)
-            # Ignore the RCS strings for now
-            elif i.attrib['kind'] == 'rcs':
-                logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))
             else:
                 has_block_elements = True
 
                 # There was a section open, but it differs from this one, close
                 # it
-                if previous_section and previous_section != i.attrib['kind']:
+                if previous_section and ((i.attrib['kind'] != 'par' and previous_section != i.attrib['kind']) or (i.attrib['kind'] == 'par' and i.find('title').text)):
                     out.parsed = out.parsed.rstrip() + '</aside>'
 
                 # Not continuing with a section from before, put a header in
-                if not previous_section or previous_section != i.attrib['kind']:
+                if not previous_section or (i.attrib['kind'] != 'par' and previous_section != i.attrib['kind']) or (i.attrib['kind'] == 'par' and i.find('title').text):
                     if i.attrib['kind'] == 'see':
                         out.parsed += '<aside class="m-note m-default"><h4>See also</h4>'
                     elif i.attrib['kind'] == 'note':
@@ -815,6 +815,30 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.parsed += '<aside class="m-note m-warning"><h4>Attention</h4>'
                     elif i.attrib['kind'] == 'warning':
                         out.parsed += '<aside class="m-note m-danger"><h4>Warning</h4>'
+                    elif i.attrib['kind'] == 'author':
+                        out.parsed += '<aside class="m-note m-default"><h4>Author</h4>'
+                    elif i.attrib['kind'] == 'authors':
+                        out.parsed += '<aside class="m-note m-default"><h4>Authors</h4>'
+                    elif i.attrib['kind'] == 'copyright':
+                        out.parsed += '<aside class="m-note m-default"><h4>Copyright</h4>'
+                    elif i.attrib['kind'] == 'version':
+                        out.parsed += '<aside class="m-note m-default"><h4>Version</h4>'
+                    elif i.attrib['kind'] == 'since':
+                        out.parsed += '<aside class="m-note m-default"><h4>Since</h4>'
+                    elif i.attrib['kind'] == 'date':
+                        out.parsed += '<aside class="m-note m-default"><h4>Date</h4>'
+                    elif i.attrib['kind'] == 'pre':
+                        out.parsed += '<aside class="m-note m-success"><h4>Precondition</h4>'
+                    elif i.attrib['kind'] == 'post':
+                        out.parsed += '<aside class="m-note m-success"><h4>Postcondition</h4>'
+                    elif i.attrib['kind'] == 'invariant':
+                        out.parsed += '<aside class="m-note m-success"><h4>Invariant</h4>'
+                    elif i.attrib['kind'] == 'remark':
+                        out.parsed += '<aside class="m-note m-default"><h4>Remark</h4>'
+                    elif i.attrib['kind'] == 'par':
+                        out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
+                    elif i.attrib['kind'] == 'rcs':
+                        out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
                     else: # pragma: no cover
                         out.parsed += '<aside class="m-note">'
                         logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))
