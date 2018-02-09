@@ -1273,6 +1273,8 @@ Property                        Description
                                 details.
 :py:`func.has_param_details`    If function parameters have description
 :py:`func.return_value`         Return value description. Can be empty.
+:py:`func.return_values`        Description of particular empty values. See
+                                below for details.
 :py:`func.brief`                Brief description. Can be empty. [1]_
 :py:`func.description`          Detailed description. Can be empty. [2]_
 :py:`func.has_details`          If there is enough content for the full
@@ -1324,6 +1326,12 @@ Property                    Description
 :py:`param.direction`       Parameter direction. One of :py:`'in'`, :py:`'out'`,
                             :py:`'inout'` or :py:`''` if unspecified.
 =========================== ===================================================
+
+The :py:`func.return_values` is a list of return values and their description
+(in contract to :py:`func.return_value`, which is just a single description).
+Each item is a tuple of :py:`(value, description)`. Can be empty, it can also
+happen that both :py:`func.return_value` and :py:`func.return_values` are
+present.
 
 `Variable properties`_
 ``````````````````````

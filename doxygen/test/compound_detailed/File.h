@@ -101,6 +101,8 @@ namespace Foo {
 @param things   And an array!
 @param stuff    Another array
 @return It returns!
+@retval 0       Zero?
+@retval 42      The Answer.
 
 Ooooh, more text!
 */
@@ -121,6 +123,12 @@ constexpr void bar(int in, int& out, void* shit) noexcept;
 int justReturn();
 
 /**
+@brief Function
+@retval 42 With just return value docs should still have detailed section
+*/
+int justReturnValues();
+
+/**
 @brief A function with scattered docs
 
 @param a    First parameter docs
@@ -133,8 +141,17 @@ merged and reordered.
 @tparam A   First template parameter docs
 
 @param b    Second parameter docs
+
+That goes also for the return values.
+
+@retval 0       Zero
+
+Yes?
+
+@retval 1337    1337 h4xx0r?!
+@retval 42      The answer. To everything
 */
-template<class A, class B> void bar(int a, int b);
+template<class A, class B> int bar(int a, int b);
 
 /**
 @brief Function with one description for all params

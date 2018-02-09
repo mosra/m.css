@@ -56,9 +56,13 @@
             </dt>
             <dd>Function.</dd>
             <dt>
+              <span class="m-dox-wrap-bumper">auto <a href="#a2aed7a8280e0ed79f5f9ceb0d54f4a30" class="m-dox">justReturnValues</a>(</span><span class="m-dox-wrap">) -&gt; int</span>
+            </dt>
+            <dd>Function.</dd>
+            <dt>
               <div class="m-dox-template">template&lt;class A, class B&gt;</div>
-              <span class="m-dox-wrap-bumper">void <a href="#a291ca0ca1dec918416a1316b23de0e42" class="m-dox">bar</a>(</span><span class="m-dox-wrap">int a,
-              int b)</span>
+              <span class="m-dox-wrap-bumper">auto <a href="#aea7a925ccf30c967a965b2549cec4154" class="m-dox">bar</a>(</span><span class="m-dox-wrap">int a,
+              int b) -&gt; int</span>
             </dt>
             <dd>A function with scattered docs.</dd>
             <dt>
@@ -116,12 +120,22 @@
                   <td>Another array</td>
                 </tr>
               </tbody>
-              <tfoot>
+              <thead>
                 <tr>
                   <th>Returns</th>
                   <td>It returns!</td>
                 </tr>
-              </tfoot>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0</td>
+                  <td>Zero?</td>
+                </tr>
+                <tr>
+                  <td>42</td>
+                  <td>The Answer.</td>
+                </tr>
+              </tbody>
             </table>
 <p>Ooooh, more text!</p>
           </div></section>
@@ -166,12 +180,29 @@
               </tfoot>
             </table>
           </div></section>
-          <section class="m-dox-details" id="a291ca0ca1dec918416a1316b23de0e42"><div>
+          <section class="m-dox-details" id="a2aed7a8280e0ed79f5f9ceb0d54f4a30"><div>
+            <h3>
+              <span class="m-dox-wrap-bumper">int Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#a2aed7a8280e0ed79f5f9ceb0d54f4a30" class="m-dox-self">justReturnValues</a>(</span><span class="m-dox-wrap">)</span></span>
+            </h3>
+            <p>Function.</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Returns</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">42</td>
+                  <td>With just return value docs should still have detailed section</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+          <section class="m-dox-details" id="aea7a925ccf30c967a965b2549cec4154"><div>
             <h3>
               <div class="m-dox-template">
                 template&lt;class A, class B&gt;
               </div>
-              <span class="m-dox-wrap-bumper">void Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#a291ca0ca1dec918416a1316b23de0e42" class="m-dox-self">bar</a>(</span><span class="m-dox-wrap">int a,
+              <span class="m-dox-wrap-bumper">int Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#aea7a925ccf30c967a965b2549cec4154" class="m-dox-self">bar</a>(</span><span class="m-dox-wrap">int a,
               int b)</span></span>
             </h3>
             <p>A function with scattered docs.</p>
@@ -202,8 +233,25 @@
                   <td>Second parameter docs</td>
                 </tr>
               </tbody>
+              <thead>
+                <tr><th colspan="2">Returns</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0</td>
+                  <td>Zero</td>
+                </tr>
+                <tr>
+                  <td>1337</td>
+                  <td>1337 h4xx0r?!</td>
+                </tr>
+                <tr>
+                  <td>42</td>
+                  <td>The answer. To everything</td>
+                </tr>
+              </tbody>
             </table>
-<p>This is a function that has the docs all scattered around. They should get merged and reordered.</p>
+<p>This is a function that has the docs all scattered around. They should get merged and reordered.</p><p>That goes also for the return values.</p><p>Yes?</p>
           </div></section>
           <section class="m-dox-details" id="a1e4e8c2c75da6e24d78c8a84e0cb3226"><div>
             <h3>

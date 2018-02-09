@@ -440,6 +440,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.templates = {}
     out.params = {}
     out.return_value = None
+    out.return_values = []
     out.add_css_class = None
     out.footer_navigation = False
     out.example_navigation = None
@@ -706,6 +707,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
                 else:
                     out.return_value = parsed.return_value
+            if parsed.return_values:
+                out.return_values += parsed.return_values
 
             # The same is (of course) with bubbling up the <mcss:class>
             # element. Reset the current value with the value coming from
@@ -869,6 +872,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 for name in param_names.findall('parametername'):
                     if i.attrib['kind'] == 'param':
                         out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
+                    elif i.attrib['kind'] == 'retval':
+                        out.return_values += [(name.text, description)]
                     else:
                         assert i.attrib['kind'] == 'templateparam'
                         out.templates[name.text] = description
@@ -1254,7 +1259,7 @@ def parse_func_desc(state: State, element: ET.Element):
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated)
+    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_define_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
@@ -1398,7 +1403,7 @@ def parse_func(state: State, element: ET.Element):
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
-    func.description, templates, params, func.return_value, search_keywords, func.is_deprecated = parse_func_desc(state, element)
+    func.description, templates, params, func.return_value, func.return_values, search_keywords, func.is_deprecated = parse_func_desc(state, element)
 
     # Extract function signature to prefix, suffix and various flags. Important
     # things affecting caller such as static or const (and rvalue overloads)
@@ -1481,7 +1486,7 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.description or func.has_template_details or func.has_param_details or func.return_value
+    func.has_details = func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values
     if func.brief or func.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
