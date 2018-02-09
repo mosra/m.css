@@ -852,8 +852,6 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
-            out.param_kind = i.attrib['kind']
-            assert out.param_kind in ['param', 'templateparam']
             for param in i:
                 # This is an overcomplicated shit, so check sanity
                 # http://www.stack.nl/~dimitri/doxygen/manual/commands.html#cmdparam
