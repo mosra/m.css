@@ -230,7 +230,7 @@ class ResultMap:
                         if c == candidate:
                             current = child[1]
                             break
-                    else: assert False
+                    else: assert False # pragma: no cover
 
                     # Allow self-reference only when referenced result suffix
                     # is longer (otherwise cycles happen). This is for
@@ -964,7 +964,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.search_enum_values_as_keywords = True
 
             # Nothing else at the moment
-            else: assert False
+            else: assert False # pragma: no cover
 
         # Either block or inline
         elif i.tag == 'programlisting':
@@ -1738,7 +1738,6 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             joiner = ''
             result_joiner = ' » '
         else:
-            print(result.flags & ResultFlag._TYPE)
             assert False # pragma: no cover
 
         # If just a leaf name, add it once
