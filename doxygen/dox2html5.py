@@ -403,10 +403,16 @@ def parse_ref(state: State, element: ET.Element) -> str:
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
-def extract_id(element: ET.Element) -> str:
+def parse_id(state: State, element: ET.Element) -> Tuple[str, str]:
     id = element.attrib['id']
     i = id.rindex('_1')
-    return id[i+2:]
+    base_url = id[:i] + '.html'
+    return base_url, id[i+2:]
+
+def extract_id_hash(state: State, element: ET.Element) -> str:
+    base_url, id = parse_id(state, element)
+    assert base_url == state.current_url
+    return id
 
 def fix_type_spacing(type: str) -> str:
     return type.replace('&lt; ', '&lt;').replace(' &gt;', '&gt;').replace(' &amp;', '&amp;').replace(' *', '*')
@@ -421,7 +427,9 @@ def parse_type(state: State, type: ET.Element) -> str:
         if i.tag == 'ref':
             out += parse_ref(state, i)
         elif i.tag == 'anchor':
-            out += '<a name="{}"></a>'.format(extract_id(i))
+            # Anchor, used for example in deprecated/todo lists. Its base_url
+            # is always equal to base_url of the page.
+            out += '<a name="{}"></a>'.format(extract_id_hash(state, i))
         else: # pragma: no cover
             logging.warning("{}: ignoring {} in <type>".format(state.current, i.tag))
 
@@ -626,7 +634,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # Top-level section has no ID or title
             if not out.section: out.section = ('', '', [])
             out.section = (out.section[0], out.section[1], out.section[2] + [parsed.section])
-            out.parsed += '<section id="{}">{}</section>'.format(extract_id(i), parsed.parsed)
+            out.parsed += '<section id="{}">{}</section>'.format(extract_id_hash(state, i), parsed.parsed)
 
         elif i.tag == 'title':
             assert element.tag != 'para' # should be top-level block element
@@ -643,7 +651,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # simplesect titles are handled directly inside simplesect
             if not element.tag == 'simplesect':
-                id = extract_id(element)
+                id = extract_id_hash(state, element)
                 title = html.escape(i.text)
 
                 # Populate section info
@@ -1122,7 +1130,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed = out.parsed.rstrip() + '<br />'
 
         elif i.tag == 'anchor':
-            out.parsed += '<a name="{}"></a>'.format(extract_id(i))
+            out.parsed += '<a name="{}"></a>'.format(extract_id_hash(state, i))
 
         elif i.tag == 'computeroutput':
             content = parse_inline_desc(state, i).strip()
@@ -1306,7 +1314,7 @@ def parse_enum(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'enum'
 
     enum = Empty()
-    enum.id = extract_id(element)
+    enum.id = extract_id_hash(state, element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
@@ -1322,7 +1330,7 @@ def parse_enum(state: State, element: ET.Element):
     enumvalue: ET.Element
     for enumvalue in element.findall('enumvalue'):
         value = Empty()
-        value.id = extract_id(enumvalue)
+        value.id = extract_id_hash(state, enumvalue)
         value.name = enumvalue.find('name').text
         # There can be an implicit initializer for enum value
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
@@ -1397,7 +1405,7 @@ def parse_typedef(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'typedef'
 
     typedef = Empty()
-    typedef.id = extract_id(element)
+    typedef.id = extract_id_hash(state, element)
     typedef.is_using = element.findtext('definition', '').startswith('using')
     typedef.type = parse_type(state, element.find('type'))
     typedef.args = parse_type(state, element.find('argsstring'))
@@ -1424,7 +1432,7 @@ def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'function'
 
     func = Empty()
-    func.id = extract_id(element)
+    func.id = extract_id_hash(state, element)
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
@@ -1530,7 +1538,7 @@ def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
 
     var = Empty()
-    var.id = extract_id(element)
+    var.id = extract_id_hash(state, element)
     var.type = parse_type(state, element.find('type'))
     if var.type.startswith('constexpr'):
         var.type = var.type[10:]
@@ -1561,7 +1569,7 @@ def parse_define(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'define'
 
     define = Empty()
-    define.id = extract_id(element)
+    define.id = extract_id_hash(state, element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
     define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
@@ -1870,6 +1878,8 @@ def parse_xml(state: State, xml: str):
     compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text
     # Compound URL is ID, except for index page
     compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
+    # Save current compound URL for search data building and ID extraction
+    state.current_url = compound.url
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
@@ -1925,9 +1935,6 @@ def parse_xml(state: State, xml: str):
         state.current_prefix = [name for name, _ in compound.breadcrumb]
     else:
         state.current_prefix = []
-
-    # Save current compound URL for search data building
-    state.current_url = compound.url
 
     if compound.kind == 'page':
         # Drop TOC for pages, if not requested
