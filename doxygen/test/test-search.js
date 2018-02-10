@@ -231,7 +231,7 @@ const { StringDecoder } = require('string_decoder');
 /* Search, Unicode */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
-    assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
+    assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
     assert.equal(Search.dataSize, 124);
     assert.equal(Search.symbolCount, 2);
     assert.deepEqual(Search.search('h'), [
