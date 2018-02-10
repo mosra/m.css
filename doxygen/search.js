@@ -323,7 +323,7 @@ var Search = {
 
         /* Otherwise extract URL from here */
         } else {
-            let max = Math.min(j + maxUrlPrefix, nextResultOffset);
+            let max = Math.min(j + maxUrlPrefix - url.length, nextResultOffset);
             for(; j != max; ++j) {
                 url += String.fromCharCode(this.map.getUint8(j));
             }
