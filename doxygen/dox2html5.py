@@ -2743,8 +2743,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                 **state.doxyfile)
 
             output = os.path.join(html_output, parsed.compound.url)
-            with open(output, 'w') as f:
-                f.write(rendered)
+            with open(output, 'wb') as f:
+                f.write(rendered.encode('utf-8'))
 
     # Empty index page in case no mainpage documentation was provided so
     # there's at least some entrypoint. Doxygen version is not set in this
