@@ -20,7 +20,8 @@ namespace Namespace {
 /**
  * @brief A class
  *
- * @m_keywords{glClass()}
+ * @note Keywords inside a note should be propagated outside:
+ *      @m_keywords{glClass()}
  */
 class Class {
     public:
