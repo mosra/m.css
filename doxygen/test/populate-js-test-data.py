@@ -82,3 +82,12 @@ trie.insert("hárá", map.add("Hárá", "#b", flags=ResultFlag.PAGE))
 
 with open(basedir/'unicode.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map, 2))
+
+trie = Trie()
+map = ResultMap()
+trie.insert("magnum", map.add("Magnum", "namespaceMagnum.html", flags=ResultFlag.NAMESPACE))
+trie.insert("math", map.add("Magnum::Math", "namespaceMagnum_1_1Math.html", flags=ResultFlag.NAMESPACE))
+trie.insert("geometry", map.add("Magnum::Math::Geometry", "namespaceMagnum_1_1Math_1_1Geometry.html", flags=ResultFlag.NAMESPACE))
+
+with open(basedir/'nested.bin', 'wb') as f:
+    f.write(serialize_search_data(trie, map, 3))

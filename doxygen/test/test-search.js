@@ -255,4 +255,17 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 }]);
 }
 
+/* Properly combine heavily nested URLs */
+{
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/nested.bin"));
+    assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
+    assert.equal(Search.dataSize, 215);
+    assert.equal(Search.symbolCount, 3);
+    assert.deepEqual(Search.search('geo'), [
+        { name: 'Magnum::Math::Geometry',
+          url: 'namespaceMagnum_1_1Math_1_1Geometry.html',
+          flags: 24,
+          suffixLength: 5 }]);
+}
+
 /* Not testing Search.download() because the xmlhttprequest npm package is *crap* */
