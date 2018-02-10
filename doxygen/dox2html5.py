@@ -2730,8 +2730,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                     **state.doxyfile)
 
                 output = os.path.join(html_output, file)
-                with open(output, 'w') as f:
-                    f.write(rendered)
+                with open(output, 'wb') as f:
+                    f.write(rendered.encode('utf-8'))
         else:
             parsed = parse_xml(state, file)
             if not parsed: continue
@@ -2761,8 +2761,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             FILENAME='index.html',
             **state.doxyfile)
         output = os.path.join(html_output, 'index.html')
-        with open(output, 'w') as f:
-            f.write(rendered)
+        with open(output, 'wb') as f:
+            f.write(rendered.encode('utf-8'))
 
     if not state.doxyfile['M_SEARCH_DISABLED']:
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
