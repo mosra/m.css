@@ -129,6 +129,7 @@ class Ignored(IntegrationTestCase):
 
     @unittest.expectedFailure
     def test_empty_class_doc_not_generated(self):
+        # This needs to be generated in order to be compatible with tag files
         self.run_dox2html5(index_pages=[], wildcard='classBrief.xml')
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classBrief.html')))
 
