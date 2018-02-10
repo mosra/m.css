@@ -1409,13 +1409,14 @@ def parse_typedef(state: State, element: ET.Element):
 
     typedef.has_details = typedef.description or typedef.has_template_details
     if typedef.brief or typedef.has_details:
-        result = Empty()
-        result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
-        result.url = state.current_url + '#' + typedef.id
-        result.prefix = state.current_prefix
-        result.name = typedef.name
-        result.keywords = search_keywords
-        state.search += [result]
+        if not state.doxyfile['M_SEARCH_DISABLED']:
+            result = Empty()
+            result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
+            result.url = state.current_url + '#' + typedef.id
+            result.prefix = state.current_prefix
+            result.name = typedef.name
+            result.keywords = search_keywords
+            state.search += [result]
         return typedef
     return None
 
