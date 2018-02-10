@@ -1633,9 +1633,9 @@ def extract_metadata(state: State, xml):
     # Compound URL is ID, except for index page
     compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    # Groups are explicitly created so they *have details*, other things need
-    # to have at least some documentation
-    compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')
+    # Groups and pages are explicitly created so they *have details*, other
+    # things need to have at least some documentation
+    compound.has_details = compound.kind in ['group', 'page'] or compound.brief or compounddef.find('detaileddescription')
     compound.children = []
     compound.parent = None # is filled in by postprocess_state()
 
@@ -1856,9 +1856,10 @@ def parse_xml(state: State, xml: str):
         logging.debug("{}: only private things, skipping".format(state.current))
         return None
 
-    # Ignoring dirs/files w/o any description
-    if compounddef.attrib['kind'] in ['dir', 'file'] and not compounddef.find('briefdescription') and not compounddef.find('detaileddescription'):
-        logging.debug("{}: file/dir documentation empty, skipping".format(state.current))
+    # Ignoring compounds w/o any description, except for pages and groups,
+    # which are created explicitly
+    if not compounddef.find('briefdescription') and not compounddef.find('detaileddescription') and not compounddef.attrib['kind'] in ['page', 'group']:
+        logging.debug("{}: neither brief nor detailed description present, skipping".format(state.current))
         return None
 
     compound = Empty()

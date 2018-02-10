@@ -91,6 +91,7 @@ And we have some detailed docs as well.
 */
 namespace Namee {}
 
+/** @brief A namespace */
 namespace Foo {
 
 /**
@@ -161,6 +162,7 @@ void thisIsAShittyWayToPassAVectorButWhatever(float x, float y, float z);
 
 }
 
+/** @brief A namespace */
 namespace Eno {
 
 /** @brief Boolean */
@@ -177,6 +179,7 @@ enum {
 
 }
 
+/** @brief A namespace */
 namespace Type {
 
 /**
@@ -195,6 +198,7 @@ typedef void(*Func)(int, std::string&);
 
 }
 
+/** @brief A namespace */
 namespace Var {
 
 /**
@@ -206,6 +210,7 @@ constexpr const int a = 25;
 
 }
 
+/** @brief A namespace */
 namespace Warning {
 
 /** @brief Use the brief! */
