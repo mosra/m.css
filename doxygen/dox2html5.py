@@ -1314,7 +1314,7 @@ def parse_enum(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'enum'
 
     enum = Empty()
-    enum.id = extract_id_hash(state, element)
+    enum.base_url, enum.id = parse_id(state, element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
@@ -1330,7 +1330,9 @@ def parse_enum(state: State, element: ET.Element):
     enumvalue: ET.Element
     for enumvalue in element.findall('enumvalue'):
         value = Empty()
-        value.id = extract_id_hash(state, enumvalue)
+        # The base_url might be different, but should be the same as enum.base_url
+        value_base_url, value.id = parse_id(state, enumvalue)
+        assert value_base_url == enum.base_url
         value.name = enumvalue.find('name').text
         # There can be an implicit initializer for enum value
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
@@ -1339,10 +1341,10 @@ def parse_enum(state: State, element: ET.Element):
         value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
         if value.description:
             enum.has_value_details = True
-            if not state.doxyfile['M_SEARCH_DISABLED']:
+            if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
                 result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
-                result.url = state.current_url + '#' + value.id
+                result.url = enum.base_url + '#' + value.id
                 result.prefix = state.current_prefix + [enum.name]
                 result.name = value.name
                 result.keywords = value_search_keywords
@@ -1351,12 +1353,12 @@ def parse_enum(state: State, element: ET.Element):
                 state.search += [result]
         enum.values += [value]
 
-    enum.has_details = enum.description or enum.has_value_details
+    enum.has_details = enum.base_url == state.current_url and (enum.description or enum.has_value_details)
     if enum.brief or enum.has_details or enum.has_value_details:
-        if not state.doxyfile['M_SEARCH_DISABLED']:
+        if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.ENUM|(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0))
-            result.url = state.current_url + '#' + enum.id
+            result.url = enum.base_url + '#' + enum.id
             result.prefix = state.current_prefix
             result.name = enum.name
             result.keywords = search_keywords
@@ -1405,7 +1407,7 @@ def parse_typedef(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'typedef'
 
     typedef = Empty()
-    typedef.id = extract_id_hash(state, element)
+    typedef.base_url, typedef.id = parse_id(state, element)
     typedef.is_using = element.findtext('definition', '').startswith('using')
     typedef.type = parse_type(state, element.find('type'))
     typedef.args = parse_type(state, element.find('argsstring'))
@@ -1415,12 +1417,13 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.is_protected = element.attrib['prot'] == 'protected'
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
-    typedef.has_details = typedef.description or typedef.has_template_details
+    typedef.has_details = typedef.base_url == state.current_url and (typedef.description or typedef.has_template_details)
     if typedef.brief or typedef.has_details:
-        if not state.doxyfile['M_SEARCH_DISABLED']:
+        # Avoid duplicates in search
+        if typedef.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
-            result.url = state.current_url + '#' + typedef.id
+            result.url = typedef.base_url + '#' + typedef.id
             result.prefix = state.current_prefix
             result.name = typedef.name
             result.keywords = search_keywords
@@ -1432,7 +1435,7 @@ def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'function'
 
     func = Empty()
-    func.id = extract_id_hash(state, element)
+    func.base_url, func.id = parse_id(state, element)
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
@@ -1519,12 +1522,13 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values
+    func.has_details = func.base_url == state.current_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values)
     if func.brief or func.has_details:
-        if not state.doxyfile['M_SEARCH_DISABLED']:
+        # Avoid duplicates in search
+        if func.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.FUNC|(ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0))
-            result.url = state.current_url + '#' + func.id
+            result.url = func.base_url + '#' + func.id
             result.prefix = state.current_prefix
             result.name = func.name
             result.keywords = search_keywords
@@ -1538,7 +1542,7 @@ def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
 
     var = Empty()
-    var.id = extract_id_hash(state, element)
+    var.base_url, var.id = parse_id(state, element)
     var.type = parse_type(state, element.find('type'))
     if var.type.startswith('constexpr'):
         var.type = var.type[10:]
@@ -1552,12 +1556,13 @@ def parse_var(state: State, element: ET.Element):
     var.brief = parse_desc(state, element.find('briefdescription'))
     var.description, search_keywords, var.is_deprecated = parse_var_desc(state, element)
 
-    var.has_details = not not var.description
+    var.has_details = var.base_url == state.current_url and var.description
     if var.brief or var.has_details:
-        if not state.doxyfile['M_SEARCH_DISABLED']:
+        # Avoid duplicates in search
+        if var.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.VAR|(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0))
-            result.url = state.current_url + '#' + var.id
+            result.url = var.base_url + '#' + var.id
             result.prefix = state.current_prefix
             result.name = var.name
             result.keywords = search_keywords

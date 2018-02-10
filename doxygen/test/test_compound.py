@@ -25,7 +25,9 @@
 import os
 import unittest
 
-from test import IntegrationTestCase
+from distutils.version import LooseVersion
+
+from test import IntegrationTestCase, doxygen_version
 
 class Listing(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -185,3 +187,21 @@ class Deprecated(IntegrationTestCase):
         # Base and derived class listing
         self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1BaseDeprecatedClass.html'))
         self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1DeprecatedClass.html'))
+
+class NamespaceMembersInFileScope(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'namespace_members_in_file_scope', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+
+        # The namespace should have the detailed docs
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
+                         "https://github.com/doxygen/doxygen/pull/653")
+    def test_file(self):
+        self.run_dox2html5(wildcard='File_8h.xml')
+
+        # The file should have just links to detailed docs
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))

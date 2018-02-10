@@ -4,6 +4,10 @@ GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
 GENERATE_XML            = YES
 XML_PROGRAMLISTING      = NO
+
+# Verify that this doesn't cause duplicated items
+XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE = YES
+
 EXAMPLE_PATH            = .
 ALIASES                 = \
     "m_keywords{1}=@xmlonly<mcss:search xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:keywords=\"\1\" />@endxmlonly" \

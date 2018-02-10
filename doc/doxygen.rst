@@ -69,6 +69,10 @@ with the stock output to avoid broken links once you switch.
     It may work reasonably well with older versions, but I can't guarantee
     that. Upgrade to the latest version to have the best experience.
 
+    Some features depend on patches that are not yet integrated in Doxygen, in
+    that case the documentation mentions which revision to use or which patch
+    you need to apply.
+
 Everything you need apart from Doxygen itself is a Python script and a bunch of
 template files. You can get that by cloning :gh:`the m.css GitHub repository <mosra/m.css$master/doxygen>`
 and looking into the ``doxygen/`` directory:
@@ -503,6 +507,23 @@ the ``@section`` command instead.
 
 Table of contents for pages is generated only if they specify
 ``@tableofcontents`` in their documentation block.
+
+`Namespace members in file scope`_
+----------------------------------
+
+Doxygen by default doesn't render namespace members for file documentation in
+its XML output. To match the behavior of stock HTML output, enable the
+:ini:`XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE` option:
+
+.. code:: ini
+
+    # Requires a patch to Doxygen 1.8.14, see below
+    XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE = YES
+
+.. note-warning:: Doxygen patches
+
+    In order to use the :ini:`XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE` option, you
+    need Doxygen with :gh:`doxygen/doxygen#653` applied.
 
 `Code highlighting`_
 --------------------
@@ -1190,6 +1211,8 @@ has the following properties:
 =============================== ===============================================
 Property                        Description
 =============================== ===============================================
+:py:`enum.base_url`             Base URL of file containing detailed
+                                description [3]_
 :py:`enum.id`                   Identifier hash [3]_
 :py:`enum.type`                 Enum type or empty if implicitly typed [6]_
 :py:`enum.is_strong`            If the enum is strong
@@ -1212,6 +1235,8 @@ Every item of :py:`enum.values` has the following properties:
 =========================== ===================================================
 Property                    Description
 =========================== ===================================================
+:py:`value.base_url`        Base URL of file containing detailed description
+                            [3]_
 :py:`value.id`              Identifier hash [3]_
 :py:`value.name`            Value name [4]_
 :py:`value.initializer`     Value initializer. Can be empty. [1]_
@@ -1230,6 +1255,8 @@ item has the following properties:
 =========================== ===================================================
 Property                    Description
 =========================== ===================================================
+:py:`typedef.base_url`      Base URL of file containing detailed description
+                            [3]_
 :py:`typedef.id`            Identifier hash [3]_
 :py:`typedef.is_using`      Whether it is a :cpp:`typedef` or an :cpp:`using`
 :py:`typedef.type`          Typedef type, or what all goes before the name for
@@ -1263,6 +1290,8 @@ every item has the following properties:
 =============================== ===============================================
 Property                        Description
 =============================== ===============================================
+:py:`func.base_url`             Base URL of file containing detailed
+                                description [3]_
 :py:`func.id`                   Identifier hash [3]_
 :py:`func.type`                 Function return type [6]_
 :py:`func.name`                 Function name [4]_
@@ -1345,6 +1374,8 @@ every item has the following properties:
 =========================== ===================================================
 Property                    Description
 =========================== ===================================================
+:py:`var.base_url`          Base URL of file containing detailed description
+                            [3]_
 :py:`var.id`                Identifier hash [3]_
 :py:`var.type`              Variable type [6]_
 :py:`var.name`              Variable name [4]_
@@ -1521,15 +1552,19 @@ all directories are before all files.
 .. [2] :py:`i.description` is HTML code with the full description, containing
     paragraphs, notes, code blocks, images etc. Can be empty in case just the
     brief description is present.
-.. [3] :py:`i.id` is a hash used to link to the member on the page, usually
-    appearing after ``#`` in page URL
+.. [3] :py:`i.base_url`, joined using ``#`` with :py:`i.id` form a unique URL
+    for given symbol. If the :py:`i.base_url` is not the same as
+    :py:`compound.url`, it means given symbol is just referenced from given
+    compound and its detailed documentation resides elsewhere.
 .. [4] :py:`i.name` is just the member name, not qualified. Prepend
     :py:`compound.prefix_wbr` to it to get the fully qualified name.
 .. [5] :py:`compound.has_*_details` and :py:`i.has_details` are :py:`True` if
     there is detailed description, function/template/macro parameter
     documentation or enum value listing that makes it worth to render the full
     description block. If :py:`False`, the member should be included only in
-    the brief listing on top of the page to avoid unnecessary repetition.
+    the brief listing on top of the page to avoid unnecessary repetition. If
+    :py:`i.base_url` is not the same as :py:`compound.url`, its
+    :py:`i.has_details` is always set to :py:`False`.
 .. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
     contains links to related documentation
 .. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given
