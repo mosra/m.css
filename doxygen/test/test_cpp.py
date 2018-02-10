@@ -55,7 +55,7 @@ class Derived(IntegrationTestCase):
 
     def test(self):
         self.run_dox2html5(wildcard='*.xml')
-        self.assertEqual(*self.actual_expected_contents('classA.html'))
-        self.assertEqual(*self.actual_expected_contents('classPrivateBase.html'))
-        self.assertEqual(*self.actual_expected_contents('classProtectedBase.html'))
-        self.assertEqual(*self.actual_expected_contents('classVirtualBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classNamespace_1_1A.html'))
+        self.assertEqual(*self.actual_expected_contents('classNamespace_1_1PrivateBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classAnother_1_1ProtectedBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classNamespace_1_1VirtualBase.html'))
