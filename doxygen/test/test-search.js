@@ -259,13 +259,19 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/nested.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 215);
-    assert.equal(Search.symbolCount, 3);
+    assert.equal(Search.dataSize, 295);
+    assert.equal(Search.symbolCount, 4);
     assert.deepEqual(Search.search('geo'), [
         { name: 'Magnum::Math::Geometry',
           url: 'namespaceMagnum_1_1Math_1_1Geometry.html',
           flags: 24,
           suffixLength: 5 }]);
+
+    assert.deepEqual(Search.search('ra'), [
+        { name: 'Magnum::Math::Range',
+          url: 'classMagnum_1_1Math_1_1Range.html',
+          flags: 40,
+          suffixLength: 3 }]);
 }
 
 /* Not testing Search.download() because the xmlhttprequest npm package is *crap* */

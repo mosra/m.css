@@ -88,6 +88,7 @@ map = ResultMap()
 trie.insert("magnum", map.add("Magnum", "namespaceMagnum.html", flags=ResultFlag.NAMESPACE))
 trie.insert("math", map.add("Magnum::Math", "namespaceMagnum_1_1Math.html", flags=ResultFlag.NAMESPACE))
 trie.insert("geometry", map.add("Magnum::Math::Geometry", "namespaceMagnum_1_1Math_1_1Geometry.html", flags=ResultFlag.NAMESPACE))
+trie.insert("range", map.add("Magnum::Math::Range", "classMagnum_1_1Math_1_1Range.html", flags=ResultFlag.CLASS))
 
 with open(basedir/'nested.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, 3))
+    f.write(serialize_search_data(trie, map, 4))
