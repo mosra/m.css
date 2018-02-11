@@ -558,7 +558,7 @@ if(typeof document !== 'undefined') {
         /* Search hidden */
         } else {
             /* Open the search on the T or Tab key */
-            if(event.key.toLowerCase() == 't' || event.key == 'Tab') {
+            if((event.key.toLowerCase() == 't' || event.key == 'Tab') && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
                 showSearch();
                 return false; /* so T doesn't get entered into the box */
             }
