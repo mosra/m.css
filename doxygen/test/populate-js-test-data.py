@@ -67,7 +67,7 @@ trie.insert("min()", index)
 trie.insert("subpage", map.add("Page » Subpage", "subpage.html", flags=ResultFlag.PAGE))
 
 trie.insert("rectangle", map.add("Rectangle", "", alias=range_index))
-trie.insert("rect()", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))
+trie.insert("rect", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))
 
 with open(basedir/'searchdata.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map, 7))

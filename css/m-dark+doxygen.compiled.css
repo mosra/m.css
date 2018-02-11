@@ -2070,6 +2070,8 @@ a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-ico
 .m-dox-search ul#search-results li a > div {
   white-space: nowrap;
   overflow: hidden;
+}
+.m-dox-search ul#search-results li a > div:not(.m-dox-search-alias) {
   direction: rtl;
 }
 .m-dox-search ul#search-results li a .m-label {

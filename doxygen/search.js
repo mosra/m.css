@@ -314,19 +314,21 @@ var Search = {
            that's just wrong, fix! */
         if(aliasedIndex != null && maxUrlPrefix == 0xffffff) {
             let alias = this.gatherResult(aliasedIndex, 0 /* ignored */, 0xffffff); /* should be enough haha */
-            name += ': ' + alias.name;
             url = alias.url;
             flags = alias.flags;
 
-            /* Result suffix length: add the whole aliased name + the `: ` */
-            resultSuffixLength += 2 + alias.name.length;
+            /* Keeping in UTF-8, as we need that for proper slicing (and concatenating) */
+            return {name: name,
+                    alias: alias.name,
+                    url: alias.url,
+                    flags: alias.flags,
+                    suffixLength: suffixLength + resultSuffixLength};
+        }
 
         /* Otherwise extract URL from here */
-        } else {
-            let max = Math.min(j + maxUrlPrefix - url.length, nextResultOffset);
-            for(; j != max; ++j) {
-                url += String.fromCharCode(this.map.getUint8(j));
-            }
+        let max = Math.min(j + maxUrlPrefix - url.length, nextResultOffset);
+        for(; j != max; ++j) {
+            url += String.fromCharCode(this.map.getUint8(j));
         }
 
         /* Keeping in UTF-8, as we need that for proper slicing (and concatenating) */
@@ -336,6 +338,11 @@ var Search = {
                 suffixLength: suffixLength + resultSuffixLength};
     },
 
+    escape: function(name) {
+        return name.replace(/[\"&<>]/g, function (a) {
+            return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
+        });
+    },
     escapeForRtl: function(name) {
         /* Besides the obvious escaping of HTML entities we also need
            to escape punctuation, because due to the RTL hack to cut
@@ -344,9 +351,7 @@ var Search = {
            characters, parentheses we need to *soak* in it. But only
            the right ones. And that for some reason needs to be also for &.
            Huh. https://en.wikipedia.org/wiki/Right-to-left_mark */
-        return name.replace(/[\"&<>]/g, function (a) {
-            return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
-        }).replace(/[:=]/g, '&lrm;$&').replace(/(\)|&gt;|&amp;|\/)/g, '&lrm;$&&lrm;');
+        return this.escape(name).replace(/[:=]/g, '&lrm;$&').replace(/(\)|&gt;|&amp;|\/)/g, '&lrm;$&&lrm;');
     },
 
     renderResults: /* istanbul ignore next */ function(value, results) {
@@ -430,9 +435,23 @@ var Search = {
                         break;
                 }
 
-                list += this.fromUtf8('<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div class="m-label m-flat ' + color + '">' + type + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '') + '<div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '</div></a></li>');
+                /* Labels + */
+                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div class="m-label m-flat ' + color + '">' + type + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
+
+                /* Render the alias (cut off from the right) */
+                if(results[i].alias) {
+                    list += '<div class="m-dox-search-alias"><span class="m-text m-dim">' + this.escape(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '<span class="m-text m-dim">: ' + this.escape(results[i].alias) + '</span>';
+
+                /* Render the normal thing (cut off from the left, have to
+                   escape for RTL) */
+                } else {
+                    list += '<div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength));
+                }
+
+                /* The closing */
+                list += '</div></a></li>';
             }
-            document.getElementById('search-results').innerHTML = list;
+            document.getElementById('search-results').innerHTML = this.fromUtf8(list);
             document.getElementById('search-current').scrollIntoView(true);
 
         } else {
