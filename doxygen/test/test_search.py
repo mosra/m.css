@@ -376,7 +376,7 @@ class Search(IntegrationTestCase):
         #print(search_data_pretty)
         self.assertEqual(len(serialized), 4572)
         self.assertEqual(search_data_pretty, """
-36 symbols
+52 symbols
 deprecated_macro [0]
 ||        |     ($
 ||        |      ) [1]
