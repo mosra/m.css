@@ -881,9 +881,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             id = i.attrib['id']
             match = xref_id_rx.match(id)
             file = match.group(1)
-            if file.startswith(('deprecated', 'bug')):
+            if file.startswith('deprecated'):
                 color = 'm-danger'
                 out.is_deprecated = True
+            elif file.startswith('bug'):
+                color = 'm-danger'
             elif file.startswith('todo'):
                 color = 'm-dim'
             else:
