@@ -552,7 +552,11 @@ if(typeof document !== 'undefined') {
             /* Go to result */
             } else if(event.key == 'Enter') {
                 document.getElementById('search-current').firstElementChild.click();
-                return false; /* so the keypress doesn't affect input cursor */
+
+                /* We might be staying on the same page, so restore scrollbar,
+                   and prevent page layout jumps */
+                document.body.style.overflow = 'auto';
+                document.body.style.paddingRight = '0';
             }
 
         /* Search hidden */
