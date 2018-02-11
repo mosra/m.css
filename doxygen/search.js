@@ -489,8 +489,8 @@ function showSearch() {
 
 /* istanbul ignore next */
 function hideSearch() {
-    window.location.hash = '#!';
-    window.history.pushState('', '', window.location.pathname);
+    /* Go back to the previous state (that removes the #search hash) */
+    window.history.back();
 
     /* Restore scrollbar, prevent page layout jumps */
     document.body.style.overflow = 'auto';
