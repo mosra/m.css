@@ -2606,7 +2606,13 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_PAGE_FINE_PRINT': ['[default]'],
         'M_SEARCH_DISABLED': ['NO'],
         'M_SEARCH_DOWNLOAD_BINARY': ['NO'],
-        'M_SEARCH_HELP': ['Search for symbols, headers, pages or example source files. You can omit any prefix from the symbol or file path.'],
+        'M_SEARCH_HELP': [
+"""Search for symbols, directories, files, pages or modules. You can omit any
+prefix from the symbol or file path; adding a <code>:</code> or <code>/</code>
+suffix lists all members of given symbol or directory. Navigate through the
+list using <span class="m-label m-dim">&darr;</span> and
+<span class="m-label m-dim">&uarr;</span>, press
+<span class="m-label m-dim">Enter</span> to go."""],
         'M_SEARCH_EXTERNAL_URL': ['']
     }
 

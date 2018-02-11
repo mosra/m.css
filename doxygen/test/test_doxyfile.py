@@ -51,8 +51,13 @@ class Doxyfile(unittest.TestCase):
             'M_SEARCH_DISABLED': False,
             'M_SEARCH_DOWNLOAD_BINARY': False,
             'M_SEARCH_EXTERNAL_URL': '',
-            'M_SEARCH_HELP': 'Search for symbols, headers, pages or example source files. '
-                             'You can omit any prefix from the symbol or file path.',
+            'M_SEARCH_HELP':
+"""Search for symbols, directories, files, pages or modules. You can omit any
+prefix from the symbol or file path; adding a <code>:</code> or <code>/</code>
+suffix lists all members of given symbol or directory. Navigate through the
+list using <span class="m-label m-dim">&darr;</span> and
+<span class="m-label m-dim">&uarr;</span>, press
+<span class="m-label m-dim">Enter</span> to go.""",
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
