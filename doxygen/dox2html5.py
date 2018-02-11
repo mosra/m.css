@@ -403,14 +403,14 @@ def parse_ref(state: State, element: ET.Element) -> str:
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
-def parse_id(state: State, element: ET.Element) -> Tuple[str, str]:
+def parse_id(element: ET.Element) -> Tuple[str, str]:
     id = element.attrib['id']
     i = id.rindex('_1')
     base_url = id[:i] + '.html'
     return base_url, id[i+2:]
 
 def extract_id_hash(state: State, element: ET.Element) -> str:
-    base_url, id = parse_id(state, element)
+    base_url, id = parse_id(element)
     assert base_url == state.current_url
     return id
 
@@ -1329,7 +1329,7 @@ def parse_enum(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'enum'
 
     enum = Empty()
-    enum.base_url, enum.id = parse_id(state, element)
+    enum.base_url, enum.id = parse_id(element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
@@ -1345,8 +1345,9 @@ def parse_enum(state: State, element: ET.Element):
     enumvalue: ET.Element
     for enumvalue in element.findall('enumvalue'):
         value = Empty()
-        # The base_url might be different, but should be the same as enum.base_url
-        value_base_url, value.id = parse_id(state, enumvalue)
+        # The base_url might be different than state.current_url, but should be
+        # the same as enum.base_url
+        value_base_url, value.id = parse_id(enumvalue)
         assert value_base_url == enum.base_url
         value.name = enumvalue.find('name').text
         # There can be an implicit initializer for enum value
@@ -1422,7 +1423,7 @@ def parse_typedef(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'typedef'
 
     typedef = Empty()
-    typedef.base_url, typedef.id = parse_id(state, element)
+    typedef.base_url, typedef.id = parse_id(element)
     typedef.is_using = element.findtext('definition', '').startswith('using')
     typedef.type = parse_type(state, element.find('type'))
     typedef.args = parse_type(state, element.find('argsstring'))
@@ -1450,7 +1451,7 @@ def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'function'
 
     func = Empty()
-    func.base_url, func.id = parse_id(state, element)
+    func.base_url, func.id = parse_id(element)
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
@@ -1557,7 +1558,7 @@ def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
 
     var = Empty()
-    var.base_url, var.id = parse_id(state, element)
+    var.base_url, var.id = parse_id(element)
     var.type = parse_type(state, element.find('type'))
     if var.type.startswith('constexpr'):
         var.type = var.type[10:]
