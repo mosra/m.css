@@ -57,11 +57,11 @@ constexpr int Variable = 5;
 typedef int Typedef;
 
 /**
- * @brief An enum
- *
- * @m_keywords{GL_ENUM}
- * @see Enum values as keywords should be propagated outside as well:
- *      @m_enum_values_as_keywords
+@brief An enum
+
+@m_keywords{GL_ENUM}
+@see Enum values as keywords should be propagated outside of notes as well:
+    @m_enum_values_as_keywords
  */
 enum class Enum {
     /**
