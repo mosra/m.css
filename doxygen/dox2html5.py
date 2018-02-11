@@ -630,6 +630,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             parsed = parse_desc_internal(state, i)
             assert parsed.section
             assert not parsed.templates and not parsed.params and not parsed.return_value
+            if parsed.search_keywords:
+                out.search_keywords += parsed.search_keywords
 
             # Top-level section has no ID or title
             if not out.section: out.section = ('', '', [])
