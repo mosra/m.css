@@ -851,10 +851,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.parsed += '<aside class="m-note">'
                         logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))
 
-                parsed, search_keywords = parse_desc_keywords(state, i)
+                # Parse the section contents and bubble important stuff up
+                parsed, search_keywords, search_enum_values_as_keywords = parse_desc_keywords(state, i)
                 out.parsed += parsed
                 if search_keywords:
                     out.search_keywords += search_keywords
+                if search_enum_values_as_keywords:
+                    out.search_enum_values_as_keywords = True
 
                 # There's something after, close it
                 if i.tail and i.tail.strip():
@@ -1257,7 +1260,7 @@ def parse_desc_keywords(state: State, element: ET.Element) -> str:
     parsed = parse_desc_internal(state, element)
     assert not parsed.templates and not parsed.params and not parsed.return_value
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.search_keywords
+    return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords
 
 def parse_enum_desc(state: State, element: ET.Element) -> str:
     # Verify that we didn't ignore any important info by accident

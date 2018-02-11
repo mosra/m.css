@@ -58,7 +58,8 @@ typedef int Typedef;
  * @brief An enum
  *
  * @m_keywords{GL_ENUM}
- * @m_enum_values_as_keywords
+ * @see Enum values as keywords should be propagated outside as well:
+ *      @m_enum_values_as_keywords
  */
 enum class Enum {
     /**
