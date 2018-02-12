@@ -1738,6 +1738,7 @@ def postprocess_state(state: State):
 
     # Assign names and URLs to menu items
     predefined = {
+        'indexpage': (state.doxyfile['PROJECT_NAME'], 'index.html'),
         'pages': ("Pages", 'pages.html'),
         'namespaces': ("Namespaces", 'namespaces.html'),
         'modules': ("Modules", 'modules.html'),
