@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>{% block title %}{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}{% endblock %}</title>
+  <title>{% block title %}{{ PROJECT_NAME }}{% if PROJECT_NUMBER %} {{ PROJECT_NUMBER }}{% endif %}{% endblock %}</title>
   {% for css in HTML_EXTRA_STYLESHEET %}
   <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
   {% endfor %}
@@ -20,7 +20,7 @@
 <header><nav id="navigation">
   <div class="m-container">
     <div class="m-row">
-      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} <span class="m-thin">{{ PROJECT_BRIEF }}</span>{% endif %}</a>
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">{{ PROJECT_NAME }}{% if PROJECT_NUMBER %} {{ PROJECT_NUMBER }}{% endif %}{% if PROJECT_BRIEF %} <span class="m-thin">{{ PROJECT_BRIEF }}</span>{% endif %}</a>
       {% if M_LINKS_NAVBAR1 or M_LINKS_NAVBAR2 or not M_SEARCH_DISABLED %}
       <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
         {% if not M_SEARCH_DISABLED %}
@@ -130,7 +130,7 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         {% if M_PAGE_FINE_PRINT == '[default]' %}
-        <p>{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}</p>
+        <p>{{ PROJECT_NAME }}{% if PROJECT_NUMBER %} {{ PROJECT_NUMBER }}{% endif %}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}</p>
         <p>Copyright (C) 2017 - 2018 <a href="http://github.com/toolbits">HORIGUCHI Junshi</a>. All rights reserved.</p>
         <p>Created by <a href="http://doxygen.org/">Doxygen</a> {{ DOXYGEN_VERSION }} and <a href="http://mcss.mosra.cz/">m.css</a>.</p>
         {% else %}

@@ -2672,6 +2672,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
 
     # String values that we want
     for i in ['PROJECT_NAME',
+              'PROJECT_NUMBER',
               'PROJECT_BRIEF',
               'OUTPUT_DIRECTORY',
               'HTML_OUTPUT',
