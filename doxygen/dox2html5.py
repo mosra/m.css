@@ -908,6 +908,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     if i.attrib['kind'] == 'param':
                         out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
                     elif i.attrib['kind'] == 'retval':
+                        if name.text is None:
+                            name.text = parse_type(state, name)
                         out.return_values += [(name.text, description)]
                     else:
                         assert i.attrib['kind'] == 'templateparam'
