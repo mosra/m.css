@@ -366,8 +366,8 @@ def add_wbr(text: str) -> str:
 
     if '::' in text: # C++ names
         return text.replace('::', '::<wbr />')
-    elif '_' in text: # VERY_LONG_UPPER_CASE macro names
-        return text.replace('_', '_<wbr />')
+    ##elif '_' in text: # VERY_LONG_UPPER_CASE macro names
+        ##return text.replace('_', '_<wbr />')
 
     # These characters are quite common, so at least check that there is no
     # space (which may hint that the text is actually some human language):
@@ -1350,8 +1350,9 @@ def parse_enum(state: State, element: ET.Element):
         value.name = enumvalue.find('name').text
         # There can be an implicit initializer for enum value
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
-        if ''.join(enumvalue.find('briefdescription').itertext()).strip():
-            logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
+        ##if ''.join(enumvalue.find('briefdescription').itertext()).strip():
+            ##logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
+        value.brief = parse_desc(state, enumvalue.find('briefdescription'))
         value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
         if value.description:
             enum.has_value_details = True
