@@ -1347,26 +1347,28 @@ def parse_enum(state: State, element: ET.Element):
         # The base_url might be different, but should be the same as enum.base_url
         value_base_url, value.id = parse_id(state, enumvalue)
         assert value_base_url == enum.base_url
-        value.name = enumvalue.find('name').text
-        # There can be an implicit initializer for enum value
-        value.initializer = html.escape(enumvalue.findtext('initializer', ''))
-        ##if ''.join(enumvalue.find('briefdescription').itertext()).strip():
-            ##logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
-        value.brief = parse_desc(state, enumvalue.find('briefdescription'))
-        value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
-        if value.brief or value.description:
-            enum.has_value_details = True
-            if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
-                result = Empty()
-                result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
-                result.url = enum.base_url + '#' + value.id
-                result.prefix = state.current_prefix + [enum.name]
-                result.name = value.name
-                result.keywords = value_search_keywords
-                if search_enum_values_as_keywords and value.initializer.startswith('='):
-                    result.keywords += [(value.initializer[1:].lstrip(), '', 0)]
-                state.search += [result]
-        enum.values += [value]
+        # The value.id should not be same as enum.id, but excluded values have same id as enum.id
+        if value.id != enum.id:
+            value.name = enumvalue.find('name').text
+            # There can be an implicit initializer for enum value
+            value.initializer = html.escape(enumvalue.findtext('initializer', ''))
+            ##if ''.join(enumvalue.find('briefdescription').itertext()).strip():
+                ##logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
+            value.brief = parse_desc(state, enumvalue.find('briefdescription'))
+            value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
+            if value.brief or value.description:
+                enum.has_value_details = True
+                if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+                    result = Empty()
+                    result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
+                    result.url = enum.base_url + '#' + value.id
+                    result.prefix = state.current_prefix + [enum.name]
+                    result.name = value.name
+                    result.keywords = value_search_keywords
+                    if search_enum_values_as_keywords and value.initializer.startswith('='):
+                        result.keywords += [(value.initializer[1:].lstrip(), '', 0)]
+                    state.search += [result]
+            enum.values += [value]
 
     enum.has_details = enum.base_url == state.current_url and (enum.description or enum.has_value_details)
     if enum.brief or enum.has_details or enum.has_value_details:
