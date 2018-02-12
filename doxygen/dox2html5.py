@@ -1354,7 +1354,7 @@ def parse_enum(state: State, element: ET.Element):
             ##logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
         value.brief = parse_desc(state, enumvalue.find('briefdescription'))
         value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
-        if value.description:
+        if value.brief or value.description:
             enum.has_value_details = True
             if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
