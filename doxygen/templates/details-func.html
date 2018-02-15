@@ -18,9 +18,6 @@
             {% if func.brief %}
             <p>{{ func.brief }}</p>
             {% endif %}
-            {% if func.description %}
-{{ func.description }}
-            {% endif %}
             {% if func.has_template_details or func.has_param_details or func.return_value or func.return_values %}
             <table class="m-table m-fullwidth m-flat">
               {% if func.has_template_details %}
@@ -43,7 +40,7 @@
               <tbody>
                 {% for param in func.params|selectattr('name') %}
                 <tr>
-                  <td{% if loop.index == 1 and not func.has_template_details %} style="width: 1%"{% endif %}>{{ param.name }}{% if param.direction == 'in' %}&nbsp;<span class="m-label m-flat m-success">in</span>{% elif param.direction == 'out' %}&nbsp;<span class="m-label m-flat m-warning">out</span>{% elif param.direction == 'inout' %}&nbsp;<span class="m-label m-flat m-danger">in/out</span>{% endif %}</td>
+                  <td{% if loop.index == 1 and not func.has_template_details %} style="width: 1%"{% endif %}>{{ param.name }}{% if param.direction == 'in' %}&nbsp;<span class="m-label m-flat m-info">in</span>{% elif param.direction == 'out' %}&nbsp;<span class="m-label m-flat m-warning">out</span>{% elif param.direction == 'inout' %}&nbsp;<span class="m-label m-flat m-danger">in/out</span>{% endif %}</td>
                   <td>{{ param.description }}</td>
                 </tr>
                 {% endfor %}
@@ -72,5 +69,8 @@
               </tbody>
               {% endif %}
             </table>
+            {% endif %}
+            {% if func.description %}
+{{ func.description }}
             {% endif %}
           </div></section>
