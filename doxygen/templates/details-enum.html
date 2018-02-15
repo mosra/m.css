@@ -24,7 +24,7 @@
                 <tr>
                   <td><a href="#{{ value.id }}" class="m-dox-self" name="{{ value.id }}">{{ value.name }}</a></td>
                   <td>
-{% if value.description %}{{ value.description }}{% else %}{{ value.brief }}{% endif %}
+{{ value.description }}
                   </td>
                 </tr>
                 {% endfor %}
