@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>{% block title %}{{ PROJECT_NAME }}{% if PROJECT_NUMBER %} {{ PROJECT_NUMBER }}{% endif %}{% endblock %}</title>
+  <title>{% block title %}{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}{% endblock %}</title>
   {% for css in HTML_EXTRA_STYLESHEET %}
   <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
   {% endfor %}
@@ -130,7 +130,7 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         {% if M_PAGE_FINE_PRINT == '[default]' %}
-        <p>{{ PROJECT_NAME }}{% if PROJECT_NUMBER %} {{ PROJECT_NUMBER }}{% endif %}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}</p>
+        <p>{{ PROJECT_NAME }}{% if PROJECT_BRIEF %} {{ PROJECT_BRIEF }}{% endif %}</p>
         <p>Copyright (C) 2017 - 2018 <a href="http://github.com/toolbits">HORIGUCHI Junshi</a>. All rights reserved.</p>
         <p>Created by <a href="http://doxygen.org/">Doxygen</a> {{ DOXYGEN_VERSION }} and <a href="http://mcss.mosra.cz/">m.css</a>.</p>
         {% else %}
