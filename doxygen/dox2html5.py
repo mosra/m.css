@@ -1539,7 +1539,7 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.base_url == state.current_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values)
+    func.has_details = func.base_url == state.current_url and (func.brief or func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values)
     if func.brief or func.has_details:
         # Avoid duplicates in search
         if func.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
