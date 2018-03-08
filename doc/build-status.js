@@ -13,11 +13,11 @@ if(location.search) {
 function timeDiff(before, now) {
     var diff = now.getTime() - before.getTime();
 
-    /* Try days first. If less than two days, try hours. If less than two
-       hours, try minutes. If less than a minute, say "now". */
-    if(diff/(24*60*60*1000) > 2)
+    /* Try days first. If less than a day, try hours. If less than an hour, try
+       minutes. If less than a minute, say "now". */
+    if(diff/(24*60*60*1000) > 1)
         return Math.round(diff/(24*60*60*1000)) + "d ago";
-    else if(diff/(60*60*1000) > 2)
+    else if(diff/(60*60*1000) > 1)
         return Math.round(diff/(60*60*1000)) + "h ago";
     else if(diff/(60*1000) > 1)
         return Math.round(diff/(60*1000)) + "m ago";
