@@ -10,12 +10,9 @@ Build Status
             text-align: center;
             vertical-align: middle;
           }
-          table.build-status td.m-success,
-          table.build-status td.m-warning,
-          table.build-status td.m-danger,
-          table.build-status td.m-info,
-          table.build-status td.m-dim {
+          table.build-status td {
             padding: 0;
+            min-width: 5rem;
           }
           table.build-status a {
             display: block;
@@ -57,9 +54,9 @@ Show builds for:
               <tbody>
                 <tr>
                   <th class="m-text-right">Pelican theme</th>
-                  <td rowspan="2" id="mcss-py34"></td>
-                  <td rowspan="2" id="mcss-py35"></td>
-                  <td rowspan="3" id="mcss-py36"></td>
+                  <td rowspan="2" id="mcss-py34"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
+                  <td rowspan="2" id="mcss-py35"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
+                  <td rowspan="3" id="mcss-py36"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
                 </tr>
                 <tr>
                   <th class="m-text-right">Pelican plugins</th>
