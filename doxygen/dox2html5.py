@@ -340,7 +340,7 @@ def serialize_search_data(trie: Trie, map: ResultMap, symbol_count, merge_subtre
     # magic header, version, symbol count, offset of result map
     return search_data_header_struct.pack(b'MCS', 0, symbol_count, len(serialized_trie) + 10) + serialized_trie + serialized_map
 
-xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+)$""")
+xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+|@)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
 slugify_hyphens_rx = re.compile(r"""[-\s]+""")
 
