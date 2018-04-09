@@ -1070,6 +1070,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                        # Pygments knows only .vert, .frag, .geo
                        ('.glsl', 'glsl'),
                        ('.conf', 'ini'),
+                       ('.xml-jinja', 'xml+jinja'),
+                       ('.html-jinja', 'html+jinja'),
+                       ('.jinja', 'jinja'),
                        ('.ansi', ansilexer.AnsiLexer)]
             for key, v in mapping:
                 if not filename.endswith(key): continue

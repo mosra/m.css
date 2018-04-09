@@ -561,6 +561,12 @@ Filename suffix     Detected language
 ``.ansi``           `Colored terminal output <{filename}/css/components.rst#colored-terminal-output>`_.
                     Use ``.shell-session`` pseudo-extension for simple
                     uncolored terminal output.
+``.xml-jinja``      Jinja templates in XML markup (these don't have any
+                    well-known extension otherwise)
+``.html-jinja``     Jinja templates in HTML markup (these don't have any
+                    well-known extension otherwise)
+``.jinja``          Jinja templates (these don't have any
+                    well-known extension otherwise)
 =================== ===========================================================
 
 The theme has experimental support for inline code highlighting. Inline code is
