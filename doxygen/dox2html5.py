@@ -1134,7 +1134,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # to 12pt font, scaled by 125% as set above in the config.
                 attribs = ' class="m-math{}" style="vertical-align: -{:.1f}pt;"'.format(
                     ' ' + add_inline_css_class if add_inline_css_class else '',
-                    rendered['depth']*12*1.25)
+                    (rendered['depth'] or 0.0)*12*1.25)
                 out.parsed += m.math._patch(i.text, rendered, attribs)
 
         # Inline elements
