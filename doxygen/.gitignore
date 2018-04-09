@@ -1,4 +1,6 @@
 test/*/html/
 test/*/xml/
+test/layout_generated_doxyfile/Doxyfile
+!test/layout_generated_doxyfile/xml/
 test/node_modules/
 coverage/

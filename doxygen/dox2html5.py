@@ -27,6 +27,7 @@
 import xml.etree.ElementTree as ET
 import argparse
 import base64
+import copy
 import sys
 import re
 import html
@@ -2587,11 +2588,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     variable_continuation_re = re.compile(r"""^\s*(?P<key>[A-Z_]+)\s*\+=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
     continuation_re = re.compile(r"""^\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
-    # Defaults so we don't fail with minimal Doxyfiles and also that the
-    # user-provided Doxygen can append to them. They are later converted to
-    # string or kept as a list based on type, so all have to be a list of
-    # strings now.
-    if not config: config = {
+    default_config = {
         'PROJECT_NAME': ['My Project'],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
@@ -2620,6 +2617,12 @@ list using <span class="m-label m-dim">&darr;</span> and
 <span class="m-label m-dim">Enter</span> to go."""],
         'M_SEARCH_EXTERNAL_URL': ['']
     }
+
+    # Defaults so we don't fail with minimal Doxyfiles and also that the
+    # user-provided Doxygen can append to them. They are later converted to
+    # string or kept as a list based on type, so all have to be a list of
+    # strings now.
+    if not config: config = copy.deepcopy(default_config)
 
     def parse_value(var):
         if var.group('quote') == '"':
@@ -2685,6 +2688,14 @@ list using <span class="m-label m-dim">&darr;</span> and
                 continue # pragma: no cover
 
             logging.warning("{}: unmatchable line {}".format(doxyfile, line)) # pragma: no cover
+
+    # Some values are set to empty in the default-generated Doxyfile but they
+    # shouldn't be empty. Revert them to our defaults.
+    # TODO: this may behave strange in corner cases where multiple @INCLUDEd
+    # files set or append to the same thing
+    for i in ['HTML_EXTRA_STYLESHEET']:
+        if i in config and not config[i]:
+            config[i] = default_config[i]
 
     # String values that we want
     for i in ['PROJECT_NAME',
