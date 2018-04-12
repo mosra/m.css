@@ -367,8 +367,8 @@ def add_wbr(text: str) -> str:
 
     if '::' in text: # C++ names
         return text.replace('::', '::<wbr />')
-    elif '_' in text: # VERY_LONG_UPPER_CASE macro names
-        return text.replace('_', '_<wbr />')
+    ##elif '_' in text: # VERY_LONG_UPPER_CASE macro names
+        ##return text.replace('_', '_<wbr />')
 
     # These characters are quite common, so at least check that there is no
     # space (which may hint that the text is actually some human language):
@@ -916,6 +916,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     if i.attrib['kind'] == 'param':
                         out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
                     elif i.attrib['kind'] == 'retval':
+                        if name.text is None:
+                            name.text = parse_type(state, name)
                         out.return_values += [(name.text, description)]
                     else:
                         assert i.attrib['kind'] == 'templateparam'
@@ -1357,25 +1359,28 @@ def parse_enum(state: State, element: ET.Element):
         # the same as enum.base_url
         value_base_url, value.id = parse_id(enumvalue)
         assert value_base_url == enum.base_url
-        value.name = enumvalue.find('name').text
-        # There can be an implicit initializer for enum value
-        value.initializer = html.escape(enumvalue.findtext('initializer', ''))
-        if ''.join(enumvalue.find('briefdescription').itertext()).strip():
-            logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
-        value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
-        if value.description:
-            enum.has_value_details = True
-            if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
-                result = Empty()
-                result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
-                result.url = enum.base_url + '#' + value.id
-                result.prefix = state.current_prefix + [enum.name]
-                result.name = value.name
-                result.keywords = value_search_keywords
-                if search_enum_values_as_keywords and value.initializer.startswith('='):
-                    result.keywords += [(value.initializer[1:].lstrip(), '', 0)]
-                state.search += [result]
-        enum.values += [value]
+        # The value.id should not be same as enum.id, but excluded values have same id as enum.id
+        if value.id != enum.id:
+            value.name = enumvalue.find('name').text
+            # There can be an implicit initializer for enum value
+            value.initializer = html.escape(enumvalue.findtext('initializer', ''))
+            ##if ''.join(enumvalue.find('briefdescription').itertext()).strip():
+                ##logging.warning("{}: ignoring brief description of enum value {}::{}".format(state.current, enum.name, value.name))
+            value.brief = parse_desc(state, enumvalue.find('briefdescription'))
+            value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
+            if value.brief or value.description:
+                enum.has_value_details = True
+                if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+                    result = Empty()
+                    result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
+                    result.url = enum.base_url + '#' + value.id
+                    result.prefix = state.current_prefix + [enum.name]
+                    result.name = value.name
+                    result.keywords = value_search_keywords
+                    if search_enum_values_as_keywords and value.initializer.startswith('='):
+                        result.keywords += [(value.initializer[1:].lstrip(), '', 0)]
+                    state.search += [result]
+            enum.values += [value]
 
     enum.has_details = enum.base_url == state.current_url and (enum.description or enum.has_value_details)
     if enum.brief or enum.has_details or enum.has_value_details:
@@ -1546,7 +1551,7 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.base_url == state.current_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values)
+    func.has_details = func.base_url == state.current_url and (func.brief or func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values)
     if func.brief or func.has_details:
         # Avoid duplicates in search
         if func.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
@@ -1745,6 +1750,7 @@ def postprocess_state(state: State):
 
     # Assign names and URLs to menu items
     predefined = {
+        'indexpage': ("Overview", 'index.html'),
         'pages': ("Pages", 'pages.html'),
         'namespaces': ("Namespaces", 'namespaces.html'),
         'modules': ("Modules", 'modules.html'),
@@ -2699,6 +2705,7 @@ list using <span class="m-label m-dim">&darr;</span> and
 
     # String values that we want
     for i in ['PROJECT_NAME',
+              'PROJECT_NUMBER',
               'PROJECT_BRIEF',
               'OUTPUT_DIRECTORY',
               'HTML_OUTPUT',
