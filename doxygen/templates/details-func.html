@@ -18,7 +18,7 @@
             {% if func.brief %}
             <p>{{ func.brief }}</p>
             {% endif %}
-            {% if func.has_template_details or func.has_param_details or func.return_value or func.return_values %}
+            {% if func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions %}
             <table class="m-table m-fullwidth m-flat">
               {% if func.has_template_details %}
               <thead>
@@ -47,12 +47,12 @@
               </tbody>
               {% endif %}
               {% if func.return_value %}
-              {{ '<thead>' if func.return_values else '<tfoot>' }}
+              {{ '<thead>' if func.return_values or func.exceptions else '<tfoot>' }}
                 <tr>
                   <th{% if not func.has_template_details and not func.has_param_details %} style="width: 1%"{% endif %}>Returns</th>
                   <td>{{ func.return_value }}</td>
                 </tr>
-              {{ '</thead>' if func.return_values else '</tfoot>' }}
+              {{ '</thead>' if func.return_values or func.exceptions else '</tfoot>' }}
               {% elif func.return_values %}
               <thead>
                 <tr><th colspan="2">Returns</th></tr>
@@ -63,6 +63,19 @@
                 {% for value, description in func.return_values %}
                 <tr>
                   <td{% if loop.index == 1 and not func.has_template_details and not func.has_param_details and not func.return_value %} style="width: 1%"{% endif %}>{{ value }}</td>
+                  <td>{{ description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
+              {% if func.exceptions %}
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                {% for exception, description in func.exceptions %}
+                <tr>
+                  <td{% if loop.index == 1 and not func.has_template_details and not func.has_param_details and not func.return_value and not func.return_values %} style="width: 1%"{% endif %}>{{ exception }}</td>
                   <td>{{ description }}</td>
                 </tr>
                 {% endfor %}

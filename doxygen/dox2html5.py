@@ -450,6 +450,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.params = {}
     out.return_value = None
     out.return_values = []
+    out.exceptions = []
     out.add_css_class = None
     out.footer_navigation = False
     out.example_navigation = None
@@ -508,6 +509,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.return_value = parsed.return_value
         if parsed.return_values:
             out.return_values += parsed.return_values
+        if parsed.exceptions:
+            out.exceptions += parsed.exceptions
 
     i: ET.Element
     for index, i in enumerate(element):
@@ -930,6 +933,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.params[name.text] = (description, name.attrib['direction'] if 'direction' in name.attrib else '')
                     elif i.attrib['kind'] == 'retval':
                         out.return_values += [(name.text, description)]
+                    elif i.attrib['kind'] == 'exception':
+                        out.exceptions += [(name.text, description)]
                     else:
                         assert i.attrib['kind'] == 'templateparam'
                         out.templates[name.text] = description
@@ -1279,7 +1284,7 @@ def parse_desc_keywords(state: State, element: ET.Element) -> str:
 
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element)
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values
+    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
     assert not parsed.section # might be problematic
     return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords
 
@@ -1287,14 +1292,14 @@ def parse_enum_desc(state: State, element: ET.Element) -> str:
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values
+    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.is_deprecated)
 
 def parse_enum_value_desc(state: State, element: ET.Element) -> str:
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values
+    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
@@ -1302,14 +1307,14 @@ def parse_var_desc(state: State, element: ET.Element) -> str:
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values
+    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_toplevel_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element)
-    assert not parsed.return_value and not parsed.return_values
+    assert not parsed.return_value and not parsed.return_values and not parsed.exceptions
     if parsed.params:
         logging.warning("{}: use @tparam instead of @param for documenting class templates, @param is ignored".format(state.current))
     return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.is_deprecated)
@@ -1318,7 +1323,7 @@ def parse_typedef_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.params and not parsed.return_value and not parsed.return_values
+    assert not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated)
 
@@ -1327,13 +1332,13 @@ def parse_func_desc(state: State, element: ET.Element):
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.search_keywords, parsed.is_deprecated)
+    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.exceptions, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_define_desc(state: State, element: ET.Element):
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.templates
+    assert not parsed.templates and not parsed.exceptions
     assert not parsed.return_values # might be problematic?
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated)
@@ -1343,7 +1348,7 @@ def parse_inline_desc(state: State, element: ET.Element) -> str:
 
     # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element, trim=False)
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values
+    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
     assert not parsed.section
     return parsed.parsed
 
@@ -1477,7 +1482,7 @@ def parse_func(state: State, element: ET.Element):
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
-    func.description, templates, params, func.return_value, func.return_values, search_keywords, func.is_deprecated = parse_func_desc(state, element)
+    func.description, templates, params, func.return_value, func.return_values, func.exceptions, search_keywords, func.is_deprecated = parse_func_desc(state, element)
 
     # Extract function signature to prefix, suffix and various flags. Important
     # things affecting caller such as static or const (and rvalue overloads)
@@ -1560,7 +1565,7 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.base_url == state.current_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values)
+    func.has_details = func.base_url == state.current_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions)
     if func.brief or func.has_details:
         # Avoid duplicates in search
         if func.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:

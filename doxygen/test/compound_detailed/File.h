@@ -130,6 +130,12 @@ int justReturn();
 int justReturnValues();
 
 /**
+@brief Function
+@exception std::bad_exception With just exception docs should still have detailed section
+*/
+int justExceptions();
+
+/**
 @brief A function with scattered docs
 
 @param a    First parameter docs
@@ -153,6 +159,9 @@ Yes?
  - extract them out of a list
 @retval 1337    1337 h4xx0r?!
 @retval 42      The answer. To everything
+
+@exception std::bad_function_call if you call the function bad
+@exception std::future_error if you are from the future
 */
 template<class A, class B> int bar(int a, int b);
 
