@@ -149,6 +149,8 @@ That goes also for the return values.
 
 Yes?
 
+ - We also need to
+ - extract them out of a list
 @retval 1337    1337 h4xx0r?!
 @retval 42      The answer. To everything
 */

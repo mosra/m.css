@@ -492,6 +492,23 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     # A CSS class to be added inline (not propagated outside of the paragraph)
     add_inline_css_class = None
 
+    # Also, to make things even funnier, parameter and return value description
+    # come from inside of some paragraph and can be nested also inside lists
+    # and whatnot. This bubbles them up. Unfortunately they can be scattered
+    # around, so also merging them together.
+    def merge_parsed_subsections(parsed):
+        if parsed.templates:
+            out.templates.update(parsed.templates)
+        if parsed.params:
+            out.params.update(parsed.params)
+        if parsed.return_value:
+            if out.return_value:
+                logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
+            else:
+                out.return_value = parsed.return_value
+        if parsed.return_values:
+            out.return_values += parsed.return_values
+
     i: ET.Element
     for index, i in enumerate(element):
         # State used later
@@ -709,20 +726,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.parsed += parsed.parsed
                 if parsed.write_paragraph_close_tag: out.parsed += '</p>'
 
-            # Also, to make things even funnier, parameter and return value
-            # description come from inside of some paragraph, so bubble them
-            # up. Unfortunately they can be scattered around, so merge them.
-            if parsed.templates:
-                out.templates.update(parsed.templates)
-            if parsed.params:
-                out.params.update(parsed.params)
-            if parsed.return_value:
-                if out.return_value:
-                    logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
-                else:
-                    out.return_value = parsed.return_value
-            if parsed.return_values:
-                out.return_values += parsed.return_values
+            # Paragraphs can have nested parameter / return value / ...
+            # descriptions, merge them to current state
+            merge_parsed_subsections(parsed)
 
             # The same is (of course) with bubbling up the <mcss:class>
             # element. Reset the current value with the value coming from
@@ -755,9 +761,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             tag = 'ul' if i.tag == 'itemizedlist' else 'ol'
             out.parsed += '<{}{}>'.format(tag,
                 ' class="{}"'.format(add_css_class) if add_css_class else '')
+
             for li in i:
                 assert li.tag == 'listitem'
-                out.parsed += '<li>{}</li>'.format(parse_desc(state, li))
+                parsed = parse_desc_internal(state, li)
+                out.parsed += '<li>{}</li>'.format(parsed.parsed)
+
+                # Lists can have nested parameter / return value / ...
+                # descriptions, bubble them up. THIS IS FUCKEN UNBELIEVABLE.
+                merge_parsed_subsections(parsed)
+
             out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'table':
