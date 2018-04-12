@@ -89,7 +89,7 @@
 {% endif %}
         {% if compound.modules %}
         <section id="groups">
-          <h2><a href="#groups">Modules</a></h3>
+          <h2><a href="#groups">Modules</a></h2>
           <dl class="m-dox">
             {% for module in compound.modules %}
 {{ entry_module(module) }}
@@ -99,7 +99,7 @@
         {% endif %}
         {% if compound.dirs %}
         <section id="subdirs">
-          <h2><a href="#subdirs">Directories</a></h3>
+          <h2><a href="#subdirs">Directories</a></h2>
           <dl class="m-dox">
             {% for dir in compound.dirs %}
 {{ entry_dir(dir) }}
@@ -109,7 +109,7 @@
         {% endif %}
         {% if compound.files %}
         <section id="files">
-          <h2><a href="#files">Files</a></h3>
+          <h2><a href="#files">Files</a></h2>
           <dl class="m-dox">
             {% for file in compound.files %}
 {{ entry_file(file) }}
@@ -119,7 +119,7 @@
         {% endif %}
         {% if compound.namespaces %}
         <section id="namespaces">
-          <h2><a href="#namespaces">Namespaces</a></h3>
+          <h2><a href="#namespaces">Namespaces</a></h2>
           <dl class="m-dox">
             {% for namespace in compound.namespaces %}
 {{ entry_namespace(namespace) }}
@@ -129,7 +129,7 @@
         {% endif %}
         {% if compound.classes %}
         <section id="nested-classes">
-          <h2><a href="#nested-classes">Classes</a></h3>
+          <h2><a href="#nested-classes">Classes</a></h2>
           <dl class="m-dox">
             {% for class in compound.classes %}
 {{ entry_class(class) }}
@@ -139,7 +139,7 @@
         {% endif %}
         {% if compound.enums %}
         <section id="enum-members">
-          <h2><a href="#enum-members">Enums</a></h3>
+          <h2><a href="#enum-members">Enums</a></h2>
           <dl class="m-dox">
             {% for enum in compound.enums %}
 {{ entry_enum(enum) }}
@@ -149,7 +149,7 @@
         {% endif %}
         {% if compound.typedefs %}
         <section id="typedef-members">
-          <h2><a href="#typedef-members">Typedefs</a></h3>
+          <h2><a href="#typedef-members">Typedefs</a></h2>
           <dl class="m-dox">
             {% for typedef in compound.typedefs %}
 {{ entry_typedef(typedef) }}
@@ -159,7 +159,7 @@
         {% endif %}
         {% if compound.funcs %}
         <section id="func-members">
-          <h2><a href="#func-members">Functions</a></h3>
+          <h2><a href="#func-members">Functions</a></h2>
           <dl class="m-dox">
             {% for func in compound.funcs %}
 {{ entry_func(func) }}
@@ -169,7 +169,7 @@
         {% endif %}
         {% if compound.vars %}
         <section id="var-members">
-          <h2><a href="#var-members">Variables</a></h3>
+          <h2><a href="#var-members">Variables</a></h2>
           <dl class="m-dox">
             {% for var in compound.vars %}
 {{ entry_var(var) }}
@@ -179,7 +179,7 @@
         {% endif %}
         {% if compound.defines %}
         <section id="define-members">
-          <h2><a href="#define-members">Defines</a></h3>
+          <h2><a href="#define-members">Defines</a></h2>
           <dl class="m-dox">
             {% for define in compound.defines %}
 {{ entry_define(define) }}
