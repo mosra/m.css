@@ -210,6 +210,12 @@ amount of generated content for no added value.
 -   ``@section``, ``@subsection`` etc. commands inside anything else than
     top-level documentation of a class, namespace, file, directory, page or
     module are not supported as the visual layout is not expecting such things
+-   The :ini:`CREATE_SUBDIRS` Doxyfile option is not supported. This option
+    causes Doxygen to scatter the XML files across numerous subdirectories to
+    work around limits of ancient filesystems. Implementing support for this
+    option would be too much effort for too little gain and so m.css simply
+    aborts if it discovers this option being enabled. Set it back to ``NO`` it
+    in your ``Doxyfile-mcss`` override.
 
 `Not yet implemented features`_
 -------------------------------
@@ -908,13 +914,6 @@ positives, this information is not present in the non-verbose output.
 
     DEBUG:root:dir_22305cb0964bbe63c21991dd2265ce48.xml: neither brief nor
     detailed description present, skipping
-
-Besides the above, the output will be mostly empty also if you have the
-:ini:`CREATE_SUBDIRS` Doxyfile option enabled. This option causes Doxygen to
-scatter the XML files across numerous subdirectories to work around limits of
-ancient filesystems. m.css doesn't support it and probably never will, set it
-back to ``NO`` it in your ``Doxyfile-mcss`` override. For easier debugging,
-m.css will warn if it finds this option enabled.
 
 `Output is not styled`_
 -----------------------

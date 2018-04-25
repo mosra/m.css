@@ -2608,7 +2608,6 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     continuation_re = re.compile(r"""^\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
     default_config = {
-        'CREATE_SUBDIRS': ['NO'],
         'PROJECT_NAME': ['My Project'],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
@@ -2752,8 +2751,9 @@ list using <span class="m-label m-dim">&darr;</span> and
         if i in config:
             state.doxyfile[i] = [line for line in config[i] if line]
 
-    if state.doxyfile['CREATE_SUBDIRS']:
-        logging.fatal("{}: CREATE_SUBDIRS is not supported, output will be most probably empty".format(doxyfile))
+    if state.doxyfile.get('CREATE_SUBDIRS', False):
+        logging.fatal("{}: CREATE_SUBDIRS is not supported, sorry. Disable it and try again.".format(doxyfile))
+        raise NotImplementedError
 
 default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
