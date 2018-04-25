@@ -102,6 +102,9 @@ If you would want to use the light theme instead, the configuration is this
     and plugins are prefixed with ``M_``. Configuration variables without
     prefix are builtin Pelican options.
 
+If you see something unexpected or not see something expected, check the
+`Troubleshooting`_ section below.
+
 `Configuration`_
 ================
 
@@ -805,3 +808,14 @@ is valid HTML5 and should be parsable as XML.
 
     This is one of the main goals of this project. Please
     :gh:`report a bug <mosra/m.css/issues/new>` if it's not like that.
+
+`Troubleshooting`_
+==================
+
+`Output is missing styling`_
+----------------------------
+
+If you are on Windows and don't have Git symlinks enabled, empty CSS files
+might get copied. The solution is either to reinstall Git with symlinks enabled
+or manually copy all ``*.css`` files from ``css/`` to
+``pelican-theme/static/``, replacing the broken symlinks present there.
