@@ -2608,7 +2608,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     continuation_re = re.compile(r"""^\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
     default_config = {
-        'GENERATE_SUBDIRS': ['NO'],
+        'CREATE_SUBDIRS': ['NO'],
         'PROJECT_NAME': ['My Project'],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
@@ -2737,7 +2737,7 @@ list using <span class="m-label m-dim">&darr;</span> and
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
 
     # Boolean values that we want
-    for i in ['GENERATE_SUBDIRS',
+    for i in ['CREATE_SUBDIRS',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
               'M_SEARCH_DOWNLOAD_BINARY']:
@@ -2752,8 +2752,8 @@ list using <span class="m-label m-dim">&darr;</span> and
         if i in config:
             state.doxyfile[i] = [line for line in config[i] if line]
 
-    if state.doxyfile['GENERATE_SUBDIRS']:
-        logging.fatal("{}: GENERATE_SUBDIRS is not supported, output will be most probably empty".format(doxyfile))
+    if state.doxyfile['CREATE_SUBDIRS']:
+        logging.fatal("{}: CREATE_SUBDIRS is not supported, output will be most probably empty".format(doxyfile))
 
 default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'

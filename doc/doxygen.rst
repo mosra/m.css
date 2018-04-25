@@ -910,7 +910,7 @@ positives, this information is not present in the non-verbose output.
     detailed description present, skipping
 
 Besides the above, the output will be mostly empty also if you have the
-:ini:`GENERATE_SUBDIRS` Doxyfile option enabled. This option causes Doxygen to
+:ini:`CREATE_SUBDIRS` Doxyfile option enabled. This option causes Doxygen to
 scatter the XML files across numerous subdirectories to work around limits of
 ancient filesystems. m.css doesn't support it and probably never will, set it
 back to ``NO`` it in your ``Doxyfile-mcss`` override. For easier debugging,

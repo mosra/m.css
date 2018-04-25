@@ -37,7 +37,7 @@ class Doxyfile(unittest.TestCase):
         state = State()
         parse_doxyfile(state, 'test/doxyfile/Doxyfile')
         self.assertEqual(state.doxyfile, {
-            'GENERATE_SUBDIRS': False,
+            'CREATE_SUBDIRS': False,
             'HTML_EXTRA_FILES': ['css', 'another.png', 'hello'],
             'HTML_EXTRA_STYLESHEET': ['a.css', 'b.css'],
             'HTML_OUTPUT': 'html',
@@ -70,7 +70,7 @@ list using <span class="m-label m-dim">&darr;</span> and
         state = State()
         parse_doxyfile(state, 'test/doxyfile/Doxyfile-subdirs')
         self.assertEqual(state.doxyfile, {
-            'GENERATE_SUBDIRS': True,
+            'CREATE_SUBDIRS': True,
             'HTML_EXTRA_FILES': [],
             'HTML_EXTRA_STYLESHEET': [
                 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
