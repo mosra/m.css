@@ -50,12 +50,11 @@ A modern, mobile-friendly drop-in replacement for the stock
 Doxygen-produced XML files. Generated filenames and URLs are fully compatible
 with the stock output to avoid broken links once you switch.
 
-.. note-success::
+.. button-success:: http://doc.magnum.graphics
 
-    Because a live example says more than a thousand words, go check out
-    http://doc.magnum.graphics first --- it contains docs for the
-    `Magnum graphics engine <http://magnum.graphics>`_ generated with the
-    latest ever-improving version of this theme.
+    Live demo
+
+    doc.magnum.graphics
 
 .. contents::
     :class: m-block m-default
