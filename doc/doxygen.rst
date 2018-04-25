@@ -446,10 +446,10 @@ the search to a subdomain:
 Brief and detailed description is parsed as-is with the following
 modifications:
 
--   Function parameter documentation, return value documentation and template
-    parameter documentation is extracted out of the text flow to allow for more
-    flexible styling, it's also reordered to match parameter order and warnings
-    are emitted if there are mismatches.
+-   Function parameter documentation, return value documentation, template
+    parameter and exception documentation is extracted out of the text flow to
+    allow for more flexible styling. It's also reordered to match parameter
+    order and warnings are emitted if there are mismatches.
 -   To make text content wrap better on narrow screens, :html:`<wbr/>` tags are
     added after ``::`` and ``_`` in long symbols in link titles and after ``/``
     in URLs.
