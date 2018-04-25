@@ -37,6 +37,7 @@ class Doxyfile(unittest.TestCase):
         state = State()
         parse_doxyfile(state, 'test/doxyfile/Doxyfile')
         self.assertEqual(state.doxyfile, {
+            'GENERATE_SUBDIRS': False,
             'HTML_EXTRA_FILES': ['css', 'another.png', 'hello'],
             'HTML_EXTRA_STYLESHEET': ['a.css', 'b.css'],
             'HTML_OUTPUT': 'html',
@@ -62,5 +63,38 @@ list using <span class="m-label m-dim">&darr;</span> and
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
             'PROJECT_NAME': 'My Pet Project',
+            'XML_OUTPUT': 'xml'
+        })
+
+    def test_subdirs(self):
+        state = State()
+        parse_doxyfile(state, 'test/doxyfile/Doxyfile-subdirs')
+        self.assertEqual(state.doxyfile, {
+            'GENERATE_SUBDIRS': True,
+            'HTML_EXTRA_FILES': [],
+            'HTML_EXTRA_STYLESHEET': [
+                'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
+                '../css/m-dark+doxygen.compiled.css'],
+            'HTML_OUTPUT': 'html',
+            'M_CLASS_TREE_EXPAND_LEVELS': 1,
+            'M_EXPAND_INNER_TYPES': False,
+            'M_FAVICON': '',
+            'M_FILE_TREE_EXPAND_LEVELS': 1,
+            'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
+            'M_LINKS_NAVBAR2': ['annotated', 'files'],
+            'M_PAGE_FINE_PRINT': '[default]',
+            'M_SEARCH_DISABLED': False,
+            'M_SEARCH_DOWNLOAD_BINARY': False,
+            'M_SEARCH_EXTERNAL_URL': '',
+            'M_SEARCH_HELP':
+"""Search for symbols, directories, files, pages or modules. You can omit any
+prefix from the symbol or file path; adding a <code>:</code> or <code>/</code>
+suffix lists all members of given symbol or directory. Navigate through the
+list using <span class="m-label m-dim">&darr;</span> and
+<span class="m-label m-dim">&uarr;</span>, press
+<span class="m-label m-dim">Enter</span> to go.""",
+            'M_THEME_COLOR': '#22272e',
+            'OUTPUT_DIRECTORY': '',
+            'PROJECT_NAME': 'My Project',
             'XML_OUTPUT': 'xml'
         })

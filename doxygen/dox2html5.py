@@ -2608,6 +2608,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     continuation_re = re.compile(r"""^\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
     default_config = {
+        'GENERATE_SUBDIRS': ['NO'],
         'PROJECT_NAME': ['My Project'],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
@@ -2736,7 +2737,8 @@ list using <span class="m-label m-dim">&darr;</span> and
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
 
     # Boolean values that we want
-    for i in ['M_EXPAND_INNER_TYPES',
+    for i in ['GENERATE_SUBDIRS',
+              'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
               'M_SEARCH_DOWNLOAD_BINARY']:
         if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
@@ -2749,6 +2751,9 @@ list using <span class="m-label m-dim">&darr;</span> and
               'M_LINKS_NAVBAR2']:
         if i in config:
             state.doxyfile[i] = [line for line in config[i] if line]
+
+    if state.doxyfile['GENERATE_SUBDIRS']:
+        logging.fatal("{}: GENERATE_SUBDIRS is not supported, output will be most probably empty".format(doxyfile))
 
 default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
