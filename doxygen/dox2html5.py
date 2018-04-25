@@ -1256,10 +1256,33 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     # Brief description always needs to be single paragraph because we're
     # sending it out without enclosing <p>.
     if element.tag == 'briefdescription':
-        assert not has_block_elements and paragraph_count <= 1
-        if paragraph_count == 1:
-            assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
-            out.parsed = out.parsed[3:-4]
+        # JAVADOC_AUTOBRIEF is *bad*
+        if state.doxyfile.get('JAVADOC_AUTOBRIEF', False):
+            # See the contents_brief_heading test for details
+            if has_block_elements:
+                logging.warning("{}: JAVADOC_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of {}".format(state.current, out.parsed))
+                out.parsed = ''
+
+            # See the contents_brief_multiline test for details
+            elif paragraph_count > 1:
+                logging.warning("{}: JAVADOC_AUTOBRIEF produced a multi-line brief description. That's not supported, using just the first paragraph of {}".format(state.current, out.parsed))
+
+                end = out.parsed.find('</p>')
+                assert out.parsed.startswith('<p>') and end != -1
+                out.parsed = out.parsed[3:end]
+
+            # See contents_brief_hr for why I need to check for out.parsed
+            elif paragraph_count == 1 and out.parsed:
+                assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
+                out.parsed = out.parsed[3:-4]
+
+        # Sane behavior otherwise
+        else:
+            assert not has_block_elements and paragraph_count <= 1
+
+            if paragraph_count == 1:
+                assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
+                out.parsed = out.parsed[3:-4]
 
     # Strip superfluous <p> for simple elments (list items, parameter and
     # return value description, table cells), but only if there is just a
@@ -2737,6 +2760,7 @@ list using <span class="m-label m-dim">&darr;</span> and
 
     # Boolean values that we want
     for i in ['CREATE_SUBDIRS',
+              'JAVADOC_AUTOBRIEF',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
               'M_SEARCH_DOWNLOAD_BINARY']:

@@ -142,3 +142,30 @@ class ParseError(BaseTestCase):
 
         # The index file should be generated, no abort
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'index.html')))
+
+# JAVADOC_AUTOBRIEF should be nuked from orbit. Or implemented from scratch,
+# properly.
+
+class AutobriefHr(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'autobrief_hr', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+
+class AutobriefMultiline(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'autobrief_multiline', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+
+class AutobriefHeading(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'autobrief_heading', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
