@@ -60,6 +60,7 @@ Next row        |               | This
 is a table      | *really*      | yes.
 
 <table>
+  <caption>Table *caption*</caption>
   <tr>
     <th>Table</th>
     <th>with</th>

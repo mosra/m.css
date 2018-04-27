@@ -792,31 +792,34 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             row: ET.Element
             for row in i:
-                assert row.tag == 'row'
-                is_header_row = True
-                row_data = ''
-                for entry in row:
-                    assert entry.tag == 'entry'
-                    is_header = entry.attrib['thead'] == 'yes'
-                    is_header_row = is_header_row and is_header
-                    row_data += '<{0}>{1}</{0}>'.format('th' if is_header else 'td', parse_desc(state, entry))
+                if row.tag == 'caption':
+                    out.parsed += '<caption>{}</caption>'.format(parse_inline_desc(state, row))
 
-                # Table head is opened upon encountering first header row
-                # and closed upon encountering first body row (in case it was
-                # ever opened). Encountering header row inside body again will
-                # not do anything special.
-                if is_header_row:
-                    if not thead_written:
-                        out.parsed += '<thead>'
-                        thead_written = True
-                else:
-                    if thead_written and not inside_tbody:
-                        out.parsed += '</thead>'
-                    if not inside_tbody:
-                        out.parsed += '<tbody>'
-                        inside_tbody = True
+                if row.tag == 'row':
+                    is_header_row = True
+                    row_data = ''
+                    for entry in row:
+                        assert entry.tag == 'entry'
+                        is_header = entry.attrib['thead'] == 'yes'
+                        is_header_row = is_header_row and is_header
+                        row_data += '<{0}>{1}</{0}>'.format('th' if is_header else 'td', parse_desc(state, entry))
 
-                out.parsed += '<tr>{}</tr>'.format(row_data)
+                    # Table head is opened upon encountering first header row
+                    # and closed upon encountering first body row (in case it was
+                    # ever opened). Encountering header row inside body again will
+                    # not do anything special.
+                    if is_header_row:
+                        if not thead_written:
+                            out.parsed += '<thead>'
+                            thead_written = True
+                    else:
+                        if thead_written and not inside_tbody:
+                            out.parsed += '</thead>'
+                        if not inside_tbody:
+                            out.parsed += '<tbody>'
+                            inside_tbody = True
+
+                    out.parsed += '<tr>{}</tr>'.format(row_data)
 
             if inside_tbody: out.parsed += '</tbody>'
             out.parsed += '</table>'
