@@ -169,3 +169,11 @@ class AutobriefHeading(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+
+class SectionUnderscoreOne(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'section_underscore_one', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))

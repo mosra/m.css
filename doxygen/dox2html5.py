@@ -411,9 +411,15 @@ def parse_id(element: ET.Element) -> Tuple[str, str]:
     return base_url, id[i+2:]
 
 def extract_id_hash(state: State, element: ET.Element) -> str:
-    base_url, id = parse_id(element)
-    assert base_url == state.current_compound.url
-    return id
+    # Can't use parse_id() here as sections with _1 in it have it verbatim
+    # unescaped and mess up with the rindex(). OTOH, can't use this approach in
+    # parse_id() because for example enums can be present in both file and
+    # namespace documentation, having the base_url either the file one or the
+    # namespace one, depending on what's documented better. Ugh. See the
+    # contents_section_underscore_one test for a verification.
+    id = element.attrib['id']
+    assert id.startswith(state.current_compound.url_base)
+    return id[len(state.current_compound.url_base)+2:]
 
 def fix_type_spacing(type: str) -> str:
     return type.replace('&lt; ', '&lt;').replace(' &gt;', '&gt;').replace(' &amp;', '&amp;').replace(' *', '*')
@@ -1952,7 +1958,8 @@ def parse_xml(state: State, xml: str):
     # is for groups.
     compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text
     # Compound URL is ID, except for index page
-    compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
+    compound.url_base = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id)
+    compound.url = compound.url_base + '.html'
     # Save current compound URL for search data building and ID extraction
     state.current_compound = compound
     compound.has_template_details = False
