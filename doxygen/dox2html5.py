@@ -355,7 +355,7 @@ class State:
         self.images: List[str] = []
         self.current = ''
         self.current_prefix = []
-        self.current_url = ''
+        self.current_compound = None
 
 def slugify(text: str) -> str:
     # Maybe some Unicode normalization would be nice here?
@@ -412,7 +412,7 @@ def parse_id(element: ET.Element) -> Tuple[str, str]:
 
 def extract_id_hash(state: State, element: ET.Element) -> str:
     base_url, id = parse_id(element)
-    assert base_url == state.current_url
+    assert base_url == state.current_compound.url
     return id
 
 def fix_type_spacing(type: str) -> str:
@@ -1395,8 +1395,8 @@ def parse_enum(state: State, element: ET.Element):
     enumvalue: ET.Element
     for enumvalue in element.findall('enumvalue'):
         value = Empty()
-        # The base_url might be different than state.current_url, but should be
-        # the same as enum.base_url
+        # The base_url might be different than state.current_compound.url, but
+        # should be the same as enum.base_url
         value_base_url, value.id = parse_id(enumvalue)
         assert value_base_url == enum.base_url
         value.name = enumvalue.find('name').text
@@ -1407,7 +1407,7 @@ def parse_enum(state: State, element: ET.Element):
         value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
         if value.description:
             enum.has_value_details = True
-            if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+            if enum.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
                 result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
                 result.url = enum.base_url + '#' + value.id
@@ -1419,9 +1419,9 @@ def parse_enum(state: State, element: ET.Element):
                 state.search += [result]
         enum.values += [value]
 
-    enum.has_details = enum.base_url == state.current_url and (enum.description or enum.has_value_details)
+    enum.has_details = enum.base_url == state.current_compound.url and (enum.description or enum.has_value_details)
     if enum.brief or enum.has_details or enum.has_value_details:
-        if enum.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if enum.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.ENUM|(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0))
             result.url = enum.base_url + '#' + enum.id
@@ -1483,10 +1483,10 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.is_protected = element.attrib['prot'] == 'protected'
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
-    typedef.has_details = typedef.base_url == state.current_url and (typedef.description or typedef.has_template_details)
+    typedef.has_details = typedef.base_url == state.current_compound.url and (typedef.description or typedef.has_template_details)
     if typedef.brief or typedef.has_details:
         # Avoid duplicates in search
-        if typedef.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if typedef.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
             result.url = typedef.base_url + '#' + typedef.id
@@ -1588,10 +1588,10 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.base_url == state.current_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions)
+    func.has_details = func.base_url == state.current_compound.url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions)
     if func.brief or func.has_details:
         # Avoid duplicates in search
-        if func.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if func.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.FUNC|(ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0))
             result.url = func.base_url + '#' + func.id
@@ -1622,10 +1622,10 @@ def parse_var(state: State, element: ET.Element):
     var.brief = parse_desc(state, element.find('briefdescription'))
     var.description, search_keywords, var.is_deprecated = parse_var_desc(state, element)
 
-    var.has_details = var.base_url == state.current_url and var.description
+    var.has_details = var.base_url == state.current_compound.url and var.description
     if var.brief or var.has_details:
         # Avoid duplicates in search
-        if var.base_url == state.current_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if var.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.VAR|(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0))
             result.url = var.base_url + '#' + var.id
@@ -1666,7 +1666,7 @@ def parse_define(state: State, element: ET.Element):
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.DEFINE|(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0))
-            result.url = state.current_url + '#' + define.id
+            result.url = state.current_compound.url + '#' + define.id
             result.prefix = []
             result.name = define.name
             result.keywords = search_keywords
@@ -1954,7 +1954,7 @@ def parse_xml(state: State, xml: str):
     # Compound URL is ID, except for index page
     compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
     # Save current compound URL for search data building and ID extraction
-    state.current_url = compound.url
+    state.current_compound = compound
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
