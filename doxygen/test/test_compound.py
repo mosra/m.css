@@ -206,3 +206,16 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
 
         # The file should have just links to detailed docs
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+class FilenameCase(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'filename_case', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+
+        # Verify that all filenames are "converted" to lowercase and the links
+        # work properly as well
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('_u_p_p_e_r_c_a_s_e.html'))
+        self.assertEqual(*self.actual_expected_contents('class_u_p_p_e_r_c_l_a_s_s.html'))

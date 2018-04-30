@@ -1960,8 +1960,10 @@ def parse_xml(state: State, xml: str):
     # Compound name is page filename, so we have to use title there. The same
     # is for groups.
     compound.name = compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text
-    # Compound URL is ID, except for index page
-    compound.url_base = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id)
+    # Compound URL is ID, except for index page, where it is named "indexpage"
+    # and so I have to override it back to "index". Can't use <compoundname>
+    # for pages because that doesn't reflect CASE_SENSE_NAMES. THANKS DOXYGEN.
+    compound.url_base = ('index' if compound.id == 'indexpage' else compound.id)
     compound.url = compound.url_base + '.html'
     # Save current compound URL for search data building and ID extraction
     state.current_compound = compound
