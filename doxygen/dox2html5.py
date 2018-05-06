@@ -51,7 +51,7 @@ from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pelican-plugins'))
 import latex2svg
-import m.math
+import latex2svgextra
 import ansilexer
 
 class Trie:
@@ -1147,7 +1147,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Assume that Doxygen wrapped the formula properly to distinguish
             # between inline, block or special environment
-            rendered = latex2svg.latex2svg('{}'.format(i.text), params=m.math.latex2svg_params)
+            rendered = latex2svg.latex2svg('{}'.format(i.text), params=latex2svgextra.params)
 
             # We should have decided about block/inline above
             assert formula_block is not None
@@ -1155,7 +1155,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 has_block_elements = True
                 out.parsed += '<div class="m-math{}">{}</div>'.format(
                     ' ' + add_css_class if add_css_class else '',
-                    m.math._patch(i.text, rendered, ''))
+                    latex2svgextra.patch(i.text, rendered, ''))
             else:
                 # CSS classes and styling for proper vertical alignment. Depth is relative
                 # to font size, describes how below the line the text is. Scaling it back
@@ -1163,7 +1163,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 attribs = ' class="m-math{}" style="vertical-align: -{:.1f}pt;"'.format(
                     ' ' + add_inline_css_class if add_inline_css_class else '',
                     (rendered['depth'] or 0.0)*12*1.25)
-                out.parsed += m.math._patch(i.text, rendered, attribs)
+                out.parsed += latex2svgextra.patch(i.text, rendered, attribs)
 
         # Inline elements
         elif i.tag == 'linebreak':
@@ -1923,7 +1923,7 @@ def base85encode_search_data(data: bytearray) -> bytearray:
 
 def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas
-    m.math.counter = 0
+    latex2svgextra.counter = 0
 
     state.current = os.path.basename(xml)
 
