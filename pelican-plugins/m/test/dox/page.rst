@@ -8,6 +8,9 @@ m.dox
 -   :dox:`Page link with custom title <corrade-cmake>`
 -   :dox:`Link to index page <corrade>`
 -   :dox:`Link to class documentation section <TestSuite-Tester-command-line>`
+-   :dox:`Link to index page with hash after <corrade#search>`
+-   :dox:`Link to page with hash after <corrade-cmake#search>`
+-   :dox:`Link to class with query and hash after <Utility::Directory?q=hello#search>`
 
 These should produce warnings:
 

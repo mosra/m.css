@@ -29,6 +29,7 @@ from docutils.parsers import rst
 from pelican import signals
 import xml.etree.ElementTree as ET
 import os
+import re
 
 import logging
 
@@ -37,6 +38,20 @@ logger = logging.getLogger(__name__)
 symbol_mapping = {}
 symbol_prefixes = ['']
 tagfile_basenames = []
+
+# Modified from __init__ to add support for queries and hashes
+link_regexp = re.compile(r'(?P<title>.*) <(?P<link>[^?#]+)(?P<hash>[?#].+)?>')
+
+def parse_link(text):
+    link = utils.unescape(text)
+    m = link_regexp.match(link)
+    if m:
+        title, link, hash = m.group('title', 'link', 'hash')
+        if not hash: hash = '' # it's None otherwise
+    else:
+        title, hash = '', ''
+
+    return title, link, hash
 
 def init(pelicanobj):
     global symbol_mapping, symbol_prefixes, tagfile_basenames
@@ -100,7 +115,7 @@ def init(pelicanobj):
                     symbol_mapping[section.text] = (section.attrib.get('title', ''), link + '#' + section.text)
 
 def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
-    title, target = parse_link(text)
+    title, target, hash = parse_link(text)
 
     # Try linking to the whole docs first
     for basename, url in tagfile_basenames:
@@ -110,7 +125,7 @@ def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
                 logger.warning("Link to main page `{}` requires a title".format(target))
                 title = target
 
-            node = nodes.reference(rawtext, title, refuri=url, **options)
+            node = nodes.reference(rawtext, title, refuri=url + hash, **options)
             return [node], []
 
     for prefix in symbol_prefixes:
@@ -125,7 +140,7 @@ def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
                     logger.warning("Doxygen anchor `{}` has no title, using its ID as link title".format(target))
 
                 use_title = target
-            node = nodes.reference(rawtext, use_title, refuri=url, **options)
+            node = nodes.reference(rawtext, use_title, refuri=url + hash, **options)
             return [node], []
 
     # TODO: print file and line

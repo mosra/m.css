@@ -168,7 +168,11 @@ where page/section title is extracted from the tagfile. It's possible to
 specify custom link title using the :rst:`:dox:`link title <link-target>``
 syntax. If a symbol can't be found, a warning is printed to output and link
 target is rendered in monospace font (or, if custom link title is specified,
-just the title is rendered, as normal text).
+just the title is rendered, as normal text). You can append ``#anchor`` to
+``link-target`` to link to anchors that are not present in the tag file (such
+as ``#details`` for the detailed docs or ``#pub-methods`` for jumping straight
+to a list of public member functions), the same works for query parameters
+starting with ``?``.
 
 .. code-figure::
 
@@ -179,12 +183,14 @@ just the title is rendered, as normal text).
         -   Page link: :dox:`building-corrade`
         -   :dox:`Custom link title <testsuite>`
         -   :dox:`Link to documentation index page <corrade>`
+        -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
 
     -   Function link: :dox:`Utility::Directory::mkpath()`
     -   Class link: :dox:`Interconnect::Emitter`
     -   Page link: :dox:`building-corrade`
     -   :dox:`Custom link title <testsuite>`
     -   :dox:`Link to documentation index page <corrade>`
+    -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
 
 `Abbreviations`_
 ================
