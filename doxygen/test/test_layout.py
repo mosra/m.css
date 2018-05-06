@@ -37,6 +37,7 @@ class Layout(BaseTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'm-dark+doxygen.compiled.css')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'search.js')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'favicon-light.png')))
 
 class LayoutGeneratedDoxyfile(BaseTestCase):
     def __init__(self, *args, **kwargs):

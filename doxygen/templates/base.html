@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
   {% endfor %}
   {% if M_FAVICON %}
-  <link rel="icon" href="{{ M_FAVICON[0] }}" type="{{ M_FAVICON[1] }}" />
+  <link rel="icon" href="{{ M_FAVICON[0]|basename_or_url|e }}" type="{{ M_FAVICON[1] }}" />
   {% endif %}
   {% block header_links %}
   {% endblock %}

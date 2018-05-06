@@ -42,7 +42,7 @@ class Doxyfile(unittest.TestCase):
             'HTML_OUTPUT': 'html',
             'M_CLASS_TREE_EXPAND_LEVELS': 1,
             'M_EXPAND_INNER_TYPES': False,
-            'M_FAVICON': '',
+            'M_FAVICON': 'favicon-dark.png',
             'M_FILE_TREE_EXPAND_LEVELS': 1,
             'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
             'M_LINKS_NAVBAR2': ['annotated', 'files'],

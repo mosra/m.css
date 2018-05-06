@@ -2656,7 +2656,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
         'M_EXPAND_INNER_TYPES': ['NO'],
         'M_THEME_COLOR': ['#22272e'],
-        'M_FAVICON': [],
+        'M_FAVICON': ['favicon-dark.png'],
         'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
         'M_LINKS_NAVBAR2': ['annotated', 'files'],
         'M_PAGE_FINE_PRINT': ['[default]'],
@@ -2893,7 +2893,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                 f.write(base85encode_search_data(data))
 
     # Copy all referenced files
-    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):
+    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([state.doxyfile['M_FAVICON'][0]] if state.doxyfile['M_FAVICON'] else []) + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 

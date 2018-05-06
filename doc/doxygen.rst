@@ -265,14 +265,16 @@ Variable                        Description
 :ini:`TAGFILES`                 Used to discover what base URL to prepend to
                                 external references
 :ini:`HTML_EXTRA_STYLESHEET`    List of CSS files to include. Relative paths
-                                are also searched relative to the
-                                ``dox2html5.py`` script. See below for more
+                                are searched relative to the Doxyfile base dir
+                                and to the ``dox2html5.py`` script dir as a
+                                fallback. See `Theme selection`_ for more
                                 information.
 :ini:`HTML_EXTRA_FILES`         List of extra files to copy (for example
                                 additional CSS files that are :css:`@import`\ ed
-                                from the primary one). Relative paths are also
-                                searched relative to the ``dox2html5.py``
-                                script.
+                                from the primary one). Relative paths are
+                                searched relative to the Doxyfile base dir and
+                                to the ``dox2html5.py`` script dir as a
+                                fallback.
 =============================== ===============================================
 
 In addition, the m.css Doxygen theme recognizes the following extra options:
@@ -288,7 +290,11 @@ Variable                            Description
                                     `Theme selection`_ for more information.
 :ini:`M_FAVICON`                    Favicon URL, used to populate
                                     :html:`<link rel="icon" />`. If empty, no
-                                    :html:`<link>` tag is rendered.
+                                    :html:`<link>` tag is rendered. Relative
+                                    paths are searched relative to the Doxyfile
+                                    base dir and to the ``dox2html5.py`` script
+                                    dir as a fallback. See `Theme selection`_
+                                    for more information.
 :ini:`M_LINKS_NAVBAR1`              Left navbar column links. See
                                     `Navbar links`_ for more information.
 :ini:`M_LINKS_NAVBAR2`              Right navbar column links. See
@@ -351,6 +357,7 @@ following configuration:
         https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600 \
         ../css/m-dark+doxygen.compiled.css
     M_THEME_COLOR = #22272e
+    M_FAVICON = favicon-dark.png
 
 If you have a site already using the ``m-dark.compiled.css`` file, there's
 another file called ``m-dark.doxygen.compiled.css``, which contains just the
@@ -376,6 +383,7 @@ place of ``m-light+doxygen.compiled.css``:
         https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600 \
         ../css/m-light+doxygen.compiled.css
     M_THEME_COLOR = #cb4b16
+    M_FAVICON = favicon-light.png
 
 See the `CSS files`_ section below for more information about customizing the
 CSS files.
