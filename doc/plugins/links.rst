@@ -192,6 +192,12 @@ starting with ``?``.
     -   :dox:`Link to documentation index page <corrade>`
     -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
 
+.. note-success::
+
+    If you haven't noticed yet, m.css also provides a
+    `full-featured Doxygen theme <{filename}/doxygen.rst>`_ with first-class
+    search functionality. Check it out!
+
 `Abbreviations`_
 ================
 
