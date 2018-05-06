@@ -32,7 +32,7 @@ Metadata
     .. note-dim::
         :class: m-text-center
 
-        `« Links <{filename}/plugins/links.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_
+        `« Links and other <{filename}/plugins/links.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_
 
 .. role:: html(code)
     :language: html

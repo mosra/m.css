@@ -49,7 +49,8 @@ and restart Pelican. Download the plugins below or
     :gh:`m.dox <mosra/m.css$master/pelican-plugins/m/dox.py>`,
     :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
     :gh:`m.abbr <mosra/m.css$master/pelican-plugins/m/abbr.py>`,
-    :gh:`m.filesize <mosra/m.css$master/pelican-plugins/m/filesize.py>`
+    :gh:`m.filesize <mosra/m.css$master/pelican-plugins/m/filesize.py>`,
+    :gh:`m.alias <mosra/m.css$master/pelican-plugins/m/alias.py>`
 -   :gh:`m.metadata <mosra/m.css$master/pelican-plugins/m/metadata.py>`
 
 Click on the headings below to get to know more. Note that particular plugins
@@ -85,12 +86,13 @@ rendering and syntax highlighting, so they are provided as separate packages
 that you can but don't have to use. With these, math and code snippets can be
 entered directly in your :abbr:`reST <reStructuredText>` sources.
 
-`Links » <{filename}/plugins/links.rst>`_
-=========================================
+`Links and other » <{filename}/plugins/links.rst>`_
+===================================================
 
-The :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.abbr` and :py:`m.fiilesize`
-plugins make it easy for you to link to GitHub projects, issues or PRs, to
-Doxygen documentation and do more useful things.
+The :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.abbr`, :py:`m.fiilesize` and
+:py:`m.alias` plugins make it easy for you to link to GitHub projects, issues
+or PRs, to Doxygen documentation, query file sizes and provide URL aliases to
+preserve link compatibility.
 
 `Metadata » <{filename}/plugins/metadata.rst>`_
 ===============================================

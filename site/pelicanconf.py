@@ -87,7 +87,7 @@ M_LINKS_NAVBAR2 = [('Pelican plugins', 'plugins/', 'plugins', [
                         ('Components', 'plugins/components/', 'plugins/components'),
                         ('Images', 'plugins/images/', 'plugins/images'),
                         ('Math and code', 'plugins/math-and-code/', 'plugins/math-and-code'),
-                        ('Links', 'plugins/links/', 'plugins/links'),
+                        ('Links and other', 'plugins/links/', 'plugins/links'),
                         ('Metadata', 'plugins/metadata/', 'plugins/metadata')]),
                    ('Doxygen theme', 'doxygen/', 'doxygen', []),
                    ('GitHub', 'https://github.com/mosra/m.css', '', [])]
@@ -118,7 +118,7 @@ M_LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
                    ('Components', 'plugins/components/'),
                    ('Images', 'plugins/images/'),
                    ('Math and code', 'plugins/math-and-code/'),
-                   ('Links', 'plugins/links/'),
+                   ('Links and other', 'plugins/links/'),
                    ('Metadata', 'plugins/metadata/')]
 
 M_FINE_PRINT = """

@@ -22,15 +22,15 @@
     DEALINGS IN THE SOFTWARE.
 ..
 
-Links
-#####
+Links and other
+###############
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_
+        `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Metadata » <{filename}/plugins/metadata.rst>`_
 
 .. role:: py(code)
     :language: py
@@ -262,3 +262,44 @@ first before calculating the size.
     :filesize:`{filename}/../css/m-dark.compiled.css` but only
     :filesize-gz:`{filename}/../css/m-dark.compiled.css` when the server
     sends it compressed.
+
+`Aliases`_
+==========
+
+Site content almost never stays on the same place for extended periods of time
+and preserving old links for backwards compatibility is a vital thing for user
+friendliness. This plugin allows you to create a redirect alias URLs for your
+pages and articles.
+
+Download the `m/alias.py <{filename}/plugins.rst>`_ file, put it
+including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+:py:`m.alias` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
+assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+
+.. code:: python
+
+    PLUGINS += ['m.htmlsanity', 'm.alias']
+
+.. note-success::
+
+    This plugin is loosely inspired by :gh:`Nitron/pelican-alias`, © 2013
+    Christopher Williams, licensed under
+    :gh:`MIT <Nitron/pelican-alias$master/LICENSE.txt>`.
+
+Use the :rst:`:alias:` field to specify one or more locations that should
+redirect to your article / page. Each line is treated as one alias, the
+locations have to begin with ``/`` and are relative to the Pelican output
+directory, each of them contains just a :html:`<meta http-equiv="refresh" />`
+that points to a fully-qualified URL of the article or page.
+
+If the alias ends with ``/``, the redirector file is saved into ``index.html``
+in given directory.
+
+.. code:: rst
+
+    My Article
+    ##########
+
+    :alias:
+        /2018/05/06/old-version-of-the-article/
+        /even-older-version-of-the-article.html

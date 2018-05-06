@@ -30,7 +30,7 @@ Math and code
     .. note-dim::
         :class: m-text-center
 
-        `« Images <{filename}/plugins/images.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Links » <{filename}/plugins/links.rst>`_
+        `« Images <{filename}/plugins/images.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Links and other » <{filename}/plugins/links.rst>`_
 
 .. role:: css(code)
     :language: css
