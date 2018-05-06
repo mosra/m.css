@@ -26,7 +26,7 @@ Doxygen theme
 #############
 
 :summary: A modern, mobile-friendly drop-in replacement for the stock Doxygen
-    HTML output, generated from Doxygen-produced XML files
+    HTML output with a first-class search functionality
 
 .. role:: cpp(code)
     :language: cpp
@@ -46,9 +46,10 @@ Doxygen theme
     :language: sh
 
 A modern, mobile-friendly drop-in replacement for the stock
-`Doxygen <http://www.doxygen.org>`_ HTML output, generated from
-Doxygen-produced XML files. Generated filenames and URLs are fully compatible
-with the stock output to avoid broken links once you switch.
+`Doxygen <http://www.doxygen.org>`_ HTML output, with a first-class search
+functionality. Generated from Doxygen-produced XML files, filenames and URLs
+are fully compatible with the stock output to avoid broken links once you
+switch.
 
 .. button-success:: http://doc.magnum.graphics
 
@@ -143,6 +144,22 @@ If you see something unexpected or not see something expected, check the
 -   Math rendered as `embedded SVG <{filename}/css/components.rst#math>`_
     instead of raster images / MathJax
 -   Uses Pygments for better code highlighting
+
+`Search`_
+---------
+
+-   Search anywhere from a page by opening a popup using a hotkey
+-   Lookahead with instant feedback without requiring any server-side backend
+-   Search for symbols using any prefix
+-   Fully controllable by keyboard
+
+.. image:: {filename}/static/opengl-search.png
+
+.. note-success::
+
+    If you want to know more, the search functionality implementation and
+    features are detailed
+    `in this blog post <http://blog.magnum.graphics/meta/implementing-a-fast-doxygen-search/>`_.
 
 `Important differences to stock HTML output`_
 ---------------------------------------------
@@ -412,8 +429,8 @@ This will put links to namespaces Foo, Bar and Utils as a sub-items of a
 top-level *Namespaces* item and links to two subdirectories as sub-items of the
 *Files* item.
 
-`Search`_
----------
+`Search options`_
+-----------------
 
 Symbol search is implemented using JavaScript Typed Arrays and does not need
 any server-side functionality to perform well --- the client automatically
