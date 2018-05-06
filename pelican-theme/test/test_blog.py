@@ -537,3 +537,15 @@ class NewsOnIndex(BlogTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class Draft(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'draft', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'DRAFT_URL': '{slug}.html',
+            'DRAFT_SAVE_AS': '{slug}.html'
+        })
+
+        self.assertEqual(*self.actual_expected_contents('article.html'))
