@@ -2139,7 +2139,7 @@ def parse_xml(state: State, xml: str):
                     class_ = Empty()
                     class_.kind = symbol.kind
                     class_.url = symbol.url
-                    class_.name = symbol.leaf_name if symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
+                    class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
                     class_.is_deprecated = symbol.is_deprecated
@@ -2162,7 +2162,7 @@ def parse_xml(state: State, xml: str):
                     class_ = Empty()
                     class_.kind = symbol.kind
                     class_.url = symbol.url
-                    class_.name = symbol.leaf_name if symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
+                    class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
                     class_.is_deprecated = symbol.is_deprecated

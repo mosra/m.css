@@ -59,3 +59,5 @@ class Derived(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classNamespace_1_1PrivateBase.html'))
         self.assertEqual(*self.actual_expected_contents('classAnother_1_1ProtectedBase.html'))
         self.assertEqual(*self.actual_expected_contents('classNamespace_1_1VirtualBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classBaseOutsideANamespace.html'))
+        self.assertEqual(*self.actual_expected_contents('classDerivedOutsideANamespace.html'))

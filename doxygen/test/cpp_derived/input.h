@@ -41,3 +41,9 @@ namespace Namespace {
 struct UndocumentedDerived: A {};
 
 }
+
+/** @brief A base class outside of a namespace */
+class BaseOutsideANamespace {};
+
+/** @brief A derived class outside of a namespace */
+class DerivedOutsideANamespace: public BaseOutsideANamespace {};
