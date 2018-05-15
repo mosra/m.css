@@ -21,3 +21,13 @@ formula has a custom environment:
 \f}
 
 */
+
+/** @page error Error
+
+This will blow up when rendered and should print a warning to output:
+
+@f[
+    \hat{
+@f]
+
+*/

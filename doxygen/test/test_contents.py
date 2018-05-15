@@ -24,6 +24,7 @@
 
 import os
 import shutil
+import subprocess
 import unittest
 
 from distutils.version import LooseVersion
@@ -110,6 +111,12 @@ class Math(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+    @unittest.skipUnless(shutil.which('latex'),
+                         "Math rendering requires LaTeX installed")
+    def test_latex_error(self):
+        with self.assertRaises(subprocess.CalledProcessError) as context:
+            self.run_dox2html5(wildcard='error.xml')
 
 class Tagfile(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
