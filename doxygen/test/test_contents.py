@@ -29,7 +29,7 @@ import unittest
 
 from distutils.version import LooseVersion
 
-from test import BaseTestCase, IntegrationTestCase, doxygen_version
+from . import BaseTestCase, IntegrationTestCase, doxygen_version
 
 class Typography(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
