@@ -99,6 +99,9 @@ def latex2svg(code, params=default_params, working_directory=None):
         ret = subprocess.run(shlex.split(params['latex_cmd']+' code.tex'),
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              cwd=working_directory)
+        # LaTeX prints errors on stdout instead of stderr (stderr is empty),
+        # so print stdout instead
+        if ret.returncode: print(ret.stdout.decode('utf-8'))
         ret.check_returncode()
     except FileNotFoundError:
         raise RuntimeError('latex not found')
@@ -113,6 +116,7 @@ def latex2svg(code, params=default_params, working_directory=None):
         ret = subprocess.run(shlex.split(params['dvisvgm_cmd']+' code.dvi'),
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                              cwd=working_directory, env=env)
+        if ret.returncode: print(ret.stderr.decode('utf-8'))
         ret.check_returncode()
     except FileNotFoundError:
         raise RuntimeError('dvisvgm not found')
