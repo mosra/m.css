@@ -32,7 +32,7 @@ from types import SimpleNamespace as Empty
 
 from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
 
-from test import IntegrationTestCase
+from . import IntegrationTestCase
 
 def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, show_merged, show_lookahead_barriers, color_map) -> str:
     # Visualize where the trees were merged
