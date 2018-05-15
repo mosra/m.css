@@ -536,6 +536,34 @@ union [58]
 59: glUnion() [alias=58] ->
 """.strip())
 
+class SearchLongSuffixLength(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'long_suffix_length', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(index_pages=[], wildcard='*.xml')
+
+        with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
+            serialized = f.read()
+            search_data_pretty = pretty_print(serialized)[0]
+        #print(search_data_pretty)
+        self.assertEqual(len(serialized), 382)
+        # The parameters get cut off with an ellipsis
+        self.assertEqual(search_data_pretty, """
+2 symbols
+file.h [2]
+|     :$
+|      :averylongfunctionname [0]
+|                            ($
+|                             ) [1]
+averylongfunctionname [0]
+|                    ($
+|                     ) [1]
+0: ::aVeryLongFunctionName(const std::reference_wrapper<const std::vector<std::string>>&, c…) [prefix=2[:12], suffix_length=69, type=FUNC] -> #a1e9a11887275938ef5541070955c9d9c
+1:  [prefix=0[:46], suffix_length=67, type=FUNC] ->
+2: File.h [type=FILE] -> File_8h.html
+""".strip())
+
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help="file to pretty-print")
