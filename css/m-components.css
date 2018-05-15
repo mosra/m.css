@@ -1434,15 +1434,50 @@ div.m-math {
   text-align: center;
 }
 
-/* Colored math block, inline math */
+/* Plots */
+div.m-plot svg {
+  text-align: center;
+}
+div.m-plot .m-background {
+  fill: var(--plot-background-color);
+}
+/* Font sizes are hardcoded in m.plots, change there first! */
+div.m-plot svg .m-label { font-size: 11px; }
+div.m-plot svg .m-title { font-size: 13px; }
+div.m-plot svg .m-label, div.m-plot svg .m-title { fill: var(--color); }
+div.m-plot svg .m-line {
+  stroke: var(--color);
+  stroke-width: 0.8;
+}
+div.m-plot svg .m-error {
+  stroke: var(--plot-error-color);
+  stroke-width: 1.5;
+}
+div.m-plot svg .m-label.m-dim { fill: var(--dim-color); }
+
+/* Colored math block, inline math, plots */
 div.m-math svg, svg.m-math { fill: var(--color); }
-div.m-math.m-default svg, svg.m-math.m-default { fill: var(--default-color); }
-div.m-math.m-primary svg, svg.m-math.m-primary { fill: var(--primary-color); }
-div.m-math.m-success svg, svg.m-math.m-success { fill: var(--success-color); }
-div.m-math.m-warning svg, svg.m-math.m-warning { fill: var(--warning-color); }
-div.m-math.m-danger svg, svg.m-math.m-danger { fill: var(--danger-color); }
-div.m-math.m-info svg, svg.m-math.m-info { fill: var(--info-color); }
-div.m-math.m-dim svg, svg.m-math.m-dim { fill: var(--dim-color); }
+div.m-math.m-default svg, svg.m-math.m-default, div.m-plot svg .m-bar.m-default {
+  fill: var(--default-color);
+}
+div.m-math.m-primary svg, svg.m-math.m-primary, div.m-plot svg .m-bar.m-primary {
+  fill: var(--primary-color);
+}
+div.m-math.m-success svg, svg.m-math.m-success, div.m-plot svg .m-bar.m-success {
+  fill: var(--success-color);
+}
+div.m-math.m-warning svg, svg.m-math.m-warning, div.m-plot svg .m-bar.m-warning {
+  fill: var(--warning-color);
+}
+div.m-math.m-danger svg, svg.m-math.m-danger, div.m-plot svg .m-bar.m-danger {
+  fill: var(--danger-color);
+}
+div.m-math.m-info svg, svg.m-math.m-info, div.m-plot svg .m-bar.m-info {
+  fill: var(--info-color);
+}
+div.m-math.m-dim svg, svg.m-math.m-dim, div.m-plot svg .m-bar.m-dim {
+  fill: var(--dim-color);
+}
 
 /* Spacing after every block element, but not after the last */
 p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,

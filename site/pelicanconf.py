@@ -88,6 +88,7 @@ M_LINKS_NAVBAR2 = [('Pelican plugins', 'plugins/', 'plugins', [
                         ('Images', 'plugins/images/', 'plugins/images'),
                         ('Math and code', 'plugins/math-and-code/', 'plugins/math-and-code'),
                         ('Links and other', 'plugins/links/', 'plugins/links'),
+                        ('Plots', 'plugins/plots/', 'plugins/plots'),
                         ('Metadata', 'plugins/metadata/', 'plugins/metadata')]),
                    ('Doxygen theme', 'doxygen/', 'doxygen', []),
                    ('GitHub', 'https://github.com/mosra/m.css', '', [])]
@@ -118,6 +119,7 @@ M_LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
                    ('Components', 'plugins/components/'),
                    ('Images', 'plugins/images/'),
                    ('Math and code', 'plugins/math-and-code/'),
+                   ('Plots', 'plugins/plots/'),
                    ('Links and other', 'plugins/links/'),
                    ('Metadata', 'plugins/metadata/')]
 
@@ -145,7 +147,8 @@ PLUGINS = ['m.abbr',
            'm.htmlsanity',
            'm.images',
            'm.math',
-           'm.metadata']
+           'm.metadata',
+           'm.plots']
 
 THEME = '../pelican-theme'
 THEME_STATIC_DIR = 'static'

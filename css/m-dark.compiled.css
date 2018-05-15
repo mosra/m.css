@@ -1709,14 +1709,46 @@ div.m-math {
   overflow-y: hidden;
   text-align: center;
 }
+div.m-plot svg {
+  text-align: center;
+}
+div.m-plot .m-background {
+  fill: #34424d;
+}
+div.m-plot svg .m-label { font-size: 11px; }
+div.m-plot svg .m-title { font-size: 13px; }
+div.m-plot svg .m-label, div.m-plot svg .m-title { fill: #dcdcdc; }
+div.m-plot svg .m-line {
+  stroke: #dcdcdc;
+  stroke-width: 0.8;
+}
+div.m-plot svg .m-error {
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+div.m-plot svg .m-label.m-dim { fill: #747474; }
 div.m-math svg, svg.m-math { fill: #dcdcdc; }
-div.m-math.m-default svg, svg.m-math.m-default { fill: #dcdcdc; }
-div.m-math.m-primary svg, svg.m-math.m-primary { fill: #a5c9ea; }
-div.m-math.m-success svg, svg.m-math.m-success { fill: #3bd267; }
-div.m-math.m-warning svg, svg.m-math.m-warning { fill: #c7cf2f; }
-div.m-math.m-danger svg, svg.m-math.m-danger { fill: #cd3431; }
-div.m-math.m-info svg, svg.m-math.m-info { fill: #2f83cc; }
-div.m-math.m-dim svg, svg.m-math.m-dim { fill: #747474; }
+div.m-math.m-default svg, svg.m-math.m-default, div.m-plot svg .m-bar.m-default {
+  fill: #dcdcdc;
+}
+div.m-math.m-primary svg, svg.m-math.m-primary, div.m-plot svg .m-bar.m-primary {
+  fill: #a5c9ea;
+}
+div.m-math.m-success svg, svg.m-math.m-success, div.m-plot svg .m-bar.m-success {
+  fill: #3bd267;
+}
+div.m-math.m-warning svg, svg.m-math.m-warning, div.m-plot svg .m-bar.m-warning {
+  fill: #c7cf2f;
+}
+div.m-math.m-danger svg, svg.m-math.m-danger, div.m-plot svg .m-bar.m-danger {
+  fill: #cd3431;
+}
+div.m-math.m-info svg, svg.m-math.m-info, div.m-plot svg .m-bar.m-info {
+  fill: #2f83cc;
+}
+div.m-math.m-dim svg, svg.m-math.m-dim, div.m-plot svg .m-bar.m-dim {
+  fill: #747474;
+}
 p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,
 hr, article, article > header, article section,
 .m-note, .m-frame, .m-block, div.m-button,

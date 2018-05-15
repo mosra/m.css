@@ -53,14 +53,14 @@ On ArchLinux:
 
 .. code:: sh
 
-    sudo pacman -S texlive-most pelican python-pillow
+    sudo pacman -S texlive-most pelican python-pillow python-matplotlib
     cower -d python-pyphen # Build the python-pyphen package from AUR
 
 On Ubuntu you need these:
 
 .. code:: sh
 
-    sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
+    sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra python3-matplotlib
     pip3 install pelican Pyphen Pillow
 
 Once you have all the dependencies, simply go to the ``site/`` subdirectory and

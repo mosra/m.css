@@ -1064,6 +1064,47 @@ the ``depth`` value returned on stderr can be taken as a base for the
     integrates LaTeX math directly into your :abbr:`reST <reStructuredText>`
     markup for convenient content authoring.
 
+`Plots`_
+========
+
+Wrap a :html:`<svg>` element in a :html:`<div class="m-plot">` to make it
+centered and occupying full width. Mark plot axes background with
+:css:`.m-background`, bars can be styled using :css:`.m-bar` and a
+corresponding `CSS color class <#colors>`_. Mark ticks and various other lines
+with :css:`.m-line`, error bars with :css:`.m-error`. Use
+:html:`<text class="m-label">` for tick and axes labels and
+:html:`<text class="m-title">` for graph title.
+
+.. code-figure::
+
+    .. code:: html
+
+        <div class="m-plot"><svg>
+          <path d="M 68.22875 70.705312 ..." class="m-background"/>
+          <path d="M 68.22875 29.116811 ..." class="m-bar m-warning"/>
+          <path d="M 68.22875 51.121309 ..." class="m-bar m-primary"/>
+          ...
+          <defs><path d="..." id="mba4ce04b6c" class="m-line"/></defs>
+          <use x="68.22875" xlink:href="#mba4ce04b6c" y="37.91861"/>
+          <text class="m-label" style="text-anchor:end;" ...>Cheetah</text>
+          ...
+          <path d="M 428.616723 37.91861 ..." class="m-error"/>
+          ...
+          <text class="m-title" style="text-anchor:middle;" ...>Fastest animals</text>
+        </svg></div>
+
+    .. container:: m-plot
+
+        .. raw:: html
+            :file: components-plot.svg
+
+.. note-success::
+
+    Plot styling is designed to be used with extenal tools, for example Python
+    Matplotlib. If you use Pelican, m.css has a `Plots <{filename}/plugins/plots.rst>`__
+    plugin that allows you to produce plots using :rst:`.. plot::` directives
+    directly in your :abbr:`reST <reStructuredText>` markup.
+
 `Padding`_
 ==========
 

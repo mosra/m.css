@@ -94,6 +94,10 @@
   --navpanel-link-color: #292929;
   --navpanel-link-active-color: #cb4b16;
 
+  /* Plots */
+  --plot-background-color: #fbf0ec;
+  --plot-error-color: #000000;
+
   /* Colored components */
   --default-color: #000000;
   --default-filled-color: #000000;

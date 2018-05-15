@@ -45,6 +45,7 @@ and restart Pelican. Download the plugins below or
 -   :gh:`m.images <mosra/m.css$master/pelican-plugins/m/images.py>`
 -   :gh:`m.math  <mosra/m.css$master/pelican-plugins/m/math.py>` (needs also :gh:`latex2svg <mosra/m.css$master/pelican-plugins/latex2svg.py>`),
     :gh:`m.code <mosra/m.css$master/pelican-plugins/m/code.py>` (needs also :gh:`ansilexer <mosra/m.css$master/pelican-plugins/ansilexer.py>`)
+-   :gh:`m.plots <mosra/m.css$master/pelican-plugins/m/plots.py>`
 -   :gh:`m.gh <mosra/m.css$master/pelican-plugins/m/gh.py>`,
     :gh:`m.dox <mosra/m.css$master/pelican-plugins/m/dox.py>`,
     :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
@@ -85,6 +86,13 @@ The :py:`m.math` and :py:`m.code` plugins use external libraries for math
 rendering and syntax highlighting, so they are provided as separate packages
 that you can but don't have to use. With these, math and code snippets can be
 entered directly in your :abbr:`reST <reStructuredText>` sources.
+
+`Plots » <{filename}/plugins/plots.rst>`_
+===================================================
+
+With :py:`m.plots` you can render various graphs and charts directly from
+values in your :abbr:`reST <reStructuredText>` sources. The result is embedded
+as an inline SVG and can be styled using CSS like everything else.
 
 `Links and other » <{filename}/plugins/links.rst>`_
 ===================================================
