@@ -37,7 +37,6 @@ import io
 
 import pelican.signals
 
-mpl.rcParams['font.family'] = 'Source Sans Pro'
 mpl.rcParams['font.size'] = '11'
 mpl.rcParams['axes.titlesize'] = '13'
 
@@ -101,13 +100,13 @@ _class_mapping = [
     ('<use style="fill:#cafe02;stroke:#cafe02;stroke-width:0.8;"', '<use'),
 
     # Label text on left
-    ('style="fill:#cafe02;font-family:Source Sans Pro;font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label"'),
+    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label"'),
     # Label text on bottom (has extra style params)
-    ('style="fill:#cafe02;font-family:Source Sans Pro;font-size:11px;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
+    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
     # Secondary label text
-    ('style="fill:#cafe0b;font-family:Source Sans Pro;font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
+    ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
     # Title text
-    ('style="fill:#cafe02;font-family:Source Sans Pro;font-size:13px;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
+    ('style="fill:#cafe02;font-family:{font};font-size:13px;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
 
     # Bar colors
     ('style="fill:#cafe03;"', 'class="m-bar m-default"'),
@@ -240,6 +239,14 @@ class Plot(rst.Directive):
 def new_page(content):
     mpl.rcParams['svg.hashsalt'] = 0
 
+def configure(pelicanobj):
+    font = pelicanobj.settings.get('M_PLOTS_FONT', 'Source Sans Pro')
+    for i in range(len(_class_mapping)):
+        src, dst = _class_mapping[i]
+        _class_mapping[i] = (src.format(font=font), dst)
+    mpl.rcParams['font.family'] = font
+
 def register():
+    pelican.signals.initialized.connect(configure)
     pelican.signals.content_object_init.connect(new_page)
     rst.directives.register_directive('plot', Plot)

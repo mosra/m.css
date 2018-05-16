@@ -1,6 +1,15 @@
 m.plots
 #######
 
+Note: the test uses DejaVu Sans instead of Source Sans Pro in order to have
+predictable rendering on the CIs.
+
+.. raw:: html
+
+    <style>
+    div.m-plot svg { font-family: DejaVu Sans; }
+    </style>
+
 .. plot:: A plot with a single color
     :type: barh
     :labels:

@@ -30,7 +30,8 @@ class Plots(PluginTestCase):
 
     def test(self):
         self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.plots']
+            'PLUGINS': ['m.htmlsanity', 'm.plots'],
+            'M_PLOTS_FONT': 'DejaVu Sans'
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))

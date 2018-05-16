@@ -49,9 +49,15 @@ package to your :py:`PLUGINS` in ``pelicanconf.py``.
 .. code:: python
 
     PLUGINS += ['m.plots']
+    M_PLOTS_FONT = 'Source Sans Pro'
 
-In addition you need the `Matplotlib <https://matplotlib.org/>`_ library
-installed. Get it via ``pip`` or your distribution package manager:
+Set :py:`M_PLOTS_FONT` to a font that matches your CSS theme (it's Source Sans
+Pro for `builtin m.css themes <{filename}/css/themes.rst>`_), note that you
+*need to have the font installed* on your system, otherwise it will fall back
+to whatever system font it finds instead (for example DejaVu Sans) and the
+output won't look as expected. In addition you need the
+`Matplotlib <https://matplotlib.org/>`_ library installed. Get it via ``pip``
+or your distribution package manager:
 
 .. code:: sh
 
