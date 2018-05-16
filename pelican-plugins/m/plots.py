@@ -30,6 +30,7 @@ from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 
 import matplotlib as mpl
+mpl.use('Agg') # otherwise it will attempt to use X11
 import matplotlib.pyplot as plt
 import numpy as np
 import io
