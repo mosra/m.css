@@ -214,6 +214,7 @@ class Plot(rst.Directive):
         fig.patch.set_visible(False) # hide the white background
         imgdata = io.StringIO()
         fig.savefig(imgdata, format='svg')
+        plt.close() # otherwise it consumes a lot of memory in autoreload mode
 
         # Patch the rendered output: remove preable and hardcoded size
         imgdata = _patch_src.sub(_patch_dst, imgdata.getvalue())
