@@ -8,6 +8,7 @@ matrix:
       - WITH_THEME=ON
       - WITH_DOXYGEN=OFF
       - WITH_NODE=OFF
+      - TRAVIS_BROKEN_MATPLOTLIB_SEED=YES
       - JOBID=py34
     - language: python
       python: 3.5
@@ -22,6 +23,7 @@ matrix:
       - WITH_THEME=ON
       - WITH_DOXYGEN=ON
       - WITH_NODE=OFF
+      - TRAVIS_BROKEN_MATPLOTLIB_SEED=YES
       - JOBID=py36
     - language: node_js
       node_js: 8
