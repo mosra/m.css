@@ -27,7 +27,7 @@ Test
 
 :save_as: plugins/images/test/index.html
 :breadcrumb: {filename}/plugins.rst Pelican plugins
-             {filename}/plugins/images.rst
+             {filename}/plugins/images.rst Images
 
 `Images, figures`_
 ==================
