@@ -12,5 +12,20 @@
 ### A third-level header
 
 #### A fourth-level header
+
+@section foo-usage Usage
+
+This is usage.
+
+@subsection foo-usage-more More
+
+A subsection.
+
+@subsubsection foo-usage-more-more More.
+
+Mooore.
+
+@param bar A param.
+@return Does not return anything.
 */
-void foo();
+void foo(int bar);

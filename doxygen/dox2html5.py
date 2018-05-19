@@ -656,38 +656,67 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             has_block_elements = True
 
             parsed = parse_desc_internal(state, i)
-            assert parsed.section
-            assert not parsed.templates and not parsed.params and not parsed.return_value
+
+            # Render as <section> in toplevel desc
+            if state.parsing_toplevel_desc:
+                assert parsed.section
+                assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
+
+                # Top-level section has no ID or title
+                if not out.section: out.section = ('', '', [])
+                out.section = (out.section[0], out.section[1], out.section[2] + [parsed.section])
+                out.parsed += '<section id="{}">{}</section>'.format(extract_id_hash(state, i), parsed.parsed)
+
+            # Render directly the contents otherwise, propagate parsed stuff up
+            else:
+                merge_parsed_subsections(parsed)
+                out.parsed += parsed.parsed
+
             if parsed.search_keywords:
                 out.search_keywords += parsed.search_keywords
-
-            # Top-level section has no ID or title
-            if not out.section: out.section = ('', '', [])
-            out.section = (out.section[0], out.section[1], out.section[2] + [parsed.section])
-            out.parsed += '<section id="{}">{}</section>'.format(extract_id_hash(state, i), parsed.parsed)
 
         elif i.tag == 'title':
             assert element.tag != 'para' # should be top-level block element
             has_block_elements = True
 
-            if element.tag == 'sect1':
-                tag = 'h2'
-            elif element.tag == 'sect2':
-                tag = 'h3'
-            elif element.tag == 'sect3':
-                tag = 'h4'
-            elif not element.tag == 'simplesect':
-                assert False # pragma: no cover
+            # Top-level description
+            if state.parsing_toplevel_desc:
+                if element.tag == 'sect1':
+                    tag = 'h2'
+                elif element.tag == 'sect2':
+                    tag = 'h3'
+                elif element.tag == 'sect3':
+                    tag = 'h4'
+                elif not element.tag == 'simplesect':
+                    assert False # pragma: no cover
+
+            # Function/enum/... descriptions are inside <h3> for function
+            # header, which is inside <h2> for detailed definition section, so
+            # it needs to be <h4> and below
+            else:
+                if element.tag == 'sect1':
+                    tag = 'h4'
+                elif element.tag == 'sect2':
+                    tag = 'h5'
+                elif element.tag == 'sect3':
+                    tag = 'h6'
+                elif not element.tag == 'simplesect':
+                    assert False # pragma: no cover
 
             # simplesect titles are handled directly inside simplesect
             if not element.tag == 'simplesect':
                 id = extract_id_hash(state, element)
                 title = html.escape(i.text)
 
-                # Populate section info
-                assert not out.section
-                out.section = (id, title, [])
-                out.parsed += '<{0}><a href="#{1}">{2}</a></{0}>'.format(tag, id, title)
+                # Populate section info for top-level desc
+                if state.parsing_toplevel_desc:
+                    assert not out.section
+                    out.section = (id, title, [])
+                    out.parsed += '<{0}><a href="#{1}">{2}</a></{0}>'.format(tag, id, title)
+
+                # Otherwise add the ID directly to the heading
+                else:
+                    out.parsed += '<{0} id="{1}">{2}</{0}>'.format(tag, id, title)
 
         elif i.tag == 'heading':
             assert element.tag == 'para' # is inside a paragraph :/

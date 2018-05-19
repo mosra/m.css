@@ -224,9 +224,6 @@ amount of generated content for no added value.
     accompanied with corresponding tutorial page instead)
 -   :cpp:`inline` functions are not marked as such (I see it as an unimportant
     implementation detail)
--   ``@section``, ``@subsection`` etc. commands inside anything else than
-    top-level documentation of a class, namespace, file, directory, page or
-    module are not supported as the visual layout is not expecting such things
 -   The :ini:`CREATE_SUBDIRS` Doxyfile option is not supported. This option
     causes Doxygen to scatter the XML files across numerous subdirectories to
     work around limits of ancient filesystems. Implementing support for this
