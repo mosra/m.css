@@ -546,6 +546,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Those elements are:
         # - <heading>
         # - <blockquote>
+        # - <hruler>
         # - <simplesect> (if not describing return type) and <xrefsect>
         # - <verbatim>, <preformatted> (those are the same thing!)
         # - <variablelist>, <itemizedlist>, <orderedlist>
@@ -571,7 +572,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'xrefsect', 'variablelist', 'verbatim', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
+            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -1036,6 +1037,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 else:
                     out.parsed += '<img class="m-image{}" src="{}" alt="Image" />'.format(
                         ' ' + add_css_class if add_css_class else '', name)
+
+        elif i.tag == 'hruler':
+            assert element.tag == 'para' # is inside a paragraph :/
+            out.parsed += '<hr/>'
 
         # Custom <div> with CSS classes (for making dim notes etc)
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}div':

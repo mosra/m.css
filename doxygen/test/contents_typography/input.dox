@@ -41,6 +41,10 @@ in&nbsp;title: @ref an-anchor "<anchor>".
 
 Empty elements: <em></em> <tt></tt> <strong></strong> <pre></pre>
 
+- - -
+
+Above is a horizontal line.
+
 */
 
 /** @page warnings Content that produces warnings
