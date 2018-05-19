@@ -67,6 +67,12 @@ Show builds for:
                   <td class="m-dim"></td>
                 </tr>
                 <tr>
+                  <th class="m-text-right">Doxygen theme<br/>client search</th>
+                  <td class="m-dim"></td>
+                  <td class="m-dim"></td>
+                  <td id="mcss-js"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
+                </tr>
+                <tr>
                   <th class="m-text-right">Math rendering</th>
                   <td class="m-dim"></td>
                   <td class="m-dim"></td>
