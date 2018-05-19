@@ -20,7 +20,8 @@ m.code
         return 1;
     }
 
-Inline code is here: :cpp:`constexpr`
+Inline code is here: :cpp:`constexpr`. Code without a language should be
+rendered as plain monospace text: :code:`code`.
 
 .. include:: console.ansi
     :code: ansi

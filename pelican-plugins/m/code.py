@@ -183,9 +183,16 @@ def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
         classes += options['classes']
         del options['classes']
 
-    # Not sure why language is duplicated in classes?
-    language = options.get('language', '')
+    # If language is not specified, render a simple literal
+    if not 'language' in options:
+        content = nodes.raw('', utils.unescape(text), format='html')
+        node = nodes.literal(rawtext, '', **options)
+        node.append(content)
+        return [node], []
+
+    language = options['language']
     del options['language']
+    # Not sure why language is duplicated in classes?
     if language in classes: classes.remove(language)
 
     class_, highlighted = _highlight(utils.unescape(text), language, options)
