@@ -1231,15 +1231,14 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             content = parse_inline_desc(state, i).strip()
             if content: out.parsed += '<code>{}</code>'.format(content)
 
-        elif i.tag == 'emphasis':
-            content = parse_inline_desc(state, i).strip()
-            if content: out.parsed += '<em{}>{}</em>'.format(
-                ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
-                content)
+        elif i.tag in ['emphasis', 'bold', 'small']:
+            mapping = {'emphasis': 'em',
+                       'bold': 'strong',
+                       'small': 'small'}
 
-        elif i.tag == 'bold':
             content = parse_inline_desc(state, i).strip()
-            if content: out.parsed += '<strong{}>{}</strong>'.format(
+            if content: out.parsed += '<{0}{1}>{2}</{0}>'.format(
+                mapping[i.tag],
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
                 content)
 
