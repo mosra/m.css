@@ -356,6 +356,7 @@ class State:
         self.current = ''
         self.current_prefix = []
         self.current_compound = None
+        self.parsing_toplevel_desc = False
 
 def slugify(text: str) -> str:
     # Maybe some Unicode normalization would be nice here?
@@ -692,17 +693,36 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
-            if i.attrib['level'] == '1':
-                tag = 'h2'
-            elif i.attrib['level'] == '2':
-                tag = 'h3'
-            elif i.attrib['level'] == '3':
-                tag = 'h4'
-            elif i.attrib['level'] == '4':
-                tag = 'h5'
-            else: # pragma: no cover
-                assert False
-            logging.warning("{}: prefer @section over Markdown heading for properly generated TOC".format(state.current))
+            # Top-level description
+            if state.parsing_toplevel_desc:
+                if i.attrib['level'] == '1':
+                    tag = 'h2'
+                elif i.attrib['level'] == '2':
+                    tag = 'h3'
+                elif i.attrib['level'] == '3':
+                    tag = 'h4'
+                elif i.attrib['level'] == '4':
+                    tag = 'h5'
+                else: # pragma: no cover
+                    assert False
+
+                # Emit this warning only in top-level desc, TOC is not
+                # generated for function/enum/... descriptions
+                logging.warning("{}: prefer @section over Markdown heading for properly generated TOC".format(state.current))
+
+            # Function/enum/... descriptions are inside <h3> for function
+            # header, which is inside <h2> for detailed definition section, so
+            # it needs to be <h4> and below
+            else:
+                if i.attrib['level'] == '1':
+                    tag = 'h4'
+                elif i.attrib['level'] == '2':
+                    tag = 'h5'
+                elif i.attrib['level'] in ['3', '4']:
+                    tag = 'h6' # there is no <h7>
+                else: # pragma: no cover
+                    assert False
+
             out.parsed += '<{0}>{1}</{0}>'.format(tag, html.escape(i.text))
 
         elif i.tag == 'para':
@@ -1344,8 +1364,10 @@ def parse_var_desc(state: State, element: ET.Element) -> str:
     return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_toplevel_desc(state: State, element: ET.Element):
-    # Verify that we didn't ignore any important info by accident
+    state.parsing_toplevel_desc = True
     parsed = parse_desc_internal(state, element)
+    state.parsing_toplevel_desc = False
+    # Verify that we didn't ignore any important info by accident
     assert not parsed.return_value and not parsed.return_values and not parsed.exceptions
     if parsed.params:
         logging.warning("{}: use @tparam instead of @param for documenting class templates, @param is ignored".format(state.current))
