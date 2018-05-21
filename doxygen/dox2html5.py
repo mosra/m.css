@@ -1018,7 +1018,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<pre>{}</pre>'.format(html.escape(i.text or ''))
 
         elif i.tag == 'image':
-            assert element.tag == 'para' # is inside a paragraph :/
+            # can be in <para> but often also in <div> and other m.css-specific
+            # elements
             has_block_elements = True
 
             name = i.attrib['name']
