@@ -777,12 +777,44 @@ formula. Example usage:
 
     .. code:: c++
 
-        /** See the red @m_class{m-danger} @f$ \Sigma @f$ character. */
+        /**
+        A green formula:
 
-    .. role:: math-danger(math)
-        :class: m-danger
+        @m_class{m-success}
 
-    See the red :math-danger:`\Sigma` character.
+        @f[
+            e^{i \pi} + 1 = 0
+        @f]
+
+        Use the @m_class{m-label m-warning} **Shift** key.
+        */
+
+    .. role:: label-warning
+        :class: m-label m-warning
+
+    A green formula:
+
+    .. math::
+        :class: m-success
+
+        e^{i \pi} + 1 = 0
+
+    Use the :label-warning:`Shift` key.
+
+.. note-info::
+
+    Due to parsing ambiguities, in order to affect the whole block with
+    ``@m_class`` instead of just the immediately following inline element, you
+    have to separate it from the paragraph with a blank line:
+
+    .. code:: c++
+
+        /**
+        @m_class{m-text m-green}
+
+        @m_class{m-text m-big}
+        **This text is big,** but the whole paragraph is green.
+        */
 
 The ``@m_footernavigation`` command is similar to ``@tableofcontents``, but
 across pages --- if a page is a subpage of some other page and this command is
