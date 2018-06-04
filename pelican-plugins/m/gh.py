@@ -22,9 +22,20 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-from . import parse_link
-from docutils import nodes
+import re
+from docutils import nodes, utils
 from docutils.parsers import rst
+
+# to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
+# m.gh and m.gl
+
+link_regexp = re.compile(r'(?P<title>.*) <(?P<link>.+)>')
+
+def parse_link(text):
+    link = utils.unescape(text)
+    m = link_regexp.match(link)
+    if m: return m.group('title', 'link')
+    return None, link
 
 def gh_internal(account, ref, title, link):
     base_url = "https://github.com/{}/{}/{}/{}"

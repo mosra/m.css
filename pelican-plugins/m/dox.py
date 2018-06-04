@@ -22,7 +22,6 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-from . import parse_link
 from docutils.parsers.rst.states import Inliner
 from docutils import nodes, utils
 from docutils.parsers import rst
