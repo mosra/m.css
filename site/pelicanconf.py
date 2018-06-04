@@ -148,7 +148,8 @@ PLUGINS = ['m.abbr',
            'm.images',
            'm.math',
            'm.metadata',
-           'm.plots']
+           'm.plots',
+           'm.vk']
 
 THEME = '../pelican-theme'
 THEME_STATIC_DIR = 'static'

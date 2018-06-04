@@ -49,6 +49,7 @@ and restart Pelican. Download the plugins below or
 -   :gh:`m.gh <mosra/m.css$master/pelican-plugins/m/gh.py>`,
     :gh:`m.dox <mosra/m.css$master/pelican-plugins/m/dox.py>`,
     :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
+    :gh:`m.vk <mosra/m.css$master/pelican-plugins/m/vk.py>`,
     :gh:`m.abbr <mosra/m.css$master/pelican-plugins/m/abbr.py>`,
     :gh:`m.filesize <mosra/m.css$master/pelican-plugins/m/filesize.py>`,
     :gh:`m.alias <mosra/m.css$master/pelican-plugins/m/alias.py>`
@@ -97,10 +98,10 @@ as an inline SVG and can be styled using CSS like everything else.
 `Links and other » <{filename}/plugins/links.rst>`_
 ===================================================
 
-The :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.abbr`, :py:`m.fiilesize` and
-:py:`m.alias` plugins make it easy for you to link to GitHub projects, issues
-or PRs, to Doxygen documentation, query file sizes and provide URL aliases to
-preserve link compatibility.
+The :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.vk`, :py:`m.abbr`,
+:py:`m.fiilesize` and :py:`m.alias` plugins make it easy for you to link to
+GitHub projects, issues or PRs, to Doxygen documentation, query file sizes and
+provide URL aliases to preserve link compatibility.
 
 `Metadata » <{filename}/plugins/metadata.rst>`_
 ===============================================

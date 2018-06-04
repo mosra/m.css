@@ -27,7 +27,7 @@ from docutils import nodes, utils
 from docutils.parsers import rst
 
 # to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
-# m.gh and m.gl
+# m.gh, m.gl and m.vk
 
 link_regexp = re.compile(r'(?P<title>.*) <(?P<link>.+)>')
 

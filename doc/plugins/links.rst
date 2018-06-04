@@ -137,6 +137,43 @@ well-known syntax.
     -   Extension function link: :glfnext:`SpecializeShader <ARB_gl_spirv>`
     -   :glfn:`Custom link title <DrawElementsIndirect>`
 
+`Vulkan functions and extensions`_
+==================================
+
+Download the `m/vk.py <{filename}/plugins.rst>`_ file, put it
+including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+:py:`m.vk` package to your :py:`PLUGINS` in ``pelicanconf.py``:
+
+.. code:: python
+
+    PLUGINS += ['m.vk']
+
+Use the :rst:`:vkfn:` interpreted text role for linking to functions,
+:rst:`:vktype:` for linking to types and :rst:`:vkext:` for linking to
+extensions. In the link target the leading ``vk`` prefix of functions, ``Vk``
+prefix of types and the leading ``VK_`` prefix of extensions is prepended
+automatically.
+
+Link text is equal to full function name including the ``vk`` prefix and
+``()`` for functions, ``Vk`` prefix for types or equal to extension name. It's
+possible to specify alternate link text using the well-known syntax.
+
+.. code-figure::
+
+    .. code:: rst
+
+        -   Function link: :vkfn:`CreateInstance`
+        -   Type link: :vktype:`InstanceCreateInfo`
+        -   Definition link: :vktype:`VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO <StructureType>`
+        -   Extension link: :vkext:`KHR_swapchain`
+        -   :vkfn:`Custom link title <DestroyInstance>`
+
+    -   Function link: :vkfn:`CreateInstance`
+    -   Type link: :vktype:`InstanceCreateInfo`
+    -   Definition link: :vktype:`VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO <StructureType>`
+    -   Extension link: :vkext:`KHR_swapchain`
+    -   :vkfn:`Custom link title <DestroyInstance>`
+
 `Doxygen documentation`_
 ========================
 

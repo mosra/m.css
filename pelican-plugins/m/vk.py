@@ -37,37 +37,28 @@ def parse_link(text):
     if m: return m.group('title', 'link')
     return None, link
 
-def glext(name, rawtext, text, lineno, inliner, options={}, content=[]):
+def vkext(name, rawtext, text, lineno, inliner, options={}, content=[]):
     title, extension = parse_link(text)
     if not title: title = extension
-    prefix = extension.partition('_')[0]
-    url = "https://www.khronos.org/registry/OpenGL/extensions/{}/{}.txt".format(prefix, extension)
+    url = "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_{}".format(extension)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
-def webglext(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    title, extension = parse_link(text)
-    if not title: title = extension
-    url = "https://www.khronos.org/registry/webgl/extensions/{}/".format(extension)
-    node = nodes.reference(rawtext, title, refuri=url, **options)
-    return [node], []
-
-def glfn(name, rawtext, text, lineno, inliner, options={}, content=[]):
+def vkfn(name, rawtext, text, lineno, inliner, options={}, content=[]):
     title, fn = parse_link(text)
-    if not title: title = "gl{}()".format(fn)
-    url = "https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{}.xhtml".format(fn)
+    if not title: title = "vk{}()".format(fn)
+    url = "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vk{}.html".format(fn)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
-def glfnext(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    title, extension = parse_link(text)
-    prefix = extension.partition('_')[0]
-    url = "https://www.khronos.org/registry/OpenGL/extensions/{}/{}.txt".format(prefix, extension)
-    node = nodes.reference(rawtext, "gl" + title + prefix + "()", refuri=url, **options)
+def vktype(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    title, fn = parse_link(text)
+    if not title: title = "Vk{}".format(fn)
+    url = "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/Vk{}.html".format(fn)
+    node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
 def register():
-    rst.roles.register_local_role('glext', glext)
-    rst.roles.register_local_role('webglext', webglext)
-    rst.roles.register_local_role('glfn', glfn)
-    rst.roles.register_local_role('glfnext', glfnext)
+    rst.roles.register_local_role('vkext', vkext)
+    rst.roles.register_local_role('vkfn', vkfn)
+    rst.roles.register_local_role('vktype', vktype)
