@@ -1147,6 +1147,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             else:
                 filename = i.attrib['filename']
 
+            # Empty code block with a full filename -- probably a @skip /
+            # @skipline / ... that didn't match anything. Be nice and warn,
+            # because Doxygen doesn't.
+            if not filename.startswith('.') and not code.strip():
+                logging.warning("{}: @include / @snippet / @skip[line] produced an empty code block, probably a wrong match expression?".format(state.current))
+
             # Custom mapping of filenames to languages
             mapping = [('.h', 'c++'),
                        ('.h.cmake', 'c++'),

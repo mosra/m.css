@@ -49,5 +49,10 @@ Another paragraph.
 Code that has unrecognizable format.
 @endcode
 
+Snippet that doesn't match anything:
+
+@dontinclude code.sh
+@skipline this is not there
+
 */
 
