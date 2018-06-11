@@ -71,8 +71,7 @@ class Math(rst.Directive):
         return _nodes
 
 def new_page(content):
-    global counter
-    counter = 0
+    latex2svgextra.counter = 0
 
 def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     # Otherwise the backslashes do quite a mess there
