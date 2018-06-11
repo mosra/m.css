@@ -40,6 +40,7 @@ params.update({
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{gensymb}
 \usepackage{newtxtext}
 """,
     # Zoom the letters a bit to match page font size
