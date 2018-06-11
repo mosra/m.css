@@ -11,6 +11,7 @@ M_THEME_COLOR           =
 M_FAVICON               =
 M_LINKS_NAVBAR1         =
 M_LINKS_NAVBAR2         =
+M_MATH_CACHE_FILE       =
 M_SEARCH_DISABLED       = YES
 
 ALIASES = \

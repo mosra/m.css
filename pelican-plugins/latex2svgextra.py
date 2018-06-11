@@ -22,7 +22,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import pickle
 import re
+from hashlib import sha1
 
 import latex2svg
 
@@ -63,11 +65,63 @@ _unique_dst = r"""\g<name>='\g<ref>eq{counter}-\g<id>'"""
 # Reset back to zero on start of a new page for reproducible behavior.
 counter = 0
 
+# Cache for rendered formulas (source formula sha1 -> (depth, svg data)). The
+# counter is not included
+_cache_version = 0
+_cache = None
+
+# Fetch cached formula or render it and add to the cache. The formula has to
+# be already wrapped in $, $$ etc. environment.
+def fetch_cached_or_render(formula):
+    global _cache
+
+    # unpickle_cache() should be called first
+    assert _cache
+
+    hash = sha1(formula.encode('utf-8')).digest()
+    if not _cache or not hash in _cache[2]:
+        out = latex2svg.latex2svg(formula, params=params)
+        _cache[2][hash] = (_cache[1], out['depth'], out['svg'])
+    else:
+        _cache[2][hash] = (_cache[1], _cache[2][hash][1], _cache[2][hash][2])
+    return (_cache[2][hash][1], _cache[2][hash][2])
+
+def unpickle_cache(file):
+    global _cache
+
+    if file:
+        with open(file, 'rb') as f:
+            _cache = pickle.load(f)
+    else:
+        _cache = None
+
+    # Reset the cache if not valid or not expected version
+    if not _cache or _cache[0] != _cache_version:
+        _cache = (_cache_version, 0, {})
+
+    # Otherwise bump cache age
+    else: _cache = (_cache[0], _cache[1] + 1, _cache[2])
+
+def pickle_cache(file):
+    global _cache
+
+    # Don't save any file if there is nothing
+    if not _cache or not _cache[2]: return
+
+    # Prune entries that were not used
+    cache_to_save = (_cache_version, _cache[1], {})
+    for hash, entry in _cache[2].items():
+        if entry[0] != _cache[1]: continue
+        cache_to_save[2][hash] = entry
+
+    with open(file, 'wb') as f:
+        pickle.dump(cache_to_save, f)
+
 # Patches the output from dvisvgm
 # - w/o the XML preamble and needless xmlns attributes
 # - unique element IDs (see `counter`)
 # - adds additional `attribs` to the <svg> element
-def patch(formula, out, attribs):
+def patch(formula, svg, attribs):
     global counter
     counter += 1
-    return _unique_src.sub(_unique_dst.format(counter=counter), _patch_src.sub(_patch_dst.format(attribs=attribs, formula=formula.replace('\\', '\\\\')), out['svg']))
+    return _unique_src.sub(_unique_dst.format(counter=counter), _patch_src.sub(_patch_dst.format(attribs=attribs, formula=formula.replace('\\', '\\\\')), svg))

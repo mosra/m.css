@@ -46,6 +46,7 @@ class Doxyfile(unittest.TestCase):
             'M_FILE_TREE_EXPAND_LEVELS': 1,
             'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
             'M_LINKS_NAVBAR2': ['annotated', 'files'],
+            'M_MATH_CACHE_FILE': 'm.math.cache',
             'M_PAGE_FINE_PRINT': 'this is "quotes"',
             'M_PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
             'M_SEARCH_DISABLED': False,

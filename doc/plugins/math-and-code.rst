@@ -63,6 +63,8 @@ assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 .. code:: python
 
     PLUGINS += ['m.htmlsanity', 'm.math']
+    M_MATH_RENDER_AS_CODE = False
+    M_MATH_CACHE_FILE = 'm.math.cache'
 
 In addition you need some LaTeX distribution installed. Use your distribution
 package manager, for example on Ubuntu:
@@ -145,6 +147,12 @@ want to add additional CSS classes, derive a custom role from it.
 
     Quaternion-conjugated dual quaternion is :math-info:`\hat q^* = q_0^* + q_\epsilon^*`,
     while dual-conjugation gives :math:`\overline{\hat q} = q_0 - \epsilon q_\epsilon`.
+
+The :py:`M_MATH_CACHE_FILE` setting (defaulting to ``m.math.cache`` in the
+site root directory) describes a file used for caching rendered LaTeX math
+formulas for speeding up subsequent runs. Old cached output is periodically
+pruned and new formulas added to the file. Set it to :py:`None` to disable
+caching.
 
 .. note-info::
 

@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os
 import re
 
 from docutils import nodes, utils
@@ -59,11 +60,11 @@ class Math(rst.Directive):
             if not block:
                 continue
 
-            out = latex2svg.latex2svg("$$" + block + "$$", params=latex2svgextra.params)
+            _, svg = latex2svgextra.fetch_cached_or_render("$$" + block + "$$")
 
             container = nodes.container(**self.options)
             container['classes'] += ['m-math']
-            node = nodes.raw(self.block_text, latex2svgextra.patch(block, out, ''), format='html')
+            node = nodes.raw(self.block_text, latex2svgextra.patch(block, svg, ''), format='html')
             node.line = self.content_offset + 1
             self.add_name(node)
             container.append(node)
@@ -98,22 +99,32 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
         classes += ' ' + ' '.join(options['classes'])
         del options['classes']
 
-    out = latex2svg.latex2svg("$" + text + "$", params=latex2svgextra.params)
+    depth, svg = latex2svgextra.fetch_cached_or_render("$" + text + "$")
 
     # CSS classes and styling for proper vertical alignment. Depth is relative
     # to font size, describes how below the line the text is. Scaling it back
     # to 12pt font, scaled by 125% as set above in the config.
-    attribs = ' class="{}" style="vertical-align: -{:.1f}pt;"'.format(classes, out['depth']*12*1.25)
+    attribs = ' class="{}" style="vertical-align: -{:.1f}pt;"'.format(classes, depth*12*1.25)
 
-    node = nodes.raw(rawtext, latex2svgextra.patch(text, out, attribs), format='html', **options)
+    node = nodes.raw(rawtext, latex2svgextra.patch(text, svg, attribs), format='html', **options)
     return [node], []
 
 def configure_pelican(pelicanobj):
     global render_as_code
     render_as_code = pelicanobj.settings.get('M_MATH_RENDER_AS_CODE', False)
+    cache_file = pelicanobj.settings.get('M_MATH_CACHE_FILE', 'm.math.cache')
+    if cache_file and os.path.exists(cache_file):
+        latex2svgextra.unpickle_cache(cache_file)
+    else:
+        latex2svgextra.unpickle_cache(None)
+
+def save_cache(pelicanobj):
+    cache_file = pelicanobj.settings.get('M_MATH_CACHE_FILE', 'm.math.cache')
+    if cache_file: latex2svgextra.pickle_cache(cache_file)
 
 def register():
     pelican.signals.initialized.connect(configure_pelican)
+    pelican.signals.finalized.connect(save_cache)
     pelican.signals.content_object_init.connect(new_page)
     rst.directives.register_directive('math', Math)
     rst.roles.register_canonical_role('math', math)

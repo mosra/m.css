@@ -1208,7 +1208,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Assume that Doxygen wrapped the formula properly to distinguish
             # between inline, block or special environment
-            rendered = latex2svg.latex2svg('{}'.format(i.text), params=latex2svgextra.params)
+            depth, svg = latex2svgextra.fetch_cached_or_render('{}'.format(i.text))
 
             # We should have decided about block/inline above
             assert formula_block is not None
@@ -1216,15 +1216,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 has_block_elements = True
                 out.parsed += '<div class="m-math{}">{}</div>'.format(
                     ' ' + add_css_class if add_css_class else '',
-                    latex2svgextra.patch(i.text, rendered, ''))
+                    latex2svgextra.patch(i.text, svg, ''))
             else:
                 # CSS classes and styling for proper vertical alignment. Depth is relative
                 # to font size, describes how below the line the text is. Scaling it back
                 # to 12pt font, scaled by 125% as set above in the config.
                 attribs = ' class="m-math{}" style="vertical-align: -{:.1f}pt;"'.format(
                     ' ' + add_inline_css_class if add_inline_css_class else '',
-                    (rendered['depth'] or 0.0)*12*1.25)
-                out.parsed += latex2svgextra.patch(i.text, rendered, attribs)
+                    (depth or 0.0)*12*1.25)
+                out.parsed += latex2svgextra.patch(i.text, svg, attribs)
 
         # Inline elements
         elif i.tag == 'linebreak':
@@ -2733,6 +2733,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'M_FAVICON': ['favicon-dark.png'],
         'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
         'M_LINKS_NAVBAR2': ['annotated', 'files'],
+        'M_MATH_CACHE_FILE': ['m.math.cache'],
         'M_PAGE_FINE_PRINT': ['[default]'],
         'M_SEARCH_DISABLED': ['NO'],
         'M_SEARCH_DOWNLOAD_BINARY': ['NO'],
@@ -2835,6 +2836,7 @@ list using <span class="m-label m-dim">&darr;</span> and
               'M_PAGE_FINE_PRINT',
               'M_THEME_COLOR',
               'M_FAVICON',
+              'M_MATH_CACHE_FILE',
               'M_SEARCH_HELP',
               'M_SEARCH_EXTERNAL_URL']:
         if i in config: state.doxyfile[i] = ' '.join(config[i])
@@ -2878,6 +2880,15 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     xml_files_metadata = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, "*.xml"))]
     xml_files = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, wildcard))]
     html_output = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['HTML_OUTPUT'])
+
+    # If math rendering cache is not disabled, load the previous version. If
+    # there is no cache, reset the cache to an empty state to avoid
+    # order-dependent issues when testing
+    math_cache_file = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['M_MATH_CACHE_FILE'])
+    if state.doxyfile['M_MATH_CACHE_FILE'] and os.path.exists(math_cache_file):
+        latex2svgextra.unpickle_cache(math_cache_file)
+    else:
+        latex2svgextra.unpickle_cache(None)
 
     if sort_globbed_files:
         xml_files_metadata.sort()
@@ -2981,6 +2992,10 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
 
         logging.debug("copying {} to output".format(i))
         shutil.copy(i, os.path.join(html_output, os.path.basename(i)))
+
+    # Save updated math cache file
+    if state.doxyfile['M_MATH_CACHE_FILE']:
+        latex2svgextra.pickle_cache(math_cache_file)
 
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()

@@ -317,6 +317,12 @@ Variable                            Description
 :ini:`M_EXPAND_INNER_TYPES`         Whether to expand inner types (e.g. a class
                                     inside a class) in the symbol tree. If not
                                     set, ``NO`` is used.
+:ini:`M_MATH_CACHE_FILE`            File to cache rendered math formulas. If
+                                    not set, ``m.math.cache`` file in the
+                                    output directory is used. Old cached output
+                                    is periodically pruned and new formulas
+                                    added to the file. Set it empty to disable
+                                    caching.
 :ini:`M_SEARCH_DISABLED`            Disable search functionality. If this
                                     option is set, no search data is compiled
                                     and the rendered HTML does not contain any
