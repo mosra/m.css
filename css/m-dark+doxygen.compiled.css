@@ -440,7 +440,7 @@ blockquote, hr {
   border-color: #405363;
 }
 pre {
-  font-family: 'Source Code Pro', monospace, monospace, monospace; /* https://en.wikipedia.org/wiki/User:Davidgothberg/Test59 */
+  font-family: 'Source Code Pro', monospace, monospace, monospace;
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
   color: #e6e6e6;
@@ -1122,7 +1122,7 @@ figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-
   color: #747474;
 }
 .m-imagegrid > div {
-  background-color: #2f363f; /* to avoid section HL shining through */
+  background-color: #2f363f;
 }
 .m-imagegrid > div > figure {
   display: block;

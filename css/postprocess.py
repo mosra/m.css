@@ -73,7 +73,11 @@ def postprocess(files, process_imports, out_file):
             if match and match['key'] in variables:
                 out.write(match['before'])
                 out.write(variables[match['key']])
-                out.write(match['after'])
+                # Strip the trailing comment, if there, to save some bytes
+                if match['after'].endswith('*/'):
+                    out.write(match['after'][:match['after'].rindex('/*')].rstrip())
+                else:
+                    out.write(match['after'])
                 out.write("\n")
                 continue
 
