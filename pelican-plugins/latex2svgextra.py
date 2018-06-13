@@ -76,11 +76,13 @@ _cache = None
 def fetch_cached_or_render(formula):
     global _cache
 
-    # unpickle_cache() should be called first
-    assert _cache
+    # Cache not used, pass through
+    if not _cache:
+        out = latex2svg.latex2svg(formula, params=params)
+        return out['depth'], out['svg']
 
     hash = sha1(formula.encode('utf-8')).digest()
-    if not _cache or not hash in _cache[2]:
+    if not hash in _cache[2]:
         out = latex2svg.latex2svg(formula, params=params)
         _cache[2][hash] = (_cache[1], out['depth'], out['svg'])
     else:
