@@ -1195,54 +1195,69 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
   color: #dcdcdc;
 }
 .m-note.m-default { background-color: #34424d; }
-.m-note.m-default, table.m-table tr.m-default td, table.m-table td.m-default,
-                   table.m-table tr.m-default th, table.m-table th.m-default {
+.m-note.m-default,
+table.m-table tr.m-default td, table.m-table td.m-default,
+table.m-table tr.m-default th, table.m-table th.m-default {
   color: #dcdcdc;
 }
-.m-note.m-default a:hover, table.m-table tr.m-default td a:hover, table.m-table td.m-default a:hover,
-                           table.m-table tr.m-default th a:hover, table.m-table th.m-default a:hover,
-.m-note.m-default a:focus, table.m-table tr.m-default td a:focus, table.m-table td.m-default a:focus,
-                           table.m-table tr.m-default th a:focus, table.m-table th.m-default a:focus,
-.m-note.m-default a:active, table.m-table tr.m-default td a:active, table.m-table td.m-default a:active,
-                            table.m-table tr.m-default th a:active, table.m-table th.m-default a:active {
+.m-note.m-default a:hover,
+table.m-table tr.m-default td a:hover, table.m-table td.m-default a:hover,
+table.m-table tr.m-default th a:hover, table.m-table th.m-default a:hover,
+.m-note.m-default a:focus,
+table.m-table tr.m-default td a:focus, table.m-table td.m-default a:focus,
+table.m-table tr.m-default th a:focus, table.m-table th.m-default a:focus,
+.m-note.m-default a:active,
+table.m-table tr.m-default td a:active, table.m-table td.m-default a:active,
+table.m-table tr.m-default th a:active, table.m-table th.m-default a:active {
   color: #a5c9ea;
 }
-.m-note.m-primary a, table.m-table tr.m-primary td a, table.m-table td.m-primary a,
-                     table.m-table tr.m-primary th a, table.m-table th.m-primary a {
+.m-note.m-primary a,
+table.m-table tr.m-primary td a, table.m-table td.m-primary a,
+table.m-table tr.m-primary th a, table.m-table th.m-primary a {
   color: #5b9dd9;
 }
-.m-note.m-primary, table.m-table tr.m-primary td, table.m-table td.m-primary,
-                   table.m-table tr.m-primary th, table.m-table th.m-primary {
+.m-note.m-primary,
+table.m-table tr.m-primary td, table.m-table td.m-primary,
+table.m-table tr.m-primary th, table.m-table th.m-primary {
   background-color: #a5c2db;
   color: #2f363f;
 }
-.m-note.m-primary a, table.m-table tr.m-primary td a, table.m-table td.m-primary a,
-                     table.m-table tr.m-primary th a, table.m-table th.m-primary a {
+.m-note.m-primary a,
+table.m-table tr.m-primary td a, table.m-table td.m-primary a,
+table.m-table tr.m-primary th a, table.m-table th.m-primary a {
   color: #2a75b6;
 }
-.m-note.m-primary a:hover, table.m-table tr.m-primary td a:hover, table.m-table td.m-primary a:hover,
-                           table.m-table tr.m-primary th a:hover, table.m-table th.m-primary a:hover,
-.m-note.m-primary a:focus, table.m-table tr.m-primary td a:focus, table.m-table td.m-primary a:focus,
-                           table.m-table tr.m-primary th a:focus, table.m-table th.m-primary a:focus,
-.m-note.m-primary a:active, table.m-table tr.m-primary td a:active, table.m-table td.m-primary a:active,
-                            table.m-table tr.m-primary th a:active, table.m-table th.m-primary a:active {
+.m-note.m-primary a:hover,
+table.m-table tr.m-primary td a:hover, table.m-table td.m-primary a:hover,
+table.m-table tr.m-primary th a:hover, table.m-table th.m-primary a:hover,
+.m-note.m-primary a:focus,
+table.m-table tr.m-primary td a:focus, table.m-table td.m-primary a:focus,
+table.m-table tr.m-primary th a:focus, table.m-table th.m-primary a:focus,
+.m-note.m-primary a:active,
+table.m-table tr.m-primary td a:active, table.m-table td.m-primary a:active,
+table.m-table tr.m-primary th a:active, table.m-table th.m-primary a:active {
   color: #2f363f;
 }
-.m-note.m-success, table.m-table tr.m-success td, table.m-table td.m-success,
-                   table.m-table tr.m-success th, table.m-table th.m-success {
+.m-note.m-success,
+table.m-table tr.m-success td, table.m-table td.m-success,
+table.m-table tr.m-success th, table.m-table th.m-success {
   background-color: #2a703f;
   color: #acecbe;
 }
-.m-note.m-success a, table.m-table tr.m-success td a, table.m-table td.m-success a,
-                     table.m-table tr.m-success th a, table.m-table th.m-success a {
+.m-note.m-success a,
+table.m-table tr.m-success td a, table.m-table td.m-success a,
+table.m-table tr.m-success th a, table.m-table th.m-success a {
   color: #3bd267;
 }
-.m-note.m-success a:hover, table.m-table tr.m-success td a:hover, table.m-table td.m-success a:hover,
-                           table.m-table tr.m-success th a:hover, table.m-table th.m-success a:hover,
-.m-note.m-success a:focus, table.m-table tr.m-success td a:focus, table.m-table td.m-success a:focus,
-                           table.m-table tr.m-success th a:focus, table.m-table th.m-success a:focus,
-.m-note.m-success a:active, table.m-table tr.m-success td a:active, table.m-table td.m-success a:active,
-                            table.m-table tr.m-success th a:active, table.m-table th.m-success a:active {
+.m-note.m-success a:hover,
+table.m-table tr.m-success td a:hover, table.m-table td.m-success a:hover,
+table.m-table tr.m-success th a:hover, table.m-table th.m-success a:hover,
+.m-note.m-success a:focus,
+table.m-table tr.m-success td a:focus, table.m-table td.m-success a:focus,
+table.m-table tr.m-success th a:focus, table.m-table th.m-success a:focus,
+.m-note.m-success a:active,
+table.m-table tr.m-success td a:active, table.m-table td.m-success a:active,
+table.m-table tr.m-success th a:active, table.m-table th.m-success a:active {
   color: #acecbe;
 }
 .m-note.m-warning, table.m-table tr.m-warning td, table.m-table td.m-warning,
@@ -1254,63 +1269,81 @@ table.m-table tr.m-dim th, table.m-table th.m-dim {
                      table.m-table tr.m-warning th a, table.m-table th.m-warning a {
   color: #b8bf2b;
 }
-.m-note.m-warning a:hover, table.m-table tr.m-warning td a:hover, table.m-table td.m-warning a:hover,
-                           table.m-table tr.m-warning th a:hover, table.m-table th.m-warning a:hover,
-.m-note.m-warning a:focus, table.m-table tr.m-warning td a:focus, table.m-table td.m-warning a:focus,
-                           table.m-table tr.m-warning th a:focus, table.m-table th.m-warning a:focus,
-.m-note.m-warning a:active, table.m-table tr.m-warning td a:active, table.m-table td.m-warning a:active,
-                            table.m-table tr.m-warning th a:active, table.m-table th.m-warning a:active {
+.m-note.m-warning a:hover,
+table.m-table tr.m-warning td a:hover, table.m-table td.m-warning a:hover,
+table.m-table tr.m-warning th a:hover, table.m-table th.m-warning a:hover,
+.m-note.m-warning a:focus,
+table.m-table tr.m-warning td a:focus, table.m-table td.m-warning a:focus,
+table.m-table tr.m-warning th a:focus, table.m-table th.m-warning a:focus,
+.m-note.m-warning a:active,
+table.m-table tr.m-warning td a:active, table.m-table td.m-warning a:active,
+table.m-table tr.m-warning th a:active, table.m-table th.m-warning a:active {
   color: #e9ecae;
 }
-.m-note.m-danger, table.m-table tr.m-danger td, table.m-table td.m-danger,
-                  table.m-table tr.m-danger th, table.m-table th.m-danger {
+.m-note.m-danger,
+table.m-table tr.m-danger td, table.m-table td.m-danger,
+table.m-table tr.m-danger th, table.m-table th.m-danger {
   background-color: #702b2a;
   color: #ff9391;
 }
-.m-note.m-danger a, table.m-table tr.m-danger td a, table.m-table td.m-danger a,
-                    table.m-table tr.m-danger th a, table.m-table th.m-danger a {
+.m-note.m-danger a,
+table.m-table tr.m-danger td a, table.m-table td.m-danger a,
+table.m-table tr.m-danger th a, table.m-table th.m-danger a {
   color: #d85c59;
 }
-.m-note.m-danger a:hover, table.m-table tr.m-danger td a:hover, table.m-table td.m-danger a:hover,
-                          table.m-table tr.m-danger th a:hover, table.m-table th.m-danger a:hover,
-.m-note.m-danger a:focus, table.m-table tr.m-danger td a:focus, table.m-table td.m-danger a:focus,
-                          table.m-table tr.m-danger th a:focus, table.m-table th.m-danger a:focus,
-.m-note.m-danger a:active, table.m-table tr.m-danger td a:active, table.m-table td.m-danger a:active,
-                           table.m-table tr.m-danger th a:active, table.m-table th.m-danger a:active {
+.m-note.m-danger a:hover,
+table.m-table tr.m-danger td a:hover, table.m-table td.m-danger a:hover,
+table.m-table tr.m-danger th a:hover, table.m-table th.m-danger a:hover,
+.m-note.m-danger a:focus,
+table.m-table tr.m-danger td a:focus, table.m-table td.m-danger a:focus,
+table.m-table tr.m-danger th a:focus, table.m-table th.m-danger a:focus,
+.m-note.m-danger a:active,
+table.m-table tr.m-danger td a:active, table.m-table td.m-danger a:active,
+table.m-table tr.m-danger th a:active, table.m-table th.m-danger a:active {
   color: #ff9391;
 }
-.m-note.m-info, table.m-table tr.m-info td, table.m-table td.m-info,
-                table.m-table tr.m-info th, table.m-table th.m-info {
+.m-note.m-info,
+table.m-table tr.m-info td, table.m-table td.m-info,
+table.m-table tr.m-info th, table.m-table th.m-info {
   background-color: #2a4f70;
   color: #a5caeb;
 }
-.m-note.m-info a, table.m-table tr.m-info td a, table.m-table td.m-info a,
-                  table.m-table tr.m-info th a, table.m-table th.m-info a {
+.m-note.m-info a,
+table.m-table tr.m-info td a, table.m-table td.m-info a,
+table.m-table tr.m-info th a, table.m-table th.m-info a {
   color: #5297d7;
 }
-.m-note.m-info a:hover, table.m-table tr.m-info td a:hover, table.m-table td.m-info a:hover,
-                        table.m-table tr.m-info th a:hover, table.m-table th.m-info a:hover,
-.m-note.m-info a:focus, table.m-table tr.m-info td a:focus, table.m-table td.m-info a:focus,
-                        table.m-table tr.m-info th a:focus, table.m-table th.m-info a:focus,
-.m-note.m-info a:active, table.m-table tr.m-info td a:active, table.m-table td.m-info a:active,
-                         table.m-table tr.m-info th a:active, table.m-table th.m-info a:active {
+.m-note.m-info a:hover,
+table.m-table tr.m-info td a:hover, table.m-table td.m-info a:hover,
+table.m-table tr.m-info th a:hover, table.m-table th.m-info a:hover,
+.m-note.m-info a:focus,
+table.m-table tr.m-info td a:focus, table.m-table td.m-info a:focus,
+table.m-table tr.m-info th a:focus, table.m-table th.m-info a:focus,
+.m-note.m-info a:active,
+table.m-table tr.m-info td a:active, table.m-table td.m-info a:active,
+table.m-table tr.m-info th a:active, table.m-table th.m-info a:active {
   color: #a5caeb;
 }
-.m-note.m-dim, table.m-table tr.m-dim td, table.m-table td.m-dim,
-               table.m-table tr.m-dim th, table.m-table th.m-dim {
+.m-note.m-dim,
+table.m-table tr.m-dim td, table.m-table td.m-dim,
+table.m-table tr.m-dim th, table.m-table th.m-dim {
   background-color: #2d3236;
   color: #747474;
 }
-.m-note.m-dim a, table.m-table tr.m-dim td a, table.m-table td.m-dim a,
-                 table.m-table tr.m-dim th a, table.m-table th.m-dim a {
+.m-note.m-dim a,
+table.m-table tr.m-dim td a, table.m-table td.m-dim a,
+table.m-table tr.m-dim th a, table.m-table th.m-dim a {
   color: #acacac;
 }
-.m-note.m-dim a:hover, table.m-table tr.m-dim td a:hover, table.m-table td.m-dim a:hover,
-                       table.m-table tr.m-dim th a:hover, table.m-table th.m-dim a:hover,
-.m-note.m-dim a:focus, table.m-table tr.m-dim td a:focus, table.m-table td.m-dim a:focus,
-                       table.m-table tr.m-dim th a:focus, table.m-table th.m-dim a:focus,
-.m-note.m-dim a:active, table.m-table tr.m-dim td a:active, table.m-table td.m-dim a:active,
-                        table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
+.m-note.m-dim a:hover,
+table.m-table tr.m-dim td a:hover, table.m-table td.m-dim a:hover,
+table.m-table tr.m-dim th a:hover, table.m-table th.m-dim a:hover,
+.m-note.m-dim a:focus,
+table.m-table tr.m-dim td a:focus, table.m-table td.m-dim a:focus,
+table.m-table tr.m-dim th a:focus, table.m-table th.m-dim a:focus,
+.m-note.m-dim a:active,
+table.m-table tr.m-dim td a:active, table.m-table td.m-dim a:active,
+table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
   color: #747474;
 }
 .m-text.m-default, .m-label.m-flat.m-default { color: #dcdcdc; }
