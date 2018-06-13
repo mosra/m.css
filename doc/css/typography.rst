@@ -38,8 +38,8 @@ Typography
     :language: html
 
 Right after being responsive, typography is the second most important thing in
-m.css and so the most often used HTML elements are styled to make them look
-great by default.
+m.css. The `m-components.css <{filename}/css.rst>`_ file styles the most often
+used HTML elements to make them look great by default.
 
 .. contents::
     :class: m-block m-default

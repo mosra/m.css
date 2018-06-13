@@ -154,8 +154,8 @@ def postprocess(files, process_imports, out_file):
 
         # Now open the imported files and parse them as well. Not doing any
         # recursive parsing.
-        for file in imported_files + files[1:]:
-            out.write('\n')
+        for i, file in enumerate(imported_files + files[1:]):
+            if i: out.write('\n')
 
             with open(file) as f: parse(f)
 

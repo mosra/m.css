@@ -37,8 +37,8 @@ Components
 .. role:: html(code)
     :language: html
 
-m.css provides a set of basic components for further improving the layout and
-display of authored content.
+In `m-components.css <{filename}/css.rst>`_, m.css provides a set of basic
+components for further improving the layout and display of authored content.
 
 .. contents::
     :class: m-block m-default

@@ -35,18 +35,20 @@ Themes
 .. role:: css(code)
     :language: css
 
-m.css provides two themes, a dark and a light one. A theme consists of just a
-set of CSS variables, which affect fonts, colors and other properties. The
-theme file is also an self-contained entry point for the whole m.css framework
---- it includes all the other necessary CSS files except fonts via CSS
-:css:`@import` statements.
+The `m-theme-*.css <{filename}/css.rst>`_ files provide final theming for the
+style. Currently, m.css provides two themes, a dark and a light one. A theme
+file consists of just a set of CSS variables, which affect fonts, colors and
+other properties. Together with theme file, m.css provides also a "driver file"
+that includes all the other necessary CSS files except fonts via CSS
+:css:`@import` statements --- so you can reference just ``m-dark.css`` instead
+of four distinct files.
 
 .. block-warning:: Browser support
 
     Note that :abbr:`some browsers <IE and Edge, I'm looking at you>` have
     problems with CSS variables and :css:`@import` statements. Because of that,
     the builtin themes provide a ``*.compiled.css`` version that contains a
-    preprocessed version without CSS variables or :css:`import` statements;
+    preprocessed version without CSS variables or :css:`@import` statements;
     which also make it smaller in total. This compiled version includes also
     the Pygments code highlighting style, all combined in one file.
 
@@ -59,7 +61,7 @@ theme file is also an self-contained entry point for the whole m.css framework
 `Dark`_
 =======
 
-The dark theme is described in the `m-dark.css <{filename}/css.rst>`_ (or
+The dark theme is contained in the `m-dark.css <{filename}/css.rst>`_ (or
 ``m-dark.compiled.css``) file. Besides that, you need to reference also
 `Source Sans Pro <https://fonts.google.com/specimen/Source+Sans+Pro>`_ font
 (used for page copy) and `Source Code Pro <https://fonts.google.com/specimen/Source+Code+Pro>`_
@@ -78,11 +80,11 @@ This theme is used on this site and also on http://magnum.graphics.
 `Light`_
 ========
 
-The light theme is described in the `m-light.css <{filename}/css.rst>`_ file.
-Besides that, you need to reference also
+The light theme is contained in the `m-light.css <{filename}/css.rst>`_ (or
+``m-light.compiled.css``) file. Besides that, you need to reference also
 `Libre Baskerville <https://fonts.google.com/specimen/Libre+Baskerville>`_ font
 (used for page copy) and `Source Code Pro <https://fonts.google.com/specimen/Source+Code+Pro>`_
-(used for pre-formatted text and code). You can get them on Google Fonts.
+(used for pre-formatted text and code).
 
 .. code:: html
 
@@ -96,13 +98,13 @@ If you want to see this theme live, go to http://blog.mosra.cz.
 ================
 
 Making your own theme is usually just a matter of modifying CSS variables in
-the top-level file. To give an example, a portion of the ``m-dark.css`` file
+the theme file. To give an example, a portion of the ``m-theme-dark.css`` file
 looks like this:
 
-.. include:: ../../../css/m-dark.css
+.. include:: ../../../css/m-theme-dark.css
     :code: css
-    :start-line: 29
-    :end-line: 53
+    :start-line: 24
+    :end-line: 48
 
 The project also bundles a Python script for *post*\ processing the CSS files
 into a single ``*.compiled.css`` file without :css:`@import` statements or

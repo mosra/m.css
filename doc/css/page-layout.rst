@@ -42,8 +42,9 @@ Page layout
 .. role:: sh(code)
     :language: sh
 
-Besides separate components, m.css provides a fully-fledged whole page layout,
-including top navigation bar, footer navigation, article styling and more.
+With `m-layout.css <{filename}/css.rst>`_, m.css provides a full-fledged whole
+page layout, including top navigation bar, footer navigation, article styling,
+active section highlighting and more.
 
 .. note-success::
 

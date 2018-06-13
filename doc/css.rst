@@ -40,17 +40,25 @@ applied to all elements by default.
 `Quick start`_
 ==============
 
-To make full advantage of m.css, you need just three files written in plain
+To make full advantage of m.css, you need the following files written in plain
 CSS. Download them below or :gh:`grab the whole Git repository <mosra/m.css>`:
 
 -   :gh:`m-grid.css <mosra/m.css$master/css/m-grid.css>` with optional
-    :gh:`m-debug.css <mosra/m.css$master/css/m-debug.css>`
--   :gh:`m-components.css <mosra/m.css$master/css/m-components.css>`
+    :gh:`m-debug.css <mosra/m.css$master/css/m-debug.css>` for responsiveness
+-   :gh:`m-components.css <mosra/m.css$master/css/m-components.css>` for
+    typography and basic components
+-   :gh:`m-layout.css <mosra/m.css$master/css/m-layout.css>` for overall page
+    and article layout
+-   :gh:`m-theme-dark.css <mosra/m.css$master/css/m-theme-dark.css>` or
+    :gh:`m-theme-light.css <mosra/m.css$master/css/m-theme-light.css>` for
+    theme setup
 -   :gh:`m-dark.css <mosra/m.css$master/css/m-dark.css>` or
-    :gh:`m-light.css <mosra/m.css$master/css/m-light.css>`
+    :gh:`m-light.css <mosra/m.css$master/css/m-light.css>` that :css:`@import`
+    the above files for a convenient single-line referencing
 
-In addition to the above, if you want to present highlighted code snippets (or
-colored terminal output) on your website, there's also a builtin style for
+Scroll below for a detailed functionality description of each file. In addition
+to the above, if you want to present highlighted code snippets (or colored
+terminal output) on your website, there's also a builtin style for
 `Pygments <http://pygments.org/>`_, matching m.css themes:
 
 -   :gh:`pygments-dark.css <mosra/m.css$master/css/pygments-dark.css>`,
@@ -58,11 +66,11 @@ colored terminal output) on your website, there's also a builtin style for
 -   :gh:`pygments-console.css <mosra/m.css$master/css/pygments-console.css>`,
     generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-console.py>`
 
-Once you have the files, include them in your HTML markup. The top-level
-``m-dark.css`` / ``m-light.css`` file includes the other via CSS :css:`@import`
-statement, so you don't need to reference these. The dark theme uses the
-`Source Sans Pro <https://fonts.google.com/specimen/Source+Sans+Pro>`_ font for
-copy and `Source Code Pro <https://fonts.google.com/specimen/Source+Code+Pro>`_
+Once you have the files, reference them from your HTML markup. The top-level
+``m-dark.css`` / ``m-light.css`` file includes the others via a CSS
+:css:`@import` statement, so you don't need to link all of them. The dark theme
+uses the `Source Sans Pro <https://fonts.google.com/specimen/Source+Sans+Pro>`_
+font for copy and `Source Code Pro <https://fonts.google.com/specimen/Source+Code+Pro>`_
 font for pre-formatted text and code, which you need to reference as well. See
 the `Themes <{filename}/css/themes.rst>`_ page for requirements of other
 themes.
@@ -140,14 +148,13 @@ image grid.
 `Page layout » <{filename}/css/page-layout.rst>`_
 =================================================
 
-Besides that, ``m-components.css`` has also full-fledged collection of elements
-to form not only the content, but the whole page including navigation ---
-header and footer, section headings, article styling with sidebar and tag cloud
-and more.
+In ``m-layout.css`` there's a styling for the whole page including navigation
+--- header and footer, section headings, article styling with sidebar, tag
+cloud, active section highlighting and more.
 
 `Themes » <{filename}/css/themes.rst>`_
 =======================================
 
-Finally, ``m-dark.css`` and ``m-light.css`` use CSS variables to achieve easy
-theming. Two builtin themes, used by the author himself on a bunch of websites
-to guarantee that everything fits well together.
+Finally, ``m-theme-dark.css`` and ``m-theme-light.css`` use CSS variables to
+achieve easy theming. Two builtin themes, used by the author himself on a bunch
+of websites to guarantee that everything fits well together.
