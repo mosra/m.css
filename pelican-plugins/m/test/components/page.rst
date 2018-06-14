@@ -76,3 +76,6 @@ m.components
 .. button-flat:: #
 
     Flat button
+
+Inline elements: :label-primary:`Primary label`,
+:label-flat-warning:`Flat warning label`.

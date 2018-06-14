@@ -301,6 +301,24 @@ Mark your reST table with :rst:`..class:: m-table` to give it styling.
 
 .. todo: cell coloring, footer etc.
 
+`Labels`_
+=========
+
+Use :rst:`:label-default:` etc. or :rst:`:label-flat-default:` etc. to create
+inline `text labels <{filename}/css/components.rst#labels>`_.
+
+.. code-figure::
+
+    .. code:: rst
+
+        -   Design direction and project goals :label-success:`done`
+        -   Automated testing :label-danger:`missing`
+            :label-flat-warning:`in progress`
+
+    -   Design direction and project goals :label-success:`done`
+    -   Automated testing :label-danger:`missing`
+        :label-flat-warning:`in progress`
+
 `Other m.css features`_
 =======================
 
@@ -340,25 +358,19 @@ arranging content in three-column grid can be done like this:
 
             Right column content.
 
-For inline components, derive a custom role with additional CSS classes. For
-example:
+For inline components not mentioned above, derive a custom role with additional
+CSS classes. For example:
 
 .. code-figure::
 
     .. code:: rst
 
-        .. role:: label-success
-            :class: m-label m-success
-        .. role:: label-danger
-            :class: m-label m-danger
+        .. role:: text-em-strong
+            :class: m-text m-em m-strong
 
-        -   Design direction and project goals :label-success:`done`
-        -   Automated testing :label-danger:`missing`
+        You *should* be **very** aware of the :text-em-strong:`potential danger`.
 
-    .. role:: label-success
-        :class: m-label m-success
-    .. role:: label-danger
-        :class: m-label m-danger
+    .. role:: text-em-strong
+        :class: m-text m-em m-strong
 
-    -   Design direction and project goals :label-success:`done`
-    -   Automated testing :label-danger:`missing`
+    You *should* be **very** aware of the :text-em-strong:`potential danger`.

@@ -295,6 +295,51 @@ class DimButton(Button):
 class FlatButton(Button):
     style_class = 'm-flat'
 
+def label(style_classes, name, rawtext, text, lineno, inliner, options, content):
+    return [nodes.inline(rawtext, text, classes=['m-label'] + style_classes)], []
+
+def label_default(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-default'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_primary(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-primary'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_success(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-success'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_warning(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-warning'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_danger(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-danger'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_info(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-info'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_dim(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-dim'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_default(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-flat', 'm-default'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_primary(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-flat', 'm-primary'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_success(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-flat', 'm-success'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_warning(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-flat', 'm-warning'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_danger(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label('m-flat', ['m-danger'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_info(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-flat', 'm-info'], name, rawtext, text, lineno, inliner, options, content)
+
+def label_flat_dim(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    return label(['m-flat', 'm-dim'], name, rawtext, text, lineno, inliner, options, content)
+
 def register():
     rst.directives.register_directive('transition', Transition)
 
@@ -335,3 +380,19 @@ def register():
     rst.directives.register_directive('button-info', InfoButton)
     rst.directives.register_directive('button-dim', DimButton)
     rst.directives.register_directive('button-flat', FlatButton)
+
+    rst.roles.register_canonical_role('label-default', label_default)
+    rst.roles.register_canonical_role('label-primary', label_primary)
+    rst.roles.register_canonical_role('label-success', label_success)
+    rst.roles.register_canonical_role('label-warning', label_warning)
+    rst.roles.register_canonical_role('label-danger', label_danger)
+    rst.roles.register_canonical_role('label-info', label_info)
+    rst.roles.register_canonical_role('label-dim', label_dim)
+
+    rst.roles.register_canonical_role('label-flat-default', label_flat_default)
+    rst.roles.register_canonical_role('label-flat-primary', label_flat_primary)
+    rst.roles.register_canonical_role('label-flat-success', label_flat_success)
+    rst.roles.register_canonical_role('label-flat-warning', label_flat_warning)
+    rst.roles.register_canonical_role('label-flat-danger', label_flat_danger)
+    rst.roles.register_canonical_role('label-flat-info', label_flat_info)
+    rst.roles.register_canonical_role('label-flat-dim', label_flat_dim)

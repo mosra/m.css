@@ -442,6 +442,12 @@ of surrounding text.
         <p class="m-text m-dim">That's how things are now.
         <span class="m-label m-flat m-primary">clarified</span></p>
 
+.. note-info::
+
+    The `Pelican Components plugin <{filename}/plugins/components.rst#labels>`__
+    provides convenience :rst:`:label-:` and :rst:`:label-flat-:` interpreted
+    text roles for labels as well.
+
 `Tables`_
 =========
 
