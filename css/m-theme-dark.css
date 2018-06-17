@@ -27,6 +27,7 @@
   --font: 'Source Sans Pro', sans-serif;
   --code-font: 'Source Code Pro', monospace;
   --font-size: 16px;
+  --code-font-size: 0.9em; /* *not* rem, so it follows surrounding font size */
   --paragraph-indent: 1.5rem;
   --paragraph-align: justify;
   --link-decoration: underline;

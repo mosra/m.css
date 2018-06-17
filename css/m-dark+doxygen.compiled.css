@@ -441,7 +441,7 @@ blockquote, hr {
 }
 pre {
   font-family: 'Source Code Pro', monospace, monospace, monospace;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   padding: 0.5rem 1rem;
   color: #e6e6e6;
   background-color: #282e36;
@@ -479,7 +479,7 @@ mark {
 }
 code {
   font-family: 'Source Code Pro', monospace, monospace, monospace;
-  font-size: 0.9rem;
+  font-size: 0.9em;
   padding: 0.125rem;
   color: #e6e6e6;
   background-color: #282e36;

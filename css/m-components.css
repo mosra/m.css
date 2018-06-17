@@ -80,7 +80,7 @@ blockquote, hr {
 }
 pre {
   font-family: var(--code-font), monospace, monospace; /* https://en.wikipedia.org/wiki/User:Davidgothberg/Test59 */
-  font-size: 0.9rem;
+  font-size: var(--code-font-size);
   padding: 0.5rem 1rem;
   color: var(--code-color);
   background-color: var(--code-background-color);
@@ -120,7 +120,7 @@ mark {
 }
 code {
   font-family: var(--code-font), monospace, monospace;
-  font-size: 0.9rem;
+  font-size: var(--code-font-size);
   padding: 0.125rem;
   color: var(--code-color);
   background-color: var(--code-background-color);
