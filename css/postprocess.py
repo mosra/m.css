@@ -35,7 +35,7 @@ closing_brace_rx = re.compile("^\\s*}\\s*$")
 comment_rx = re.compile("^\\s*(/\\*.*\\*/)?\\s*$")
 comment_start_rx = re.compile("^\\s*(/\\*.*)\\s*$")
 comment_end_rx = re.compile("^\\s*(.*\\*/)\\s*$")
-variable_declaration_rx = re.compile("^\\s*(?P<key>--[a-z-]+)\\s*:\\s*(?P<value>[^;]+)\\s*;\\s*$")
+variable_declaration_rx = re.compile("^\\s*(?P<key>--[a-z-]+)\\s*:\\s*(?P<value>[^;]+)\\s*;\\s*(/\\*.*\\*/)?\\s*$")
 variable_use_rx = re.compile("^(?P<before>.+)var\\((?P<key>--[a-z-]+)\\)(?P<after>.+)$")
 
 def postprocess(files, process_imports, out_file):
