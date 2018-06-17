@@ -22,9 +22,14 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os
+import shutil
+import subprocess
 import unittest
 
 from dox2html5 import parse_doxyfile, State
+
+from . import BaseTestCase
 
 class Doxyfile(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -44,8 +49,8 @@ class Doxyfile(unittest.TestCase):
             'M_EXPAND_INNER_TYPES': False,
             'M_FAVICON': 'favicon-dark.png',
             'M_FILE_TREE_EXPAND_LEVELS': 1,
-            'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
-            'M_LINKS_NAVBAR2': ['annotated', 'files'],
+            'M_LINKS_NAVBAR1': ['pages', 'modules'],
+            'M_LINKS_NAVBAR2': ['files', 'annotated'], # different order
             'M_MATH_CACHE_FILE': 'm.math.cache',
             'M_PAGE_FINE_PRINT': 'this is "quotes"',
             'M_PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
@@ -70,3 +75,25 @@ list using <span class="m-label m-dim">&darr;</span> and
         state = State()
         with self.assertRaises(NotImplementedError):
             parse_doxyfile(state, 'test/doxyfile/Doxyfile-subdirs')
+
+class Upgrade(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'upgrade_custom_variables', *args, **kwargs)
+
+    def test(self):
+        # Copy the Doxyfile to a new location because it gets overwritten
+        shutil.copyfile(os.path.join(self.path, 'Doxyfile'),
+                        os.path.join(self.path, 'Doxyfile-upgrade'))
+
+        subprocess.run(['doxygen', '-u', 'Doxyfile-upgrade'], cwd=self.path)
+        with open(os.path.join(self.path, 'Doxyfile-upgrade'), 'r') as f:
+            contents = f.read()
+
+        self.assertFalse('UNKNOWN_VARIABLE' in contents)
+        self.assertFalse('COMMENTED_OUT_VARIABLE' in contents)
+        self.assertTrue('## HASHED_COMMENTED_VARIABLE = 2' in contents)
+        self.assertTrue('##! HASHED_BANG_COMMENTED_VARIABLE = 3 \\' in contents)
+        self.assertTrue('##!   HASHED_BANG_COMMENTED_VARIABLE_CONT' in contents)
+        self.assertTrue('##!HASHED_BANG_COMMENTED_VARIABLE_NOSPACE = 4' in contents)
+        self.assertTrue('INPUT                  = 5' in contents)
+        self.assertTrue('##! HASHED_BANG_COMMENTED_VARIABLE_END = 6' in contents)

@@ -347,6 +347,19 @@ Variable                            Description
 Note that namespace, directory and page lists are always fully expanded as
 these are not expected to be excessively large.
 
+.. block-success:: Hiding extra options from Doxygen
+
+    Doxygen complains on unknown options, so it's possible to add them
+    prefixed with ``##!``. Line continuations are supported too, using ``##!``
+    ensures that the options also survive Doxyfile upgrades using
+    ``doxygen -u`` (which is not the case when the options would be specified
+    directly):
+
+    .. code:: ini
+
+        ##! M_LINKS_NAVBAR1 = pages \
+        ##!                   modules
+
 `Theme selection`_
 ------------------
 

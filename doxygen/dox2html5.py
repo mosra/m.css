@@ -2724,9 +2724,9 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     logging.debug("Parsing configuration from {}".format(doxyfile))
 
     comment_re = re.compile(r"""^\s*(#.*)?$""")
-    variable_re = re.compile(r"""^\s*(?P<key>[A-Z0-9_@]+)\s*=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
-    variable_continuation_re = re.compile(r"""^\s*(?P<key>[A-Z_]+)\s*\+=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
-    continuation_re = re.compile(r"""^\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
+    variable_re = re.compile(r"""^\s*(##!\s*)?(?P<key>[A-Z0-9_@]+)\s*=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
+    variable_continuation_re = re.compile(r"""^\s*(##!\s*)?(?P<key>[A-Z_]+)\s*\+=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
+    continuation_re = re.compile(r"""^\s*(##!\s*)?(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
     default_config = {
         'PROJECT_NAME': ['My Project'],
@@ -2786,13 +2786,9 @@ list using <span class="m-label m-dim">&darr;</span> and
         for line in f:
             line = line.strip()
 
-            # Ignore comments and empty lines. Comment also stops line
-            # continuation
-            if comment_re.match(line):
-                continued_line = None
-                continue
-
-            # Line continuation from before, append the line contents to it
+            # Line continuation from before, append the line contents to it.
+            # Needs to be before variable so variable-looking continuations
+            # are not parsed as variables.
             if continued_line:
                 var = continuation_re.match(line)
                 value, backslash = parse_value(var)
@@ -2827,6 +2823,13 @@ list using <span class="m-label m-dim">&darr;</span> and
 
                 # only because coverage.py can't handle continue
                 continue # pragma: no cover
+
+            # Ignore comments and empty lines. Comment also stops line
+            # continuation. Has to be last because variables can be inside
+            # comments.
+            if comment_re.match(line):
+                continued_line = None
+                continue
 
             logging.warning("{}: unmatchable line {}".format(doxyfile, line)) # pragma: no cover
 
