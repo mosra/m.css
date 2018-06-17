@@ -89,7 +89,8 @@ package manager:
 
 .. code:: sh
 
-    pip install jinja2 Pygments
+    # You may need sudo here
+    pip3 install jinja2 Pygments
 
 If your documentation includes math formulas, in addition you need some LaTeX
 distribution installed. Use your distribution package manager, for example on
@@ -993,7 +994,7 @@ positives, this information is not present in the non-verbose output.
 
 If your ``Doxyfile`` contains a non-empty :ini:`HTML_EXTRA_STYLESHEET` option,
 m.css will use CSS files from there instead of the builtin ones. Either
-override to an empty value it in your ``Doxyfile-mcss`` or specify proper CSS
+override it to an empty value in your ``Doxyfile-mcss`` or specify proper CSS
 files explicitly as mentioned in the `Theme selection`_ section.
 
 `Generating takes too long, crashes, asserts or generally fails`_

@@ -34,7 +34,7 @@ Theme
 
 .. role:: rst(code)
     :language: rst
-.. |x| unicode:: U+2715 .. nicer multiply sign
+.. |x| unicode:: U+00D7 .. nicer multiply sign
 
 The second largest offering of m.css is a full-featured theme for the
 `Pelican static site generator <https://getpelican.com/>`_. The theme is
