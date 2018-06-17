@@ -300,3 +300,11 @@ class SectionInFunction(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+class AnchorInBothGroupAndNamespace(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'anchor_in_both_group_and_namespace', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='namespaceFoo.xml')
+        self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))

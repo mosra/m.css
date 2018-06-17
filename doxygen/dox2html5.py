@@ -355,7 +355,8 @@ class State:
         self.images: List[str] = []
         self.current = ''
         self.current_prefix = []
-        self.current_compound = None
+        self.current_compound_url = None
+        self.current_definition_url_base = None
         self.parsing_toplevel_desc = False
 
 def slugify(text: str) -> str:
@@ -405,22 +406,30 @@ def parse_ref(state: State, element: ET.Element) -> str:
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
-def parse_id(element: ET.Element) -> Tuple[str, str]:
+def parse_id(element: ET.Element) -> Tuple[str, str, str]:
+    # Returns URL base (usually saved to state.current_definition_url_base and
+    # used by extract_id_hash() later), base URL (with file extension), and the
+    # actual ID
     id = element.attrib['id']
     i = id.rindex('_1')
-    base_url = id[:i] + '.html'
-    return base_url, id[i+2:]
+    return id[:i], id[:i] + '.html', id[i+2:]
 
 def extract_id_hash(state: State, element: ET.Element) -> str:
     # Can't use parse_id() here as sections with _1 in it have it verbatim
-    # unescaped and mess up with the rindex(). OTOH, can't use this approach in
+    # unescaped and mess up with rindex(). OTOH, can't use this approach in
     # parse_id() because for example enums can be present in both file and
     # namespace documentation, having the base_url either the file one or the
     # namespace one, depending on what's documented better. Ugh. See the
     # contents_section_underscore_one test for a verification.
+    #
+    # Can't use current compount URL base here, as definitions can have
+    # different URL base (again an enum being present in both file and
+    # namespace documentation). The state.current_definition_url_base usually
+    # comes from parse_id()[0]. See the
+    # contents_anchor_in_both_group_and_namespace test for a verification.
     id = element.attrib['id']
-    assert id.startswith(state.current_compound.url_base)
-    return id[len(state.current_compound.url_base)+2:]
+    assert id.startswith(state.current_definition_url_base)
+    return id[len(state.current_definition_url_base)+2:]
 
 def fix_type_spacing(type: str) -> str:
     return type.replace('&lt; ', '&lt;').replace(' &gt;', '&gt;').replace(' &amp;', '&amp;').replace(' *', '*')
@@ -1450,7 +1459,7 @@ def parse_enum(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'enum'
 
     enum = Empty()
-    enum.base_url, enum.id = parse_id(element)
+    state.current_definition_url_base, enum.base_url, enum.id = parse_id(element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
@@ -1468,8 +1477,7 @@ def parse_enum(state: State, element: ET.Element):
         value = Empty()
         # The base_url might be different than state.current_compound.url, but
         # should be the same as enum.base_url
-        value_base_url, value.id = parse_id(enumvalue)
-        assert value_base_url == enum.base_url
+        value.id = extract_id_hash(state, enumvalue)
         value.name = enumvalue.find('name').text
         # There can be an implicit initializer for enum value
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
@@ -1478,7 +1486,7 @@ def parse_enum(state: State, element: ET.Element):
         value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
         if value.description:
             enum.has_value_details = True
-            if enum.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
+            if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
                 result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
                 result.url = enum.base_url + '#' + value.id
@@ -1490,9 +1498,9 @@ def parse_enum(state: State, element: ET.Element):
                 state.search += [result]
         enum.values += [value]
 
-    enum.has_details = enum.base_url == state.current_compound.url and (enum.description or enum.has_value_details)
+    enum.has_details = enum.base_url == state.current_compound_url and (enum.description or enum.has_value_details)
     if enum.brief or enum.has_details or enum.has_value_details:
-        if enum.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.ENUM|(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0))
             result.url = enum.base_url + '#' + enum.id
@@ -1544,7 +1552,7 @@ def parse_typedef(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'typedef'
 
     typedef = Empty()
-    typedef.base_url, typedef.id = parse_id(element)
+    state.current_definition_url_base, typedef.base_url, typedef.id = parse_id(element)
     typedef.is_using = element.findtext('definition', '').startswith('using')
     typedef.type = parse_type(state, element.find('type'))
     typedef.args = parse_type(state, element.find('argsstring'))
@@ -1554,10 +1562,10 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.is_protected = element.attrib['prot'] == 'protected'
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
-    typedef.has_details = typedef.base_url == state.current_compound.url and (typedef.description or typedef.has_template_details)
+    typedef.has_details = typedef.base_url == state.current_compound_url and (typedef.description or typedef.has_template_details)
     if typedef.brief or typedef.has_details:
         # Avoid duplicates in search
-        if typedef.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if typedef.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
             result.url = typedef.base_url + '#' + typedef.id
@@ -1572,7 +1580,7 @@ def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'function'
 
     func = Empty()
-    func.base_url, func.id = parse_id(element)
+    state.current_definition_url_base, func.base_url, func.id = parse_id(element)
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
@@ -1659,10 +1667,10 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.base_url == state.current_compound.url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions)
+    func.has_details = func.base_url == state.current_compound_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions)
     if func.brief or func.has_details:
         # Avoid duplicates in search
-        if func.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if func.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.FUNC|(ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0))
             result.url = func.base_url + '#' + func.id
@@ -1679,7 +1687,7 @@ def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
 
     var = Empty()
-    var.base_url, var.id = parse_id(element)
+    state.current_definition_url_base, var.base_url, var.id = parse_id(element)
     var.type = parse_type(state, element.find('type'))
     if var.type.startswith('constexpr'):
         var.type = var.type[10:]
@@ -1693,10 +1701,10 @@ def parse_var(state: State, element: ET.Element):
     var.brief = parse_desc(state, element.find('briefdescription'))
     var.description, search_keywords, var.is_deprecated = parse_var_desc(state, element)
 
-    var.has_details = var.base_url == state.current_compound.url and var.description
+    var.has_details = var.base_url == state.current_compound_url and var.description
     if var.brief or var.has_details:
         # Avoid duplicates in search
-        if var.base_url == state.current_compound.url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if var.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.VAR|(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0))
             result.url = var.base_url + '#' + var.id
@@ -1737,7 +1745,7 @@ def parse_define(state: State, element: ET.Element):
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.DEFINE|(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0))
-            result.url = state.current_compound.url + '#' + define.id
+            result.url = state.current_compound_url + '#' + define.id
             result.prefix = []
             result.name = define.name
             result.keywords = search_keywords
@@ -2039,8 +2047,12 @@ def parse_xml(state: State, xml: str):
     # for pages because that doesn't reflect CASE_SENSE_NAMES. THANKS DOXYGEN.
     compound.url_base = ('index' if compound.id == 'indexpage' else compound.id)
     compound.url = compound.url_base + '.html'
-    # Save current compound URL for search data building and ID extraction
-    state.current_compound = compound
+    # Save current compound URL for search data building and ID extraction,
+    # save current URL prefix for extract_id_hash() (these are the same for
+    # top-level desc, but usually not for definitions, as an enum can be both
+    # in file docs and namespace docs, for example)
+    state.current_compound_url = compound.url
+    state.current_definition_url_base = compound.url_base
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
