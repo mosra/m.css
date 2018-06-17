@@ -64,20 +64,20 @@ def postprocess(files, process_imports, out_file):
             match = import_rx.match(line)
             if match:
                 if process_imports:
-                    imported_files += [match['file']]
+                    imported_files += [match.group('file')]
                 continue
 
             # Variable use, replace with actual value
             # TODO: more variables on the same line?
             match = variable_use_rx.match(line)
-            if match and match['key'] in variables:
-                out.write(match['before'])
-                out.write(variables[match['key']])
+            if match and match.group('key') in variables:
+                out.write(match.group('before'))
+                out.write(variables[match.group('key')])
                 # Strip the trailing comment, if there, to save some bytes
-                if match['after'].endswith('*/'):
-                    out.write(match['after'][:match['after'].rindex('/*')].rstrip())
+                if match.group('after').endswith('*/'):
+                    out.write(match.group('after')[:match.group('after').rindex('/*')].rstrip())
                 else:
-                    out.write(match['after'])
+                    out.write(match.group('after'))
                 out.write("\n")
                 continue
 
@@ -90,7 +90,7 @@ def postprocess(files, process_imports, out_file):
             # Variable declaration
             match = variable_declaration_rx.match(line)
             if match and in_variable_declarations:
-                variables[match['key']] = match['value']
+                variables[match.group('key')] = match.group('value')
                 continue
 
             # Comment or empty line, ignore
