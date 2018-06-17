@@ -120,7 +120,7 @@ m.css math
             .. button-info:: {filename}/plugins/math-and-code.rst#math
                 :class: m-fullwidth
 
-                Get the Pelican plugin
+                Get the plugin
 
 .. _demo:
 
