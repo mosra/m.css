@@ -59,6 +59,12 @@ script:
   # Test client doxygen JS
   - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR && istanbul cover doxygen/test/test-search.js; fi
 
+  # Test that compiled CSS is up-to-date. First display the diff, then check
+  # with diff-index which should print what's wrong and return with non-zero
+  # exit code.
+  - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/css && ./postprocess.sh && git diff --color=always . | cat; fi
+  - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/css && git diff-index --exit-code HEAD -- .; fi
+
 # Cache the downloaded doxygen
 cache:
   directories:
