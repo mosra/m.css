@@ -398,7 +398,7 @@ body {
 }
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
-  font-weight: bold;
+  font-weight: 600;
 }
 h1 {
   margin-bottom: 1rem;
@@ -1047,7 +1047,7 @@ figure.m-figure.m-flat img {
 figure.m-figure figcaption {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.17rem;
 }
 figure.m-figure a img {
@@ -1381,7 +1381,7 @@ body > header > nav a {
 }
 body > header > nav a#m-navbar-brand, body > header > nav a#m-navbar-show, body > header > nav a#m-navbar-hide {
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 1.125rem;
   padding-left: 1rem;
   padding-right: 1rem;
