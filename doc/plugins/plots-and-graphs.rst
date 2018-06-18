@@ -22,8 +22,8 @@
     DEALINGS IN THE SOFTWARE.
 ..
 
-Plots
-#####
+Plots and graphs
+################
 
 :breadcrumb: {filename}/plugins.rst Pelican plugins
 :footer:
@@ -32,15 +32,24 @@ Plots
 
         `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Links and other » <{filename}/plugins/math-and-code.rst>`_
 
-Allows you to render plots directly from data specified inline in the page
-source. Similarly to `math rendering <{filename}/admire/math.rst>`_, the plots
-are rendered to a SVG that's embedded directly in the HTML markup.
+.. role:: dot(code)
+    :language: dot
+
+These plugin allow you to render plots and graphs directly from data specified
+inline in the page source. Similarly to `math rendering <{filename}/admire/math.rst>`_,
+the graphics is rendered to a SVG that's embedded directly in the HTML markup.
+
+.. note-danger:: Experimental features
+
+    Please note that these plugins are highly experimental and at the moment
+    created to fulfill a particular immediate need of the author. They might
+    not work reliably on general input.
 
 .. contents::
     :class: m-block m-default
 
-`How to use`_
-=============
+`Plots`_
+========
 
 Download the `m/plots.py <{filename}/plugins.rst>`_ file, put it including the
 ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.plots``
@@ -66,11 +75,11 @@ or your distribution package manager:
 The plugin produces SVG plots that make use of the
 `CSS plot styling <{filename}/css/components.rst#plots>`_.
 
-`Bar graphs`_
-=============
+`Bar charts`_
+-------------
 
-Currently the only supported plot type is a horizontal bar graph, denoted by
-:rst:`:type: hbar`:
+Currently the only supported plot type is a horizontal bar chart, denoted by
+:rst:`.. plot::` directive with :rst:`:type: hbar`:
 
 .. code-figure::
 
@@ -105,7 +114,7 @@ It's also optionally possible to add error bars using :rst:`:error:` and
 configure bar colors using :rst:`:colors:`. The colors correspond to m.css
 `color classes <{filename}/css/components.rst#colors>`_ and you can either
 use one color for all or one for each value, separated by whitespace. It's
-possible to add an extra line of labels using :rst:`:labels_extra:`. Bar graph
+possible to add an extra line of labels using :rst:`:labels_extra:`. Bar chart
 height is calculated automatically based on amount of values, you can adjust
 the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
 
@@ -148,3 +157,119 @@ the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
         :errors: 0.74 3.65 9.45 25.66
         :colors: success info danger dim
         :bar_height: 0.6
+
+`Graphs`_
+=========
+
+Download the `m/dot.py <{filename}/plugins.rst>`_ file, put it including the
+``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.dot``
+package to your :py:`PLUGINS` in ``pelicanconf.py``.
+
+.. note-danger::
+
+    Note that this plugin, unlike most of the others, requires at least Python
+    3.5 to run properly.
+
+.. code:: python
+
+    PLUGINS += ['m.dot']
+    M_DOT_FONT = 'Source Sans Pro'
+
+Set :py:`M_DOT_FONT` to a font that matches your CSS theme (it's Source Sans
+Pro for `builtin m.css themes <{filename}/css/themes.rst>`_), note that you
+*need to have the font installed* on your system, otherwise it will fall back
+to whatever system font it finds instead (for example DejaVu Sans) and the
+output won't look as expected. In addition you need the
+`Graphviz <https://graphviz.org/>`_ library installed. Get it via your
+distribution package manager, for example on Ubuntu:
+
+.. code:: sh
+
+    sudo apt install graphviz
+
+The plugin produces SVG graphcs that make use of the
+`CSS graph styling <{filename}/css/components.rst#graphs>`_.
+
+`Directed graphs`_
+--------------------
+
+The :rst:`.. digraph::` directive uses the ``dot`` tool to produce directed
+graphs. The required directive argument is graph title, contents is whatever
+you would put inside the :dot:`digraph` block. Use the :rst:`:class:` to
+specify a `CSS color class <{filename}/css/components.rst#colors>`_ for the
+whole graph, it's also possible to color particular nodes and edges using the
+(currently undocumented) ``class`` attribute.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. digraph:: Finite state machine
+
+            rankdir=LR
+
+            S₁ [shape=circle, class="m-primary", peripheries=2]
+            S₂ [shape=circle]
+            _  [style=invis]
+
+            _  -> S₁ [class="m-warning"]
+            S₁ -> S₂ [label="0"]
+            S₂ -> S₁ [label="0"]
+            S₁ -> S₁ [label="1"]
+            S₂ -> S₂ [label="1"]
+
+    .. digraph:: Finite state machine
+
+        rankdir=LR
+
+        S₁ [shape=circle, class="m-primary", peripheries=2]
+        S₂ [shape=circle]
+        _  [style=invis]
+        b  [style=invis]
+
+        _  -> S₁ [class="m-warning"]
+        S₂ -> b  [style=invis]
+        S₁ -> S₂ [label="0"]
+        S₂ -> S₁ [label="0"]
+        S₁ -> S₁ [label="1"]
+        S₂ -> S₂ [label="1"]
+
+For more information check the official
+`GraphViz Reference <http://www.graphviz.org/doc/info/>`_, in particular the
+extensive `attribute documentation <http://www.graphviz.org/doc/info/attrs.html>`_.
+
+.. note-warning::
+
+    Note that currently all styling is discarded and only the
+    ``class`` and ``fontsize`` attributes are taken into account.
+
+`Undirected graphs`_
+--------------------
+
+The :rst:`.. graph::` and :rst:`.. strict-graph::` directives are similar to
+:rst:`.. digraph::`, but allow undirected graphs only. Again these are
+equivalent to :dot:`graph` and :dot:`strict graph` in the DOT language:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. graph:: A house
+            :class: m-success
+
+            { rank=same 0 1 }
+            { rank=same 2 4 }
+
+            0 -- 1 -- 2 -- 3 -- 4 -- 0 -- 2 -- 4 --1
+            3 [style=solid]
+
+    .. graph:: A house
+        :class: m-success
+
+        rankdir=BT
+
+        { rank=same 0 1 }
+        { rank=same 2 4 }
+
+        0 -- 1 -- 2 -- 3 -- 4 -- 0 -- 2 -- 4 --1
+        3 [style=filled]

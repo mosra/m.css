@@ -30,7 +30,7 @@ Links and other
     .. note-dim::
         :class: m-text-center
 
-        `« Plots <{filename}/plugins/plots.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Metadata » <{filename}/plugins/metadata.rst>`_
+        `« Plots and graphs <{filename}/plugins/plots-and-graphs.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Metadata » <{filename}/plugins/metadata.rst>`_
 
 .. role:: py(code)
     :language: py

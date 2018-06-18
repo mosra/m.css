@@ -12,6 +12,10 @@ matrix:
       - JOBID=py34
     - language: python
       python: 3.5
+      addons:
+        apt:
+          packages:
+          - graphviz
       env:
       - WITH_THEME=ON
       - WITH_DOXYGEN=OFF
@@ -19,6 +23,10 @@ matrix:
       - JOBID=py35
     - language: python
       python: 3.6
+      addons:
+        apt:
+          packages:
+          - graphviz
       env:
       - WITH_THEME=ON
       - WITH_DOXYGEN=ON

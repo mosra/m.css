@@ -962,13 +962,10 @@ div.m-button.m-default a:active svg.m-math {
   fill: var(--link-active-color);
 }
 
-/* Plots */
-div.m-plot svg {
-  text-align: center;
-}
-div.m-plot .m-background {
-  fill: var(--plot-background-color);
-}
+/* Plots, graphs */
+div.m-plot, div.m-graph { text-align: center; }
+div.m-plot svg, div.m-graph svg { max-width: 100%; }
+div.m-plot .m-background { fill: var(--plot-background-color); }
 /* Font sizes are hardcoded in m.plots, change there first! */
 div.m-plot svg .m-label { font-size: 11px; }
 div.m-plot svg .m-title { font-size: 13px; }
@@ -982,50 +979,238 @@ div.m-plot svg .m-error {
   stroke-width: 1.5;
 }
 div.m-plot svg .m-label.m-dim { fill: var(--dim-color); }
+div.m-graph svg g.m-edge path, div.m-graph svg g.m-node.m-flat ellipse,
+div.m-graph svg g.m-node.m-flat polygon {
+  fill: none;
+}
+div.m-graph svg g.m-node:not(.m-flat) text {
+  fill: var(--button-background-color);
+}
 
-/* Colored math block, inline math, colored math parts, plots */
+/* Colored math block, inline math, colored math parts, plots and
+   global-colored graphs. Should be before local graph coloring, so the latter
+   can override this. */
 div.m-math svg, svg.m-math { fill: var(--color); }
 div.m-math.m-default svg, svg.m-math.m-default,
 div.m-math svg g.m-default, svg.m-math g.m-default,
 div.m-math svg rect.m-default, svg.m-math rect.m-default,
-div.m-plot svg .m-bar.m-default {
+div.m-plot svg .m-bar.m-default,
+div.m-graph svg g.m-edge polygon,
+div.m-graph svg g.m-node:not(.m-flat) ellipse,
+div.m-graph svg g.m-node:not(.m-flat) polygon,
+div.m-graph svg g.m-edge text,
+div.m-graph svg g.m-node.m-flat text,
+div.m-graph.m-default svg g.m-edge polygon,
+div.m-graph.m-default svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-default svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-default svg g.m-edge text,
+div.m-graph.m-default svg g.m-node.m-flat text {
   fill: var(--default-color);
+}
+div.m-graph svg g.m-edge polygon,
+div.m-graph svg g.m-edge path,
+div.m-graph svg g.m-node ellipse,
+div.m-graph svg g.m-node polygon,
+div.m-graph.m-default svg g.m-edge polygon,
+div.m-graph.m-default svg g.m-edge path,
+div.m-graph.m-default svg g.m-node ellipse,
+div.m-graph.m-default svg g.m-node polygon {
+  stroke: var(--default-color);
 }
 div.m-math.m-primary svg, svg.m-math.m-primary,
 div.m-math svg g.m-primary, svg.m-math g.m-primary,
 div.m-math svg rect.m-primary, svg.m-math rect.m-primary,
-div.m-plot svg .m-bar.m-primary {
+div.m-plot svg .m-bar.m-primary,
+div.m-graph.m-primary svg g.m-edge polygon,
+div.m-graph.m-primary svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-primary svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-primary svg g.m-edge text,
+div.m-graph.m-primary svg g.m-node.m-flat text {
   fill: var(--primary-color);
+}
+div.m-graph.m-primary svg g.m-edge polygon,
+div.m-graph.m-primary svg g.m-edge path,
+div.m-graph.m-primary svg g.m-node ellipse,
+div.m-graph.m-primary svg g.m-node polygon {
+  stroke: var(--primary-color);
 }
 div.m-math.m-success svg, svg.m-math.m-success,
 div.m-math svg g.m-success, svg.m-math g.m-success,
 div.m-math svg rect.m-success, svg.m-math rect.m-success,
-div.m-plot svg .m-bar.m-success {
+div.m-plot svg .m-bar.m-success,
+div.m-graph.m-success svg g.m-edge polygon,
+div.m-graph.m-success svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-success svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-success svg g.m-edge text,
+div.m-graph.m-success svg g.m-node.m-flat text {
   fill: var(--success-color);
+}
+div.m-graph.m-success svg g.m-edge polygon,
+div.m-graph.m-success svg g.m-edge path,
+div.m-graph.m-success svg g.m-node ellipse,
+div.m-graph.m-success svg g.m-node polygon {
+  stroke: var(--success-color);
 }
 div.m-math.m-warning svg, svg.m-math.m-warning,
 div.m-math svg g.m-warning, svg.m-math g.m-warning,
 div.m-math svg rect.m-warning, svg.m-math rect.m-warning,
-div.m-plot svg .m-bar.m-warning {
+div.m-plot svg .m-bar.m-warning,
+div.m-graph.m-warning svg g.m-edge polygon,
+div.m-graph.m-warning svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-warning svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-warning svg g.m-edge text,
+div.m-graph.m-warning svg g.m-node.m-flat text {
   fill: var(--warning-color);
+}
+div.m-graph.m-warning svg g.m-edge polygon,
+div.m-graph.m-warning svg g.m-edge path,
+div.m-graph.m-warning svg g.m-node ellipse,
+div.m-graph.m-warning svg g.m-node polygon {
+  stroke: var(--warning-color);
 }
 div.m-math.m-danger svg, svg.m-math.m-danger,
 div.m-math svg g.m-danger, svg.m-math g.m-danger,
 div.m-math svg rect.m-danger, svg.m-math rect.m-danger,
-div.m-plot svg .m-bar.m-danger {
+div.m-plot svg .m-bar.m-danger,
+div.m-graph.m-danger svg g.m-edge polygon,
+div.m-graph.m-danger svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-danger svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-danger svg g.m-edge text,
+div.m-graph.m-danger svg g.m-node.m-flat text {
   fill: var(--danger-color);
+}
+div.m-graph.m-danger svg g.m-edge polygon,
+div.m-graph.m-danger svg g.m-edge path,
+div.m-graph.m-danger svg g.m-node ellipse,
+div.m-graph.m-danger svg g.m-node polygon {
+  stroke: var(--danger-color);
 }
 div.m-math.m-info svg, svg.m-math.m-info,
 div.m-math svg g.m-info, svg.m-math g.m-info,
 div.m-math svg rect.m-info, svg.m-math rect.m-info,
-div.m-plot svg .m-bar.m-info {
+div.m-plot svg .m-bar.m-info,
+div.m-graph.m-info svg g.m-edge polygon,
+div.m-graph.m-info svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-info svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-info svg g.m-edge text,
+div.m-graph.m-info svg g.m-node.m-flat text {
   fill: var(--info-color);
+}
+div.m-graph.m-info svg g.m-edge polygon,
+div.m-graph.m-info svg g.m-edge path,
+div.m-graph.m-info svg g.m-node ellipse,
+div.m-graph.m-info svg g.m-node polygon {
+  stroke: var(--info-color);
 }
 div.m-math.m-dim svg, svg.m-math.m-dim,
 div.m-math svg g.m-dim, svg.m-math g.m-dim,
 div.m-math svg rect.m-dim, svg.m-math rect.m-dim,
-div.m-plot svg .m-bar.m-dim {
+div.m-plot svg .m-bar.m-dim,
+div.m-graph.m-dim svg g.m-edge polygon,
+div.m-graph.m-dim svg g.m-node:not(.m-flat) ellipse,
+div.m-graph.m-dim svg g.m-node:not(.m-flat) polygon,
+div.m-graph.m-dim svg g.m-edge text,
+div.m-graph.m-dim svg g.m-node.m-flat text {
   fill: var(--dim-color);
+}
+div.m-graph.m-dim svg g.m-edge polygon,
+div.m-graph.m-dim svg g.m-edge path,
+div.m-graph.m-dim svg g.m-node ellipse,
+div.m-graph.m-dim svg g.m-node polygon {
+  stroke: var(--dim-color);
+}
+
+/* Local-colored graphs. Later so it overrides global coloring. */
+div.m-graph svg g.m-edge.m-default polygon,
+div.m-graph svg g.m-node.m-default:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-default:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-default text,
+div.m-graph svg g.m-node.m-default.m-flat text {
+  fill: var(--default-color);
+}
+div.m-graph svg g.m-edge.m-default polygon,
+div.m-graph svg g.m-edge.m-default path,
+div.m-graph svg g.m-node.m-default ellipse,
+div.m-graph svg g.m-node.m-default polygon {
+  stroke: var(--default-color);
+}
+div.m-graph svg g.m-edge.m-primary polygon,
+div.m-graph svg g.m-node.m-primary:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-primary:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-primary text,
+div.m-graph svg g.m-node.m-primary.m-flat text {
+  fill: var(--primary-color);
+}
+div.m-graph svg g.m-edge.m-primary polygon,
+div.m-graph svg g.m-edge.m-primary path,
+div.m-graph svg g.m-node.m-primary ellipse,
+div.m-graph svg g.m-node.m-primary polygon {
+  stroke: var(--primary-color);
+}
+div.m-graph svg g.m-edge.m-success polygon,
+div.m-graph svg g.m-node.m-success:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-success:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-success text,
+div.m-graph svg g.m-node.m-success.m-flat text {
+  fill: var(--success-color);
+}
+div.m-graph svg g.m-edge.m-success polygon,
+div.m-graph svg g.m-edge.m-success path,
+div.m-graph svg g.m-node.m-success ellipse,
+div.m-graph svg g.m-node.m-success polygon {
+  stroke: var(--success-color);
+}
+div.m-graph svg g.m-edge.m-warning polygon,
+div.m-graph svg g.m-node.m-warning:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-warning:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-warning text,
+div.m-graph svg g.m-node.m-warning.m-flat text {
+  fill: var(--warning-color);
+}
+div.m-graph svg g.m-edge.m-warning polygon,
+div.m-graph svg g.m-edge.m-warning path,
+div.m-graph svg g.m-node.m-warning ellipse,
+div.m-graph svg g.m-node.m-warning polygon {
+  stroke: var(--warning-color);
+}
+div.m-graph svg g.m-edge.m-danger polygon,
+div.m-graph svg g.m-node.m-danger:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-danger:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-danger text,
+div.m-graph svg g.m-node.m-danger.m-flat text {
+  fill: var(--danger-color);
+}
+div.m-graph svg g.m-edge.m-danger polygon,
+div.m-graph svg g.m-edge.m-danger path,
+div.m-graph svg g.m-node.m-danger ellipse,
+div.m-graph svg g.m-node.m-danger polygon {
+  stroke: var(--danger-color);
+}
+div.m-graph svg g.m-edge.m-info polygon,
+div.m-graph svg g.m-node.m-info:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-info:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-info text,
+div.m-graph svg g.m-node.m-info.m-flat text {
+  fill: var(--info-color);
+}
+div.m-graph svg g.m-edge.m-info polygon,
+div.m-graph svg g.m-edge.m-info path,
+div.m-graph svg g.m-node.m-info ellipse,
+div.m-graph svg g.m-node.m-info polygon {
+  stroke: var(--info-color);
+}
+div.m-graph svg g.m-edge.m-dim polygon,
+div.m-graph svg g.m-node.m-dim:not(.m-flat) ellipse,
+div.m-graph svg g.m-node.m-dim:not(.m-flat) polygon,
+div.m-graph svg g.m-edge.m-dim text,
+div.m-graph svg g.m-node.m-dim.m-flat text {
+  fill: var(--dim-color);
+}
+div.m-graph svg g.m-edge.m-dim polygon,
+div.m-graph svg g.m-edge.m-dim path,
+div.m-graph svg g.m-node.m-dim ellipse,
+div.m-graph svg g.m-node.m-dim polygon {
+  stroke: var(--dim-color);
 }
 
 /* Spacing after every block element, but not after the last and not when

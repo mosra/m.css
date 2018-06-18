@@ -1102,12 +1102,90 @@ with :css:`.m-line`, error bars with :css:`.m-error`. Use
         .. raw:: html
             :file: components-plot.svg
 
-.. note-success::
+.. note-info::
 
     Plot styling is designed to be used with extenal tools, for example Python
-    Matplotlib. If you use Pelican, m.css has a `Plots <{filename}/plugins/plots.rst>`__
-    plugin that allows you to produce plots using :rst:`.. plot::` directives
-    directly in your :abbr:`reST <reStructuredText>` markup.
+    Matplotlib. If you use Pelican, m.css has a
+    `m.plots <{filename}/plugins/plots-and-graphs.rst#plots>`__ plugin that
+    allows you to produce plots using :rst:`.. plot::` directives directly in
+    your :abbr:`reST <reStructuredText>` markup.
+
+`Graphs`_
+=========
+
+Wrap a :html:`<svg>` element in a :html:`<div class="m-graph">` to make it
+centered and occupying full width at most. Wrap edge :html:`<path>`,
+:html:`<polygon>` and :html:`<text>` elements in :html:`<g class="m-edge">` to
+style them as edges, wrap node :html:`<polygon>`, :html:`<ellipse>` and
+:html:`<text>` elements in :html:`<g class="m-node">` to style them as nodes.
+You can use `CSS color classes <#colors>`_ on either the wrapper :html:`<div>`
+or on the :html:`<g>` to color the whole graph or its parts. Use :css:`.m-flat`
+on a :css:`.m-node` to make it just an outline instead of filled.
+
+.. code-figure::
+
+    .. code:: html
+
+        <div class="m-graph m-info"><svg>
+          <g class="m-node">
+            <ellipse cx="27.5772" cy="-27.5772" rx="27.6545" ry="27.6545"/>
+            <text text-anchor="middle" x="27.5772" y="-23.7772">yes</text>
+          </g>
+          <g class="m-node m-flat">
+            <ellipse cx="134.9031" cy="-27.5772" rx="25" ry="25"/>
+            <text text-anchor="middle" x="134.9031" y="-23.7772">no</text>
+          </g>
+          <g class="m-edge">
+            <path d="M55.2163,-27.5772C68.8104,-27.5772 85.3444,-27.5772 99.8205,-27.5772"/>
+            <polygon points="99.9261,-31.0773 109.9261,-27.5772 99.9261,-24.0773 99.9261,-31.0773"/>
+            <text text-anchor="middle" x="82.6543" y="-32.7772">no</text>
+          </g>
+          <g class="m-edge m-dim">
+            <path d="M125.3459,-50.4471C124.3033,-61.0564 127.489,-70.3259 134.9031,-70.3259 139.7685,-70.3259 142.813,-66.3338 144.0365,-60.5909"/>
+            <polygon points="147.5398,-60.5845 144.4603,-50.4471 140.5459,-60.2923 147.5398,-60.5845"/>
+            <text text-anchor="middle" x="134.9031" y="-75.5259">no</text>
+          </g>
+        </svg></div>
+
+    .. raw:: html
+
+        <div class="m-graph m-info">
+        <svg style="width: 10.500rem; height: 6.000rem;" viewBox="0.00 0.00 167.65 96.33">
+        <g transform="scale(1 1) rotate(0) translate(4 92.3259)">
+        <title>FSM</title>
+        <g class="m-node">
+        <title>yes</title>
+        <ellipse cx="27.5772" cy="-27.5772" rx="27.6545" ry="27.6545"/>
+        <text text-anchor="middle" x="27.5772" y="-23.7772">yes</text>
+        </g>
+        <g class="m-node m-flat">
+        <title>no</title>
+        <ellipse cx="134.9031" cy="-27.5772" rx="25" ry="25"/>
+        <text text-anchor="middle" x="134.9031" y="-23.7772">no</text>
+        </g>
+        <g class="m-edge">
+        <title>yes&#45;&gt;no</title>
+        <path d="M55.2163,-27.5772C68.8104,-27.5772 85.3444,-27.5772 99.8205,-27.5772"/>
+        <polygon points="99.9261,-31.0773 109.9261,-27.5772 99.9261,-24.0773 99.9261,-31.0773"/>
+        <text text-anchor="middle" x="82.6543" y="-32.7772">no</text>
+        </g>
+        <g class="m-edge m-dim">
+        <title>no&#45;&gt;no</title>
+        <path d="M125.3459,-50.4471C124.3033,-61.0564 127.489,-70.3259 134.9031,-70.3259 139.7685,-70.3259 142.813,-66.3338 144.0365,-60.5909"/>
+        <polygon points="147.5398,-60.5845 144.4603,-50.4471 140.5459,-60.2923 147.5398,-60.5845"/>
+        <text text-anchor="middle" x="134.9031" y="-75.5259">no</text>
+        </g>
+        </g>
+        </svg>
+        </div>
+
+.. note-primary::
+
+    Similarly to plot styling, graph styling is designed to be used with
+    external tools, for example Graphviz. If you use Pelican, m.css has a
+    `m.dot <{filename}/plugins/plots-and-graphs.rst#graphs>`__ plugin that
+    allows you to produce plots using :rst:`.. graph::` directives directly in
+    your :abbr:`reST <reStructuredText>` markup.
 
 `Padding`_
 ==========
