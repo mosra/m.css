@@ -1225,15 +1225,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 has_block_elements = True
                 out.parsed += '<div class="m-math{}">{}</div>'.format(
                     ' ' + add_css_class if add_css_class else '',
-                    latex2svgextra.patch(i.text, svg, ''))
+                    latex2svgextra.patch(i.text, svg, None, ''))
             else:
                 # CSS classes and styling for proper vertical alignment. Depth is relative
                 # to font size, describes how below the line the text is. Scaling it back
                 # to 12pt font, scaled by 125% as set above in the config.
-                attribs = ' class="m-math{}" style="vertical-align: -{:.1f}pt;"'.format(
-                    ' ' + add_inline_css_class if add_inline_css_class else '',
-                    (depth or 0.0)*12*1.25)
-                out.parsed += latex2svgextra.patch(i.text, svg, attribs)
+                attribs = ' class="m-math{}"'.format(' ' + add_inline_css_class if add_inline_css_class else '')
+                out.parsed += latex2svgextra.patch(i.text, svg, depth, attribs)
 
         # Inline elements
         elif i.tag == 'linebreak':

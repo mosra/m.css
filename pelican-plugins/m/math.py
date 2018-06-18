@@ -64,7 +64,7 @@ class Math(rst.Directive):
 
             container = nodes.container(**self.options)
             container['classes'] += ['m-math']
-            node = nodes.raw(self.block_text, latex2svgextra.patch(block, svg, ''), format='html')
+            node = nodes.raw(self.block_text, latex2svgextra.patch(block, svg, None, ''), format='html')
             node.line = self.content_offset + 1
             self.add_name(node)
             container.append(node)
@@ -101,12 +101,8 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
 
     depth, svg = latex2svgextra.fetch_cached_or_render("$" + text + "$")
 
-    # CSS classes and styling for proper vertical alignment. Depth is relative
-    # to font size, describes how below the line the text is. Scaling it back
-    # to 12pt font, scaled by 125% as set above in the config.
-    attribs = ' class="{}" style="vertical-align: -{:.1f}pt;"'.format(classes, depth*12*1.25)
-
-    node = nodes.raw(rawtext, latex2svgextra.patch(text, svg, attribs), format='html', **options)
+    attribs = ' class="{}"'.format(classes)
+    node = nodes.raw(rawtext, latex2svgextra.patch(text, svg, depth, attribs), format='html', **options)
     return [node], []
 
 def configure_pelican(pelicanobj):
