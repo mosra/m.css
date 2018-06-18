@@ -184,7 +184,6 @@ a.m-dox-search-icon {
   padding-right: 1rem;
 }
 a.m-dox-search-icon svg {
-  height: 0.9rem;
   fill: var(--header-link-color);
 }
 body > header > nav #m-navbar-collapse a.m-dox-search-icon svg {
