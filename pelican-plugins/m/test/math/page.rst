@@ -34,3 +34,11 @@ Properly escape the formula source:
     \begin{array}{rcl}
         x & = & 1
     \end{array}
+
+.. class:: m-text m-big
+
+Formulas :math:`a^2` in big text are big.
+
+.. class:: m-text m-small
+
+Formulas :math:`a^2` in small text are small.
