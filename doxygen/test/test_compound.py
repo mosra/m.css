@@ -207,6 +207,18 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
         # The file should have just links to detailed docs
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
+class NamespaceMembersInFileScopeDefineBaseUrl(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'namespace_members_in_file_scope_define_base_url', *args, **kwargs)
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
+                         "https://github.com/doxygen/doxygen/pull/653")
+    def test(self):
+        self.run_dox2html5(wildcard='File_8h.xml')
+
+        # The file should have just links to detailed docs
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
 class FilenameCase(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'filename_case', *args, **kwargs)

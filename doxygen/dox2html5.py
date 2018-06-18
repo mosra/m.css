@@ -1719,7 +1719,11 @@ def parse_define(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'define'
 
     define = Empty()
-    define.id = extract_id_hash(state, element)
+    # defines are always only defined in files, never duplicated to namespaces,
+    # so we don't need to have define.base_url. Can't use extract_id_hash()
+    # here because current_definition_url_base might be stale. See a test in
+    # compound_namespace_members_in_file_scope_define_base_url.
+    state.current_definition_url_base, _, define.id = parse_id(element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
     define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
