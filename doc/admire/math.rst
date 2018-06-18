@@ -30,6 +30,8 @@ m.css math
 .. role:: text-primary
     :class: m-text m-primary
 
+.. |o| replace:: ·
+
 :url: admire/math/
 :cover: {filename}/static/cover-math.jpg
 :summary: The fastest possible math rendering for the modern web
@@ -75,11 +77,11 @@ m.css math
 
         .. container:: m-col-m-12
 
-            .. https://en.wikipedia.org/wiki/Rendering_equation
+            .. a copy of the following is below
 
             .. math::
 
-                L_o(p,\omega_o) = \int\limits_{\Omega} f_r(p,\omega_i,\omega_o) L_i(p,\omega_i) n \cdot \omega_i d\omega_i
+                {\color{m-primary} L_o (\boldsymbol{x}, \omega_o)} = {\color{m-danger}\int\limits_{\Omega}} {\color{m-warning} f_r(\boldsymbol{x},\omega_i,\omega_o)} {\color{m-success} L_i(\boldsymbol{x},\omega_i)} {\color{m-info} ( \omega_i \cdot \boldsymbol{n})} {\color{m-danger} \operatorname d \omega_i}
 
 .. container:: m-row m-container-inflate
 
@@ -132,11 +134,24 @@ performs and that there is no blank space or jumping until the math appears.
 View the page source to verify that there is nothing extra being loaded to make
 this happen.
 
+Try to resize the window --- everything is possible, so why not have a
+different layout of long equations optimized for smaller screens?
+
     .. math::
+        :class: m-show-m
 
         \pi = \cfrac{4} {1+\cfrac{1^2} {2+\cfrac{3^2} {2+\cfrac{5^2} {2+\ddots}}}}
             = \sum_{n=0}^\infty \frac{4(-1)^n}{2n+1}
             = \frac{4}{1} - \frac{4}{3} + \frac{4}{5} - \frac{4}{7} +- \cdots
+
+    .. math::
+        :class: m-hide-m
+
+        \begin{array}{rcl}
+        \pi &=& \cfrac{4} {1+\cfrac{1^2} {2+\cfrac{3^2} {2+\cfrac{5^2} {2+\ddots}}}}
+             =  \sum_{n=0}^\infty \frac{4(-1)^n}{2n+1} \\
+            &=& \frac{4}{1} - \frac{4}{3} + \frac{4}{5} - \frac{4}{7} +- \cdots
+        \end{array}
 
     .. class:: m-text m-text-right m-dim m-em
 
@@ -158,20 +173,8 @@ Matrices render pretty well also:
     --- `QR decomposition <https://en.wikipedia.org/wiki/QR_decomposition>`_,
     Wikipedia
 
-And :text-primary:`everything can be colored` just by putting CSS classes
-around:
-
-    .. math::
-        :class: m-primary
-
-        X_{k+N} \ \stackrel{\mathrm{def}}{=} \ \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} (k+N) n} = \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} k n}  \underbrace{e^{-2 \pi i n}}_{1} = \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} k n} = X_k.
-
-    .. class:: m-text m-text-right m-dim m-em
-
-    --- `Discrete Fourier transform § Periodicity <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Periodicity>`_, Wikipedia
-
-And now, finally, some inline math. Note the vertical alignment, consistent
-line spacing and that nothing gets relayouted during page load:
+Now, some inline math --- note the vertical alignment, consistent line spacing
+and that nothing gets relayouted during page load:
 
     Multiplying :math:`x_n` by a *linear phase* :math:`e^{\frac{2\pi i}{N}n m}`
     for some integer :math:`m` corresponds to a *circular shift* of the output
@@ -191,3 +194,58 @@ line spacing and that nothing gets relayouted during page load:
     .. class:: m-text m-text-right m-dim m-em
 
     ---  `Discrete Fourier transform § Shift theorem <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Shift_theorem>`_, Wikipedia
+
+The inline SVG follows surrounding text size, so you can use it easily in more
+places than just the main copy:
+
+    .. button-default:: https://tauday.com/
+
+        The :math:`\tau` manifesto
+
+        they say :math:`\pi` is wrong
+
+:text-primary:`Everything can be colored` just by putting CSS classes around:
+
+    .. math::
+        :class: m-primary m-show-m
+
+        X_{k+N} \ \stackrel{\mathrm{def}}{=} \ \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} (k+N) n} = \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} k n}  \underbrace{e^{-2 \pi i n}}_{1} = \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} k n} = X_k.
+
+    .. math::
+        :class: m-primary m-hide-m
+
+        \begin{array}{rcl}
+            X_{k+N} & \ \stackrel{\mathrm{def}}{=} \ & \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} (k+N) n} \\
+             & = & \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} k n}  \underbrace{e^{-2 \pi i n}}_{1} \\
+             & = & \sum_{n=0}^{N-1} x_n e^{-\frac{2\pi i}{N} k n} = X_k.
+        \end{array}
+
+    .. class:: m-text m-text-right m-dim m-em
+
+    --- `Discrete Fourier transform § Periodicity <https://en.wikipedia.org/wiki/Discrete_Fourier_transform#Periodicity>`_, Wikipedia
+
+But it's also possible to color only parts of the equation --- with a color
+that matches page theme.
+
+    .. math::
+        :class: m-show-s
+
+        {\color{m-primary} L_o (\boldsymbol{x}, \omega_o)} = {\color{m-danger}\int\limits_{\Omega}} {\color{m-warning} f_r(\boldsymbol{x},\omega_i,\omega_o)} {\color{m-success} L_i(\boldsymbol{x},\omega_i)} {\color{m-info} ( \omega_i \cdot \boldsymbol{n})} {\color{m-danger} \operatorname d \omega_i}
+
+    .. math::
+        :class: m-hide-s m-text m-small
+
+        {\color{m-primary} L_o (\boldsymbol{x}, \omega_o)} = {\color{m-danger}\int\limits_{\Omega}} {\color{m-warning} f_r(\boldsymbol{x},\omega_i,\omega_o)} {\color{m-success} L_i(\boldsymbol{x},\omega_i)} {\color{m-info} ( \omega_i \cdot \boldsymbol{n})} {\color{m-danger} \operatorname d \omega_i}
+
+    .. class:: m-text-center m-noindent
+
+        :label-primary:`outgoing light` |o| :label-danger:`integral`
+        |o| :label-warning:`BRDF` |o| :label-success:`incoming light`
+        |o| :label-info:`normal attenuation`
+
+    .. class:: m-text m-text-right m-dim m-em
+
+    --- `Lighting: The Rendering Equation <http://www.rorydriscoll.com/2008/08/24/lighting-the-rendering-equation/>`_, rorydriscoll.com
+
+.. combined with https://en.wikipedia.org/wiki/Rendering_equation for the nice
+    Greek letters

@@ -97,8 +97,12 @@ and:
 -   Instead of relying on MathML or MathJax, converts input LaTeX math formula
     to a SVG file, which is then embedded directly to the page. All glyphs are
     converted to paths.
--   Adds a :html:`<title>` and :html:`<desc>` containing the original formula
-    to the generated :html:`<svg>` element for accessibility.
+-   Size is represented using CSS :css:`em` units so the formula follows
+    surrounding text size.
+-   Adds a possibility to color the whole formula or parts of it using colors
+    that follow the current theme.
+-   Adds a :html:`<title>` containing the original formula to the generated
+    :html:`<svg>` element for accessibility.
 
 Put `math blocks <{filename}/css/components.rst#math>`_ into the :rst:`.. math::`
 directive; if you want to color the equations, add corresponding
@@ -148,11 +152,55 @@ want to add additional CSS classes, derive a custom role from it.
     Quaternion-conjugated dual quaternion is :math-info:`\hat q^* = q_0^* + q_\epsilon^*`,
     while dual-conjugation gives :math:`\overline{\hat q} = q_0 - \epsilon q_\epsilon`.
 
+The resulting SVG follows font size of surrounding text, so you can use math
+even outside of main page copy:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. button-success:: https://tauday.com/
+
+            The :math:`\tau` manifesto
+
+            they say :math:`\pi` is wrong
+
+    .. button-success:: https://tauday.com/
+
+        The :math:`\tau` manifesto
+
+        they say :math:`\pi` is wrong
+
+The ``xcolor`` package is enabled by default together with names matching CSS
+color classes. You can use it to highlight different parts of the formula:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. math::
+
+            \boldsymbol{A} = \begin{pmatrix}
+                {\color{m-info} s_x} & 0 & 0 & {\color{m-success} t_x} \\
+                0 & {\color{m-info} s_y} & 0 & {\color{m-success} t_y} \\
+                0 & 0 & {\color{m-info} s_z} & {\color{m-success} t_z} \\
+                0 & 0 & 0 & 1
+            \end{pmatrix}
+
+    .. math::
+
+        \boldsymbol{A} = \begin{pmatrix}
+            {\color{m-info} s_x} & 0 & 0 & {\color{m-success} t_x} \\
+            0 & {\color{m-info} s_y} & 0 & {\color{m-success} t_y} \\
+            0 & 0 & {\color{m-info} s_z} & {\color{m-success} t_z} \\
+            0 & 0 & 0 & 1
+        \end{pmatrix}
+
 The :py:`M_MATH_CACHE_FILE` setting (defaulting to ``m.math.cache`` in the
 site root directory) describes a file used for caching rendered LaTeX math
-formulas for speeding up subsequent runs. Old cached output is periodically
-pruned and new formulas added to the file. Set it to :py:`None` to disable
-caching.
+formulas for speeding up subsequent runs. Cached output that's no longer needed
+is periodically pruned and new formulas added to the file. Set it to :py:`None`
+to disable caching.
 
 .. note-info::
 
