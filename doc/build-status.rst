@@ -55,11 +55,15 @@ Show builds for:
                 <tr>
                   <th class="m-text-right">Pelican theme</th>
                   <td rowspan="2" id="mcss-py34"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
-                  <td rowspan="2" id="mcss-py35"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
-                  <td rowspan="3" id="mcss-py36"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
+                  <td rowspan="3" id="mcss-py35"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
+                  <td rowspan="4" id="mcss-py36"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
                 </tr>
                 <tr>
                   <th class="m-text-right">Pelican plugins</th>
+                </tr>
+                <tr>
+                  <th class="m-text-right">Graph rendering</th>
+                  <td class="m-dim"></td>
                 </tr>
                 <tr>
                   <th class="m-text-right">Doxygen theme</th>
