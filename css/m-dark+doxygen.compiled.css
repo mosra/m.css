@@ -1287,25 +1287,46 @@ div.m-plot svg .m-error {
 }
 div.m-plot svg .m-label.m-dim { fill: #747474; }
 div.m-math svg, svg.m-math { fill: #dcdcdc; }
-div.m-math.m-default svg, svg.m-math.m-default, div.m-plot svg .m-bar.m-default {
+div.m-math.m-default svg, svg.m-math.m-default,
+div.m-math svg g.m-default, svg.m-math g.m-default,
+div.m-math svg rect.m-default, svg.m-math rect.m-default,
+div.m-plot svg .m-bar.m-default {
   fill: #dcdcdc;
 }
-div.m-math.m-primary svg, svg.m-math.m-primary, div.m-plot svg .m-bar.m-primary {
+div.m-math.m-primary svg, svg.m-math.m-primary,
+div.m-math svg g.m-primary, svg.m-math g.m-primary,
+div.m-math svg rect.m-primary, svg.m-math rect.m-primary,
+div.m-plot svg .m-bar.m-primary {
   fill: #a5c9ea;
 }
-div.m-math.m-success svg, svg.m-math.m-success, div.m-plot svg .m-bar.m-success {
+div.m-math.m-success svg, svg.m-math.m-success,
+div.m-math svg g.m-success, svg.m-math g.m-success,
+div.m-math svg rect.m-success, svg.m-math rect.m-success,
+div.m-plot svg .m-bar.m-success {
   fill: #3bd267;
 }
-div.m-math.m-warning svg, svg.m-math.m-warning, div.m-plot svg .m-bar.m-warning {
+div.m-math.m-warning svg, svg.m-math.m-warning,
+div.m-math svg g.m-warning, svg.m-math g.m-warning,
+div.m-math svg rect.m-warning, svg.m-math rect.m-warning,
+div.m-plot svg .m-bar.m-warning {
   fill: #c7cf2f;
 }
-div.m-math.m-danger svg, svg.m-math.m-danger, div.m-plot svg .m-bar.m-danger {
+div.m-math.m-danger svg, svg.m-math.m-danger,
+div.m-math svg g.m-danger, svg.m-math g.m-danger,
+div.m-math svg rect.m-danger, svg.m-math rect.m-danger,
+div.m-plot svg .m-bar.m-danger {
   fill: #cd3431;
 }
-div.m-math.m-info svg, svg.m-math.m-info, div.m-plot svg .m-bar.m-info {
+div.m-math.m-info svg, svg.m-math.m-info,
+div.m-math svg g.m-info, svg.m-math g.m-info,
+div.m-math svg rect.m-info, svg.m-math rect.m-info,
+div.m-plot svg .m-bar.m-info {
   fill: #2f83cc;
 }
-div.m-math.m-dim svg, svg.m-math.m-dim, div.m-plot svg .m-bar.m-dim {
+div.m-math.m-dim svg, svg.m-math.m-dim,
+div.m-math svg g.m-dim, svg.m-math g.m-dim,
+div.m-math svg rect.m-dim, svg.m-math rect.m-dim,
+div.m-plot svg .m-bar.m-dim {
   fill: #747474;
 }
 p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,

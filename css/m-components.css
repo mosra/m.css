@@ -983,27 +983,48 @@ div.m-plot svg .m-error {
 }
 div.m-plot svg .m-label.m-dim { fill: var(--dim-color); }
 
-/* Colored math block, inline math, plots */
+/* Colored math block, inline math, colored math parts, plots */
 div.m-math svg, svg.m-math { fill: var(--color); }
-div.m-math.m-default svg, svg.m-math.m-default, div.m-plot svg .m-bar.m-default {
+div.m-math.m-default svg, svg.m-math.m-default,
+div.m-math svg g.m-default, svg.m-math g.m-default,
+div.m-math svg rect.m-default, svg.m-math rect.m-default,
+div.m-plot svg .m-bar.m-default {
   fill: var(--default-color);
 }
-div.m-math.m-primary svg, svg.m-math.m-primary, div.m-plot svg .m-bar.m-primary {
+div.m-math.m-primary svg, svg.m-math.m-primary,
+div.m-math svg g.m-primary, svg.m-math g.m-primary,
+div.m-math svg rect.m-primary, svg.m-math rect.m-primary,
+div.m-plot svg .m-bar.m-primary {
   fill: var(--primary-color);
 }
-div.m-math.m-success svg, svg.m-math.m-success, div.m-plot svg .m-bar.m-success {
+div.m-math.m-success svg, svg.m-math.m-success,
+div.m-math svg g.m-success, svg.m-math g.m-success,
+div.m-math svg rect.m-success, svg.m-math rect.m-success,
+div.m-plot svg .m-bar.m-success {
   fill: var(--success-color);
 }
-div.m-math.m-warning svg, svg.m-math.m-warning, div.m-plot svg .m-bar.m-warning {
+div.m-math.m-warning svg, svg.m-math.m-warning,
+div.m-math svg g.m-warning, svg.m-math g.m-warning,
+div.m-math svg rect.m-warning, svg.m-math rect.m-warning,
+div.m-plot svg .m-bar.m-warning {
   fill: var(--warning-color);
 }
-div.m-math.m-danger svg, svg.m-math.m-danger, div.m-plot svg .m-bar.m-danger {
+div.m-math.m-danger svg, svg.m-math.m-danger,
+div.m-math svg g.m-danger, svg.m-math g.m-danger,
+div.m-math svg rect.m-danger, svg.m-math rect.m-danger,
+div.m-plot svg .m-bar.m-danger {
   fill: var(--danger-color);
 }
-div.m-math.m-info svg, svg.m-math.m-info, div.m-plot svg .m-bar.m-info {
+div.m-math.m-info svg, svg.m-math.m-info,
+div.m-math svg g.m-info, svg.m-math g.m-info,
+div.m-math svg rect.m-info, svg.m-math rect.m-info,
+div.m-plot svg .m-bar.m-info {
   fill: var(--info-color);
 }
-div.m-math.m-dim svg, svg.m-math.m-dim, div.m-plot svg .m-bar.m-dim {
+div.m-math.m-dim svg, svg.m-math.m-dim,
+div.m-math svg g.m-dim, svg.m-math g.m-dim,
+div.m-math svg rect.m-dim, svg.m-math rect.m-dim,
+div.m-plot svg .m-bar.m-dim {
   fill: var(--dim-color);
 }
 
