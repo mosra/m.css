@@ -60,7 +60,7 @@ On Ubuntu you need these:
 
 .. code:: sh
 
-    sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra python3-matplotlib
+    sudo apt install texlive-base texlive-latex-extra texlive-fonts-extra python3-matplotlib graphviz
     pip3 install pelican Pyphen Pillow
 
 Once you have all the dependencies, simply go to the ``site/`` subdirectory and
