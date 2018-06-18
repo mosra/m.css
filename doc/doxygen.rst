@@ -142,9 +142,12 @@ If you see something unexpected or not see something expected, check the
     links
 -   Focused on presenting the actual written documentation while reducing
     questionable auto-generated content
--   Math rendered as `embedded SVG <{filename}/css/components.rst#math>`_
-    instead of raster images / MathJax
--   Uses Pygments for better code highlighting
+-   Math rendered as embedded SVG instead of raster images / MathJax. The
+    supported feature set is equivalent to the `m.math Pelican plugin <{filename}/plugins/math-and-code.rst#math>`_,
+    see its documentation for more information.
+-   Uses Pygments for better code highlighting. The supported feature set is
+    equivalent to the `m.code Pelican plugin <{filename}/plugins/math-and-code.rst#code>`_,
+    see its documentation for more information.
 
 `Search`_
 ---------
