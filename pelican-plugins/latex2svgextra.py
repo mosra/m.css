@@ -82,7 +82,7 @@ _patch_dst = r"""<svg{attribs} style="width: {width:.3f}em; height: {height:.3f}
 
 # 1 pt is 1.333 px, base font size is 16px. TODO: make this configurable,
 # remove the 1.25 scaling
-pt2em = 1.333333/16.0
+_pt2em = 1.333333/16.0
 
 _unique_src = re.compile(r"""(?P<name> id|xlink:href)='(?P<ref>#?)(?P<id>g\d+-\d+|page\d+)'""")
 _unique_dst = r"""\g<name>='\g<ref>eq{counter}-\g<id>'"""
@@ -154,8 +154,8 @@ def patch(formula, svg, depth, attribs):
     else: style = ' vertical-align: -{:.3f}em;'.format(depth*1.25)
     def repl(match):
         return _patch_dst.format(
-            width=pt2em*float(match.group('width')),
-            height=pt2em*float(match.group('height')),
+            width=_pt2em*float(match.group('width')),
+            height=_pt2em*float(match.group('height')),
             style=style,
             viewBox=match.group('viewBox'),
             attribs=attribs,
