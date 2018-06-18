@@ -383,7 +383,10 @@ in the grid system for aligning and floating blocks in a similar way.
 
 Block elements :html:`<p>`, :html:`<ol>`, :html:`<ul>`, :html:`<dl>`,
 :html:`<blockqote>`, :html:`<pre>` and :html:`<hr>` by default have :css:`1rem`
-padding after, except when they are the last child, to avoid excessive spacing.
-A special case is lists --- components directly inside :html:`<li>` elements
-have :css:`1rem` padding after, except when the :html:`<li>` is last, to
-achieve consistent spacing for inflated lists.
+padding on the bottom, except when they are the last child, to avoid excessive
+spacing. A special case is lists --- components directly inside :html:`<li>`
+elements have :css:`1rem` padding on the bottom, except when the :html:`<li>`
+is last, to achieve consistent spacing for inflated lists.
+
+The :css:`1rem` padding on the bottom can be disabled with :css:`.m-nopadb`,
+similarly as with `grid layouts <{filename}/css/grid.rst#grid-padding>`_.

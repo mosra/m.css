@@ -1307,12 +1307,22 @@ hr, .m-note, .m-frame, .m-block, div.m-button, div.m-scroll, table.m-table,
 div.m-image, img.m-image, svg.m-image, figure.m-figure, .m-imagegrid, div.m-math {
   margin-bottom: 1rem;
 }
-p:last-child, ul:last-child, ol:last-child, dl:last-child, blockquote:last-child,
-pre:last-child, figure.m-code-figure:last-child, figure.m-console-figure:last-child,
-hr:last-child, .m-note:last-child, .m-frame:last-child, .m-block:last-child,
-div.m-button:last-child, div.m-scroll:last-child, table.m-table:last-child,
-img.m-image:last-child, svg.m-image:last-child, div.m-image:last-child,
-figure.m-figure:last-child, .m-imagegrid:last-child, div.m-math:last-child {
+p:last-child, p.m-nopadb, ul:last-child, ul.m-nopadb,
+ol:last-child, ol.m-nopadb, dl:last-child, dl.m-nopadb,
+blockquote:last-child, blockquote.m-nopadb, pre:last-child, pre.m-nopadb,
+figure.m-code-figure:last-child, figure.m-code-figure.m-nopadb,
+figure.m-console-figure:last-child, figure.m-console-figure.m-nopadb,
+hr:last-child, hr.m-nopadb, .m-note:last-child, .m-note.m-nopadb,
+.m-frame:last-child, .m-frame.m-nopadb, .m-block:last-child, .m-block.m-nopadb,
+div.m-button:last-child, div.m-button.m-nopadb,
+div.m-scroll:last-child, div.m-scroll.m-nopadb,
+table.m-table:last-child, table.m-table.m-nopadb,
+img.m-image:last-child, img.m-image.m-nopadb
+svg.m-image:last-child, svg.m-image.m-nopadb,
+div.m-image:last-child, div.m-image.m-nopadb,
+figure.m-figure:last-child, figure.m-figure.m-nopadb,
+.m-imagegrid:last-child, .m-imagegrid.m-nopadb,
+div.m-math:last-child, div.m-math.m-nopadb {
   margin-bottom: 0;
 }
 li > p:last-child, li > blockquote:last-child, li > pre:last-child,
@@ -1323,13 +1333,22 @@ li > img.m-image:last-child, li > svg.m-image:last-child, li > div.m-image:last-
 li > figure.m-figure:last-child, li > div.m-math:last-child {
   margin-bottom: 1rem;
 }
-li:last-child > p:last-child, li:last-child > blockquote:last-child, li:last-child > pre:last-child,
-li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-console-figure:last-child,
-li:last-child > .m-note:last-child, li:last-child > .m-frame:last-child, li:last-child > .m-block:last-child,
-li:last-child > div.m-button:last-child, li:last-child > div.m-scroll:last-child,
-li:last-child > table.m-table:last-child, li:last-child > img.m-image:last-child,
-li:last-child > svg.m-image:last-child, li:last-child > div.m-image:last-child,
-li:last-child > figure.m-figure:last-child, li:last-child > div.m-math:last-child {
+li:last-child > p:last-child, li:last-child > p.m-nopadb,
+li:last-child > blockquote:last-child, li:last-child > blockquote.m-nopadb,
+li:last-child > pre:last-child, li:last-child > pre.m-nopadb,
+li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-code-figure.m-nopadb,
+li:last-child > figure.m-console-figure:last-child, li:last-child > figure.m-console-figure.m-nopadb,
+li:last-child > .m-note:last-child, li:last-child > .m-note.m-nopadb,
+li:last-child > .m-frame:last-child, li:last-child > .m-frame.m-nopadb,
+li:last-child > .m-block:last-child, li:last-child > .m-block.m-nopadb,
+li:last-child > div.m-button:last-child, li:last-child > div.m-button.m-nopadb,
+li:last-child > div.m-scroll:last-child, li:last-child > div.m-scroll.m-nopadb,
+li:last-child > table.m-table:last-child, li:last-child > table.m-table.m-nopadb,
+li:last-child > img.m-image:last-child, li:last-child > img.m-image.m-nopadb,
+li:last-child > svg.m-image:last-child, li:last-child > svg.m-image.m-nopadb,
+li:last-child > div.m-image:last-child, li:last-child > div.m-image.m-nopadb,
+li:last-child > figure.m-figure:last-child, li:last-child > figure.m-figure.m-nopadb,
+li:last-child > div.m-math:last-child, li:last-child > div.m-math.m-nopadb {
   margin-bottom: 0;
 }
 

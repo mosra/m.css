@@ -1116,9 +1116,9 @@ with :css:`.m-line`, error bars with :css:`.m-error`. Use
 
 Similarly to `typography elements <{filename}/css/typography.rst#padding>`_;
 blocks, notes, frames, tables, images, figures, image grids, code and math
-blocks and code figures have :css:`1rem` padding after, except when they are
-the last element, to avoid excessive spacing. The list special casing applies
-here as well.
+blocks and code figures have :css:`1rem` padding on the bottom, except when
+they are the last element, to avoid excessive spacing. The list special casing
+and ability to disable the padding using :css:`.m-nopadb` applies here as well.
 
 `Responsive utilities`_
 =======================
