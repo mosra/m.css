@@ -20,3 +20,11 @@ the lines :math:`W = \sum_{i=0}^{n} \frac{w_i}{h_i}` because
 :math:`Y = \sum_{i=0}^{n} B`
 
 The ``\cfrac`` thing doesn't align well: :math:`W = \sum_{i=0}^{n} \cfrac{w_i}{h_i}`
+
+Properly escape the formula source:
+
+.. math::
+
+    \begin{array}{rcl}
+        x & = & 1
+    \end{array}

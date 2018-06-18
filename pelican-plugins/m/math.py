@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import html
 import os
 import re
 
@@ -48,7 +49,7 @@ class Math(rst.Directive):
 
         # Fallback rendering as code requested
         if render_as_code:
-            content = nodes.raw('', '\n'.join(self.content), format='html')
+            content = nodes.raw('', html.escape('\n'.join(self.content)), format='html')
             pre = nodes.literal_block('')
             pre.append(content)
             return [pre]
@@ -87,7 +88,7 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
             classes += options['classes']
             del options['classes']
 
-        content = nodes.raw('', utils.unescape(text), format='html')
+        content = nodes.raw('', html.escape(utils.unescape(text)), format='html')
         node = nodes.literal(rawtext, '', **options)
         node.append(content)
         return [node], []

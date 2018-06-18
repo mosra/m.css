@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import html
 import pickle
 import re
 from hashlib import sha1
@@ -143,6 +144,6 @@ def patch(formula, svg, depth, attribs):
             style=style,
             viewBox=match.group('viewBox'),
             attribs=attribs,
-            formula=formula)
+            formula=html.escape(formula))
 
     return _unique_src.sub(_unique_dst.format(counter=counter), _patch_src.sub(repl, svg))
