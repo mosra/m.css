@@ -62,7 +62,7 @@ mpl.rcParams['figure.autolayout'] = True # so it relayouts everything to fit
 # Gets increased for every graph on a page to (hopefully) ensure unique SVG IDs
 mpl.rcParams['svg.hashsalt'] = 0
 
-# Color codes for bars
+# Color codes for bars. Keep in sync with latex2svgextra.
 style_mapping = {
     'default': '#cafe03',
     'primary': '#cafe04',
@@ -108,7 +108,7 @@ _class_mapping = [
     # Title text
     ('style="fill:#cafe02;font-family:{font};font-size:13px;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
 
-    # Bar colors
+    # Bar colors. Keep in sync with latex2svgextra.
     ('style="fill:#cafe03;"', 'class="m-bar m-default"'),
     ('style="fill:#cafe04;"', 'class="m-bar m-primary"'),
     ('style="fill:#cafe05;"', 'class="m-bar m-success"'),

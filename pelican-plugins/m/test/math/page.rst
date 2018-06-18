@@ -13,6 +13,12 @@ Inline colored math :math-primary:`a^2` and colored math block:
 
     a^2 + b^2 = c^2
 
+Colored parts of inline :math:`b^2 - \color{m-info}{4ac}` and block formulas:
+
+.. math::
+
+    \frac{-b \pm \color{m-success} \sqrt{D}}{2a}
+
 Properly align *huge* formulas vertically on a line:
 :math:`\hat q^{-1} = \frac{\hat q^*}{|\hat q|^2}`
 and make sure there's enough space for all the complex :math:`W` things between
