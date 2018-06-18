@@ -1262,6 +1262,12 @@ div.m-math {
   overflow-y: hidden;
   text-align: center;
 }
+div.m-button a svg.m-math { fill: #22272e; }
+div.m-button.m-flat a svg.m-math { fill: #dcdcdc; }
+div.m-button.m-flat a:hover svg.m-math, div.m-button.m-default a:focus svg.m-math,
+div.m-button.m-default a:active svg.m-math {
+  fill: #a5c9ea;
+}
 div.m-plot svg {
   text-align: center;
 }
