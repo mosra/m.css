@@ -245,6 +245,11 @@ extensive `attribute documentation <http://www.graphviz.org/doc/info/attrs.html>
     Note that currently all styling is discarded and only the
     ``class`` and ``fontsize`` attributes are taken into account.
 
+.. note-warning::
+
+    The ``class`` attribute is new in Graphviz 2.40.1. If you have an older
+    version on your system, this attribute will get ignored.
+
 `Undirected graphs`_
 --------------------
 
