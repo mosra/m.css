@@ -1312,10 +1312,12 @@ div.m-graph svg g.m-edge polygon,
 div.m-graph svg g.m-edge path,
 div.m-graph svg g.m-node ellipse,
 div.m-graph svg g.m-node polygon,
+div.m-graph svg g.m-node polyline,
 div.m-graph.m-default svg g.m-edge polygon,
 div.m-graph.m-default svg g.m-edge path,
 div.m-graph.m-default svg g.m-node ellipse,
-div.m-graph.m-default svg g.m-node polygon {
+div.m-graph.m-default svg g.m-node polygon,
+div.m-graph.m-default svg g.m-node polyline {
   stroke: #dcdcdc;
 }
 div.m-math.m-primary svg, svg.m-math.m-primary,
@@ -1332,7 +1334,8 @@ div.m-graph.m-primary svg g.m-node.m-flat text {
 div.m-graph.m-primary svg g.m-edge polygon,
 div.m-graph.m-primary svg g.m-edge path,
 div.m-graph.m-primary svg g.m-node ellipse,
-div.m-graph.m-primary svg g.m-node polygon {
+div.m-graph.m-primary svg g.m-node polygon,
+div.m-graph.m-primary svg g.m-node polyline {
   stroke: #a5c9ea;
 }
 div.m-math.m-success svg, svg.m-math.m-success,
@@ -1349,7 +1352,8 @@ div.m-graph.m-success svg g.m-node.m-flat text {
 div.m-graph.m-success svg g.m-edge polygon,
 div.m-graph.m-success svg g.m-edge path,
 div.m-graph.m-success svg g.m-node ellipse,
-div.m-graph.m-success svg g.m-node polygon {
+div.m-graph.m-success svg g.m-node polygon,
+div.m-graph.m-success svg g.m-node polyline {
   stroke: #3bd267;
 }
 div.m-math.m-warning svg, svg.m-math.m-warning,
@@ -1366,7 +1370,8 @@ div.m-graph.m-warning svg g.m-node.m-flat text {
 div.m-graph.m-warning svg g.m-edge polygon,
 div.m-graph.m-warning svg g.m-edge path,
 div.m-graph.m-warning svg g.m-node ellipse,
-div.m-graph.m-warning svg g.m-node polygon {
+div.m-graph.m-warning svg g.m-node polygon,
+div.m-graph.m-warning svg g.m-node polyline {
   stroke: #c7cf2f;
 }
 div.m-math.m-danger svg, svg.m-math.m-danger,
@@ -1383,7 +1388,8 @@ div.m-graph.m-danger svg g.m-node.m-flat text {
 div.m-graph.m-danger svg g.m-edge polygon,
 div.m-graph.m-danger svg g.m-edge path,
 div.m-graph.m-danger svg g.m-node ellipse,
-div.m-graph.m-danger svg g.m-node polygon {
+div.m-graph.m-danger svg g.m-node polygon,
+div.m-graph.m-danger svg g.m-node polyline {
   stroke: #cd3431;
 }
 div.m-math.m-info svg, svg.m-math.m-info,
@@ -1400,7 +1406,8 @@ div.m-graph.m-info svg g.m-node.m-flat text {
 div.m-graph.m-info svg g.m-edge polygon,
 div.m-graph.m-info svg g.m-edge path,
 div.m-graph.m-info svg g.m-node ellipse,
-div.m-graph.m-info svg g.m-node polygon {
+div.m-graph.m-info svg g.m-node polygon,
+div.m-graph.m-info svg g.m-node polyline {
   stroke: #2f83cc;
 }
 div.m-math.m-dim svg, svg.m-math.m-dim,
@@ -1417,7 +1424,8 @@ div.m-graph.m-dim svg g.m-node.m-flat text {
 div.m-graph.m-dim svg g.m-edge polygon,
 div.m-graph.m-dim svg g.m-edge path,
 div.m-graph.m-dim svg g.m-node ellipse,
-div.m-graph.m-dim svg g.m-node polygon {
+div.m-graph.m-dim svg g.m-node polygon,
+div.m-graph.m-dim svg g.m-node polyline {
   stroke: #747474;
 }
 div.m-graph svg g.m-edge.m-default polygon,
@@ -1430,7 +1438,8 @@ div.m-graph svg g.m-node.m-default.m-flat text {
 div.m-graph svg g.m-edge.m-default polygon,
 div.m-graph svg g.m-edge.m-default path,
 div.m-graph svg g.m-node.m-default ellipse,
-div.m-graph svg g.m-node.m-default polygon {
+div.m-graph svg g.m-node.m-default polygon,
+div.m-graph svg g.m-node.m-default polyline {
   stroke: #dcdcdc;
 }
 div.m-graph svg g.m-edge.m-primary polygon,
@@ -1443,7 +1452,8 @@ div.m-graph svg g.m-node.m-primary.m-flat text {
 div.m-graph svg g.m-edge.m-primary polygon,
 div.m-graph svg g.m-edge.m-primary path,
 div.m-graph svg g.m-node.m-primary ellipse,
-div.m-graph svg g.m-node.m-primary polygon {
+div.m-graph svg g.m-node.m-primary polygon,
+div.m-graph svg g.m-node.m-primary polyline {
   stroke: #a5c9ea;
 }
 div.m-graph svg g.m-edge.m-success polygon,
@@ -1456,7 +1466,8 @@ div.m-graph svg g.m-node.m-success.m-flat text {
 div.m-graph svg g.m-edge.m-success polygon,
 div.m-graph svg g.m-edge.m-success path,
 div.m-graph svg g.m-node.m-success ellipse,
-div.m-graph svg g.m-node.m-success polygon {
+div.m-graph svg g.m-node.m-success polygon,
+div.m-graph svg g.m-node.m-success polyline {
   stroke: #3bd267;
 }
 div.m-graph svg g.m-edge.m-warning polygon,
@@ -1469,7 +1480,8 @@ div.m-graph svg g.m-node.m-warning.m-flat text {
 div.m-graph svg g.m-edge.m-warning polygon,
 div.m-graph svg g.m-edge.m-warning path,
 div.m-graph svg g.m-node.m-warning ellipse,
-div.m-graph svg g.m-node.m-warning polygon {
+div.m-graph svg g.m-node.m-warning polygon,
+div.m-graph svg g.m-node.m-warning polyline {
   stroke: #c7cf2f;
 }
 div.m-graph svg g.m-edge.m-danger polygon,
@@ -1482,7 +1494,8 @@ div.m-graph svg g.m-node.m-danger.m-flat text {
 div.m-graph svg g.m-edge.m-danger polygon,
 div.m-graph svg g.m-edge.m-danger path,
 div.m-graph svg g.m-node.m-danger ellipse,
-div.m-graph svg g.m-node.m-danger polygon {
+div.m-graph svg g.m-node.m-danger polygon,
+div.m-graph svg g.m-node.m-danger polyline {
   stroke: #cd3431;
 }
 div.m-graph svg g.m-edge.m-info polygon,
@@ -1495,7 +1508,8 @@ div.m-graph svg g.m-node.m-info.m-flat text {
 div.m-graph svg g.m-edge.m-info polygon,
 div.m-graph svg g.m-edge.m-info path,
 div.m-graph svg g.m-node.m-info ellipse,
-div.m-graph svg g.m-node.m-info polygon {
+div.m-graph svg g.m-node.m-info polygon,
+div.m-graph svg g.m-node.m-info polyline {
   stroke: #2f83cc;
 }
 div.m-graph svg g.m-edge.m-dim polygon,
@@ -1508,7 +1522,8 @@ div.m-graph svg g.m-node.m-dim.m-flat text {
 div.m-graph svg g.m-edge.m-dim polygon,
 div.m-graph svg g.m-edge.m-dim path,
 div.m-graph svg g.m-node.m-dim ellipse,
-div.m-graph svg g.m-node.m-dim polygon {
+div.m-graph svg g.m-node.m-dim polygon,
+div.m-graph svg g.m-node.m-dim polyline {
   stroke: #747474;
 }
 p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,

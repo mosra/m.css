@@ -46,3 +46,11 @@ Strict graphs:
 
     a -- b
     a -- b
+
+Structs:
+
+.. digraph:: Structs
+
+    struct [label="{ a | b | { c | d | e }}" shape=record class="m-info"]
+
+    another [label="a | { b | c } | d | e" shape=record]

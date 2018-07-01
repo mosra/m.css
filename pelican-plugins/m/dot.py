@@ -51,7 +51,7 @@ _class_dst = r"""<g class="{classes}">
 <title>{title}</title>
 <{element} """
 
-_attributes_src = re.compile(r"""<(?P<element>ellipse|polygon) fill="[^"]+" stroke="[^"]+" """)
+_attributes_src = re.compile(r"""<(?P<element>ellipse|polygon|polyline) fill="[^"]+" stroke="[^"]+" """)
 
 _attributes_dst = r"""<\g<element> """
 
