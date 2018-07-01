@@ -61,11 +61,11 @@ _text_src_src = ' font-family="{font}" font-size="(?P<size>[^"]+)" fill="[^"]+"'
 _text_dst = ' style="font-size: {size}px;"'
 
 _font = ''
-_font_size = 16.0 # TODO: avoid hardcoding this
+_font_size = 0.0
 
 # The pt are actually px (16pt font is the same size as 16px), so just
 # converting to rem here
-_pt2em = 1.0/_font_size
+def _pt2em(pt): return pt/_font_size
 
 class Dot(rst.Directive):
     has_content = True
@@ -99,8 +99,8 @@ class Dot(rst.Directive):
 
         # Remove preamble and fixed size
         def patch_repl(match): return _patch_dst.format(
-            width=_pt2em*float(match.group('width')),
-            height=_pt2em*float(match.group('height')),
+            width=_pt2em(float(match.group('width'))),
+            height=_pt2em(float(match.group('height'))),
             viewBox=match.group('viewBox'))
         svg = _patch_src.sub(patch_repl, svg)
 
@@ -150,8 +150,9 @@ class StrictGraph(Dot):
         return Dot.run(self, 'strict graph "{}" {{\n{}}}'.format(self.arguments[0], '\n'.join(self.content)))
 
 def configure(pelicanobj):
-    global _font, _text_src
+    global _font, _font_size, _text_src
     _font = pelicanobj.settings.get('M_DOT_FONT', 'Source Sans Pro')
+    _font_size = pelicanobj.settings.get('M_DOT_FONT_SIZE', 16.0)
     _text_src = re.compile(_text_src_src.format(font=_font))
 
 def register():

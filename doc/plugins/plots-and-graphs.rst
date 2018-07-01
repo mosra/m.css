@@ -174,12 +174,14 @@ package to your :py:`PLUGINS` in ``pelicanconf.py``.
 
     PLUGINS += ['m.dot']
     M_DOT_FONT = 'Source Sans Pro'
+    M_DOT_FONT_SIZE = 16.0
 
-Set :py:`M_DOT_FONT` to a font that matches your CSS theme (it's Source Sans
-Pro for `builtin m.css themes <{filename}/css/themes.rst>`_), note that you
-*need to have the font installed* on your system, otherwise it will fall back
-to whatever system font it finds instead (for example DejaVu Sans) and the
-output won't look as expected. In addition you need the
+Set :py:`M_DOT_FONT` and :py:`M_DOT_FONT_SIZE` to a font that matches your CSS
+theme (it's Source Sans Pro at :css:`16px` for
+`builtin m.css themes <{filename}/css/themes.rst>`_), note that you *need to
+have the font installed* on your system, otherwise it will fall back to
+whatever system font it finds instead (for example DejaVu Sans) and the output
+won't look as expected. In addition you need the
 `Graphviz <https://graphviz.org/>`_ library installed. Get it via your
 distribution package manager, for example on Ubuntu:
 
