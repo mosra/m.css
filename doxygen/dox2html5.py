@@ -2482,8 +2482,7 @@ def parse_xml(state: State, xml: str):
             elif compounddef_child.attrib['kind'] not in ['private-type',
                                                           'private-static-func',
                                                           'private-static-attrib',
-                                                          'private-attrib',
-                                                          'friend']: # pragma: no cover
+                                                          'private-attrib']: # pragma: no cover
                 logging.warning("{}: unknown <sectiondef> kind {}".format(state.current, compounddef_child.attrib['kind']))
 
         elif compounddef_child.tag == 'templateparamlist':
