@@ -114,6 +114,9 @@ h3 .m-dox-template {
 .m-dox-template, dl.m-dox dd, ul.m-dox li > span.m-dox {
   color: var(--dim-color);
 }
+dl.m-dox dd svg.m-math, ul.m-dox li > span.m-dox svg.m-math {
+  fill: var(--dim-color);
+}
 .m-dox-template a, dl.m-dox dd a, ul.m-dox li > span.m-dox a {
   color: var(--dim-link-color);
 }
