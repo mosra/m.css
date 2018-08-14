@@ -24,7 +24,12 @@
                 <tr>
                   <td><a href="#{{ value.id }}" class="m-dox-self" name="{{ value.id }}">{{ value.name }}</a></td>
                   <td>
+                  {% if value.brief %}{# brief is not required for values #}
+                  <p>{{ value.brief }}</p>
+                  {% endif %}
+                  {% if value.description %}{# it can be only brief tho #}
 {{ value.description }}
+                  {% endif %}
                   </td>
                 </tr>
                 {% endfor %}

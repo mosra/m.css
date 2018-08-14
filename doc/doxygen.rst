@@ -218,9 +218,6 @@ amount of generated content for no added value.
     this unnecessary, there's also search for this)
 -   Verbatim listing of parsed headers, "Includes" and "Included By" lists are
     not present (use your IDE or GitHub instead)
--   Brief description for enum values is ignored (only the detailed description
-    is used, as the brief description was never used anywhere else than next to
-    the detailed description)
 -   Initializers of defines and variables are unconditionally ignored (one can
     always look in the sources, if really needed)
 -   No section with list of examples or linking from function/class
@@ -1426,6 +1423,7 @@ Property                    Description
 :py:`value.name`            Value name [4]_
 :py:`value.initializer`     Value initializer. Can be empty. [1]_
 :py:`value.is_deprecated`   Whether the value is deprecated. [7]_
+:py:`value.brief`           Brief description. Can be empty. [1]_
 :py:`value.description`     Detailed description. Can be empty. [2]_
 =========================== ===================================================
 

@@ -258,6 +258,14 @@ class ParseError(BaseTestCase):
         # The index file should be generated, no abort
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'index.html')))
 
+class AutobriefCppComments(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'autobrief_cpp_comments', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='File_8h.xml')
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
 # JAVADOC_AUTOBRIEF should be nuked from orbit. Or implemented from scratch,
 # properly.
 

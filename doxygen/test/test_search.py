@@ -374,9 +374,9 @@ class Search(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 4572)
+        self.assertEqual(len(serialized), 4695)
         self.assertEqual(search_data_pretty, """
-52 symbols
+53 symbols
 deprecated_macro [0]
 ||        |     ($
 ||        |      ) [1]
@@ -398,9 +398,9 @@ deprecated_macro [0]
 ||        |          |         foo [37]
 ||        |          |         |  ($
 ||        |          |         |   ) [38]
-||        |          |         class [52]
-||        |          |         struct [53]
-||        |          |         union [57]
+||        |          |         class [53]
+||        |          |         struct [54]
+||        |          |         union [58]
 ||        |          enum [34]
 ||        |          |   :$
 ||        |          |    :deprecatedvalue [33]
@@ -410,9 +410,9 @@ deprecated_macro [0]
 ||        value [33]
 ||        | riable [36]
 ||        typedef [35]
-||        class [52]
-||        struct [53]
-||        union [57]
+||        class [53]
+||        struct [54]
+||        union [58]
 |ir [24]
 || /$
 ||  file.h [9]
@@ -423,7 +423,7 @@ macro [3]
 ||            _with_params [7]
 ||            |           ($
 ||            |            ) [8]
-|in() [48]
+|in() [49]
 glmacro() [4]
 | file() [10]
 | |oo() [13]
@@ -432,48 +432,51 @@ glmacro() [4]
 | |  () [26]
 | _dir [27]
 | |group [30]
-| |enum [44]
-| ||   _value [42]
-| ||         _ext [41]
-| |typedef [46]
-| namespace() [50]
-| struct() [55]
-| union() [59]
+| |enum [45]
+| ||   _value [43]
+| ||         _ext [42]
+| |typedef [47]
+| namespace() [51]
+| struct() [56]
+| union() [60]
 file.h [9]
 |oo [11, 14, 16, 18]
 || ($
 ||  ) [12, 15, 17, 19]
-namespace [49]
+namespace [50]
 |        :$
 |         :class [20]
 |          |    :$
 |          |     :foo [11, 14, 16, 18]
 |          |         ($
 |          |          ) [12, 15, 17, 19]
-|          enum [43]
+|          enum [44]
 |          |   :$
-|          |    :value [40]
-|          typedef [45]
-|          variable [47]
-|          struct [54]
-|          union [58]
+|          |    :onlyabrief [40]
+|          |     value [41]
+|          typedef [46]
+|          variable [48]
+|          struct [55]
+|          union [59]
 class [20]
 |    :$
 |     :foo [11, 14, 16, 18]
 |         ($
 |          ) [12, 15, 17, 19]
 a group [28, 29]
-| page [51]
-value [31, 40]
-| riable [47]
-enum [34, 43]
+| page [52]
+value [31, 41]
+| riable [48]
+enum [34, 44]
 |   :$
 |    :deprecatedvalue [33]
-|     value [40]
-typedef [45]
-struct [54]
-|ubpage [56]
-union [58]
+|     onlyabrief [40]
+|     value [41]
+onlyabrief [40]
+typedef [46]
+struct [55]
+|ubpage [57]
+union [59]
 0: DEPRECATED_MACRO(a, b, c) [suffix_length=9, deprecated, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
 1:  [prefix=0[:56], suffix_length=7, deprecated, type=DEFINE] ->
 2: /DeprecatedFile.h [prefix=23[:0], deprecated, type=FILE] -> DeprecatedFile_8h.html
@@ -494,7 +497,7 @@ union [58]
 17:  [prefix=16[:62], suffix_length=3, deleted, type=FUNC] ->
 18: ::foo(const Enum&, Typedef) [prefix=20[:28], suffix_length=22, type=FUNC] -> #aba8d57a830d4d79f86d58d92298677fa
 19:  [prefix=18[:62], suffix_length=20, type=FUNC] ->
-20: ::Class [prefix=49[:0], type=CLASS] -> classNamespace_1_1Class.html
+20: ::Class [prefix=50[:0], type=CLASS] -> classNamespace_1_1Class.html
 21: glClass() [alias=20] ->
 22: Deprecated List [type=PAGE] -> deprecated.html
 23: DeprecatedDir [deprecated, type=DIR] -> dir_c6c97faf5a6cbd0f62c27843ce3af4d0.html
@@ -514,26 +517,27 @@ union [58]
 37: ::deprecatedFoo(int, bool, double) [prefix=39[:33], suffix_length=19, deprecated, type=FUNC] -> #a9a1b3fc71d294b548095985acc0d5092
 38:  [prefix=37[:67], suffix_length=17, deprecated, type=FUNC] ->
 39: DeprecatedNamespace [deprecated, type=NAMESPACE] -> namespaceDeprecatedNamespace.html
-40: ::Value [prefix=43[:57], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
-41: _EXT [alias=40, prefix=42[:0]] ->
-42: _VALUE [alias=40, prefix=44[:0]] ->
-43: ::Enum [prefix=49[:23], type=ENUM] -> #add172b93283b1ab7612c3ca6cc5dcfea
-44: GL_ENUM [alias=43] ->
-45: ::Typedef [prefix=49[:23], type=TYPEDEF] -> #abe2a245304bc2234927ef33175646e08
-46: GL_TYPEDEF [alias=45] ->
-47: ::Variable [prefix=49[:23], type=VAR] -> #ad3121960d8665ab045ca1bfa1480a86d
-48: GLSL: min() [alias=47, suffix_length=2] ->
-49: Namespace [type=NAMESPACE] -> namespaceNamespace.html
-50: glNamespace() [alias=49] ->
-51: A page [type=PAGE] -> page.html
-52: ::DeprecatedClass [prefix=39[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
-53: ::DeprecatedStruct [prefix=39[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
-54: ::Struct [prefix=49[:0], type=STRUCT] -> structNamespace_1_1Struct.html
-55: glStruct() [alias=54] ->
-56:  » Subpage [prefix=51[:0], type=PAGE] -> subpage.html
-57: ::DeprecatedUnion [prefix=39[:0], deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
-58: ::Union [prefix=49[:0], type=UNION] -> unionNamespace_1_1Union.html
-59: glUnion() [alias=58] ->
+40: ::OnlyABrief [prefix=44[:57], type=ENUM_VALUE] -> a9b0246417d89d650ed429f1b784805eb
+41: ::Value [prefix=44[:57], type=ENUM_VALUE] -> a689202409e48743b914713f96d93947c
+42: _EXT [alias=41, prefix=43[:0]] ->
+43: _VALUE [alias=41, prefix=45[:0]] ->
+44: ::Enum [prefix=50[:23], type=ENUM] -> #add172b93283b1ab7612c3ca6cc5dcfea
+45: GL_ENUM [alias=44] ->
+46: ::Typedef [prefix=50[:23], type=TYPEDEF] -> #abe2a245304bc2234927ef33175646e08
+47: GL_TYPEDEF [alias=46] ->
+48: ::Variable [prefix=50[:23], type=VAR] -> #ad3121960d8665ab045ca1bfa1480a86d
+49: GLSL: min() [alias=48, suffix_length=2] ->
+50: Namespace [type=NAMESPACE] -> namespaceNamespace.html
+51: glNamespace() [alias=50] ->
+52: A page [type=PAGE] -> page.html
+53: ::DeprecatedClass [prefix=39[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedClass.html
+54: ::DeprecatedStruct [prefix=39[:0], deprecated, type=STRUCT] -> structDeprecatedNamespace_1_1DeprecatedStruct.html
+55: ::Struct [prefix=50[:0], type=STRUCT] -> structNamespace_1_1Struct.html
+56: glStruct() [alias=55] ->
+57:  » Subpage [prefix=52[:0], type=PAGE] -> subpage.html
+58: ::DeprecatedUnion [prefix=39[:0], deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
+59: ::Union [prefix=50[:0], type=UNION] -> unionNamespace_1_1Union.html
+60: glUnion() [alias=59] ->
 """.strip())
 
 class SearchLongSuffixLength(IntegrationTestCase):

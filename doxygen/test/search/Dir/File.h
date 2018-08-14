@@ -64,6 +64,9 @@ typedef int Typedef;
     @m_enum_values_as_keywords
  */
 enum class Enum {
+    /** @brief Only a brief and no value */
+    OnlyABrief,
+
     /**
      * Enum value
      *

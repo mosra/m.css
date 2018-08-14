@@ -224,12 +224,6 @@ constexpr const int a = 25;
 /** @brief A namespace */
 namespace Warning {
 
-/** @brief Use the brief! */
-enum Enum {
-    /** @brief Don't use the brief! */
-    Warn
-};
-
 /**
 @brief Wrong
 @param wrong This parameter is not here
