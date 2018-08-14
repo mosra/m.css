@@ -238,6 +238,11 @@ amount of generated content for no added value.
 -   Clickable symbols in code snippets. Doxygen has quite a lot of false
     positives while a lot of symbols stay unmatched. I need to find a way
     around that.
+-   Documented friend classes, structs and unions. Doxygen is unable to
+    cross-link the declarations with the definitions.
+-   Proper scoping for friend and related functions/classes/variables etc.
+    Doxygen doesn't provide any namespace scoping for these and at the moment
+    I have no way to deduct that information.
 
 `Configuration`_
 ================
@@ -1267,6 +1272,9 @@ Property                                Description
 :py:`compound.private_funcs`            List of documented private virtual
                                         functions. Set only for classes. See
                                         `Function properties`_ for details.
+:py:`compound.friend_funcs`             List of documented friend functions.
+                                        Set only for classes. See
+                                        `Function properties`_ for details.
 :py:`compound.related`                  List of related non-member symbols. Set
                                         only for classes. See
                                         `Related properties`_ for details.
@@ -1492,9 +1500,9 @@ Property                    Description
 
 The :py:`commpound.funcs`, :py:`compound.public_static_funcs`,
 :py:`compound.public_funcs`, :py:`compound.protected_static_funcs`,
-:py:`compound.protected_funcs`, :py:`compound.private_funcs` and
-:py:`compound.related_funcs` properties contain a list of functions, where
-every item has the following properties:
+:py:`compound.protected_funcs`, :py:`compound.private_funcs`,
+:py:`compound.friend_funcs` and :py:`compound.related_funcs` properties contain
+a list of functions, where every item has the following properties:
 
 .. class:: m-table m-fullwidth
 

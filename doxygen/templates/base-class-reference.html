@@ -41,7 +41,7 @@
           </tbody>
         </table>
         {% endif %}
-        {% if compound.sections or compound.public_types or compound.public_static_funcs or compound.typeless_funcs or compound.public_funcs or compound.public_static_vars or compound.public_vars or compound.protected_types or compound.protected_static_funcs or compound.protected_funcs or compound.protected_static_vars or compound.protected_vars or compound.private_funcs or compound.groups or compound.relate %}
+        {% if compound.sections or compound.public_types or compound.public_static_funcs or compound.typeless_funcs or compound.public_funcs or compound.public_static_vars or compound.public_vars or compound.protected_types or compound.protected_static_funcs or compound.protected_funcs or compound.protected_static_vars or compound.protected_vars or compound.private_funcs or compound.groups or compound.friend_funcs or compound.related %}
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -105,6 +105,9 @@
                 {% for group in compound.groups %}
                 <li><a href="#{{ group.id }}">{{ group.name }}</a></li>
                 {% endfor %}
+                {% if compound.friend_funcs %}
+                <li><a href="#friends">Friends</a></li>
+                {% endif %}
                 {% if compound.related %}
                 <li><a href="#related">Related</a></li>
                 {% endif %}
@@ -289,6 +292,16 @@
           </dl>
         </section>
         {% endfor %}
+        {% if compound.friend_funcs %}
+        <section id="friends">
+          <h2><a href="#friends">Friends</a></h2>
+          <dl class="m-dox">
+            {% for func in compound.friend_funcs %}
+{{ entry_func(func) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
         {% if compound.related %}
         <section id="related">
           <h2><a href="#related">Related</a></h2>
@@ -402,6 +415,11 @@
 {{ details_func(member, compound.prefix_wbr) }}
           {% endif %}
           {% endfor %}
+          {% endfor %}
+          {% for func in compound.friend_funcs %}
+          {% if func.has_details %}
+{{ details_func(func, '') }}
+          {% endif %}
           {% endfor %}
           {% for kind, member in compound.related %}
           {% if kind == 'func' and member.has_details %}

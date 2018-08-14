@@ -1570,7 +1570,7 @@ def parse_typedef(state: State, element: ET.Element):
     return None
 
 def parse_func(state: State, element: ET.Element):
-    assert element.tag == 'memberdef' and element.attrib['kind'] == 'function'
+    assert element.tag == 'memberdef' and element.attrib['kind'] in ['function', 'friend']
 
     func = Empty()
     state.current_definition_url_base, func.base_url, func.id = parse_id(element)
@@ -1578,6 +1578,10 @@ def parse_func(state: State, element: ET.Element):
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
     func.description, templates, params, func.return_value, func.return_values, func.exceptions, search_keywords, func.is_deprecated = parse_func_desc(state, element)
+
+    # Friend functions have friend as type. That's just awful. COME ON.
+    if func.type.startswith('friend '):
+        func.type = func.type[7:]
 
     # Extract function signature to prefix, suffix and various flags. Important
     # things affecting caller such as static or const (and rvalue overloads)
@@ -1619,8 +1623,10 @@ def parse_func(state: State, element: ET.Element):
         func.is_pure_virtual = False
     func.suffix = html.escape(signature[signature.rindex(')') + 1:].strip())
     if func.suffix: func.suffix = ' ' + func.suffix
-    func.is_protected = element.attrib['prot'] == 'protected'
-    func.is_private = element.attrib['prot'] == 'private'
+    # Protected / private makes no sense for friend functions
+    if element.attrib['kind'] != 'friend':
+        func.is_protected = element.attrib['prot'] == 'protected'
+        func.is_private = element.attrib['prot'] == 'private'
 
     func.has_template_details, func.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
@@ -2085,6 +2091,7 @@ def parse_xml(state: State, xml: str):
     compound.protected_vars = []
     compound.private_funcs = []
     compound.related = []
+    compound.friend_funcs = []
     compound.groups = []
     compound.has_enum_details = False
     compound.has_typedef_details = False
@@ -2434,6 +2441,22 @@ def parse_xml(state: State, xml: str):
                     else: # pragma: no cover
                         logging.warning("{}: unknown related <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 
+            elif compounddef_child.attrib['kind'] == 'friend':
+                for memberdef in compounddef_child:
+                    # Ignore friend classes. This does not ignore friend
+                    # classes written as `friend Foo;`, those are parsed as
+                    # variables (ugh).
+                    if memberdef.find('type').text in ['friend class', 'friend struct', 'friend union']:
+                        # Print a warning in case these are documented
+                        if (''.join(memberdef.find('briefdescription').itertext()).strip() or ''.join(memberdef.find('detaileddescription').itertext()).strip()):
+                            logging.warning("{}: doxygen is unable to cross-link {}, ignoring, sorry".format(state.current, memberdef.find('definition').text))
+                    # Only friend functions left, hopefully, parse as a func
+                    else:
+                        func = parse_func(state, memberdef)
+                        if func:
+                            compound.friend_funcs += [func]
+                            if func.has_details: compound.has_func_details = True
+
             elif compounddef_child.attrib['kind'] == 'user-defined':
                 list = []
 
@@ -2464,6 +2487,18 @@ def parse_xml(state: State, xml: str):
                         if define:
                             list += [('define', define)]
                             if define.has_details: compound.has_define_details = True
+                    elif memberdef.attrib['kind'] == 'friend':
+                        # Ignore friend classes. This does not ignore friend
+                        # classes written as `friend Foo;`, those are parsed as
+                        # variables (ugh).
+                        if memberdef.find('type').text in ['friend class', 'friend struct', 'friend union'] and (memberdef.find('briefdescription').text or memberdef.find('detaileddescription').text):
+                            logging.warning("{}: doxygen is unable to cross-link {}, ignoring, sorry".format(state.current, memberdef.find('definition').text))
+                        # Only friend functions left, hopefully, parse as a func
+                        else:
+                            func = parse_func(state, memberdef)
+                            if func:
+                                list += [('func', func)]
+                                if func.has_details: compound.has_func_details = True
                     else: # pragma: no cover
                         logging.warning("{}: unknown user-defined <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 

@@ -61,3 +61,14 @@ class Derived(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classNamespace_1_1VirtualBase.html'))
         self.assertEqual(*self.actual_expected_contents('classBaseOutsideANamespace.html'))
         self.assertEqual(*self.actual_expected_contents('classDerivedOutsideANamespace.html'))
+
+class Friends(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'friends', *args, **kwargs)
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+                         "1.8.13 produces invalid XML for friend declarations")
+    def test(self):
+        self.run_dox2html5(wildcard='class*.xml')
+        self.assertEqual(*self.actual_expected_contents('classClass.html'))
+        self.assertEqual(*self.actual_expected_contents('classTemplate.html'))
