@@ -864,9 +864,7 @@ appended the an existing ``@example`` command.
 
 The purpose of ``@m_keywords``, ``@m_keyword`` and ``@m_enum_values_as_keywords``
 command is to add further search keywords to given documented symbols. Use
-``@m_keywords`` to enter whitespace-separated list of keywords. Use ``@m_keyword``
-if you need to enter a keyword containing spaces, the optional second and third
-parameter allow you to specify a different title and suffix length. The
+``@m_keywords`` to enter whitespace-separated list of keywords. The
 ``@m_enum_values_as_keywords`` command will add initializers of given enum
 values as keywords for each corresponding value, it's ignored when not used in
 enum description block. In the following example, an OpenGL wrapper API adds GL
@@ -895,6 +893,37 @@ enum value is found when entering :cpp:`GL_DEPTH_TEST`:
 
         ...
     };
+
+The ``@m_keyword`` command is useful if you need to enter a keyword containing
+spaces, the optional second and third parameter allow you to specify a
+different title and suffix length. Example usage --- in the first case below,
+the page will be discoverable both using its primary title and using
+*TCB spline support*, in the second and third case the two overloads of the
+:cpp:`lerp()` function are discoverable also via :cpp:`mix()`, displaying
+either *GLSL mix()* or *GLSL mix(genType, genType, float)* in the search
+results. The last parameter is suffix length, needed to correctly higlight the
+*mix* substring when there are additional characters at the end of the title.
+If not specified, it defaults to :cpp:`0`, meaning the search string is a
+suffix of the title.
+
+.. code:: c++
+
+    /**
+     * @page splines-tcb Kochanek–Bartels spline support
+     * @m_keyword{TCB spline support,,}
+     */
+
+    /**
+     * @brief Clamp a value
+     * @m_keyword{clamp(),GLSL clamp(),}
+     */
+    float lerp(float x, float y, float a);
+
+    /**
+     * @brief Clamp a value
+     * @m_keyword{mix(),GLSL mix(genType\, genType\, float),23}
+     */
+    template<class T> lerp(const T& x, const T& y, float a);
 
 `Command-line options`_
 =======================
