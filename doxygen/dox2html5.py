@@ -2782,7 +2782,7 @@ list using <span class="m-label m-dim">&darr;</span> and
 
         return [i.replace('\\"', '"').replace('\\\'', '\'') for i in out], backslash
 
-    with open(doxyfile) as f:
+    with open(doxyfile, encoding='utf-8') as f:
         continued_line = None
         for line in f:
             line = line.strip()
