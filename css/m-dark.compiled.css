@@ -497,6 +497,9 @@ div.m-scroll {
 .m-fullwidth {
   width: 100%;
 }
+.m-spacing-150 {
+  line-height: 1.5rem;
+}
 .m-text-center, .m-text-center.m-noindent, table.m-table th.m-text-center, .m-text-center p {
   text-align: center;
 }

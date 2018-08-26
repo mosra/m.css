@@ -140,6 +140,11 @@ div.m-scroll {
 .m-fullwidth {
   width: 100%;
 }
+.m-spacing-150 {
+  /* saying 1.5 should be better according to https://stackoverflow.com/a/20818206,
+     but here I need consistent spacing together with .m-big etc. */
+  line-height: 1.5rem;
+}
 .m-text-center, .m-text-center.m-noindent, table.m-table th.m-text-center, .m-text-center p {
   text-align: center;
 }

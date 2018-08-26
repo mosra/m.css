@@ -53,6 +53,7 @@ justified and is separated from the following content by some padding. The
 Because the indentation may look distracting for manually wrapped line blocks,
 assign :css:`.m-poem` to such paragraph to indent all lines the same way. To
 remove the indentation and justification altogether, use :css:`.m-noindent`.
+Spacing between lines can be extended to 150% using :css:`.m-spacing-150`.
 
 .. code-figure::
 
@@ -67,7 +68,7 @@ remove the indentation and justification altogether, use :css:`.m-noindent`.
         Proin sagittis nisi leo, ac pellentesque purus bibendum sit
         amet.</p></blockquote>
 
-        <p class="m-poem">
+        <p class="m-poem m-spacing-150">
         Curabitur<br/>
         sodales<br/>
         arcu<br/>
@@ -88,7 +89,7 @@ remove the indentation and justification altogether, use :css:`.m-noindent`.
         Proin sagittis nisi leo, ac pellentesque purus bibendum sit
         amet.</p></blockquote>
 
-        <p class="m-poem">
+        <p class="m-poem m-spacing-150">
         Curabitur<br/>
         sodales<br/>
         arcu<br/>
