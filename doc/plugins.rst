@@ -47,7 +47,8 @@ and restart Pelican. Download the plugins below or
     :gh:`m.code <mosra/m.css$master/pelican-plugins/m/code.py>` (needs also :gh:`ansilexer <mosra/m.css$master/pelican-plugins/ansilexer.py>`)
 -   :gh:`m.plots <mosra/m.css$master/pelican-plugins/m/plots.py>`,
     :gh:`m.dot <mosra/m.css$master/pelican-plugins/m/dot.py>`
--   :gh:`m.gh <mosra/m.css$master/pelican-plugins/m/gh.py>`,
+-   :gh:`m.link <mosra/m.css$master/pelican-plugins/m/link.py>`,
+    :gh:`m.gh <mosra/m.css$master/pelican-plugins/m/gh.py>`,
     :gh:`m.dox <mosra/m.css$master/pelican-plugins/m/dox.py>`,
     :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
     :gh:`m.vk <mosra/m.css$master/pelican-plugins/m/vk.py>`,
@@ -100,7 +101,7 @@ else.
 `Links and other » <{filename}/plugins/links.rst>`_
 ===================================================
 
-The :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.vk`, :py:`m.abbr`,
+The :py:`m.link`, :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.vk`, :py:`m.abbr`,
 :py:`m.fiilesize` and :py:`m.alias` plugins make it easy for you to link to
 GitHub projects, issues or PRs, to Doxygen documentation, query file sizes and
 provide URL aliases to preserve link compatibility.

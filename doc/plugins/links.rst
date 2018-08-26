@@ -50,6 +50,35 @@ own requirements.
 .. contents::
     :class: m-block m-default
 
+`Stylable links`_
+=================
+
+Download the `m/link.py <{filename}/plugins.rst>`_ file, put it including the
+``m/`` directory into one of your :py:`PLUGIN_PATHS` and add :py:`m.link`
+package to your :py:`PLUGINS` in ``pelicanconf.py``:
+
+.. code:: python
+
+    PLUGINS += ['m.link']
+
+The :rst:`:link:` interpreted text role is an alternative to the builtin
+:abbr:`reST <reStructuredText>` link syntax, but with an ability to specify
+additional CSS classes. At the moment the plugin knows only external URLs.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. role:: link-flat-big(link)
+            :class: m-flat m-text m-big
+
+        :link-flat-big:`Look here, this is great! <http://mcss.mosra.cz>`
+
+    .. role:: link-flat-big(link)
+        :class: m-flat m-text m-big
+
+    :link-flat-big:`Look here, this is great! <http://mcss.mosra.cz>`
+
 `GitHub`_
 =========
 

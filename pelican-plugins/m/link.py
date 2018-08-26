@@ -38,31 +38,13 @@ def parse_link(text):
     if m: return m.group('title', 'link')
     return None, link
 
-def vkext(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    title, extension = parse_link(text)
-    if not title: title = extension
-    url = "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_{}".format(extension)
-    set_classes(options)
-    node = nodes.reference(rawtext, title, refuri=url, **options)
-    return [node], []
-
-def vkfn(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    title, fn = parse_link(text)
-    if not title: title = "vk{}()".format(fn)
-    url = "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vk{}.html".format(fn)
-    set_classes(options)
-    node = nodes.reference(rawtext, title, refuri=url, **options)
-    return [node], []
-
-def vktype(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    title, fn = parse_link(text)
-    if not title: title = "Vk{}".format(fn)
-    url = "https://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/Vk{}.html".format(fn)
+def link(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    title, url = parse_link(text)
+    if not title: title = url
+    # TODO: mailto URLs, internal links (need to gut out docutils for that)
     set_classes(options)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
 def register():
-    rst.roles.register_local_role('vkext', vkext)
-    rst.roles.register_local_role('vkfn', vkfn)
-    rst.roles.register_local_role('vktype', vktype)
+    rst.roles.register_local_role('link', link)

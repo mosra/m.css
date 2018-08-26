@@ -22,28 +22,15 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-import re
-from docutils import nodes, utils
-from docutils.parsers import rst
-from docutils.parsers.rst.roles import set_classes
+from . import PluginTestCase
 
-# to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
-# m.gh, m.gl, m.link and m.vk
+class Link(PluginTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, '', *args, **kwargs)
 
-link_regexp = re.compile(r'(?P<title>.*) <(?P<link>.+)>')
+    def test(self):
+        self.run_pelican({
+            'PLUGINS': ['m.htmlsanity', 'm.link']
+        })
 
-def parse_link(text):
-    link = utils.unescape(text)
-    m = link_regexp.match(link)
-    if m: return m.group('title', 'link')
-    return None, link
-
-def abbr(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    abbr, title = parse_link(text)
-    set_classes(options)
-    if not abbr:
-        return [nodes.abbreviation(title, title, **options)], []
-    return [nodes.abbreviation(abbr, abbr, title=title, **options)], []
-
-def register():
-    rst.roles.register_local_role('abbr', abbr)
+        self.assertEqual(*self.actual_expected_contents('page.html'))

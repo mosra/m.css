@@ -28,7 +28,7 @@ from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
 
 # to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
-# m.gh, m.gl and m.vk
+# m.gh, m.gl, m.link and m.vk
 
 link_regexp = re.compile(r'(?P<title>.*) <(?P<link>.+)>')
 
