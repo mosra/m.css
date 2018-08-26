@@ -467,6 +467,9 @@ sub { bottom: -0.2rem; }
 a {
   color: #5b9dd9;
 }
+a.m-flat {
+  text-decoration: none;
+}
 a:hover, a:focus, a:active {
   color: #a5c9ea;
 }

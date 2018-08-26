@@ -354,6 +354,15 @@ will have negative margin to make its contents aligned with surrounding text.
     The Components page has additional information about
     `code block styling <{filename}/css/components.rst#code>`_.
 
+`Text alignment`_
+=================
+
+Use :css:`.m-text-left`, :css:`.m-text-right` or :css:`.m-text-center` to
+align text inside its parent element. Use :css:`.m-text-top`,
+:css:`.m-text-middle` and :css:`.m-text-bottom` to align text vertically for
+example in a table cell. See `Floating around <{filename}/css/grid.rst#floating-around>`_
+in the grid system for aligning and floating blocks in a similar way.
+
 `Inline elements`_
 ==================
 
@@ -377,19 +386,28 @@ will have negative margin to make its contents aligned with surrounding text.
         right now</s> oh, there is also <mark>marked text</mark> and
         <code>int a = some_code();</code>.
 
+Links are underlined by default in all `builtin themes <{filename}/css/themes.rst>`_.
+Adding :css:`.m-flat` to the :html:`<a>` element will remove the underline,
+useful where underlines would be too distracting:
+
+.. code-figure::
+
+    .. code:: html
+
+        <p class="m-text-center m-text m-dim">
+          There is a <a href="#" class="m-flat">hidden</a> link.
+        </p>
+
+    .. raw:: html
+
+        <p class="m-text-center m-text m-dim">
+          There is a <a href="#" class="m-flat">hidden</a> link.
+        </p>
+
 .. note-info::
 
     The Components page has additional information about
     `text styling <{filename}/css/components.rst#text>`_.
-
-`Text alignment`_
-=================
-
-Use :css:`.m-text-left`, :css:`.m-text-right` or :css:`.m-text-center` to
-align text inside its parent element. Use :css:`.m-text-top`,
-:css:`.m-text-middle` and :css:`.m-text-bottom` to align text vertically for
-example in a table cell. See `Floating around <{filename}/css/grid.rst#floating-around>`_
-in the grid system for aligning and floating blocks in a similar way.
 
 `Padding`_
 ==========

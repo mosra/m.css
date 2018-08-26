@@ -108,6 +108,9 @@ sub { bottom: -0.2rem; }
 a {
   color: var(--link-color);
 }
+a.m-flat {
+  text-decoration: none;
+}
 a:hover, a:focus, a:active {
   color: var(--link-active-color);
 }
