@@ -185,20 +185,32 @@ ul[class*='m-block-'] li, ol[class*='m-block-'] li {
 ul[class*='m-block-bar-'] li:not(:last-child)::after, ol[class*='m-block-bar-'] li:not(:last-child)::after {
   content: " | ";
 }
+ul[class*='m-block-dot-'] li:not(:last-child)::after, ol[class*='m-block-dot-'] li:not(:last-child)::after {
+  content: " • ";
+}
 @media screen and (min-width: 576px) {
-  ul.m-block-bar-s, ol.m-block-bar-s { padding-left: 2rem; }
-  ul.m-block-bar-s li, ol.m-block-bar-s li { display: list-item; }
-  ul.m-block-bar-s li:not(:last-child)::after, ol.m-block-bar-s li:not(:last-child)::after { content: ""; }
+  ul.m-block-bar-s, ol.m-block-bar-s,
+  ul.m-block-dot-s, ol.m-block-dot-s { padding-left: 2rem; }
+  ul.m-block-bar-s li, ol.m-block-bar-s li,
+  ul.m-block-dot-s li, ol.m-block-dot-s li { display: list-item; }
+  ul.m-block-bar-s li:not(:last-child)::after, ol.m-block-bar-s li:not(:last-child)::after,
+  ul.m-block-dot-s li:not(:last-child)::after, ol.m-block-dot-s li:not(:last-child)::after { content: ""; }
 }
 @media screen and (min-width: 768px) {
-  ul.m-block-bar-m, ol.m-block-bar-m { padding-left: 2rem; }
-  ul.m-block-bar-m li, ol.m-block-bar-m li { display: list-item; }
-  ul.m-block-bar-m li:not(:last-child)::after, ol.m-block-bar-m li:not(:last-child)::after { content: ""; }
+  ul.m-block-bar-m, ol.m-block-bar-m,
+  ul.m-block-dot-m, ol.m-block-dot-m { padding-left: 2rem; }
+  ul.m-block-bar-m li, ol.m-block-bar-m li,
+  ul.m-block-dot-m li, ol.m-block-dot-m li { display: list-item; }
+  ul.m-block-bar-m li:not(:last-child)::after, ol.m-block-bar-m li:not(:last-child)::after,
+  ul.m-block-dot-m li:not(:last-child)::after, ol.m-block-dot-m li:not(:last-child)::after { content: ""; }
 }
 @media screen and (min-width: 992px) {
-  ul.m-block-bar-l, ol.m-block-bar-l { padding-left: 2rem; }
-  ul.m-block-bar-l li, ol.m-block-bar-l li { display: list-item; }
-  ul.m-block-bar-l li:not(:last-child)::after, ol.m-block-bar-l li:not(:last-child)::after { content: ""; }
+  ul.m-block-bar-l, ol.m-block-bar-l,
+  ul.m-block-dot-l, ol.m-block-dot-l { padding-left: 2rem; }
+  ul.m-block-bar-l li, ol.m-block-bar-l li,
+  ul.m-block-dot-l li, ol.m-block-dot-l li { display: list-item; }
+  ul.m-block-bar-l li:not(:last-child)::after, ol.m-block-bar-l li:not(:last-child)::after,
+  ul.m-block-dot-l li:not(:last-child)::after, ol.m-block-dot-l li:not(:last-child)::after { content: ""; }
 }
 
 /* Special paragraph styling */

@@ -146,8 +146,9 @@ indentation.
         </ol>
 
 It's possible to convert a list to a single line with items separated by ``|``
-to save vertical space on mobile devices and responsively change it back on
-larger screens. Mark such list with :css:`.m-block-bar-*`:
+or ``•`` to save vertical space on mobile devices and responsively change it
+back on larger screens. Mark such list with :css:`.m-block-bar-*` or
+:css:`.m-block-dot-*`:
 
 .. code-figure::
 
@@ -159,12 +160,24 @@ larger screens. Mark such list with :css:`.m-block-bar-*`:
           <li>Item 3</li>
         </ul>
 
+        <ul class="m-block-dot-t">
+          <li>Alice</li>
+          <li>Bob</li>
+          <li>Joe</li>
+        </ul>
+
     .. raw:: html
 
         <ul class="m-block-bar-m">
           <li>Item 1</li>
           <li>Item 2</li>
           <li>Item 3</li>
+        </ul>
+
+        <ul class="m-block-dot-t">
+          <li>Alice</li>
+          <li>Bob</li>
+          <li>Joe</li>
         </ul>
 
 .. note-success::
