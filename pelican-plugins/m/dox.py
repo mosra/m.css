@@ -25,6 +25,8 @@
 from docutils.parsers.rst.states import Inliner
 from docutils import nodes, utils
 from docutils.parsers import rst
+from docutils.parsers.rst.roles import set_classes
+
 from pelican import signals
 import xml.etree.ElementTree as ET
 import os
@@ -115,6 +117,8 @@ def init(pelicanobj):
 
 def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     title, target, hash = parse_link(text)
+
+    set_classes(options)
 
     # Try linking to the whole docs first
     for basename, url in tagfile_basenames:

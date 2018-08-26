@@ -72,11 +72,15 @@ one slash, the target is simply prepended with ``https://github.com/``.
 Link text is equal to link target for repository, commit and issue/PR links,
 otherwise the full expanded URL is used. Similarly to builtin linking
 functionality, if you want a custom text for a link, use the
-:rst:`:gh:`link text <link-target>`` syntax.
+:rst:`:gh:`link text <link-target>`` syntax. It's also possible to add custom
+CSS classes by deriving the role and adding the :rst:`:class:` option.
 
 .. code-figure::
 
     .. code:: rst
+
+        .. role:: gh-flat(gh)
+            :class: m-flat
 
         -   Profile link: :gh:`mosra`
         -   Repository link: :gh:`mosra/m.css`
@@ -87,6 +91,10 @@ functionality, if you want a custom text for a link, use the
         -   File link: :gh:`mosra/m.css$master/css/m-dark.css`
         -   Arbitrary link: :gh:`mosra/magnum/graphs/contributors`
         -   :gh:`Link with custom title <getpelican/pelican>`
+        -   Flat link: :gh-flat:`mosra`
+
+    .. role:: gh-flat(gh)
+        :class: m-flat
 
     -   Profile link: :gh:`mosra`
     -   Repository link: :gh:`mosra/m.css`
@@ -97,6 +105,7 @@ functionality, if you want a custom text for a link, use the
     -   File link: :gh:`mosra/m.css$master/css/m-dark.css`
     -   Arbitrary link: :gh:`mosra/magnum/graphs/contributors`
     -   :gh:`Link with custom title <getpelican/pelican>`
+    -   Flat link: :gh-flat:`mosra`
 
 `OpenGL functions and extensions`_
 ==================================
@@ -119,23 +128,32 @@ Link text is equal to full function name including the ``gl`` prefix and
 ``()`` for functions, equal to extension name or equal to extension function
 link, including the vendor suffix. For :rst:`:glfn:`, :rst:`:glext:` and
 :rst:`:webglext:` it's possible to specify alternate link text using the
-well-known syntax.
+well-known syntax. Adding custom CSS classes can be done by deriving the role
+and adding the :rst:`:class:` option.
 
 .. code-figure::
 
     .. code:: rst
+
+        .. role:: glfn-flat(glfn)
+            :class: m-flat
 
         -   Function link: :glfn:`DispatchCompute`
         -   Extension link: :glext:`ARB_direct_state_access`
         -   WebGL extension link: :webglext:`OES_texture_float`
         -   Extension function link: :glfnext:`SpecializeShader <ARB_gl_spirv>`
         -   :glfn:`Custom link title <DrawElementsIndirect>`
+        -   Flat link: :glfn-flat:`DrawElements`
+
+    .. role:: glfn-flat(glfn)
+        :class: m-flat
 
     -   Function link: :glfn:`DispatchCompute`
     -   Extension link: :glext:`ARB_direct_state_access`
     -   WebGL extension link: :webglext:`OES_texture_float`
     -   Extension function link: :glfnext:`SpecializeShader <ARB_gl_spirv>`
     -   :glfn:`Custom link title <DrawElementsIndirect>`
+    -   Flat link: :glfn-flat:`DrawElements`
 
 `Vulkan functions and extensions`_
 ==================================
@@ -162,17 +180,25 @@ possible to specify alternate link text using the well-known syntax.
 
     .. code:: rst
 
+        .. role:: vkfn-flat(vkfn)
+            :class: m-flat
+
         -   Function link: :vkfn:`CreateInstance`
         -   Type link: :vktype:`InstanceCreateInfo`
         -   Definition link: :vktype:`VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO <StructureType>`
         -   Extension link: :vkext:`KHR_swapchain`
         -   :vkfn:`Custom link title <DestroyInstance>`
+        -   Flat link :vkfn-flat:`DestroyDevice`
+
+    .. role:: vkfn-flat(vkfn)
+        :class: m-flat
 
     -   Function link: :vkfn:`CreateInstance`
     -   Type link: :vktype:`InstanceCreateInfo`
     -   Definition link: :vktype:`VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO <StructureType>`
     -   Extension link: :vkext:`KHR_swapchain`
     -   :vkfn:`Custom link title <DestroyInstance>`
+    -   Flat link :vkfn-flat:`DestroyDevice`
 
 `Doxygen documentation`_
 ========================
@@ -209,11 +235,15 @@ just the title is rendered, as normal text). You can append ``#anchor`` to
 ``link-target`` to link to anchors that are not present in the tag file (such
 as ``#details`` for the detailed docs or ``#pub-methods`` for jumping straight
 to a list of public member functions), the same works for query parameters
-starting with ``?``.
+starting with ``?``. Adding custom CSS classes can be done by deriving the role
+and adding the :rst:`:class:` option.
 
 .. code-figure::
 
     .. code:: rst
+
+        .. role:: dox-flat(dox)
+            :class: m-flat
 
         -   Function link: :dox:`Utility::Directory::mkpath()`
         -   Class link: :dox:`Interconnect::Emitter`
@@ -221,6 +251,10 @@ starting with ``?``.
         -   :dox:`Custom link title <testsuite>`
         -   :dox:`Link to documentation index page <corrade>`
         -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
+        -   Flat link: :dox-flat:`plugin-management`
+
+    .. role:: dox-flat(dox)
+        :class: m-flat
 
     -   Function link: :dox:`Utility::Directory::mkpath()`
     -   Class link: :dox:`Interconnect::Emitter`
@@ -228,6 +262,7 @@ starting with ``?``.
     -   :dox:`Custom link title <testsuite>`
     -   :dox:`Link to documentation index page <corrade>`
     -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
+    -   Flat link: :dox-flat:`plugin-management`
 
 .. note-success::
 
@@ -256,16 +291,23 @@ and makes its syntax consistent with other common roles of :abbr:`reST <reStruct
 and m.css.
 
 Use the :rst:`:abbr:` interpreted text role for creating abbreviations with
-title in angle brackets:
+title in angle brackets. Adding custom CSS classes can be done by deriving the
+role and adding the :rst:`:class:` option.
 
 .. code-figure::
 
     .. code:: rst
 
-        :abbr:`HTML <HyperText Markup Language>` and :abbr:`CSS <Cascading Style Sheets>`
+        .. role:: abbr-warning(abbr)
+            :class: m-text m-warning
+
+        :abbr:`HTML <HyperText Markup Language>` and :abbr-warning:`CSS <Cascading Style Sheets>`
         are *all you need* for producing rich content-oriented websites.
 
-    :abbr:`HTML <HyperText Markup Language>` and :abbr:`CSS <Cascading Style Sheets>`
+    .. role:: abbr-warning(abbr)
+        :class: m-text m-warning
+
+    :abbr:`HTML <HyperText Markup Language>` and :abbr-warning:`CSS <Cascading Style Sheets>`
     are *all you need* for producing rich content-oriented websites.
 
 `File size queries`_
@@ -284,20 +326,27 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 
 Use the :rst:`filesize` interpreted text role to display the size of a file
 including units. The :rst:`filesize-gz` role compresses the file using GZip
-first before calculating the size.
+first before calculating the size. Adding custom CSS classes can be done by
+deriving the role and adding the :rst:`:class:` option.
 
 .. code-figure::
 
     .. code:: rst
 
+        .. role:: filesize-yay(filesize-gz)
+            :class: m-text m-success
+
         The compiled ``m-dark.compiled.css`` CSS file has
         :filesize:`{filename}/../css/m-dark.compiled.css` but only
-        :filesize-gz:`{filename}/../css/m-dark.compiled.css` when the server
+        :filesize-yay:`{filename}/../css/m-dark.compiled.css` when the server
         sends it compressed.
+
+    .. role:: filesize-yay(filesize-gz)
+        :class: m-text m-success
 
     The compiled ``m-dark.compiled.css`` CSS file has
     :filesize:`{filename}/../css/m-dark.compiled.css` but only
-    :filesize-gz:`{filename}/../css/m-dark.compiled.css` when the server
+    :filesize-yay:`{filename}/../css/m-dark.compiled.css` when the server
     sends it compressed.
 
 `Aliases`_

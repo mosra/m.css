@@ -25,6 +25,7 @@
 import re
 from docutils import nodes, utils
 from docutils.parsers import rst
+from docutils.parsers.rst.roles import set_classes
 
 # to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
 # m.gh, m.gl and m.vk
@@ -72,6 +73,7 @@ def gh(name, rawtext, text, lineno, inliner, options={}, content=[]):
     else:
         title, url = gh_internal(account, ref, title, link)
 
+    set_classes(options)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 

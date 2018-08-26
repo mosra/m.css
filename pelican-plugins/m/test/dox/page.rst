@@ -1,6 +1,9 @@
 m.dox
 #####
 
+.. role:: dox-flat(dox)
+    :class: m-flat
+
 -   Function link: :dox:`Utility::Directory::mkpath()`
 -   Class link: :dox:`Interconnect::Emitter`
 -   Page link: :dox:`building-corrade`
@@ -11,6 +14,7 @@ m.dox
 -   :dox:`Link to index page with hash after <corrade#search>`
 -   :dox:`Link to page with hash after <corrade-cmake#search>`
 -   :dox:`Link to class with query and hash after <Utility::Directory?q=hello#search>`
+-   Flat link: :dox-flat:`plugin-management`
 
 These should produce warnings:
 

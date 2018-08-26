@@ -25,6 +25,7 @@
 import re
 from docutils import nodes, utils
 from docutils.parsers import rst
+from docutils.parsers.rst.roles import set_classes
 
 # to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
 # m.gh, m.gl and m.vk
@@ -39,9 +40,10 @@ def parse_link(text):
 
 def abbr(name, rawtext, text, lineno, inliner, options={}, content=[]):
     abbr, title = parse_link(text)
+    set_classes(options)
     if not abbr:
-        return [nodes.abbreviation(title, title)], []
-    return [nodes.abbreviation(abbr, abbr, title=title)], []
+        return [nodes.abbreviation(title, title, **options)], []
+    return [nodes.abbreviation(abbr, abbr, title=title, **options)], []
 
 def register():
     rst.roles.register_local_role('abbr', abbr)

@@ -26,6 +26,7 @@ import os
 import gzip
 from docutils import nodes
 from docutils.parsers import rst
+from docutils.parsers.rst.roles import set_classes
 from pelican import signals
 
 settings = {}
@@ -44,7 +45,8 @@ def filesize(name, rawtext, text, lineno, inliner, options={}, content=[]):
         size /= 1024.0
     else: size_string = "%.1f PB" % size
 
-    return [nodes.inline(size_string, size_string)], []
+    set_classes(options)
+    return [nodes.inline(size_string, size_string, **options)], []
 
 def filesize_gz(name, rawtext, text, lineno, inliner, options={}, content=[]):
     with open(text.format(filename=os.path.join(os.getcwd(), settings['path'])), mode='rb') as f:
@@ -57,7 +59,8 @@ def filesize_gz(name, rawtext, text, lineno, inliner, options={}, content=[]):
         size /= 1024.0
     else: size_string = "%.1f PB" % size
 
-    return [nodes.inline(size_string, size_string)], []
+    set_classes(options)
+    return [nodes.inline(size_string, size_string, **options)], []
 
 def register():
     signals.initialized.connect(init)

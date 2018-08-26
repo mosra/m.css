@@ -25,6 +25,7 @@
 import re
 from docutils import nodes, utils
 from docutils.parsers import rst
+from docutils.parsers.rst.roles import set_classes
 
 # to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
 # m.gh, m.gl and m.vk
@@ -42,6 +43,7 @@ def glext(name, rawtext, text, lineno, inliner, options={}, content=[]):
     if not title: title = extension
     prefix = extension.partition('_')[0]
     url = "https://www.khronos.org/registry/OpenGL/extensions/{}/{}.txt".format(prefix, extension)
+    set_classes(options)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
@@ -49,6 +51,7 @@ def webglext(name, rawtext, text, lineno, inliner, options={}, content=[]):
     title, extension = parse_link(text)
     if not title: title = extension
     url = "https://www.khronos.org/registry/webgl/extensions/{}/".format(extension)
+    set_classes(options)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
@@ -56,6 +59,7 @@ def glfn(name, rawtext, text, lineno, inliner, options={}, content=[]):
     title, fn = parse_link(text)
     if not title: title = "gl{}()".format(fn)
     url = "https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/gl{}.xhtml".format(fn)
+    set_classes(options)
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
@@ -63,6 +67,7 @@ def glfnext(name, rawtext, text, lineno, inliner, options={}, content=[]):
     title, extension = parse_link(text)
     prefix = extension.partition('_')[0]
     url = "https://www.khronos.org/registry/OpenGL/extensions/{}/{}.txt".format(prefix, extension)
+    set_classes(options)
     node = nodes.reference(rawtext, "gl" + title + prefix + "()", refuri=url, **options)
     return [node], []
 
