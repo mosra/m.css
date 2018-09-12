@@ -27,7 +27,7 @@ predictable rendering on the CIs.
         March
     :labels_extra:
         a paradise
-        okay
+        ..
         hell!
     :units: Mondays
     :values: 3 4 5

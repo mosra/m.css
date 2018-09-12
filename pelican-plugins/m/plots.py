@@ -203,8 +203,9 @@ class Plot(rst.Directive):
         # with first having the second line empty and second having the first
         # line empty.
         if labels_extra:
-            ax.set_yticklabels([y + '\n' for y in labels])
+            ax.set_yticklabels([y + ('' if labels_extra[i] == '..' else '\n') for i, y in enumerate(labels)])
             for i, label in enumerate(ax.get_yticklabels()):
+                if labels_extra[i] == '..': continue
                 ax.text(0, i + 0.05, '\n' + labels_extra[i],
                         va='center', ha='right',
                         transform=label.get_transform(), color='#cafe0b')

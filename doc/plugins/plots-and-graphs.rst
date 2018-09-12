@@ -113,10 +113,13 @@ labels. Hovering over the bars will show the concrete value in a title.
 It's also optionally possible to add error bars using :rst:`:error:` and
 configure bar colors using :rst:`:colors:`. The colors correspond to m.css
 `color classes <{filename}/css/components.rst#colors>`_ and you can either
-use one color for all or one for each value, separated by whitespace. It's
-possible to add an extra line of labels using :rst:`:labels_extra:`. Bar chart
+use one color for all or one for each value, separated by whitespace. Bar chart
 height is calculated automatically based on amount of values, you can adjust
 the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
+
+It's possible to add an extra line of labels using :rst:`:labels_extra:`.
+Again, there should be as many entries as primary labels and values. To omit an extra label for a value, specify it as the :abbr:`reST <reStructuredText>`
+comment :rst:`..`.
 
 .. code-figure::
 
@@ -133,7 +136,7 @@ the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
                 15 modules
                 60 modules
                 200 modules
-                for comparison
+                ..
             :units: µs
             :values: 15.09 84.98 197.13 934.27
             :errors: 0.74 3.65 9.45 25.66
@@ -151,7 +154,7 @@ the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
             15 modules
             60 modules
             200 modules
-            for comparison
+            ..
         :units: µs
         :values: 15.09 84.98 197.13 934.27
         :errors: 0.74 3.65 9.45 25.66
