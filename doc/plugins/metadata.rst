@@ -93,7 +93,8 @@ following metadata are recognized:
     block and in ``og:title`` / ``twitter:title`` social :html:`<meta>` tag on
     author page. Can be used to provide a longer version of author name on this
     page. If not set, the m.css Pelican theme uses the global author name (the
-    one set by articles) instead.
+    one set by articles) instead --- but note that since 3.8, Pelican will warn
+    about this and suggest to specify the title explicitly.
 -   The :rst:`:description:` field is exposed to the theme in
     :py:`author.page.description` on the author page. The m.css Pelican theme
     uses it in :html:`<meta name="description">`. If not set, no tag is
@@ -165,7 +166,9 @@ for category named *Guest posts* will be in a file named
     :html:`<meta>` tag on category page and as badge title on article pages.
     Can be used to provide a longer version of category name for article badge
     and detailed category info. If not set, the m.css Pelican theme uses the
-    global category name (the one set by articles) instead.
+    global category name (the one set by articles) instead --- but note that
+    since 3.8, Pelican will warn about this and suggest to specify the title
+    explicitly.
 -   The :rst:`:description:` field is exposed to the theme in
     :py:`category.page.description` on the category page. The m.css Pelican
     theme uses it in :html:`<meta name="description">`. If not set, no tag is
@@ -235,7 +238,9 @@ following metadata are recognized:
     is used as caption in tag details block on tag page and in ``og:title`` /
     ``twitter:title`` social :html:`<meta>` tag. Can be used to provide a
     longer version of tag name on this page. If not set, the m.css Pelican
-    theme uses the global tag name (the one set by articles) instead.
+    theme uses the global tag name (the one set by articles) instead --- but
+    note that since 3.8, Pelican will warn about this and suggest to specify
+    the title explicitly.
 -   The :rst:`:description:` field is exposed to the theme in
     :py:`tag.page.description` on the tag page. The m.css Pelican theme uses
     it in :html:`<meta name="description">`. If not set, no :html:`<meta>` tag
