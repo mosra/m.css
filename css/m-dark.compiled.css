@@ -490,6 +490,7 @@ code {
 code.m-console {
   background-color: #000000;
 }
+*:focus { outline-color: #5b9dd9; }
 div.m-scroll {
   max-width: 100%;
   overflow-x: auto;

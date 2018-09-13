@@ -132,6 +132,9 @@ code.m-console {
   background-color: var(--console-background-color);
 }
 
+/* Focus outline on link, canvas and input: match the focused header item. */
+*:focus { outline-color: var(--header-link-current-color); }
+
 /* Utility */
 div.m-scroll {
   max-width: 100%;
