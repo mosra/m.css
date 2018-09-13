@@ -114,6 +114,13 @@ $Id: some strange RCS content $
 
 @par
     Paragraph that adds to the previous
+
+@par Block title
+@parblock
+Hello!
+
+Here is something inside that paragraph block.
+@endparblock
 */
 
 /** @page other Other page

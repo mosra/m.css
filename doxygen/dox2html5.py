@@ -558,6 +558,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <hruler>
         # - <simplesect> (if not describing return type) and <xrefsect>
         # - <verbatim>, <preformatted> (those are the same thing!)
+        # - <parblock> (a weird grouping thing that we abuse for <div>s)
         # - <variablelist>, <itemizedlist>, <orderedlist>
         # - <image>, <table>
         # - <mcss:div>
@@ -581,7 +582,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
+            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -763,6 +764,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         logging.warning("{}: more than three levels of Markdown headings in member descriptions are not supported, stopping at <h6>".format(state.current))
 
                 out.parsed += '<h{0}>{1}</h{0}>'.format(h_tag_level, html.escape(i.text))
+
+        elif i.tag == 'parblock':
+            assert element.tag == 'para' # is inside a paragraph :/
+            has_block_elements = True
+            out.parsed += '<div{}>{}</div>'.format(
+                ' class="{}"'.format(add_css_class) if add_css_class else '',
+                parse_desc(state, i))
 
         elif i.tag == 'para':
             assert element.tag != 'para' # should be top-level block element
