@@ -7,15 +7,13 @@
           {% for i in index.modules recursive %}
           {% if i.has_nestable_children %}
           <li class="m-dox-collapsible">
-            <a href="#" onclick="return toggle(this)">module</a> <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %}
-
-            {# the above is here to preserve the newline #}
+            <a href="#" onclick="return toggle(this)">module</a> <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %} <span class="m-dox">{{ i.brief }}</span>
             <ul class="m-dox">
 {{ loop(i.children)|indent(4, true) }}
             </ul>
           </li>
           {% else %}
-          <li>module <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a> <span class="m-dox">{{ i.brief }}</span>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %}</li>
+          <li>module <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %} <span class="m-dox">{{ i.brief }}</span></li>
           {% endif %}
           {% endfor %}
         </ul>
