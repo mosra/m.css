@@ -52,7 +52,9 @@ class MinimalTestCase(unittest.TestCase):
             'OUTPUT_PATH': os.path.join(self.path, 'output'),
             'PAGE_EXCLUDES': [os.path.join(self.path, 'output')],
             'ARTICLE_EXCLUDES': [os.path.join(self.path, 'output')],
-            'FEED_ALL_ATOM': None, # Don't render feeds, we're not testing them *ever*
+            # Don't render feeds, we don't want to test them all the time
+            'FEED_ALL_ATOM': None,
+            'CATEGORY_FEED_ATOM': None
         }
         implicit_settings.update(settings)
         settings = read_settings(path=None, override=implicit_settings)

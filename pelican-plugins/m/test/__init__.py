@@ -55,7 +55,9 @@ class PluginTestCase(unittest.TestCase):
             'PAGE_URL': '{slug}.html',
             'PAGE_EXCLUDES': ['output'],
             'ARTICLE_PATHS': ['articles'], # does not exist
-            'FEED_ALL_ATOM': None, # Don't render feeds, we're not testing them *ever*
+            # Don't render feeds, we don't want to test them all the time
+            'FEED_ALL_ATOM': None,
+            'CATEGORY_FEED_ATOM': None,
             'THEME': '../pelican-theme',
             'PLUGIN_PATHS': ['.'],
             'THEME_STATIC_DIR': 'static',

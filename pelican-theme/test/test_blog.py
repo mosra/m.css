@@ -550,3 +550,35 @@ class Draft(BlogTestCase):
 
         self.assertEqual(*self.actual_expected_contents('article.html'))
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
+
+class Feeds(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'feeds', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': True,
+            'FEED_ALL_ATOM': 'atom.xml',
+            'FEED_ALL_ATOM_URL': 'feeds/atom.xml',
+            'CATEGORY_FEED_ATOM': '%s.atom.xml',
+            'CATEGORY_FEED_ATOM_URL': 'feeds/%s.atom.xml',
+        })
+
+        # There should be just the first column
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('category-a-category.html'))
+
+class FeedsNoUrl(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'feeds_no_url', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'M_DISABLE_SOCIAL_META_TAGS': True,
+            'FEED_ALL_ATOM': 'feeds/atom.xml',
+            'CATEGORY_FEED_ATOM': 'feeds/%s.atom.xml',
+        })
+
+        # The feed URLs should be the same as above
+        self.assertEqual(*self.actual_expected_contents('index.html', '../blog_feeds/index.html'))
+        self.assertEqual(*self.actual_expected_contents('category-a-category.html', '../blog_feeds/category-a-category.html'))

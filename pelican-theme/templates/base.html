@@ -10,9 +10,15 @@
   {% endblock head_links %}
   {% if FEED_ALL_ATOM_URL %}
   <link href="{{ FEED_ALL_ATOM_URL|format_siteurl|e }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }}" />
+  {% elif FEED_ALL_ATOM %}
+  <link href="{{ FEED_ALL_ATOM|format_siteurl|e }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }}" />
   {% endif %}
-  {% if CATEGORY_FEED_ATOM_URL and category %}
+  {% if category %}
+  {% if CATEGORY_FEED_ATOM_URL %}
   <link href="{{ CATEGORY_FEED_ATOM_URL|format(category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }} | {{ category|e }}" />
+  {% elif CATEGORY_FEED_ATOM %}
+  <link href="{{ CATEGORY_FEED_ATOM|format(category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }} | {{ category|e }}" />
+  {% endif %}
   {% endif %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   {% if M_THEME_COLOR %}
