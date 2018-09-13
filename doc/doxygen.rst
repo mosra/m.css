@@ -760,39 +760,6 @@ aliases however you want to fit your naming scheme.
         "m_keyword{3}=" \
         "m_enum_values_as_keywords="
 
-With ``@m_div`` and ``@m_span`` it's possible to wrap individual paragraphs or
-inline text in :html:`<div>` / :html:`<span>` and add CSS classes to them.
-Example usage and corresponding rendered HTML output:
-
-.. code-figure::
-
-    .. code:: c++
-
-        /**
-        @div{m-note m-dim m-text-center} This paragraph is rendered in a dim
-        note, centered. @enddiv
-
-        This text contains a @span{m-text m-success} green @endspan word.
-        */
-
-    .. note-dim::
-        :class: m-text-center
-
-        This paragraph is rendered in a dim note, centered.
-
-    .. role:: success
-        :class: m-text m-success
-
-    This text contains a :success:`green` word.
-
-.. note-warning::
-
-    Note that due to Doxygen XML output limitations it's not possible to wrap
-    multiple paragraphs this way, attempt to do that will result in an invalid
-    XML file that can't be processed. Similarly, if you forget a closing
-    ``@enddiv`` / ``@endspan`` or misplace them, the result will be an invalid
-    XML file.
-
 With ``@m_class`` it's possible to add CSS classes to the immediately following
 paragraph, image, table, list or math formula block. When used inline, it
 affects the immediately following emphasis, strong text, link or inline math
@@ -840,6 +807,98 @@ formula. Example usage:
         @m_class{m-text m-big}
         **This text is big,** but the whole paragraph is green.
         */
+
+The builtin ``@parblock`` command can be combined with ``@m_class`` to wrap a
+block of HTML code in a :html:`<div>` and add CSS classes to it. With
+``@m_div`` and ``@m_span`` it's possible to wrap individual paragraphs or
+inline text in :html:`<div>` / :html:`<span>` and add CSS classes to them
+without any extra elements being added. Example usage and corresponding
+rendered HTML output:
+
+.. code-figure::
+
+    .. code:: c++
+
+        /**
+        @m_class{m-note m-dim m-text-center}
+        This block is rendered in a dim note.
+
+        Centered.
+        @parblock
+
+        @m_div{m-button m-primary} <a href="http://doc.magnum.graphics/">@m_div{m-big}See
+        it live! @m_enddiv @m_div{m-small} uses the m.css theme @m_enddiv </a> @m_enddiv
+
+        This text contains a @span{m-text m-success} green @endspan word.
+        */
+
+    .. note-dim::
+        :class: m-text-center
+
+        This paragraph is rendered in a dim note.
+
+        Centered.
+
+    .. button-primary:: http://doc.magnum.graphics
+
+        See it live!
+
+        uses the m.css theme
+
+    .. role:: success
+        :class: m-text m-success
+
+    This text contains a :success:`green` word.
+
+.. note-warning::
+
+    Note that due to Doxygen XML output limitations it's not possible to wrap
+    multiple paragraphs with ``@m_div`` / ``@m_span``, attempt to do that will
+    result in an invalid XML that can't be processed. Use the ``@parblock`` in
+    that case instead. Similarly, if you forget a closing ``@m_enddiv`` /
+    ``@m_endspan`` or misplace them, the result will be an invalid XML file.
+
+It's possible to combine ``@par`` with ``@parblock`` to create blocks, notes
+and other `m.css components <{filename}/css/components.rst>`_ with arbitrary
+contents. The ``@par`` command visuals can be fully overriden by putting ``@m_class`` in front, the ``@parblock`` after will ensure everything will
+belong inside. A bit recursive example:
+
+.. code-figure::
+
+    .. code:: c++
+
+        /**
+        @m_class{m-block m-success} @par How to get the answer
+        @parblock
+            It's simple:
+
+            @m_class{m-code-figure} @parblock
+                @code{.cpp}
+                // this is the code
+                printf("The answer to the universe and everything is %d.", 5*9);
+                @endcode
+
+                @code{.shell-session}
+                The answer to the universe and everything is 42.
+                @endcode
+            @endparblock
+        @endparblock
+        */
+
+    .. block-success:: How to get an answer
+
+        It's simple:
+
+        .. code-figure::
+
+            .. code:: c++
+
+                // this is the code
+                printf("The answer to the universe and everything is %d.", 5*9);
+
+            .. code:: shell-session
+
+                The answer to the universe and everything is 42.
 
 The ``@m_footernavigation`` command is similar to ``@tableofcontents``, but
 across pages --- if a page is a subpage of some other page and this command is
