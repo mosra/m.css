@@ -110,6 +110,9 @@ class Class {
         /** @brief Private virtual function in a group */
         virtual int doStuff() = 0;
 
+        /** @brief Private non-virtual function in a group shouldn't appear in the docs */
+        int doStuffIgnored();
+
         /*@}*/
 
         /** @brief This shouldn't appear in the docs */

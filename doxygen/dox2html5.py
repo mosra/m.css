@@ -2473,6 +2473,11 @@ def parse_xml(state: State, xml: str):
                             list += [('typedef', typedef)]
                             if typedef.has_details: compound.has_typedef_details = True
                     elif memberdef.attrib['kind'] == 'function':
+                        # Gather only private functions that are virtual and
+                        # documented
+                        if memberdef.attrib['prot'] == 'private' and (memberdef.attrib['virt'] == 'non-virtual' or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text)):
+                            continue
+
                         func = parse_func(state, memberdef)
                         if func:
                             list += [('func', func)]
