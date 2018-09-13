@@ -1788,8 +1788,11 @@ def extract_metadata(state: State, xml):
     # Compound name is page filename, so we have to use title there. The same
     # is for groups.
     compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text)
-    # Compound URL is ID, except for index page
-    compound.url = (compounddef.find('compoundname').text if compound.kind == 'page' else compound.id) + '.html'
+    # Compound URL is ID, except for index page, where it is named "indexpage"
+    # and so I have to override it back to "index". Can't use <compoundname>
+    # for pages because that doesn't reflect CASE_SENSE_NAMES. THANKS DOXYGEN.
+    # This is similar to compound.url_base handling in parse_xml() below.
+    compound.url = 'index.html' if compound.kind == 'page' and compound.id == 'indexpage' else compound.id + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
     # Groups and pages are explicitly created so they *have details*, other
     # things need to have at least some documentation
@@ -2045,6 +2048,7 @@ def parse_xml(state: State, xml: str):
     # Compound URL is ID, except for index page, where it is named "indexpage"
     # and so I have to override it back to "index". Can't use <compoundname>
     # for pages because that doesn't reflect CASE_SENSE_NAMES. THANKS DOXYGEN.
+    # This is similar to compound.url handling in extract_metadata() above.
     compound.url_base = ('index' if compound.id == 'indexpage' else compound.id)
     compound.url = compound.url_base + '.html'
     # Save current compound URL for search data building and ID extraction,
