@@ -732,37 +732,36 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
-            # Top-level description
-            if state.parsing_toplevel_desc:
-                if i.attrib['level'] == '1':
-                    tag = 'h2'
-                elif i.attrib['level'] == '2':
-                    tag = 'h3'
-                elif i.attrib['level'] == '3':
-                    tag = 'h4'
-                elif i.attrib['level'] == '4':
-                    tag = 'h5'
-                else: # pragma: no cover
-                    assert False
+            # Do not print anything if there are no contents
+            if not i.text:
+                logging.warning("{}: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead (or better, use @section for properly generated TOC)".format(state.current))
 
-                # Emit this warning only in top-level desc, TOC is not
-                # generated for function/enum/... descriptions
-                logging.warning("{}: prefer @section over Markdown heading for properly generated TOC".format(state.current))
-
-            # Function/enum/... descriptions are inside <h3> for function
-            # header, which is inside <h2> for detailed definition section, so
-            # it needs to be <h4> and below
             else:
-                if i.attrib['level'] == '1':
-                    tag = 'h4'
-                elif i.attrib['level'] == '2':
-                    tag = 'h5'
-                elif i.attrib['level'] in ['3', '4']:
-                    tag = 'h6' # there is no <h7>
-                else: # pragma: no cover
-                    assert False
+                h_tag_level = int(i.attrib['level'])
+                assert h_tag_level > 0
 
-            out.parsed += '<{0}>{1}</{0}>'.format(tag, html.escape(i.text))
+                # Top-level description can have 5 levels (first level used for
+                # page title), so it needs to be <h2> and below
+                if state.parsing_toplevel_desc:
+                    h_tag_level += 1
+                    if h_tag_level > 6:
+                        h_tag_level = 6
+                        logging.warning("{}: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>".format(state.current))
+
+                    # Emit this warning only in top-level desc, TOC is not
+                    # generated for function/enum/... descriptions
+                    logging.warning("{}: prefer @section over Markdown heading for properly generated TOC".format(state.current))
+
+                # Function/enum/... descriptions are inside <h3> for function
+                # header, which is inside <h2> for detailed definition section,
+                # so it needs to be <h4> and below
+                else:
+                    h_tag_level += 3
+                    if h_tag_level > 6:
+                        h_tag_level = 6
+                        logging.warning("{}: more than three levels of Markdown headings in member descriptions are not supported, stopping at <h6>".format(state.current))
+
+                out.parsed += '<h{0}>{1}</h{0}>'.format(h_tag_level, html.escape(i.text))
 
         elif i.tag == 'para':
             assert element.tag != 'para' # should be top-level block element

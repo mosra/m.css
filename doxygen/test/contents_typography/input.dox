@@ -1,18 +1,16 @@
 /** @mainpage
 
-@section section Page section
-
 > A blockquote.
 
     Preformatted text.
 
 Paragraph \n with \n explicit \n line \n breaks.
 
+@section section Page section
+
 <pre>Differently
   preformatted
 text.</pre>
-
-@subsection subsection Page subsection
 
 -   Unordered
 -   list
@@ -20,8 +18,6 @@ text.</pre>
     -   nested
     -   items
 -   and back
-
-@subsubsection subsubsection Sub-sub section
 
 1.  Ordered
 2.  list
@@ -35,8 +31,8 @@ text.</pre>
 This is a `typewriter text`, *emphasis* and **bold**. <em>Emphasis with
 <tt>typewriter</tt> and <strong>bold</strong> nested.</em> http://google.com
 and [URL](http://google.com). <small>Small *text*.</small> En-dash -- and
-em-dash ---. Reference to a @ref subsection. Named reference with special
-characters in title: @ref warnings "&raquo; Warnings &laquo;". Reference with
+em-dash ---. Reference to a @ref section. Named reference with special
+characters in title: @ref section "&raquo; Warnings &laquo;". Reference with
 escaped characters in&nbsp;title: @ref an-anchor "<anchor>".
 
 Empty elements: <em></em> <tt></tt> <strong></strong> <pre></pre> <small></small>
@@ -44,17 +40,5 @@ Empty elements: <em></em> <tt></tt> <strong></strong> <pre></pre> <small></small
 - - -
 
 Above is a horizontal line.
-
-*/
-
-/** @page warnings Content that produces warnings
-
-# Markdown heading 1
-
-## Markdown heading 2
-
-### Markdown heading 3
-
-#### Markdown heading 4
 
 */

@@ -11,8 +11,6 @@
 
 ### A third-level header
 
-#### A fourth-level header
-
 @section foo-usage Usage
 
 This is usage.
@@ -29,3 +27,14 @@ Mooore.
 @return Does not return anything.
 */
 void foo(int bar);
+
+/**
+@brief This produces warnings
+
+#### Markdown heading 4 that's rendered the same as 3
+
+Markdown heading, underlined, is misparsed
+##########################################
+
+*/
+void bar(int foo);
