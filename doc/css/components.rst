@@ -922,11 +922,12 @@ might then look similarly to this:
 
 It often happens that you want to present code with corresponding result
 together. The code figure looks similar to `image figures <#figures>`_ and
-consists of a :html:`<figure class="m-code-figure">` element containing a
-:html:`<pre>` block and whatever else you want to put in as the result. The
-:html:`<pre>` element has to be the very first child of the :html:`<figure>`
-for the markup to work correctly. Similar to image figure, you can apply the
-:css:`.m-flat` CSS class to remove the border.
+consists of a :html:`<figure>` (or :html:`<div>`) element with the
+:css:`.m-code-figure` class containing a :html:`<pre>` block and whatever else
+you want to put in as the result. The :html:`<pre>` element has to be the very
+first child of the :html:`<figure>` for the markup to work correctly. Similar
+to image figure, you can apply the :css:`.m-flat` CSS class to remove the
+border.
 
 Example (note that this page uses code figure for all code examples, so it's a
 bit of a figure inception shown here):
@@ -952,8 +953,7 @@ bit of a figure inception shown here):
         </figure>
 
 It's also possible to have matching border for a console output. Just use
-:css:`.m-console-figure` instead of :css:`.m-code-figure` on the :html:`<figure>`
-element.
+:css:`.m-console-figure` instead of :css:`.m-code-figure` on the outer element.
 
 .. note-info::
 

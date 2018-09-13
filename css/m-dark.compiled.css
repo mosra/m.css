@@ -1088,14 +1088,14 @@ figure.m-figure.m-fullwidth:after {
   margin-top: 1rem;
   height: 1px;
 }
-figure.m-code-figure, figure.m-console-figure {
+.m-code-figure, .m-console-figure {
   margin-top: 0;
   margin-left: 0;
   margin-right: 0;
   position: relative;
   padding: 1rem;
 }
-figure.m-code-figure:before, figure.m-console-figure:before {
+.m-code-figure:before, .m-console-figure:before {
   position: absolute;
   content: ' ';
   top: 0;
@@ -1107,16 +1107,16 @@ figure.m-code-figure:before, figure.m-console-figure:before {
   border-width: 0.125rem;
   border-radius: 0.2rem;
 }
-figure.m-code-figure:before {
+.m-code-figure:before {
   border-color: #282e36;
 }
-figure.m-console-figure:before {
+.m-console-figure:before {
   border-color: #000000;
 }
-figure.m-code-figure.m-flat:before, figure.m-console-figure.m-flat:before {
+.m-code-figure.m-flat:before, .m-console-figure.m-flat:before {
   border-color: transparent;
 }
-figure.m-code-figure > pre:first-child, figure.m-console-figure > pre:first-child {
+.m-code-figure > pre:first-child, .m-console-figure > pre:first-child {
   position: relative;
   margin: -1rem -1rem 1rem -1rem;
   border-bottom-left-radius: 0;
@@ -1226,15 +1226,15 @@ figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-
 .m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
 .m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
 .m-container-inflatable > .m-row > [class*='m-col-'] > pre,
-.m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-code-figure,
-.m-container-inflatable > .m-row > [class*='m-col-'] > figure.m-console-figure,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-code-figure,
+.m-container-inflatable > .m-row > [class*='m-col-'] > .m-console-figure,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > pre,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-code-figure,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > figure.m-console-figure {
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-code-figure,
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-console-figure {
   margin-left: -1rem;
   margin-right: -1rem;
 }
@@ -1545,16 +1545,16 @@ div.m-graph svg g.m-node.m-dim polygon,
 div.m-graph svg g.m-node.m-dim polyline {
   stroke: #747474;
 }
-p, ul, ol, dl, blockquote, pre, figure.m-code-figure, figure.m-console-figure,
-hr, .m-note, .m-frame, .m-block, div.m-button, div.m-scroll, table.m-table,
-div.m-image, img.m-image, svg.m-image, figure.m-figure, .m-imagegrid, div.m-math {
+p, ul, ol, dl, blockquote, pre, .m-code-figure, .m-console-figure, hr, .m-note,
+.m-frame, .m-block, div.m-button, div.m-scroll, table.m-table, div.m-image,
+img.m-image, svg.m-image, figure.m-figure, .m-imagegrid, div.m-math {
   margin-bottom: 1rem;
 }
 p:last-child, p.m-nopadb, ul:last-child, ul.m-nopadb,
 ol:last-child, ol.m-nopadb, dl:last-child, dl.m-nopadb,
 blockquote:last-child, blockquote.m-nopadb, pre:last-child, pre.m-nopadb,
-figure.m-code-figure:last-child, figure.m-code-figure.m-nopadb,
-figure.m-console-figure:last-child, figure.m-console-figure.m-nopadb,
+.m-code-figure:last-child, .m-code-figure.m-nopadb,
+.m-console-figure:last-child, .m-console-figure.m-nopadb,
 hr:last-child, hr.m-nopadb, .m-note:last-child, .m-note.m-nopadb,
 .m-frame:last-child, .m-frame.m-nopadb, .m-block:last-child, .m-block.m-nopadb,
 div.m-button:last-child, div.m-button.m-nopadb,
@@ -1569,7 +1569,7 @@ div.m-math:last-child, div.m-math.m-nopadb {
   margin-bottom: 0;
 }
 li > p:last-child, li > blockquote:last-child, li > pre:last-child,
-li > figure.m-code-figure:last-child, li > figure.m-console-figure:last-child,
+li > .m-code-figure:last-child, li > .m-console-figure:last-child,
 li > .m-note:last-child, li > .m-frame:last-child, li > .m-block:last-child,
 li > div.m-button:last-child, li > div.m-scroll:last-child, li > table.m-table:last-child,
 li > img.m-image:last-child, li > svg.m-image:last-child, li > div.m-image:last-child,
@@ -1579,8 +1579,8 @@ li > figure.m-figure:last-child, li > div.m-math:last-child {
 li:last-child > p:last-child, li:last-child > p.m-nopadb,
 li:last-child > blockquote:last-child, li:last-child > blockquote.m-nopadb,
 li:last-child > pre:last-child, li:last-child > pre.m-nopadb,
-li:last-child > figure.m-code-figure:last-child, li:last-child > figure.m-code-figure.m-nopadb,
-li:last-child > figure.m-console-figure:last-child, li:last-child > figure.m-console-figure.m-nopadb,
+li:last-child > .m-code-figure:last-child, li:last-child > .m-code-figure.m-nopadb,
+li:last-child > .m-console-figure:last-child, li:last-child > .m-console-figure.m-nopadb,
 li:last-child > .m-note:last-child, li:last-child > .m-note.m-nopadb,
 li:last-child > .m-frame:last-child, li:last-child > .m-frame.m-nopadb,
 li:last-child > .m-block:last-child, li:last-child > .m-block.m-nopadb,
