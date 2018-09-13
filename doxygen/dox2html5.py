@@ -1387,25 +1387,25 @@ def parse_desc_keywords(state: State, element: ET.Element) -> str:
     return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords
 
 def parse_enum_desc(state: State, element: ET.Element) -> str:
-    # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
+    if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in enum description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.is_deprecated)
 
 def parse_enum_value_desc(state: State, element: ET.Element) -> str:
-    # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
+    if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in enum value description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_var_desc(state: State, element: ET.Element) -> str:
-    # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
+    if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in variable description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
 
@@ -1413,33 +1413,29 @@ def parse_toplevel_desc(state: State, element: ET.Element):
     state.parsing_toplevel_desc = True
     parsed = parse_desc_internal(state, element)
     state.parsing_toplevel_desc = False
-    # Verify that we didn't ignore any important info by accident
-    assert not parsed.return_value and not parsed.return_values and not parsed.exceptions
-    if parsed.params:
-        logging.warning("{}: use @tparam instead of @param for documenting class templates, @param is ignored".format(state.current))
+    if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @param / @return / @retval / @exception found in top-level description, ignoring".format(state.current))
     return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_typedef_desc(state: State, element: ET.Element):
-    # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
+    if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @param / @return / @retval / @exception found in typedef description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_func_desc(state: State, element: ET.Element):
-    # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.exceptions, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_define_desc(state: State, element: ET.Element):
-    # Verify that we didn't ignore any important info by accident
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    assert not parsed.templates and not parsed.exceptions
-    assert not parsed.return_values # might be problematic?
+    if parsed.templates or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @tparam / @retval / @exception found in macro description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
     return (parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated)
 

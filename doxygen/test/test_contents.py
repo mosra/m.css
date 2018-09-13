@@ -320,3 +320,11 @@ class AnchorInBothGroupAndNamespace(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='namespaceFoo.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
+
+class UnexpectedSections(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'unexpected_sections', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='File_8h.xml')
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
