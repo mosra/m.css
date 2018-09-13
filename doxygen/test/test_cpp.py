@@ -72,3 +72,11 @@ class Friends(IntegrationTestCase):
         self.run_dox2html5(wildcard='class*.xml')
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('classTemplate.html'))
+
+class SignalsSlots(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'signals_slots', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='classClass.xml')
+        self.assertEqual(*self.actual_expected_contents('classClass.html'))

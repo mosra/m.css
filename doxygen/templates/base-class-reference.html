@@ -41,7 +41,7 @@
           </tbody>
         </table>
         {% endif %}
-        {% if compound.sections or compound.public_types or compound.public_static_funcs or compound.typeless_funcs or compound.public_funcs or compound.public_static_vars or compound.public_vars or compound.protected_types or compound.protected_static_funcs or compound.protected_funcs or compound.protected_static_vars or compound.protected_vars or compound.private_funcs or compound.groups or compound.friend_funcs or compound.related %}
+        {% if compound.sections or compound.public_types or compound.public_static_funcs or compound.typeless_funcs or compound.public_funcs or compound.signals or compound.public_slots or compound.public_static_vars or compound.public_vars or compound.protected_types or compound.protected_static_funcs or compound.protected_funcs or compound.protected_signals or compound.protected_static_vars or compound.protected_vars or compound.private_funcs or compound.private_slots or compound.groups or compound.friend_funcs or compound.related %}
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -81,6 +81,12 @@
                 {% if compound.public_funcs %}
                 <li><a href="#pub-methods">Public functions</a></li>
                 {% endif %}
+                {% if compound.signals %}
+                <li><a href="#signals">Signals</a></li>
+                {% endif %}
+                {% if compound.public_slots %}
+                <li><a href="#pub-slots">Public slots</a></li>
+                {% endif %}
                 {% if compound.public_vars %}
                 <li><a href="#pub-attribs">Public variables</a></li>
                 {% endif %}
@@ -93,6 +99,9 @@
                 {% if compound.protected_funcs %}
                 <li><a href="#pro-methods">Protected functions</a></li>
                 {% endif %}
+                {% if compound.protected_slots %}
+                <li><a href="#pro-slots">Protected slots</a></li>
+                {% endif %}
                 {% if compound.protected_static_vars %}
                 <li><a href="#pro-static-attribs">Protected static variables</a></li>
                 {% endif %}
@@ -101,6 +110,9 @@
                 {% endif %}
                 {% if compound.private_funcs %}
                 <li><a href="#pri-methods">Private functions</a></li>
+                {% endif %}
+                {% if compound.private_slots %}
+                <li><a href="#pri-slots">Private slots</a></li>
                 {% endif %}
                 {% for group in compound.groups %}
                 <li><a href="#{{ group.id }}">{{ group.name }}</a></li>
@@ -195,6 +207,26 @@
           </dl>
         </section>
         {% endif %}
+        {% if compound.signals %}
+        <section id="signals">
+          <h2><a href="#signals">Signals</a></h2>
+          <dl class="m-dox">
+            {% for func in compound.signals %}
+{{ entry_func(func) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+        {% if compound.public_slots %}
+        <section id="pub-slots">
+          <h2><a href="#pub-slots">Public slots</a></h2>
+          <dl class="m-dox">
+            {% for func in compound.public_slots %}
+{{ entry_func(func) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
         {% if compound.public_vars %}
         <section id="pub-attribs">
           <h2><a href="#pub-attribs">Public variables</a></h2>
@@ -241,6 +273,16 @@
           </dl>
         </section>
         {% endif %}
+        {% if compound.protected_slots %}
+        <section id="pro-slots">
+          <h2><a href="#pro-slots">Protected slots</a></h2>
+          <dl class="m-dox">
+            {% for func in compound.protected_slots %}
+{{ entry_func(func) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
         {% if compound.protected_static_vars %}
         <section id="pro-static-attribs">
           <h2><a href="#pro-static-attribs">Protected static variables</a></h2>
@@ -266,6 +308,16 @@
           <h2><a href="#pri-methods">Private functions</a></h2>
           <dl class="m-dox">
             {% for func in compound.private_funcs %}
+{{ entry_func(func) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+        {% if compound.private_slots %}
+        <section id="pri-slots">
+          <h2><a href="#pri-slots">Private slots</a></h2>
+          <dl class="m-dox">
+            {% for func in compound.private_slots %}
 {{ entry_func(func) }}
             {% endfor %}
           </dl>
@@ -394,6 +446,16 @@
 {{ details_func(func, compound.prefix_wbr) }}
           {% endif %}
           {% endfor %}
+          {% for func in compound.signals %}
+          {% if func.has_details %}
+{{ details_func(func, compound.prefix_wbr) }}
+          {% endif %}
+          {% endfor %}
+          {% for func in compound.public_slots %}
+          {% if func.has_details %}
+{{ details_func(func, compound.prefix_wbr) }}
+          {% endif %}
+          {% endfor %}
           {% for func in compound.protected_static_funcs %}
           {% if func.has_details %}
 {{ details_func(func, compound.prefix_wbr) }}
@@ -404,7 +466,17 @@
 {{ details_func(func, compound.prefix_wbr) }}
           {% endif %}
           {% endfor %}
+          {% for func in compound.protected_slots %}
+          {% if func.has_details %}
+{{ details_func(func, compound.prefix_wbr) }}
+          {% endif %}
+          {% endfor %}
           {% for func in compound.private_funcs %}
+          {% if func.has_details %}
+{{ details_func(func, compound.prefix_wbr) }}
+          {% endif %}
+          {% endfor %}
+          {% for func in compound.private_slots %}
           {% if func.has_details %}
 {{ details_func(func, compound.prefix_wbr) }}
           {% endif %}

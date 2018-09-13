@@ -1248,6 +1248,12 @@ Property                                Description
 :py:`compound.public_funcs`             List of public functions. Set only for
                                         classes. See `Function properties`_ for
                                         details.
+:py:`compound.signals`                  List of Qt signals. Set only for
+                                        classes. See `Function properties`_ for
+                                        details.
+:py:`compound.public_slots`             List of public Qt slots. Set only for
+                                        classes. See `Function properties`_ for
+                                        details.
 :py:`compound.public_static_vars`       List of public static variables. Set
                                         only for classes. See
                                         `Variable properties`_ for details.
@@ -1263,6 +1269,9 @@ Property                                Description
 :py:`compound.protected_funcs`          List of protected functions. Set only
                                         for classes. See `Function properties`_
                                         for details.
+:py:`compound.protected_slots`          List of protected Qt slots. Set only
+                                        for classes. See `Function properties`_
+                                        for details.
 :py:`compound.protected_static_vars`    List of protected static variables. Set
                                         only for classes. See
                                         `Variable properties`_ for details.
@@ -1271,6 +1280,9 @@ Property                                Description
                                         for details.
 :py:`compound.private_funcs`            List of documented private virtual
                                         functions. Set only for classes. See
+                                        `Function properties`_ for details.
+:py:`compound.private_slots`            List of documented private virtual Qt
+                                        slots. Set only for classes. See
                                         `Function properties`_ for details.
 :py:`compound.friend_funcs`             List of documented friend functions.
                                         Set only for classes. See
@@ -1499,8 +1511,10 @@ Property                    Description
 ``````````````````````
 
 The :py:`commpound.funcs`, :py:`compound.public_static_funcs`,
-:py:`compound.public_funcs`, :py:`compound.protected_static_funcs`,
-:py:`compound.protected_funcs`, :py:`compound.private_funcs`,
+:py:`compound.public_funcs`, :py:`compound.signals`,
+:py:`compound.public_slots`, :py:`compound.protected_static_funcs`,
+:py:`compound.protected_funcs`, :py:`compound.protected_slots`,
+:py:`compound.private_funcs`, :py:`compound.private_slots`,
 :py:`compound.friend_funcs` and :py:`compound.related_funcs` properties contain
 a list of functions, where every item has the following properties:
 
@@ -1555,6 +1569,10 @@ Property                        Description
 :py:`func.is_constexpr`         If the function is :cpp:`constexpr`
 :py:`func.is_defaulted`         If the function is :cpp:`default`\ ed
 :py:`func.is_deleted`           If the function is :cpp:`delete`\ d
+:py:`func.is_signal`            If the function is a Qt signal. Set only for
+                                member functions.
+:py:`func.is_slot`              If the function is a Qt slot. Set only for
+                                member functions.
 =============================== ===============================================
 
 The :py:`func.params` is a list of function parameters and their description.

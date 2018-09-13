@@ -1570,7 +1570,7 @@ def parse_typedef(state: State, element: ET.Element):
     return None
 
 def parse_func(state: State, element: ET.Element):
-    assert element.tag == 'memberdef' and element.attrib['kind'] in ['function', 'friend']
+    assert element.tag == 'memberdef' and element.attrib['kind'] in ['function', 'friend', 'signal', 'slot']
 
     func = Empty()
     state.current_definition_url_base, func.base_url, func.id = parse_id(element)
@@ -1627,6 +1627,8 @@ def parse_func(state: State, element: ET.Element):
     if element.attrib['kind'] != 'friend':
         func.is_protected = element.attrib['prot'] == 'protected'
         func.is_private = element.attrib['prot'] == 'private'
+    func.is_signal = element.attrib['kind'] == 'signal'
+    func.is_slot = element.attrib['kind'] == 'slot'
 
     func.has_template_details, func.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
@@ -2082,14 +2084,18 @@ def parse_xml(state: State, xml: str):
     compound.public_static_funcs = []
     compound.typeless_funcs = []
     compound.public_funcs = []
+    compound.signals = []
+    compound.public_slots = []
     compound.public_static_vars = []
     compound.public_vars = []
     compound.protected_types = []
     compound.protected_static_funcs = []
     compound.protected_funcs = []
+    compound.protected_slots = []
     compound.protected_static_vars = []
     compound.protected_vars = []
     compound.private_funcs = []
+    compound.private_slots = []
     compound.related = []
     compound.friend_funcs = []
     compound.groups = []
@@ -2341,6 +2347,20 @@ def parse_xml(state: State, xml: str):
                             compound.typeless_funcs += [func]
                         if func.has_details: compound.has_func_details = True
 
+            elif compounddef_child.attrib['kind'] == 'signal':
+                for memberdef in compounddef_child:
+                    func = parse_func(state, memberdef)
+                    if func:
+                        compound.signals += [func]
+                        if func.has_details: compound.has_func_details = True
+
+            elif compounddef_child.attrib['kind'] == 'public-slot':
+                for memberdef in compounddef_child:
+                    func = parse_func(state, memberdef)
+                    if func:
+                        compound.public_slots += [func]
+                        if func.has_details: compound.has_func_details = True
+
             elif compounddef_child.attrib['kind'] == 'public-static-attrib':
                 for memberdef in compounddef_child:
                     var = parse_var(state, memberdef)
@@ -2384,6 +2404,13 @@ def parse_xml(state: State, xml: str):
                             compound.typeless_funcs += [func]
                         if func.has_details: compound.has_func_details = True
 
+            elif compounddef_child.attrib['kind'] == 'protected-slot':
+                for memberdef in compounddef_child:
+                    func = parse_func(state, memberdef)
+                    if func:
+                        compound.protected_slots += [func]
+                        if func.has_details: compound.has_func_details = True
+
             elif compounddef_child.attrib['kind'] == 'protected-static-attrib':
                 for memberdef in compounddef_child:
                     var = parse_var(state, memberdef)
@@ -2398,17 +2425,19 @@ def parse_xml(state: State, xml: str):
                         compound.protected_vars += [var]
                         if var.has_details: compound.has_var_details = True
 
-            elif compounddef_child.attrib['kind'] == 'private-func':
+            elif compounddef_child.attrib['kind'] in ['private-func', 'private-slot']:
                 # Gather only private functions that are virtual and
                 # documented
                 for memberdef in compounddef_child:
                     if memberdef.attrib['virt'] == 'non-virtual' or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text):
-                        assert True # only because coverage.py can't handle continue :/
-                        continue # pragma: no cover
+                        continue
 
                     func = parse_func(state, memberdef)
                     if func:
-                        compound.private_funcs += [func]
+                        if compounddef_child.attrib['kind'] == 'private-slot':
+                            compound.private_slots += [func]
+                        else:
+                            compound.private_funcs += [func]
                         if func.has_details: compound.has_func_details = True
 
             elif compounddef_child.attrib['kind'] == 'related':
@@ -2472,7 +2501,7 @@ def parse_xml(state: State, xml: str):
                         if typedef:
                             list += [('typedef', typedef)]
                             if typedef.has_details: compound.has_typedef_details = True
-                    elif memberdef.attrib['kind'] == 'function':
+                    elif memberdef.attrib['kind'] in ['function', 'signal', 'slot']:
                         # Gather only private functions that are virtual and
                         # documented
                         if memberdef.attrib['prot'] == 'private' and (memberdef.attrib['virt'] == 'non-virtual' or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text)):
