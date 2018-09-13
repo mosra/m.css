@@ -46,6 +46,26 @@ An unstyled list:
 -   First item without a dot
 -   Second item without a dot
 
+@m_class{m-block m-info}
+
+@par A info block with some paragraphs inside
+@parblock
+Hello.
+
+This is good, finally.
+@endparblock
+
+@m_class{m-code-figure}
+
+@parblock
+@code
+// this is the code
+printf("The answer to the universe and everything is %d.", 5*9)
+@endcode
+
+The answer to the universe and everything is 42.
+@endparblock
+
 */
 
 /** @page math Math

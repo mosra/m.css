@@ -939,7 +939,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     elif i.attrib['kind'] == 'remark':
                         out.parsed += '<aside class="m-note m-default"><h4>Remark</h4>'
                     elif i.attrib['kind'] == 'par':
-                        out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
+                        if add_css_class:
+                            out.parsed += '<aside class="{}"><h3>{}</h3>'.format(add_css_class, html.escape(i.findtext('title', '')))
+                        else:
+                            out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
                     elif i.attrib['kind'] == 'rcs':
                         out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
                     else: # pragma: no cover
