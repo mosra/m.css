@@ -698,8 +698,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     tag = 'h3'
                 elif element.tag == 'sect3':
                     tag = 'h4'
-                elif not element.tag == 'simplesect':
-                    assert False # pragma: no cover
+                elif not element.tag == 'simplesect': # pragma: no cover
+                    assert False
 
             # Function/enum/... descriptions are inside <h3> for function
             # header, which is inside <h2> for detailed definition section, so
@@ -711,8 +711,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     tag = 'h5'
                 elif element.tag == 'sect3':
                     tag = 'h6'
-                elif not element.tag == 'simplesect':
-                    assert False # pragma: no cover
+                elif not element.tag == 'simplesect': # pragma: no cover
+                    assert False
 
             # simplesect titles are handled directly inside simplesect
             if not element.tag == 'simplesect':
