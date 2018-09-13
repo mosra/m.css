@@ -56,7 +56,7 @@
         <div id="m-jumbo-cover">
           <div class="m-container">
             <div class="m-row">
-              <div class="{% if article.authors %}m-col-t-6 m-col-s-5{% else %}m-col-t-12 m-col-s-10{% endif %} m-push-s-1 m-text-left">{{ article.locale_date|e }}</div>
+              <div class="{% if article.authors %}m-col-t-6 m-col-s-5{% else %}m-col-t-12 m-col-s-10{% endif %} m-push-s-1 m-text-left">{{ article.locale_date|e }}{% if article.status == 'draft' %} <span class="m-label m-dim">draft</span>{% endif %}</div>
               {% if article.authors %}
               <div class="m-col-t-6 m-col-s-5 m-push-s-1 m-text-right">{% for author in article.authors %}<a href="{{ author.url|format_siteurl|e }}">{{ author|e }}</a>{% endfor %}</div>
               {% endif %}

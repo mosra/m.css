@@ -5,6 +5,9 @@
       {{ month }} <span class="m-date-day">{{ day }}</span> {{year}}
     </time>
     {{ article.title }}
+    {% if article.status == 'draft' %}
+    <span class="m-label m-dim">draft</span>
+    {% endif %}
   </a></h1>
   {# Display summary only if:
     - we're on article listing page (either the articles_page is defined by

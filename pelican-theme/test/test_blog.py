@@ -549,3 +549,4 @@ class Draft(BlogTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('article.html'))
+        self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
