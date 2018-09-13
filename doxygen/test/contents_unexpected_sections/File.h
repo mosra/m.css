@@ -2,6 +2,10 @@
 @brief A file
 
 @return Files don't return anyhting.
+
+@section section A section
+
+@tparam huh Setions shouldn't have template params.
 */
 
 /**

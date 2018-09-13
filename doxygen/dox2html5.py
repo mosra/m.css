@@ -670,7 +670,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # Render as <section> in toplevel desc
             if state.parsing_toplevel_desc:
                 assert parsed.section
-                assert not parsed.templates and not parsed.params and not parsed.return_value and not parsed.return_values and not parsed.exceptions
+                if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+                    logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found inside a @section, ignoring".format(state.current))
 
                 # Top-level section has no ID or title
                 if not out.section: out.section = ('', '', [])
