@@ -1,8 +1,10 @@
 <header>
   <h1><a href="{{ article.url|format_siteurl|e }}" rel="bookmark" title="Permalink to {{ article.title }}">
     <time class="m-date" datetime="{{ article.date.isoformat() }}">
-      {% set month, day, year = article.date.strftime('%b %d %Y').split(' ') %}
-      {{ month }} <span class="m-date-day">{{ day }}</span> {{year}}
+      {% set month = article.date.strftime('%b') %}
+      {% set day = article.date.strftime('%d') %}
+      {% set year = article.date.strftime('%Y') %}
+      {{ month }} <span class="m-date-day">{{ day }}</span> {{ year }}
     </time>
     {{ article.title }}
     {% if article.status == 'draft' %}
