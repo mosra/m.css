@@ -1196,8 +1196,7 @@ Property                                Description
 :py:`compound.footer_navigation`        Footer navigation of a page. See
                                         `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
-:py:`compound.is_deprecated`            Whether the compound is deprecated. Not
-                                        set for pages. [7]_
+:py:`compound.is_deprecated`            Whether the compound is deprecated. [7]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
 :py:`compound.modules`                  List of submodules in this compound.
                                         Set only for modules. See

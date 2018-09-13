@@ -185,6 +185,9 @@ class Deprecated(IntegrationTestCase):
         # Namespace tree
         self.assertEqual(*self.actual_expected_contents('namespaces.html'))
 
+        # Page tree
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
+
         # Base and derived class listing
         self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1BaseDeprecatedClass.html'))
         self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1DeprecatedClass.html'))

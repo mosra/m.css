@@ -1,4 +1,4 @@
-INPUT                   = Dir
+INPUT                   = Dir deprecated-page.dox
 RECURSIVE               = YES
 AUTOLINK_SUPPORT        = NO
 QUIET                   = YES
