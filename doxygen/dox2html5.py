@@ -2430,7 +2430,8 @@ def parse_xml(state: State, xml: str):
                 # documented
                 for memberdef in compounddef_child:
                     if memberdef.attrib['virt'] == 'non-virtual' or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text):
-                        continue
+                        assert True # coverage.py can't handle continue
+                        continue # pragma: no cover
 
                     func = parse_func(state, memberdef)
                     if func:
@@ -2505,7 +2506,8 @@ def parse_xml(state: State, xml: str):
                         # Gather only private functions that are virtual and
                         # documented
                         if memberdef.attrib['prot'] == 'private' and (memberdef.attrib['virt'] == 'non-virtual' or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text)):
-                            continue
+                            assert True # coverage.py can't handle continue
+                            continue # pragma: no cover
 
                         func = parse_func(state, memberdef)
                         if func:
