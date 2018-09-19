@@ -35,7 +35,12 @@ import latex2svg
 # Modified params to use for math rendering
 params = latex2svg.default_params.copy()
 params.update({
-    # Don't use libertine fonts as they mess up things
+    # Don't use libertine fonts as they mess up things. The latex xcolor
+    # package version < 2.12 (the one on Ubuntu 16.04) has a bug that prevents
+    # lowercase `f` being used for color names (uppercase works):
+    # https://tex.stackexchange.com/a/274531. However, when replacing the
+    # colors with CSS classes later (_class_mapping below), the hexadecimal
+    # number needs to be lowercase again.
     'preamble': r"""
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath}
@@ -45,13 +50,13 @@ params.update({
 \usepackage{newtxtext}
 
 \usepackage{xcolor}
-\definecolor{m-default}{HTML}{cafe03}
-\definecolor{m-primary}{HTML}{cafe04}
-\definecolor{m-success}{HTML}{cafe05}
-\definecolor{m-warning}{HTML}{cafe06}
-\definecolor{m-danger}{HTML}{cafe07}
-\definecolor{m-info}{HTML}{cafe08}
-\definecolor{m-dim}{HTML}{cafe09}
+\definecolor{m-default}{HTML}{caFe03}
+\definecolor{m-primary}{HTML}{caFe04}
+\definecolor{m-success}{HTML}{caFe05}
+\definecolor{m-warning}{HTML}{caFe06}
+\definecolor{m-danger}{HTML}{caFe07}
+\definecolor{m-info}{HTML}{caFe08}
+\definecolor{m-dim}{HTML}{caFe09}
 """,
     # Zoom the letters a bit to match page font size.
     # TODO dvisvgm 2.2.2 was changed to "avoid scientific notation of floating
