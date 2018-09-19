@@ -53,7 +53,15 @@ params.update({
 \definecolor{m-info}{HTML}{cafe08}
 \definecolor{m-dim}{HTML}{cafe09}
 """,
-    # Zoom the letters a bit to match page font size
+    # Zoom the letters a bit to match page font size.
+    # TODO dvisvgm 2.2.2 was changed to "avoid scientific notation of floating
+    # point numbers" (https://github.com/mgieseki/dvisvgm/blob/3facb925bfe3ab47bf40d376d567a114b2bee3a5/NEWS#L90),
+    # meaning the default precision (6) is now used for the decimal points, so
+    # you'll often get numbers like 194.283203, which is a bit too much
+    # precision. Could be enough to have 4 decimal points max, but that would
+    # be too little for <2.2.2, where it would mean you get just 194.28. We
+    # need to detect the version somehow and then apply reasonable precision
+    # based on that.
     'dvisvgm_cmd': 'dvisvgm --no-fonts -Z 1.25',
     })
 
