@@ -73,9 +73,11 @@ switch.
     that case the documentation mentions which revision to use or which patch
     you need to apply.
 
-Everything you need apart from Doxygen itself is a Python script and a bunch of
-template files. You can get that by cloning :gh:`the m.css GitHub repository <mosra/m.css$master/doxygen>`
-and looking into the ``doxygen/`` directory:
+The base is contained in a single Python script and related style/template
+files, for advanced features such as math rendering it'll make use of internals
+of some `m.css plugins <{filename}/plugins.rst>`_. Clone
+:gh:`the m.css GitHub repository <mosra/m.css$master/doxygen>` and look into
+the ``doxygen/`` directory:
 
 .. code:: sh
 
