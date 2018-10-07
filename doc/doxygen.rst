@@ -555,6 +555,17 @@ single-paragraph item will make sure the enclosing :html:`<p>` is not stripped.
 
 To match the stock HTML output, images that are marked with ``html`` target are
 used. If image name is present, the image is rendered as a figure with caption.
+It's possible affect width/height of the image using the ``sizespec`` parameter
+(unlike stock Doxygen, which makes use of this field only for LaTeX output and
+ignores it for HTML output). The parameter is converted to an inline CSS
+:css:`width` or :css:`height` property, so the value has to contain the units
+as well:
+
+.. code:: c++
+
+    /**
+    @image image.png width=250px
+    */
 
 `Pages, sections and table of contents`_
 ----------------------------------------

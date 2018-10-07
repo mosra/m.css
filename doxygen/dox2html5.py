@@ -1050,14 +1050,20 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 else:
                     logging.warning("{}: image {} was not found in XML_OUTPUT".format(state.current, name))
 
+                sizespec = ''
+                if 'width' in i.attrib:
+                    sizespec = ' style="width: {}"'.format(i.attrib['width'])
+                elif 'height' in i.attrib:
+                    sizespec = ' style="height: {}"'.format(i.attrib['height'])
+
                 caption = i.text
                 if caption:
-                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="Image" /><figcaption>{}</figcaption></figure>'.format(
+                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="Image"{} /><figcaption>{}</figcaption></figure>'.format(
                         ' ' + add_css_class if add_css_class else '',
-                        name, html.escape(caption))
+                        name, sizespec, html.escape(caption))
                 else:
-                    out.parsed += '<img class="m-image{}" src="{}" alt="Image" />'.format(
-                        ' ' + add_css_class if add_css_class else '', name)
+                    out.parsed += '<img class="m-image{}" src="{}" alt="Image"{} />'.format(
+                        ' ' + add_css_class if add_css_class else '', name, sizespec)
 
         elif i.tag == 'hruler':
             assert element.tag == 'para' # is inside a paragraph :/
