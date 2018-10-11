@@ -2854,7 +2854,7 @@ list using <span class="m-label m-dim">&darr;</span> and
     if not config: config = copy.deepcopy(default_config)
 
     def parse_value(var):
-        if var.group('quote') == '"':
+        if var.group('quote') in ['"', '\'']:
             out = [var.group('value')]
         else:
             out = var.group('value').split()
@@ -2942,7 +2942,7 @@ list using <span class="m-label m-dim">&darr;</span> and
               'M_MATH_CACHE_FILE',
               'M_SEARCH_HELP',
               'M_SEARCH_EXTERNAL_URL']:
-        if i in config: state.doxyfile[i] = ' '.join(config[i])
+        if i in config: state.doxyfile[i] = '\n'.join(config[i])
 
     # Int values that we want
     for i in ['M_CLASS_TREE_EXPAND_LEVELS',
