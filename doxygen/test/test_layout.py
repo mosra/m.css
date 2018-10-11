@@ -39,7 +39,7 @@ class Layout(BaseTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.js')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'favicon-light.png')))
 
-class LayoutGeneratedDoxyfile(BaseTestCase):
+class GeneratedDoxyfile(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'generated_doxyfile', *args, **kwargs)
 
@@ -51,7 +51,7 @@ class LayoutGeneratedDoxyfile(BaseTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-class LayoutMinimal(BaseTestCase):
+class Minimal(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'minimal', *args, **kwargs)
 
@@ -59,7 +59,7 @@ class LayoutMinimal(BaseTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-class LayoutNavbarSingleColumn(BaseTestCase):
+class NavbarSingleColumn(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'navbar_single_column', *args, **kwargs)
 
@@ -67,7 +67,7 @@ class LayoutNavbarSingleColumn(BaseTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-class LayoutSearchBinary(BaseTestCase):
+class SearchBinary(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'search_binary', *args, **kwargs)
 
