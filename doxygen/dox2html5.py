@@ -2935,6 +2935,7 @@ list using <span class="m-label m-dim">&darr;</span> and
               'OUTPUT_DIRECTORY',
               'HTML_OUTPUT',
               'XML_OUTPUT',
+              'M_HTML_HEADER',
               'M_PAGE_HEADER',
               'M_PAGE_FINE_PRINT',
               'M_THEME_COLOR',

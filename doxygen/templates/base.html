@@ -15,6 +15,9 @@
   {% if M_THEME_COLOR %}
   <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
   {% endif %}
+  {% if M_HTML_HEADER %}
+  {{ M_HTML_HEADER|indent(2) }}
+  {% endif %}
 </head>
 <body>
 <header><nav id="navigation">

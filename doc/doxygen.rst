@@ -304,6 +304,13 @@ Variable                            Description
                                     `Navbar links`_ for more information.
 :ini:`M_LINKS_NAVBAR2`              Right navbar column links. See
                                     `Navbar links`_ for more information.
+:ini:`M_HTML_HEADER`                HTML code to put at the end of the
+                                    :html:`<head>` element. Useful for linking
+                                    arbitrary JavaScript code or, for example,
+                                    adding :html:`<link>` CSS stylesheets with
+                                    additional properties and IDs that are
+                                    otherwise not possible with just
+                                    :ini:`HTML_EXTRA_STYLESHEET`
 :ini:`M_PAGE_HEADER`                HTML code to put at the top of every page.
                                     Useful for example to link to different
                                     versions of the same documentation. The

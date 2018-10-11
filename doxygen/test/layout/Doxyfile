@@ -12,3 +12,6 @@ PROJECT_BRIEF = "is cool"
 ##! M_LINKS_NAVBAR2     = "pages pages annotated"
 ##! M_SEARCH_EXTERNAL_URL = "https://google.com/search?q=site:mcss.mosra.cz+{}"
 ##! M_SEARCH_HELP       = "Some <em>help</em>."
+##! M_HTML_HEADER       = "<!-- this is extra in the header -->" \
+##!                       "  <!-- and more, indented -->" \
+##!                       "<!-- yes. -->"
