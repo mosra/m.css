@@ -1889,36 +1889,58 @@ def postprocess_state(state: State):
         # Other compounds are not in any index pages or breadcrumb, so leaf
         # name not needed
 
-    # Assign names and URLs to menu items
+    # Assign names and URLs to menu items. The link can be either a predefined
+    # keyword from the below list, a Doxygen symbol, or a HTML code. The
+    # template then gets a tuple of (HTML code, title, URL) and either puts
+    # in the HTML code verbatim (if it's not empty) or creates a link from the
+    # title and URL.
     predefined = {
-        'pages': ("Pages", 'pages.html'),
-        'namespaces': ("Namespaces", 'namespaces.html'),
-        'modules': ("Modules", 'modules.html'),
-        'annotated': ("Classes", 'annotated.html'),
-        'files': ("Files", 'files.html')
+        'pages': (None, "Pages", 'pages.html'),
+        'namespaces': (None, "Namespaces", 'namespaces.html'),
+        'modules': (None, "Modules", 'modules.html'),
+        'annotated': (None, "Classes", 'annotated.html'),
+        'files': (None, "Files", 'files.html')
     }
+    def extract_link(link):
+        # If this is a HTML code, return it verbatim
+        if link.startswith('<a'):
+            return link, None, None
 
-    def find(id):
         # If predefined, return those
-        if id in predefined:
-            return predefined[id]
+        if link in predefined:
+            return predefined[link]
 
         # Otherwise search in symbols
-        found = state.compounds[id]
-        return found.name, found.url
-
+        found = state.compounds[link]
+        return None, found.name, found.url
     i: str
     for var in 'M_LINKS_NAVBAR1', 'M_LINKS_NAVBAR2':
         navbar_links = []
         for i in state.doxyfile[var]:
-            links = i.split()
-            assert len(links)
+            # Split the line into links. It's either single-word keywords or
+            # HTML <a> elements. If it looks like a HTML, take everything until
+            # the closing </a>, otherwise take everything until the next
+            # whitespace.
+            links = []
+            while i:
+                if i.startswith('<a'):
+                    end = i.index('</a>') + 4
+                    links += [i[0:end]]
+                    i = i[end:]
+                else:
+                    firstAndRest = i.split(None, 1)
+                    if len(firstAndRest):
+                        links += [firstAndRest[0]]
+                        if len(firstAndRest) == 1:
+                            break;
+                    i = firstAndRest[1]
+
             sublinks = []
             for sublink in links[1:]:
-                title, url = find(sublink)
-                sublinks += [(title, url, sublink)]
-            title, url = find(links[0])
-            navbar_links += [(title, url, links[0], sublinks)]
+                html, title, url = extract_link(sublink)
+                sublinks += [(html, title, url, sublink)]
+            html, title, url = extract_link(links[0])
+            navbar_links += [(html, title, url, links[0], sublinks)]
 
         state.doxyfile[var] = navbar_links
 

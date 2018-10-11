@@ -67,6 +67,14 @@ class NavbarSingleColumn(BaseTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
+class NavbarHtml(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'navbar_html', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
 class SearchBinary(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'search_binary', *args, **kwargs)

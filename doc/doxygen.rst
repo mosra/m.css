@@ -468,6 +468,19 @@ This will put links to namespaces Foo, Bar and Utils as a sub-items of a
 top-level *Namespaces* item and links to two subdirectories as sub-items of the
 *Files* item.
 
+For custom links in the navbar it's possible to use HTML code directly, both
+for a top-level item or in a submenu. The item is taken as everything from the
+initial :html:`<a` to the first closing :html:`</a>`. In the following snippet,
+there are two top-level items, first linking to the page index and having a
+submenu linking to an e-mail address and a ``fine-print`` page and the second
+linking to a GitHub project page:
+
+.. code:: ini
+
+    M_LINKS_NAVBAR2 = \
+        "pages <a href=\"mailto:mosra@centrum.cz\">Contact</a> fine-print" \
+        "<a href=\"https://github.com/mosra/m.css\">GitHub</a>"
+
 `Search options`_
 -----------------
 
@@ -1220,11 +1233,13 @@ the `Configuration`_ table. Most values are provided as-is depending on their
 type, so either strings, booleans, or lists of strings. The exceptions are:
 
 -   The :py:`M_LINKS_NAVBAR1` and :py:`M_LINKS_NAVBAR2` are processed to tuples
-    in a form :py:`(title, url, id, sub)` where :py:`title` is link title,
-    :py:`url` is link URL, :py:`id` is compound ID (to use for highlighting
-    active menu item) and :py:`sub` is a list optionally containing sub-menu
-    items. The sub-menu items are in a similarly formed tuple,
-    :py:`(title, url, id)`.
+    in a form :py:`(html, title, url, id, sub)` where either :py:`html` is a
+    full HTML code for the link and :py:`title`, :py:`url` :py:`id` is empty;
+    or :py:`html` is :py:`None`, :py:`title` and :py:`url` is a link title and
+    URL and :py:`id` is compound ID (to use for highlighting active menu item).
+    The last item, :py:`sub` is a list optionally containing sub-menu items.
+    The sub-menu items are in a similarly formed tuple,
+    :py:`(html, title, url, id)`.
 -   The :py:`M_FAVICON` is converted to a tuple of :py:`(url, type)` where
     :py:`url` is the favicon URL and :py:`type` is favicon MIME type to
     populate the ``type`` attribute of :html:`<link rel="favicon" />`.

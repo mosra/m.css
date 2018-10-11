@@ -37,15 +37,19 @@
       <div id="m-navbar-collapse" class="m-col-t-12 m-show-m m-col-m-none m-right-m">
         <div class="m-row">
           <ol class="{% if M_LINKS_NAVBAR2 %}m-col-t-6{% else %}m-col-t-12{% endif %} m-col-m-none">
-            {% for title, link, id, sub in M_LINKS_NAVBAR1 %}
+            {% for html, title, link, id, sub in M_LINKS_NAVBAR1 %}
             {% if not sub %}
-            <li><a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+            <li>{% if html %}{{ html }}{% else %}<a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a>{% endif %}</li>
             {% else %}
             <li>
+              {% if html %}
+              {{ html }}
+              {% else %}
               <a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+              {% endif %}
               <ol>
-                {% for title, link, id in sub %}
-                <li><a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+                {% for html, title, link, id in sub %}
+                <li>{% if html %}{{ html }}{% else %}<a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a>{% endif %}</li>
                 {% endfor %}
               </ol>
             </li>
@@ -55,15 +59,19 @@
           {% if M_LINKS_NAVBAR2 or not M_SEARCH_DISABLED %}
           {% set start = M_LINKS_NAVBAR1|length + 1 %}
           <ol class="m-col-t-6 m-col-m-none" start="{{ start }}">
-            {% for title, link, id, sub in M_LINKS_NAVBAR2 %}
+            {% for html, title, link, id, sub in M_LINKS_NAVBAR2 %}
             {% if not sub %}
-            <li><a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+            <li>{% if html %}{{ html }}{% else %}<a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a>{% endif %}</li>
             {% else %}
             <li>
+              {% if html %}
+              {{ html }}
+              {% else %}
               <a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a>
+              {% endif %}
               <ol>
-                {% for title, link, id in sub %}
-                <li><a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a></li>
+                {% for html, title, link, id in sub %}
+                <li>{% if html %}{{ html }}{% else %}<a href="{{ link }}"{% if (compound and compound.id == id) or navbar_current == id %} id="m-navbar-current"{% endif %}>{{ title }}</a>{% endif %}</li>
                 {% endfor %}
               </ol>
             </li>
