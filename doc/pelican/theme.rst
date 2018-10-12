@@ -337,11 +337,15 @@ Pages can override which menu item in the `top navbar`_ will be highlighted
 by specifying the corresponding menu item slug in the :rst:`:highlight:` field.
 If the field is not present, page's own slug is used instead.
 
-`Extra CSS`_
-------------
+`Extending HTML \<head\>`_
+--------------------------
 
 The :rst:`:css:` field can be used to link additional CSS files in page header.
-Put one URL per line, internal link targets are expanded. Example:
+Put one URL per line, internal link targets are expanded. Similarly :rst:`:js:`
+can be used to link JavaScript files. Besides that, the :rst:`:html_header:`
+field can be used to put arbitrary HTML at the end of the :html:`<head>`
+element. Indenting the lines is possible by putting an escaped space in front
+(the backslash and the escaped space itself won't get inserted). Example:
 
 .. code:: rst
 
@@ -351,6 +355,15 @@ Put one URL per line, internal link targets are expanded. Example:
     :css:
         {filename}/static/webgl.css
         {filename}/static/canvas-controls.css
+    :js:
+        {filename}/static/showcase.js
+    :html_header:
+        <script>
+        \   function handleDrop(event) {
+        \     event.preventDefault();
+        \     ...
+        \   }
+        </script>
 
 `Breadcrumb navigation`_
 ------------------------

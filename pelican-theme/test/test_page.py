@@ -71,14 +71,15 @@ class Breadcrumb(PageTestCase):
         self.assertEqual(*self.actual_expected_contents('page.html'))
         self.assertEqual(*self.actual_expected_contents('subpage.html'))
 
-class ExtraCss(PageTestCase):
+class ExtraHtmlHead(PageTestCase):
     def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'extra_css', *args, **kwargs)
+        super().__init__(__file__, 'extra_html_head', *args, **kwargs)
 
     def test(self):
         self.run_pelican({})
 
-        # The page should contain two extra CSS links
+        # The page should contain two extra CSS links, two JS references and a
+        # multi-line HTML comment
         self.assertEqual(*self.actual_expected_contents('page.html'))
 
 class HeaderFooter(PageTestCase):
