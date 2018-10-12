@@ -191,3 +191,15 @@ class GlobalSocialMeta(PageTestCase):
 
         # Verify that the social meta tags are present
         self.assertEqual(*self.actual_expected_contents('page.html'))
+
+class Passthrough(PageTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'passthrough', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'READERS': {}, # re-enable the HTML reader
+            'PAGE_PATHS': ['input']
+        })
+
+        self.assertEqual(*self.actual_expected_contents('page.html'))

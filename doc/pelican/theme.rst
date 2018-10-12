@@ -811,6 +811,52 @@ Index, archive and all category/tag/author pages are paginated based on the
 to prev and next page, besides that there's :html:`<link rel="prev">` and
 :html:`<link rel="next">` that provides the same as a hint to search engines.
 
+`Pass-through pages`_
+=====================
+
+Besides `pages`_, `articles`_ and `pre-defined pages`_ explained above, where
+the content is always wrapped with the navbar on top and the footer bottom,
+it's possible to have pages with fully custom markup --- for example various
+presentation slides, demos etc. To do that, set the :rst:`:template:` metadata
+to ``passthrough``. While it works with :abbr:`reST <reStructuredText>`
+sources, this is best combined with raw HTML input. Pelican will copy the
+contents of the :html:`<body>` tag verbatim and use contents of the
+:html:`<title>` element for a page title, put again in the :html:`<title>`
+(*not* as a :html:`<h1>` inside :html:`<body>`). Besides that, you can specify
+additional metadata using the :html:`<meta name="key" content="value" />` tags:
+
+-   :html:`<meta name="template" content="passthrough" />` needs to be always
+    present in order to make Pelican use the passthrough template.
+-   :html:`<meta name="css" />`, :html:`<meta name="js" />` and
+    :html:`<meta name="html_header" />` specify additional CSS files,
+    JavaScript files and arbitrary HTML, similarly as with normal pages. The
+    ``content`` can be multiple lines, empty lines are discarded for CSS and JS
+    references. Be sure to properly escape everything.
+-   :html:`<meta name="class" />` can be used to add a CSS class to the
+    top-level :html:`<html>` element
+-   All usual Pelican metadata like ``url``, ``slug`` etc. work here as well.
+
+Note that at the moment, the pass-through pages do not insert any of the
+(social) meta tags. Example of an *input* file for a pass-through page:
+
+.. code:: html
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <title>WebGL Demo Page</title>
+      <meta name="template" content="passthrough" />
+      <meta name="css" content="
+        m-dark.css
+        https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i
+        " />
+      <meta name="js" content="webgl-demo.js" />
+    </head>
+    <body>
+    <!-- the actual page body -->
+    </body>
+    </html>
+
 `Theme properties`_
 ===================
 
