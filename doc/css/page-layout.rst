@@ -249,6 +249,34 @@ items and sub-menus. Doesn't do anything on the :css:`#m-navbar-brand` element.
     page source to see how it's done here. Don't forget to try to shrink your
     browser window to see its behavior in various cases.
 
+`Link back to main site from a subsite`_
+----------------------------------------
+
+If you have a subsite with independent top navbar (for example a main site and
+a forum or documentation subsite), you may want to prominently show its
+relation to the main site and link back to the main site as well as the subsite
+homepage. The markup looks like in the following snippet (note the
+:css:`#m-navbar-brand` is now a span containing two links and a "breadcrumb"
+separator), `see here how it looks <{filename}/css/page-layout-test-navbar-subsite.html>`_.
+
+.. code:: html
+    :hl_lines: 4 5 6 7 8
+    :class: m-inverted
+
+    <header><nav id="navigation">
+      <div class="m-container">
+        <div class="m-row">
+          <span id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">
+            <a href="/">Your Brand</a>
+            <span class="m-breadcrumb">|</span>
+            <a href="#" class="m-thin">subsite</a>
+          </span>
+          <a id="m-navbar-show" href="#navigation" title="Show navigation" class="m-col-t-3 m-hide-m m-text-right"></a>
+          <a id="m-navbar-hide" href="#" title="Hide navigation" class="m-col-t-3 m-hide-m m-text-right"></a>
+          ...
+        </div>
+      </div>
+
 `Footer navigation`_
 ====================
 

@@ -1622,10 +1622,10 @@ body> header > nav.m-navbar-cover:target {
   background-color: #22272e;
   opacity: 1;
 }
-body > header > nav.m-navbar-landing a#m-navbar-brand.m-navbar-brand-hidden {
+body > header > nav.m-navbar-landing #m-navbar-brand.m-navbar-brand-hidden {
   visibility: hidden;
 }
-body > header > nav.m-navbar-landing:target a#m-navbar-brand.m-navbar-brand-hidden {
+body > header > nav.m-navbar-landing:target #m-navbar-brand.m-navbar-brand-hidden {
   visibility: visible;
 }
 body > header > nav {
@@ -1641,15 +1641,24 @@ body > header > nav a {
   line-height: 2.75rem;
   color: #ffffff;
 }
-body > header > nav a#m-navbar-brand, body > header > nav a#m-navbar-show, body > header > nav a#m-navbar-hide {
-  text-transform: uppercase;
+body > header > nav #m-navbar-brand, body > header > nav a#m-navbar-show, body > header > nav a#m-navbar-hide {
   font-weight: 600;
   font-size: 1.125rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }
-body > header > nav a#m-navbar-brand .m-thin {
+body > header > nav a#m-navbar-brand, body > header > nav #m-navbar-brand a {
+  text-transform: uppercase;
+}
+body > header > nav #m-navbar-brand a {
+  padding-left: 0;
+  padding-right: 0;
+}
+body > header > nav #m-navbar-brand .m-thin {
   font-weight: normal;
+}
+body > header > nav #m-navbar-brand .m-breadcrumb {
+  color: #747474;
 }
 body > header > nav a#m-navbar-show:before, body > header > nav a#m-navbar-hide:before {
   content:'\2630';
