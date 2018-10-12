@@ -304,6 +304,11 @@ Variable                            Description
                                     `Navbar links`_ for more information.
 :ini:`M_LINKS_NAVBAR2`              Right navbar column links. See
                                     `Navbar links`_ for more information.
+:ini:`M_MAIN_PROJECT_URL`           If set and :ini:`PROJECT_BRIEF` is also
+                                    set, then :ini:`PROJECT_NAME` in the top
+                                    navbar will link to this URL and
+                                    :ini:`PROJECT_BRIEF` into the documentation
+                                    main page, similarly as `shown here <{filename}/css/page-layout.rst#link-back-to-main-site-from-a-subsite>`_.
 :ini:`M_HTML_HEADER`                HTML code to put at the end of the
                                     :html:`<head>` element. Useful for linking
                                     arbitrary JavaScript code or, for example,
