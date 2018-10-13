@@ -1279,7 +1279,11 @@ pre.m-code.m-inverted > span.hll {
 div.m-math {
   overflow-x: auto;
   overflow-y: hidden;
-  text-align: center;
+}
+div.m-math svg {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 div.m-button a svg.m-math { fill: #ffffff; }
 div.m-button.m-flat a svg.m-math { fill: #000000; }
@@ -1287,9 +1291,13 @@ div.m-button.m-flat a:hover svg.m-math, div.m-button.m-default a:focus svg.m-mat
 div.m-button.m-default a:active svg.m-math {
   fill: #cb4b16;
 }
-div.m-plot, div.m-graph { text-align: center; }
 div.m-graph { font-size: 14px; }
-div.m-plot svg, div.m-graph svg { max-width: 100%; }
+div.m-plot svg, div.m-graph svg {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
 div.m-plot .m-background { fill: #fbf0ec; }
 div.m-plot svg .m-label { font-size: 11px; }
 div.m-plot svg .m-title { font-size: 13px; }
