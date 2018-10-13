@@ -675,7 +675,7 @@ div.m-button.m-dim a:hover, div.m-button.m-dim a:focus, div.m-button.m-dim a:act
   background-color: var(--dim-button-active-color);
 }
 
-/* Image */
+/* Image. Ensure everything is done for both <img> and <svg>. */
 img.m-image, svg.m-image {
   display: block;
   margin-left: auto;
@@ -684,7 +684,7 @@ img.m-image, svg.m-image {
 div.m-image {
   text-align: center;
 }
-img.m-image, svg.m-image, div.m-image img {
+img.m-image, svg.m-image, div.m-image img, div.m-image svg {
   max-width: 100%;
   border-radius: var(--border-radius);
 }
@@ -692,7 +692,7 @@ div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
   width: 100%;
 }
 
-/* Figure */
+/* Figure. Ensure everything is done for both <img> and <svg>. */
 figure.m-figure {
   max-width: 100%;
   margin-top: 0;
@@ -724,13 +724,13 @@ figure.m-figure > * {
   caption-side: bottom;
 }
 figure.m-figure > *:first-child {
-  /* otherwise figure with clickable image is center differently */
+  /* otherwise figure with clickable image is centered differently */
   display: inline;
 }
 figure.m-figure > *:last-child {
   margin-bottom: 1rem;
 }
-figure.m-figure img {
+figure.m-figure img, figure.m-figure svg {
   position: relative; /* so it's above the border */
   margin-left: 0;
   margin-right: 0;
@@ -739,7 +739,7 @@ figure.m-figure img {
   border-top-right-radius: var(--border-radius);
   max-width: 100%;
 }
-figure.m-figure.m-flat img {
+figure.m-figure.m-flat img, figure.m-figure.m-flat svg {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
@@ -749,7 +749,7 @@ figure.m-figure figcaption {
   font-weight: var(--heading-font-weight);
   font-size: 1.17rem; /* taken from webkit defaults for h3 */
 }
-figure.m-figure a img {
+figure.m-figure a img, figure.m-figure a svg {
   margin-left: -1rem;
   margin-right: -1rem;
 }
@@ -760,7 +760,7 @@ figure.m-figure.m-fullwidth, figure.m-figure.m-fullwidth > * {
 figure.m-figure.m-fullwidth > *:first-child {
   display: inline;
 }
-figure.m-figure.m-fullwidth img {
+figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
   width: 100%;
 }
 figure.m-figure.m-fullwidth:after {

@@ -1007,7 +1007,7 @@ img.m-image, svg.m-image {
 div.m-image {
   text-align: center;
 }
-img.m-image, svg.m-image, div.m-image img {
+img.m-image, svg.m-image, div.m-image img, div.m-image svg {
   max-width: 100%;
   border-radius: 0.2rem;
 }
@@ -1050,7 +1050,7 @@ figure.m-figure > *:first-child {
 figure.m-figure > *:last-child {
   margin-bottom: 1rem;
 }
-figure.m-figure img {
+figure.m-figure img, figure.m-figure svg {
   position: relative;
   margin-left: 0;
   margin-right: 0;
@@ -1059,7 +1059,7 @@ figure.m-figure img {
   border-top-right-radius: 0.2rem;
   max-width: 100%;
 }
-figure.m-figure.m-flat img {
+figure.m-figure.m-flat img, figure.m-figure.m-flat svg {
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
 }
@@ -1069,7 +1069,7 @@ figure.m-figure figcaption {
   font-weight: normal;
   font-size: 1.17rem;
 }
-figure.m-figure a img {
+figure.m-figure a img, figure.m-figure a svg {
   margin-left: -1rem;
   margin-right: -1rem;
 }
@@ -1079,7 +1079,7 @@ figure.m-figure.m-fullwidth, figure.m-figure.m-fullwidth > * {
 figure.m-figure.m-fullwidth > *:first-child {
   display: inline;
 }
-figure.m-figure.m-fullwidth img {
+figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
   width: 100%;
 }
 figure.m-figure.m-fullwidth:after {

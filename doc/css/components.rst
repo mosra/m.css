@@ -660,7 +660,8 @@ border around the caption and description. The caption is expected to be in the
 :html:`<figcaption>` element. The description is optional, but should be
 wrapped in some tag as well (for example a :html:`<span>`). The
 :css:`.m-fullwidth` class works here too and you can also wrap the
-:html:`<img>` element in an :html:`<a>` tag to make it clickable.
+:html:`<img>` / :html:`<svg>` element in an :html:`<a>` tag to make it
+clickable.
 
 Figure always expects at least the caption to be present. If you want just an
 image, use the plain image tag. If you have a lot of figures on the page and
