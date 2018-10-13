@@ -107,7 +107,7 @@ and:
 Put `math blocks <{filename}/css/components.rst#math>`_ into the :rst:`.. math::`
 directive; if you want to color the equations, add corresponding
 `CSS class <{filename}/css/components.rst#colors>`_ via a :rst:`:class:`
-option. Equations separated by a blank line are processed separately.
+option.
 
 .. code-figure::
 

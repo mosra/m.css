@@ -54,23 +54,18 @@ class Math(rst.Directive):
             pre.append(content)
             return [pre]
 
-        # join lines, separate blocks
-        content = '\n'.join(self.content).split('\n\n')
-        _nodes = []
-        for block in content:
-            if not block:
-                continue
+        content = '\n'.join(self.content)
 
-            _, svg = latex2svgextra.fetch_cached_or_render("$$" + block + "$$")
+        _, svg = latex2svgextra.fetch_cached_or_render("$$" + content + "$$")
 
-            container = nodes.container(**self.options)
-            container['classes'] += ['m-math']
-            node = nodes.raw(self.block_text, latex2svgextra.patch(block, svg, None, ''), format='html')
-            node.line = self.content_offset + 1
-            self.add_name(node)
-            container.append(node)
-            _nodes.append(container)
-        return _nodes
+        node = nodes.raw(self.block_text, latex2svgextra.patch(content, svg, None, ''), format='html')
+        node.line = self.content_offset + 1
+        self.add_name(node)
+
+        container = nodes.container(**self.options)
+        container['classes'] += ['m-math']
+        container.append(node)
+        return [container]
 
 def new_page(content):
     latex2svgextra.counter = 0
