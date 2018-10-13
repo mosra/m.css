@@ -1256,7 +1256,8 @@ div.m-graph svg g.m-node.m-dim polyline {
   m-nopadb is specified */
 p, ul, ol, dl, blockquote, pre, .m-code-figure, .m-console-figure, hr, .m-note,
 .m-frame, .m-block, div.m-button, div.m-scroll, table.m-table, div.m-image,
-img.m-image, svg.m-image, figure.m-figure, .m-imagegrid, div.m-math {
+img.m-image, svg.m-image, figure.m-figure, .m-imagegrid, div.m-math,
+div.m-graph, div.m-plot {
   margin-bottom: 1rem;
 }
 p:last-child, p.m-nopadb, ul:last-child, ul.m-nopadb,
@@ -1274,7 +1275,9 @@ svg.m-image:last-child, svg.m-image.m-nopadb,
 div.m-image:last-child, div.m-image.m-nopadb,
 figure.m-figure:last-child, figure.m-figure.m-nopadb,
 .m-imagegrid:last-child, .m-imagegrid.m-nopadb,
-div.m-math:last-child, div.m-math.m-nopadb {
+div.m-math:last-child, div.m-math.m-nopadb,
+div.m-graph:last-child, div.m-graph.m-nopadb,
+div.m-plot:last-child, div.m-plot.m-nopadb {
   margin-bottom: 0;
 }
 
@@ -1286,7 +1289,8 @@ li > .m-code-figure:last-child, li > .m-console-figure:last-child,
 li > .m-note:last-child, li > .m-frame:last-child, li > .m-block:last-child,
 li > div.m-button:last-child, li > div.m-scroll:last-child, li > table.m-table:last-child,
 li > img.m-image:last-child, li > svg.m-image:last-child, li > div.m-image:last-child,
-li > figure.m-figure:last-child, li > div.m-math:last-child {
+li > figure.m-figure:last-child, li > div.m-math:last-child,
+li > div.m-graph:last-child, li > div.m-plot:last-child {
   margin-bottom: 1rem;
 }
 li:last-child > p:last-child, li:last-child > p.m-nopadb,
@@ -1304,7 +1308,9 @@ li:last-child > img.m-image:last-child, li:last-child > img.m-image.m-nopadb,
 li:last-child > svg.m-image:last-child, li:last-child > svg.m-image.m-nopadb,
 li:last-child > div.m-image:last-child, li:last-child > div.m-image.m-nopadb,
 li:last-child > figure.m-figure:last-child, li:last-child > figure.m-figure.m-nopadb,
-li:last-child > div.m-math:last-child, li:last-child > div.m-math.m-nopadb {
+li:last-child > div.m-math:last-child, li:last-child > div.m-math.m-nopadb,
+li:last-child > div.m-graph:last-child, li:last-child > div.m-graph.m-nopadb,
+li:last-child > div.m-plot:last-child, li:last-child > div.m-plot.m-nopadb {
   margin-bottom: 0;
 }
 
