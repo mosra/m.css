@@ -63,7 +63,7 @@ Graphs
 ======
 
 First is colored except the self-pointing "no", second is colored globally,
-third is colored globally with overrides except for for the self-pointing "no".
+third is colored globally with overrides except for the self-pointing "no".
 
 .. container:: m-row
 
