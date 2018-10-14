@@ -35,7 +35,7 @@ import dot2svg
 
 class Dot(rst.Directive):
     has_content = True
-    required_arguments = 1
+    optional_arguments = 1
     final_argument_whitespace = True
     option_spec = {'class': directives.class_option,
                    'name': directives.unchanged}
@@ -53,19 +53,35 @@ class Dot(rst.Directive):
 
 class Digraph(Dot):
     def run(self):
-        return Dot.run(self, 'digraph "{}" {{\n{}}}'.format(self.arguments[0], '\n'.join(self.content)))
+        # We need to pass "" for an empty title to get rid of <title>,
+        # otherwise the output contains <title>%3</title> (wtf!)
+        return Dot.run(self, 'digraph "{}" {{\n{}}}'.format(
+            self.arguments[0] if self.arguments else '',
+            '\n'.join(self.content)))
 
 class StrictDigraph(Dot):
     def run(self):
-        return Dot.run(self, 'strict digraph "{}" {{\n{}}}'.format(self.arguments[0], '\n'.join(self.content)))
+        # We need to pass "" for an empty title to get rid of <title>,
+        # otherwise the output contains <title>%3</title> (wtf!)
+        return Dot.run(self, 'strict digraph "{}" {{\n{}}}'.format(
+            self.arguments[0] if self.arguments else '',
+            '\n'.join(self.content)))
 
 class Graph(Dot):
     def run(self):
-        return Dot.run(self, 'graph "{}" {{\n{}}}'.format(self.arguments[0], '\n'.join(self.content)))
+        # We need to pass "" for an empty title to get rid of <title>,
+        # otherwise the output contains <title>%3</title> (wtf!)
+        return Dot.run(self, 'graph "{}" {{\n{}}}'.format(
+            self.arguments[0] if self.arguments else '',
+            '\n'.join(self.content)))
 
 class StrictGraph(Dot):
     def run(self):
-        return Dot.run(self, 'strict graph "{}" {{\n{}}}'.format(self.arguments[0], '\n'.join(self.content)))
+        # We need to pass "" for an empty title to get rid of <title>,
+        # otherwise the output contains <title>%3</title> (wtf!)
+        return Dot.run(self, 'strict graph "{}" {{\n{}}}'.format(
+            self.arguments[0] if self.arguments else '',
+            '\n'.join(self.content)))
 
 def configure(pelicanobj):
     dot2svg.configure(

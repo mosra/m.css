@@ -27,9 +27,9 @@ Colors:
     a -> b [class="m-warning" label="yes"]
     b -> b [class="m-primary" label="no"]
 
-Unoriented graph:
+Unoriented graph without a title:
 
-.. graph:: A to B
+.. graph::
     :class: m-success
 
     a -- b

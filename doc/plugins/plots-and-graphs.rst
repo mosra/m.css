@@ -199,7 +199,7 @@ The plugin produces SVG graphcs that make use of the
 --------------------
 
 The :rst:`.. digraph::` directive uses the ``dot`` tool to produce directed
-graphs. The required directive argument is graph title, contents is whatever
+graphs. The optional directive argument is graph title, contents is whatever
 you would put inside the :dot:`digraph` block. Use the :rst:`:class:` to
 specify a `CSS color class <{filename}/css/components.rst#colors>`_ for the
 whole graph, it's also possible to color particular nodes and edges using the
