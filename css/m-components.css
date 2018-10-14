@@ -728,7 +728,9 @@ figure.m-figure > *:first-child {
   display: inline;
 }
 figure.m-figure > *:last-child {
-  margin-bottom: 1rem;
+  /* Need !important so the :last-child margin reset doesn't have higher
+     priority than this */
+  margin-bottom: 1rem !important;
 }
 figure.m-figure img, figure.m-figure svg {
   position: relative; /* so it's above the border */
