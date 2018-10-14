@@ -754,6 +754,7 @@ figure.m-figure.m-fullwidth, figure.m-figure.m-fullwidth > * {
   display: block;
 }
 figure.m-figure.m-fullwidth > *:first-child {
+  /* otherwise figure with clickable image is centered differently */
   display: inline;
 }
 figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {

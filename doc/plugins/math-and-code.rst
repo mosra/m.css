@@ -391,3 +391,10 @@ terminal, it's best to have the listings in external files and use
 
     .. include:: math-and-code-console.ansi
         :code: ansi
+
+`Code figure`_
+--------------
+
+See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
+plugin for details about code figures using the :rst:`.. code-figure::`
+directive.
