@@ -142,13 +142,14 @@ Use the :rst:`:class:` option to specify additional CSS classes.
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Vivamus ultrices a erat eu suscipit. `Link. <#>`_
 
-`Code figure`_
-==============
+`Code, math and graph figure`_
+==============================
 
 Use :rst:`.. code-figure::` to denote a `code figure <{filename}/css/components.rst#code-figure>`_.
 Then put a literal code block denoted by :rst:`::` or a :rst:`.. code::`
 directive as the first element inside. Use the :rst:`:class:` option to specify
-additional CSS classes.
+additional CSS classes. The optional directive parameter can be used for a
+figure caption.
 
 .. code-figure::
 
@@ -176,6 +177,8 @@ additional CSS classes.
 
 Use :rst:`.. console-figure::` to denote code figure styled for a
 `console listing <{filename}/css/components.rst#colored-terminal-output>`_.
+Similarly, :rst:`.. math-figure::` denotes a `math figure <{filename}/css/components.rst#math-figure>`_
+and :rst:`.. graph-figure::` denotes a `graph figure <{filename}/css/components.rst#graph-figure>`_.
 
 `Text`_
 =======
