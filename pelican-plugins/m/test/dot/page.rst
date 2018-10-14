@@ -54,3 +54,12 @@ Structs:
     struct [label="{ a | b | { c | d | e }}" shape=record class="m-info"]
 
     another [label="a | { b | c } | d | e" shape=record]
+
+.. graph-figure:: This is a title.
+
+    .. digraph:: A to B
+        :class: m-info
+
+        a -> b
+
+    This is a description.

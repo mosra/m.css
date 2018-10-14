@@ -38,6 +38,17 @@ import latex2svgextra
 
 render_as_code = False
 
+def _is_math_figure(parent):
+    # The parent has to be a figure, marked as m-figure
+    if not isinstance(parent, nodes.figure): return False
+    if 'm-figure' not in parent.get('classes', []): return False
+
+    # And as a first visible node of such type
+    for child in parent:
+        if not isinstance(child, nodes.Invisible): return False
+
+    return True
+
 class Math(rst.Directive):
     option_spec = {'class': directives.class_option,
                    'name': directives.unchanged}
@@ -47,8 +58,15 @@ class Math(rst.Directive):
         set_classes(self.options)
         self.assert_has_content()
 
+        parent = self.state.parent
+
         # Fallback rendering as code requested
         if render_as_code:
+            # If this is a math figure, replace the figure CSS class to have a
+            # matching border
+            if _is_math_figure(parent):
+                parent['classes'][parent['classes'].index('m-figure')] = 'm-code-figure'
+
             content = nodes.raw('', html.escape('\n'.join(self.content)), format='html')
             pre = nodes.literal_block('')
             pre.append(content)
@@ -58,10 +76,18 @@ class Math(rst.Directive):
 
         _, svg = latex2svgextra.fetch_cached_or_render("$$" + content + "$$")
 
+        # If this is the first real node inside a math figure, put the SVG
+        # directly inside
+        if _is_math_figure(parent):
+            node = nodes.raw(self.block_text, latex2svgextra.patch(content, svg, None, ' class="{}"'.format(' '.join(['m-math'] + self.options.get('classes', [])))), format='html')
+            node.line = self.content_offset + 1
+            self.add_name(node)
+            return [node]
+
+        # Otherwise wrap it in a <div class="m-math">
         node = nodes.raw(self.block_text, latex2svgextra.patch(content, svg, None, ''), format='html')
         node.line = self.content_offset + 1
         self.add_name(node)
-
         container = nodes.container(**self.options)
         container['classes'] += ['m-math']
         container.append(node)
