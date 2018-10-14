@@ -34,6 +34,8 @@ _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="UTF-8" standalone="n
 
 _patch_dst = r"""<svg{attribs} style="width: {width:.3f}rem; height: {height:.3f}rem;" viewBox="{viewBox}">
 <g """
+_patch_custom_size_dst = r"""<svg{attribs} style="{size}" viewBox="\g<viewBox>">
+<g """
 
 _comment_src = re.compile(r"""<!--[^-]+-->\n""")
 
@@ -63,7 +65,7 @@ _font_size = 0.0
 # converting to rem here
 def _pt2em(pt): return pt/_font_size
 
-def dot2svg(source, attribs=''):
+def dot2svg(source, size=None, attribs=''):
     try:
         ret = subprocess.run(['dot', '-Tsvg',
             '-Gfontname={}'.format(_font),
@@ -83,12 +85,15 @@ def dot2svg(source, attribs=''):
     svg = _comment_src.sub('', ret.stdout.decode('utf-8'))
 
     # Remove preamble and fixed size
-    def patch_repl(match): return _patch_dst.format(
-        attribs=attribs,
-        width=_pt2em(float(match.group('width'))),
-        height=_pt2em(float(match.group('height'))),
-        viewBox=match.group('viewBox'))
-    svg = _patch_src.sub(patch_repl, svg)
+    if size:
+        svg = _patch_src.sub(_patch_custom_size_dst.format(attribs=attribs, size=size), svg)
+    else:
+        def patch_repl(match): return _patch_dst.format(
+            attribs=attribs,
+            width=_pt2em(float(match.group('width'))),
+            height=_pt2em(float(match.group('height'))),
+            viewBox=match.group('viewBox'))
+        svg = _patch_src.sub(patch_repl, svg)
 
     # Remove unnecessary IDs and attributes, replace classes for elements
     def element_repl(match):

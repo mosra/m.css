@@ -80,3 +80,23 @@ A green formula:
 
 A yellow @m_class{m-warning} @f$ \Sigma @f$ inline formula.
 */
+
+/** @page dot Dot
+
+A red graph:
+
+@m_class{m-danger}
+
+@dot
+strict graph "" {
+    a -- b
+    a -- b
+}
+@enddot
+
+A blue graph, from a file:
+
+@m_class{m-info}
+
+@dotfile ab.dot
+*/

@@ -50,6 +50,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pelican-plugins'))
+import dot2svg
 import latex2svg
 import latex2svgextra
 import ansilexer
@@ -560,7 +561,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <verbatim>, <preformatted> (those are the same thing!)
         # - <parblock> (a weird grouping thing that we abuse for <div>s)
         # - <variablelist>, <itemizedlist>, <orderedlist>
-        # - <image>, <table>
+        # - <image>, <dot>, <dotfile>, <table>
         # - <mcss:div>
         # - <formula> (if block)
         # - <programlisting> (if block)
@@ -582,7 +583,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
+            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'dot', 'dotfile', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -1064,6 +1065,41 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 else:
                     out.parsed += '<img class="m-image{}" src="{}" alt="Image"{} />'.format(
                         ' ' + add_css_class if add_css_class else '', name, sizespec)
+
+        elif i.tag in ['dot', 'dotfile']:
+            # can be in <para> but often also in <div> and other m.css-specific
+            # elements
+            has_block_elements = True
+
+            # Why the heck can't it just read the file and paste it into the
+            # XML?!
+            caption = None
+            if i.tag == 'dotfile':
+                if 'name' in i.attrib:
+                    with open(i.attrib['name'], 'r') as f:
+                        source = f.read()
+                else:
+                    logging.warning("{}: file passed to @dotfile was not found, rendering an empty graph")
+                    source = 'digraph "" {}'
+                caption = i.text
+            else:
+                source = i.text
+                if 'caption' in i.attrib: caption = i.attrib['caption']
+
+            size = None
+            if 'width' in i.attrib:
+                size = 'width: {};'.format(i.attrib['width'])
+            elif 'height' in i.attrib:
+                size = 'height: {};'.format(i.attrib['height'])
+
+            if caption:
+                out.parsed += '<figure class="m-figure">{}<figcaption>{}</figcaption></figure>'.format(dot2svg.dot2svg(
+                    source, size=size,
+                    attribs=' class="m-graph{}"'.format(' ' + add_css_class if add_css_class else '')),
+                    caption)
+            else:
+                out.parsed += '<div class="m-graph{}">{}</div>'.format(
+                    ' ' + add_css_class if add_css_class else '', dot2svg.dot2svg(source, size))
 
         elif i.tag == 'hruler':
             assert element.tag == 'para' # is inside a paragraph :/
@@ -2847,6 +2883,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
             'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
             '../css/m-dark+doxygen.compiled.css'],
         'HTML_EXTRA_FILES': [],
+        'DOT_FONTNAME': ['Helvetica'],
+        'DOT_FONTSIZE': ['10'],
 
         'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
@@ -2957,6 +2995,7 @@ list using <span class="m-label m-dim">&darr;</span> and
               'OUTPUT_DIRECTORY',
               'HTML_OUTPUT',
               'XML_OUTPUT',
+              'DOT_FONTNAME',
               'M_MAIN_PROJECT_URL',
               'M_HTML_HEADER',
               'M_PAGE_HEADER',
@@ -2969,7 +3008,8 @@ list using <span class="m-label m-dim">&darr;</span> and
         if i in config: state.doxyfile[i] = '\n'.join(config[i])
 
     # Int values that we want
-    for i in ['M_CLASS_TREE_EXPAND_LEVELS',
+    for i in ['DOT_FONTSIZE',
+              'M_CLASS_TREE_EXPAND_LEVELS',
               'M_FILE_TREE_EXPAND_LEVELS']:
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
 
@@ -3016,6 +3056,9 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         latex2svgextra.unpickle_cache(math_cache_file)
     else:
         latex2svgextra.unpickle_cache(None)
+
+    # Configure graphviz/dot
+    dot2svg.configure(state.doxyfile['DOT_FONTNAME'], state.doxyfile['DOT_FONTSIZE'])
 
     if sort_globbed_files:
         xml_files_metadata.sort()

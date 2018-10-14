@@ -147,6 +147,9 @@ If you see something unexpected or not see something expected, check the
 -   Math rendered as embedded SVG instead of raster images / MathJax. The
     supported feature set is equivalent to the `m.math Pelican plugin <{filename}/plugins/math-and-code.rst#math>`_,
     see its documentation for more information.
+-   Graphviz / Dot diagrams rendered as embedded SVG. The supported feature set
+    is equivalent to the `m.dot Pelican plugin <{filename}/plugins/plots-and-graphs.rst#graphs>`_,
+    see its documentation for more information.
 -   Uses Pygments for better code highlighting. The supported feature set is
     equivalent to the `m.code Pelican plugin <{filename}/plugins/math-and-code.rst#code>`_,
     see its documentation for more information.
@@ -280,6 +283,15 @@ Variable                        Description
                                 searched relative to the Doxyfile base dir and
                                 to the ``dox2html5.py`` script dir as a
                                 fallback.
+:ini:`DOT_FONTNAME`             Font name to use for ``@dot`` and ``@dotfile``
+                                commands. To ensure consistent look with the
+                                default m.css themes, set it to
+                                ``Source Sans Pro``. Doxygen default is
+                                ``Helvetica``.
+:ini:`DOT_FONTSIZE`             Font size to use for ``@dot`` and ``@dotfile``
+                                commands. To ensure consistent look with the
+                                default m.css themes, set it to ``16``.
+                                Doxygen default is ``10``.
 =============================== ===============================================
 
 In addition, the m.css Doxygen theme recognizes the following extra options:
@@ -591,6 +603,13 @@ as well:
     /**
     @image image.png width=250px
     */
+
+`Dot graphs`_
+-------------
+
+Grapviz ``dot`` graphs from the ``@dot`` and ``@dotfile`` commands are rendered
+as an inline SVG. Graph name and the ``sizespec`` works equivalently to the
+`Images and figures`_.
 
 `Pages, sections and table of contents`_
 ----------------------------------------

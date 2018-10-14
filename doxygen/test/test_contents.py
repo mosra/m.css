@@ -24,6 +24,7 @@
 
 import os
 import pickle
+import re
 import shutil
 import subprocess
 import unittest
@@ -33,6 +34,9 @@ from hashlib import sha1
 from distutils.version import LooseVersion
 
 from . import BaseTestCase, IntegrationTestCase, doxygen_version
+
+def dot_version():
+    return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
 
 class Typography(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -244,6 +248,25 @@ class Custom(IntegrationTestCase):
         self.run_dox2html5(wildcard='math.xml')
         self.assertEqual(*self.actual_expected_contents('math.html'))
 
+    @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
+                         "Dot < 2.40.1 has a completely different output.")
+    def test_dot(self):
+        self.run_dox2html5(wildcard='dot.xml')
+        self.assertEqual(*self.actual_expected_contents('dot.html'))
+
+    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1") and
+                         LooseVersion(dot_version()) >= LooseVersion("2.38.0"),
+                         "Dot < 2.38 and dot > 2.38 has a completely different output.")
+    def test_dot238(self):
+        self.run_dox2html5(wildcard='dot.xml')
+        self.assertEqual(*self.actual_expected_contents('dot.html', 'dot-238.html'))
+
+    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.38.0"),
+                         "Dot > 2.36 has a completely different output.")
+    def test_dot236(self):
+        self.run_dox2html5(wildcard='dot.xml')
+        self.assertEqual(*self.actual_expected_contents('dot.html', 'dot-236.html'))
+
 class ParseError(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'parse_error', *args, **kwargs)
@@ -328,3 +351,30 @@ class UnexpectedSections(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+class Dot(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'dot', *args, **kwargs)
+
+    @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
+                         "Dot < 2.40.1 has a completely different output.")
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1") and
+                         LooseVersion(dot_version()) >= LooseVersion("2.38.0"),
+                         "Dot < 2.38 and dot > 2.38 has a completely different output.")
+    def test_238(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html', 'index-238.html'))
+
+    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.38.0"),
+                         "Dot > 2.36 has a completely different output.")
+    def test_236(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html', 'index-236.html'))
+
+    def test_warnings(self):
+        self.run_dox2html5(wildcard='warnings.xml')
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))

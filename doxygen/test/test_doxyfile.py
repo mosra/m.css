@@ -42,6 +42,8 @@ class Doxyfile(unittest.TestCase):
         state = State()
         parse_doxyfile(state, 'test/doxyfile/Doxyfile')
         self.assertEqual(state.doxyfile, {
+            'DOT_FONTNAME': 'Helvetica',
+            'DOT_FONTSIZE': 10,
             'HTML_EXTRA_FILES': ['css', 'another.png', 'hello'],
             'HTML_EXTRA_STYLESHEET': ['a.css', 'b.css'],
             'HTML_OUTPUT': 'html',
