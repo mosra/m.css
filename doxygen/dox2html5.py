@@ -1052,9 +1052,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
                 sizespec = ''
                 if 'width' in i.attrib:
-                    sizespec = ' style="width: {}"'.format(i.attrib['width'])
+                    sizespec = ' style="width: {};"'.format(i.attrib['width'])
                 elif 'height' in i.attrib:
-                    sizespec = ' style="height: {}"'.format(i.attrib['height'])
+                    sizespec = ' style="height: {};"'.format(i.attrib['height'])
 
                 caption = i.text
                 if caption:
