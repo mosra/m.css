@@ -1926,7 +1926,7 @@ def postprocess_state(state: State):
                 if i.startswith('<a'):
                     end = i.index('</a>') + 4
                     links += [i[0:end]]
-                    i = i[end:]
+                    i = i[end:].lstrip()
                 else:
                     firstAndRest = i.split(None, 1)
                     if len(firstAndRest):
