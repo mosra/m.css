@@ -43,7 +43,7 @@ class Dot(PluginTestCase):
                          "The math plugin requires at least Python 3.5 installed. Dot < 2.40.1 has a completely different output.")
     def test(self):
         self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.dot'],
+            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
             'M_DOT_FONT': 'DejaVu Sans'
         })
 
@@ -55,7 +55,7 @@ class Dot(PluginTestCase):
                          "The math plugin requires at least Python 3.5 installed. Dot < 2.38 and dot > 2.38 has a completely different output.")
     def test_238(self):
         self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.dot'],
+            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
             'M_DOT_FONT': 'DejaVu Sans'
         })
 
@@ -66,7 +66,7 @@ class Dot(PluginTestCase):
                          "The math plugin requires at least Python 3.5 installed. Dot > 2.36 has a completely different output.")
     def test_236(self):
         self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.dot'],
+            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
             'M_DOT_FONT': 'DejaVu Sans'
         })
 

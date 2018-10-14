@@ -32,7 +32,7 @@ _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="UTF-8" standalone="n
  viewBox="(?P<viewBox>[^"]+)" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">
 <g id="graph0" class="graph" """)
 
-_patch_dst = r"""<svg style="width: {width:.3f}rem; height: {height:.3f}rem;" viewBox="{viewBox}">
+_patch_dst = r"""<svg{attribs} style="width: {width:.3f}rem; height: {height:.3f}rem;" viewBox="{viewBox}">
 <g """
 
 _comment_src = re.compile(r"""<!--[^-]+-->\n""")
@@ -63,7 +63,7 @@ _font_size = 0.0
 # converting to rem here
 def _pt2em(pt): return pt/_font_size
 
-def dot2svg(source):
+def dot2svg(source, attribs=''):
     try:
         ret = subprocess.run(['dot', '-Tsvg',
             '-Gfontname={}'.format(_font),
@@ -84,6 +84,7 @@ def dot2svg(source):
 
     # Remove preamble and fixed size
     def patch_repl(match): return _patch_dst.format(
+        attribs=attribs,
         width=_pt2em(float(match.group('width'))),
         height=_pt2em(float(match.group('height'))),
         viewBox=match.group('viewBox'))

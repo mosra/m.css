@@ -283,3 +283,40 @@ equivalent to :dot:`graph` and :dot:`strict graph` in the DOT language:
 
         0 -- 1 -- 2 -- 3 -- 4 -- 0 -- 2 -- 4 --1
         3 [style=filled]
+
+`Graph figure`_
+---------------
+
+See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
+plugin for details about graph figures using the :rst:`.. graph-figure::`
+directive.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. graph-figure:: Impenetrable logic
+
+            .. digraph::
+
+                rankdir=LR
+                yes [shape=circle, class="m-primary", style=filled]
+                no [shape=circle, class="m-primary"]
+                yes -> no [label="no", class="m-primary"]
+                no -> no [label="no"]
+
+            No.
+
+    .. graph-figure:: Impenetrable logic
+
+        .. digraph::
+
+            rankdir=LR
+            yes [shape=circle, class="m-primary", style=filled]
+            no [shape=circle, class="m-primary"]
+            yes -> no [label="no", class="m-primary"]
+            no -> no [label="no"]
+
+        .. class:: m-noindent
+
+        No.

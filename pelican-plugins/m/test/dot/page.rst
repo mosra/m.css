@@ -63,3 +63,16 @@ Structs:
         a -> b
 
     This is a description.
+
+.. graph-figure::
+
+    .. digraph::
+
+        a -> b
+
+    The graph below should not be styled as a part of the figure:
+
+    .. digraph:: A to B
+        :class: m-danger
+
+        a -> b

@@ -33,6 +33,17 @@ from docutils.parsers.rst.roles import set_classes
 
 import dot2svg
 
+def _is_graph_figure(parent):
+    # The parent has to be a figure, marked as m-figure
+    if not isinstance(parent, nodes.figure): return False
+    if 'm-figure' not in parent.get('classes', []): return False
+
+    # And as a first visible node of such type
+    for child in parent:
+        if not isinstance(child, nodes.Invisible): return False
+
+    return True
+
 class Dot(rst.Directive):
     has_content = True
     optional_arguments = 1
@@ -43,8 +54,16 @@ class Dot(rst.Directive):
     def run(self, source):
         set_classes(self.options)
 
-        svg = dot2svg.dot2svg(source)
+        # If this is the first real node inside a graph figure, put the SVG
+        # directly inside
+        parent = self.state.parent
+        if _is_graph_figure(parent):
+            svg = dot2svg.dot2svg(source, attribs=' class="{}"'.format(' '.join(['m-graph'] + self.options.get('classes', []))))
+            node = nodes.raw('', svg, format='html')
+            return [node]
 
+        # Otherwise wrap it in a <div class="m-graph">
+        svg = dot2svg.dot2svg(source)
         container = nodes.container(**self.options)
         container['classes'] = ['m-graph'] + container['classes']
         node = nodes.raw('', svg, format='html')
