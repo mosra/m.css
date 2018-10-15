@@ -70,7 +70,8 @@ list using <span class="m-label m-dim">&darr;</span> and
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
             'PROJECT_NAME': 'My Pet Project',
-            'XML_OUTPUT': 'xml'
+            'XML_OUTPUT': 'xml',
+            'IMAGE_PATH': ''
         })
 
     def test_subdirs(self):
