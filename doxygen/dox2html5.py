@@ -1051,7 +1051,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     os.path.join(state.basedir, name)
                 ]
                 if image_path:
-                    path_candidates.append(os.path.join(image_path, name))
+                    if os.path.isabs(image_path):
+                        path_candidates.append(os.path.join(image_path, name))
+                    else:
+                        path_candidates.append(os.path.join(state.basedir, image_path, name))
 
                 image_found = False
                 for path in path_candidates:
