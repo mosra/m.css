@@ -10,8 +10,10 @@
 .m-code .cpf { color: #c7cf2f } /* Comment.PreprocFile */
 .m-code .c1 { color: #a5c9ea } /* Comment.Single */
 .m-code .cs { color: #a5c9ea } /* Comment.Special */
+.m-code .gd { color: #cd3431 } /* Generic.Deleted */
 .m-code .ge { color: #e6e6e6; font-style: italic } /* Generic.Emph */
 .m-code .gh { color: #ffffff; font-weight: bold } /* Generic.Heading */
+.m-code .gi { color: #3bd267 } /* Generic.Inserted */
 .m-code .gs { color: #e6e6e6; font-weight: bold } /* Generic.Strong */
 .m-code .kc { color: #ffffff; font-weight: bold } /* Keyword.Constant */
 .m-code .kd { color: #ffffff; font-weight: bold } /* Keyword.Declaration */
