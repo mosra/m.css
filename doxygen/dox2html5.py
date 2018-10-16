@@ -2696,7 +2696,8 @@ def parse_xml(state: State, xml: str):
             compound.location_bodyfile = symbol.location_bodyfile
 
             for other_compound in state.compounds.values():
-                if getattr(other_compound, 'kind', '') == 'file' and other_compound.location_file == symbol.location_bodyfile:
+                # create a link when source file is documented
+                if getattr(other_compound, 'kind', '') == 'file' and other_compound.location_file == symbol.location_bodyfile and other_compound.has_details:
                     compound.location_url = other_compound.url
                     break
 
