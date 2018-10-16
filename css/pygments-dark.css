@@ -15,6 +15,7 @@
 .m-code .gh { color: #ffffff; font-weight: bold } /* Generic.Heading */
 .m-code .gi { color: #3bd267 } /* Generic.Inserted */
 .m-code .gs { color: #e6e6e6; font-weight: bold } /* Generic.Strong */
+.m-code .gu { color: #5b9dd9 } /* Generic.Subheading */
 .m-code .kc { color: #ffffff; font-weight: bold } /* Keyword.Constant */
 .m-code .kd { color: #ffffff; font-weight: bold } /* Keyword.Declaration */
 .m-code .kn { color: #ffffff; font-weight: bold } /* Keyword.Namespace */

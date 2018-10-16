@@ -2113,6 +2113,7 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-code .gh { color: #ffffff; font-weight: bold }
 .m-code .gi { color: #3bd267 }
 .m-code .gs { color: #e6e6e6; font-weight: bold }
+.m-code .gu { color: #5b9dd9 }
 .m-code .kc { color: #ffffff; font-weight: bold }
 .m-code .kd { color: #ffffff; font-weight: bold }
 .m-code .kn { color: #ffffff; font-weight: bold }

@@ -59,6 +59,7 @@ class DarkStyle(Style):
         Generic.Strong:         'bold #e6e6e6',
 
         # Diffs
+        Generic.Subheading:     '#5b9dd9',
         Generic.Inserted:       '#3bd267',
         Generic.Deleted:        '#cd3431'
     }
