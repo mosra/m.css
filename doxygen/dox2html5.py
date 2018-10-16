@@ -1874,6 +1874,20 @@ def extract_metadata(state: State, xml):
         # Parse template list for classes
         _, compound.templates = parse_template_params(state, compounddef.find('templateparamlist'), {})
 
+    # file location
+    compound.location_file = None
+    compound.location_bodyfile = None
+    if not compound.kind in ['dir', 'page', 'group']:
+        location_tag = compounddef.find('location')
+        if location_tag is not None:
+            if 'file' in location_tag.keys():
+                location_file = location_tag.attrib['file']
+                location_bodyfile = location_tag.get('bodyfile', None)
+                if location_file:
+                    compound.location_file = location_file
+                if location_bodyfile:
+                    compound.location_bodyfile = location_bodyfile
+
     # Files have <innerclass> and <innernamespace> but that's not what we want,
     # so separate the children queries based on compound type
     if compounddef.attrib['kind'] in ['namespace', 'class', 'struct', 'union']:
@@ -2668,6 +2682,26 @@ def parse_xml(state: State, xml: str):
             compound.prefix_wbr += '&gt;'
 
         compound.prefix_wbr += '::<wbr />'
+
+    # class definition location
+    if compound.kind in ['class', 'struct', 'union']:
+        compound.location_bodyfile = None
+        compound.location_url = None
+
+        id = compounddef.attrib['id']
+        symbol = state.compounds[id]
+
+        if symbol.location_bodyfile is not None:
+            assert symbol.location_bodyfile != ''
+            compound.location_bodyfile = symbol.location_bodyfile
+
+            for other_compound in state.compounds.values():
+                if getattr(other_compound, 'kind', '') == 'file' and other_compound.location_file == symbol.location_bodyfile:
+                    compound.location_url = other_compound.url
+                    break
+
+        if compound.location_bodyfile is None:
+            logging.warning('could not find the source file where {} is defined.'.format(compound.name))
 
     # Example pages
     if compound.kind == 'example':
