@@ -16,6 +16,15 @@
 {% block title %}{% set j = joiner('::') %}{% for name, _ in compound.breadcrumb %}{{ j() }}{{ name }}{% endfor %} {{ compound.kind }} | {{ super() }}{% endblock %}
 
 {% block main %}
+        {% if compound.location_bodyfile %}
+          <p class="m-text-right">
+          {% if compound.location_url %}
+            <span class="m-text m-dim">Defined in </span><a href="{{ compound.location_url }}">&lt;{{ compound.location_bodyfile }}&gt;</a>
+          {% else %}
+          <span class="m-text m-dim">Defined in &lt;{{ compound.location_bodyfile }}&gt;</span>
+          {% endif %}
+          </p>
+        {% endif %}
         <h1>
           {% if compound.templates != None %}
           {% set j = joiner(', ') %}
