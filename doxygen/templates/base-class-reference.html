@@ -17,11 +17,11 @@
 
 {% block main %}
         {% if compound.location_bodyfile %}
-          <p class="m-text-right">
+          <p class="m-text-right m-code">
           {% if compound.location_url %}
-            <span class="m-text m-dim">Defined in </span><a href="{{ compound.location_url }}">&lt;{{ compound.location_bodyfile }}&gt;</a>
+            <span class="cp">#include</span> <a class="cpf" href="{{ compound.location_url }}">&lt;{{ compound.location_bodyfile }}&gt;</a>
           {% else %}
-          <span class="m-text m-dim">Defined in &lt;{{ compound.location_bodyfile }}&gt;</span>
+            <span class="cp">#include</span> <span class="cpf">&lt;{{ compound.location_bodyfile }}&gt;</span>
           {% endif %}
           </p>
         {% endif %}
