@@ -283,6 +283,9 @@ Variable                        Description
                                 searched relative to the Doxyfile base dir and
                                 to the ``dox2html5.py`` script dir as a
                                 fallback.
+:ini:`IMAGE_PATH`               Extra diretories in which the image file are
+                                searched. See `Images and figures`_ for more
+                                information.
 :ini:`DOT_FONTNAME`             Font name to use for ``@dot`` and ``@dotfile``
                                 commands. To ensure consistent look with the
                                 default m.css themes, set it to
@@ -591,7 +594,13 @@ single-paragraph item will make sure the enclosing :html:`<p>` is not stripped.
 ---------------------
 
 To match the stock HTML output, images that are marked with ``html`` target are
-used. If image name is present, the image is rendered as a figure with caption.
+used. Image files are searched in the following order:
+
+1.  XML output directory
+2.  same directory as Doxyfile exists
+3.  ``IMAGE_PATH`` tag in the Doxyfile
+
+If image name is present, the image is rendered as a figure with caption.
 It's possible affect width/height of the image using the ``sizespec`` parameter
 (unlike stock Doxygen, which makes use of this field only for LaTeX output and
 ignores it for HTML output). The parameter is converted to an inline CSS

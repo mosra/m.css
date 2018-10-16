@@ -1042,13 +1042,28 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # can be in <para> but often also in <div> and other m.css-specific
             # elements
             has_block_elements = True
+            image_path = state.doxyfile.get('IMAGE_PATH', [])
 
             name = i.attrib['name']
             if i.attrib['type'] == 'html':
-                path = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], name)
-                if os.path.exists(path):
-                    state.images += [path]
-                else:
+                path_candidates = [
+                    os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], name),
+                    os.path.join(state.basedir, name)
+                ]
+                for path in image_path:
+                    if os.path.isabs(path):
+                        path_candidates.append(os.path.join(path, name))
+                    else:
+                        path_candidates.append(os.path.join(state.basedir, path, name))
+
+                image_found = False
+                for path in path_candidates:
+                    if os.path.exists(path):
+                        state.images += [path]
+                        image_found = True
+                        break
+
+                if not image_found:
                     logging.warning("{}: image {} was not found in XML_OUTPUT".format(state.current, name))
 
                 sizespec = ''
@@ -2885,6 +2900,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'HTML_EXTRA_FILES': [],
         'DOT_FONTNAME': ['Helvetica'],
         'DOT_FONTSIZE': ['10'],
+        'IMAGE_PATH': [],
 
         'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
@@ -3025,6 +3041,7 @@ list using <span class="m-label m-dim">&darr;</span> and
     for i in ['TAGFILES',
               'HTML_EXTRA_STYLESHEET',
               'HTML_EXTRA_FILES',
+              'IMAGE_PATH',
               'M_LINKS_NAVBAR1',
               'M_LINKS_NAVBAR2']:
         if i in config:
