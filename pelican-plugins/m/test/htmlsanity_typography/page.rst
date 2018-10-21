@@ -33,3 +33,9 @@ verbatim blocks:
 .. class:: language-cs
 
     Odstavec v češtině. "Uvozovky" fungují jinak a dělení slov jakbysmet.
+
+Links with titles that are URLs (or e-mail addresses) shouldn't be hyphenated
+either:
+
+-   info@magnum.graphics
+-   https://magnum.graphics
