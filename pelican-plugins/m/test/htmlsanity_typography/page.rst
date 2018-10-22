@@ -34,8 +34,12 @@ verbatim blocks:
 
     Odstavec v češtině. "Uvozovky" fungují jinak a dělení slov jakbysmet.
 
+Links
+=====
+
 Links with titles that are URLs (or e-mail addresses) shouldn't be hyphenated
 either:
 
 -   info@magnum.graphics
 -   https://magnum.graphics
+-   `Links`_ without refuri should not give an error

@@ -85,7 +85,7 @@ def can_apply_typography(txtnode):
        isinstance(txtnode.parent, nodes.field_name) or \
        isinstance(txtnode.parent, nodes.Bibliographic) or \
        (isinstance(txtnode.parent, nodes.reference) and
-            (txtnode.astext() == txtnode.parent['refuri'] or 'mailto:' + txtnode.astext() == txtnode.parent['refuri'])):
+            (txtnode.astext() == txtnode.parent.get('refuri', '') or 'mailto:' + txtnode.astext() == txtnode.parent.get('refuri', ''))):
         return False
 
     # From fields include only the ones that are in FORMATTED_FIELDS
