@@ -440,7 +440,7 @@ the following markup in front of your page content --- an outer
 .. note-info::
 
     Real-world example of a page with cover image can be seen on the
-    `Magnum Engine website <http://magnum.graphics/features/>`_.
+    `Magnum Engine website <https://magnum.graphics/features/>`_.
 
 `Breadcrumb navigation`_
 ------------------------

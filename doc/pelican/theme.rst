@@ -466,7 +466,7 @@ for details about how the cover image affects page layout.
 .. note-info::
 
     Real-world example of a page with cover image can be seen on the
-    `Magnum Engine website <http://magnum.graphics/features/extensions/>`_.
+    `Magnum Engine website <https://magnum.graphics/features/extensions/>`_.
 
 `Page header and footer`_
 -------------------------

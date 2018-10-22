@@ -244,8 +244,8 @@ work. Example configuration:
 
     PLUGINS += ['m.dox']
     M_DOX_TAGFILES = [
-        ('doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::']),
-        ('doxygen/magnum.tag', 'http://doc.magnum.graphics/magnum/', ['Magnum::'])]
+        ('doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::']),
+        ('doxygen/magnum.tag', 'https://doc.magnum.graphics/magnum/', ['Magnum::'])]
 
 Use the :rst:`:dox:` interpreted text role for linking to documented symbols.
 All link targets understood by Doxygen's ``@ref`` or ``@link`` commands are
