@@ -1877,8 +1877,14 @@ def extract_metadata(state: State, xml):
     # file location
     compound.location_file = None
     compound.location_bodyfile = None
+    compound.location_url = None
     if not compound.kind in ['dir', 'page', 'group']:
         location_tag = compounddef.find('location')
+        includes_tag = compounddef.find('includes')
+        if includes_tag is not None:
+            compound.location_bodyfile = includes_tag.text
+            if 'refid' in includes_tag.keys():
+                compound.location_url = includes_tag.attrib['refid'] + '.html'
         if location_tag is not None:
             if 'file' in location_tag.keys():
                 location_file = location_tag.attrib['file']
@@ -2691,7 +2697,16 @@ def parse_xml(state: State, xml: str):
         id = compounddef.attrib['id']
         symbol = state.compounds[id]
 
-        if symbol.location_bodyfile is not None:
+        if symbol.location_url is not None:
+            assert symbol.location_url != ''
+            refid = symbol.location_url[:-5]
+            if refid in state.compounds.keys():
+                other_compound = state.compounds[refid]
+                compound.location_bodyfile = other_compound.location_file
+                if getattr(other_compound, 'kind', '') == 'file' and other_compound.has_details and other_compound.location_file != '':
+                    compound.location_url = symbol.location_url
+
+        elif symbol.location_bodyfile is not None:
             assert symbol.location_bodyfile != ''
             compound.location_bodyfile = symbol.location_bodyfile
 
