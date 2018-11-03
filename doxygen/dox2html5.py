@@ -543,6 +543,51 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert not out.write_paragraph_close_tag
             out.parsed = out.parsed.rstrip() + '</aside>'
 
+        # Decide if a formula / code snippet is a block or not
+        # <formula> can be both, depending on what's inside
+        if i.tag == 'formula':
+            if i.text.startswith('$') and i.text.endswith('$'):
+                formula_block = False
+            else:
+                formula_block = True
+
+        # <programlisting> is autodetected to be either block or inline
+        elif i.tag == 'programlisting':
+            element_children_count = len([listing for listing in element])
+
+            # If it seems to be a standalone code paragraph, don't wrap it
+            # in <p> and use <pre>:
+            if (
+                # It's either alone in the paragraph, with no text or other
+                # elements around, or
+                ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and element_children_count == 1) or
+
+                # is a code snippet, i.e. filename instead of just .ext
+                # (Doxygen unfortunately doesn't put @snippet in its own
+                # paragraph even if it's separated by blank lines. It does
+                # so for @include and related, though.)
+                ('filename' in i.attrib and not i.attrib['filename'].startswith('.')) or
+
+                # or is code right after a note/attention/... section,
+                # there's no text after and it's the last thing in the
+                # paragraph (Doxygen ALSO doesn't separate end of a section
+                # and begin of a code block by a paragraph even if there is
+                # a blank line. But it does so for xrefitems such as @todo.
+                # I don't even.)
+                (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
+            ):
+                code_block = True
+
+            # Looks like inline code, but has multiple code lines, so it's
+            # suspicious. Use code block, but warn.
+            elif len([codeline for codeline in i]) > 1:
+                code_block = True
+                logging.warning("{}: inline code has multiple lines, fallback to a code block".format(state.current))
+
+            # Otherwise wrap it in <p> and use <code>
+            else:
+                code_block = False
+
         # DOXYGEN <PARA> PATCHING 2/4
         #
         # Upon encountering a block element nested in <para>, we need to act.
@@ -593,50 +638,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # <formula> can be both, depending on what's inside
             elif i.tag == 'formula':
-                if i.text.startswith('$') and i.text.endswith('$'):
-                    formula_block = False
-                else:
-                    end_previous_paragraph = True
-                    formula_block = True
+                assert formula_block is not None
+                end_previous_paragraph = formula_block
 
             # <programlisting> is autodetected to be either block or inline
             elif i.tag == 'programlisting':
-                element_children_count = len([listing for listing in element])
-
-                # If it seems to be a standalone code paragraph, don't wrap it
-                # in <p> and use <pre>:
-                if (
-                    # It's either alone in the paragraph, with no text or other
-                    # elements around, or
-                    ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and element_children_count == 1) or
-
-                    # is a code snippet, i.e. filename instead of just .ext
-                    # (Doxygen unfortunately doesn't put @snippet in its own
-                    # paragraph even if it's separated by blank lines. It does
-                    # so for @include and related, though.)
-                    ('filename' in i.attrib and not i.attrib['filename'].startswith('.')) or
-
-                    # or is code right after a note/attention/... section,
-                    # there's no text after and it's the last thing in the
-                    # paragraph (Doxygen ALSO doesn't separate end of a section
-                    # and begin of a code block by a paragraph even if there is
-                    # a blank line. But it does so for xrefitems such as @todo.
-                    # I don't even.)
-                    (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
-                ):
-                    end_previous_paragraph = True
-                    code_block = True
-
-                # Looks like inline code, but has multiple code lines, so it's
-                # suspicious. Use code block, but warn.
-                elif len([codeline for codeline in i]) > 1:
-                    end_previous_paragraph = True
-                    code_block = True
-                    logging.warning("{}: inline code has multiple lines, fallback to a code block".format(state.current))
-
-                # Otherwise wrap it in <p> and use <code>
-                else:
-                    code_block = False
+                assert code_block is not None
+                end_previous_paragraph = code_block
 
             if end_previous_paragraph:
                 out.is_reasonable_paragraph = False
