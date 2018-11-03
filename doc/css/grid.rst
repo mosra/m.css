@@ -37,7 +37,7 @@ Grid system
 .. role:: html(code)
     :language: html
 
-Inspired by `Bootstrap <http://getbootstrap.com>`_, the grid system is the
+Inspired by `Bootstrap <https://getbootstrap.com>`_, the grid system is the
 heart of a responsive website layout. The `m-grid.css <{filename}/css.rst>`_
 file contains all the setup you need for it, it's completely standalone.
 Besides that, in order to have devices recognize your website properly as

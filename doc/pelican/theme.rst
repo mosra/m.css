@@ -285,12 +285,12 @@ Example configuration to give sane defaults to all social meta tags:
 .. code:: py
 
     M_BLOG_NAME = "Your Brand Blog"
-    M_BLOG_URL = 'http://blog.your.brand/'
+    M_BLOG_URL = 'https://blog.your.brand/'
     M_BLOG_DESCRIPTION = "Your Brand is the brand that provides all that\'s needed."
 
     M_SOCIAL_TWITTER_SITE = '@your.brand'
     M_SOCIAL_TWITTER_SITE_ID = 1234567890
-    M_SOCIAL_IMAGE = 'http://your.brand/static/site.png'
+    M_SOCIAL_IMAGE = 'https://your.brand/static/site.png'
     M_SOCIAL_BLOG_SUMMARY = "This is the brand you need"
 
 .. _global-site-image:
@@ -529,7 +529,7 @@ of articles shown. Example configuration:
 .. note-success::
 
     You can see how this block looks on the Magnum Engine main page:
-    http://magnum.graphics
+    https://magnum.graphics
 
 `(Social) meta tags for pages`_
 -------------------------------

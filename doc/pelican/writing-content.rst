@@ -396,7 +396,7 @@ created using the :rst:`.. _anchor:` syntax.
         ============
 
         Repeated link to `Google`_. Anonymous links that share the same titles
-        `here <http://blog.mosra.cz>`__ and `here <http://magnum.graphics/>`__.
+        `here <http://blog.mosra.cz>`__ and `here <https://magnum.graphics/>`__.
         Link to `an anchor`_ above.
 
     .. _an anchor:
@@ -411,7 +411,7 @@ created using the :rst:`.. _anchor:` syntax.
         <h2><a href="#a-heading">A heading</a></h2>
 
     Repeated link to `Google`_. Anonymous links that share the same titles
-    `here <http://blog.mosra.cz>`__ and `here <http://magnum.graphics/>`__.
+    `here <http://blog.mosra.cz>`__ and `here <https://magnum.graphics/>`__.
     Link to `an anchor`_ above.
 
     .. raw:: html

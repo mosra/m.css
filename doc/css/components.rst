@@ -967,8 +967,7 @@ It's also possible to have matching border for a console output. Just use
 
 The ``latex2svg.py`` utility from :gh:`tuxu/latex2svg` can be used to generate
 SVG representation of your LaTeX math formulas. Assuming you have some LaTeX
-distribution and `dvisvgm <http://dvisvgm.bplaced.net/>`_ installed, the usage
-is simple:
+distribution and `dvisvgm <https://dvisvgm.de/>`_ installed, the usage is:
 
 .. code:: sh
 

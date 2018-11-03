@@ -240,8 +240,8 @@ whole graph, it's also possible to color particular nodes and edges using the
         S₂ -> S₂ [label="1"]
 
 For more information check the official
-`GraphViz Reference <http://www.graphviz.org/doc/info/>`_, in particular the
-extensive `attribute documentation <http://www.graphviz.org/doc/info/attrs.html>`_.
+`GraphViz Reference <https://www.graphviz.org/doc/info/>`_, in particular the
+extensive `attribute documentation <https://www.graphviz.org/doc/info/attrs.html>`_.
 
 .. note-warning::
 

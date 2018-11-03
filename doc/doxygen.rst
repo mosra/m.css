@@ -46,12 +46,12 @@ Doxygen theme
     :language: sh
 
 A modern, mobile-friendly drop-in replacement for the stock
-`Doxygen <http://www.doxygen.org>`_ HTML output, with a first-class search
+`Doxygen <https://www.doxygen.org>`_ HTML output, with a first-class search
 functionality. Generated from Doxygen-produced XML files, filenames and URLs
 are fully compatible with the stock output to avoid broken links once you
 switch.
 
-.. button-success:: http://doc.magnum.graphics
+.. button-success:: https://doc.magnum.graphics
 
     Live demo
 
@@ -168,7 +168,7 @@ If you see something unexpected or not see something expected, check the
 
     If you want to know more, the search functionality implementation and
     features are detailed
-    `in this blog post <http://blog.magnum.graphics/meta/implementing-a-fast-doxygen-search/>`_.
+    `in this blog post <https://blog.magnum.graphics/meta/implementing-a-fast-doxygen-search/>`_.
 
 `Important differences to stock HTML output`_
 ---------------------------------------------
@@ -883,7 +883,7 @@ rendered HTML output:
         Centered.
         @endparblock
 
-        @m_div{m-button m-primary} <a href="http://doc.magnum.graphics/">@m_div{m-big}See
+        @m_div{m-button m-primary} <a href="https://doc.magnum.graphics/">@m_div{m-big}See
         it live! @m_enddiv @m_div{m-small} uses the m.css theme @m_enddiv </a> @m_enddiv
 
         This text contains a @span{m-text m-success} green @endspan word.
@@ -896,7 +896,7 @@ rendered HTML output:
 
         Centered.
 
-    .. button-primary:: http://doc.magnum.graphics
+    .. button-primary:: https://doc.magnum.graphics
 
         See it live!
 
