@@ -1290,14 +1290,25 @@ element and put the :html:`<svg>` as a first child, all other content after.
         <figcaption>Impenetrable logic</figcaption>
         </figure>
 
-`Padding`_
-==========
+`Padding and floating`_
+=======================
 
 Similarly to `typography elements <{filename}/css/typography.rst#padding>`_;
 blocks, notes, frames, tables, images, figures, image grids, code and math
 blocks and code figures have :css:`1rem` padding on the bottom, except when
 they are the last element, to avoid excessive spacing. The list special casing
 and ability to disable the padding using :css:`.m-nopadb` applies here as well.
+
+Components that appear directly in a column that's :css:`m-container-inflatable`
+or directly inside any nested :html:`<section>` are outdented to preserve a
+straight line of text alignment on the sides. You can spot that on this page
+--- look how notes and figures have their background outside. This also makes
+narrow layouts better readable, as the component visuals don't cut into
+precious screen width.
+
+All components support the `floating classes <{filename}/css/grid.rst#floating-around>`_ from the grid system, however having floating elements *inside* the
+components is not supported. Floating elements also preserve the inflatable
+behavior described above.
 
 `Responsive utilities`_
 =======================

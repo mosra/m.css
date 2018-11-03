@@ -25,7 +25,7 @@
 Test
 ####
 
-:save_as: css/page-layout/test/index.html
+:slug: css/page-layout/test
 :breadcrumb: {filename}/css.rst CSS
              {filename}/css/page-layout.rst Page layout
 
@@ -81,6 +81,110 @@ elements should be flattened and nothing should jump when highlighted.
 .. frame:: Frame
 
     Frame will have its left border fattened.
+
+.. code-figure::
+
+    .. code:: c++
+
+        /* The code will have a custom border */
+
+    The figure as well.
+
+`Floating components`_
+----------------------
+
+.. container:: m-col-m-4 m-left-m
+
+    .. note-success::
+
+        Changed on the left side.
+
+.. container:: m-col-m-4 m-right-m
+
+    .. note-danger::
+
+        No change if not fullsize.
+
+Should behave as expected on the left side, but not on the right (unless the
+window size is small). Centered note below should be marked also only when
+touching the left side, not when centered.
+
+.. container:: m-clearfix-l
+
+    ..
+
+.. container:: m-col-m-4 m-left-m
+
+    .. block-success:: Block
+
+        Changed on the left side.
+
+.. container:: m-col-m-4 m-right-m
+
+    .. block-danger:: Block
+
+        No change if not fullsize.
+
+Neither the blocks should do that.
+
+.. container:: m-clearfix-l
+
+    ..
+
+.. container:: m-col-m-4 m-center-m
+
+    .. block-danger:: Centered
+
+        No change if not fullsize.
+
+.. container:: m-col-m-4 m-center-m
+
+    .. frame:: Watch the border
+
+        No change if not fullsize.
+
+.. container:: m-col-m-8 m-center-m
+
+    .. code:: c++
+
+        /* Change on the left on small screen sizes. */
+
+.. container:: m-col-m-10 m-center-m
+
+    .. console-figure::
+
+        .. code:: shell-session
+
+            $ code will have a custom border on small screens
+
+        The figure as well.
+
+`Floating components, inflated`_
+--------------------------------
+
+.. container:: m-col-l-4 m-left-l m-container-inflate
+
+    .. note-success::
+
+        Changed.
+
+.. container:: m-col-l-4 m-right-l m-container-inflate
+
+    .. note-success::
+
+        Not changed if not on the left.
+
+Lorem ipsum.
+
+.. container:: m-clearfix-l
+
+    ..
+
+.. container:: m-container-inflate
+
+    .. note-info:: Yes.
+
+        This changes as well.
 
 `Nested components`_
 --------------------

@@ -932,12 +932,72 @@ figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > pre,
 .m-container-inflatable > .m-row > [class*='m-col-'] section > .m-code-figure,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-console-figure {
+.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-console-figure,
+.m-container-inflatable [class*='m-center-'] > .m-note,
+.m-container-inflatable [class*='m-center-'] > .m-frame,
+.m-container-inflatable [class*='m-center-'] > .m-block,
+.m-container-inflatable [class*='m-center-'] > .m-imagegrid,
+.m-container-inflatable [class*='m-center-'] > pre,
+.m-container-inflatable [class*='m-center-'] > .m-code-figure,
+.m-container-inflatable [class*='m-center-'] > .m-console-figure,
+.m-container-inflatable [class*='m-left-'] > .m-note,
+.m-container-inflatable [class*='m-left-'] > .m-frame,
+.m-container-inflatable [class*='m-left-'] > .m-block,
+.m-container-inflatable [class*='m-left-'] > .m-imagegrid,
+.m-container-inflatable [class*='m-left-'] > pre,
+.m-container-inflatable [class*='m-left-'] > .m-code-figure,
+.m-container-inflatable [class*='m-left-'] > .m-console-figure,
+.m-container-inflatable [class*='m-right-'] > .m-note,
+.m-container-inflatable [class*='m-right-'] > .m-frame,
+.m-container-inflatable [class*='m-right-'] > .m-block,
+.m-container-inflatable [class*='m-right-'] > .m-imagegrid,
+.m-container-inflatable [class*='m-right-'] > pre,
+.m-container-inflatable [class*='m-right-'] > .m-code-figure,
+.m-container-inflatable [class*='m-right-'] > .m-console-figure,
+.m-container-inflatable .m-container-inflate > .m-note,
+.m-container-inflatable .m-container-inflate > .m-frame,
+.m-container-inflatable .m-container-inflate > .m-block,
+.m-container-inflatable .m-container-inflate > .m-imagegrid,
+.m-container-inflatable .m-container-inflate > pre,
+.m-container-inflatable .m-container-inflate > .m-code-figure,
+.m-container-inflatable .m-container-inflate > .m-console-figure
+{
   margin-left: -1rem;
   margin-right: -1rem;
 }
 
 @media screen and (min-width: 576px) {
+  .m-container-inflatable .m-center-s > .m-note,
+  .m-container-inflatable .m-center-s > .m-frame,
+  .m-container-inflatable .m-center-s > .m-block,
+  .m-container-inflatable .m-center-s > .m-imagegrid,
+  .m-container-inflatable .m-center-s > pre,
+  .m-container-inflatable .m-center-s > .m-code-figure,
+  .m-container-inflatable .m-center-s > .m-console-figure {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  .m-container-inflatable .m-left-s > .m-note,
+  .m-container-inflatable .m-left-s > .m-frame,
+  .m-container-inflatable .m-left-s > .m-block,
+  .m-container-inflatable .m-left-s > .m-imagegrid,
+  .m-container-inflatable .m-left-s > pre,
+  .m-container-inflatable .m-left-s > .m-code-figure,
+  .m-container-inflatable .m-left-s > .m-console-figure {
+    margin-left: -1rem;
+    margin-right: 0;
+  }
+  .m-container-inflatable .m-right-s > .m-note,
+  .m-container-inflatable .m-right-s > .m-frame,
+  .m-container-inflatable .m-right-s > .m-block,
+  .m-container-inflatable .m-right-s > .m-imagegrid,
+  .m-container-inflatable .m-right-s > pre,
+  .m-container-inflatable .m-right-s > .m-code-figure,
+  .m-container-inflatable .m-right-s > .m-console-figure {
+    margin-left: 0;
+    margin-right: -1rem;
+  }
+
   .m-container-inflatable > .m-row > .m-col-s-10 > .m-imagegrid.m-container-inflate,
   .m-container-inflatable > .m-row > .m-col-s-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
@@ -945,6 +1005,37 @@ figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-
   }
 }
 @media screen and (min-width: 768px) {
+  .m-container-inflatable .m-center-m > .m-note,
+  .m-container-inflatable .m-center-m > .m-frame,
+  .m-container-inflatable .m-center-m > .m-block,
+  .m-container-inflatable .m-center-m > .m-imagegrid,
+  .m-container-inflatable .m-center-m > pre,
+  .m-container-inflatable .m-center-m > .m-code-figure,
+  .m-container-inflatable .m-center-m > .m-console-figure {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  .m-container-inflatable .m-left-m > .m-note,
+  .m-container-inflatable .m-left-m > .m-frame,
+  .m-container-inflatable .m-left-m > .m-block,
+  .m-container-inflatable .m-left-m > .m-imagegrid,
+  .m-container-inflatable .m-left-m > pre,
+  .m-container-inflatable .m-left-m > .m-code-figure,
+  .m-container-inflatable .m-left-m > .m-console-figure {
+    margin-left: -1rem;
+    margin-right: 0;
+  }
+  .m-container-inflatable .m-right-m > .m-note,
+  .m-container-inflatable .m-right-m > .m-frame,
+  .m-container-inflatable .m-right-m > .m-block,
+  .m-container-inflatable .m-right-m > .m-imagegrid,
+  .m-container-inflatable .m-right-m > pre,
+  .m-container-inflatable .m-right-m > .m-code-figure,
+  .m-container-inflatable .m-right-m > .m-console-figure {
+    margin-left: 0;
+    margin-right: -1rem;
+  }
+
   .m-container-inflatable > .m-row > .m-col-m-10 > .m-imagegrid.m-container-inflate,
   .m-container-inflatable > .m-row > .m-col-m-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;
@@ -952,6 +1043,37 @@ figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-
   }
 }
 @media screen and (min-width: 992px) {
+  .m-container-inflatable .m-center-l > .m-note,
+  .m-container-inflatable .m-center-l > .m-frame,
+  .m-container-inflatable .m-center-l > .m-block,
+  .m-container-inflatable .m-center-l > .m-imagegrid,
+  .m-container-inflatable .m-center-l > pre,
+  .m-container-inflatable .m-center-l > .m-code-figure,
+  .m-container-inflatable .m-center-l > .m-console-figure {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+  .m-container-inflatable .m-left-l > .m-note,
+  .m-container-inflatable .m-left-l > .m-frame,
+  .m-container-inflatable .m-left-l > .m-block,
+  .m-container-inflatable .m-left-l > .m-imagegrid,
+  .m-container-inflatable .m-left-l > pre,
+  .m-container-inflatable .m-left-l > .m-code-figure,
+  .m-container-inflatable .m-left-l > .m-console-figure {
+    margin-left: -1rem;
+    margin-right: 0;
+  }
+  .m-container-inflatable .m-right-l > .m-note,
+  .m-container-inflatable .m-right-l > .m-frame,
+  .m-container-inflatable .m-right-l > .m-block,
+  .m-container-inflatable .m-right-l > .m-imagegrid,
+  .m-container-inflatable .m-right-l > pre,
+  .m-container-inflatable .m-right-l > .m-code-figure,
+  .m-container-inflatable .m-right-l > .m-console-figure {
+    margin-left: 0;
+    margin-right: -1rem;
+  }
+
   .m-container-inflatable > .m-row > .m-col-l-10 > .m-imagegrid.m-container-inflate,
   .m-container-inflatable > .m-row > .m-col-l-10 section > .m-imagegrid.m-container-inflate {
     margin-left: -10%;

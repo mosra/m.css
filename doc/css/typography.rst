@@ -421,4 +421,6 @@ elements have :css:`1rem` padding on the bottom, except when the :html:`<li>`
 is last, to achieve consistent spacing for inflated lists.
 
 The :css:`1rem` padding on the bottom can be disabled with :css:`.m-nopadb`,
-similarly as with `grid layouts <{filename}/css/grid.rst#grid-padding>`_.
+similarly as with `grid layouts <{filename}/css/grid.rst#grid-padding>`_. On
+the other hand, if you want to preserve it, add an empty :html:`<div></div>`
+element after.

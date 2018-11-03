@@ -120,7 +120,7 @@ body > header > nav ol {
 body > header > nav ol ol {
   padding-left: 1.5rem;
 }
-body > header > nav [class*='m-col-'] {
+body > header > nav .m-row > [class*='m-col-'] {
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -479,7 +479,9 @@ article section:target figure.m-code-figure, article section:target figure.m-con
 article, article > header, article section { margin-bottom: 1rem; }
 article:last-child, article section:last-child { margin-bottom: 0; }
 
-/* Active sections in inflatable content affect left border of some components */
+/* Active sections in inflatable content affect left border of some components
+   --- restrict to components directly in active section, its subsections and
+   floating / inflatable content inside. */
 .m-container-inflatable section:target > .m-note,
 .m-container-inflatable section:target > .m-frame,
 .m-container-inflatable section:target > .m-block,
@@ -491,7 +493,31 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-container-inflatable section:target section > .m-block,
 .m-container-inflatable section:target section > pre,
 .m-container-inflatable section:target section > figure.m-code-figure > pre:first-child,
-.m-container-inflatable section:target section > figure.m-console-figure > pre:first-child {
+.m-container-inflatable section:target section > figure.m-console-figure > pre:first-child,
+.m-container-inflatable section:target [class*='m-center-'] > .m-note,
+.m-container-inflatable section:target [class*='m-center-'] > .m-frame,
+.m-container-inflatable section:target [class*='m-center-'] > .m-block,
+.m-container-inflatable section:target [class*='m-center-'] > pre,
+.m-container-inflatable section:target [class*='m-center-'] > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target [class*='m-center-'] > figure.m-console-figure > pre:first-child,
+.m-container-inflatable section:target [class*='m-left-'] > .m-note,
+.m-container-inflatable section:target [class*='m-left-'] > .m-frame,
+.m-container-inflatable section:target [class*='m-left-'] > .m-block,
+.m-container-inflatable section:target [class*='m-left-'] > pre,
+.m-container-inflatable section:target [class*='m-left-'] > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target [class*='m-left-'] > figure.m-console-figure > pre:first-child,
+.m-container-inflatable section:target [class*='m-right-'] > .m-note,
+.m-container-inflatable section:target [class*='m-right-'] > .m-frame,
+.m-container-inflatable section:target [class*='m-right-'] > .m-block,
+.m-container-inflatable section:target [class*='m-right-'] > pre,
+.m-container-inflatable section:target [class*='m-right-'] > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target [class*='m-right-'] > figure.m-console-figure > pre:first-child,
+.m-container-inflatable section:target .m-container-inflate > .m-note,
+.m-container-inflatable section:target .m-container-inflate > .m-frame,
+.m-container-inflatable section:target .m-container-inflate > .m-block,
+.m-container-inflatable section:target .m-container-inflate > pre,
+.m-container-inflatable section:target .m-container-inflate > figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target .m-container-inflate > figure.m-console-figure > pre:first-child {
   margin-left: -1.0rem;
   border-left-style: solid;
   border-left-width: 0.25rem;
@@ -502,50 +528,253 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-container-inflatable section:target > figure.m-code-figure::before,
 .m-container-inflatable section:target > figure.m-console-figure::before,
 .m-container-inflatable section:target section > figure.m-code-figure::before,
-.m-container-inflatable section:target section > figure.m-console-figure::before {
+.m-container-inflatable section:target section > figure.m-console-figure::before,
+.m-container-inflatable section:target [class*='m-center-'] > figure.m-code-figure::before,
+.m-container-inflatable section:target [class*='m-center-'] > figure.m-console-figure::before,
+.m-container-inflatable section:target [class*='m-left-'] > figure.m-code-figure::before,
+.m-container-inflatable section:target [class*='m-left-'] > figure.m-console-figure::before,
+.m-container-inflatable section:target [class*='m-right-'] > figure.m-code-figure::before,
+.m-container-inflatable section:target [class*='m-right-'] > figure.m-console-figure::before,
+.m-container-inflatable section:target .m-container-inflate > figure.m-code-figure::before,
+.m-container-inflatable section:target .m-container-inflate > figure.m-console-figure::before {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
 }
-.m-container-inflatable section:target > pre,
-.m-container-inflatable section:target > figure.m-code-figure > pre:first-child,
-.m-container-inflatable section:target > figure.m-console-figure > pre:first-child,
-.m-container-inflatable section:target section > pre,
-.m-container-inflatable section:target section > figure.m-code-figure > pre:first-child,
-.m-container-inflatable section:target section > figure.m-console-figure > pre:first-child {
-  border-color: var(--line-color);
+/* Center/left/right are tied to particular breakpoint so we need to
+   conditionally revert that. Left-aligned content is touching the left border
+   both in full size and aligned, so we revert it only for center and right. */
+@media screen and (min-width: 576px) {
+  .m-container-inflatable section:target .m-center-s > .m-note,
+  .m-container-inflatable section:target .m-center-s > pre,
+  .m-container-inflatable section:target .m-center-s > figure.m-code-figure > pre:first-child,
+  .m-container-inflatable section:target .m-center-s > figure.m-console-figure > pre:first-child,
+  .m-container-inflatable section:target .m-right-s > figure.m-code-figure > pre:first-child,
+  .m-container-inflatable section:target .m-right-s > figure.m-console-figure > pre:first-child {
+    /* Centers have -1rem margin on both sides *always* and pre inside figures
+       as well, don't revert that */
+    border-left-width: 0;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    padding-left: 1rem;
+  }
+  .m-container-inflatable section:target .m-center-s > .m-block,
+  .m-container-inflatable section:target .m-right-s > .m-block {
+    /* Block keep the same left border width at all times */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+  }
+  .m-container-inflatable section:target .m-center-s > .m-frame,
+  .m-container-inflatable section:target .m-right-s > .m-frame {
+    /* Frame has a thinner border */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-left-width: 0.125rem;
+    padding-left: 0.875rem;
+  }
+  .m-container-inflatable section:target .m-right-s > .m-block,
+  .m-container-inflatable section:target .m-right-s > .m-frame {
+    margin-left: 0;
+  }
+  .m-container-inflatable section:target .m-right-s > .m-note,
+  .m-container-inflatable section:target .m-right-s > pre {
+    /* Note and pre has no border */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    margin-left: 0;
+    border-left-width: 0;
+    padding-left: 1rem;
+  }
+  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
+    /* Reverting thin figure border, keeping -1rem margin */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-left-width: 0.125rem;
+  }
 }
+@media screen and (min-width: 768px) {
+  .m-container-inflatable section:target .m-center-m > .m-note,
+  .m-container-inflatable section:target .m-center-m > pre,
+  .m-container-inflatable section:target .m-center-m > figure.m-code-figure > pre:first-child,
+  .m-container-inflatable section:target .m-center-m > figure.m-console-figure > pre:first-child,
+  .m-container-inflatable section:target .m-right-m > figure.m-code-figure > pre:first-child,
+  .m-container-inflatable section:target .m-right-m > figure.m-console-figure > pre:first-child {
+    /* Centers have -1rem margin on both sides *always* and pre inside figures
+       as well, don't revert that */
+    border-left-width: 0;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    padding-left: 1rem;
+  }
+  .m-container-inflatable section:target .m-center-m > .m-block,
+  .m-container-inflatable section:target .m-right-m > .m-block {
+    /* Block keep the same left border width at all times */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+  }
+  .m-container-inflatable section:target .m-center-m > .m-frame,
+  .m-container-inflatable section:target .m-right-m > .m-frame {
+    /* Frame has a thinner border */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-left-width: 0.125rem;
+    padding-left: 0.875rem;
+  }
+  .m-container-inflatable section:target .m-right-m > .m-block,
+  .m-container-inflatable section:target .m-right-m > .m-frame {
+    margin-left: 0;
+  }
+  .m-container-inflatable section:target .m-right-m > .m-note,
+  .m-container-inflatable section:target .m-right-m > pre {
+    /* Note and pre has no border */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    margin-left: 0;
+    border-left-width: 0;
+    padding-left: 1rem;
+  }
+  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
+    /* Reverting thin figure border, keeping -1rem margin */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-left-width: 0.125rem;
+  }
+}
+@media screen and (min-width: 992px) {
+  .m-container-inflatable section:target .m-center-l > .m-note,
+  .m-container-inflatable section:target .m-center-l > pre,
+  .m-container-inflatable section:target .m-center-l > figure.m-code-figure > pre:first-child,
+  .m-container-inflatable section:target .m-center-l > figure.m-console-figure > pre:first-child,
+  .m-container-inflatable section:target .m-right-l > figure.m-code-figure > pre:first-child,
+  .m-container-inflatable section:target .m-right-l > figure.m-console-figure > pre:first-child {
+    /* Centers have -1rem margin on both sides *always* and pre inside figures
+       as well, don't revert that */
+    border-left-width: 0;
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    padding-left: 1rem;
+  }
+  .m-container-inflatable section:target .m-center-l > .m-block,
+  .m-container-inflatable section:target .m-right-l > .m-block {
+    /* Block keep the same left border width at all times */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+  }
+  .m-container-inflatable section:target .m-center-l > .m-frame,
+  .m-container-inflatable section:target .m-right-l > .m-frame {
+    /* Frame has a thinner border */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-left-width: 0.125rem;
+    padding-left: 0.875rem;
+  }
+  .m-container-inflatable section:target .m-right-l > .m-block,
+  .m-container-inflatable section:target .m-right-l > .m-frame {
+    margin-left: 0;
+  }
+  .m-container-inflatable section:target .m-right-l > .m-note,
+  .m-container-inflatable section:target .m-right-l > pre {
+    /* Note and pre has no border */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    margin-left: 0;
+    border-left-width: 0;
+    padding-left: 1rem;
+  }
+  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
+    /* Reverting thin figure border, keeping -1rem margin */
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-left-width: 0.125rem;
+  }
+}
+
+/* These have different border width/color around so we need to restrict like
+   above. */
 .m-container-inflatable section:target > figure.m-code-figure::before,
 .m-container-inflatable section:target > figure.m-console-figure::before,
-.m-container-inflatable section:target > .m-note.m-default,
 .m-container-inflatable section:target section > figure.m-code-figure::before,
 .m-container-inflatable section:target section > figure.m-console-figure::before,
-.m-container-inflatable section:target section > .m-note.m-default {
+.m-container-inflatable section:target [class*='m-center-'] > figure.m-code-figure::before,
+.m-container-inflatable section:target [class*='m-center-'] > figure.m-console-figure::before,
+.m-container-inflatable section:target [class*='m-left-'] > figure.m-code-figure::before,
+.m-container-inflatable section:target [class*='m-left-'] > figure.m-console-figure::before,
+.m-container-inflatable section:target [class*='m-right-'] > figure.m-code-figure::before,
+.m-container-inflatable section:target [class*='m-right-'] > figure.m-console-figure::before,
+.m-container-inflatable section:target .m-container-inflatable > figure.m-code-figure::before,
+.m-container-inflatable section:target .m-container-inflatable > figure.m-console-figure::before {
   border-left-color: var(--line-color);
 }
-.m-container-inflatable section:target > .m-note.m-primary,
-.m-container-inflatable section:target section > .m-note.m-primary {
-  border-left-color: var(--primary-color);
+/* Center/left/right are tied to particular breakpoint so we need to
+   conditionally revert that. Left-aligned content is touching the left border
+   both in full size and aligned, so we revert it only for center and right. */
+@media screen and (min-width: 576px) {
+  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before {
+    border-color: var(--code-background-color);
+  }
+  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
+    border-color: var(--console-background-color);
+  }
 }
-.m-container-inflatable section:target > .m-note.m-success,
-.m-container-inflatable section:target section > .m-note.m-success {
-  border-left-color: var(--success-color);
+@media screen and (min-width: 768px) {
+  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before {
+    border-color: var(--code-background-color);
+  }
+  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
+    border-color: var(--console-background-color);
+  }
 }
-.m-container-inflatable section:target > .m-note.m-warning,
-.m-container-inflatable section:target section > .m-note.m-warning {
-  border-left-color: var(--warning-color);
+@media screen and (min-width: 992px) {
+  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before {
+    border-color: var(--code-background-color);
+  }
+  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
+  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
+    border-color: var(--console-background-color);
+  }
 }
-.m-container-inflatable section:target > .m-note.m-danger,
-.m-container-inflatable section:target section > .m-note.m-danger {
-  border-left-color: var(--danger-color);
+
+/* These don't have any border otherwise, so we don't need to restrict the
+   selectors or border sides like above. */
+.m-container-inflatable section:target pre,
+.m-container-inflatable section:target figure.m-code-figure > pre:first-child,
+.m-container-inflatable section:target figure.m-console-figure > pre:first-child {
+  border-color: var(--line-color);
 }
-.m-container-inflatable section:target > .m-note.m-info,
-.m-container-inflatable section:target section > .m-note.m-info {
-  border-left-color: var(--info-color);
+.m-container-inflatable section:target .m-note.m-default {
+  border-color: var(--line-color);
 }
-.m-container-inflatable section:target > .m-note.m-dim,
-.m-container-inflatable section:target section > .m-note.m-dim {
-  border-left-color: var(--dim-color);
+.m-container-inflatable section:target .m-note.m-primary  {
+  border-color: var(--primary-color);
+}
+.m-container-inflatable section:target .m-note.m-success {
+  border-color: var(--success-color);
+}
+.m-container-inflatable section:target .m-note.m-warning {
+  border-color: var(--warning-color);
+}
+.m-container-inflatable section:target .m-note.m-danger {
+  border-color: var(--danger-color);
+}
+.m-container-inflatable section:target .m-note.m-info {
+  border-color: var(--info-color);
+}
+.m-container-inflatable section:target .m-note.m-dim {
+  border-color: var(--dim-color);
 }
 
 /* kate: indent-width 2; */

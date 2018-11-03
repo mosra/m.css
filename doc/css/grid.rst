@@ -215,7 +215,7 @@ content based on screen width. Learn by example:
       <div class="m-col-l-6 m-push-l-3 m-nopad"><div class="m-frame m-text-center">.m-col-l-6 .m-push-l-3</div></div>
     </div>
     <div class="m-row">
-      <div class="m-col-s-8 m-push-s-4 m-nopadx m-nopadt"><div class="m-frame m-text-center">.m-col-s-8 .m-push-s-4<br/>first</div></div>
+      <div class="m-col-s-8 m-push-s-4 m-nopad"><div class="m-frame m-text-center">.m-col-s-8 .m-push-s-4<br/>first</div></div>
       <div class="m-col-s-4 m-pull-s-8 m-nopadx m-nopadt"><div class="m-frame m-text-center">.m-col-s-4 .m-pull-s-8<br/>second</div></div>
     </div>
 
@@ -245,21 +245,31 @@ on tiny screens:
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
     consequat.</p>
 
-.. frame::
+.. raw:: html
 
-    .. raw:: html
+    <div class="m-col-s-6 m-center-s m-col-m-4 m-right-m">
+    <div class="m-frame m-text-center">.m-col-s-6 .m-center-s .m-col-m-4 .m-right-m</div>
+    </div>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+    consequat.</p>
 
-        <div class="m-col-s-6 m-center-s m-col-m-4 m-right-m">
-        <div class="m-note m-primary m-text-center">.m-col-s-6 .m-center-s .m-col-m-4 .m-right-m</div>
-        </div>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat.</p>
+.. container:: m-clearfix-m
+
+    ..
+
+Left-aligned floating blocks additionally have :css:`1rem` padding on the right
+and right-aligned blocks on the left. All of them have implicitly padding on bottom, except if the element is a last child. Add a :css:`.m-nopadb` class to
+them to disable bottom padding, if you want to preserve it even for a last
+child, add an empty :html:`<div></div>` element after.
 
 .. note-info::
 
     The floating works on any element, not just those that are :css:`.m-col-*`.
+    Moreover, if you'll float `components <{filename}/css/components.rst>`_
+    such as images or figures without using :css:`.m-col-*`, they will occupy
+    exactly the width of their contents without being shrunk or scaled.
 
 `Grid padding`_
 ===============
@@ -336,7 +346,7 @@ navigation on different devices.
 =========================
 
 It's usual that the content area of the page doesn't span the full 12-column
-width in order to avoid long unreadable lines. But sometimmes one might want to
+width in order to avoid long unreadable lines. But sometimes one might want to
 use the full available width --- for example to show big pictures or to fit
 many things next to each other.
 
@@ -356,7 +366,48 @@ put your nested content in elements marked with :css:`.m-container-inflate`.
 
 .. raw:: html
 
-    <div class="m-container-inflate"><div class="m-frame m-text-center">.m-container-inflate</div></div>
+    <div class="m-container-inflate">
+      <div class="m-frame m-text-center">.m-container-inflate</div>
+    </div>
+
+The :css:`.m-container-inflate` block has implicitly a :css:`1rem` padding
+after (but not on other sides and also not if it's the last child). Add a
+:css:`.m-nopadb` class to it to disable that, if you want to preserve the
+padding even for a last child, add an empty :html:`<div></div>` element after.
+
+It's also possible to tuck floating content out of the page flow by combining
+:css:`.m-left-*` with :css:`.m-container-inflate`:
+
+.. code:: html
+
+    <div class="m-container m-container-inflatable">
+      <div class="m-row">
+        <div class="m-col-l-10 m-push-l-1">
+          <div class="m-container-inflate m-col-l-6 m-right-l">
+            .m-container-inflate .m-col-l-6 .m-right-l
+          </div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id
+          elit posuere, consectetur magna congue, sagittis est. Pellentesque
+          est neque, aliquet nec consectetur in, mattis ac diam.</p>
+        </div>
+      </div>
+    </div>
+
+.. raw:: html
+
+    <div class="m-container-inflate m-col-l-6 m-right-l">
+      <div class="m-frame m-text-center">.m-container-inflate .m-col-l-6 m-right-l</div>
+    </div>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id
+    elit posuere, consectetur magna congue, sagittis est. Pellentesque
+    est neque, aliquet nec consectetur in, mattis ac diam.</p>
+
+.. note-warning::
+
+    Similarly to `pushing and pulling`_, there may be corner cases where
+    inflating of floating elements may not work. To fix that, try specifying
+    all applicable :css:`.m-col-*-10` breakpoints for the inflatable column and
+    :css:`.m-right-*` / :css:`.m-left-*` for the floating element explicitly.
 
 `Debug CSS`_
 ============
