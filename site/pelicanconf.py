@@ -158,7 +158,9 @@ THEME_STATIC_DIR = 'static'
 M_THEME_COLOR = '#22272e'
 M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&subset=latin-ext',
                'static/m-dark.css',
-              #'static/m-debug.css'
+               # enable so we see the problems right away (not present for
+               # publish)
+               'static/m-debug.css'
               ]
 #M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
                #'static/m-light.css']
