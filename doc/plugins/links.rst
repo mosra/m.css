@@ -72,12 +72,12 @@ additional CSS classes. At the moment the plugin knows only external URLs.
         .. role:: link-flat-big(link)
             :class: m-flat m-text m-big
 
-        :link-flat-big:`Look here, this is great! <http://mcss.mosra.cz>`
+        :link-flat-big:`Look here, this is great! <https://mcss.mosra.cz>`
 
     .. role:: link-flat-big(link)
         :class: m-flat m-text m-big
 
-    :link-flat-big:`Look here, this is great! <http://mcss.mosra.cz>`
+    :link-flat-big:`Look here, this is great! <https://mcss.mosra.cz>`
 
 `GitHub`_
 =========

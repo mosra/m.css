@@ -211,7 +211,7 @@ specified, the theme will use the following instead. Set
 .. code:: py
 
     M_FINE_PRINT = SITENAME + """. Powered by `Pelican <https://getpelican.com>`_
-        and `m.css <http://mcss.mosra.cz>`_."""
+        and `m.css <https://mcss.mosra.cz>`_."""
 
 If :py:`M_FINE_PRINT` is set to :py:`None` and none of :py:`M_LINKS_FOOTER1`,
 :py:`M_LINKS_FOOTER2`, :py:`M_LINKS_FOOTER3`, :py:`M_LINKS_FOOTER4` is set, the

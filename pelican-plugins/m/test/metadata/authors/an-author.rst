@@ -10,4 +10,4 @@ Author name, displayed on top of the author page
     `Link to the author. <{author}an-author>`_
 
 Contents of author details, displayed on top of the author page.
-`Link. <http://mcss.mosra.cz>`_
+`Link. <https://mcss.mosra.cz>`_

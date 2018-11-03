@@ -8,4 +8,4 @@ A category name, displayed on top of the category badge/details
     `Link to the category. <{category}a-category>`_
 
 Contents of category details, displayed on top of the category page.
-`Link. <http://mcss.mosra.cz>`_
+`Link. <https://mcss.mosra.cz>`_
