@@ -1100,6 +1100,17 @@ pre.m-code.m-inverted > span.hll {
   border-color: transparent;
 }
 
+/* Code color swatch */
+.m-code-color {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  vertical-align: -0.05rem;
+  margin-left: 0.2rem;
+  margin-right: 0.1rem;
+  border-radius: 0.1rem;
+}
+
 /* Math block, math figure, inline math, math inside buttons because I am
    crazy */
 div.m-math {

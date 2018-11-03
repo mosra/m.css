@@ -1346,6 +1346,15 @@ pre.m-code.m-inverted > span.hll {
   background-color: transparent;
   border-color: transparent;
 }
+.m-code-color {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  vertical-align: -0.05rem;
+  margin-left: 0.2rem;
+  margin-right: 0.1rem;
+  border-radius: 0.1rem;
+}
 div.m-math {
   overflow-x: auto;
   overflow-y: hidden;

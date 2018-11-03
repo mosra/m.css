@@ -883,6 +883,28 @@ instead of :html:`<pre>`:
     :abbr:`reST <reStructuredText>` directive and a :rst:`:code:` inline text
     role.
 
+`Color swatches in code snippets`_
+----------------------------------
+
+For code dealing with colors it might be useful to show the actual color that's
+being represented by a hexadecimal literal, for example. In the below snippet,
+:html:`<span class="m-code-color" style="background-color: #3bd267;"></span>`
+is added next to the literal, showing a colored square:
+
+.. code-figure::
+
+    .. code:: html
+
+        <pre class="m-code"><span class="p">.</span><span class="nc">success</span> <span class="p">{</span>
+          <span class="k">color</span><span class="p">:</span> <span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span>
+        <span class="p">}</span></pre>
+
+    .. raw:: html
+
+        <pre class="m-code"><span class="p">.</span><span class="nc">success</span> <span class="p">{</span>
+          <span class="k">color</span><span class="p">:</span> <span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span>
+        <span class="p">}</span></pre>
+
 `Colored terminal output`_
 --------------------------
 
