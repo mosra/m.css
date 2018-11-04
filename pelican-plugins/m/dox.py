@@ -36,10 +36,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-symbol_mapping = {}
-symbol_prefixes = ['']
-tagfile_basenames = []
-
 # Modified from __init__ to add support for queries and hashes
 link_regexp = re.compile(r'(?P<title>.*) <(?P<link>[^?#]+)(?P<hash>[?#].+)?>')
 
@@ -59,7 +55,11 @@ def init(pelicanobj):
 
     tagfiles = pelicanobj.settings.get('M_DOX_TAGFILES', [])
 
-    # Pre-round to populate subclasses
+    # Pre-round to populate subclasses. Clear everything in case we init'd
+    # before already.
+    tagfile_basenames = []
+    symbol_mapping = {}
+    symbol_prefixes = ['']
 
     for tagfile, path, prefixes in tagfiles:
         tagfile_basenames += [(os.path.splitext(os.path.basename(tagfile))[0], path)]
