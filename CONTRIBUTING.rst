@@ -70,7 +70,7 @@ http://localhost:8000.
 .. code:: sh
 
     cd site
-    make devserver
+    pelican -Dlr
 
 Publishing the website with ``make publish`` depends on a few patches that are
 not in any stable Pelican release yet (most importantly
