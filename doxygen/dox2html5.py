@@ -610,6 +610,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <mcss:div>
         # - <formula> (if block)
         # - <programlisting> (if block)
+        # - <htmlonly> (if block, which is ATM always)
         #
         # <parameterlist> and <simplesect kind="return"> are extracted out of
         # the text flow, so these are removed from this check.
@@ -628,7 +629,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'dot', 'dotfile', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
+            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'dot', 'dotfile', 'table', '{http://mcss.mosra.cz/doxygen/}div', 'htmlonly']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -1110,6 +1111,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'hruler':
             assert element.tag == 'para' # is inside a paragraph :/
             out.parsed += '<hr/>'
+
+        elif i.tag == 'htmlonly':
+            # The @htmlonly command has a block version, which is able to get
+            # rid of the wrapping paragraph. But @htmlonly is not exposed to
+            # XML. Only @htmlinclude is exposed in XML and that one is always
+            # wrapped in a paragraph. I need to submit another patch to make it
+            # less freaking insane. I guess.
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
+            if i.text: out.parsed += i.text
 
         # Custom <div> with CSS classes (for making dim notes etc)
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}div':

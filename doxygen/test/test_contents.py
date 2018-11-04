@@ -378,3 +378,15 @@ class Dot(IntegrationTestCase):
     def test_warnings(self):
         self.run_dox2html5(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+
+class Htmlinclude(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'htmlinclude', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+    def test_warnings(self):
+        self.run_dox2html5(wildcard='warnings.xml')
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))
