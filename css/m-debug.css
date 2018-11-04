@@ -53,9 +53,11 @@
 /* m-scroll can't be applied to tables, as it doesn't go well with m-fullwidth */
 table.m-scroll, table.m-scroll *,
 
-/* Grid column can't be also m-note, m-block or m-frame as the margin would
+/* Grid column can't be also m-note, m-block or m-frame ... as the margin would
    break things */
 [class*='m-col-'].m-note, [class*='m-col-'].m-block, [class*='m-col-'].m-frame,
+[class*='m-col-'].m-image, [class*='m-col-'].m-imagegrid, pre[class*='m-col-'],
+[class*='m-col-'].m-code, [class*='m-col-'].m-figure, [class*='m-col-'].m-code-figure,
 
 /* It's ugly to have something styled as two different things so it's illegal */
 .m-block.m-note, .m-block.m-text, .m-note.m-frame, .m-note.m-text, .m-frame.m-text,
