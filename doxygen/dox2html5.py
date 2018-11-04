@@ -775,7 +775,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.parsed += '<h{0}>{1}</h{0}>'.format(h_tag_level, html.escape(i.text))
 
         elif i.tag == 'parblock':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<div{}>{}</div>'.format(
                 ' class="{}"'.format(add_css_class) if add_css_class else '',
@@ -836,12 +836,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert not parsed.section
 
         elif i.tag == 'blockquote':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<blockquote>{}</blockquote>'.format(parse_desc(state, i))
 
         elif i.tag in ['itemizedlist', 'orderedlist']:
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             tag = 'ul' if i.tag == 'itemizedlist' else 'ol'
             out.parsed += '<{}{}>'.format(tag,
@@ -859,7 +859,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'table':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<table class="m-table{}">'.format(
                 ' ' + add_css_class if add_css_class else '')
@@ -1028,7 +1028,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.templates[name.text] = description
 
         elif i.tag == 'variablelist':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<dl class="m-dox">'
 
@@ -1042,13 +1042,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</dl>'
 
         elif i.tag in ['verbatim', 'preformatted']:
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<pre>{}</pre>'.format(html.escape(i.text or ''))
 
         elif i.tag == 'image':
-            # can be in <para> but often also in <div> and other m.css-specific
-            # elements
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
 
             name = i.attrib['name']
@@ -1075,8 +1074,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         ' ' + add_css_class if add_css_class else '', name, sizespec)
 
         elif i.tag in ['dot', 'dotfile']:
-            # can be in <para> but often also in <div> and other m.css-specific
-            # elements
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
 
             # Why the heck can't it just read the file and paste it into the
@@ -1163,7 +1161,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Either block or inline
         elif i.tag == 'programlisting':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
 
             # We should have decided about block/inline above
             assert code_block is not None
@@ -1272,7 +1270,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Either block or inline
         elif i.tag == 'formula':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
 
             logging.debug("{}: rendering math: {}".format(state.current, i.text))
 
