@@ -1085,7 +1085,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     with open(i.attrib['name'], 'r') as f:
                         source = f.read()
                 else:
-                    logging.warning("{}: file passed to @dotfile was not found, rendering an empty graph")
+                    logging.warning("{}: file passed to @dotfile was not found, rendering an empty graph".format(state.current))
                     source = 'digraph "" {}'
                 caption = i.text
             else:
