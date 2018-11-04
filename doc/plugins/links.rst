@@ -236,14 +236,15 @@ Download the `m/dox.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.dox` package to your plugins in ``pelicanconf.py``. The plugin uses
 Doxygen tag files to get a list of linkable symbols and you need to provide
-list of 3-tuples containing tag file path, URL prefix and list of implicitly
-prepended namespaces in :py:`M_DOX_TAGFILES` configuration to make the plugin
-work. Example configuration:
+list of tuples containing tag file path, URL prefix and an optional list of
+implicitly prepended namespaces in :py:`M_DOX_TAGFILES` configuration to make
+the plugin work. Example configuration:
 
 .. code:: python
 
     PLUGINS += ['m.dox']
     M_DOX_TAGFILES = [
+        ('doxygen/stl.tag', 'https://en.cppreference.com/w/'),
         ('doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::']),
         ('doxygen/magnum.tag', 'https://doc.magnum.graphics/magnum/', ['Magnum::'])]
 
@@ -292,6 +293,20 @@ and adding the :rst:`:class:` option.
     -   :dox:`Link to documentation index page <corrade>`
     -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
     -   Flat link: :dox-flat:`plugin-management`
+
+It's also possible to add custom CSS classes via a fourth tuple item. For
+example, to make the links consistent with the Doxygen theme (where
+documentation links are not underscored, internal doxygen links are bold and
+external not), you could do this:
+
+.. code:: python
+
+    PLUGINS += ['m.dox']
+    M_DOX_TAGFILES = [
+        ('doxygen/stl.tag', 'https://en.cppreference.com/w/', [],
+            ['m-flat']),
+        ('doxygen/your-lib.tag', 'https://doc.your-lib.com/', ['YourLib::'],
+            ['m-flat', 'm-text', 'm-strong'])]
 
 .. note-success::
 

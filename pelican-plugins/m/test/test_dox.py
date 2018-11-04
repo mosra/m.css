@@ -36,3 +36,12 @@ class Dox(PluginTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
+
+    def test_css_classes(self):
+        self.run_pelican({
+            'PLUGINS': ['m.htmlsanity', 'm.dox'],
+            'M_DOX_TAGFILES': [
+                ('../doc/doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'], ['m-flat', 'm-text', 'm-strong'])]
+        })
+
+        self.assertEqual(*self.actual_expected_contents('page.html', 'page_css_classes.html'))
