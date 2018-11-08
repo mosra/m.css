@@ -78,11 +78,14 @@ def can_apply_typography(txtnode):
     #  - raw code (such as SVG)
     #  - field names
     #  - bibliographic elements (author, date, ... fields)
+    #  - links with title that's the same as URL (or e-mail)
     if isinstance(txtnode.parent, nodes.literal) or \
        isinstance(txtnode.parent.parent, nodes.literal) or \
        isinstance(txtnode.parent, nodes.raw) or \
        isinstance(txtnode.parent, nodes.field_name) or \
-       isinstance(txtnode.parent, nodes.Bibliographic):
+       isinstance(txtnode.parent, nodes.Bibliographic) or \
+       (isinstance(txtnode.parent, nodes.reference) and
+            (txtnode.astext() == txtnode.parent.get('refuri', '') or 'mailto:' + txtnode.astext() == txtnode.parent.get('refuri', ''))):
         return False
 
     # From fields include only the ones that are in FORMATTED_FIELDS
@@ -196,7 +199,10 @@ class Pyphen(Transform):
 
             for txtnode in node.traverse(nodes.Text):
                 if not can_apply_typography(txtnode): continue
-                # Don't hyphenate document title
+
+                # Don't hyphenate document title. Not part of
+                # can_apply_typography() because we *do* want smart quotes for
+                # a document title.
                 if isinstance(txtnode.parent, nodes.title): continue
 
                 # Useful for debugging, don't remove ;)

@@ -58,7 +58,7 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
     M_HTMLSANITY_SMART_QUOTES = True
     M_HTMLSANITY_HYPHENATION = True
 
-Hyphenation (see below) requires the `Pyphen <http://pyphen.org/>`_ library,
+Hyphenation (see below) requires the `Pyphen <https://pyphen.org/>`_ library,
 either install it via ``pip`` or your distribution package manager or disable
 it with the above setting.
 
@@ -164,11 +164,12 @@ implementing that feature. Lack of word wrap is visible especially on narrow
 screens of mobile devices, where there is just way too much blank space because
 of long words being wrapped on new lines.
 
-The hyphenation is done using `Pyphen <http://pyphen.org/>`_ and is applied to
+The hyphenation is done using `Pyphen <https://pyphen.org/>`_ and is applied to
 whole document contents and fields that are included in the :py:`FORMATTED_FIELDS`.
 All other fields including document title are excluded from hyphenation, the
-same goes for literal and raw blocks. You can see it in practice in the
-following convoluted example, it's also language-aware:
+same goes for literal and raw blocks and links with URL (or e-mail) as a title.
+You can see it in practice in the following convoluted example, it's also
+language-aware:
 
 .. code-figure::
 
@@ -302,8 +303,8 @@ with a formatter that makes use of `urljoin <https://docs.python.org/3/library/u
 so it does the right thing also when dealing with absolute URLs and even when
 they start with just ``//``.
 
-For example, if :py:`SITEURL` is :py:`'http://your.site'` and you apply
-``format_siteurl`` to :py:`'about/'`, then you get ``http://your.site/about/``;
+For example, if :py:`SITEURL` is :py:`'https://your.site'` and you apply
+``format_siteurl`` to :py:`'about/'`, then you get ``https://your.site/about/``;
 but if you apply it to :py:`'https://github.com/mosra/m.css'`, then you get
 just ``https://github.com/mosra/m.css``.
 

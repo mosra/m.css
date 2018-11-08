@@ -211,7 +211,7 @@ specified, the theme will use the following instead. Set
 .. code:: py
 
     M_FINE_PRINT = SITENAME + """. Powered by `Pelican <https://getpelican.com>`_
-        and `m.css <http://mcss.mosra.cz>`_."""
+        and `m.css <https://mcss.mosra.cz>`_."""
 
 If :py:`M_FINE_PRINT` is set to :py:`None` and none of :py:`M_LINKS_FOOTER1`,
 :py:`M_LINKS_FOOTER2`, :py:`M_LINKS_FOOTER3`, :py:`M_LINKS_FOOTER4` is set, the
@@ -285,12 +285,12 @@ Example configuration to give sane defaults to all social meta tags:
 .. code:: py
 
     M_BLOG_NAME = "Your Brand Blog"
-    M_BLOG_URL = 'http://blog.your.brand/'
+    M_BLOG_URL = 'https://blog.your.brand/'
     M_BLOG_DESCRIPTION = "Your Brand is the brand that provides all that\'s needed."
 
     M_SOCIAL_TWITTER_SITE = '@your.brand'
     M_SOCIAL_TWITTER_SITE_ID = 1234567890
-    M_SOCIAL_IMAGE = 'http://your.brand/static/site.png'
+    M_SOCIAL_IMAGE = 'https://your.brand/static/site.png'
     M_SOCIAL_BLOG_SUMMARY = "This is the brand you need"
 
 .. _global-site-image:
@@ -337,11 +337,15 @@ Pages can override which menu item in the `top navbar`_ will be highlighted
 by specifying the corresponding menu item slug in the :rst:`:highlight:` field.
 If the field is not present, page's own slug is used instead.
 
-`Extra CSS`_
-------------
+`Extending HTML \<head\>`_
+--------------------------
 
 The :rst:`:css:` field can be used to link additional CSS files in page header.
-Put one URL per line, internal link targets are expanded. Example:
+Put one URL per line, internal link targets are expanded. Similarly :rst:`:js:`
+can be used to link JavaScript files. Besides that, the :rst:`:html_header:`
+field can be used to put arbitrary HTML at the end of the :html:`<head>`
+element. Indenting the lines is possible by putting an escaped space in front
+(the backslash and the escaped space itself won't get inserted). Example:
 
 .. code:: rst
 
@@ -351,6 +355,15 @@ Put one URL per line, internal link targets are expanded. Example:
     :css:
         {filename}/static/webgl.css
         {filename}/static/canvas-controls.css
+    :js:
+        {filename}/static/showcase.js
+    :html_header:
+        <script>
+        \   function handleDrop(event) {
+        \     event.preventDefault();
+        \     ...
+        \   }
+        </script>
 
 `Breadcrumb navigation`_
 ------------------------
@@ -453,7 +466,7 @@ for details about how the cover image affects page layout.
 .. note-info::
 
     Real-world example of a page with cover image can be seen on the
-    `Magnum Engine website <http://magnum.graphics/features/extensions/>`_.
+    `Magnum Engine website <https://magnum.graphics/features/extensions/>`_.
 
 `Page header and footer`_
 -------------------------
@@ -516,7 +529,7 @@ of articles shown. Example configuration:
 .. note-success::
 
     You can see how this block looks on the Magnum Engine main page:
-    http://magnum.graphics
+    https://magnum.graphics
 
 `(Social) meta tags for pages`_
 -------------------------------
@@ -797,6 +810,52 @@ Index, archive and all category/tag/author pages are paginated based on the
 :py:`DEFAULT_PAGINATION` setting --- on the bottom of each page there are link
 to prev and next page, besides that there's :html:`<link rel="prev">` and
 :html:`<link rel="next">` that provides the same as a hint to search engines.
+
+`Pass-through pages`_
+=====================
+
+Besides `pages`_, `articles`_ and `pre-defined pages`_ explained above, where
+the content is always wrapped with the navbar on top and the footer bottom,
+it's possible to have pages with fully custom markup --- for example various
+presentation slides, demos etc. To do that, set the :rst:`:template:` metadata
+to ``passthrough``. While it works with :abbr:`reST <reStructuredText>`
+sources, this is best combined with raw HTML input. Pelican will copy the
+contents of the :html:`<body>` tag verbatim and use contents of the
+:html:`<title>` element for a page title, put again in the :html:`<title>`
+(*not* as a :html:`<h1>` inside :html:`<body>`). Besides that, you can specify
+additional metadata using the :html:`<meta name="key" content="value" />` tags:
+
+-   :html:`<meta name="template" content="passthrough" />` needs to be always
+    present in order to make Pelican use the passthrough template.
+-   :html:`<meta name="css" />`, :html:`<meta name="js" />` and
+    :html:`<meta name="html_header" />` specify additional CSS files,
+    JavaScript files and arbitrary HTML, similarly as with normal pages. The
+    ``content`` can be multiple lines, empty lines are discarded for CSS and JS
+    references. Be sure to properly escape everything.
+-   :html:`<meta name="class" />` can be used to add a CSS class to the
+    top-level :html:`<html>` element
+-   All usual Pelican metadata like ``url``, ``slug`` etc. work here as well.
+
+Note that at the moment, the pass-through pages do not insert any of the
+(social) meta tags. Example of an *input* file for a pass-through page:
+
+.. code:: html
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <title>WebGL Demo Page</title>
+      <meta name="template" content="passthrough" />
+      <meta name="css" content="
+        m-dark.css
+        https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i
+        " />
+      <meta name="js" content="webgl-demo.js" />
+    </head>
+    <body>
+    <!-- the actual page body -->
+    </body>
+    </html>
 
 `Theme properties`_
 ===================

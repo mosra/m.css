@@ -98,7 +98,7 @@ subdirectory with a ``.rst`` extension. For this example that would be
     :summary: This article has a cool summary.
 
     This article has not only cool summary, but also has cool contents. Lorem?
-    *Ipsum.* `Hi, google! <http://google.com>`_
+    *Ipsum.* `Hi, google! <https://google.com>`_
 
 If you did everything right, the auto-reload script should pick the file up and
 process it (check the console output). Then it's just a matter of refreshing

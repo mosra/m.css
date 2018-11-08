@@ -27,9 +27,9 @@ Colors:
     a -> b [class="m-warning" label="yes"]
     b -> b [class="m-primary" label="no"]
 
-Unoriented graph:
+Unoriented graph without a title:
 
-.. graph:: A to B
+.. graph::
     :class: m-success
 
     a -- b
@@ -54,3 +54,25 @@ Structs:
     struct [label="{ a | b | { c | d | e }}" shape=record class="m-info"]
 
     another [label="a | { b | c } | d | e" shape=record]
+
+.. graph-figure:: This is a title.
+
+    .. digraph:: A to B
+        :class: m-info
+
+        a -> b
+
+    This is a description.
+
+.. graph-figure::
+
+    .. digraph::
+
+        a -> b
+
+    The graph below should not be styled as a part of the figure:
+
+    .. digraph:: A to B
+        :class: m-danger
+
+        a -> b

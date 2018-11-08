@@ -158,7 +158,9 @@ THEME_STATIC_DIR = 'static'
 M_THEME_COLOR = '#22272e'
 M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&subset=latin-ext',
                'static/m-dark.css',
-              #'static/m-debug.css'
+               # enable so we see the problems right away (not present for
+               # publish)
+               'static/m-debug.css'
               ]
 #M_CSS_FILES = ['https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600',
                #'static/m-light.css']
@@ -168,7 +170,7 @@ FORMATTED_FIELDS = ['summary', 'landing', 'header', 'footer', 'description', 'ba
 M_HTMLSANITY_SMART_QUOTES = True
 M_HTMLSANITY_HYPHENATION = True
 M_DOX_TAGFILES = [
-    ('../doc/doxygen/corrade.tag', 'http://doc.magnum.graphics/corrade/', ['Corrade::'])]
+    ('../doc/doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'])]
 
 if not shutil.which('latex'):
     logging.warning("LaTeX not found, fallback to rendering math as code")

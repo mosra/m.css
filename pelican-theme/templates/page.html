@@ -55,6 +55,18 @@
   <meta property="og:type" content="page" />
 {% endblock %}
 
+{% block extra %}
+  {% if page.js %}
+  {% set scripts = page.js.strip().split('\n') %}
+  {% for script in scripts %}
+  <script src="{{ script|expand_link(page)|e }}"></script>
+  {% endfor %}
+  {% endif %}
+  {% if page.html_header %}
+  {{ page.html_header|indent(2) }}
+  {% endif %}
+{% endblock %}
+
 {% block main %}
 {% if not page.landing %}
 {% if page.cover %}

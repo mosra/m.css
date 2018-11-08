@@ -199,7 +199,7 @@ The plugin produces SVG graphcs that make use of the
 --------------------
 
 The :rst:`.. digraph::` directive uses the ``dot`` tool to produce directed
-graphs. The required directive argument is graph title, contents is whatever
+graphs. The optional directive argument is graph title, contents is whatever
 you would put inside the :dot:`digraph` block. Use the :rst:`:class:` to
 specify a `CSS color class <{filename}/css/components.rst#colors>`_ for the
 whole graph, it's also possible to color particular nodes and edges using the
@@ -240,8 +240,8 @@ whole graph, it's also possible to color particular nodes and edges using the
         S₂ -> S₂ [label="1"]
 
 For more information check the official
-`GraphViz Reference <http://www.graphviz.org/doc/info/>`_, in particular the
-extensive `attribute documentation <http://www.graphviz.org/doc/info/attrs.html>`_.
+`GraphViz Reference <https://www.graphviz.org/doc/info/>`_, in particular the
+extensive `attribute documentation <https://www.graphviz.org/doc/info/attrs.html>`_.
 
 .. note-warning::
 
@@ -283,3 +283,40 @@ equivalent to :dot:`graph` and :dot:`strict graph` in the DOT language:
 
         0 -- 1 -- 2 -- 3 -- 4 -- 0 -- 2 -- 4 --1
         3 [style=filled]
+
+`Graph figure`_
+---------------
+
+See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
+plugin for details about graph figures using the :rst:`.. graph-figure::`
+directive.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. graph-figure:: Impenetrable logic
+
+            .. digraph::
+
+                rankdir=LR
+                yes [shape=circle, class="m-primary", style=filled]
+                no [shape=circle, class="m-primary"]
+                yes -> no [label="no", class="m-primary"]
+                no -> no [label="no"]
+
+            No.
+
+    .. graph-figure:: Impenetrable logic
+
+        .. digraph::
+
+            rankdir=LR
+            yes [shape=circle, class="m-primary", style=filled]
+            no [shape=circle, class="m-primary"]
+            yes -> no [label="no", class="m-primary"]
+            no -> no [label="no"]
+
+        .. class:: m-noindent
+
+        No.

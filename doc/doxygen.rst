@@ -46,12 +46,12 @@ Doxygen theme
     :language: sh
 
 A modern, mobile-friendly drop-in replacement for the stock
-`Doxygen <http://www.doxygen.org>`_ HTML output, with a first-class search
+`Doxygen <https://www.doxygen.org>`_ HTML output, with a first-class search
 functionality. Generated from Doxygen-produced XML files, filenames and URLs
 are fully compatible with the stock output to avoid broken links once you
 switch.
 
-.. button-success:: http://doc.magnum.graphics
+.. button-success:: https://doc.magnum.graphics
 
     Live demo
 
@@ -147,6 +147,9 @@ If you see something unexpected or not see something expected, check the
 -   Math rendered as embedded SVG instead of raster images / MathJax. The
     supported feature set is equivalent to the `m.math Pelican plugin <{filename}/plugins/math-and-code.rst#math>`_,
     see its documentation for more information.
+-   Graphviz / Dot diagrams rendered as embedded SVG. The supported feature set
+    is equivalent to the `m.dot Pelican plugin <{filename}/plugins/plots-and-graphs.rst#graphs>`_,
+    see its documentation for more information.
 -   Uses Pygments for better code highlighting. The supported feature set is
     equivalent to the `m.code Pelican plugin <{filename}/plugins/math-and-code.rst#code>`_,
     see its documentation for more information.
@@ -165,7 +168,7 @@ If you see something unexpected or not see something expected, check the
 
     If you want to know more, the search functionality implementation and
     features are detailed
-    `in this blog post <http://blog.magnum.graphics/meta/implementing-a-fast-doxygen-search/>`_.
+    `in this blog post <https://blog.magnum.graphics/meta/implementing-a-fast-doxygen-search/>`_.
 
 `Important differences to stock HTML output`_
 ---------------------------------------------
@@ -280,6 +283,15 @@ Variable                        Description
                                 searched relative to the Doxyfile base dir and
                                 to the ``dox2html5.py`` script dir as a
                                 fallback.
+:ini:`DOT_FONTNAME`             Font name to use for ``@dot`` and ``@dotfile``
+                                commands. To ensure consistent look with the
+                                default m.css themes, set it to
+                                ``Source Sans Pro``. Doxygen default is
+                                ``Helvetica``.
+:ini:`DOT_FONTSIZE`             Font size to use for ``@dot`` and ``@dotfile``
+                                commands. To ensure consistent look with the
+                                default m.css themes, set it to ``16``.
+                                Doxygen default is ``10``.
 =============================== ===============================================
 
 In addition, the m.css Doxygen theme recognizes the following extra options:
@@ -304,6 +316,11 @@ Variable                            Description
                                     `Navbar links`_ for more information.
 :ini:`M_LINKS_NAVBAR2`              Right navbar column links. See
                                     `Navbar links`_ for more information.
+:ini:`M_MAIN_PROJECT_URL`           If set and :ini:`PROJECT_BRIEF` is also
+                                    set, then :ini:`PROJECT_NAME` in the top
+                                    navbar will link to this URL and
+                                    :ini:`PROJECT_BRIEF` into the documentation
+                                    main page, similarly as `shown here <{filename}/css/page-layout.rst#link-back-to-main-site-from-a-subsite>`_.
 :ini:`M_HTML_HEADER`                HTML code to put at the end of the
                                     :html:`<head>` element. Useful for linking
                                     arbitrary JavaScript code or, for example,
@@ -587,6 +604,13 @@ as well:
     @image image.png width=250px
     */
 
+`Dot graphs`_
+-------------
+
+Grapviz ``dot`` graphs from the ``@dot`` and ``@dotfile`` commands are rendered
+as an inline SVG. Graph name and the ``sizespec`` works equivalently to the
+`Images and figures`_.
+
 `Pages, sections and table of contents`_
 ----------------------------------------
 
@@ -853,13 +877,13 @@ rendered HTML output:
     .. code:: c++
 
         /**
-        @m_class{m-note m-dim m-text-center}
+        @m_class{m-note m-dim m-text-center} @parblock
         This block is rendered in a dim note.
 
         Centered.
-        @parblock
+        @endparblock
 
-        @m_div{m-button m-primary} <a href="http://doc.magnum.graphics/">@m_div{m-big}See
+        @m_div{m-button m-primary} <a href="https://doc.magnum.graphics/">@m_div{m-big}See
         it live! @m_enddiv @m_div{m-small} uses the m.css theme @m_enddiv </a> @m_enddiv
 
         This text contains a @span{m-text m-success} green @endspan word.
@@ -872,7 +896,7 @@ rendered HTML output:
 
         Centered.
 
-    .. button-primary:: http://doc.magnum.graphics
+    .. button-primary:: https://doc.magnum.graphics
 
         See it live!
 

@@ -27,7 +27,7 @@ import sys
 sys.path.append(os.curdir)
 from pelicanconf import *
 
-SITEURL = 'http://mcss.mosra.cz'
+SITEURL = 'https://mcss.mosra.cz'
 
 OUTPUT_PATH = 'published/'
 DELETE_OUTPUT_DIRECTORY = True

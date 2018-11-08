@@ -28,7 +28,6 @@ from pygments.token import Keyword, Name, Comment, String, Error, \
     Whitespace
 
 class DarkStyle(Style):
-
     background_color = None
     highlight_color = '#34424d'
     default_style = ""
@@ -57,5 +56,10 @@ class DarkStyle(Style):
         Operator.Word:          'bold #dcdcdc',
         Generic.Heading:        'bold #ffffff',
         Generic.Emph:           'italic #e6e6e6',
-        Generic.Strong:         'bold #e6e6e6'
+        Generic.Strong:         'bold #e6e6e6',
+
+        # Diffs
+        Generic.Subheading:     '#5b9dd9',
+        Generic.Inserted:       '#3bd267',
+        Generic.Deleted:        '#cd3431'
     }

@@ -42,3 +42,25 @@ Formulas :math:`a^2` in big text are big.
 .. class:: m-text m-small
 
 Formulas :math:`a^2` in small text are small.
+
+.. math-figure:: This is a title.
+
+    .. math::
+        :class: m-info
+
+        a^2 + b^2 = c^2
+
+    This is a description.
+
+.. math-figure::
+
+    .. math::
+
+        a^2 + b^2 = c^2
+
+    The math below should not be styled as a part of the figure:
+
+    .. math::
+        :class: m-danger
+
+        a^2 + b^2 = c^2

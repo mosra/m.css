@@ -15,7 +15,7 @@ Code contribution
 =================
 
 -   Setting up and using m.css for your own project is described in the
-    `documentation <http://mcss.mosra.cz/>`_.
+    `documentation <https://mcss.mosra.cz/>`_.
 -   Documentation and the website is essential part of the project and every
     larger Pelican theme, plugin code or CSS contribution should be reflected
     there. Documentation and website content is written in reStructuredText and
@@ -70,7 +70,7 @@ http://localhost:8000.
 .. code:: sh
 
     cd site
-    make devserver
+    pelican -Dlr
 
 Publishing the website with ``make publish`` depends on a few patches that are
 not in any stable Pelican release yet (most importantly
@@ -125,12 +125,12 @@ case of Doxygen, comment-out the line that removes the ``html`` directory in
 The project is built on Travis CI on Linux with Python 3.4, 3.5 and 3.6;
 Doxygen theme is tested only on 3.6 and math rendering is disabled as it's
 impossible to get it working on the old Ubuntu 14.04 LTS. Build status is over
-at http://mcss.mosra.cz/build-status/.
+at https://mcss.mosra.cz/build-status/.
 
 Contact
 =======
 
--   Website --- http://mcss.mosra.cz
+-   Website --- https://mcss.mosra.cz
 -   GitHub --- https://github.com/mosra/m.css
 -   Gitter --- https://gitter.im/mosra/m.css
 -   Twitter --- https://twitter.com/czmosra

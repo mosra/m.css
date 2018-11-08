@@ -75,7 +75,7 @@ is below:
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?Source+Sans+Pro:400,400i,600,600i%7Cfamily=Source+Code+Pro:400,400i,600" />
     <meta name="theme-color" content="#22272e" />
 
-This theme is used on this site and also on http://magnum.graphics.
+This theme is used on this site and also on https://magnum.graphics.
 
 `Light`_
 ========

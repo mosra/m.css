@@ -42,7 +42,7 @@ class Math(PluginTestCase):
                          "The math plugin requires at least Python 3.5 and LaTeX installed")
     def test(self):
         self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.math'],
+            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.math'],
             'M_MATH_CACHE_FILE': None
         })
 

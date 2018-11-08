@@ -163,25 +163,51 @@ class Frame(rst.Directive):
                                 topic_node)
         return [topic_node]
 
-class CodeFigure(rst.Directive):
+class _Figure(rst.Directive):
+    final_argument_whitespace = True
     has_content = True
+    optional_arguments = 1
     option_spec = {'class': directives.class_option}
 
-    style_class = 'm-code-figure'
+    style_classes = []
 
     def run(self):
         set_classes(self.options)
 
         text = '\n'.join(self.content)
         figure_node = nodes.figure(text, **self.options)
-        figure_node['classes'] += [self.style_class]
+        figure_node['classes'] += self.style_classes
 
         self.state.nested_parse(self.content, self.content_offset,
                                 figure_node)
+
+        # Insert the title node, if any, right after the code / math / graph.
+        # There could be things like the class directive before, so be sure to
+        # find the right node.
+        if len(self.arguments) == 1:
+            title_text = self.arguments[0]
+            title_nodes, _ = self.state.inline_text(title_text, self.lineno)
+            title_node = nodes.caption('', '', *title_nodes)
+
+            for i, child in enumerate(figure_node):
+                if isinstance(child, nodes.raw) or isinstance(child, nodes.literal_block):
+                    figure_node.insert(i + 1, title_node)
+                    break
+            else: assert False # pragma: no cover
+
         return [figure_node]
 
+class CodeFigure(_Figure):
+    style_classes = ['m-code-figure']
+
 class ConsoleFigure(CodeFigure):
-    style_class = 'm-console-figure'
+    style_classes = ['m-console-figure']
+
+class MathFigure(_Figure):
+    style_classes = ['m-figure']
+
+class GraphFigure(_Figure):
+    style_classes = ['m-figure']
 
 class Text(rst.Directive):
     has_content = True
@@ -363,6 +389,8 @@ def register():
     rst.directives.register_directive('frame', Frame)
     rst.directives.register_directive('code-figure', CodeFigure)
     rst.directives.register_directive('console-figure', ConsoleFigure)
+    rst.directives.register_directive('math-figure', MathFigure)
+    rst.directives.register_directive('graph-figure', GraphFigure)
 
     rst.directives.register_directive('text-default', DefaultText)
     rst.directives.register_directive('text-primary', PrimaryText)

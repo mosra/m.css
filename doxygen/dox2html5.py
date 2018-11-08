@@ -50,6 +50,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pelican-plugins'))
+import dot2svg
 import latex2svg
 import latex2svgextra
 import ansilexer
@@ -542,6 +543,51 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert not out.write_paragraph_close_tag
             out.parsed = out.parsed.rstrip() + '</aside>'
 
+        # Decide if a formula / code snippet is a block or not
+        # <formula> can be both, depending on what's inside
+        if i.tag == 'formula':
+            if i.text.startswith('$') and i.text.endswith('$'):
+                formula_block = False
+            else:
+                formula_block = True
+
+        # <programlisting> is autodetected to be either block or inline
+        elif i.tag == 'programlisting':
+            element_children_count = len([listing for listing in element])
+
+            # If it seems to be a standalone code paragraph, don't wrap it
+            # in <p> and use <pre>:
+            if (
+                # It's either alone in the paragraph, with no text or other
+                # elements around, or
+                ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and element_children_count == 1) or
+
+                # is a code snippet, i.e. filename instead of just .ext
+                # (Doxygen unfortunately doesn't put @snippet in its own
+                # paragraph even if it's separated by blank lines. It does
+                # so for @include and related, though.)
+                ('filename' in i.attrib and not i.attrib['filename'].startswith('.')) or
+
+                # or is code right after a note/attention/... section,
+                # there's no text after and it's the last thing in the
+                # paragraph (Doxygen ALSO doesn't separate end of a section
+                # and begin of a code block by a paragraph even if there is
+                # a blank line. But it does so for xrefitems such as @todo.
+                # I don't even.)
+                (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
+            ):
+                code_block = True
+
+            # Looks like inline code, but has multiple code lines, so it's
+            # suspicious. Use code block, but warn.
+            elif len([codeline for codeline in i]) > 1:
+                code_block = True
+                logging.warning("{}: inline code has multiple lines, fallback to a code block".format(state.current))
+
+            # Otherwise wrap it in <p> and use <code>
+            else:
+                code_block = False
+
         # DOXYGEN <PARA> PATCHING 2/4
         #
         # Upon encountering a block element nested in <para>, we need to act.
@@ -560,10 +606,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # - <verbatim>, <preformatted> (those are the same thing!)
         # - <parblock> (a weird grouping thing that we abuse for <div>s)
         # - <variablelist>, <itemizedlist>, <orderedlist>
-        # - <image>, <table>
+        # - <image>, <dot>, <dotfile>, <table>
         # - <mcss:div>
         # - <formula> (if block)
         # - <programlisting> (if block)
+        # - <htmlonly> (if block, which is ATM always)
         #
         # <parameterlist> and <simplesect kind="return"> are extracted out of
         # the text flow, so these are removed from this check.
@@ -582,7 +629,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             end_previous_paragraph = False
 
             # Straightforward elements
-            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'table', '{http://mcss.mosra.cz/doxygen/}div']:
+            if i.tag in ['heading', 'blockquote', 'hruler', 'xrefsect', 'variablelist', 'verbatim', 'parblock', 'preformatted', 'itemizedlist', 'orderedlist', 'image', 'dot', 'dotfile', 'table', '{http://mcss.mosra.cz/doxygen/}div', 'htmlonly']:
                 end_previous_paragraph = True
 
             # <simplesect> describing return type is cut out of text flow, so
@@ -592,50 +639,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # <formula> can be both, depending on what's inside
             elif i.tag == 'formula':
-                if i.text.startswith('$') and i.text.endswith('$'):
-                    formula_block = False
-                else:
-                    end_previous_paragraph = True
-                    formula_block = True
+                assert formula_block is not None
+                end_previous_paragraph = formula_block
 
             # <programlisting> is autodetected to be either block or inline
             elif i.tag == 'programlisting':
-                element_children_count = len([listing for listing in element])
-
-                # If it seems to be a standalone code paragraph, don't wrap it
-                # in <p> and use <pre>:
-                if (
-                    # It's either alone in the paragraph, with no text or other
-                    # elements around, or
-                    ((not element.text or not element.text.strip()) and (not i.tail or not i.tail.strip()) and element_children_count == 1) or
-
-                    # is a code snippet, i.e. filename instead of just .ext
-                    # (Doxygen unfortunately doesn't put @snippet in its own
-                    # paragraph even if it's separated by blank lines. It does
-                    # so for @include and related, though.)
-                    ('filename' in i.attrib and not i.attrib['filename'].startswith('.')) or
-
-                    # or is code right after a note/attention/... section,
-                    # there's no text after and it's the last thing in the
-                    # paragraph (Doxygen ALSO doesn't separate end of a section
-                    # and begin of a code block by a paragraph even if there is
-                    # a blank line. But it does so for xrefitems such as @todo.
-                    # I don't even.)
-                    (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
-                ):
-                    end_previous_paragraph = True
-                    code_block = True
-
-                # Looks like inline code, but has multiple code lines, so it's
-                # suspicious. Use code block, but warn.
-                elif len([codeline for codeline in i]) > 1:
-                    end_previous_paragraph = True
-                    code_block = True
-                    logging.warning("{}: inline code has multiple lines, fallback to a code block".format(state.current))
-
-                # Otherwise wrap it in <p> and use <code>
-                else:
-                    code_block = False
+                assert code_block is not None
+                end_previous_paragraph = code_block
 
             if end_previous_paragraph:
                 out.is_reasonable_paragraph = False
@@ -766,7 +776,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.parsed += '<h{0}>{1}</h{0}>'.format(h_tag_level, html.escape(i.text))
 
         elif i.tag == 'parblock':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<div{}>{}</div>'.format(
                 ' class="{}"'.format(add_css_class) if add_css_class else '',
@@ -827,12 +837,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert not parsed.section
 
         elif i.tag == 'blockquote':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<blockquote>{}</blockquote>'.format(parse_desc(state, i))
 
         elif i.tag in ['itemizedlist', 'orderedlist']:
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             tag = 'ul' if i.tag == 'itemizedlist' else 'ol'
             out.parsed += '<{}{}>'.format(tag,
@@ -850,7 +860,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'table':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<table class="m-table{}">'.format(
                 ' ' + add_css_class if add_css_class else '')
@@ -1019,7 +1029,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         out.templates[name.text] = description
 
         elif i.tag == 'variablelist':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<dl class="m-dox">'
 
@@ -1033,13 +1043,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '</dl>'
 
         elif i.tag in ['verbatim', 'preformatted']:
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
             out.parsed += '<pre>{}</pre>'.format(html.escape(i.text or ''))
 
         elif i.tag == 'image':
-            # can be in <para> but often also in <div> and other m.css-specific
-            # elements
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
 
             name = i.attrib['name']
@@ -1052,9 +1061,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
                 sizespec = ''
                 if 'width' in i.attrib:
-                    sizespec = ' style="width: {}"'.format(i.attrib['width'])
+                    sizespec = ' style="width: {};"'.format(i.attrib['width'])
                 elif 'height' in i.attrib:
-                    sizespec = ' style="height: {}"'.format(i.attrib['height'])
+                    sizespec = ' style="height: {};"'.format(i.attrib['height'])
 
                 caption = i.text
                 if caption:
@@ -1065,9 +1074,52 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     out.parsed += '<img class="m-image{}" src="{}" alt="Image"{} />'.format(
                         ' ' + add_css_class if add_css_class else '', name, sizespec)
 
+        elif i.tag in ['dot', 'dotfile']:
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
+            has_block_elements = True
+
+            # Why the heck can't it just read the file and paste it into the
+            # XML?!
+            caption = None
+            if i.tag == 'dotfile':
+                if 'name' in i.attrib:
+                    with open(i.attrib['name'], 'r') as f:
+                        source = f.read()
+                else:
+                    logging.warning("{}: file passed to @dotfile was not found, rendering an empty graph".format(state.current))
+                    source = 'digraph "" {}'
+                caption = i.text
+            else:
+                source = i.text
+                if 'caption' in i.attrib: caption = i.attrib['caption']
+
+            size = None
+            if 'width' in i.attrib:
+                size = 'width: {};'.format(i.attrib['width'])
+            elif 'height' in i.attrib:
+                size = 'height: {};'.format(i.attrib['height'])
+
+            if caption:
+                out.parsed += '<figure class="m-figure">{}<figcaption>{}</figcaption></figure>'.format(dot2svg.dot2svg(
+                    source, size=size,
+                    attribs=' class="m-graph{}"'.format(' ' + add_css_class if add_css_class else '')),
+                    caption)
+            else:
+                out.parsed += '<div class="m-graph{}">{}</div>'.format(
+                    ' ' + add_css_class if add_css_class else '', dot2svg.dot2svg(source, size))
+
         elif i.tag == 'hruler':
             assert element.tag == 'para' # is inside a paragraph :/
             out.parsed += '<hr/>'
+
+        elif i.tag == 'htmlonly':
+            # The @htmlonly command has a block version, which is able to get
+            # rid of the wrapping paragraph. But @htmlonly is not exposed to
+            # XML. Only @htmlinclude is exposed in XML and that one is always
+            # wrapped in a paragraph. I need to submit another patch to make it
+            # less freaking insane. I guess.
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
+            if i.text: out.parsed += i.text
 
         # Custom <div> with CSS classes (for making dim notes etc)
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}div':
@@ -1119,7 +1171,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Either block or inline
         elif i.tag == 'programlisting':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
 
             # We should have decided about block/inline above
             assert code_block is not None
@@ -1228,7 +1280,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Either block or inline
         elif i.tag == 'formula':
-            assert element.tag == 'para' # is inside a paragraph :/
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
 
             logging.debug("{}: rendering math: {}".format(state.current, i.text))
 
@@ -1926,7 +1978,7 @@ def postprocess_state(state: State):
                 if i.startswith('<a'):
                     end = i.index('</a>') + 4
                     links += [i[0:end]]
-                    i = i[end:]
+                    i = i[end:].lstrip()
                 else:
                     firstAndRest = i.split(None, 1)
                     if len(firstAndRest):
@@ -2047,7 +2099,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
     return serialize_search_data(trie, map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
 def base85encode_search_data(data: bytearray) -> bytearray:
-    return (b"/* Generated by http://mcss.mosra.cz/doxygen/. Do not edit. */\n" +
+    return (b"/* Generated by https://mcss.mosra.cz/doxygen/. Do not edit. */\n" +
             b"Search.load('" + base64.b85encode(data, True) + b"');\n")
 
 def parse_xml(state: State, xml: str):
@@ -2847,6 +2899,8 @@ def parse_doxyfile(state: State, doxyfile, config = None):
             'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
             '../css/m-dark+doxygen.compiled.css'],
         'HTML_EXTRA_FILES': [],
+        'DOT_FONTNAME': ['Helvetica'],
+        'DOT_FONTSIZE': ['10'],
 
         'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
@@ -2957,6 +3011,8 @@ list using <span class="m-label m-dim">&darr;</span> and
               'OUTPUT_DIRECTORY',
               'HTML_OUTPUT',
               'XML_OUTPUT',
+              'DOT_FONTNAME',
+              'M_MAIN_PROJECT_URL',
               'M_HTML_HEADER',
               'M_PAGE_HEADER',
               'M_PAGE_FINE_PRINT',
@@ -2968,7 +3024,8 @@ list using <span class="m-label m-dim">&darr;</span> and
         if i in config: state.doxyfile[i] = '\n'.join(config[i])
 
     # Int values that we want
-    for i in ['M_CLASS_TREE_EXPAND_LEVELS',
+    for i in ['DOT_FONTSIZE',
+              'M_CLASS_TREE_EXPAND_LEVELS',
               'M_FILE_TREE_EXPAND_LEVELS']:
         if i in config: state.doxyfile[i] = int(' '.join(config[i]))
 
@@ -3015,6 +3072,9 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         latex2svgextra.unpickle_cache(math_cache_file)
     else:
         latex2svgextra.unpickle_cache(None)
+
+    # Configure graphviz/dot
+    dot2svg.configure(state.doxyfile['DOT_FONTNAME'], state.doxyfile['DOT_FONTSIZE'])
 
     if sort_globbed_files:
         xml_files_metadata.sort()

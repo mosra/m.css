@@ -25,7 +25,7 @@
 Test
 ####
 
-:save_as: css/components/test/index.html
+:slug: css/components/test
 :breadcrumb: {filename}/css.rst CSS
              {filename}/css/components.rst Components
 
@@ -1193,3 +1193,76 @@ List with components inside
     </ul>
 
     <p>Paragraph after.</p>
+
+`Floating around`_
+==================
+
+Similar to the `grid test <{filename}/css/grid-test.rst#floating-around>`_, but
+with components.
+
+.. raw:: html
+
+    <div class="m-note m-default">
+      Should have the background extended all the way to the sides on small
+      screens.
+    </div>
+
+    <div class="m-col-m-5 m-right-m">
+      <div class="m-note m-default">
+      <p>Should have no spacing on top/sides but on the bottom, extended to the
+      sides on tiny. Lorem ipsum dolor.</p>
+      </div>
+    </div>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id
+    elit posuere, consectetur magna congue, sagittis est. Pellentesque
+    est neque, aliquet nec consectetur in, mattis ac diam. Aliquam
+    placerat justo ut purus interdum, ac placerat lacus consequat. Ut dictum
+    enim posuere metus porta, et aliquam ex condimentum. Proin sagittis nisi
+    leo, ac pellentesque purus bibendum sit amet.</p>
+
+    <div class="m-col-s-6 m-center-s">
+      <div class="m-note m-default">
+      <p>Should have spacing on sides but not on the bottom, extended to the
+      sides on tiny. Pellentesque est neque, aliquet nec consectetur.</p>
+      </div>
+    </div>
+
+`Floating around, inflated`_
+============================
+
+.. raw:: html
+
+    <div class="m-container-inflate">
+      <div class="m-note m-default">
+      <p>Should be extended to both sides, have padding on bottom an on sides
+      the same as above. Lorem ipsum dolor sit amet, consectetur adipiscing
+      elit. Aenean id elit posuere, consectetur magna congue, sagittis est.
+      Pellentesque est neque, aliquet nec consectetur in, mattis ac diam.
+      Aliquam placerat justo ut purus interdum, ac placerat lacus
+      consequat.</p>
+      </div>
+    </div>
+
+    <div class="m-container-inflate m-col-l-4 m-right-l">
+      <div class="m-note m-default">
+      <p>Should be extended to the right, have padding on bottom an on the
+      right side the same as above. Lorem ipsum dolor.</p>
+      </div>
+    </div>
+
+    <div class="m-container-inflate m-col-l-4 m-left-l">
+      <div class="m-note m-default">
+      <p>Should be extended to the left, have padding on bottom an on the
+      outside the same as above. Lorem ipsum dolor.</p>
+      </div>
+    </div>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id
+    elit posuere, consectetur magna congue, sagittis est. Pellentesque
+    est neque, aliquet nec consectetur in, mattis ac diam. Aliquam placerat
+    justo ut purus interdum, ac placerat lacus consequat. Ut dictum enim
+    posuere metus porta, et aliquam ex condimentum. Proin sagittis nisi leo, ac
+    pellentesque purus bibendum sit amet. Aliquam placerat justo ut purus
+    interdum, ac placerat lacus consequat. Ut dictum enim posuere metus porta,
+    et aliquam ex condimentum. </p>

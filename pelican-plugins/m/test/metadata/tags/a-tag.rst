@@ -5,4 +5,4 @@ Tag name, displayed on top of the tag page
 :summary: Tag summary, used for the social <meta> tags.
 
 Contents of tag details, displayed on top of the tag page.
-`Link. <http://mcss.mosra.cz>`_
+`Link. <https://mcss.mosra.cz>`_

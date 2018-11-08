@@ -47,7 +47,7 @@ m.components
 
     And a resulting output.
 
-.. console-figure::
+.. console-figure:: Figure caption
 
     .. class:: m-console
 
@@ -56,6 +56,22 @@ m.components
         Console
 
     And text.
+
+.. math-figure::
+
+    .. raw:: html
+
+        <svg class="m-math" style="width: 5rem; height: 5rem;"></svg>
+
+    Math figure contents.
+
+.. graph-figure:: Caption
+
+    .. raw:: html
+
+        <svg class="m-graph" style="width: 5rem; height: 5rem;"></svg>
+
+    Graph figure contents.
 
 .. text-dim::
 

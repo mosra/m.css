@@ -107,7 +107,7 @@ and:
 Put `math blocks <{filename}/css/components.rst#math>`_ into the :rst:`.. math::`
 directive; if you want to color the equations, add corresponding
 `CSS class <{filename}/css/components.rst#colors>`_ via a :rst:`:class:`
-option. Equations separated by a blank line are processed separately.
+option.
 
 .. code-figure::
 
@@ -218,6 +218,47 @@ to disable caching.
         if not shutil.which('latex'):
             logging.warning("LaTeX not found, fallback to rendering math as code")
             M_MATH_RENDER_AS_CODE = True
+
+`Math figure`_
+--------------
+
+See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
+plugin for details about code figures using the :rst:`.. math-figure::`
+directive.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. math-figure:: Infinite projection matrix
+
+            .. math::
+                :class: m-success
+
+                \boldsymbol{A} = \begin{pmatrix}
+                    \frac{2n}{s_x} & 0 & 0 & 0 \\
+                    0 & \frac{2n}{s_y} & 0 & 0 \\
+                    0 & 0 & -1 & -2n \\
+                    0 & 0 & -1 & 0
+                \end{pmatrix}
+
+            With :math:`f = \infty`.
+
+    .. math-figure:: Infinite projection matrix
+
+        .. math::
+            :class: m-success
+
+            \boldsymbol{A} = \begin{pmatrix}
+                \frac{2n}{s_x} & 0 & 0 & 0 \\
+                0 & \frac{2n}{s_y} & 0 & 0 \\
+                0 & 0 & -1 & -2n \\
+                0 & 0 & -1 & 0
+            \end{pmatrix}
+
+        .. class:: m-noindent
+
+        With :math:`f = \infty`.
 
 `Code`_
 =======
@@ -350,3 +391,10 @@ terminal, it's best to have the listings in external files and use
 
     .. include:: math-and-code-console.ansi
         :code: ansi
+
+`Code figure`_
+--------------
+
+See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
+plugin for details about code figures using the :rst:`.. code-figure::`
+directive.
