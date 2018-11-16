@@ -55,6 +55,18 @@ Hello.
 This is good, finally.
 @endparblock
 
+@m_class{m-frame}
+
+@note A note styled as a frame.
+
+This has to be here otherwise doxygen puts the next `@m_class` call into the
+above note. WHAT THE HELL!!!
+
+@m_class{m-block m-success}
+
+@xrefitem licenses "Third-party license info" "Third-party license info"
+    This package is licensed under MIT. All is good.
+
 @m_class{m-code-figure}
 
 @parblock

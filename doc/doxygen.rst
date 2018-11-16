@@ -818,9 +818,33 @@ aliases however you want to fit your naming scheme.
         "m_enum_values_as_keywords="
 
 With ``@m_class`` it's possible to add CSS classes to the immediately following
-paragraph, image, table, list or math formula block. When used inline, it
-affects the immediately following emphasis, strong text, link or inline math
-formula. Example usage:
+paragraph, image, table, list or math formula block. When used before a block
+such as ``@par``, ``@note``, ``@see`` or ``@xrefitem``, the CSS class fully
+overrides the block styling. By default :css:`.m-note` with some color and
+:html:`<h4>` is used, with ``@m_class`` before it get :html:`<h3>` for the
+title and you can turn it into a block, for example:
+
+.. code-figure::
+
+    .. code:: c++
+
+        /**
+        @m_class{m-block m-success}
+
+        @par Third-party license info
+            This utility depends on the [Magnum engine](https://magnum.graphics).
+            It's licensed under MIT, so all you need to do is mention it in the
+            credits of your commercial app.
+        */
+
+    .. block-success:: Third-party license info
+
+        This utility depends on the `Magnum engine <https://magnum.graphics>`_.
+        It's licensed under MIT, so all you need to do is mention it in the
+        credits of your commercial app.
+
+When used inline, it affects the immediately following emphasis, strong text,
+link or inline math formula. Example usage:
 
 .. code-figure::
 
