@@ -36,7 +36,9 @@ def init(pelicanobj):
     pass
 
 def filesize(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    size = os.path.getsize(text.format(filename=os.path.join(os.getcwd(), settings['path'])))
+    # Support both {filename} (3.7.1) and {static} (3.8) placeholders
+    file = os.path.join(os.getcwd(), settings['path'])
+    size = os.path.getsize(text.format(filename=file, static=file))
 
     for unit in ['','k','M','G','T']:
         if abs(size) < 1024.0:
@@ -49,7 +51,9 @@ def filesize(name, rawtext, text, lineno, inliner, options={}, content=[]):
     return [nodes.inline(size_string, size_string, **options)], []
 
 def filesize_gz(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    with open(text.format(filename=os.path.join(os.getcwd(), settings['path'])), mode='rb') as f:
+    # Support both {filename} (3.7.1) and {static} (3.8) placeholders
+    file = os.path.join(os.getcwd(), settings['path'])
+    with open(text.format(filename=file, static=file), mode='rb') as f:
         size = len(gzip.compress(f.read()))
 
     for unit in ['','k','M','G','T']:

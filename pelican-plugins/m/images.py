@@ -181,7 +181,9 @@ class ImageGrid(rst.Directive):
                 continue
 
             # Open the files and calculate the overall width
-            absuri = uri.format(filename=os.path.join(os.getcwd(), settings['PATH']))
+            # Support both {filename} (3.7.1) and {static} (3.8) placeholders
+            file = os.path.join(os.getcwd(), settings['PATH'])
+            absuri = uri.format(filename=file, static=file)
             im = PIL.Image.open(absuri)
 
             # Get EXIF info, if it's there
