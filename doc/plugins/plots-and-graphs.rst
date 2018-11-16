@@ -217,7 +217,7 @@ whole graph, it's also possible to color particular nodes and edges using the
 
             rankdir=LR
 
-            S₁ [shape=circle, class="m-primary", peripheries=2]
+            S₁ [shape=doublecircle class="m-primary"]
             S₂ [shape=circle]
             _  [style=invis]
 
@@ -231,7 +231,7 @@ whole graph, it's also possible to color particular nodes and edges using the
 
         rankdir=LR
 
-        S₁ [shape=circle, class="m-primary", peripheries=2]
+        S₁ [shape=doublecircle class="m-primary"]
         S₂ [shape=circle]
         _  [style=invis]
         b  [style=invis]
@@ -304,9 +304,9 @@ directive.
             .. digraph::
 
                 rankdir=LR
-                yes [shape=circle, class="m-primary", style=filled]
-                no [shape=circle, class="m-primary"]
-                yes -> no [label="no", class="m-primary"]
+                yes [shape=circle class="m-primary" style=filled]
+                no [shape=circle class="m-primary"]
+                yes -> no [label="no" class="m-primary"]
                 no -> no [label="no"]
 
             No.
@@ -316,9 +316,9 @@ directive.
         .. digraph::
 
             rankdir=LR
-            yes [shape=circle, class="m-primary", style=filled]
-            no [shape=circle, class="m-primary"]
-            yes -> no [label="no", class="m-primary"]
+            yes [shape=circle class="m-primary" style=filled]
+            no [shape=circle class="m-primary"]
+            yes -> no [label="no" class="m-primary"]
             no -> no [label="no"]
 
         .. class:: m-noindent
