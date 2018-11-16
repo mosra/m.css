@@ -978,24 +978,26 @@ div.m-button.m-danger a, .m-label:not(.m-flat).m-danger { background-color: var(
 div.m-button.m-info a, .m-label:not(.m-flat).m-info { background-color: var(--info-color); }
 div.m-button.m-dim a, .m-label:not(.m-flat).m-dim { background-color: var(--dim-color); }
 div.m-button.m-default a:hover, div.m-button.m-default a:focus, div.m-button.m-default a:active {
-  background-color: var(--default-button-active-color);
+  background-color: var(--default-link-active-color);
 }
 div.m-button.m-primary a:hover, div.m-button.m-primary a:focus, div.m-button.m-primary a:active {
-  background-color: var(--primary-button-active-color);
+  background-color: var(--primary-link-active-color);
 }
 div.m-button.m-success a:hover, div.m-button.m-success a:focus, div.m-button.m-success a:active {
-  background-color: var(--success-button-active-color);
+  background-color: var(--success-link-active-color);
 }
 div.m-button.m-warning a:hover, div.m-button.m-warning a:focus, div.m-button.m-warning a:active {
-  background-color: var(--warning-button-active-color);
+  background-color: var(--warning-link-active-color);
 }
 div.m-button.m-danger a:hover, div.m-button.m-danger a:focus, div.m-button.m-danger a:active {
-  background-color: var(--danger-button-active-color);
+  background-color: var(--danger-link-active-color);
 }
 div.m-button.m-info a:hover, div.m-button.m-info a:focus, div.m-button.m-info a:active {
-  background-color: var(--info-button-active-color);
+  background-color: var(--info-link-active-color);
 }
 div.m-button.m-dim a:hover, div.m-button.m-dim a:focus, div.m-button.m-dim a:active {
+  /* Using a dedicated color here because we want the button dim by default,
+     not highlighted as other links */
   background-color: var(--dim-button-active-color);
 }
 
