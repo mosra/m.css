@@ -162,7 +162,7 @@ If you see something unexpected or not see something expected, check the
 -   Search for symbols using any prefix
 -   Fully controllable by keyboard
 
-.. image:: {filename}/static/opengl-search.png
+.. image:: {static}/static/opengl-search.png
 
 .. note-success::
 

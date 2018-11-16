@@ -381,16 +381,16 @@ deriving the role and adding the :rst:`:class:` option.
             :class: m-text m-success
 
         The compiled ``m-dark.compiled.css`` CSS file has
-        :filesize:`{filename}/../css/m-dark.compiled.css` but only
-        :filesize-yay:`{filename}/../css/m-dark.compiled.css` when the server
+        :filesize:`{static}/../css/m-dark.compiled.css` but only
+        :filesize-yay:`{static}/../css/m-dark.compiled.css` when the server
         sends it compressed.
 
     .. role:: filesize-yay(filesize-gz)
         :class: m-text m-success
 
     The compiled ``m-dark.compiled.css`` CSS file has
-    :filesize:`{filename}/../css/m-dark.compiled.css` but only
-    :filesize-yay:`{filename}/../css/m-dark.compiled.css` when the server
+    :filesize:`{static}/../css/m-dark.compiled.css` but only
+    :filesize-yay:`{static}/../css/m-dark.compiled.css` when the server
     sends it compressed.
 
 `Aliases`_

@@ -1,7 +1,7 @@
 A category name, displayed on top of the category badge/details
 ###############################################################
 
-:image: {filename}/category.jpg
+:image: {static}/category.jpg
 :description: Category description, used for a <meta name="description"> tag.
 :summary: Category summary, used for the social <meta> tags.
 :badge: Contents of the badge, displayed at article bottom.

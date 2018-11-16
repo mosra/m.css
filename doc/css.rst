@@ -100,11 +100,11 @@ to include a proper :html:`<meta>` tag. The HTML5 DOCTYPE is also required.
     the code and console Pygments style, all combined in one file:
 
     -   :gh:`m-dark.compiled.css <mosra/m.css$master/css/m-dark.compiled.css>`
-        (:filesize:`{filename}/../css/m-dark.compiled.css`,
-        :filesize-gz:`{filename}/../css/m-dark.compiled.css` compressed)
+        (:filesize:`{static}/../css/m-dark.compiled.css`,
+        :filesize-gz:`{static}/../css/m-dark.compiled.css` compressed)
     -   :gh:`m-light.compiled.css <mosra/m.css$master/css/m-light.compiled.css>`
-        (:filesize:`{filename}/../css/m-light.compiled.css`,
-        :filesize-gz:`{filename}/../css/m-light.compiled.css` compressed)
+        (:filesize:`{static}/../css/m-light.compiled.css`,
+        :filesize-gz:`{static}/../css/m-light.compiled.css` compressed)
 
     I recommend using the original files for development and switching to the
     compiled versions when publishing the website.

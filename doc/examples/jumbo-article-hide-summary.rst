@@ -28,7 +28,7 @@ Article with hidden summary --- a jumbo one
 .. role:: language-la
     :class: language-la
 
-:cover: {filename}/static/ship.jpg
+:cover: {static}/static/ship.jpg
 :date: 2017-12-06 1:00
 :category: Examples
 :tags: Jumbo, Special

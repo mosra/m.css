@@ -7,7 +7,7 @@ An article — a jumbo one
 :date: 2017-12-08
 :category: Another category
 :tags: Fourth, First, Third
-:cover: {filename}/ship.jpg
+:cover: {static}/ship.jpg
 :summary: A summary.
     On multiple
     lines.

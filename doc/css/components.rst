@@ -164,7 +164,7 @@ Only :html:`<h3>` is supported for a badge.
     .. raw:: html
 
         <div class="m-block m-badge m-success">
-          <img src="{filename}/static/mosra.jpg" alt="The Author" />
+          <img src="{static}/static/mosra.jpg" alt="The Author" />
           <h3>About the author</h3>
           <p><a href="http://blog.mosra.cz">The Author</a> is not really
           smiling at you from this avatar. Sorry about that. He knows that and
@@ -624,7 +624,7 @@ reasons it's a good practice to include the ``alt`` attribute.
 
     .. raw:: html
 
-        <img src="{filename}/static/flowers-small.jpg" alt="Flowers" class="m-image" />
+        <img src="{static}/static/flowers-small.jpg" alt="Flowers" class="m-image" />
 
 To make the image clickable, wrap the :html:`<a>` tag in an additional
 :html:`<div>` and put the :css:`.m-image` class on the :html:`<div>` element
@@ -642,7 +642,7 @@ not the surrounding area:
     .. raw:: html
 
         <div class="m-image">
-          <a href="{filename}/static/flowers.jpg"><img src="{filename}/static/flowers-small.jpg" /></a>
+          <a href="{static}/static/flowers.jpg"><img src="{static}/static/flowers-small.jpg" /></a>
         </div>
 
 .. note-info::
@@ -682,7 +682,7 @@ Optionally you can color the figure border and caption by adding one of the
     .. raw:: html
 
         <figure class="m-figure">
-          <img src="{filename}/static/ship-small.jpg" alt="Ship" />
+          <img src="{static}/static/ship-small.jpg" alt="Ship" />
           <figcaption>A Ship</figcaption>
           <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
         </figure>
@@ -752,28 +752,28 @@ Example usage (stupidly showing the two images all over again --- sorry):
     <div class="m-imagegrid m-container-inflate">
       <div>
         <figure style="width: 69.127%">
-          <a href="{filename}/static/ship.jpg">
-            <img src="{filename}/static/ship.jpg" />
+          <a href="{static}/static/ship.jpg">
+            <img src="{static}/static/ship.jpg" />
             <figcaption>F9.0, 1/250 s, ISO 100</figcaption>
           </a>
         </figure>
         <figure style="width: 30.873%">
-          <a href="{filename}/static/flowers.jpg">
-            <img src="{filename}/static/flowers.jpg" />
+          <a href="{static}/static/flowers.jpg">
+            <img src="{static}/static/flowers.jpg" />
             <figcaption>F2.8, 1/1600 s, ISO 100</figcaption>
           </a>
         </figure>
       </div>
       <div>
         <figure style="width: 30.873%">
-          <a href="{filename}/static/flowers.jpg">
-            <img src="{filename}/static/flowers.jpg" />
+          <a href="{static}/static/flowers.jpg">
+            <img src="{static}/static/flowers.jpg" />
             <figcaption>F2.8, 1/1600 s, ISO 100</figcaption>
           </a>
         </figure>
         <figure style="width: 69.127%">
-          <a href="{filename}/static/ship.jpg">
-            <img src="{filename}/static/ship.jpg" />
+          <a href="{static}/static/ship.jpg">
+            <img src="{static}/static/ship.jpg" />
             <figcaption>F9.0, 1/250 s, ISO 100</figcaption>
           </a>
         </figure>

@@ -1,7 +1,7 @@
 A page
 ######
 
-:cover: {filename}/ship.jpg
+:cover: {static}/ship.jpg
 :hide_navbar_brand: True
 :landing:
     .. container:: m-row

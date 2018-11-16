@@ -108,12 +108,12 @@ option for both images and figures.
 
         .. container:: m-col-m-6
 
-            .. image:: {filename}/static/flowers-small.jpg
-                :target: {filename}/static/flowers.jpg
+            .. image:: {static}/static/flowers-small.jpg
+                :target: {static}/static/flowers.jpg
 
         .. container:: m-col-m-6
 
-            .. figure:: {filename}/static/ship-small.jpg
+            .. figure:: {static}/static/ship-small.jpg
 
                 A Ship
 
@@ -138,23 +138,23 @@ with non-repeating images, head over to `my blog <http://blog.mosra.cz/cesty/mai
 
     .. image-grid::
 
-        {filename}/ship.jpg
-        {filename}/flowers.jpg
+        {static}/ship.jpg
+        {static}/flowers.jpg
 
-        {filename}/flowers.jpg
-        {filename}/ship.jpg
+        {static}/flowers.jpg
+        {static}/ship.jpg
 
 .. image-grid::
 
-    {filename}/static/ship.jpg
-    {filename}/static/flowers.jpg
+    {static}/static/ship.jpg
+    {static}/static/flowers.jpg
 
-    {filename}/static/flowers.jpg
-    {filename}/static/ship.jpg
+    {static}/static/flowers.jpg
+    {static}/static/ship.jpg
 
 .. note-warning::
 
     Unlike with the image and figure directives above, Pelican *needs* to have
     the images present on a filesystem to extract size information. It's
-    advised to use the builtin *absolute* ``{filename}`` or ``{attach}`` syntax
+    advised to use the builtin *absolute* ``{static}`` or ``{attach}`` syntax
     for `linking to internal content <http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.

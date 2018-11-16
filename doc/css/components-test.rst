@@ -240,7 +240,7 @@ Badge with lots of text and less text:
 .. raw:: html
 
     <div class="m-block m-badge m-primary">
-      <img src="{filename}/static/mosra.jpg" alt="The Author" />
+      <img src="{static}/static/mosra.jpg" alt="The Author" />
       <h3>About the author</h3>
       <p><a href="#">The Author</a> is lorem ipsum dolor sit amet, consectetur
       adipiscing elit. Aenean id elit posuere, consectetur magna congue,
@@ -250,7 +250,7 @@ Badge with lots of text and less text:
     </div>
 
     <div class="m-block m-badge m-dim">
-      <img src="{filename}/static/mosra.jpg" alt="The Author" />
+      <img src="{static}/static/mosra.jpg" alt="The Author" />
       <h3>About the author</h3>
       <p><a href="#">The Author</a> is lorem ipsum dolor sit amet, consectetur
       adipiscing elit.</p>
@@ -936,28 +936,28 @@ Image, centered:
 
 .. raw:: html
 
-    <img src="{filename}/static/flowers-small.jpg" class="m-image" />
+    <img src="{static}/static/flowers-small.jpg" class="m-image" />
 
 Image, centered, link:
 
 .. raw:: html
 
     <div class="m-image">
-      <a href="http://blog.mosra.cz/"><img src="{filename}/static/flowers-small.jpg" /></a>
+      <a href="http://blog.mosra.cz/"><img src="{static}/static/flowers-small.jpg" /></a>
     </div>
 
 Image, fullwidth (yes, it should be pixelated):
 
 .. raw:: html
 
-    <img src="{filename}/static/flowers-small.jpg" class="m-image m-fullwidth" />
+    <img src="{static}/static/flowers-small.jpg" class="m-image m-fullwidth" />
 
 Image, fullwidth, link (yes, it should be pixelated):
 
 .. raw:: html
 
     <div class="m-image m-fullwidth">
-      <a href="http://blog.mosra.cz/"><img src="{filename}/static/flowers-small.jpg" /></a>
+      <a href="http://blog.mosra.cz/"><img src="{static}/static/flowers-small.jpg" /></a>
     </div>
 
 SVG image:
@@ -996,7 +996,7 @@ Figure, centered:
 .. raw:: html
 
     <figure class="m-figure">
-      <img src="{filename}/static/ship-small.jpg" />
+      <img src="{static}/static/ship-small.jpg" />
       <figcaption>A Ship</figcaption>
       <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
     </figure>
@@ -1006,7 +1006,7 @@ Figure, centered, image link, flat:
 .. raw:: html
 
     <figure class="m-figure m-flat">
-      <a href="http://blog.mosra.cz/"><img src="{filename}/static/ship-small.jpg" /></a>
+      <a href="http://blog.mosra.cz/"><img src="{static}/static/ship-small.jpg" /></a>
       <figcaption>A Ship</figcaption>
       <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
     </figure>
@@ -1016,7 +1016,7 @@ Figure, fullwidth, without description (yes, it should be pixelated):
 .. raw:: html
 
     <figure class="m-figure m-fullwidth">
-      <img src="{filename}/static/ship-small.jpg" />
+      <img src="{static}/static/ship-small.jpg" />
       <figcaption>A Ship</figcaption>
     </figure>
 
@@ -1026,7 +1026,7 @@ unnecessary wrapping of the text:
 .. raw:: html
 
     <figure class="m-figure m-fullwidth">
-      <img src="{filename}/static/ship-small.jpg" />
+      <img src="{static}/static/ship-small.jpg" />
       <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
       <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
       On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
@@ -1039,7 +1039,7 @@ leaking of the image outside of the page:
 .. raw:: html
 
     <figure class="m-figure">
-      <img src="{filename}/static/ship.jpg" />
+      <img src="{static}/static/ship.jpg" />
       <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
       <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
       On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
@@ -1052,7 +1052,7 @@ instead of extending the border and there should be proper padding on bottom):
 .. raw:: html
 
     <figure class="m-figure">
-      <img src="{filename}/static/ship-small.jpg" />
+      <img src="{static}/static/ship-small.jpg" />
       <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
       <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
       On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
@@ -1062,7 +1062,7 @@ instead of extending the border and there should be proper padding on bottom):
 .. raw:: html
 
     <figure class="m-figure">
-      <img src="{filename}/static/ship-small.jpg" />
+      <img src="{static}/static/ship-small.jpg" />
       <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
     </figure>
 
@@ -1073,28 +1073,28 @@ Figures of varying colors:
     <div class="m-row">
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-default">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Default figure</figcaption>
           <span>Text.</span>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-primary">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Primary figure</figcaption>
           <span>Text.</span>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-success">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Success figure</figcaption>
           <span>Text.</span>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-warning">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Warning figure</figcaption>
           <span>Text.</span>
         </figure>
@@ -1103,21 +1103,21 @@ Figures of varying colors:
     <div class="m-row">
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-danger">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Danger figure</figcaption>
           <span>Text.</span>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-info">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Info figure</figcaption>
           <span>Text.</span>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-dim">
-          <img src="{filename}/static/ship-small.jpg" />
+          <img src="{static}/static/ship-small.jpg" />
           <figcaption>Dim figure</figcaption>
           <span>Text.</span>
         </figure>
@@ -1134,11 +1134,11 @@ Without the link:
     <div class="m-imagegrid m-container-inflate">
       <div>
         <figure style="width: 69.127%">
-          <img src="{filename}/static/ship.jpg" />
+          <img src="{static}/static/ship.jpg" />
           <figcaption>F9.0, 1/250 s, ISO 100</figcaption>
         </figure>
         <figure style="width: 30.873%">
-          <img src="{filename}/static/flowers.jpg" />
+          <img src="{static}/static/flowers.jpg" />
           <figcaption>F2.8, 1/1600 s, ISO 100</figcaption>
         </figure>
       </div>
@@ -1151,14 +1151,14 @@ With link, without caption, not inflated:
     <div class="m-imagegrid">
       <div>
         <figure style="width: 30.873%">
-          <a href="{filename}/static/flowers.jpg">
-            <img src="{filename}/static/flowers.jpg" />
+          <a href="{static}/static/flowers.jpg">
+            <img src="{static}/static/flowers.jpg" />
             <div></div>
           </a>
         </figure>
         <figure style="width: 69.127%">
-          <a href="{filename}/static/ship.jpg">
-            <img src="{filename}/static/ship.jpg" />
+          <a href="{static}/static/ship.jpg">
+            <img src="{static}/static/ship.jpg" />
             <div></div>
           </a>
         </figure>
@@ -1172,11 +1172,11 @@ Without link or caption:
     <div class="m-imagegrid m-container-inflate">
       <div>
         <figure style="width: 69.127%">
-          <img src="{filename}/static/ship.jpg" />
+          <img src="{static}/static/ship.jpg" />
           <div></div>
         </figure>
         <figure style="width: 30.873%">
-          <img src="{filename}/static/flowers.jpg" />
+          <img src="{static}/static/flowers.jpg" />
           <div></div>
         </figure>
       </div>

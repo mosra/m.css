@@ -28,7 +28,7 @@ An article --- a jumbo one
 .. role:: language-la
     :class: language-la
 
-:cover: {filename}/static/ship.jpg
+:cover: {static}/static/ship.jpg
 :date: 2017-09-08 1:00
 :category: Examples
 :tags: Jumbo

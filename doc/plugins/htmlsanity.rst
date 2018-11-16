@@ -295,7 +295,7 @@ making use of both fields could look like this:
 
     :date: 2017-06-22
     :legal: This article is released under `CC0 {filename}/license.rst`_.
-    :cover: {filename}/img/article-cover.jpg
+    :cover: {static}/img/article-cover.jpg
 
 `SITEURL formatting`_
 ---------------------
