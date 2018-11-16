@@ -40,6 +40,8 @@ Math and code
     :language: py
 .. role:: rst(code)
     :language: rst
+.. role:: sh(code)
+    :language: sh
 
 These plugins use external libraries to produce beautiful math and code
 rendering directly from your :abbr:`reST <reStructuredText>` sources.

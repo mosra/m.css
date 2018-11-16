@@ -34,6 +34,10 @@ Plots and graphs
 
 .. role:: dot(code)
     :language: dot
+.. role:: py(code)
+    :language: py
+.. role:: rst(code)
+    :language: rst
 
 These plugin allow you to render plots and graphs directly from data specified
 inline in the page source. Similarly to `math rendering <{filename}/admire/math.rst>`_,

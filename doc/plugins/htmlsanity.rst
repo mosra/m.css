@@ -38,6 +38,8 @@ HTML sanity
     :language: jinja
 .. role:: py(code)
     :language: py
+.. role:: rst(code)
+    :language: rst
 
 Base plugin that makes your Pelican HTML output and typography look like from
 the current century.
