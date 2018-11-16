@@ -1157,51 +1157,91 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
   background-color: #405363;
 }
 .m-block.m-default { border-left-color: #405363; }
-.m-block.m-default h3, .m-block.m-default h4, .m-block.m-default h5, .m-block.m-default h6 {
+.m-block.m-default h3, .m-block.m-default h4, .m-block.m-default h5, .m-block.m-default h6,
+.m-text.m-default, .m-label.m-flat.m-default {
   color: #dcdcdc;
 }
+.m-block.m-default h3 a, .m-block.m-default h4 a, .m-block.m-default h5 a, .m-block.m-default h6 a {
+  color: #5b9dd9;
+}
 .m-block.m-primary { border-left-color: #a5c9ea; }
-.m-block.m-primary h3, .m-block.m-primary h4, .m-block.m-primary h5, .m-block.m-primary h6 {
+.m-block.m-primary h3, .m-block.m-primary h4, .m-block.m-primary h5, .m-block.m-primary h6,
+.m-block.m-primary h3 a, .m-block.m-primary h4 a, .m-block.m-primary h5 a, .m-block.m-primary h6 a,
+.m-text.m-primary, .m-label.m-flat.m-primary {
   color: #a5c9ea;
 }
 .m-block.m-success { border-left-color: #3bd267; }
-.m-block.m-success h3, .m-block.m-success h4, .m-block.m-success h5, .m-block.m-success h6 {
+.m-block.m-success h3, .m-block.m-success h4, .m-block.m-success h5, .m-block.m-success h6,
+.m-block.m-success h3 a, .m-block.m-success h4 a, .m-block.m-success h5 a, .m-block.m-success h6 a,
+.m-text.m-success, .m-label.m-flat.m-success {
   color: #3bd267;
 }
 .m-block.m-warning { border-left-color: #c7cf2f; }
-.m-block.m-warning h3, .m-block.m-warning h4, .m-block.m-warning h5, .m-block.m-warning h6 {
+.m-block.m-warning h3, .m-block.m-warning h4, .m-block.m-warning h5, .m-block.m-warning h6,
+.m-block.m-warning h3 a, .m-block.m-warning h4 a, .m-block.m-warning h5 a, .m-block.m-warning h6 a,
+.m-text.m-warning, .m-label.m-flat.m-warning {
   color: #c7cf2f;
 }
 .m-block.m-danger { border-left-color: #cd3431; }
-.m-block.m-danger h3, .m-block.m-danger h4, .m-block.m-danger h5, .m-block.m-danger h6 {
+.m-block.m-danger h3, .m-block.m-danger h4, .m-block.m-danger h5, .m-block.m-danger h6,
+.m-block.m-danger h3 a, .m-block.m-danger h4 a, .m-block.m-danger h5 a, .m-block.m-danger h6 a,
+.m-text.m-danger, .m-label.m-flat.m-danger {
   color: #cd3431;
 }
 .m-block.m-info { border-left-color: #2f83cc; }
-.m-block.m-info h3, .m-block.m-info h4, .m-block.m-info h5, .m-block.m-info h6 {
+.m-block.m-info h3, .m-block.m-info h4, .m-block.m-info h5, .m-block.m-info h6,
+.m-block.m-info h3 a, .m-block.m-info h4 a, .m-block.m-info h5 a, .m-block.m-info h6 a,
+.m-text.m-info, .m-label.m-flat.m-info {
   color: #2f83cc;
 }
-.m-block.m-dim {
-  border-left-color: #747474;
+.m-block.m-dim { border-left-color: #747474; }
+.m-block.m-dim, .m-text.m-dim, .m-label.m-flat.m-dim {
   color: #747474;
 }
-.m-block.m-dim a { color: #acacac; }
-.m-block.m-dim a:hover, .m-block.m-dim a:focus, .m-block.m-dim a:active {
+.m-block.m-dim a, .m-text.m-dim a { color: #acacac; }
+.m-block.m-dim a:hover, .m-block.m-dim a:focus, .m-block.m-dim a:active,
+.m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
   color: #747474;
 }
 .m-block.m-flat { border-color: transparent; }
 .m-block.m-flat h3, .m-block.m-flat h4, .m-block.m-flat h5. .m-block.m-flat h6 {
   color: #dcdcdc;
 }
-.m-text.m-default, .m-label.m-flat.m-default { color: #dcdcdc; }
-.m-text.m-primary, .m-label.m-flat.m-primary { color: #a5c9ea; }
-.m-text.m-success, .m-label.m-flat.m-success { color: #3bd267; }
-.m-text.m-warning, .m-label.m-flat.m-warning { color: #c7cf2f; }
-.m-text.m-danger, .m-label.m-flat.m-danger { color: #cd3431; }
-.m-text.m-info, .m-label.m-flat.m-info { color: #2f83cc; }
-.m-text.m-dim, .m-label.m-flat.m-dim { color: #747474; }
-.m-text.m-dim a { color: #acacac; }
-.m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
-  color: #747474;
+.m-block.m-default h3 a:hover, .m-block.m-default h3 a:focus, .m-block.m-default h3 a:active,
+.m-block.m-default h4 a:hover, .m-block.m-default h4 a:focus, .m-block.m-default h4 a:active,
+.m-block.m-default h5 a:hover, .m-block.m-default h5 a:focus, .m-block.m-default h5 a:active,
+.m-block.m-default h6 a:hover, .m-block.m-default h6 a:focus, .m-block.m-default h6 a:active {
+  color: #a5c9ea;
+}
+.m-block.m-primary h3 a:hover, .m-block.m-primary h3 a:focus, .m-block.m-primary h3 a:active,
+.m-block.m-primary h4 a:hover, .m-block.m-primary h4 a:focus, .m-block.m-primary h4 a:active,
+.m-block.m-primary h5 a:hover, .m-block.m-primary h5 a:focus, .m-block.m-primary h5 a:active,
+.m-block.m-primary h6 a:hover, .m-block.m-primary h6 a:focus, .m-block.m-primary h6 a:active {
+  color: #dcdcdc;
+}
+.m-block.m-success h3 a:hover, .m-block.m-success h3 a:focus, .m-block.m-success h3 a:active,
+.m-block.m-success h4 a:hover, .m-block.m-success h4 a:focus, .m-block.m-success h4 a:active,
+.m-block.m-success h5 a:hover, .m-block.m-success h5 a:focus, .m-block.m-success h5 a:active,
+.m-block.m-success h6 a:hover, .m-block.m-success h6 a:focus, .m-block.m-success h6 a:active {
+  color: #acecbe;
+}
+.m-block.m-warning h3 a:hover, .m-block.m-warning h3 a:focus, .m-block.m-warning h3 a:active,
+.m-block.m-warning h4 a:hover, .m-block.m-warning h4 a:focus, .m-block.m-warning h4 a:active,
+.m-block.m-warning h5 a:hover, .m-block.m-warning h5 a:focus, .m-block.m-warning h5 a:active,
+.m-block.m-warning h6 a:hover, .m-block.m-warning h6 a:focus, .m-block.m-warning h6 a:active {
+  color: #e9ecae;
+}
+.m-block.m-danger h3 a:hover, .m-block.m-danger h3 a:focus, .m-block.m-danger h3 a:active,
+.m-block.m-danger h4 a:hover, .m-block.m-danger h4 a:focus, .m-block.m-danger h4 a:active,
+.m-block.m-danger h5 a:hover, .m-block.m-danger h5 a:focus, .m-block.m-danger h5 a:active,
+.m-block.m-danger h6 a:hover, .m-block.m-danger h6 a:focus, .m-block.m-danger h6 a:active {
+  color: #ff9391;
+}
+.m-block.m-info h3 a:hover, .m-block.m-info h3 a:focus, .m-block.m-info h3 a:active,
+.m-block.m-info h4 a:hover, .m-block.m-info h4 a:focus, .m-block.m-info h4 a:active,
+.m-block.m-info h5 a:hover, .m-block.m-info h5 a:focus, .m-block.m-info h5 a:active,
+.m-block.m-info h6 a:hover, .m-block.m-info h6 a:focus, .m-block.m-info h6 a:active {
+  color: #5297d7;
 }
 div.m-button a, .m-label { color: #22272e; }
 div.m-button.m-flat a { color: #dcdcdc; }

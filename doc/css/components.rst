@@ -67,7 +67,7 @@ Blocks, defined by :css:`.m-block`, wrap the content in a light frame and add a
 bolder colored bar on the left. Use in combination with one of the color styles
 above. Block caption should go into :html:`<h3>` (or :html:`<h4>`,
 :html:`<h5>`, :html:`<h6>`) and is colored in respect to the color style as
-well. Text and links always have the default color, except for
+well. Text and links inside the text always have the default color, except for
 :css:`.m-block.m-dim`. It's also possible to have a block without the border,
 just add :css:`.m-flat` class to it.
 

@@ -480,6 +480,110 @@ Different :html:`<h*>` tags.
       </div>
     </div>
 
+Blocks, notes with a link
+=========================
+
+Different :html:`<h*>` tags.
+
+.. raw:: html
+
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-default">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-primary">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-success">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-warning">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-danger">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-info">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-note m-dim">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-default">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-primary">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-success">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-warning">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-danger">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-info">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+      <div class="m-clearfix-s"></div>
+      <div class="m-col-m-3 m-col-s-6">
+        <div class="m-block m-dim">
+          <h3><a href="#">Header link</a></h3>
+          Lorem ipsum dolor sit amet. <a href="#">Text link.</a>
+        </div>
+      </div>
+    </div>
+
 Labels
 ======
 
