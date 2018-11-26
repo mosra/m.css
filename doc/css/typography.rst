@@ -36,6 +36,8 @@ Typography
     :language: css
 .. role:: html(code)
     :language: html
+.. role:: rst(code)
+    :language: rst
 
 Right after being responsive, typography is the second most important thing in
 m.css. The `m-components.css <{filename}/css.rst>`_ file styles the most often

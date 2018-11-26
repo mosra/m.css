@@ -32,6 +32,8 @@ Theme
 
         `« Writing content <{filename}/pelican/writing-content.rst>`_ | `Pelican <{filename}/pelican.rst>`_
 
+.. role:: py(code)
+    :language: py
 .. role:: rst(code)
     :language: rst
 .. |x| unicode:: U+00D7 .. nicer multiply sign
