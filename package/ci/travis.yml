@@ -1,5 +1,7 @@
 # kate: indent-width 2;
 
+dist: xenial
+
 matrix:
   include:
     - language: python
