@@ -648,6 +648,10 @@ def expand_link(link, content):
         link)
 
 def expand_links(text, content):
+    # TODO: fields that are in FORMATTED_FIELDS are already expanded, but that
+    # requires extra work on user side. Ideal would be to handle that all on
+    # template side, so keeping this one for the time when we can replace
+    # FORMATTED_FIELDS with render_rst as well.
     return content._update_content(text, content.get_siteurl())
 
 # To be consistent with both what Pelican does now with '/'.join(SITEURL, url)

@@ -263,14 +263,15 @@ The filter is fully equivalent to the builtin reST rendering and the above
 `Internal link expansion`_
 --------------------------
 
-By default, link expansion works only in document content and article
-summaries. In order to expand links in additional fields and arbitrary strings,
-this plugin provides two Jinja2 filters, producing results equivalent to
+By default, link expansion works only in document content and fields that are
+referenced in the :py:`FORMATTED_FIELDS` (such as article summaries). In order
+to expand links in additional fields and arbitrary strings, this plugin
+provides two Jinja2 filters, producing results equivalent to
 `links expanded by Pelican <http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
 
-For fields that are referenced in the :py:`FORMATTED_FIELDS` setting, one can
-use the ``expand_links`` Jinja2 filter in the template. The link expansion
-needs the content object (either ``article`` or ``page``) as a parameter.
+For formatted fields, one can use the ``expand_links`` Jinja2 filter in the
+template. The link expansion needs the content object (either ``article`` or
+``page``) as a parameter.
 
 .. code:: jinja
 
