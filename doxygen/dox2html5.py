@@ -432,8 +432,15 @@ def extract_id_hash(state: State, element: ET.Element) -> str:
     assert id.startswith(state.current_definition_url_base)
     return id[len(state.current_definition_url_base)+2:]
 
+and_re_src = re.compile(r'([^\s])&amp;&amp;([^\s])')
+and_re_dst = r'\1 &amp;&amp; \2'
+
 def fix_type_spacing(type: str) -> str:
-    return type.replace('&lt; ', '&lt;').replace(' &gt;', '&gt;').replace(' &amp;', '&amp;').replace(' *', '*')
+    return and_re_src.sub(and_re_dst, type
+        .replace('&lt; ', '&lt;')
+        .replace(' &gt;', '&gt;')
+        .replace(' &amp;', '&amp;')
+        .replace(' *', '*'))
 
 def parse_type(state: State, type: ET.Element) -> str:
     # Constructors and typeless enums might not have it

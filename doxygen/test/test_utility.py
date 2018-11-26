@@ -23,8 +23,9 @@
 #
 
 import unittest
+import html
 
-from dox2html5 import add_wbr
+from dox2html5 import add_wbr, fix_type_spacing
 
 class Utility(unittest.TestCase):
     def test_add_wbr(self):
@@ -32,3 +33,11 @@ class Utility(unittest.TestCase):
         self.assertEqual(add_wbr('CORRADE_TEST_MAIN()'), 'CORRADE_<wbr />TEST_<wbr />MAIN()')
         self.assertEqual(add_wbr('https://magnum.graphics/showcase/'), 'https:/<wbr />/<wbr />magnum.graphics/<wbr />showcase/<wbr />')
         self.assertEqual(add_wbr('<strong>a</strong>'), '<strong>a</strong>')
+
+    def test_fix_type_spacing(self):
+        def fix_escaped(str):
+            return html.unescape(fix_type_spacing(html.escape(str)))
+
+        self.assertEqual(fix_escaped('Foo< T, U > *'), 'Foo<T, U>*')
+        self.assertEqual(fix_escaped('Foo< T, U > &'), 'Foo<T, U>&')
+        self.assertEqual(fix_escaped('Foo< T&&U >'), 'Foo<T && U>')
