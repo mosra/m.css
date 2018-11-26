@@ -100,7 +100,11 @@ Ubuntu:
 
 .. code:: sh
 
-    sudo apt-get install texlive-base texlive-latex-extra texlive-fonts-extra
+    sudo apt install \
+        texlive-base \
+        texlive-latex-extra \
+        texlive-fonts-extra \
+        texlive-fonts-recommended
 
 .. note-success::
 

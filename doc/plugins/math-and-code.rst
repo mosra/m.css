@@ -73,7 +73,11 @@ package manager, for example on Ubuntu:
 
 .. code:: sh
 
-    sudo apt install texlive-base texlive-latex-extra texlive-fonts-extra
+    sudo apt install \
+        texlive-base \
+        texlive-latex-extra \
+        texlive-fonts-extra \
+        texlive-fonts-recommended
 
 .. block-warning:: Note for macOS users
 
