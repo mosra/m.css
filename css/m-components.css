@@ -1512,5 +1512,3 @@ li:last-child > div.m-graph:last-child, li:last-child > div.m-graph.m-nopadb,
 li:last-child > div.m-plot:last-child, li:last-child > div.m-plot.m-nopadb {
   margin-bottom: 0;
 }
-
-/* kate: indent-width 2; */

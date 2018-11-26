@@ -24,17 +24,17 @@
 
 /* Grid container should always contain rows */
 .m-container > * {
-    background-color: #ff0000;
+  background-color: #ff0000;
 }
 .m-container > .m-row {
-    background-color: transparent;
+  background-color: transparent;
 }
 /* Grid row should always contain columns or a clearfix */
 .m-row > * {
-    background-color: #ff0000;
+  background-color: #ff0000;
 }
 .m-row > [class*='m-col-'], .m-row > [class*='m-clearfix-'] {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 /* Grid container can't contain another container */
@@ -68,4 +68,4 @@ table.m-scroll, table.m-scroll *,
 
 /* Links shouldn't contain links */
 a a
-    { background-color: #ff0000; }
+  { background-color: #ff0000; }
