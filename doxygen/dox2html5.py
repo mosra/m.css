@@ -1640,11 +1640,21 @@ def parse_template_params(state: State, element: ET.Element, description):
         if declname is not None:
             # declname or decltype?!
             template.name = declname.text
+        # Doxygen sometimes puts both in type, extract that, but only in case
+        # it's not too crazy to do (i.e., no pointer values, no nameless
+        # FooBar<T, U> types). Using rpartition() to split on the last found
+        # space, but in case of nothing found, rpartition() puts the full
+        # string into [2] instead of [0], so we have to account for that.
+        elif template.type[-1].isalnum():
+            parts = template.type.rpartition(' ')
+            if parts[1]:
+                template.type = parts[0]
+                template.name = parts[2]
+            else:
+                template.type = parts[2]
+                template.name = ''
         else:
-            # Doxygen sometimes puts both in type, extract that
-            parts = template.type.partition(' ')
-            template.type = parts[0]
-            template.name = parts[2]
+            template.name = ''
         default = i.find('defval')
         template.default = parse_type(state, default) if default is not None else ''
         if template.name in description:
