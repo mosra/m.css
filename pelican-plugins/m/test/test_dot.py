@@ -50,9 +50,8 @@ class Dot(PluginTestCase):
         self.assertEqual(*self.actual_expected_contents('page.html'))
 
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion("3.5") and
-                         LooseVersion(dot_version()) < LooseVersion("2.40.1") and
-                         LooseVersion(dot_version()) >= LooseVersion("2.38.0"),
-                         "The math plugin requires at least Python 3.5 installed. Dot < 2.38 and dot > 2.38 has a completely different output.")
+                         LooseVersion(dot_version()) < LooseVersion("2.40.1"),
+                         "The math plugin requires at least Python 3.5 installed. Dot < 2.40.1 has a completely different output.")
     def test_238(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
@@ -60,14 +59,3 @@ class Dot(PluginTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html', 'page-238.html'))
-
-    @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion("3.5") and
-                         LooseVersion(dot_version()) < LooseVersion("2.38.0"),
-                         "The math plugin requires at least Python 3.5 installed. Dot > 2.36 has a completely different output.")
-    def test_236(self):
-        self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
-            'M_DOT_FONT': 'DejaVu Sans'
-        })
-
-        self.assertEqual(*self.actual_expected_contents('page.html', 'page-236.html'))

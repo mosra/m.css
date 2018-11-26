@@ -362,18 +362,11 @@ class Dot(IntegrationTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1") and
-                         LooseVersion(dot_version()) >= LooseVersion("2.38.0"),
-                         "Dot < 2.38 and dot > 2.38 has a completely different output.")
+    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1"),
+                         "Dot < 2.40.1 has a completely different output.")
     def test_238(self):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html', 'index-238.html'))
-
-    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.38.0"),
-                         "Dot > 2.36 has a completely different output.")
-    def test_236(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html', 'index-236.html'))
 
     def test_warnings(self):
         self.run_dox2html5(wildcard='warnings.xml')
