@@ -857,6 +857,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # descriptions, bubble them up. THIS IS FUCKEN UNBELIEVABLE.
                 merge_parsed_subsections(parsed)
 
+                # Bubble up keywords as well
+                if parsed.search_keywords:
+                    out.search_keywords += parsed.search_keywords
+
             out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'table':
