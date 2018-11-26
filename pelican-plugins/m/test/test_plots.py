@@ -31,8 +31,6 @@ class Plots(PluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 
-    @unittest.skipIf(os.environ.get('TRAVIS_BROKEN_MATPLOTLIB_SEED'),
-        "Travis Python 3.4 and 3.6 has broken matplotlib seed, causing different clip-path ID")
     def test(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.plots'],
@@ -40,13 +38,3 @@ class Plots(PluginTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
-
-    @unittest.skipUnless(os.environ.get('TRAVIS_BROKEN_MATPLOTLIB_SEED'),
-        "Travis Python 3.4 and 3.6 has different matplotlib seed, causing different clip-path ID")
-    def test_broken_seed(self):
-        self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.plots'],
-            'M_PLOTS_FONT': 'DejaVu Sans'
-        })
-
-        self.assertEqual(*self.actual_expected_contents('page.html', 'page-travis-broken-matplotlib-seed.html'))
