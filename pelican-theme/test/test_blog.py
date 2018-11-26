@@ -560,8 +560,8 @@ class Feeds(BlogTestCase):
             'M_DISABLE_SOCIAL_META_TAGS': True,
             'FEED_ALL_ATOM': 'atom.xml',
             'FEED_ALL_ATOM_URL': 'feeds/atom.xml',
-            'CATEGORY_FEED_ATOM': '%s.atom.xml',
-            'CATEGORY_FEED_ATOM_URL': 'feeds/%s.atom.xml',
+            'CATEGORY_FEED_ATOM': '{slug}.atom.xml',
+            'CATEGORY_FEED_ATOM_URL': 'feeds/{slug}.atom.xml',
         })
 
         # There should be just the first column
@@ -576,7 +576,7 @@ class FeedsNoUrl(BlogTestCase):
         self.run_pelican({
             'M_DISABLE_SOCIAL_META_TAGS': True,
             'FEED_ALL_ATOM': 'feeds/atom.xml',
-            'CATEGORY_FEED_ATOM': 'feeds/%s.atom.xml',
+            'CATEGORY_FEED_ATOM': 'feeds/{slug}.atom.xml',
         })
 
         # The feed URLs should be the same as above

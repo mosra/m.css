@@ -15,9 +15,9 @@
   {% endif %}
   {% if category %}
   {% if CATEGORY_FEED_ATOM_URL %}
-  <link href="{{ CATEGORY_FEED_ATOM_URL|format(category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }} | {{ category|e }}" />
+  <link href="{{ CATEGORY_FEED_ATOM_URL.format(slug=category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }} | {{ category|e }}" />
   {% elif CATEGORY_FEED_ATOM %}
-  <link href="{{ CATEGORY_FEED_ATOM|format(category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }} | {{ category|e }}" />
+  <link href="{{ CATEGORY_FEED_ATOM.format(slug=category.slug)|format_siteurl }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME|e }} | {{ category|e }}" />
   {% endif %}
   {% endif %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
