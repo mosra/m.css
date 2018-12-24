@@ -432,8 +432,15 @@ def extract_id_hash(state: State, element: ET.Element) -> str:
     assert id.startswith(state.current_definition_url_base)
     return id[len(state.current_definition_url_base)+2:]
 
+and_re_src = re.compile(r'([^\s])&amp;&amp;([^\s])')
+and_re_dst = r'\1 &amp;&amp; \2'
+
 def fix_type_spacing(type: str) -> str:
-    return type.replace('&lt; ', '&lt;').replace(' &gt;', '&gt;').replace(' &amp;', '&amp;').replace(' *', '*')
+    return and_re_src.sub(and_re_dst, type
+        .replace('&lt; ', '&lt;')
+        .replace(' &gt;', '&gt;')
+        .replace(' &amp;', '&amp;')
+        .replace(' *', '*'))
 
 def parse_type(state: State, type: ET.Element) -> str:
     # Constructors and typeless enums might not have it
@@ -857,6 +864,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # descriptions, bubble them up. THIS IS FUCKEN UNBELIEVABLE.
                 merge_parsed_subsections(parsed)
 
+                # Bubble up keywords as well
+                if parsed.search_keywords:
+                    out.search_keywords += parsed.search_keywords
+
             out.parsed += '</{}>'.format(tag)
 
         elif i.tag == 'table':
@@ -921,43 +932,72 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # Not continuing with a section from before, put a header in
                 if not previous_section or (i.attrib['kind'] != 'par' and previous_section != i.attrib['kind']) or (i.attrib['kind'] == 'par' and i.find('title').text):
                     if i.attrib['kind'] == 'see':
-                        out.parsed += '<aside class="m-note m-default"><h4>See also</h4>'
+                        title = 'See also'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'note':
-                        out.parsed += '<aside class="m-note m-info"><h4>Note</h4>'
+                        title = 'Note'
+                        css_class = 'm-info'
                     elif i.attrib['kind'] == 'attention':
-                        out.parsed += '<aside class="m-note m-warning"><h4>Attention</h4>'
+                        title = 'Attention'
+                        css_class = 'm-warning'
                     elif i.attrib['kind'] == 'warning':
-                        out.parsed += '<aside class="m-note m-danger"><h4>Warning</h4>'
+                        title = 'Warning'
+                        css_class = 'm-danger'
                     elif i.attrib['kind'] == 'author':
-                        out.parsed += '<aside class="m-note m-default"><h4>Author</h4>'
+                        title = 'Author'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'authors':
-                        out.parsed += '<aside class="m-note m-default"><h4>Authors</h4>'
+                        title = 'Authors'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'copyright':
-                        out.parsed += '<aside class="m-note m-default"><h4>Copyright</h4>'
+                        title = 'Copyright'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'version':
-                        out.parsed += '<aside class="m-note m-default"><h4>Version</h4>'
+                        title = 'Version'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'since':
-                        out.parsed += '<aside class="m-note m-default"><h4>Since</h4>'
+                        title = 'Since'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'date':
-                        out.parsed += '<aside class="m-note m-default"><h4>Date</h4>'
+                        title = 'Date'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'pre':
-                        out.parsed += '<aside class="m-note m-success"><h4>Precondition</h4>'
+                        title = 'Precondition'
+                        css_class = 'm-success'
                     elif i.attrib['kind'] == 'post':
-                        out.parsed += '<aside class="m-note m-success"><h4>Postcondition</h4>'
+                        title = 'Postcondition'
+                        css_class = 'm-success'
                     elif i.attrib['kind'] == 'invariant':
-                        out.parsed += '<aside class="m-note m-success"><h4>Invariant</h4>'
+                        title = 'Invariant'
+                        css_class = 'm-success'
                     elif i.attrib['kind'] == 'remark':
-                        out.parsed += '<aside class="m-note m-default"><h4>Remark</h4>'
+                        title = 'Remark'
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'par':
-                        if add_css_class:
-                            out.parsed += '<aside class="{}"><h3>{}</h3>'.format(add_css_class, html.escape(i.findtext('title', '')))
-                        else:
-                            out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
+                        title = html.escape(i.findtext('title', ''))
+                        css_class = 'm-default'
                     elif i.attrib['kind'] == 'rcs':
-                        out.parsed += '<aside class="m-note m-default"><h4>{}</h4>'.format(html.escape(i.findtext('title', '')))
+                        title = html.escape(i.findtext('title', ''))
+                        css_class = 'm-default'
                     else: # pragma: no cover
-                        out.parsed += '<aside class="m-note">'
+                        title = ''
+                        css_class = ''
                         logging.warning("{}: ignoring {} kind of <simplesect>".format(state.current, i.attrib['kind']))
+
+                    if add_css_class:
+                        css_class = add_css_class
+                        heading = 'h3'
+                    else:
+                        css_class = 'm-note ' + css_class
+                        heading = 'h4'
+
+                    if title:
+                        out.parsed += '<aside class="{css_class}"><{heading}>{title}</{heading}>'.format(
+                            css_class=css_class,
+                            heading=heading,
+                            title=title)
+                    else:
+                        out.parsed += '<aside class="{}">'.format(css_class)
 
                 # Parse the section contents and bubble important stuff up
                 parsed, search_keywords, search_enum_values_as_keywords = parse_desc_keywords(state, i)
@@ -987,17 +1027,28 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             id = i.attrib['id']
             match = xref_id_rx.match(id)
             file = match.group(1)
-            if file.startswith('deprecated'):
-                color = 'm-danger'
-                out.is_deprecated = True
-            elif file.startswith('bug'):
-                color = 'm-danger'
-            elif file.startswith('todo'):
-                color = 'm-dim'
+            if add_css_class:
+                css_class = add_css_class
+                heading = 'h3'
             else:
-                color = 'm-default'
-            out.parsed += '<aside class="m-note {}"><h4><a href="{}.html#{}" class="m-dox">{}</a></h4>{}</aside>'.format(
-                color, file, match.group(2), i.find('xreftitle').text, parse_desc(state, i.find('xrefdescription')))
+                heading = 'h4'
+                css_class = 'm-note '
+                if file.startswith('deprecated'):
+                    css_class += 'm-danger'
+                    out.is_deprecated = True
+                elif file.startswith('bug'):
+                    css_class += 'm-danger'
+                elif file.startswith('todo'):
+                    css_class += 'm-dim'
+                else:
+                    css_class += 'm-default'
+            out.parsed += '<aside class="{css_class}"><{heading}><a href="{file}.html#{anchor}" class="m-dox">{title}</a></{heading}>{description}</aside>'.format(
+                css_class=css_class,
+                heading=heading,
+                file=file,
+                anchor=match.group(2),
+                title=i.find('xreftitle').text,
+                description=parse_desc(state, i.find('xrefdescription')))
 
         elif i.tag == 'parameterlist':
             assert element.tag == 'para' # is inside a paragraph :/
@@ -1589,11 +1640,21 @@ def parse_template_params(state: State, element: ET.Element, description):
         if declname is not None:
             # declname or decltype?!
             template.name = declname.text
+        # Doxygen sometimes puts both in type, extract that, but only in case
+        # it's not too crazy to do (i.e., no pointer values, no nameless
+        # FooBar<T, U> types). Using rpartition() to split on the last found
+        # space, but in case of nothing found, rpartition() puts the full
+        # string into [2] instead of [0], so we have to account for that.
+        elif template.type[-1].isalnum():
+            parts = template.type.rpartition(' ')
+            if parts[1]:
+                template.type = parts[0]
+                template.name = parts[2]
+            else:
+                template.type = parts[2]
+                template.name = ''
         else:
-            # Doxygen sometimes puts both in type, extract that
-            parts = template.type.partition(' ')
-            template.type = parts[0]
-            template.name = parts[2]
+            template.name = ''
         default = i.find('defval')
         template.default = parse_type(state, default) if default is not None else ''
         if template.name in description:

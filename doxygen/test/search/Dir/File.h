@@ -22,8 +22,8 @@ namespace Namespace {
 
 @section section2 A section, stuff inside should be propagated outside
 
-@note Keywords inside a note should be propagated outside:
-     @m_keywords{glClass()}
+-   Keywords inside a list
+-   @note inside a note should be propagated outside: @m_keywords{glClass()}
  */
 class Class {
     public:

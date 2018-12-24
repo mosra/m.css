@@ -1,7 +1,7 @@
 Examples
 ########
 
-:image: {filename}/static/site.jpg
+:image: {static}/static/site.jpg
 :badge: Info badge for the `Examples <{category}examples>`_ category provided
     by the `Metadata <{filename}/plugins/metadata.rst>`_ plugin.
 

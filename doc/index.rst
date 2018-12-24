@@ -27,7 +27,7 @@ m.css
 
 :save_as: index.html
 :url:
-:cover: {filename}/static/cover.jpg
+:cover: {static}/static/cover.jpg
 :summary: A no-nonsense, no-JavaScript CSS framework and Pelican theme for
     content-oriented websites
 :hide_navbar_brand: True
@@ -60,7 +60,7 @@ m.css
 
                 Get the essence
 
-                | :filesize-gz:`{filename}/../css/m-dark.compiled.css` of gzipped CSS,
+                | :filesize-gz:`{static}/../css/m-dark.compiled.css` of gzipped CSS,
                 | licensed under MIT
 
 .. container:: m-row m-container-inflate
@@ -69,7 +69,7 @@ m.css
 
         .. block-success:: *Pure* CSS and HTML
 
-            Everything you need is :filesize-gz:`{filename}/../css/m-dark.compiled.css`
+            Everything you need is :filesize-gz:`{static}/../css/m-dark.compiled.css`
             of compressed CSS. This framework has exactly 0 bytes of JavaScript
             because *nobody actually needs it*. Even for responsive websites.
 

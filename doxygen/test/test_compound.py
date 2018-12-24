@@ -235,3 +235,13 @@ class FilenameCase(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('pages.html'))
         self.assertEqual(*self.actual_expected_contents('_u_p_p_e_r_c_a_s_e.html'))
         self.assertEqual(*self.actual_expected_contents('class_u_p_p_e_r_c_l_a_s_s.html'))
+
+class CrazyTemplateParams(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'crazy_template_params', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+
+        # The file should have the whole template argument as a type
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))

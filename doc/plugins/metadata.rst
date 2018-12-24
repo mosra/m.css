@@ -135,7 +135,7 @@ and matching an author named *John Doe*:
 
     :twitter: @se7en
     :twitter_id: 7777777
-    :image: {filename}/authors/john-doe.jpg
+    :image: {static}/authors/john-doe.jpg
     :description: I'm not that serial killer.
     :summary: I'm really not that serial killer.
     :badge: No, really, don't confuse me with that guy.
@@ -206,7 +206,7 @@ and matching a category named *Guest posts*:
     Posts by our users
     ##################
 
-    :image: {filename}/categories/guest-posts.jpg
+    :image: {static}/categories/guest-posts.jpg
     :description: User stories and product reviews
     :summary: Stories of our users and honest reviews of our product.
     :badge: This article is a guest post. Want to share your story as well? Head

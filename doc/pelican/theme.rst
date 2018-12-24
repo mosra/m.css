@@ -32,6 +32,8 @@ Theme
 
         `« Writing content <{filename}/pelican/writing-content.rst>`_ | `Pelican <{filename}/pelican.rst>`_
 
+.. role:: py(code)
+    :language: py
 .. role:: rst(code)
     :language: rst
 .. |x| unicode:: U+00D7 .. nicer multiply sign
@@ -353,10 +355,10 @@ element. Indenting the lines is possible by putting an escaped space in front
     ########
 
     :css:
-        {filename}/static/webgl.css
-        {filename}/static/canvas-controls.css
+        {static}/static/webgl.css
+        {static}/static/canvas-controls.css
     :js:
-        {filename}/static/showcase.js
+        {static}/static/showcase.js
     :html_header:
         <script>
         \   function handleDrop(event) {
@@ -427,7 +429,7 @@ destination and URL.
 
     :save_as: index.html
     :url:
-    :cover: {filename}/static/cover.jpg
+    :cover: {static}/static/cover.jpg
     :hide_navbar_brand: True
     :landing:
         .. container:: m-row
@@ -577,7 +579,7 @@ social links:
 
     :save_as: index.html
     :url:
-    :cover: {filename}/static/cover.jpg
+    :cover: {static}/static/cover.jpg
     :summary: This is the brand you need.
 
 .. block-success:: Recommended sizes for cover images
@@ -645,7 +647,7 @@ title and subtitle that's then rendered in a different font size. Example:
     An article --- a jumbo one
     ##########################
 
-    :cover: {filename}/static/ship.jpg
+    :cover: {static}/static/ship.jpg
     :summary: Article summary paragraph.
 
     Article contents.
@@ -746,7 +748,7 @@ Example:
     An article without explicit summary
     ###################################
 
-    :cover: {filename}/static/ship.jpg
+    :cover: {static}/static/ship.jpg
     :hide_summary: True
 
     Implicit article summary paragraph.

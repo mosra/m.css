@@ -776,5 +776,3 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-container-inflatable section:target .m-note.m-dim {
   border-color: var(--dim-color);
 }
-
-/* kate: indent-width 2; */

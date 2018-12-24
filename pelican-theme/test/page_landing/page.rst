@@ -1,7 +1,7 @@
 A page title that displays only in title
 ########################################
 
-:cover: {filename}/ship.jpg
+:cover: {static}/ship.jpg
 :header: This shouldn't be visible anywhere.
 :footer: This is visible on the bottom.
 :landing:

@@ -40,6 +40,8 @@ Math and code
     :language: py
 .. role:: rst(code)
     :language: rst
+.. role:: sh(code)
+    :language: sh
 
 These plugins use external libraries to produce beautiful math and code
 rendering directly from your :abbr:`reST <reStructuredText>` sources.
@@ -71,7 +73,11 @@ package manager, for example on Ubuntu:
 
 .. code:: sh
 
-    sudo apt install texlive-base texlive-latex-extra texlive-fonts-extra
+    sudo apt install \
+        texlive-base \
+        texlive-latex-extra \
+        texlive-fonts-extra \
+        texlive-fonts-recommended
 
 .. block-warning:: Note for macOS users
 

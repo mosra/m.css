@@ -195,7 +195,7 @@ Example and corresponding output, note the indentation:
 
         Info block content.
 
-        .. figure:: {filename}/static/ship-small.jpg
+        .. figure:: {static}/static/ship-small.jpg
             :alt: Image alt text
 
             Figure title
