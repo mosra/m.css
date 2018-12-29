@@ -69,9 +69,9 @@ switch.
     It may work reasonably well with older versions, but I can't guarantee
     that. Upgrade to the latest version to have the best experience.
 
-    Some features depend on patches that are not yet integrated in Doxygen, in
-    that case the documentation mentions which revision to use or which patch
-    you need to apply.
+    Some features depend on newer versions or patches that are not yet
+    integrated in Doxygen, in that case the documentation mentions which
+    revision to use or which patch you need to apply.
 
 The base is contained in a single Python script and related style/template
 files, for advanced features such as math rendering it'll make use of internals
@@ -633,17 +633,16 @@ Table of contents for pages is generated only if they specify
 
 Doxygen by default doesn't render namespace members for file documentation in
 its XML output. To match the behavior of stock HTML output, enable the
-:ini:`XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE` option:
+:ini:`XML_NS_MEMB_FILE_SCOPE` option:
 
 .. code:: ini
 
-    # Requires a patch to Doxygen 1.8.14, see below
-    XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE = YES
+    XML_NS_MEMB_FILE_SCOPE = YES
 
 .. note-warning:: Doxygen patches
 
-    In order to use the :ini:`XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE` option, you
-    need Doxygen with :gh:`doxygen/doxygen#653` applied.
+    In order to use the :ini:`XML_NS_MEMB_FILE_SCOPE` option, you need Doxygen
+    1.8.15 (released December 2018).
 
 `Code highlighting`_
 --------------------
