@@ -1454,12 +1454,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     if element.tag == 'briefdescription':
         # JAVADOC_AUTOBRIEF is *bad*
         if state.doxyfile.get('JAVADOC_AUTOBRIEF', False):
-            # See the contents_brief_heading test for details
+            # See the contents_autobrief_heading test for details (only on
+            # Doxygen <= 1.8.14, 1.8.15 doesn't put <heading> there anymore)
             if has_block_elements:
                 logging.warning("{}: JAVADOC_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of {}".format(state.current, out.parsed))
                 out.parsed = ''
 
-            # See the contents_brief_multiline test for details
+            # See the contents_autobrief_multiline test for details
             elif paragraph_count > 1:
                 logging.warning("{}: JAVADOC_AUTOBRIEF produced a multi-line brief description. That's not supported, using just the first paragraph of {}".format(state.current, out.parsed))
 
@@ -1467,7 +1468,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 assert out.parsed.startswith('<p>') and end != -1
                 out.parsed = out.parsed[3:end]
 
-            # See contents_brief_hr for why I need to check for out.parsed
+            # See contents_autobrief_hr for why I need to check for out.parsed
+            # (only on Doxygen <= 1.8.14, 1.8.15 doesn't put <hr> there
+            # anymore)
             elif paragraph_count == 1 and out.parsed:
                 assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
                 out.parsed = out.parsed[3:-4]

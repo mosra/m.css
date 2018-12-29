@@ -292,6 +292,8 @@ class AutobriefHr(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'autobrief_hr', *args, **kwargs)
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test(self):
         self.run_dox2html5(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
@@ -308,6 +310,8 @@ class AutobriefHeading(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'autobrief_heading', *args, **kwargs)
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test(self):
         self.run_dox2html5(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
