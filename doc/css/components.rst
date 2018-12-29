@@ -36,6 +36,8 @@ Components
     :language: css
 .. role:: html(code)
     :language: html
+.. role:: rst(code)
+    :language: rst
 
 In `m-components.css <{filename}/css.rst>`_, m.css provides a set of basic
 components for further improving the layout and display of authored content.

@@ -32,6 +32,8 @@ Links and other
 
         `« Plots and graphs <{filename}/plugins/plots-and-graphs.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Metadata » <{filename}/plugins/metadata.rst>`_
 
+.. role:: html(code)
+    :language: html
 .. role:: py(code)
     :language: py
 .. role:: rst(code)
