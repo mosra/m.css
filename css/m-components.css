@@ -826,13 +826,15 @@ pre.m-code span.hll {
   margin-right: -1.0rem;
   padding-left: 1.0rem;
 }
-pre.m-code.m-inverted {
+
+/* Inverted code block / inline code */
+.m-code.m-inverted {
   color: var(--code-inverted-color);
 }
-pre.m-code.m-inverted > span {
+.m-code.m-inverted > span {
   opacity: 0.3333;
 }
-pre.m-code.m-inverted > span.hll {
+.m-code.m-inverted > span.hll {
   color: var(--color);
   opacity: 1;
   background-color: transparent;

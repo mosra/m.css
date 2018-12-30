@@ -1084,13 +1084,13 @@ pre.m-code span.hll {
   margin-right: -1.0rem;
   padding-left: 1.0rem;
 }
-pre.m-code.m-inverted {
+.m-code.m-inverted {
   color: rgba(230, 230, 230, 0.33);
 }
-pre.m-code.m-inverted > span {
+.m-code.m-inverted > span {
   opacity: 0.3333;
 }
-pre.m-code.m-inverted > span.hll {
+.m-code.m-inverted > span.hll {
   color: #dcdcdc;
   opacity: 1;
   background-color: transparent;
