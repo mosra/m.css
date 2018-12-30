@@ -80,3 +80,12 @@ class SignalsSlots(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='classClass.xml')
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
+
+class VariableTemplate(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'variable_template', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('structFoo.html'))
+        self.assertEqual(*self.actual_expected_contents('structBar.html'))

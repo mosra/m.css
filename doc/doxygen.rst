@@ -1760,25 +1760,29 @@ every item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`var.base_url`          Base URL of file containing detailed description
-                            [3]_
-:py:`var.id`                Identifier hash [3]_
-:py:`var.type`              Variable type [6]_
-:py:`var.name`              Variable name [4]_
-:py:`var.brief`             Brief description. Can be empty. [1]_
-:py:`var.description`       Detailed description. Can be empty. [2]_
-:py:`var.has_details`       If there is enough content for the full description
-                            block [5]_
-:py:`var.is_deprecated`     Whether the variable is deprecated. [7]_
-:py:`var.is_static`         If the variable is :cpp:`static`. Set only for
-                            member variables.
-:py:`var.is_protected`      If the variable is :cpp:`protected`. Set only for
-                            member variables.
-:py:`var.is_constexpr`      If the variable is :cpp:`constexpr`
-=========================== ===================================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`var.base_url`              Base URL of file containing detailed
+                                description [3]_
+:py:`var.id`                    Identifier hash [3]_
+:py:`var.type`                  Variable type [6]_
+:py:`var.name`                  Variable name [4]_
+:py:`var.templates`             Template specification for C++14 variable
+                                templates. See `Template properties`_ for
+                                details.
+:py:`var.has_template_details`  If template parameters have description
+:py:`var.brief`                 Brief description. Can be empty. [1]_
+:py:`var.description`           Detailed description. Can be empty. [2]_
+:py:`var.has_details`           If there is enough content for the full
+                                description block [5]_
+:py:`var.is_deprecated`         Whether the variable is deprecated. [7]_
+:py:`var.is_static`             If the variable is :cpp:`static`. Set only for
+                                member variables.
+:py:`var.is_protected`          If the variable is :cpp:`protected`. Set only
+                                for member variables.
+:py:`var.is_constexpr`          If the variable is :cpp:`constexpr`
+=============================== ===============================================
 
 `Define properties`_
 ````````````````````

@@ -1545,10 +1545,10 @@ def parse_enum_value_desc(state: State, element: ET.Element) -> str:
 def parse_var_desc(state: State, element: ET.Element) -> str:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
-    if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
-        logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in variable description, ignoring".format(state.current))
+    if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
+        logging.warning("{}: unexpected @param / @return / @retval / @exception found in variable description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
+    return (parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated)
 
 def parse_toplevel_desc(state: State, element: ET.Element):
     state.parsing_toplevel_desc = True
@@ -1850,9 +1850,10 @@ def parse_var(state: State, element: ET.Element):
     var.is_private = element.attrib['prot'] == 'private'
     var.name = element.find('name').text
     var.brief = parse_desc(state, element.find('briefdescription'))
-    var.description, search_keywords, var.is_deprecated = parse_var_desc(state, element)
+    var.description, templates, search_keywords, var.is_deprecated = parse_var_desc(state, element)
+    var.has_template_details, var.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
-    var.has_details = var.base_url == state.current_compound_url and var.description
+    var.has_details = var.base_url == state.current_compound_url and (var.description or var.has_template_details)
     if var.brief or var.has_details:
         # Avoid duplicates in search
         if var.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
