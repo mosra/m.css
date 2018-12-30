@@ -346,15 +346,26 @@ xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+|@)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
 slugify_hyphens_rx = re.compile(r"""[-\s]+""")
 
+class StateCompound:
+    def __init__(self):
+        self.id: str
+        self.kind: str
+        self.name: str
+        self.url: str
+        self.brief: str
+        self.has_details: bool
+        self.children: List[str]
+        self.parent: str = None
+
 class State:
     def __init__(self):
         self.basedir = ''
-        self.compounds: Dict[str, Any] = {}
+        self.compounds: Dict[str, StateCompound] = {}
         self.search: List[Any] = []
         self.examples: List[Any] = []
         self.doxyfile: Dict[str, str] = {}
         self.images: List[str] = []
-        self.current = ''
+        self.current = '' # current file being processed (for logging)
         self.current_prefix = []
         self.current_compound_url = None
         self.current_definition_url_base = None
@@ -1926,7 +1937,7 @@ def extract_metadata(state: State, xml):
         logging.debug("No useful info in {}, skipping".format(os.path.basename(xml)))
         return
 
-    compound = Empty()
+    compound = StateCompound()
     compound.id  = compounddef.attrib['id']
     compound.kind = compounddef.attrib['kind']
     # Compound name is page filename, so we have to use title there. The same
@@ -1942,7 +1953,6 @@ def extract_metadata(state: State, xml):
     # things need to have at least some documentation
     compound.has_details = compound.kind in ['group', 'page'] or compound.brief or compounddef.find('detaileddescription')
     compound.children = []
-    compound.parent = None # is filled in by postprocess_state()
 
     compound.is_deprecated = False
     for i in compounddef.find('detaileddescription').findall('.//xrefsect'):
@@ -1982,6 +1992,7 @@ def extract_metadata(state: State, xml):
     state.compounds[compound.id] = compound
 
 def postprocess_state(state: State):
+    # Save parent for each child
     for _, compound in state.compounds.items():
         for child in compound.children:
             if child in state.compounds:
@@ -2721,8 +2732,8 @@ def parse_xml(state: State, xml: str):
             compound.has_template_details, compound.templates = parse_template_params(state, compounddef_child, templates)
 
         elif (compounddef_child.tag not in ['compoundname',
-                                            'briefdescription',
-                                            'detaileddescription',
+                                            'briefdescription', # handled above
+                                            'detaileddescription', # handled above
                                             'innerpage', # doesn't add anything to output
                                             'location',
                                             'includes',
