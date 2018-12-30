@@ -53,10 +53,22 @@ class Blocks(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
-        self.assertEqual(*self.actual_expected_contents('todo.html'))
         # Multiple xrefitems should be merged into one
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
+                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
+    def test_xrefitem1814(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('todo.html'))
         self.assertEqual(*self.actual_expected_contents('old.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) <= LooseVersion("1.8.14"),
+                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
+    def test_xrefitem(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
+        self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
 class Code(IntegrationTestCase):
     def __init__(self, *args, **kwargs):

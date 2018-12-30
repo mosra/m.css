@@ -452,8 +452,12 @@ def parse_type(state: State, type: ET.Element) -> str:
         if i.tag == 'ref':
             out += parse_ref(state, i)
         elif i.tag == 'anchor':
-            # Anchor, used for example in deprecated/todo lists. Its base_url
-            # is always equal to base_url of the page.
+            # Anchor, used by <= 1.8.14 for deprecated/todo lists. Its base_url
+            # is always equal to base_url of the page. In 1.8.15 the anchor is
+            # in the description, making the anchor look extra awful:
+            # https://github.com/doxygen/doxygen/pull/6587
+            # TODO: this should get reverted and fixed properly so the
+            # one-on-one case works as it should
             out += '<a name="{}"></a>'.format(extract_id_hash(state, i))
         else: # pragma: no cover
             logging.warning("{}: ignoring {} in <type>".format(state.current, i.tag))
