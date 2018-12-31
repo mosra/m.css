@@ -428,6 +428,11 @@ def parse_ref(state: State, element: ET.Element) -> str:
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
+def make_include(state: State, file) -> Tuple[str, str]:
+    if file in state.includes and state.compounds[state.includes[file]].has_details:
+        return (html.escape('<{}>'.format(file)), state.compounds[state.includes[file]].url)
+    return None
+
 def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str]]:
     # Returns URL base (usually saved to state.current_definition_url_base and
     # used by extract_id_hash() later), base URL (with file extension), and the
@@ -440,14 +445,23 @@ def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, s
     include = None
     if state.current_kind in ['namespace', 'group']:
         file = element.find('location').attrib['file']
-        if file in state.includes and state.compounds[state.includes[file]].has_details:
-            include = (html.escape('<{}>'.format(file)), state.compounds[state.includes[file]].url)
+        include = make_include(state, file)
 
-        # If the include differs from current compound include, reset it to signal
-        # that the compound doesn't have one unique include file. This will get
-        # later picked up by parse_xml() which either adds has_details to all
-        # compounds or wipes the compound-specific includes.
-        if state.current_include and state.current_include != file:
+        # If the include for current namespace is not yet set (empty string)
+        # but also not already signalled to be non-unique using None, set it to
+        # this value. Need to do it this way instead of using the location
+        # information from the compound, because namespace location is
+        # sometimes pointed to a *.cpp file, which Doxygen sees before *.h.
+        if not state.current_include and state.current_include is not None:
+            assert state.current_kind == 'namespace'
+            state.current_include = file
+            # parse_xml() fills compound.include from this later
+
+        # If the include differs from current compound include, reset it to
+        # None to signal that the compound doesn't have one unique include
+        # file. This will get later picked up by parse_xml() which either adds
+        # has_details to all compounds or wipes the compound-specific includes.
+        elif state.current_include and state.current_include != file:
             state.current_include = None
 
     return id[:i], id[:i] + '.html', id[i+2:], include
@@ -2347,21 +2361,36 @@ def parse_xml(state: State, xml: str):
         state.current_prefix = []
 
     # Decide about the include file for this compound. Classes get it always,
-    # namespaces only if it we later don't discover that it's spread over
-    # multiple files; files and dirs don't need it (it's implicit) and it makes
-    # no sense for pages or modules.
+    # namespaces without any members too.
     state.current_kind = compound.kind
-    if compound.kind in ['struct', 'class', 'union', 'namespace']:
-        include = compounddef.find('location').attrib['file']
-        if include in state.includes and state.compounds[state.includes[include]].has_details:
-            compound.include = (html.escape('<{}>'.format(include)), state.compounds[state.includes[include]].url)
+    if compound.kind in ['struct', 'class', 'union'] or (compound.kind == 'namespace' and compounddef.find('innerclass') is None and compounddef.find('innernamespace') is None and compounddef.find('sectiondef') is None):
+        file = compounddef.find('location').attrib['file']
+        compound.include = make_include(state, file)
 
         # Save include for current compound. Every enum/var/function/... parser
         # checks against it and resets to None in case the include differs for
         # given entry, meaning all entries need to have their own include
         # definition instead. That's then finally reflected in has_details of
         # each entry.
-        state.current_include = include
+        state.current_include = file
+
+    # Namespaces with members get a placeholder that gets filled from the
+    # contents; but only if the namespace doesn't contain subnamespaces or
+    # classes, in which case it would be misleading. It's done this way because
+    # Doxygen sets namespace location to the first file it sees, which can be
+    # a *.cpp file. In case the namespace doesn't have any members, it's set
+    # above like with classes.
+    #
+    # Once current_include is filled for the first time in
+    # parse_id_and_include(), every enum/var/function/... parser checks against
+    # it and resets to None in case the include differs for given entry,
+    # meaning all entries need to have their own include definition instead.
+    # That's then finally reflected in has_details of each entry.
+    elif compound.kind == 'namespace' and compounddef.find('innerclass') is None and compounddef.find('innernamespace') is None:
+        state.current_include = ''
+
+    # Files and dirs don't need it (it's implicit); and it makes no sense for
+    # pages or modules.
     else:
         state.current_include = None
 
@@ -2887,6 +2916,10 @@ def parse_xml(state: State, xml: str):
     # #include (for all others the include info is either on a compound itself
     # or nowhere at all)
     if state.doxyfile['SHOW_INCLUDE_FILES'] and compound.kind in ['namespace', 'group']:
+        # If we're in a namespace, its include info comes from inside
+        if compound.kind == 'namespace' and state.current_include:
+            compound.include = make_include(state, state.current_include)
+
         # If we discovered that entries of this compound don't have a common
         # #include, flip on has_details of all entries and wipe the compound
         # include. Otherwise wipe the include information from everywhere but

@@ -111,3 +111,34 @@ void foo();
 #define A_DEFINE
 
 /*@}*/
+
+/**
+@brief This namespace should not have a global include
+
+Even though it's in a single file --- the contained namespace might or might
+not be in the same file and that could be misleading.
+*/
+namespace ContainsNamespace {
+    /**
+     * @brief This namespace should not have a global include either
+     *
+     * Because it has a class inside.
+     */
+    namespace ContainsClass {
+        /** @brief Union */
+        union Union {};
+
+        /** @brief This function should also have a local include */
+        void foo();
+    }
+
+    /** @brief This function should have a local include */
+    void foo();
+}
+
+/**
+@brief This namespace should have a global include
+
+Even though it has no members that could set the global include for it.
+*/
+namespace Empty {}

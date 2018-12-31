@@ -261,6 +261,12 @@ class Includes(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
 
+        # These two should all have local includes because otherwise it gets
+        # misleading; the Empty namespace a global one
+        self.assertEqual(*self.actual_expected_contents('namespaceContainsNamespace.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaceContainsNamespace_1_1ContainsClass.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaceEmpty.html'))
+
 class IncludesDisabled(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'includes_disabled', *args, **kwargs)
