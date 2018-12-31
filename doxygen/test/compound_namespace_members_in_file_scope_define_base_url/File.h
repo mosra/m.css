@@ -3,7 +3,7 @@
  */
 
 /* Preprocessor defines are usually first in the XML file, but if there is a
-   user-defined group, that is first. That triggers a corder case in define ID
+   user-defined group, that is first. That triggers a corner case in define ID
    extraction -- parsing the var will set current base url to namespaceNS,
    but that shouldn't trigger any error when parsing the define after. */
 

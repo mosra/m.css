@@ -302,9 +302,9 @@ In addition, the m.css Doxygen theme recognizes the following extra options:
 
 .. class:: m-table m-fullwidth
 
-=================================== =======================================
+=================================== ===========================================
 Variable                            Description
-=================================== =======================================
+=================================== ===========================================
 :ini:`M_THEME_COLOR`                Color for :html:`<meta name="theme-color" />`,
                                     corresponding to the CSS style. If empty,
                                     no :html:`<meta>` tag is rendered. See
@@ -378,7 +378,7 @@ Variable                            Description
                                     search is offered. See `Search`_ for more
                                     information. Has effect only if
                                     :ini:`M_SEARCH_DISABLED` is not ``YES``.
-=================================== =======================================
+=================================== ===========================================
 
 Note that namespace, directory and page lists are always fully expanded as
 these are not expected to be excessively large.
@@ -1295,7 +1295,9 @@ type, so either strings, booleans, or lists of strings. The exceptions are:
     :py:`url` is the favicon URL and :py:`type` is favicon MIME type to
     populate the ``type`` attribute of :html:`<link rel="favicon" />`.
 
- and in addition the following variables:
+.. class:: m-noindent
+
+and in addition the following variables:
 
 .. class:: m-table m-fullwidth
 
