@@ -1630,29 +1630,31 @@ item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`typedef.base_url`      Base URL of file containing detailed description
-                            [3]_
-:py:`typedef.id`            Identifier hash [3]_
-:py:`typedef.is_using`      Whether it is a :cpp:`typedef` or an :cpp:`using`
-:py:`typedef.type`          Typedef type, or what all goes before the name for
-                            function pointer typedefs [6]_
-:py:`typedef.args`          Typedef arguments, or what all goes after the name
-                            for function pointer typedefs [6]_
-:py:`typedef.name`          Typedef name [4]_
-:py:`typedef.templates`     Template specification. Set only in case of
-                            :cpp:`using`. . See `Template properties`_ for
-                            details.
-:py:`typedef.brief`         Brief description. Can be empty. [1]_
-:py:`typedef.is_deprecated` Whether the typedef is deprecated. [7]_
-:py:`typedef.description`   Detailed description. Can be empty. [2]_
-:py:`typedef.has_details`   If there is enough content for the full description
-                            block [4]_
-:py:`typedef.is_protected`  If the typedef is :cpp:`protected`. Set only for
-                            member types.
-=========================== ===================================================
+=================================== ===========================================
+Property                            Description
+=================================== ===========================================
+:py:`typedef.base_url`              Base URL of file containing detailed
+                                    description [3]_
+:py:`typedef.id`                    Identifier hash [3]_
+:py:`typedef.is_using`              Whether it is a :cpp:`typedef` or an
+                                    :cpp:`using`
+:py:`typedef.type`                  Typedef type, or what all goes before the
+                                    name for function pointer typedefs [6]_
+:py:`typedef.args`                  Typedef arguments, or what all goes after
+                                    the name for function pointer typedefs [6]_
+:py:`typedef.name`                  Typedef name [4]_
+:py:`typedef.templates`             Template specification. Set only in case of
+                                    :cpp:`using`. . See `Template properties`_
+                                    for details.
+:py:`typedef.has_template_details`  If template parameters have description
+:py:`typedef.brief`                 Brief description. Can be empty. [1]_
+:py:`typedef.is_deprecated`         Whether the typedef is deprecated. [7]_
+:py:`typedef.description`           Detailed description. Can be empty. [2]_
+:py:`typedef.has_details`           If there is enough content for the full
+                                    description block [4]_
+:py:`typedef.is_protected`          If the typedef is :cpp:`protected`. Set
+                                    only for member types.
+=================================== ===========================================
 
 `Function properties`_
 ``````````````````````
