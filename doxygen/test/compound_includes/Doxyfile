@@ -1,4 +1,4 @@
-INPUT                   = First.h Second.h
+INPUT                   = First.cpp First.h Second.h
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
