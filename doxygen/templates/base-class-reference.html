@@ -18,10 +18,16 @@
 {% block main %}
         <h1>
           {% if compound.templates != None %}
+          {% if compound.include %}
+          <div class="m-dox-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ compound.include[1] }}">{{ compound.include[0] }}</a></div>
+          {% endif %}
           {% set j = joiner(', ') %}
           <div class="m-dox-template">template&lt;{% for t in compound.templates %}{{ j() }}{{ t.type }}{% if t.name %} {{ t.name }}{% endif %}{% if t.default %} = {{ t.default }}{% endif%}{% endfor %}&gt;</div>
           {% endif %}
           {%+ for name, target in compound.breadcrumb[:-1] %}<span class="m-breadcrumb"><a href="{{ target }}">{{ name }}</a>::<wbr/></span>{% endfor %}{{ compound.breadcrumb[-1][0] }} <span class="m-thin">{{ compound.kind }}</span>
+          {% if compound.include and compound.templates == None %}
+          <div class="m-dox-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ compound.include[1] }}">{{ compound.include[0] }}</a></div>
+          {% endif %}
         </h1>
         {% if compound.brief %}
         <p>{{ compound.brief }}</p>

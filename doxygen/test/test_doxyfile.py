@@ -70,6 +70,7 @@ list using <span class="m-label m-dim">&darr;</span> and
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
             'PROJECT_NAME': 'My Pet Project',
+            'SHOW_INCLUDE_FILES': True,
             'XML_OUTPUT': 'xml'
         })
 

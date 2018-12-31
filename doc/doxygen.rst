@@ -209,6 +209,9 @@ If you see something unexpected or not see something expected, check the
     member detailed docs
 -   Deprecation markers are propagated to member and compound listing pages and
     search results; :cpp:`delete`\ d functions are marked in search as well
+-   Information about which file to :cpp:`#include` for given symbol is
+    provided also for free functions, enums, typedefs and variables (or
+    namespaces, in case all contents of the namespace are in a single file)
 
 `Intentionally unsupported features`_
 -------------------------------------
@@ -296,6 +299,15 @@ Variable                        Description
                                 commands. To ensure consistent look with the
                                 default m.css themes, set it to ``16``.
                                 Doxygen default is ``10``.
+:ini:`SHOW_INCLUDE_FILES`       Whether to show corresponding :cpp:`#include`
+                                file for classes, namespaces and namespace
+                                members. Originally :ini:`SHOW_INCLUDE_FILES`
+                                is meant to be for "a list of the files that
+                                are included by a file in the documentation of
+                                that file" but that kind of information is
+                                glaringly useless in every imaginable way and
+                                thus the theme is reusing it for something
+                                actually useful. Doxygen default is ``YES``.
 =============================== ===============================================
 
 In addition, the m.css Doxygen theme recognizes the following extra options:
@@ -1337,6 +1349,11 @@ Property                                Description
                                         corresponding to output file name
 :py:`compound.url`                      Compound URL (or where this file will
                                         be saved)
+:py:`compound.include`                  Corresponding :cpp:`#include` statement
+                                        to use given compound. Set only for
+                                        classes or namespaces that are all
+                                        defined in a single file. See
+                                        `Include properties`_ for details.
 :py:`compound.name`                     Compound name
 :py:`compound.templates`                Template specification. Set only for
                                         classes. See `Template properties`_ for
@@ -1480,6 +1497,21 @@ of :py:`(url, title)` for a page that's either previous in the defined order,
 one level up or next. For starting/ending page the :py:`prev`/:py:`next` is
 :py:`None`.
 
+`Include properties`_
+`````````````````````
+
+The :py:`compound.include` property is a tuple of :py:`(name, URL)` where
+:py:`name` is the include name (together with angle brackets, quotes or a macro
+name) and :py:`URL` is a URL pointing to the corresponding header documentation
+file. This property is present only if the corresponding header documentation
+is present. This property is present for classes; namespaces have it only when
+all documented namespace contents are defined in a single file. For modules and
+namespaces spread over multiple files this property is presented separately for
+each enum, typedef, function, variable or define inside given module or
+namespace. Directories, files and file members don't provide this property,
+since in that case the mapping to a corresponding :cpp:`#include` file is known
+implicitly.
+
 `Module properties`_
 ````````````````````
 
@@ -1590,6 +1622,11 @@ Property                        Description
 =============================== ===============================================
 :py:`enum.base_url`             Base URL of file containing detailed
                                 description [3]_
+:py:`enum.include`              Corresponding :cpp:`#include` to get the enum
+                                definition. Present only for enums inside
+                                modules or inside namespaces that are spread
+                                over multiple files.
+                                See `Include properties`_ for more information.
 :py:`enum.id`                   Identifier hash [3]_
 :py:`enum.type`                 Enum type or empty if implicitly typed [6]_
 :py:`enum.is_strong`            If the enum is strong
@@ -1635,6 +1672,12 @@ Property                            Description
 =================================== ===========================================
 :py:`typedef.base_url`              Base URL of file containing detailed
                                     description [3]_
+:py:`typedef.include`               Corresponding :cpp:`#include` to get the
+                                    typedef declaration. Present only for
+                                    typedefs inside modules or inside
+                                    namespaces that are spread over multiple
+                                    files. See `Include properties`_ for more
+                                    information.
 :py:`typedef.id`                    Identifier hash [3]_
 :py:`typedef.is_using`              Whether it is a :cpp:`typedef` or an
                                     :cpp:`using`
@@ -1674,6 +1717,11 @@ Property                        Description
 =============================== ===============================================
 :py:`func.base_url`             Base URL of file containing detailed
                                 description [3]_
+:py:`func.include`              Corresponding :cpp:`#include` to get the
+                                function declaration. Present only for
+                                functions inside modules or inside namespaces
+                                that are spread over multiple files. See
+                                `Include properties`_ for more information.
 :py:`func.id`                   Identifier hash [3]_
 :py:`func.type`                 Function return type [6]_
 :py:`func.name`                 Function name [4]_
@@ -1765,6 +1813,11 @@ Property                        Description
 =============================== ===============================================
 :py:`var.base_url`              Base URL of file containing detailed
                                 description [3]_
+:py:`var.include`               Corresponding :cpp:`#include` to get the
+                                variable declaration. Present only for
+                                variables inside modules or inside namespaces
+                                that are spread over multiple files. See
+                                `Include properties`_ for more information.
 :py:`var.id`                    Identifier hash [3]_
 :py:`var.type`                  Variable type [6]_
 :py:`var.name`                  Variable name [4]_
@@ -1795,6 +1848,12 @@ item has the following properties:
 =============================== ===============================================
 Property                        Description
 =============================== ===============================================
+:py:`define.include`            Corresponding :cpp:`#include` to get the
+                                define definition. Present only for defines
+                                inside modules, since otherwise the define is
+                                documented inside a file docs and the
+                                corresponding include is known implicitly. See
+                                `Include properties`_ for more information.
 :py:`define.id`                 Identifier hash [3]_
 :py:`define.name`               Define name
 :py:`define.params`             List of macro parameter names. See below for
@@ -1953,11 +2012,11 @@ all directories are before all files.
     :py:`compound.prefix_wbr` to it to get the fully qualified name.
 .. [5] :py:`compound.has_*_details` and :py:`i.has_details` are :py:`True` if
     there is detailed description, function/template/macro parameter
-    documentation or enum value listing that makes it worth to render the full
-    description block. If :py:`False`, the member should be included only in
-    the brief listing on top of the page to avoid unnecessary repetition. If
-    :py:`i.base_url` is not the same as :py:`compound.url`, its
-    :py:`i.has_details` is always set to :py:`False`.
+    documentation, enum value listing or an entry-specific :cpp:`#include` that
+    makes it worth to render the full description block. If :py:`False`, the
+    member should be included only in the brief listing on top of the page to
+    avoid unnecessary repetition. If :py:`i.base_url` is not the same as
+    :py:`compound.url`, its :py:`i.has_details` is always set to :py:`False`.
 .. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
     contains links to related documentation
 .. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given

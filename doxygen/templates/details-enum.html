@@ -9,6 +9,13 @@
               enum {% if enum.is_strong %}class {% endif %}{{ prefix }}<a href="#{{ enum.id }}" class="m-dox-self">{{ enum.name }}</a>{% if enum.type %}: {{ enum.type }}{% endif %}{% if enum.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}
               {# not sure why there needs to be this space #}
 
+              {% if enum.include %}
+              {# Template info can be only present if the enum is inside a
+                 templated class, but in that case we have global include
+                 information, so no need to handle case where
+                 `enum.include and compound.templates != None` #}
+              <div class="m-dox-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ enum.include[1] }}">{{ enum.include[0] }}</a></div>
+              {% endif %}
             </h3>
             {% if enum.brief %}{# brief can be omitted for anonymous enums #}
             <p>{{ enum.brief }}</p>

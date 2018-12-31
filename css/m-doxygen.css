@@ -23,7 +23,8 @@
 */
 
 a.m-dox, a.m-dox-self, a.m-dox-external,
-ul.m-dox li.m-dox-expansible > a:first-child, ul.m-dox li.m-dox-collapsible > a:first-child {
+ul.m-dox li.m-dox-expansible > a:first-child, ul.m-dox li.m-dox-collapsible > a:first-child,
+.m-code.m-inverted.m-dox-include > a {
   text-decoration: none;
 }
 a.m-dox, a.m-dox-self {
@@ -103,11 +104,16 @@ ul.m-dox li.m-dox-expansible > a:first-child:before, ul.m-dox li.m-dox-collapsib
 ul.m-dox li.m-dox-expansible > a:first-child:before { content: '⊕'; }
 ul.m-dox li.m-dox-collapsible > a:first-child:before { content: '⊖'; }
 
-h1 .m-dox-template {
+h1 .m-dox-template, h1 .m-dox-include {
   font-size: 1.3rem;
   font-weight: normal;
 }
-h3 .m-dox-template {
+/* If there's no template, the include is shown after in a slightly more packed
+   layout */
+h1 .m-dox-include:last-child {
+  margin-bottom: -0.5rem;
+}
+h3 .m-dox-template, h3 .m-dox-include {
   font-size: 1rem;
   font-weight: normal;
 }
@@ -124,6 +130,16 @@ dl.m-dox dd svg.m-math, ul.m-dox li > span.m-dox svg.m-math {
 dl.m-dox dd a:hover, dl.m-dox dd a:focus, dl.m-dox dd a:active,
 ul.m-dox li > span.m-dox a:hover, ul.m-dox li > span.m-dox a:focus, ul.m-dox li > span.m-dox a:active {
   color: var(--dim-link-active-color);
+}
+/* So the link gets highlighted on hover */
+.m-code.m-inverted.m-dox-include > a:link,
+.m-code.m-inverted.m-dox-include > a:visited {
+  opacity: 0.6666; /* Same as .m-code.m-inverted > span */
+}
+.m-code.m-inverted.m-dox-include > a:hover,
+.m-code.m-inverted.m-dox-include > a:focus,
+.m-code.m-inverted.m-dox-include > a:active {
+  opacity: 1;
 }
 
 article section.m-dox-details > div {

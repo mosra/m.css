@@ -361,11 +361,21 @@ class State:
     def __init__(self):
         self.basedir = ''
         self.compounds: Dict[str, StateCompound] = {}
+        self.includes: Dict[str, str] = {}
         self.search: List[Any] = []
         self.examples: List[Any] = []
         self.doxyfile: Dict[str, str] = {}
         self.images: List[str] = []
         self.current = '' # current file being processed (for logging)
+        # Current kind of compound being processed. Affects current_include
+        # below (i.e., per-entry includes are parsed only for namespaces or
+        # modules, because for classes they are consistent and don't need to be
+        # repeated).
+        self.current_kind = None
+        # If this is None (or becomes None), it means the compound is spread
+        # over multiple files and thus every entry needs its own specific
+        # include definition
+        self.current_include = None
         self.current_prefix = []
         self.current_compound_url = None
         self.current_definition_url_base = None
@@ -418,13 +428,29 @@ def parse_ref(state: State, element: ET.Element) -> str:
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
-def parse_id(element: ET.Element) -> Tuple[str, str, str]:
+def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str]]:
     # Returns URL base (usually saved to state.current_definition_url_base and
     # used by extract_id_hash() later), base URL (with file extension), and the
     # actual ID
     id = element.attrib['id']
     i = id.rindex('_1')
-    return id[:i], id[:i] + '.html', id[i+2:]
+
+    # Extract the corresponding include, if the current compound is a namespace
+    # or a module
+    include = None
+    if state.current_kind in ['namespace', 'group']:
+        file = element.find('location').attrib['file']
+        if file in state.includes and state.compounds[state.includes[file]].has_details:
+            include = (html.escape('<{}>'.format(file)), state.compounds[state.includes[file]].url)
+
+        # If the include differs from current compound include, reset it to signal
+        # that the compound doesn't have one unique include file. This will get
+        # later picked up by parse_xml() which either adds has_details to all
+        # compounds or wipes the compound-specific includes.
+        if state.current_include and state.current_include != file:
+            state.current_include = None
+
+    return id[:i], id[:i] + '.html', id[i+2:], include
 
 def extract_id_hash(state: State, element: ET.Element) -> str:
     # Can't use parse_id() here as sections with _1 in it have it verbatim
@@ -1593,7 +1619,7 @@ def parse_enum(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'enum'
 
     enum = Empty()
-    state.current_definition_url_base, enum.base_url, enum.id = parse_id(element)
+    state.current_definition_url_base, enum.base_url, enum.id, enum.include = parse_id_and_include(state, element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
@@ -1695,7 +1721,7 @@ def parse_typedef(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'typedef'
 
     typedef = Empty()
-    state.current_definition_url_base, typedef.base_url, typedef.id = parse_id(element)
+    state.current_definition_url_base, typedef.base_url, typedef.id, typedef.include = parse_id_and_include(state, element)
     typedef.is_using = element.findtext('definition', '').startswith('using')
     typedef.type = parse_type(state, element.find('type'))
     typedef.args = parse_type(state, element.find('argsstring'))
@@ -1723,7 +1749,7 @@ def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] in ['function', 'friend', 'signal', 'slot']
 
     func = Empty()
-    state.current_definition_url_base, func.base_url, func.id = parse_id(element)
+    state.current_definition_url_base, func.base_url, func.id, func.include = parse_id_and_include(state, element)
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
@@ -1838,7 +1864,7 @@ def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
 
     var = Empty()
-    state.current_definition_url_base, var.base_url, var.id = parse_id(element)
+    state.current_definition_url_base, var.base_url, var.id, var.include = parse_id_and_include(state, element)
     var.type = parse_type(state, element.find('type'))
     if var.type.startswith('constexpr'):
         var.type = var.type[10:]
@@ -1875,7 +1901,7 @@ def parse_define(state: State, element: ET.Element):
     # so we don't need to have define.base_url. Can't use extract_id_hash()
     # here because current_definition_url_base might be stale. See a test in
     # compound_namespace_members_in_file_scope_define_base_url.
-    state.current_definition_url_base, _, define.id = parse_id(element)
+    state.current_definition_url_base, _, define.id, define.include = parse_id_and_include(state, element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
     define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
@@ -2022,6 +2048,29 @@ def postprocess_state(state: State):
 
         # Other compounds are not in any index pages or breadcrumb, so leaf
         # name not needed
+
+    # Build reverse header name to ID mapping for #include information, unless
+    # it's explicitly disabled. Doxygen doesn't provide full path for files so
+    # we need to combine that ourselves. Ugh. (Yes, I know SHOW_INCLUDE_FILES
+    # is meant to be for "a list of the files that are included by a file in
+    # the documentation of that file" but that kind of information is so
+    # glaringly useless in every imaginable way so I'm reusing it for something
+    # saner.)
+    if state.doxyfile['SHOW_INCLUDE_FILES']:
+        for _, compound in state.compounds.items():
+            if not compound.kind == 'file': continue
+
+            # Gather parent compounds
+            path_reverse = [compound.id]
+            while path_reverse[-1] in state.compounds and state.compounds[path_reverse[-1]].parent:
+                path_reverse += [state.compounds[path_reverse[-1]].parent]
+
+            # Fill breadcrumb with leaf names and URLs
+            include = []
+            for i in reversed(path_reverse):
+                include += [state.compounds[i].leaf_name]
+
+            state.includes['/'.join(include)] = compound.id
 
     # Assign names and URLs to menu items. The link can be either a predefined
     # keyword from the below list, a Doxygen symbol, or a HTML code. The
@@ -2235,6 +2284,7 @@ def parse_xml(state: State, xml: str):
     # in file docs and namespace docs, for example)
     state.current_compound_url = compound.url
     state.current_definition_url_base = compound.url_base
+    compound.include = None
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
@@ -2295,6 +2345,25 @@ def parse_xml(state: State, xml: str):
         state.current_prefix = [name for name, _ in compound.breadcrumb]
     else:
         state.current_prefix = []
+
+    # Decide about the include file for this compound. Classes get it always,
+    # namespaces only if it we later don't discover that it's spread over
+    # multiple files; files and dirs don't need it (it's implicit) and it makes
+    # no sense for pages or modules.
+    state.current_kind = compound.kind
+    if compound.kind in ['struct', 'class', 'union', 'namespace']:
+        include = compounddef.find('location').attrib['file']
+        if include in state.includes and state.compounds[state.includes[include]].has_details:
+            compound.include = (html.escape('<{}>'.format(include)), state.compounds[state.includes[include]].url)
+
+        # Save include for current compound. Every enum/var/function/... parser
+        # checks against it and resets to None in case the include differs for
+        # given entry, meaning all entries need to have their own include
+        # definition instead. That's then finally reflected in has_details of
+        # each entry.
+        state.current_include = include
+    else:
+        state.current_include = None
 
     if compound.kind == 'page':
         # Drop TOC for pages, if not requested
@@ -2736,7 +2805,7 @@ def parse_xml(state: State, xml: str):
                                             'briefdescription', # handled above
                                             'detaileddescription', # handled above
                                             'innerpage', # doesn't add anything to output
-                                            'location',
+                                            'location', # handled above
                                             'includes',
                                             'includedby',
                                             'incdepgraph',
@@ -2813,6 +2882,56 @@ def parse_xml(state: State, xml: str):
 
         else:
             compound.breadcrumb = [(compound.name, compound.id + '.html')]
+
+    # Special handling for compounds that might or might not have a common
+    # #include (for all others the include info is either on a compound itself
+    # or nowhere at all)
+    if state.doxyfile['SHOW_INCLUDE_FILES'] and compound.kind in ['namespace', 'group']:
+        # If we discovered that entries of this compound don't have a common
+        # #include, flip on has_details of all entries and wipe the compound
+        # include. Otherwise wipe the include information from everywhere but
+        # the compound.
+        if not state.current_include:
+            compound.include = None
+        for entry in compound.enums:
+            if entry.include and not state.current_include:
+                entry.has_details = True
+                compound.has_enum_details = True
+            else:
+                entry.include = None
+        for entry in compound.typedefs:
+            if entry.include and not state.current_include:
+                entry.has_details = True
+                compound.has_typedef_details = True
+            else:
+                entry.include = None
+        for entry in compound.funcs:
+            if entry.include and not state.current_include:
+                entry.has_details = True
+                compound.has_func_details = True
+            else:
+                entry.include = None
+        for entry in compound.vars:
+            if entry.include and not state.current_include:
+                entry.has_details = True
+                compound.has_var_details = True
+            else:
+                entry.include = None
+        for entry in compound.defines:
+            if entry.include and not state.current_include:
+                entry.has_details = True
+                compound.has_define_details = True
+            else:
+                entry.include = None
+        # Skipping public_types etc., as that is for classes which have a
+        # global include anyway
+        for group in compound.groups:
+            for kind, entry in group.members:
+                if entry.include and not state.current_include:
+                    entry.has_details = True
+                    setattr(compound, 'has_{}_details'.format(kind), True)
+                else:
+                    entry.include = None
 
     # Add the compound to search data, if it's documented
     # TODO: add example sources there? how?
@@ -2983,6 +3102,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'HTML_EXTRA_FILES': [],
         'DOT_FONTNAME': ['Helvetica'],
         'DOT_FONTSIZE': ['10'],
+        'SHOW_INCLUDE_FILES': ['YES'],
 
         'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
         'M_FILE_TREE_EXPAND_LEVELS': ['1'],
@@ -3114,6 +3234,7 @@ list using <span class="m-label m-dim">&darr;</span> and
     # Boolean values that we want
     for i in ['CREATE_SUBDIRS',
               'JAVADOC_AUTOBRIEF',
+              'SHOW_INCLUDE_FILES',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
               'M_SEARCH_DOWNLOAD_BINARY']:
