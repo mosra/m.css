@@ -3324,6 +3324,11 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                 output = os.path.join(html_output, file)
                 with open(output, 'wb') as f:
                     f.write(rendered.encode('utf-8'))
+                    # Add back a trailing newline so we don't need to bother
+                    # with patching test files to include a trailing newline to
+                    # make Git happy
+                    # TODO could keep_trailing_newline fix this better?
+                    f.write(b'\n')
         else:
             parsed = parse_xml(state, file)
             if not parsed: continue
@@ -3337,6 +3342,11 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             output = os.path.join(html_output, parsed.compound.url)
             with open(output, 'wb') as f:
                 f.write(rendered.encode('utf-8'))
+                # Add back a trailing newline so we don't need to bother with
+                # patching test files to include a trailing newline to make Git
+                # happy
+                # TODO could keep_trailing_newline fix this better?
+                f.write(b'\n')
 
     # Empty index page in case no mainpage documentation was provided so
     # there's at least some entrypoint. Doxygen version is not set in this
@@ -3355,6 +3365,11 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         output = os.path.join(html_output, 'index.html')
         with open(output, 'wb') as f:
             f.write(rendered.encode('utf-8'))
+            # Add back a trailing newline so we don't need to bother with
+            # patching test files to include a trailing newline to make Git
+            # happy
+            # TODO could keep_trailing_newline fix this better?
+            f.write(b'\n')
 
     if not state.doxyfile['M_SEARCH_DISABLED']:
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
