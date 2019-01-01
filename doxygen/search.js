@@ -40,6 +40,10 @@ var Search = {
        only after mouse moves */
     mouseMovedSinceLastRender: false,
 
+    /* Whether we can go back in history in order to hide the search box or
+       not. We can't do that if we arrived directly on #search from outside. */
+    canGoBackToHideSearch: false,
+
     init: function(buffer, maxResults) {
         let view = new DataView(buffer);
 
@@ -512,6 +516,7 @@ function updateForSearchVisible() {
 /* istanbul ignore next */
 function showSearch() {
     window.location.hash = '#search';
+    Search.canGoBackToHideSearch = true;
 
     updateForSearchVisible();
     return false;
@@ -519,8 +524,17 @@ function showSearch() {
 
 /* istanbul ignore next */
 function hideSearch() {
-    /* Go back to the previous state (that removes the #search hash) */
-    window.history.back();
+    /* If the search box was opened using showSearch(), we can go back in the
+       history. Otherwise (for example when we landed to #search from a
+       bookmark or another server), going back would not do the right thing and
+       in that case we simply replace the current history state. */
+    if(Search.canGoBackToHideSearch) {
+        Search.canGoBackToHideSearch = false;
+        window.history.back();
+    } else {
+        window.location.hash = '#!';
+        window.history.replaceState('', '', window.location.pathname);
+    }
 
     /* Restore scrollbar, prevent page layout jumps */
     document.body.style.overflow = 'auto';
