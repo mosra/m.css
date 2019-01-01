@@ -354,6 +354,8 @@ class StateCompound:
         self.url: str
         self.brief: str
         self.has_details: bool
+        self.is_deprecated: bool
+        self.is_final: bool = None
         self.children: List[str]
         self.parent: str = None
 
@@ -1790,12 +1792,9 @@ def parse_func(state: State, element: ET.Element):
     func.is_virtual = element.attrib['virt'] != 'non-virtual'
     if element.attrib['static'] == 'yes':
         func.prefix += 'static '
-    signature = element.find('argsstring').text
-    if signature.endswith(' noexcept'):
-        signature = signature[:-9]
-        func.is_noexcept = True
-    else:
-        func.is_noexcept = False
+    # Extract additional C++11 stuff from the signature. Order matters, going
+    # from the keywords that can be rightmost to the leftmost.
+    signature: str = element.find('argsstring').text
     if signature.endswith('=default'):
         signature = signature[:-8]
         func.is_defaulted = True
@@ -1811,6 +1810,32 @@ def parse_func(state: State, element: ET.Element):
         func.is_pure_virtual = True
     else:
         func.is_pure_virtual = False
+    # Final tested twice because it can be both `override final`
+    func.is_final = False
+    if signature.endswith(' final'):
+        signature = signature[:-6]
+        func.is_final = True
+    if signature.endswith(' override'):
+        signature = signature[:-9]
+        func.is_override = True
+    else:
+        func.is_override = False
+    # ... and `final override`
+    if signature.endswith(' final'):
+        signature = signature[:-6]
+        func.is_final = True
+    if signature.endswith(' noexcept'):
+        signature = signature[:-9]
+        func.is_noexcept = True
+        func.is_conditional_noexcept = False
+    elif ' noexcept(' in signature:
+        signature = signature[:signature.index(' noexcept(')]
+        func.is_noexcept = True
+        func.is_conditional_noexcept = True
+    else:
+        func.is_noexcept = False
+        func.is_conditional_noexcept = False
+    # Put the rest (const, volatile, ...) into a suffix
     func.suffix = html.escape(signature[signature.rindex(')') + 1:].strip())
     if func.suffix: func.suffix = ' ' + func.suffix
     # Protected / private makes no sense for friend functions
@@ -1995,6 +2020,7 @@ def extract_metadata(state: State, xml):
     compound.has_details = compound.kind in ['group', 'page'] or compound.brief or compounddef.find('detaileddescription')
     compound.children = []
 
+    # Deprecation status
     compound.is_deprecated = False
     for i in compounddef.find('detaileddescription').findall('.//xrefsect'):
         id = i.attrib['id']
@@ -2003,6 +2029,12 @@ def extract_metadata(state: State, xml):
         if file.startswith('deprecated'):
             compound.is_deprecated = True
             break
+
+    # Final classes
+    if compound.kind in ['struct', 'class', 'union'] and compounddef.attrib.get('final') == 'yes':
+        compound.is_final = True
+    else:
+        compound.is_final = False
 
     if compound.kind in ['class', 'struct', 'union']:
         # Fix type spacing
@@ -2360,6 +2392,12 @@ def parse_xml(state: State, xml: str):
     else:
         state.current_prefix = []
 
+    # Final classes
+    if compound.kind in ['struct', 'class', 'union'] and compounddef.attrib.get('final') == 'yes':
+        compound.is_final = True
+    else:
+        compound.is_final = False
+
     # Decide about the include file for this compound. Classes get it always,
     # namespaces without any members too.
     state.current_kind = compound.kind
@@ -2537,6 +2575,8 @@ def parse_xml(state: State, xml: str):
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
                     class_.is_deprecated = symbol.is_deprecated
+                    class_.is_virtual = compounddef_child.attrib['virt'] == 'virtual'
+                    class_.is_final = symbol.is_final
 
                     compound.derived_classes += [class_]
 

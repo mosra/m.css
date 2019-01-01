@@ -61,6 +61,7 @@ class Derived(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classNamespace_1_1VirtualBase.html'))
         self.assertEqual(*self.actual_expected_contents('classBaseOutsideANamespace.html'))
         self.assertEqual(*self.actual_expected_contents('classDerivedOutsideANamespace.html'))
+        self.assertEqual(*self.actual_expected_contents('structAnother_1_1Final.html'))
 
 class Friends(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -89,3 +90,14 @@ class VariableTemplate(IntegrationTestCase):
         self.run_dox2html5(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('structFoo.html'))
         self.assertEqual(*self.actual_expected_contents('structBar.html'))
+
+class FunctionAttributes(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'function_attributes', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('structFoo.html'))
+        self.assertEqual(*self.actual_expected_contents('classBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classDerived.html'))
+        self.assertEqual(*self.actual_expected_contents('structFinal.html'))

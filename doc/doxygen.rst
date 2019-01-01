@@ -1396,6 +1396,8 @@ Property                                Description
 :py:`compound.footer_navigation`        Footer navigation of a page. See
                                         `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
+:py:`compound.is_final`                 Whether the class is :cpp:`final`. Set
+                                        only for classes.
 :py:`compound.is_deprecated`            Whether the compound is deprecated. [7]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
 :py:`compound.modules`                  List of submodules in this compound.
@@ -1636,8 +1638,11 @@ Property                    Description
 :py:`class.is_deprecated`   Whether the class is deprecated. [7]_
 :py:`class.is_protected`    Whether this is a protected base class. Set only
                             for base classes.
-:py:`class.is_virtual`      Whether this is a virtual base class. Set only for
-                            base classes.
+:py:`class.is_virtual`      Whether this is a virtual base class or a
+                            virtually derived class. Set only for base /
+                            derived classes.
+:py:`class.is_final`        Whether this is a final derived class. Set only for
+                            derived classes.
 =========================== ===================================================
 
 `Enum properties`_
@@ -1743,65 +1748,75 @@ a list of functions, where every item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=============================== ===============================================
-Property                        Description
-=============================== ===============================================
-:py:`func.base_url`             Base URL of file containing detailed
-                                description [3]_
-:py:`func.include`              Corresponding :cpp:`#include` to get the
-                                function declaration. Present only for
-                                functions inside modules or inside namespaces
-                                that are spread over multiple files. See
-                                `Include properties`_ for more information.
-:py:`func.id`                   Identifier hash [3]_
-:py:`func.type`                 Function return type [6]_
-:py:`func.name`                 Function name [4]_
-:py:`func.templates`            Template specification. See
-                                `Template properties`_ for details.
-:py:`func.has_template_details` If template parameters have description
-:py:`func.params`               List of function parameters. See below for
-                                details.
-:py:`func.has_param_details`    If function parameters have description
-:py:`func.return_value`         Return value description. Can be empty.
-:py:`func.return_values`        Description of particular return values. See
-                                below for details.
-:py:`func.exceptions`           Description of particular exception types. See
-                                below for details.
-:py:`func.brief`                Brief description. Can be empty. [1]_
-:py:`func.description`          Detailed description. Can be empty. [2]_
-:py:`func.has_details`          If there is enough content for the full
-                                description block [5]_
-:py:`func.prefix`               Function signature prefix, containing keywords
-                                such as :cpp:`static`. Information about
-                                :cpp:`constexpr`\ ness, :cpp:`explicit`\ ness
-                                and :cpp:`virtual`\ ity is removed from the
-                                prefix and available via other properties.
-:py:`func.suffix`               Function signature suffix, containing keywords
-                                such as :cpp:`const` and r-value overloads.
-                                Information about :cpp:`noexcept`, pure
-                                :cpp:`virtual`\ ity and :cpp:`delete`\ d /
-                                :cpp:`default`\ ed functions is removed from
-                                the suffix and available via other properties.
-:py:`func.is_deprecated`        Whether the function is deprecated. [7]_
-:py:`func.is_protected`         If the function is :cpp:`protected`. Set only
-                                for member functions.
-:py:`func.is_private`           If the function is :cpp:`private`. Set only for
-                                member functions.
-:py:`func.is_explicit`          If the function is :cpp:`explicit`. Set only
-                                for member functions.
-:py:`func.is_virtual`           If the function is :cpp:`virtual`. Set only for
-                                member functions.
-:py:`func.is_pure_virtual`      If the function is pure :cpp:`virtual`. Set
-                                only for member functions.
-:py:`func.is_noexcept`          If the function is :cpp:`noexcept`
-:py:`func.is_constexpr`         If the function is :cpp:`constexpr`
-:py:`func.is_defaulted`         If the function is :cpp:`default`\ ed
-:py:`func.is_deleted`           If the function is :cpp:`delete`\ d
-:py:`func.is_signal`            If the function is a Qt signal. Set only for
-                                member functions.
-:py:`func.is_slot`              If the function is a Qt slot. Set only for
-                                member functions.
-=============================== ===============================================
+=================================== ===========================================
+Property                            Description
+=================================== ===========================================
+:py:`func.base_url`                 Base URL of file containing detailed
+                                    description [3]_
+:py:`func.include`                  Corresponding :cpp:`#include` to get the
+                                    function declaration. Present only for
+                                    functions inside modules or inside
+                                    namespaces that are spread over multiple
+                                    files. See `Include properties`_ for more
+                                    information.
+:py:`func.id`                       Identifier hash [3]_
+:py:`func.type`                     Function return type [6]_
+:py:`func.name`                     Function name [4]_
+:py:`func.templates`                Template specification. See
+                                    `Template properties`_ for details.
+:py:`func.has_template_details`     If template parameters have description
+:py:`func.params`                   List of function parameters. See below for
+                                    details.
+:py:`func.has_param_details`        If function parameters have description
+:py:`func.return_value`             Return value description. Can be empty.
+:py:`func.return_values`            Description of particular return values.
+                                    See below for details.
+:py:`func.exceptions`               Description of particular exception types.
+                                    See below for details.
+:py:`func.brief`                    Brief description. Can be empty. [1]_
+:py:`func.description`              Detailed description. Can be empty. [2]_
+:py:`func.has_details`              If there is enough content for the full
+                                    description block [5]_
+:py:`func.prefix`                   Function signature prefix, containing
+                                    keywords such as :cpp:`static`. Information
+                                    about :cpp:`constexpr`\ ness,
+                                    :cpp:`explicit`\ ness and
+                                    :cpp:`virtual`\ ity is removed from the
+                                    prefix and available via other properties.
+:py:`func.suffix`                   Function signature suffix, containing
+                                    keywords such as :cpp:`const` and r-value
+                                    overloads. Information about
+                                    :cpp:`noexcept`, pure :cpp:`virtual`\ ity
+                                    and :cpp:`delete`\ d / :cpp:`default`\ ed
+                                    functions is removed from the suffix and
+                                    available via other properties.
+:py:`func.is_deprecated`            Whether the function is deprecated. [7]_
+:py:`func.is_protected`             If the function is :cpp:`protected`. Set
+                                    only for member functions.
+:py:`func.is_private`               If the function is :cpp:`private`. Set only
+                                    for member functions.
+:py:`func.is_explicit`              If the function is :cpp:`explicit`. Set
+                                    only for member functions.
+:py:`func.is_virtual`               If the function is :cpp:`virtual` (or pure
+                                    virtual). Set only for member functions.
+:py:`func.is_pure_virtual`          If the function is pure :cpp:`virtual`. Set
+                                    only for member functions.
+:py:`func.is_override`              If the function is an :cpp:`override`. Set
+                                    only for member functions.
+:py:`func.is_final`                 If the function is a :cpp:`final override`.
+                                    Set only for member functions.
+:py:`func.is_noexcept`              If the function is :cpp:`noexcept` (even
+                                    conditionally)
+:py:`func.is_conditional_noexcept`  If the function is conditionally
+                                    :cpp:`noexcept`.
+:py:`func.is_constexpr`             If the function is :cpp:`constexpr`
+:py:`func.is_defaulted`             If the function is :cpp:`default`\ ed
+:py:`func.is_deleted`               If the function is :cpp:`delete`\ d
+:py:`func.is_signal`                If the function is a Qt signal. Set only
+                                    for member functions.
+:py:`func.is_slot`                  If the function is a Qt slot. Set only for
+                                    member functions.
+=================================== ===========================================
 
 The :py:`func.params` is a list of function parameters and their description.
 Each item has the following properties:
