@@ -55,78 +55,6 @@ import latex2svg
 import latex2svgextra
 import ansilexer
 
-class Trie:
-    #  root  |     |     header         | results | child 1 | child 1 | child 1 |
-    # offset | ... | result # | value # |   ...   |  char   | barrier | offset  | ...
-    #  32b   |     |    8b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
-    root_offset_struct = struct.Struct('<I')
-    header_struct = struct.Struct('<BB')
-    result_struct = struct.Struct('<H')
-    child_struct = struct.Struct('<I')
-    child_char_struct = struct.Struct('<B')
-
-    def __init__(self):
-        self.results = []
-        self.children = {}
-
-    def _insert(self, path: bytes, result, lookahead_barriers):
-        if not path:
-            self.results += [result]
-            return
-
-        char = path[0]
-        if not char in self.children:
-            self.children[char] = (False, Trie())
-        if lookahead_barriers and lookahead_barriers[0] == 0:
-            lookahead_barriers = lookahead_barriers[1:]
-            self.children[char] = (True, self.children[char][1])
-        self.children[char][1]._insert(path[1:], result, [b - 1 for b in lookahead_barriers])
-
-    def insert(self, path: str, result, lookahead_barriers=[]):
-        self._insert(path.encode('utf-8'), result, lookahead_barriers)
-
-    # Returns offset of the serialized thing in `output`
-    def _serialize(self, hashtable, output: bytearray, merge_subtrees) -> int:
-        # Serialize all children first
-        child_offsets = []
-        for char, child in self.children.items():
-            offset = child[1]._serialize(hashtable, output, merge_subtrees=merge_subtrees)
-            child_offsets += [(char, child[0], offset)]
-
-        # Serialize this node
-        serialized = bytearray()
-        serialized += self.header_struct.pack(len(self.results), len(self.children))
-        for v in self.results:
-            serialized += self.result_struct.pack(v)
-
-        # Serialize child offsets
-        for char, lookahead_barrier, abs_offset in child_offsets:
-            assert abs_offset < 2**23
-
-            # write them over each other because that's the only way to pack
-            # a 24 bit field
-            offset = len(serialized)
-            serialized += self.child_struct.pack(abs_offset | ((1 if lookahead_barrier else 0) << 23))
-            self.child_char_struct.pack_into(serialized, offset + 3, char)
-
-        # Subtree merging: if this exact tree is already in the table, return
-        # its offset. Otherwise add it and return the new offset.
-        # TODO: why hashable = bytes(output[base_offset:] + serialized) didn't work?
-        hashable = bytes(serialized)
-        if merge_subtrees and hashable in hashtable:
-            return hashtable[hashable]
-        else:
-            offset = len(output)
-            output += serialized
-            if merge_subtrees: hashtable[hashable] = offset
-            return offset
-
-    def serialize(self, merge_subtrees=True) -> bytearray:
-        output = bytearray(b'\x00\x00\x00\x00')
-        hashtable = {}
-        self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output, merge_subtrees=merge_subtrees))
-        return output
-
 class ResultFlag(Flag):
     HAS_SUFFIX = 1 << 0
     HAS_PREFIX = 1 << 3
@@ -332,6 +260,78 @@ class ResultMap:
                 output += e.url.encode('utf-8')
 
         assert len(output) == offset
+        return output
+
+class Trie:
+    #  root  |     |     header         | results | child 1 | child 1 | child 1 |
+    # offset | ... | result # | value # |   ...   |  char   | barrier | offset  | ...
+    #  32b   |     |    8b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
+    root_offset_struct = struct.Struct('<I')
+    header_struct = struct.Struct('<BB')
+    result_struct = struct.Struct('<H')
+    child_struct = struct.Struct('<I')
+    child_char_struct = struct.Struct('<B')
+
+    def __init__(self):
+        self.results = []
+        self.children = {}
+
+    def _insert(self, path: bytes, result, lookahead_barriers):
+        if not path:
+            self.results += [result]
+            return
+
+        char = path[0]
+        if not char in self.children:
+            self.children[char] = (False, Trie())
+        if lookahead_barriers and lookahead_barriers[0] == 0:
+            lookahead_barriers = lookahead_barriers[1:]
+            self.children[char] = (True, self.children[char][1])
+        self.children[char][1]._insert(path[1:], result, [b - 1 for b in lookahead_barriers])
+
+    def insert(self, path: str, result, lookahead_barriers=[]):
+        self._insert(path.encode('utf-8'), result, lookahead_barriers)
+
+    # Returns offset of the serialized thing in `output`
+    def _serialize(self, hashtable, output: bytearray, merge_subtrees) -> int:
+        # Serialize all children first
+        child_offsets = []
+        for char, child in self.children.items():
+            offset = child[1]._serialize(hashtable, output, merge_subtrees=merge_subtrees)
+            child_offsets += [(char, child[0], offset)]
+
+        # Serialize this node
+        serialized = bytearray()
+        serialized += self.header_struct.pack(len(self.results), len(self.children))
+        for v in self.results:
+            serialized += self.result_struct.pack(v)
+
+        # Serialize child offsets
+        for char, lookahead_barrier, abs_offset in child_offsets:
+            assert abs_offset < 2**23
+
+            # write them over each other because that's the only way to pack
+            # a 24 bit field
+            offset = len(serialized)
+            serialized += self.child_struct.pack(abs_offset | ((1 if lookahead_barrier else 0) << 23))
+            self.child_char_struct.pack_into(serialized, offset + 3, char)
+
+        # Subtree merging: if this exact tree is already in the table, return
+        # its offset. Otherwise add it and return the new offset.
+        # TODO: why hashable = bytes(output[base_offset:] + serialized) didn't work?
+        hashable = bytes(serialized)
+        if merge_subtrees and hashable in hashtable:
+            return hashtable[hashable]
+        else:
+            offset = len(output)
+            output += serialized
+            if merge_subtrees: hashtable[hashable] = offset
+            return offset
+
+    def serialize(self, merge_subtrees=True) -> bytearray:
+        output = bytearray(b'\x00\x00\x00\x00')
+        hashtable = {}
+        self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output, merge_subtrees=merge_subtrees))
         return output
 
 search_data_header_struct = struct.Struct('<3sBHI')
