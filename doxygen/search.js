@@ -494,10 +494,9 @@ function selectResult(event) {
     event.currentTarget.parentNode.id = 'search-current';
 }
 
-/* istanbul ignore next */
-function showSearch() {
-    window.location.hash = '#search';
-
+/* This is separated from showSearch() because we need non-destructive behavior
+   when appearing directly on a URL with #search */ /* istanbul ignore next */
+function updateForSearchVisible() {
     /* Prevent accidental scrolling of the body, prevent page layout jumps */
     let scrolledBodyWidth = document.body.offsetWidth;
     document.body.style.overflow = 'hidden';
@@ -508,6 +507,13 @@ function showSearch() {
     document.getElementById('search-results').style.display = 'none';
     document.getElementById('search-notfound').style.display = 'none';
     document.getElementById('search-help').style.display = 'block';
+}
+
+/* istanbul ignore next */
+function showSearch() {
+    window.location.hash = '#search';
+
+    updateForSearchVisible();
     return false;
 }
 
@@ -589,6 +595,10 @@ if(typeof document !== 'undefined') {
     document.getElementById('search-results').onmousemove = function() {
         Search.mouseMovedSinceLastRender = true;
     };
+
+    /* If #search is already present in the URL, hide the scrollbar etc. for a
+       consistent experience */
+    if(window.location.hash == '#search') updateForSearchVisible();
 }
 
 /* For Node.js testing */ /* istanbul ignore else */
