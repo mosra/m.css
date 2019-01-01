@@ -61,22 +61,24 @@ class ResultFlag(Flag):
     DEPRECATED = 1 << 1
     DELETED = 1 << 2
 
+    # Result type. Order defines order in which equally-named symbols appear in
+    # search results. Keep in sync with search.js.
     _TYPE = 0xf << 4
-    ALIAS = 0 << 4
-    NAMESPACE = 1 << 4
-    CLASS = 2 << 4
-    STRUCT = 3 << 4
-    UNION = 4 << 4
-    TYPEDEF = 5 << 4
-    FUNC = 6 << 4
-    VAR = 7 << 4
-    ENUM = 8 << 4
-    ENUM_VALUE = 9 << 4
-    DEFINE = 10 << 4
-    GROUP = 11 << 4
-    PAGE = 12 << 4
-    DIR = 13 << 4
-    FILE = 14 << 4
+    ALIAS = 0 << 4 # This one gets the type from the referenced result
+    PAGE = 1 << 4
+    NAMESPACE = 2 << 4
+    GROUP = 3 << 4
+    CLASS = 4 << 4
+    STRUCT = 5 << 4
+    UNION = 6 << 4
+    TYPEDEF = 7 << 4
+    DIR = 8 << 4
+    FILE = 9 << 4
+    FUNC = 10 << 4
+    DEFINE = 11 << 4
+    ENUM = 12 << 4
+    ENUM_VALUE = 13 << 4
+    VAR = 14 << 4
 
 class ResultMap:
     # item 1 flags | item 2 flags |     | item N flags | file | item 1 |
@@ -165,7 +167,7 @@ class ResultMap:
                     # Allow self-reference only when referenced result suffix
                     # is longer (otherwise cycles happen). This is for
                     # functions that should appear when searching for foo (so
-                    # they get ordered properly based on the name lenght) and
+                    # they get ordered properly based on the name length) and
                     # also when searching for foo() (so everything that's not
                     # a function gets filtered out). Such entries are
                     # completely the same except for a different suffix length.
@@ -291,6 +293,34 @@ class Trie:
 
     def insert(self, path: str, result, lookahead_barriers=[]):
         self._insert(path.encode('utf-8'), result, lookahead_barriers)
+
+    def _sort(self, key):
+        self.results.sort(key=key)
+        for _, child in self.children.items():
+            child[1]._sort(key)
+
+    def sort(self, result_map: ResultMap):
+        # What the shit, why can't I just take two elements and say which one
+        # is in front of which, this is awful
+        def key(item: int):
+            entry = result_map.entries[item]
+            return [
+                # First order based on deprecation/deletion status, deprecated
+                # always last, deleted in front of them, usable stuff on top
+                2 if entry.flags & ResultFlag.DEPRECATED else 1 if entry.flags & ResultFlag.DELETED else 0,
+
+                # Second order based on type (pages, then namespaces/classes,
+                # later functions, values last)
+                (entry.flags & ResultFlag._TYPE).value,
+
+                # Third on suffix length (shortest first)
+                entry.suffix_length,
+
+                # Lastly on prefix length (shortest first)
+                entry.prefix_length
+            ]
+
+        self._sort(key)
 
     # Returns offset of the serialized thing in `output`
     def _serialize(self, hashtable, output: bytearray, merge_subtrees) -> int:
@@ -2272,6 +2302,10 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
 
         # Add this symbol and all its aliases to total symbol count
         symbol_count += len(result.keywords) + 1
+
+    # For each node in the trie sort the results so the found items have sane
+    # order by default
+    trie.sort(map)
 
     return serialize_search_data(trie, map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 

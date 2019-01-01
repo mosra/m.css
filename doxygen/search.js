@@ -377,61 +377,62 @@ var Search = {
                 let type = '';
                 let color = '';
                 switch(results[i].flags >> 4) {
+                    /* Keep in sync with dox2html5.py */
                     case 1:
-                        type = 'namespace';
-                        color = 'm-primary';
-                        break;
-                    case 2:
-                        type = 'class';
-                        color = 'm-primary';
-                        break;
-                    case 3:
-                        type = 'struct';
-                        color = 'm-primary';
-                        break;
-                    case 4:
-                        type = 'union';
-                        color = 'm-primary';
-                        break;
-                    case 5:
-                        type = 'typedef';
-                        color = 'm-primary';
-                        break;
-                    case 6:
-                        type = 'func';
-                        color = 'm-info';
-                        break;
-                    case 7:
-                        type = 'var';
-                        color = 'm-default';
-                        break;
-                    case 8:
-                        type = 'enum';
-                        color = 'm-primary';
-                        break;
-                    case 9:
-                        type = 'enum val';
-                        color = 'm-default';
-                        break;
-                    case 10:
-                        type = 'define';
-                        color = 'm-info';
-                        break;
-                    case 11:
-                        type = 'group';
-                        color = 'm-success';
-                        break;
-                    case 12:
                         type = 'page';
                         color = 'm-success';
                         break;
-                    case 13:
+                    case 2:
+                        type = 'namespace';
+                        color = 'm-primary';
+                        break;
+                    case 3:
+                        type = 'group';
+                        color = 'm-success';
+                        break;
+                    case 4:
+                        type = 'class';
+                        color = 'm-primary';
+                        break;
+                    case 5:
+                        type = 'struct';
+                        color = 'm-primary';
+                        break;
+                    case 6:
+                        type = 'union';
+                        color = 'm-primary';
+                        break;
+                    case 7:
+                        type = 'typedef';
+                        color = 'm-primary';
+                        break;
+                    case 8:
                         type = 'dir';
                         color = 'm-warning';
                         break;
-                    case 14:
+                    case 9:
                         type = 'file';
                         color = 'm-warning';
+                        break;
+                    case 10:
+                        type = 'func';
+                        color = 'm-info';
+                        break;
+                    case 11:
+                        type = 'define';
+                        color = 'm-info';
+                        break;
+                    case 12:
+                        type = 'enum';
+                        color = 'm-primary';
+                        break;
+                    case 13:
+                        type = 'enum val';
+                        color = 'm-default';
+                        break;
+                    case 14:
+                        type = 'var';
+                        color = 'm-default';
                         break;
                 }
 
