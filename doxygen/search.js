@@ -84,7 +84,7 @@ var Search = {
             /* Search for the input value (there might be something already,
                for example when going back in the browser) */
             let value = document.getElementById('search-input').value;
-            if(value.length) Search.renderResults(value, Search.search(value));
+            if(value.length) Search.searchAndRender(value);
         }
 
         return true;
@@ -468,6 +468,19 @@ var Search = {
            suddenly appearing over a search result */
         this.mouseMovedSinceLastRender = false;
     },
+
+    searchAndRender: function(value) {
+        let prev = performance.now();
+        let results = this.search(value);
+        let after = performance.now();
+        this.renderResults(value, results);
+        if(value.trim().length) {
+            document.getElementById('search-symbolcount').innerHTML =
+                results.length + (results.length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
+        } else
+            document.getElementById('search-symbolcount').innerHTML =
+                this.symbolCount + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
+    },
 };
 
 /* istanbul ignore next */
@@ -514,17 +527,7 @@ function hideSearch() {
    work is beyond me. */ /* istanbul ignore if */
 if(typeof document !== 'undefined') {
     document.getElementById('search-input').oninput = function(event) {
-        let value = document.getElementById('search-input').value;
-        let prev = performance.now();
-        let results = Search.search(value);
-        let after = performance.now();
-        Search.renderResults(value, results);
-        if(value.trim().length) {
-            document.getElementById('search-symbolcount').innerHTML =
-                results.length + (results.length >= Search.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
-        } else
-            document.getElementById('search-symbolcount').innerHTML =
-                Search.symbolCount + " symbols (" + Math.round(Search.dataSize/102.4)/10 + " kB)";
+        Search.searchAndRender(document.getElementById('search-input').value);
     };
 
     document.onkeydown = function(event) {
