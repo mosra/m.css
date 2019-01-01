@@ -36,6 +36,10 @@ var Search = {
     searchString: '',
     searchStack: [],
 
+    /* So items don't get selected right away when a cursor is over results but
+       only after mouse moves */
+    mouseMovedSinceLastRender: false,
+
     init: function(buffer, maxResults) {
         let view = new DataView(buffer);
 
@@ -459,11 +463,17 @@ var Search = {
             document.getElementById('search-results').style.display = 'none';
             document.getElementById('search-notfound').style.display = 'block';
         }
+
+        /* Don't allow things to be selected just by motionless mouse cursor
+           suddenly appearing over a search result */
+        this.mouseMovedSinceLastRender = false;
     },
 };
 
 /* istanbul ignore next */
 function selectResult(event) {
+    if(!Search.mouseMovedSinceLastRender) return;
+
     if(event.currentTarget.parentNode.id == 'search-current') return;
 
     let current = document.getElementById('search-current');
@@ -568,6 +578,13 @@ if(typeof document !== 'undefined') {
                 return false; /* so T doesn't get entered into the box */
             }
         }
+    };
+
+    /* Allow selecting items by mouse hover only after it moves once the
+       results are populated. This prevents a random item getting selected if
+       the cursor is left motionless over the result area. */
+    document.getElementById('search-results').onmousemove = function() {
+        Search.mouseMovedSinceLastRender = true;
     };
 }
 
