@@ -3459,6 +3459,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     # there's at least some entrypoint. Doxygen version is not set in this
     # case, as this is totally without Doxygen involvement.
     if not os.path.join(xml_input, 'indexpage.xml') in xml_files_metadata:
+        logging.debug("writing index.html for an empty mainpage")
+
         compound = Empty()
         compound.kind = 'page'
         compound.name = state.doxyfile['PROJECT_NAME']
@@ -3479,6 +3481,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             f.write(b'\n')
 
     if not state.doxyfile['M_SEARCH_DISABLED']:
+        logging.debug("building search data for {} symbols".format(len(state.search)))
+
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         if state.doxyfile['M_SEARCH_DOWNLOAD_BINARY']:
@@ -3531,6 +3535,7 @@ if __name__ == '__main__': # pragma: no cover
     doxyfile = os.path.abspath(args.doxyfile)
 
     if not args.no_doxygen:
+        logging.debug("running Doxygen on {}".format(args.doxyfile))
         subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile))
 
     run(doxyfile, os.path.abspath(args.templates), args.wildcard, args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
