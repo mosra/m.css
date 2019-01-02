@@ -580,7 +580,7 @@ function selectResult(event) {
     if(event.currentTarget.parentNode.id == 'search-current') return;
 
     let current = document.getElementById('search-current');
-    current.id = '';
+    current.removeAttribute('id');
     event.currentTarget.parentNode.id = 'search-current';
 }
 
