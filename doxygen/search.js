@@ -557,6 +557,11 @@ if(typeof document !== 'undefined') {
             if(event.key == 'Escape') {
                 hideSearch();
 
+            /* Focus the search input, if not already, using T or Tab */
+            } else if((!document.activeElement || document.activeElement.id != 'search-input') && (event.key.toLowerCase() == 't' || event.key == 'Tab') && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
+                document.getElementById('search-input').focus();
+                return false; /* so T doesn't get entered into the box */
+
             /* Select next item */
             } else if(event.key == 'ArrowDown' || (event.key == 'Tab' && !event.shiftKey)) {
                 let current = document.getElementById('search-current');
