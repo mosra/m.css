@@ -514,7 +514,7 @@ var Search = {
                 }
 
                 /* Labels + */
-                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)"><div class="m-label m-flat ' + color + '">' + type + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
+                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + color + '">' + type + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
 
                 /* Render the alias (cut off from the right) */
                 if(results[i].alias) {
@@ -629,6 +629,23 @@ function hideSearch() {
     return false;
 }
 
+/* istanbul ignore next */
+function copyToKeyboard(text) {
+    /* Append to the popup, appending to document.body would cause it to
+       scroll when focused */
+    let searchPopup = document.getElementsByClassName('m-dox-search')[0];
+    let textarea = document.createElement("textarea");
+    textarea.value = text;
+    searchPopup.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    document.execCommand('copy');
+
+    searchPopup.removeChild(textarea);
+    document.getElementById('search-input').focus();
+}
+
 /* Only in case we're running in a browser. Why a simple if(document) doesn't
    work is beyond me. */ /* istanbul ignore if */
 if(typeof document !== 'undefined') {
@@ -695,6 +712,26 @@ if(typeof document !== 'undefined') {
 
                 return false; /* so the form doesn't get sent */
 
+            /* Copy (Markdown) link to keyboard */
+            } else if((event.key.toLowerCase() == 'l' || event.key.toLowerCase() == 'm') && event.metaKey) {
+                let result = document.getElementById('search-current');
+                if(result) {
+                    let plain = event.key.toLowerCase() == 'l';
+                    let link = plain ? result.firstElementChild.href :
+                        '[' + result.firstElementChild.dataset.mdLinkTitle + '](' + result.firstElementChild.href + ')';
+
+                    copyToKeyboard(link);
+
+                    /* Add CSS class to the element for visual feedback (this
+                       will get removed on keyup), but only if it's not already
+                       there (in case of key repeat, e.g.) */
+                    if(result.className.indexOf('m-dox-search-copied') == -1)
+                        result.className += ' m-dox-search-copied';
+                    console.log("Copied " +  (plain ? "link" : "Markdown link") + " to " + result.firstElementChild.dataset.mdLinkTitle);
+                }
+
+                return false; /* so L doesn't get entered into the box */
+
             /* Looks like the user is inserting some text (and not cutting,
                copying or whatever), allow autocompletion for the new
                character. The oninput event resets this back to false, so this
@@ -722,6 +759,14 @@ if(typeof document !== 'undefined') {
                 showSearch();
                 return false; /* so T doesn't get entered into the box */
             }
+        }
+    };
+
+    document.onkeyup = function(event) {
+        /* Remove highlight after key is released after a link copy */
+        if((event.key.toLowerCase() == 'l' || event.key.toLowerCase() == 'm') && event.metaKey) {
+            let result = document.getElementById('search-current');
+            if(result) result.className = result.className.replace(' m-dox-search-copied', '');
         }
     };
 

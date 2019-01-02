@@ -61,12 +61,18 @@ class Doxyfile(unittest.TestCase):
             'M_SEARCH_BASE_URL': '',
             'M_SEARCH_EXTERNAL_URL': '',
             'M_SEARCH_HELP':
-"""Search for symbols, directories, files, pages or modules. You can omit any
-prefix from the symbol or file path; adding a <code>:</code> or <code>/</code>
-suffix lists all members of given symbol or directory. Navigate through the
-list using <span class="m-label m-dim">&darr;</span> and
-<span class="m-label m-dim">&uarr;</span>, press
-<span class="m-label m-dim">Enter</span> to go.""",
+"""<p class="m-noindent">Search for symbols, directories, files, pages or
+modules. You can omit any prefix from the symbol or file path; adding a
+<code>:</code> or <code>/</code> suffix lists all members of given symbol or
+directory.</p>
+<p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+/ <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+<span class="m-label m-dim">Enter</span> to go.
+<span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+copy a link to the result using <span class="m-label m-dim">⌘</span>
+<span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+<span class="m-label m-dim">M</span> produces a Markdown link.</p>
+""",
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',

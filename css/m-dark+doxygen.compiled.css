@@ -2765,6 +2765,9 @@ a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-ico
 .m-dox-search ul#search-results li#search-current a {
   background-color: #34424d;
 }
+.m-dox-search ul#search-results li#search-current.m-dox-search-copied a {
+  background-color: #2a703f;
+}
 .m-dox-search-typed {
   color: #5b9dd9;
 }

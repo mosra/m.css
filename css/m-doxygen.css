@@ -308,6 +308,9 @@ a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-ico
 .m-dox-search ul#search-results li#search-current a {
   background-color: var(--default-filled-background-color);
 }
+.m-dox-search ul#search-results li#search-current.m-dox-search-copied a {
+  background-color: var(--success-filled-background-color);
+}
 .m-dox-search-typed {
   color: var(--link-color);
 }

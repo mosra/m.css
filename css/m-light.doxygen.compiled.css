@@ -287,6 +287,9 @@ a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-ico
 .m-dox-search ul#search-results li#search-current a {
   background-color: #fbf0ec;
 }
+.m-dox-search ul#search-results li#search-current.m-dox-search-copied a {
+  background-color: #4dd376;
+}
 .m-dox-search-typed {
   color: #ea7944;
 }
