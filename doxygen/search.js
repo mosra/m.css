@@ -44,6 +44,11 @@ var Search = {
        not. We can't do that if we arrived directly on #search from outside. */
     canGoBackToHideSearch: false,
 
+    /* Autocompletion in the input field is whitelisted only for character
+       input (so not deletion, cut, or anything else). This is flipped in the
+       onkeypress event and reset after each oninput event. */
+    autocompleteNextInputEvent: false,
+
     init: function(buffer, maxResults) {
         let view = new DataView(buffer);
 
@@ -184,6 +189,41 @@ var Search = {
     toUtf8: function(string) { return unescape(encodeURIComponent(string)); },
     fromUtf8: function(string) { return decodeURIComponent(escape(string)); },
 
+    autocompletedCharsToString: function(chars) {
+        /* Strip incomplete UTF-8 chars from the autocompletion end */
+        for(let i = chars.length - 1; i >= 0; --i) {
+            let c = chars[i];
+
+            /* We're safe, finish */
+            if(
+                /* ASCII value at the end */
+                (c < 128 && i + 1 == chars.length) ||
+
+                /* Full two-byte character at the end */
+                ((c & 0xe0) == 0xc0 && i + 2 == chars.length) ||
+
+                /* Full three-byte character at the end */
+                ((c & 0xf0) == 0xe0 && i + 3 == chars.length) ||
+
+                /* Full four-byte character at the end */
+                ((c & 0xf8) == 0xf0 && i + 4 == chars.length)
+            ) break;
+
+            /* Continuing UTF-8 character, go further back */
+            if((c & 0xc0) == 0x80) continue;
+
+            /* Otherwise the character is not complete, drop it from the end */
+            chars.length = i;
+            break;
+        }
+
+        /* Convert the autocompleted UTF-8 sequence to a string */
+        let suggestedTabAutocompletionString = '';
+        for(let i = 0; i != chars.length; ++i)
+            suggestedTabAutocompletionString += String.fromCharCode(chars[i]);
+        return this.fromUtf8(suggestedTabAutocompletionString);
+    },
+
     /* Returns the values in UTF-8, but input is in whatever shitty 16bit
        encoding JS has */
     search: function(searchString) {
@@ -240,10 +280,11 @@ var Search = {
                 if(link)
                     link.href = link.dataset.searchEngine.replace('{query}', encodeURIComponent(searchString));
             }
-            return [];
+            return [[], ''];
         }
 
         /* Otherwise gather the results */
+        let suggestedTabAutocompletionChars = [];
         let results = [];
         let leaves = [[this.searchStack[this.searchStack.length - 1], 0]];
         while(leaves.length) {
@@ -259,7 +300,8 @@ var Search = {
                 results.push(this.gatherResult(index, suffixLength, 0xffffff)); /* should be enough haha */
 
                 /* 'nuff said. */
-                if(results.length >= this.maxResults) return results;
+                if(results.length >= this.maxResults)
+                    return [results, this.autocompletedCharsToString(suggestedTabAutocompletionChars)];
             }
 
             /* Dig deeper */
@@ -275,10 +317,21 @@ var Search = {
 
                 /* Append to the queue */
                 leaves.push([offsetBarrier & 0x007fffff, suffixLength + 1]);
+
+                /* We don't have anything yet and this is the only path
+                   forward, add the char to suggested Tab autocompletion. Can't
+                   extract it from the leftmost 8 bits of offsetBarrier because
+                   that would make it negative, have to load as Uint8 instead.
+                   Also can't use String.fromCharCode(), because later doing
+                   str.charCodeAt() would give me back UTF-16 values, which is
+                   absolutely unwanted when all I want is check for truncated
+                   UTF-8. */
+                if(!results.length && leaves.length == 1 && childCount == 1)
+                    suggestedTabAutocompletionChars.push(this.trie.getUint8(childOffset + j*4 + 3));
             }
         }
 
-        return results;
+        return [results, this.autocompletedCharsToString(suggestedTabAutocompletionChars)];
     },
 
     gatherResult: function(index, suffixLength, maxUrlPrefix) {
@@ -375,7 +428,7 @@ var Search = {
         return this.escape(name).replace(/[:=]/g, '&lrm;$&').replace(/(\)|&gt;|&amp;|\/)/g, '&lrm;$&&lrm;');
     },
 
-    renderResults: /* istanbul ignore next */ function(value, results) {
+    renderResults: /* istanbul ignore next */ function(value, resultsSuggestedTabAutocompletion) {
         /* Normalize the value and encode as UTF-8 so the slicing works
            properly */
         value = this.toUtf8(value.trim());
@@ -389,7 +442,10 @@ var Search = {
 
         document.getElementById('search-help').style.display = 'none';
 
-        if(results.length) {
+        /* Results found */
+        if(resultsSuggestedTabAutocompletion[0].length) {
+            let results = resultsSuggestedTabAutocompletion[0];
+
             document.getElementById('search-results').style.display = 'block';
             document.getElementById('search-notfound').style.display = 'none';
 
@@ -476,6 +532,18 @@ var Search = {
             document.getElementById('search-results').innerHTML = this.fromUtf8(list);
             document.getElementById('search-current').scrollIntoView(true);
 
+            /* Append the suggested tab autocompletion, if any, and if the user
+               didn't just delete it */
+            let searchInput = document.getElementById('search-input');
+            if(this.autocompleteNextInputEvent && resultsSuggestedTabAutocompletion[1].length && searchInput.selectionEnd == searchInput.value.length) {
+                let suggestedTabAutocompletion = this.fromUtf8(resultsSuggestedTabAutocompletion[1]);
+
+                let lengthBefore = searchInput.value.length;
+                searchInput.value += suggestedTabAutocompletion;
+                searchInput.setSelectionRange(lengthBefore, searchInput.value.length);
+            }
+
+        /* Nothing found */
         } else {
             document.getElementById('search-results').style.display = 'none';
             document.getElementById('search-notfound').style.display = 'block';
@@ -484,16 +552,20 @@ var Search = {
         /* Don't allow things to be selected just by motionless mouse cursor
            suddenly appearing over a search result */
         this.mouseMovedSinceLastRender = false;
+
+        /* Reset autocompletion, if it was allowed. It'll get whitelisted next
+           time a character gets inserted. */
+        this.autocompleteNextInputEvent = false;
     },
 
-    searchAndRender: function(value) {
+    searchAndRender: /* istanbul ignore next */ function(value) {
         let prev = performance.now();
         let results = this.search(value);
         let after = performance.now();
         this.renderResults(value, results);
         if(value.trim().length) {
             document.getElementById('search-symbolcount').innerHTML =
-                results.length + (results.length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
+                results[0].length + (results.length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
         } else
             document.getElementById('search-symbolcount').innerHTML =
                 this.symbolCount + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
@@ -575,8 +647,15 @@ if(typeof document !== 'undefined') {
                 document.getElementById('search-input').focus();
                 return false; /* so T doesn't get entered into the box */
 
+            /* Fill in the autocompleted selection */
+            } else if(event.key == 'Tab' && !event.shiftKey && !event.ctrlKey && !event.altKey && !event.metaKey) {
+                /* But only if the input has selection at the end */
+                let input = document.getElementById('search-input');
+                if(input.selectionEnd == input.value.length && input.selectionStart != input.selectionEnd)
+                    input.setSelectionRange(input.value.length, input.value.length);
+
             /* Select next item */
-            } else if(event.key == 'ArrowDown' || (event.key == 'Tab' && !event.shiftKey)) {
+            } else if(event.key == 'ArrowDown') {
                 let current = document.getElementById('search-current');
                 if(current) {
                     let next = current.nextSibling;
@@ -589,7 +668,7 @@ if(typeof document !== 'undefined') {
                 return false; /* so the keypress doesn't affect input cursor */
 
             /* Select prev item */
-            } else if(event.key == 'ArrowUp' || (event.key == 'Tab' && event.shiftKey)) {
+            } else if(event.key == 'ArrowUp') {
                 let current = document.getElementById('search-current');
                 if(current) {
                     let prev = current.previousSibling;
@@ -610,6 +689,25 @@ if(typeof document !== 'undefined') {
                 document.body.style.overflow = 'auto';
                 document.body.style.paddingRight = '0';
                 return false; /* so the form doesn't get sent */
+
+            /* Looks like the user is inserting some text (and not cutting,
+               copying or whatever), allow autocompletion for the new
+               character. The oninput event resets this back to false, so this
+               basically whitelists only keyboard input, including Shift-key
+               and special chars using right Alt (or equivalent on Mac), but
+               excluding Ctrl-key, which is usually not for text input. In the
+               worst case the autocompletion won't be allowed ever, which is
+               much more acceptable behavior than having no ability to disable
+               it and annoying the users. See also this WONTFIX Android bug:
+               https://bugs.chromium.org/p/chromium/issues/detail?id=118639 */
+            } else if(event.key != 'Backspace' && event.key != 'Delete' && !event.metaKey && (!event.ctrlKey || event.altKey)) {
+                Search.autocompleteNextInputEvent = true;
+            /* Otherwise reset the flag, because when the user would press e.g.
+               the 'a' key and then e.g. ArrowRight (which doesn't trigger
+               oninput), a Backspace after would still result in
+               autocompleteNextInputEvent, because nothing reset it back. */
+            } else {
+                Search.autocompleteNextInputEvent = false;
             }
 
         /* Search hidden */
