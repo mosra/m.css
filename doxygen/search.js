@@ -88,6 +88,19 @@ var Search = {
             /* Search for the input value (there might be something already,
                for example when going back in the browser) */
             let value = document.getElementById('search-input').value;
+
+            /* Otherwise check the GET parameters for `q` and fill the input
+               with that */
+            if(!value.length) {
+                var args = decodeURIComponent(window.location.search.substr(1)).trim().split('&');
+                for(var i = 0; i != args.length; ++i) {
+                    if(args[i].substring(0, 2) != 'q=') continue;
+
+                    value = document.getElementById('search-input').value = args[i].substring(2);
+                    break;
+                }
+            }
+
             if(value.length) Search.searchAndRender(value);
         }
 
