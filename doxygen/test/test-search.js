@@ -33,11 +33,20 @@ const { StringDecoder } = require('string_decoder');
 
 /* HTML escaping with RTL workarounds */
 {
+    assert.equal(Search.escape("foo()"), "foo()");
     assert.equal(Search.escapeForRtl("foo()"), "foo(&lrm;)&lrm;");
+
+    assert.equal(Search.escape("Dir/"), "Dir/");
     /* Not sure why / and & has to be escaped from both sides */
     assert.equal(Search.escapeForRtl("Dir/"), "Dir&lrm;/&lrm;");
+
+    assert.equal(Search.escape("foo() &&"), "foo() &amp;&amp;");
     assert.equal(Search.escapeForRtl("foo() &&"), "foo(&lrm;)&lrm; &lrm;&amp;&lrm;&lrm;&amp;&lrm;");
+
+    assert.equal(Search.escape("operator=()"), "operator=()");
     assert.equal(Search.escapeForRtl("operator=()"), "operator&lrm;=(&lrm;)&lrm;");
+
+    assert.equal(Search.escape("NS::Class<int>"), "NS::Class&lt;int&gt;");
     assert.equal(Search.escapeForRtl("NS::Class<int>"), "NS&lrm;:&lrm;:Class&lt;int&lrm;&gt;&lrm;");
 }
 
