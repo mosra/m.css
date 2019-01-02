@@ -545,6 +545,7 @@ var Search = {
 
         /* Nothing found */
         } else {
+            document.getElementById('search-results').innerHTML = '';
             document.getElementById('search-results').style.display = 'none';
             document.getElementById('search-notfound').style.display = 'block';
         }
@@ -680,14 +681,18 @@ if(typeof document !== 'undefined') {
                 }
                 return false; /* so the keypress doesn't affect input cursor */
 
-            /* Go to result */
+            /* Go to result (if any) */
             } else if(event.key == 'Enter') {
-                document.getElementById('search-current').firstElementChild.click();
+                let result = document.getElementById('search-current');
+                if(result) {
+                    result.firstElementChild.click();
 
-                /* We might be staying on the same page, so restore scrollbar,
-                   and prevent page layout jumps */
-                document.body.style.overflow = 'auto';
-                document.body.style.paddingRight = '0';
+                    /* We might be staying on the same page, so restore scrollbar,
+                       and prevent page layout jumps */
+                    document.body.style.overflow = 'auto';
+                    document.body.style.paddingRight = '0';
+                }
+
                 return false; /* so the form doesn't get sent */
 
             /* Looks like the user is inserting some text (and not cutting,
