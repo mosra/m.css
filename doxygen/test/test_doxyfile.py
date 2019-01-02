@@ -58,6 +58,7 @@ class Doxyfile(unittest.TestCase):
             'M_PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
             'M_SEARCH_DISABLED': False,
             'M_SEARCH_DOWNLOAD_BINARY': False,
+            'M_SEARCH_BASE_URL': '',
             'M_SEARCH_EXTERNAL_URL': '',
             'M_SEARCH_HELP':
 """Search for symbols, directories, files, pages or modules. You can omit any

@@ -42,6 +42,7 @@ import logging
 from enum import Flag
 from types import SimpleNamespace as Empty
 from typing import Tuple, Dict, Any, List
+from urllib.parse import urljoin
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -3229,6 +3230,7 @@ suffix lists all members of given symbol or directory. Navigate through the
 list using <span class="m-label m-dim">&darr;</span> and
 <span class="m-label m-dim">&uarr;</span>, press
 <span class="m-label m-dim">Enter</span> to go."""],
+        'M_SEARCH_BASE_URL': [''],
         'M_SEARCH_EXTERNAL_URL': ['']
     }
 
@@ -3329,7 +3331,8 @@ list using <span class="m-label m-dim">&darr;</span> and
               'M_FAVICON',
               'M_MATH_CACHE_FILE',
               'M_SEARCH_HELP',
-              'M_SEARCH_EXTERNAL_URL']:
+              'M_SEARCH_EXTERNAL_URL',
+              'M_SEARCH_BASE_URL']:
         if i in config: state.doxyfile[i] = '\n'.join(config[i])
 
     # Int values that we want
@@ -3401,6 +3404,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         if urllib.parse.urlparse(path).netloc: return path
         return os.path.basename(path)
     env.filters['basename_or_url'] = basename_or_url
+    env.filters['urljoin'] = urljoin
 
     # Do a pre-pass and gather:
     # - brief descriptions of all classes, namespaces, dirs and files because
@@ -3491,6 +3495,21 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         else:
             with open(os.path.join(html_output, "searchdata.js"), 'wb') as f:
                 f.write(base85encode_search_data(data))
+
+        # OpenSearch metadata, in case we have the base URL
+        if state.doxyfile['M_SEARCH_BASE_URL']:
+            logging.debug("writing OpenSearch metadata file")
+
+            template = env.get_template('opensearch.xml')
+            rendered = template.render(**state.doxyfile)
+            output = os.path.join(html_output, 'opensearch.xml')
+            with open(output, 'wb') as f:
+                f.write(rendered.encode('utf-8'))
+                # Add back a trailing newline so we don't need to bother with
+                # patching test files to include a trailing newline to make Git
+                # happy
+                # TODO could keep_trailing_newline fix this better?
+                f.write(b'\n')
 
     # Copy all referenced files
     for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([state.doxyfile['M_FAVICON'][0]] if state.doxyfile['M_FAVICON'] else []) + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):

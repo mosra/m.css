@@ -378,17 +378,22 @@ Variable                            Description
                                     ``NO`` is used.
 :ini:`M_SEARCH_DOWNLOAD_BINARY`     Download search data as a binary to save
                                     bandwidth and initial processing time. If
-                                    not set, ``NO`` is used. See `Search`_ for
-                                    more information.
+                                    not set, ``NO`` is used. See
+                                    `Search options`_ for more information.
 :ini:`M_SEARCH_HELP`                HTML code to display as help text on empty
                                     search popup. If not set, a default message
                                     is used. Has effect only if
                                     :ini:`M_SEARCH_DISABLED` is not ``YES``.
+:ini:`M_SEARCH_BASE_URL`            Base URL for OpenSearch-based search engine
+                                    suggestions for web browsers. See
+                                    `Search options`_ for more information. Has
+                                    effect only if :ini:`M_SEARCH_DISABLED` is
+                                    not ``YES``.
 :ini:`M_SEARCH_EXTERNAL_URL`        URL for external search. The ``{query}``
                                     placeholder is replaced with urlencoded
                                     search string. If not set, no external
-                                    search is offered. See `Search`_ for more
-                                    information. Has effect only if
+                                    search is offered. See `Search options`_
+                                    for more information. Has effect only if
                                     :ini:`M_SEARCH_DISABLED` is not ``YES``.
 =================================== ===========================================
 
@@ -530,6 +535,25 @@ asynchronously as a plain JavaScript file. This results in the search data
 being 25% larger, but since this is for serving from a local filesystem, it's
 not considered a problem. If your docs are accessed through a server (or you
 don't need Chrome support), enable the :ini:`M_SEARCH_DOWNLOAD_BINARY` option.
+
+The site can provide search engine metadata using the `OpenSearch <http://www.opensearch.org/>`_
+specification. On supported browsers this means you can add the search field to
+search engines and search directly from the address bar. To enable search
+engine metadata, point :ini:`M_SEARCH_BASE_URL` to base URL of your
+documentation, for example:
+
+.. code:: ini
+
+    M_SEARCH_BASE_URL = "https://doc.magnum.graphics/magnum/"
+
+In general, even without the above setting, appending ``?q={query}#search`` to
+the URL will directly open the search popup with results for ``{query}``.
+
+.. note-info::
+
+    OpenSearch also makes it possible to have autocompletion and search results
+    directly in the browser address bar. However that requires a server-side
+    search implementation and is not supported at the moment.
 
 If :ini:`M_SEARCH_EXTERNAL_URL` is specified, full-text search using an
 external search engine is offered if nothing is found for given string or if

@@ -609,6 +609,7 @@ if(typeof document !== 'undefined') {
                    and prevent page layout jumps */
                 document.body.style.overflow = 'auto';
                 document.body.style.paddingRight = '0';
+                return false; /* so the form doesn't get sent */
             }
 
         /* Search hidden */

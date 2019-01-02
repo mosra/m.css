@@ -9,6 +9,9 @@
   {% if M_FAVICON %}
   <link rel="icon" href="{{ M_FAVICON[0]|basename_or_url|e }}" type="{{ M_FAVICON[1] }}" />
   {% endif %}
+  {% if not M_SEARCH_DISABLED and M_SEARCH_BASE_URL %}
+  <link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml" title="Search {{ PROJECT_NAME }} documentation" />
+  {% endif %}
   {% block header_links %}
   {% endblock %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -120,7 +123,9 @@
           <div id="search-symbolcount">&hellip;</div>
         </div>
         <div class="m-dox-search-content">
-          <input type="search" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" spellcheck="false" />
+          <form{% if M_SEARCH_BASE_URL %} action="{{ M_SEARCH_BASE_URL }}#search"{% endif %}>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
           <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.{% if M_SEARCH_EXTERNAL_URL %} Enable it or <a href="{{ M_SEARCH_EXTERNAL_URL|replace('{query}', '') }}">use an external search engine</a>.{% endif %}</noscript>
           <div id="search-help" class="m-text m-dim m-text-center">
             {{ M_SEARCH_HELP|indent(12) }}

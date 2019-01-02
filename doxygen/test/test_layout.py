@@ -91,3 +91,14 @@ class SearchBinary(BaseTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.bin')))
+
+class SearchOpenSearch(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'search_opensearch', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        # Renamed with a HTML extension so dox2html5's metadata parser doesn't
+        # pick it up
+        self.assertEqual(*self.actual_expected_contents('opensearch.xml', 'opensearch.xml.html'))
