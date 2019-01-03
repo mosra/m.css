@@ -26,7 +26,7 @@
 
 import os
 
-from dox2html5 import search_data_header_struct
+from doxygen import search_data_header_struct
 
 from . import IntegrationTestCase
 
@@ -35,7 +35,7 @@ class Test(IntegrationTestCase):
         super().__init__(__file__, '', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # The index pages should be full
         self.assertEqual(*self.actual_expected_contents('annotated.html'))

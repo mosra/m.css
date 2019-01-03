@@ -29,8 +29,8 @@ from hashlib import sha1
 
 import latex2svg
 
-# Extracted common code used by both dox2html5.py and the m.math plugin to
-# avoid dependency of dox2html5.py on Pelican
+# Extracted common code used by both doxygen.py and the m.math plugin to
+# avoid dependency of doxygen.py on Pelican
 
 # Modified params to use for math rendering
 params = latex2svg.default_params.copy()

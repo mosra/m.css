@@ -30,9 +30,9 @@ import sys
 import unittest
 from types import SimpleNamespace as Empty
 
-from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
+from doxygen import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
 
-from . import IntegrationTestCase
+from test_doxygen import IntegrationTestCase
 
 def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, show_merged, show_lookahead_barriers, color_map) -> str:
     # Visualize where the trees were merged
@@ -368,7 +368,7 @@ class Search(IntegrationTestCase):
         super().__init__(__file__, '', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(index_pages=[], wildcard='*.xml')
+        self.run_doxygen(index_pages=[], wildcard='*.xml')
 
         with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
             serialized = f.read()
@@ -545,7 +545,7 @@ class SearchLongSuffixLength(IntegrationTestCase):
         super().__init__(__file__, 'long_suffix_length', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(index_pages=[], wildcard='*.xml')
+        self.run_doxygen(index_pages=[], wildcard='*.xml')
 
         with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
             serialized = f.read()

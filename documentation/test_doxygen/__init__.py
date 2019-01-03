@@ -28,7 +28,7 @@ import subprocess
 import unittest
 import xml.etree.ElementTree as ET
 
-from dox2html5 import run, default_templates, default_wildcard, default_index_pages
+from doxygen import run, default_templates, default_wildcard, default_index_pages
 
 def doxygen_version():
     return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip()
@@ -45,7 +45,7 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
 
-    def run_dox2html5(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
+    def run_doxygen(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
         run(os.path.join(self.path, 'Doxyfile'), templates=templates, wildcard=wildcard, index_pages=index_pages, sort_globbed_files=True)
 
     def actual_expected_contents(self, actual, expected = None):

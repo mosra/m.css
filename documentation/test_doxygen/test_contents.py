@@ -43,7 +43,7 @@ class Typography(IntegrationTestCase):
         super().__init__(__file__, 'typography', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class Blocks(IntegrationTestCase):
@@ -51,7 +51,7 @@ class Blocks(IntegrationTestCase):
         super().__init__(__file__, 'blocks', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
         # Multiple xrefitems should be merged into one
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
@@ -59,14 +59,14 @@ class Blocks(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
     def test_xrefitem1814(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('todo.html'))
         self.assertEqual(*self.actual_expected_contents('old.html'))
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) <= LooseVersion("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
     def test_xrefitem(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
         self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
@@ -75,7 +75,7 @@ class Internal(IntegrationTestCase):
         super().__init__(__file__, 'internal', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class Code(IntegrationTestCase):
@@ -83,11 +83,11 @@ class Code(IntegrationTestCase):
         super().__init__(__file__, 'code', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
-        self.run_dox2html5(wildcard='warnings.xml')
+        self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class CodeLanguage(IntegrationTestCase):
@@ -97,19 +97,19 @@ class CodeLanguage(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/621")
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/623")
     def test_ansi(self):
-        self.run_dox2html5(wildcard='ansi.xml')
+        self.run_doxygen(wildcard='ansi.xml')
         self.assertEqual(*self.actual_expected_contents('ansi.html'))
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/621")
     def test_warnings(self):
-        self.run_dox2html5(wildcard='warnings.xml')
+        self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class Image(IntegrationTestCase):
@@ -117,18 +117,18 @@ class Image(IntegrationTestCase):
         super().__init__(__file__, 'image', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'tiny.png')))
 
     def test_warnings(self):
-        self.run_dox2html5(wildcard='warnings.xml')
+        self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.15"),
                          "fully fixed after 1:8.15")
     def test_imagelink(self):
-        self.run_dox2html5(wildcard='imagelink.xml')
+        self.run_doxygen(wildcard='imagelink.xml')
         self.assertEqual(*self.actual_expected_contents('imagelink.html'))
 
 class Math(IntegrationTestCase):
@@ -138,14 +138,14 @@ class Math(IntegrationTestCase):
     @unittest.skipUnless(shutil.which('latex'),
                          "Math rendering requires LaTeX installed")
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     @unittest.skipUnless(shutil.which('latex'),
                          "Math rendering requires LaTeX installed")
     def test_latex_error(self):
         with self.assertRaises(subprocess.CalledProcessError) as context:
-            self.run_dox2html5(wildcard='error.xml')
+            self.run_doxygen(wildcard='error.xml')
 
 class MathCached(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -202,7 +202,7 @@ class MathCached(IntegrationTestCase):
         with open(os.path.join(self.path, 'xml/math.cache'), 'wb') as f:
             pickle.dump(math_cache, f)
 
-        self.run_dox2html5(wildcard='math.xml')
+        self.run_doxygen(wildcard='math.xml')
         self.assertEqual(*self.actual_expected_contents('math.html'))
 
         # Expect that after the operation the global cache age is bumped,
@@ -221,7 +221,7 @@ class MathCached(IntegrationTestCase):
         with open(os.path.join(self.path, 'xml/math.cache'), 'wb') as f:
             pickle.dump((1337, 0, {"something different"}), f)
 
-        self.run_dox2html5(wildcard='math-uncached.xml')
+        self.run_doxygen(wildcard='math-uncached.xml')
 
         with open(os.path.join(self.path, 'math.html')) as f:
             expected_contents = f.read().strip()
@@ -247,7 +247,7 @@ class MathCached(IntegrationTestCase):
             shutil.rmtree(os.path.join(self.path, 'xml/math.cache'))
 
         # Processing without any math
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
 
         # There should be no file generated
         self.assertFalse(os.path.exists(os.path.join(self.path, 'xml/math.cache')))
@@ -257,7 +257,7 @@ class Tagfile(IntegrationTestCase):
         super().__init__(__file__, 'tagfile', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class Custom(IntegrationTestCase):
@@ -265,32 +265,32 @@ class Custom(IntegrationTestCase):
         super().__init__(__file__, 'custom', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     @unittest.skipUnless(shutil.which('latex'),
                          "Math rendering requires LaTeX installed")
     def test_math(self):
-        self.run_dox2html5(wildcard='math.xml')
+        self.run_doxygen(wildcard='math.xml')
         self.assertEqual(*self.actual_expected_contents('math.html'))
 
     @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
                          "Dot < 2.40.1 has a completely different output.")
     def test_dot(self):
-        self.run_dox2html5(wildcard='dot.xml')
+        self.run_doxygen(wildcard='dot.xml')
         self.assertEqual(*self.actual_expected_contents('dot.html'))
 
     @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1") and
                          LooseVersion(dot_version()) >= LooseVersion("2.38.0"),
                          "Dot < 2.38 and dot > 2.38 has a completely different output.")
     def test_dot238(self):
-        self.run_dox2html5(wildcard='dot.xml')
+        self.run_doxygen(wildcard='dot.xml')
         self.assertEqual(*self.actual_expected_contents('dot.html', 'dot-238.html'))
 
     @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.38.0"),
                          "Dot > 2.36 has a completely different output.")
     def test_dot236(self):
-        self.run_dox2html5(wildcard='dot.xml')
+        self.run_doxygen(wildcard='dot.xml')
         self.assertEqual(*self.actual_expected_contents('dot.html', 'dot-236.html'))
 
 class ParseError(BaseTestCase):
@@ -298,7 +298,7 @@ class ParseError(BaseTestCase):
         super().__init__(__file__, 'parse_error', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='broken.xml')
+        self.run_doxygen(wildcard='broken.xml')
 
         # The index file should be generated, no abort
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'index.html')))
@@ -308,7 +308,7 @@ class AutobriefCppComments(IntegrationTestCase):
         super().__init__(__file__, 'autobrief_cpp_comments', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 # JAVADOC_AUTOBRIEF should be nuked from orbit. Or implemented from scratch,
@@ -321,7 +321,7 @@ class AutobriefHr(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
                          "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test(self):
-        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
 class AutobriefMultiline(IntegrationTestCase):
@@ -329,7 +329,7 @@ class AutobriefMultiline(IntegrationTestCase):
         super().__init__(__file__, 'autobrief_multiline', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
 class AutobriefHeading(IntegrationTestCase):
@@ -339,7 +339,7 @@ class AutobriefHeading(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
                          "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test(self):
-        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
 class SectionUnderscoreOne(IntegrationTestCase):
@@ -347,7 +347,7 @@ class SectionUnderscoreOne(IntegrationTestCase):
         super().__init__(__file__, 'section_underscore_one', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class SectionsHeadings(IntegrationTestCase):
@@ -355,15 +355,15 @@ class SectionsHeadings(IntegrationTestCase):
         super().__init__(__file__, 'sections_headings', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
-        self.run_dox2html5(wildcard='warnings.xml')
+        self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
     def test_functions(self):
-        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class AnchorInBothGroupAndNamespace(IntegrationTestCase):
@@ -371,7 +371,7 @@ class AnchorInBothGroupAndNamespace(IntegrationTestCase):
         super().__init__(__file__, 'anchor_in_both_group_and_namespace', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
         self.assertEqual(*self.actual_expected_contents('group__fizzbuzz.html'))
 
@@ -380,7 +380,7 @@ class AnchorHtmlNoPrefixBug(IntegrationTestCase):
         super().__init__(__file__, 'anchor_html_no_prefix_bug', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='some-long-page-name.xml')
+        self.run_doxygen(wildcard='some-long-page-name.xml')
         self.assertEqual(*self.actual_expected_contents('some-long-page-name.html'))
 
 class UnexpectedSections(IntegrationTestCase):
@@ -388,7 +388,7 @@ class UnexpectedSections(IntegrationTestCase):
         super().__init__(__file__, 'unexpected_sections', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class Dot(IntegrationTestCase):
@@ -398,17 +398,17 @@ class Dot(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
                          "Dot < 2.40.1 has a completely different output.")
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1"),
                          "Dot < 2.40.1 has a completely different output.")
     def test_238(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html', 'index-238.html'))
 
     def test_warnings(self):
-        self.run_dox2html5(wildcard='warnings.xml')
+        self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class Htmlinclude(IntegrationTestCase):
@@ -416,11 +416,11 @@ class Htmlinclude(IntegrationTestCase):
         super().__init__(__file__, 'htmlinclude', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='indexpage.xml')
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
-        self.run_dox2html5(wildcard='warnings.xml')
+        self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
 class BriefMultilineIngroup(IntegrationTestCase):
@@ -428,5 +428,5 @@ class BriefMultilineIngroup(IntegrationTestCase):
         super().__init__(__file__, 'brief_multiline_ingroup', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='group__thatgroup.xml')
+        self.run_doxygen(wildcard='group__thatgroup.xml')
         self.assertEqual(*self.actual_expected_contents('group__thatgroup.html'))

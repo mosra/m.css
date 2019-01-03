@@ -27,7 +27,7 @@ import shutil
 import subprocess
 import unittest
 
-from dox2html5 import parse_doxyfile, State
+from doxygen import parse_doxyfile, State
 
 from . import BaseTestCase
 
@@ -40,7 +40,7 @@ class Doxyfile(unittest.TestCase):
 
     def test(self):
         state = State()
-        parse_doxyfile(state, 'test/doxyfile/Doxyfile')
+        parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile')
         self.assertEqual(state.doxyfile, {
             'DOT_FONTNAME': 'Helvetica',
             'DOT_FONTSIZE': 10,
@@ -85,7 +85,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
     def test_subdirs(self):
         state = State()
         with self.assertRaises(NotImplementedError):
-            parse_doxyfile(state, 'test/doxyfile/Doxyfile-subdirs')
+            parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
 
 class Upgrade(BaseTestCase):
     def __init__(self, *args, **kwargs):

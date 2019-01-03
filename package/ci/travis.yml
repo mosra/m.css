@@ -64,10 +64,10 @@ script:
 
   # Test doxygen theme. Math rendering is not tested as dvisvgm on 14.04 is
   # unusable.
-  - if [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR/doxygen && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
+  - if [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
   # Test client doxygen JS
-  - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR && istanbul cover doxygen/test/test-search.js; fi
+  - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR && istanbul cover documentation/test_doxygen/test-search.js; fi
 
   # Test that compiled CSS is up-to-date. First display the diff, then check
   # with diff-index which should print what's wrong and return with non-zero

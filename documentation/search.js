@@ -454,7 +454,7 @@ var Search = {
                 let type = '';
                 let color = '';
                 switch(results[i].flags >> 4) {
-                    /* Keep in sync with dox2html5.py */
+                    /* Keep in sync with doxygen.py */
                     case 1:
                         type = 'page';
                         color = 'm-success';

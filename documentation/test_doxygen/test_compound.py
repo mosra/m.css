@@ -27,46 +27,46 @@ import unittest
 
 from distutils.version import LooseVersion
 
-from test import IntegrationTestCase, doxygen_version
+from . import IntegrationTestCase, doxygen_version
 
 class Listing(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'listing', *args, **kwargs)
 
     def test_index_pages(self):
-        self.run_dox2html5(wildcard='index.xml', index_pages=['annotated', 'namespaces', 'pages'])
+        self.run_doxygen(wildcard='index.xml', index_pages=['annotated', 'namespaces', 'pages'])
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
         self.assertEqual(*self.actual_expected_contents('namespaces.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
     def test_index_pages_custom_expand_level(self):
-        self.run_dox2html5(wildcard='index.xml', index_pages=['files'])
+        self.run_doxygen(wildcard='index.xml', index_pages=['files'])
         self.assertEqual(*self.actual_expected_contents('files.html'))
 
     def test_dir(self):
-        self.run_dox2html5(wildcard='dir_*.xml')
+        self.run_doxygen(wildcard='dir_*.xml')
         self.assertEqual(*self.actual_expected_contents('dir_4b0d5f8864bf89936129251a2d32609b.html'))
         self.assertEqual(*self.actual_expected_contents('dir_bbe5918fe090eee9db2d9952314b6754.html'))
 
     def test_file(self):
-        self.run_dox2html5(wildcard='*_8h.xml')
+        self.run_doxygen(wildcard='*_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('Class_8h.html'))
 
     def test_namespace(self):
-        self.run_dox2html5(wildcard='namespaceRoot_1_1Directory.xml')
+        self.run_doxygen(wildcard='namespaceRoot_1_1Directory.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceRoot_1_1Directory.html'))
 
     def test_namespace_empty(self):
-        self.run_dox2html5(wildcard='namespaceAnother.xml')
+        self.run_doxygen(wildcard='namespaceAnother.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceAnother.html'))
 
     def test_class(self):
-        self.run_dox2html5(wildcard='classRoot_1_1Directory_1_1Sub_1_1Class.xml')
+        self.run_doxygen(wildcard='classRoot_1_1Directory_1_1Sub_1_1Class.xml')
         self.assertEqual(*self.actual_expected_contents('classRoot_1_1Directory_1_1Sub_1_1Class.html'))
 
     def test_page_no_toc(self):
-        self.run_dox2html5(wildcard='page-no-toc.xml')
+        self.run_doxygen(wildcard='page-no-toc.xml')
         self.assertEqual(*self.actual_expected_contents('page-no-toc.html'))
 
 class Detailed(IntegrationTestCase):
@@ -74,43 +74,43 @@ class Detailed(IntegrationTestCase):
         super().__init__(__file__, 'detailed', *args, **kwargs)
 
     def test_namespace(self):
-        self.run_dox2html5(wildcard='namespaceNamee.xml')
+        self.run_doxygen(wildcard='namespaceNamee.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamee.html'))
 
     def test_class_template(self):
-        self.run_dox2html5(wildcard='structTemplate.xml')
+        self.run_doxygen(wildcard='structTemplate.xml')
         self.assertEqual(*self.actual_expected_contents('structTemplate.html'))
 
     def test_class_template_specialized(self):
-        self.run_dox2html5(wildcard='structTemplate_3_01void_01_4.xml')
+        self.run_doxygen(wildcard='structTemplate_3_01void_01_4.xml')
         self.assertEqual(*self.actual_expected_contents('structTemplate_3_01void_01_4.html'))
 
     def test_class_template_warnings(self):
-        self.run_dox2html5(wildcard='structTemplateWarning.xml')
+        self.run_doxygen(wildcard='structTemplateWarning.xml')
         self.assertEqual(*self.actual_expected_contents('structTemplateWarning.html'))
 
     def test_function(self):
-        self.run_dox2html5(wildcard='namespaceFoo.xml')
+        self.run_doxygen(wildcard='namespaceFoo.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
 
     def test_enum(self):
-        self.run_dox2html5(wildcard='namespaceEno.xml')
+        self.run_doxygen(wildcard='namespaceEno.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceEno.html'))
 
     def test_function_enum_warnings(self):
-        self.run_dox2html5(wildcard='namespaceWarning.xml')
+        self.run_doxygen(wildcard='namespaceWarning.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceWarning.html'))
 
     def test_typedef(self):
-        self.run_dox2html5(wildcard='namespaceType.xml')
+        self.run_doxygen(wildcard='namespaceType.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceType.html'))
 
     def test_var(self):
-        self.run_dox2html5(wildcard='namespaceVar.xml')
+        self.run_doxygen(wildcard='namespaceVar.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceVar.html'))
 
     def test_define(self):
-        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class Ignored(IntegrationTestCase):
@@ -118,7 +118,7 @@ class Ignored(IntegrationTestCase):
         super().__init__(__file__, 'ignored', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(index_pages=[], wildcard='*.xml')
+        self.run_doxygen(index_pages=[], wildcard='*.xml')
 
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'classA.html')))
 
@@ -130,7 +130,7 @@ class Ignored(IntegrationTestCase):
     @unittest.expectedFailure
     def test_empty_class_doc_not_generated(self):
         # This needs to be generated in order to be compatible with tag files
-        self.run_dox2html5(index_pages=[], wildcard='classBrief.xml')
+        self.run_doxygen(index_pages=[], wildcard='classBrief.xml')
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classBrief.html')))
 
 class Warnings(IntegrationTestCase):
@@ -139,7 +139,7 @@ class Warnings(IntegrationTestCase):
 
     def test(self):
         # Should warn that an export macro is present in the XML
-        self.run_dox2html5(wildcard='namespaceMagnum.xml')
+        self.run_doxygen(wildcard='namespaceMagnum.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceMagnum.html'))
 
 class Modules(IntegrationTestCase):
@@ -147,7 +147,7 @@ class Modules(IntegrationTestCase):
         super().__init__(__file__, 'modules', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
         self.assertEqual(*self.actual_expected_contents('group__group2.html'))
         self.assertEqual(*self.actual_expected_contents('group__subgroup.html'))
@@ -158,7 +158,7 @@ class Deprecated(IntegrationTestCase):
         super().__init__(__file__, 'deprecated', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
         # Test that the [deprecated] label is in all places where it should ne
 
         # Class tree
@@ -197,7 +197,7 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
         super().__init__(__file__, 'namespace_members_in_file_scope', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='namespaceNamespace.xml')
+        self.run_doxygen(wildcard='namespaceNamespace.xml')
 
         # The namespace should have the detailed docs
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
@@ -205,7 +205,7 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/653")
     def test_file(self):
-        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_doxygen(wildcard='File_8h.xml')
 
         # The file should have just links to detailed docs
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
@@ -217,7 +217,7 @@ class NamespaceMembersInFileScopeDefineBaseUrl(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/653")
     def test(self):
-        self.run_dox2html5(wildcard='File_8h.xml')
+        self.run_doxygen(wildcard='File_8h.xml')
 
         # The file should have just links to detailed docs
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
@@ -227,7 +227,7 @@ class FilenameCase(IntegrationTestCase):
         super().__init__(__file__, 'filename_case', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # Verify that all filenames are "converted" to lowercase and the links
         # and page tree work properly as well
@@ -241,7 +241,7 @@ class CrazyTemplateParams(IntegrationTestCase):
         super().__init__(__file__, 'crazy_template_params', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # The file should have the whole template argument as a type
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
@@ -251,7 +251,7 @@ class Includes(IntegrationTestCase):
         super().__init__(__file__, 'includes', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # The Contained namespace should have just the global include, the
         # Spread just the local includes, the class a global include and the
@@ -272,7 +272,7 @@ class IncludesDisabled(IntegrationTestCase):
         super().__init__(__file__, 'includes_disabled', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # No include information as SHOW_INCLUDE_FILES is disabled globally
         self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
@@ -285,7 +285,7 @@ class IncludesUndocumentedFiles(IntegrationTestCase):
         super().__init__(__file__, 'includes_undocumented_files', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # The files are not documented, so there should be no include
         # information -- practically the same output as when SHOW_INCLUDE_FILES
@@ -300,7 +300,7 @@ class IncludesTemplated(IntegrationTestCase):
         super().__init__(__file__, 'includes_templated', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # All entries should have the includes next to the template
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
@@ -311,7 +311,7 @@ class BaseDerivedInRootNamespace(IntegrationTestCase):
         super().__init__(__file__, 'base_derived_in_root_namespace', *args, **kwargs)
 
     def test(self):
-        self.run_dox2html5(wildcard='*.xml')
+        self.run_doxygen(wildcard='*.xml')
 
         # Shouldn't crash or anything
         self.assertEqual(*self.actual_expected_contents('structNamespace_1_1BothBaseAndDerivedInRootNamespace.html'))

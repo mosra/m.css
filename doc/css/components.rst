@@ -913,13 +913,13 @@ might then look similarly to this:
 
     .. code:: html
 
-        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
-        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
+        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>            <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
+        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">documentation</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
 
     .. raw:: html
 
-        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
-        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
+        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>            <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
+        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">documentation</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
 
 .. note-success::
 

@@ -95,9 +95,9 @@ There are no visual tests for the CSS style at the moment. Run tests:
     cd plugins
     python -m unittest
 
-    cd doxygen
+    cd documentation
     python -m unittest
-    node test/test-search.js
+    node test_doxygen/test-search.js
 
 Code coverage needs `coverage.py <https://coverage.readthedocs.io/>`_ for
 Python (use ``pip`` or your system package) and
@@ -106,7 +106,7 @@ to avoid polluting the whole system with crap:
 
 .. code:: sh
 
-    cd doxygen
+    cd documentation
     npm install istanbul
 
 There is no
@@ -114,11 +114,11 @@ possibility of getting code coverage for Jinja2 templates, though.
 
 .. code:: sh
 
-    cd doxygen
+    cd documentation
     coverage run -m unittest ; coverage html
     # open htmlcov/index.html in your browser
 
-    cd doxygen
+    cd documentation
     node ./node_modules/istanbul/lib/cli.js cover test/test-search.js
     # open coverage/lcov-report/index.html in your browser
 

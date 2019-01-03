@@ -30,7 +30,7 @@ import sys
 import pathlib
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from dox2html5 import Trie, ResultMap, ResultFlag, serialize_search_data
+from doxygen import Trie, ResultMap, ResultFlag, serialize_search_data
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'
 

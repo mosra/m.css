@@ -25,7 +25,7 @@
 import unittest
 import html
 
-from dox2html5 import add_wbr, fix_type_spacing
+from doxygen import add_wbr, fix_type_spacing
 
 class Utility(unittest.TestCase):
     def test_add_wbr(self):
