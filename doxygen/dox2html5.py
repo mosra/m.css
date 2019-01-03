@@ -3371,7 +3371,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 
 default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
-default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/')
+default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/cpp/')
 
 def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
     state = State()
