@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% macro entry_namespace(namespace) %}{% include 'entry-namespace.html' %}{% endmacro %}
+{% macro entry_type(type) %}{% include 'entry-type.html' %}{% endmacro %}
+
+{% block title %}{% set j = joiner('.') %}{% for name, _ in page.breadcrumb %}{{ j() }}{{ name }}{% endfor %} | {{ super() }}{% endblock %}
+
+{% block main %}
+        <h1>
+          {%+ for name, target in page.breadcrumb[:-1] %}<span class="m-breadcrumb"><a href="{{ target }}">{{ name }}</a>.<wbr/></span>{% endfor %}{{ page.breadcrumb[-1][0] }} <span class="m-thin">{{ page.kind }}</span>{% if page.is_final %} <span class="m-label m-flat m-warning">final</span>{% endif %}
+          {# need an explicit space here otherwise the newline gets removed #}
+
+        </h1>
+        {% if page.summary %}
+        <p>{{ page.summary }}</p>
+        {% endif %}
+        {% if page.types or page.members %}
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                {% if page.namespaces %}
+                <li><a href="#methods">Methods</a></li>
+                {% endif %}
+                {% if page.types %}
+                <li><a href="#types">Types</a></li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+        </div>
+        {% endif %}
+        {% if page.namespaces %}
+        <section id="namespaces">
+          <h2><a href="#namespaces">Namespaces</a></h2>
+          <dl class="m-dox">
+            {% for namespace in page.namespaces %}
+{{ entry_namespace(namespace) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+        {% if page.types %}
+        <section id="types">
+          <h2><a href="#types">Types</a></h2>
+          <dl class="m-dox">
+            {% for type in page.types %}
+{{ entry_type(type) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,61 @@
+          <section class="m-dox-details" id="{{ method.id }}"><div>
+            <h3>
+              {% set j = joiner(',\n              ') %}
+              <span class="m-dox-wrap-bumper">{{ method.prefix }}{{ method.type }} {{ prefix }}</span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#{{ method.id }}" class="m-dox-self">{{ method.name }}</a>(</span><span class="m-dox-wrap">{% for param in method.params %}{{ j() }}{{ param.type_name }}{% if param.default %} = {{ param.default }}{% endif %}{% endfor %}){{ method.suffix }}
+            </h3>
+            {% if method.brief %}
+            <p>{{ method.summary }}</p>
+            {% endif %}
+            {% if method.has_param_details or method.return_value or method.return_values or method.exceptions %}
+            <table class="m-table m-fullwidth m-flat">
+              {% if method.has_param_details %}
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                {% for param in method.params|selectattr('name') %}
+                <tr>
+                  <td{% if loop.index == 1 and not method.has_template_details %} style="width: 1%"{% endif %}>{{ param.name }}{% if param.direction == 'in' %}&nbsp;<span class="m-label m-flat m-info">in</span>{% elif param.direction == 'out' %}&nbsp;<span class="m-label m-flat m-warning">out</span>{% elif param.direction == 'inout' %}&nbsp;<span class="m-label m-flat m-danger">in/out</span>{% endif %}</td>
+                  <td>{{ param.description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
+              {% if method.return_value %}
+              {{ '<thead>' if method.return_values or method.exceptions else '<tfoot>' }}
+                <tr>
+                  <th{% if not method.has_template_details and not method.has_param_details %} style="width: 1%"{% endif %}>Returns</th>
+                  <td>{{ method.return_value }}</td>
+                </tr>
+              {{ '</thead>' if method.return_values or method.exceptions else '</tfoot>' }}
+              {% elif method.return_values %}
+              <thead>
+                <tr><th colspan="2">Returns</th></tr>
+              </thead>
+              {% endif %}
+              {% if method.return_values %}
+              <tbody>
+                {% for value, description in method.return_values %}
+                <tr>
+                  <td{% if loop.index == 1 and not method.has_template_details and not method.has_param_details and not method.return_value %} style="width: 1%"{% endif %}>{{ value }}</td>
+                  <td>{{ description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
+              {% if method.exceptions %}
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                {% for exception, description in method.exceptions %}
+                <tr>
+                  <td{% if loop.index == 1 and not method.has_template_details and not method.has_param_details and not method.return_value and not method.return_values %} style="width: 1%"{% endif %}>{{ exception }}</td>
+                  <td>{{ description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
+            </table>
+            {% endif %}
+          </div></section>

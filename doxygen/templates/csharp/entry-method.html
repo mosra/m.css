@@ -1,0 +1,5 @@
+            <dt>
+              {% set j = joiner(',\n              ') %}
+              <span class="m-dox-wrap-bumper">{{ method.prefix }}{% if method.type == 'void' %}void {% elif method.type %}auto {% endif %}<a href="{{ method.base_url }}#{{ method.id }}" {% if method.has_details %}class="m-dox"{% else %}class="m-dox-self" name="{{ method.id }}"{% endif %}>{{ method.name }}</a>(</span><span class="m-dox-wrap">{% for param in method.params %}{{ j() }}{{ param.type_name }}{% if param.default %} = {{ param.default }}{% endif %}{% endfor %}){{ method.suffix }}{% if method.type and method.type != 'void' %} -&gt; {{ method.type }}{% endif %}
+            </dt>
+            <dd>{{ method.summary }}</dd>
