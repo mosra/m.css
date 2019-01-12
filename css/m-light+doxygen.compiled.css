@@ -3,7 +3,7 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -1084,13 +1084,13 @@ pre.m-code span.hll {
   margin-right: -1.0rem;
   padding-left: 1.0rem;
 }
-pre.m-code.m-inverted {
+.m-code.m-inverted {
   color: rgba(91, 91, 91, 0.33);
 }
-pre.m-code.m-inverted > span {
+.m-code.m-inverted > span {
   opacity: 0.3333;
 }
-pre.m-code.m-inverted > span.hll {
+.m-code.m-inverted > span.hll {
   color: #000000;
   opacity: 1;
   background-color: transparent;
@@ -2436,7 +2436,8 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-console .w { color: #b2b2b2 }
 
 a.m-dox, a.m-dox-self, a.m-dox-external,
-ul.m-dox li.m-dox-expansible > a:first-child, ul.m-dox li.m-dox-collapsible > a:first-child {
+ul.m-dox li.m-dox-expansible > a:first-child, ul.m-dox li.m-dox-collapsible > a:first-child,
+.m-code.m-inverted.m-dox-include > a {
   text-decoration: none;
 }
 a.m-dox, a.m-dox-self {
@@ -2514,11 +2515,14 @@ ul.m-dox li.m-dox-expansible > a:first-child:before, ul.m-dox li.m-dox-collapsib
 }
 ul.m-dox li.m-dox-expansible > a:first-child:before { content: '⊕'; }
 ul.m-dox li.m-dox-collapsible > a:first-child:before { content: '⊖'; }
-h1 .m-dox-template {
+h1 .m-dox-template, h1 .m-dox-include {
   font-size: 1.3rem;
   font-weight: normal;
 }
-h3 .m-dox-template {
+h1 .m-dox-include:last-child {
+  margin-bottom: -0.5rem;
+}
+h3 .m-dox-template, h3 .m-dox-include {
   font-size: 1rem;
   font-weight: normal;
 }
@@ -2535,6 +2539,15 @@ dl.m-dox dd svg.m-math, ul.m-dox li > span.m-dox svg.m-math {
 dl.m-dox dd a:hover, dl.m-dox dd a:focus, dl.m-dox dd a:active,
 ul.m-dox li > span.m-dox a:hover, ul.m-dox li > span.m-dox a:focus, ul.m-dox li > span.m-dox a:active {
   color: #949494;
+}
+.m-code.m-inverted.m-dox-include > a:link,
+.m-code.m-inverted.m-dox-include > a:visited {
+  opacity: 0.6666;
+}
+.m-code.m-inverted.m-dox-include > a:hover,
+.m-code.m-inverted.m-dox-include > a:focus,
+.m-code.m-inverted.m-dox-include > a:active {
+  opacity: 1;
 }
 article section.m-dox-details > div {
   margin-top: 0;
@@ -2684,6 +2697,9 @@ a.m-dox-search-icon:focus svg, a.m-dox-search-icon:hover svg, a.m-dox-search-ico
 }
 .m-dox-search ul#search-results li#search-current a {
   background-color: #fbf0ec;
+}
+.m-dox-search ul#search-results li#search-current.m-dox-search-copied a {
+  background-color: #4dd376;
 }
 .m-dox-search-typed {
   color: #ea7944;

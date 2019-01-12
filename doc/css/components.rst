@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -36,6 +36,8 @@ Components
     :language: css
 .. role:: html(code)
     :language: html
+.. role:: rst(code)
+    :language: rst
 
 In `m-components.css <{filename}/css.rst>`_, m.css provides a set of basic
 components for further improving the layout and display of authored content.

@@ -37,7 +37,7 @@ Code contribution
         /*
             This file is part of m.css.
 
-            Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+            Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
             Copyright © YEAR YOUR_NAME <your@mail.com>
 
             Permission is hereby granted, free of charge, to any person obtaining a
@@ -100,7 +100,16 @@ There are no visual tests for the CSS style at the moment. Run tests:
     node test/test-search.js
 
 Code coverage needs `coverage.py <https://coverage.readthedocs.io/>`_ for
-Python and `istanbul <https://istanbul.js.org/>`_ for JS. There is no
+Python (use ``pip`` or your system package) and
+`istanbul <https://istanbul.js.org/>`_ for JS. Install it locally using ``npm``
+to avoid polluting the whole system with crap:
+
+.. code:: sh
+
+    cd doxygen
+    npm install istanbul
+
+There is no
 possibility of getting code coverage for Jinja2 templates, though.
 
 .. code:: sh
@@ -110,7 +119,7 @@ possibility of getting code coverage for Jinja2 templates, though.
     # open htmlcov/index.html in your browser
 
     cd doxygen
-    node ./path/to/istanbul/lib/cli.js cover test/test-search.js
+    node ./node_modules/istanbul/lib/cli.js cover test/test-search.js
     # open coverage/lcov-report/index.html in your browser
 
     cd pelican-plugins

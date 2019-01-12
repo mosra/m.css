@@ -53,9 +53,7 @@ install:
   - if [ "$WITH_DOXYGEN" == "ON" ]; then mkdir -p $HOME/bin && export PATH=$HOME/bin:$PATH; fi
 
   # Download newer Doxygen, as I don't want to care for the old bugs
-  # TODO: use a stable URL once https://github.com/doxygen/doxygen/issues/6393
-  # is resolved
-  - if [ "$WITH_DOXYGEN" == "ON" ] && [ ! -f $HOME/bin/doxygen ]; then wget "http://ftp.stack.nl/pub/users/dimitri/test/doxygen-1.8.14.static_clang.linux.bin.tar.gz" && tar -xzf doxygen-1.8.14.static_clang.linux.bin.tar.gz && cp doxygen-1.8.14/bin/doxygen $HOME/bin && doxygen -v; fi
+  - if [ "$WITH_DOXYGEN" == "ON" ] && [ ! -f $HOME/bin/doxygen ]; then wget "http://doxygen.nl/files/doxygen-1.8.15.linux.bin.tar.gz" && tar -xzf doxygen-1.8.15.linux.bin.tar.gz && cp doxygen-1.8.15/bin/doxygen $HOME/bin && doxygen -v; fi
 
 script:
   # Test the theme. No code coverage there.

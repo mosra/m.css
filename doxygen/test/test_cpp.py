@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -61,6 +61,7 @@ class Derived(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classNamespace_1_1VirtualBase.html'))
         self.assertEqual(*self.actual_expected_contents('classBaseOutsideANamespace.html'))
         self.assertEqual(*self.actual_expected_contents('classDerivedOutsideANamespace.html'))
+        self.assertEqual(*self.actual_expected_contents('structAnother_1_1Final.html'))
 
 class Friends(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -80,3 +81,23 @@ class SignalsSlots(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='classClass.xml')
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
+
+class VariableTemplate(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'variable_template', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('structFoo.html'))
+        self.assertEqual(*self.actual_expected_contents('structBar.html'))
+
+class FunctionAttributes(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'function_attributes', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('structFoo.html'))
+        self.assertEqual(*self.actual_expected_contents('classBase.html'))
+        self.assertEqual(*self.actual_expected_contents('classDerived.html'))
+        self.assertEqual(*self.actual_expected_contents('structFinal.html'))

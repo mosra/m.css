@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -53,10 +53,22 @@ class Blocks(IntegrationTestCase):
     def test(self):
         self.run_dox2html5(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
-        self.assertEqual(*self.actual_expected_contents('todo.html'))
         # Multiple xrefitems should be merged into one
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
+                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
+    def test_xrefitem1814(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('todo.html'))
         self.assertEqual(*self.actual_expected_contents('old.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) <= LooseVersion("1.8.14"),
+                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
+    def test_xrefitem(self):
+        self.run_dox2html5(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
+        self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
 class Code(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -292,6 +304,8 @@ class AutobriefHr(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'autobrief_hr', *args, **kwargs)
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test(self):
         self.run_dox2html5(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
@@ -308,6 +322,8 @@ class AutobriefHeading(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'autobrief_heading', *args, **kwargs)
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test(self):
         self.run_dox2html5(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))

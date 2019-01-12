@@ -60,15 +60,22 @@
           <div id="search-symbolcount">&hellip;</div>
         </div>
         <div class="m-dox-search-content">
-          <input type="search" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" />
+          <form>
+            <input type="search" name="q" id="search-input" placeholder="Loading &hellip;" disabled="disabled" autofocus="autofocus" autocomplete="off" spellcheck="false" />
+          </form>
           <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.</noscript>
           <div id="search-help" class="m-text m-dim m-text-center">
-            Search for symbols, directories, files, pages or modules. You can omit any
-            prefix from the symbol or file path; adding a <code>:</code> or <code>/</code>
-            suffix lists all members of given symbol or directory. Navigate through the
-            list using <span class="m-label m-dim">&darr;</span> and
-            <span class="m-label m-dim">&uarr;</span>, press
+            <p class="m-noindent">Search for symbols, directories, files, pages or
+            modules. You can omit any prefix from the symbol or file path; adding a
+            <code>:</code> or <code>/</code> suffix lists all members of given symbol or
+            directory.</p>
+            <p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+            / <span class="m-label m-dim">&uarr;</span> to navigate through the list,
             <span class="m-label m-dim">Enter</span> to go.
+            <span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+            copy a link to the result using <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+            <span class="m-label m-dim">M</span> produces a Markdown link.</p>
           </div>
           <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.</div>
           <ul id="search-results"></ul>

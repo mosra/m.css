@@ -1,6 +1,9 @@
           <section class="m-dox-details" id="{{ typedef.id }}"><div>
             <h3>
               {% if compound.templates != None or typedef.templates != None %}
+              {% if typedef.include %}
+              <div class="m-dox-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ typedef.include[1] }}">{{ typedef.include[0] }}</a></div>
+              {% endif %}
               <div class="m-dox-template">
                 {% if compound.templates != None %}
                 {% set j = joiner(', ') %}
@@ -19,6 +22,9 @@
               {% endif %}
               {# the empty line has to be here to prevent the lines from merging #}
 
+              {% if typedef.include and compound.templates == None and typedef.templates == None %}
+              <div class="m-dox-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ typedef.include[1] }}">{{ typedef.include[0] }}</a></div>
+              {% endif %}
             </h3>
             {% if typedef.brief %}
             <p>{{ typedef.brief }}</p>

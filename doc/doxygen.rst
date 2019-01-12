@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -69,9 +69,9 @@ switch.
     It may work reasonably well with older versions, but I can't guarantee
     that. Upgrade to the latest version to have the best experience.
 
-    Some features depend on patches that are not yet integrated in Doxygen, in
-    that case the documentation mentions which revision to use or which patch
-    you need to apply.
+    Some features depend on newer versions or patches that are not yet
+    integrated in Doxygen, in that case the documentation mentions which
+    revision to use or which patch you need to apply.
 
 The base is contained in a single Python script and related style/template
 files, for advanced features such as math rendering it'll make use of internals
@@ -209,6 +209,9 @@ If you see something unexpected or not see something expected, check the
     member detailed docs
 -   Deprecation markers are propagated to member and compound listing pages and
     search results; :cpp:`delete`\ d functions are marked in search as well
+-   Information about which file to :cpp:`#include` for given symbol is
+    provided also for free functions, enums, typedefs and variables (or
+    namespaces, in case all contents of the namespace are in a single file)
 
 `Intentionally unsupported features`_
 -------------------------------------
@@ -296,15 +299,24 @@ Variable                        Description
                                 commands. To ensure consistent look with the
                                 default m.css themes, set it to ``16``.
                                 Doxygen default is ``10``.
+:ini:`SHOW_INCLUDE_FILES`       Whether to show corresponding :cpp:`#include`
+                                file for classes, namespaces and namespace
+                                members. Originally :ini:`SHOW_INCLUDE_FILES`
+                                is meant to be for "a list of the files that
+                                are included by a file in the documentation of
+                                that file" but that kind of information is
+                                glaringly useless in every imaginable way and
+                                thus the theme is reusing it for something
+                                actually useful. Doxygen default is ``YES``.
 =============================== ===============================================
 
 In addition, the m.css Doxygen theme recognizes the following extra options:
 
 .. class:: m-table m-fullwidth
 
-=================================== =======================================
+=================================== ===========================================
 Variable                            Description
-=================================== =======================================
+=================================== ===========================================
 :ini:`M_THEME_COLOR`                Color for :html:`<meta name="theme-color" />`,
                                     corresponding to the CSS style. If empty,
                                     no :html:`<meta>` tag is rendered. See
@@ -366,19 +378,24 @@ Variable                            Description
                                     ``NO`` is used.
 :ini:`M_SEARCH_DOWNLOAD_BINARY`     Download search data as a binary to save
                                     bandwidth and initial processing time. If
-                                    not set, ``NO`` is used. See `Search`_ for
-                                    more information.
+                                    not set, ``NO`` is used. See
+                                    `Search options`_ for more information.
 :ini:`M_SEARCH_HELP`                HTML code to display as help text on empty
                                     search popup. If not set, a default message
                                     is used. Has effect only if
                                     :ini:`M_SEARCH_DISABLED` is not ``YES``.
+:ini:`M_SEARCH_BASE_URL`            Base URL for OpenSearch-based search engine
+                                    suggestions for web browsers. See
+                                    `Search options`_ for more information. Has
+                                    effect only if :ini:`M_SEARCH_DISABLED` is
+                                    not ``YES``.
 :ini:`M_SEARCH_EXTERNAL_URL`        URL for external search. The ``{query}``
                                     placeholder is replaced with urlencoded
                                     search string. If not set, no external
-                                    search is offered. See `Search`_ for more
-                                    information. Has effect only if
+                                    search is offered. See `Search options`_
+                                    for more information. Has effect only if
                                     :ini:`M_SEARCH_DISABLED` is not ``YES``.
-=================================== =======================================
+=================================== ===========================================
 
 Note that namespace, directory and page lists are always fully expanded as
 these are not expected to be excessively large.
@@ -519,6 +536,25 @@ being 25% larger, but since this is for serving from a local filesystem, it's
 not considered a problem. If your docs are accessed through a server (or you
 don't need Chrome support), enable the :ini:`M_SEARCH_DOWNLOAD_BINARY` option.
 
+The site can provide search engine metadata using the `OpenSearch <http://www.opensearch.org/>`_
+specification. On supported browsers this means you can add the search field to
+search engines and search directly from the address bar. To enable search
+engine metadata, point :ini:`M_SEARCH_BASE_URL` to base URL of your
+documentation, for example:
+
+.. code:: ini
+
+    M_SEARCH_BASE_URL = "https://doc.magnum.graphics/magnum/"
+
+In general, even without the above setting, appending ``?q={query}#search`` to
+the URL will directly open the search popup with results for ``{query}``.
+
+.. note-info::
+
+    OpenSearch also makes it possible to have autocompletion and search results
+    directly in the browser address bar. However that requires a server-side
+    search implementation and is not supported at the moment.
+
 If :ini:`M_SEARCH_EXTERNAL_URL` is specified, full-text search using an
 external search engine is offered if nothing is found for given string or if
 the user has JavaScript disabled. It's recommended to restrict the search to
@@ -633,17 +669,47 @@ Table of contents for pages is generated only if they specify
 
 Doxygen by default doesn't render namespace members for file documentation in
 its XML output. To match the behavior of stock HTML output, enable the
-:ini:`XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE` option:
+:ini:`XML_NS_MEMB_FILE_SCOPE` option:
 
 .. code:: ini
 
-    # Requires a patch to Doxygen 1.8.14, see below
-    XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE = YES
+    XML_NS_MEMB_FILE_SCOPE = YES
 
 .. note-warning:: Doxygen patches
 
-    In order to use the :ini:`XML_NAMESPACE_MEMBERS_IN_FILE_SCOPE` option, you
-    need Doxygen with :gh:`doxygen/doxygen#653` applied.
+    In order to use the :ini:`XML_NS_MEMB_FILE_SCOPE` option, you need Doxygen
+    1.8.15 (released December 2018).
+
+`Include files`_
+----------------
+
+Doxygen by default shows corresponding :cpp:`#include`\ s only for classes. The
+m.css Doxygen theme shows it also for namespaces, free functions, enums,
+typedefs, variables and :cpp:`#define`\ s. The rules are:
+
+-   For classes, :cpp:`#include` information is always shown on the top
+-   If a namespace doesn't contain any inner namespaces or classes and consists
+    only of functions (enums, typedefs, variables) that are all declared in the
+    same header file, the :cpp:`#include` information is shown only globally at
+    the top, similarly to classes
+-   If a namespace contains inner classes/namespaces, or is spread over multiple
+    headers, the :cpp:`#include` information is shown locally for each member
+-   Files don't show any include information, as it is known implicitly
+-   In case of modules (grouped using ``@defgroup``), the :cpp:`#include` info
+    is always shown locally for each member. This includes also :cpp:`#define`\ s.
+
+This feature is enabled by default, disable :ini:`SHOW_INCLUDE_FILES` to hide
+all :cpp:`#include`-related information:
+
+.. code:: ini
+
+    SHOW_INCLUDE_FILES = NO
+
+.. note-warning:: Doxygen patches
+
+    Current stable Doxygen release (1.8.15) doesn't correctly provide location
+    information for function and variable declarations. A fix is submitted in
+    :gh:`doxygen/doxygen#6722`, which is not integrated yet.
 
 `Code highlighting`_
 --------------------
@@ -1296,7 +1362,9 @@ type, so either strings, booleans, or lists of strings. The exceptions are:
     :py:`url` is the favicon URL and :py:`type` is favicon MIME type to
     populate the ``type`` attribute of :html:`<link rel="favicon" />`.
 
- and in addition the following variables:
+.. class:: m-noindent
+
+and in addition the following variables:
 
 .. class:: m-table m-fullwidth
 
@@ -1336,6 +1404,11 @@ Property                                Description
                                         corresponding to output file name
 :py:`compound.url`                      Compound URL (or where this file will
                                         be saved)
+:py:`compound.include`                  Corresponding :cpp:`#include` statement
+                                        to use given compound. Set only for
+                                        classes or namespaces that are all
+                                        defined in a single file. See
+                                        `Include properties`_ for details.
 :py:`compound.name`                     Compound name
 :py:`compound.templates`                Template specification. Set only for
                                         classes. See `Template properties`_ for
@@ -1347,6 +1420,8 @@ Property                                Description
 :py:`compound.footer_navigation`        Footer navigation of a page. See
                                         `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
+:py:`compound.is_final`                 Whether the class is :cpp:`final`. Set
+                                        only for classes.
 :py:`compound.is_deprecated`            Whether the compound is deprecated. [7]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
 :py:`compound.modules`                  List of submodules in this compound.
@@ -1479,6 +1554,21 @@ of :py:`(url, title)` for a page that's either previous in the defined order,
 one level up or next. For starting/ending page the :py:`prev`/:py:`next` is
 :py:`None`.
 
+`Include properties`_
+`````````````````````
+
+The :py:`compound.include` property is a tuple of :py:`(name, URL)` where
+:py:`name` is the include name (together with angle brackets, quotes or a macro
+name) and :py:`URL` is a URL pointing to the corresponding header documentation
+file. This property is present only if the corresponding header documentation
+is present. This property is present for classes; namespaces have it only when
+all documented namespace contents are defined in a single file. For modules and
+namespaces spread over multiple files this property is presented separately for
+each enum, typedef, function, variable or define inside given module or
+namespace. Directories, files and file members don't provide this property,
+since in that case the mapping to a corresponding :cpp:`#include` file is known
+implicitly.
+
 `Module properties`_
 ````````````````````
 
@@ -1572,8 +1662,11 @@ Property                    Description
 :py:`class.is_deprecated`   Whether the class is deprecated. [7]_
 :py:`class.is_protected`    Whether this is a protected base class. Set only
                             for base classes.
-:py:`class.is_virtual`      Whether this is a virtual base class. Set only for
-                            base classes.
+:py:`class.is_virtual`      Whether this is a virtual base class or a
+                            virtually derived class. Set only for base /
+                            derived classes.
+:py:`class.is_final`        Whether this is a final derived class. Set only for
+                            derived classes.
 =========================== ===================================================
 
 `Enum properties`_
@@ -1589,6 +1682,11 @@ Property                        Description
 =============================== ===============================================
 :py:`enum.base_url`             Base URL of file containing detailed
                                 description [3]_
+:py:`enum.include`              Corresponding :cpp:`#include` to get the enum
+                                definition. Present only for enums inside
+                                modules or inside namespaces that are spread
+                                over multiple files.
+                                See `Include properties`_ for more information.
 :py:`enum.id`                   Identifier hash [3]_
 :py:`enum.type`                 Enum type or empty if implicitly typed [6]_
 :py:`enum.is_strong`            If the enum is strong
@@ -1629,29 +1727,37 @@ item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`typedef.base_url`      Base URL of file containing detailed description
-                            [3]_
-:py:`typedef.id`            Identifier hash [3]_
-:py:`typedef.is_using`      Whether it is a :cpp:`typedef` or an :cpp:`using`
-:py:`typedef.type`          Typedef type, or what all goes before the name for
-                            function pointer typedefs [6]_
-:py:`typedef.args`          Typedef arguments, or what all goes after the name
-                            for function pointer typedefs [6]_
-:py:`typedef.name`          Typedef name [4]_
-:py:`typedef.templates`     Template specification. Set only in case of
-                            :cpp:`using`. . See `Template properties`_ for
-                            details.
-:py:`typedef.brief`         Brief description. Can be empty. [1]_
-:py:`typedef.is_deprecated` Whether the typedef is deprecated. [7]_
-:py:`typedef.description`   Detailed description. Can be empty. [2]_
-:py:`typedef.has_details`   If there is enough content for the full description
-                            block [4]_
-:py:`typedef.is_protected`  If the typedef is :cpp:`protected`. Set only for
-                            member types.
-=========================== ===================================================
+=================================== ===========================================
+Property                            Description
+=================================== ===========================================
+:py:`typedef.base_url`              Base URL of file containing detailed
+                                    description [3]_
+:py:`typedef.include`               Corresponding :cpp:`#include` to get the
+                                    typedef declaration. Present only for
+                                    typedefs inside modules or inside
+                                    namespaces that are spread over multiple
+                                    files. See `Include properties`_ for more
+                                    information.
+:py:`typedef.id`                    Identifier hash [3]_
+:py:`typedef.is_using`              Whether it is a :cpp:`typedef` or an
+                                    :cpp:`using`
+:py:`typedef.type`                  Typedef type, or what all goes before the
+                                    name for function pointer typedefs [6]_
+:py:`typedef.args`                  Typedef arguments, or what all goes after
+                                    the name for function pointer typedefs [6]_
+:py:`typedef.name`                  Typedef name [4]_
+:py:`typedef.templates`             Template specification. Set only in case of
+                                    :cpp:`using`. . See `Template properties`_
+                                    for details.
+:py:`typedef.has_template_details`  If template parameters have description
+:py:`typedef.brief`                 Brief description. Can be empty. [1]_
+:py:`typedef.is_deprecated`         Whether the typedef is deprecated. [7]_
+:py:`typedef.description`           Detailed description. Can be empty. [2]_
+:py:`typedef.has_details`           If there is enough content for the full
+                                    description block [4]_
+:py:`typedef.is_protected`          If the typedef is :cpp:`protected`. Set
+                                    only for member types.
+=================================== ===========================================
 
 `Function properties`_
 ``````````````````````
@@ -1666,60 +1772,75 @@ a list of functions, where every item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=============================== ===============================================
-Property                        Description
-=============================== ===============================================
-:py:`func.base_url`             Base URL of file containing detailed
-                                description [3]_
-:py:`func.id`                   Identifier hash [3]_
-:py:`func.type`                 Function return type [6]_
-:py:`func.name`                 Function name [4]_
-:py:`func.templates`            Template specification. See
-                                `Template properties`_ for details.
-:py:`func.has_template_details` If template parameters have description
-:py:`func.params`               List of function parameters. See below for
-                                details.
-:py:`func.has_param_details`    If function parameters have description
-:py:`func.return_value`         Return value description. Can be empty.
-:py:`func.return_values`        Description of particular return values. See
-                                below for details.
-:py:`func.exceptions`           Description of particular exception types. See
-                                below for details.
-:py:`func.brief`                Brief description. Can be empty. [1]_
-:py:`func.description`          Detailed description. Can be empty. [2]_
-:py:`func.has_details`          If there is enough content for the full
-                                description block [5]_
-:py:`func.prefix`               Function signature prefix, containing keywords
-                                such as :cpp:`static`. Information about
-                                :cpp:`constexpr`\ ness, :cpp:`explicit`\ ness
-                                and :cpp:`virtual`\ ity is removed from the
-                                prefix and available via other properties.
-:py:`func.suffix`               Function signature suffix, containing keywords
-                                such as :cpp:`const` and r-value overloads.
-                                Information about :cpp:`noexcept`, pure
-                                :cpp:`virtual`\ ity and :cpp:`delete`\ d /
-                                :cpp:`default`\ ed functions is removed from
-                                the suffix and available via other properties.
-:py:`func.is_deprecated`        Whether the function is deprecated. [7]_
-:py:`func.is_protected`         If the function is :cpp:`protected`. Set only
-                                for member functions.
-:py:`func.is_private`           If the function is :cpp:`private`. Set only for
-                                member functions.
-:py:`func.is_explicit`          If the function is :cpp:`explicit`. Set only
-                                for member functions.
-:py:`func.is_virtual`           If the function is :cpp:`virtual`. Set only for
-                                member functions.
-:py:`func.is_pure_virtual`      If the function is pure :cpp:`virtual`. Set
-                                only for member functions.
-:py:`func.is_noexcept`          If the function is :cpp:`noexcept`
-:py:`func.is_constexpr`         If the function is :cpp:`constexpr`
-:py:`func.is_defaulted`         If the function is :cpp:`default`\ ed
-:py:`func.is_deleted`           If the function is :cpp:`delete`\ d
-:py:`func.is_signal`            If the function is a Qt signal. Set only for
-                                member functions.
-:py:`func.is_slot`              If the function is a Qt slot. Set only for
-                                member functions.
-=============================== ===============================================
+=================================== ===========================================
+Property                            Description
+=================================== ===========================================
+:py:`func.base_url`                 Base URL of file containing detailed
+                                    description [3]_
+:py:`func.include`                  Corresponding :cpp:`#include` to get the
+                                    function declaration. Present only for
+                                    functions inside modules or inside
+                                    namespaces that are spread over multiple
+                                    files. See `Include properties`_ for more
+                                    information.
+:py:`func.id`                       Identifier hash [3]_
+:py:`func.type`                     Function return type [6]_
+:py:`func.name`                     Function name [4]_
+:py:`func.templates`                Template specification. See
+                                    `Template properties`_ for details.
+:py:`func.has_template_details`     If template parameters have description
+:py:`func.params`                   List of function parameters. See below for
+                                    details.
+:py:`func.has_param_details`        If function parameters have description
+:py:`func.return_value`             Return value description. Can be empty.
+:py:`func.return_values`            Description of particular return values.
+                                    See below for details.
+:py:`func.exceptions`               Description of particular exception types.
+                                    See below for details.
+:py:`func.brief`                    Brief description. Can be empty. [1]_
+:py:`func.description`              Detailed description. Can be empty. [2]_
+:py:`func.has_details`              If there is enough content for the full
+                                    description block [5]_
+:py:`func.prefix`                   Function signature prefix, containing
+                                    keywords such as :cpp:`static`. Information
+                                    about :cpp:`constexpr`\ ness,
+                                    :cpp:`explicit`\ ness and
+                                    :cpp:`virtual`\ ity is removed from the
+                                    prefix and available via other properties.
+:py:`func.suffix`                   Function signature suffix, containing
+                                    keywords such as :cpp:`const` and r-value
+                                    overloads. Information about
+                                    :cpp:`noexcept`, pure :cpp:`virtual`\ ity
+                                    and :cpp:`delete`\ d / :cpp:`default`\ ed
+                                    functions is removed from the suffix and
+                                    available via other properties.
+:py:`func.is_deprecated`            Whether the function is deprecated. [7]_
+:py:`func.is_protected`             If the function is :cpp:`protected`. Set
+                                    only for member functions.
+:py:`func.is_private`               If the function is :cpp:`private`. Set only
+                                    for member functions.
+:py:`func.is_explicit`              If the function is :cpp:`explicit`. Set
+                                    only for member functions.
+:py:`func.is_virtual`               If the function is :cpp:`virtual` (or pure
+                                    virtual). Set only for member functions.
+:py:`func.is_pure_virtual`          If the function is pure :cpp:`virtual`. Set
+                                    only for member functions.
+:py:`func.is_override`              If the function is an :cpp:`override`. Set
+                                    only for member functions.
+:py:`func.is_final`                 If the function is a :cpp:`final override`.
+                                    Set only for member functions.
+:py:`func.is_noexcept`              If the function is :cpp:`noexcept` (even
+                                    conditionally)
+:py:`func.is_conditional_noexcept`  If the function is conditionally
+                                    :cpp:`noexcept`.
+:py:`func.is_constexpr`             If the function is :cpp:`constexpr`
+:py:`func.is_defaulted`             If the function is :cpp:`default`\ ed
+:py:`func.is_deleted`               If the function is :cpp:`delete`\ d
+:py:`func.is_signal`                If the function is a Qt signal. Set only
+                                    for member functions.
+:py:`func.is_slot`                  If the function is a Qt slot. Set only for
+                                    member functions.
+=================================== ===========================================
 
 The :py:`func.params` is a list of function parameters and their description.
 Each item has the following properties:
@@ -1757,25 +1878,34 @@ every item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`var.base_url`          Base URL of file containing detailed description
-                            [3]_
-:py:`var.id`                Identifier hash [3]_
-:py:`var.type`              Variable type [6]_
-:py:`var.name`              Variable name [4]_
-:py:`var.brief`             Brief description. Can be empty. [1]_
-:py:`var.description`       Detailed description. Can be empty. [2]_
-:py:`var.has_details`       If there is enough content for the full description
-                            block [5]_
-:py:`var.is_deprecated`     Whether the variable is deprecated. [7]_
-:py:`var.is_static`         If the variable is :cpp:`static`. Set only for
-                            member variables.
-:py:`var.is_protected`      If the variable is :cpp:`protected`. Set only for
-                            member variables.
-:py:`var.is_constexpr`      If the variable is :cpp:`constexpr`
-=========================== ===================================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`var.base_url`              Base URL of file containing detailed
+                                description [3]_
+:py:`var.include`               Corresponding :cpp:`#include` to get the
+                                variable declaration. Present only for
+                                variables inside modules or inside namespaces
+                                that are spread over multiple files. See
+                                `Include properties`_ for more information.
+:py:`var.id`                    Identifier hash [3]_
+:py:`var.type`                  Variable type [6]_
+:py:`var.name`                  Variable name [4]_
+:py:`var.templates`             Template specification for C++14 variable
+                                templates. See `Template properties`_ for
+                                details.
+:py:`var.has_template_details`  If template parameters have description
+:py:`var.brief`                 Brief description. Can be empty. [1]_
+:py:`var.description`           Detailed description. Can be empty. [2]_
+:py:`var.has_details`           If there is enough content for the full
+                                description block [5]_
+:py:`var.is_deprecated`         Whether the variable is deprecated. [7]_
+:py:`var.is_static`             If the variable is :cpp:`static`. Set only for
+                                member variables.
+:py:`var.is_protected`          If the variable is :cpp:`protected`. Set only
+                                for member variables.
+:py:`var.is_constexpr`          If the variable is :cpp:`constexpr`
+=============================== ===============================================
 
 `Define properties`_
 ````````````````````
@@ -1788,6 +1918,12 @@ item has the following properties:
 =============================== ===============================================
 Property                        Description
 =============================== ===============================================
+:py:`define.include`            Corresponding :cpp:`#include` to get the
+                                define definition. Present only for defines
+                                inside modules, since otherwise the define is
+                                documented inside a file docs and the
+                                corresponding include is known implicitly. See
+                                `Include properties`_ for more information.
 :py:`define.id`                 Identifier hash [3]_
 :py:`define.name`               Define name
 :py:`define.params`             List of macro parameter names. See below for
@@ -1946,11 +2082,11 @@ all directories are before all files.
     :py:`compound.prefix_wbr` to it to get the fully qualified name.
 .. [5] :py:`compound.has_*_details` and :py:`i.has_details` are :py:`True` if
     there is detailed description, function/template/macro parameter
-    documentation or enum value listing that makes it worth to render the full
-    description block. If :py:`False`, the member should be included only in
-    the brief listing on top of the page to avoid unnecessary repetition. If
-    :py:`i.base_url` is not the same as :py:`compound.url`, its
-    :py:`i.has_details` is always set to :py:`False`.
+    documentation, enum value listing or an entry-specific :cpp:`#include` that
+    makes it worth to render the full description block. If :py:`False`, the
+    member should be included only in the brief listing on top of the page to
+    avoid unnecessary repetition. If :py:`i.base_url` is not the same as
+    :py:`compound.url`, its :py:`i.has_details` is always set to :py:`False`.
 .. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
     contains links to related documentation
 .. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given

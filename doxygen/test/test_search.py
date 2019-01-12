@@ -3,7 +3,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -440,16 +440,16 @@ glmacro() [4]
 | struct() [56]
 | union() [60]
 file.h [9]
-|oo [11, 14, 16, 18]
+|oo [11, 14, 18, 16]
 || ($
-||  ) [12, 15, 17, 19]
+||  ) [12, 15, 19, 17]
 namespace [50]
 |        :$
 |         :class [20]
 |          |    :$
-|          |     :foo [11, 14, 16, 18]
+|          |     :foo [11, 14, 18, 16]
 |          |         ($
-|          |          ) [12, 15, 17, 19]
+|          |          ) [12, 15, 19, 17]
 |          enum [44]
 |          |   :$
 |          |    :onlyabrief [40]
@@ -460,10 +460,10 @@ namespace [50]
 |          union [59]
 class [20]
 |    :$
-|     :foo [11, 14, 16, 18]
+|     :foo [11, 14, 18, 16]
 |         ($
-|          ) [12, 15, 17, 19]
-a group [28, 29]
+|          ) [12, 15, 19, 17]
+a group [29, 28]
 | page [52]
 value [31, 41]
 | riable [48]

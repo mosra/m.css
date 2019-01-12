@@ -34,6 +34,9 @@ namespace Another {
 /** @brief A derived class */
 class Derived: public Namespace::A {};
 
+/** @brief A final derived class */
+struct Final final: Namespace::A {};
+
 }
 
 namespace Namespace {
