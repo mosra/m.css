@@ -42,7 +42,6 @@ import logging
 from enum import Flag
 from types import SimpleNamespace as Empty
 from typing import Tuple, Dict, Any, List
-from urllib.parse import urljoin
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -3410,7 +3409,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         if urllib.parse.urlparse(path).netloc: return path
         return os.path.basename(path)
     env.filters['basename_or_url'] = basename_or_url
-    env.filters['urljoin'] = urljoin
+    env.filters['urljoin'] = urllib.parse.urljoin
 
     # Do a pre-pass and gather:
     # - brief descriptions of all classes, namespaces, dirs and files because
