@@ -708,8 +708,9 @@ all :cpp:`#include`-related information:
 .. note-warning:: Doxygen patches
 
     Current stable Doxygen release (1.8.15) doesn't correctly provide location
-    information for function and variable declarations. A fix is submitted in
-    :gh:`doxygen/doxygen#6722`, which is not integrated yet.
+    information for function and variable declarations. A fix is present since
+    :gh:`doxygen/doxygen@7f40e488e27bcea4bb15045df05479dc5fbd9d6d` (formerly
+    :gh:`doxygen/doxygen#6722`).
 
 `Code highlighting`_
 --------------------

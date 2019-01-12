@@ -477,7 +477,8 @@ def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, s
     # or a module
     include = None
     if state.current_kind in ['namespace', 'group']:
-        file = element.find('location').attrib['file']
+        location_attribs = element.find('location').attrib
+        file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
         include = make_include(state, file)
 
         # If the include for current namespace is not yet set (empty string)
@@ -2437,7 +2438,8 @@ def parse_xml(state: State, xml: str):
     # namespaces without any members too.
     state.current_kind = compound.kind
     if compound.kind in ['struct', 'class', 'union'] or (compound.kind == 'namespace' and compounddef.find('innerclass') is None and compounddef.find('innernamespace') is None and compounddef.find('sectiondef') is None):
-        file = compounddef.find('location').attrib['file']
+        location_attribs = compounddef.find('location').attrib
+        file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
         compound.include = make_include(state, file)
 
         # Save include for current compound. Every enum/var/function/... parser
