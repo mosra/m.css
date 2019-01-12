@@ -316,8 +316,9 @@ class Trie:
                 # Third on suffix length (shortest first)
                 entry.suffix_length,
 
-                # Lastly on prefix length (shortest first)
-                entry.prefix_length
+                # Lastly on full name length (or prefix length, also shortest
+                # first)
+                len(entry.name)
             ]
 
         self._sort(key)
