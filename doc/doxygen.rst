@@ -161,6 +161,7 @@ If you see something unexpected or not see something expected, check the
 `Search`_
 ---------
 
+-   Vastly superior search capabilities with immediate feedback
 -   Search anywhere from a page by opening a popup using a hotkey
 -   Lookahead with instant feedback without requiring any server-side backend
 -   Search for symbols using any prefix
@@ -177,7 +178,6 @@ If you see something unexpected or not see something expected, check the
 `Important differences to stock HTML output`_
 ---------------------------------------------
 
--   Vastly improved search capabilities with immediate feedback
 -   Detailed description is put first and foremost on a page, *before* the
     member listing
 -   Files, directories and symbols that don't have any documentation are not
@@ -188,17 +188,18 @@ If you see something unexpected or not see something expected, check the
     all sections of detailed description together with anchors to member
     listings
 -   Private members and anonymous namespaces are always ignored, however
-    private virtual functions are listed in case they are documented
-    (`why? <http://www.gotw.ca/publications/mill18.htm>`_)
+    private virtual functions are listed in case they are documented.
+    See `Private virtual functions`_ for more information.
 -   Inner classes are listed in the public/protected type sections instead of
     being listed in a separate section ignoring their public/private status
 -   Class references contain also their template specification on the linked
     page
 -   Function signatures don't contain :cpp:`constexpr` and :cpp:`noexcept`
     anymore. These keywords are instead added as flags to the function
-    description together with :cpp:`virtual`\ ness and :cpp:`explicit`\ ity. On
-    the other hand, important properties like :cpp:`static`, :cpp:`const` and
-    r-value overloads *are* part of function signature.
+    description together with :cpp:`virtual`\ ness, :cpp:`explicit`\ ity and
+    :cpp:`override` / :cpp:`final` status. On the other hand, important
+    properties like :cpp:`static`, :cpp:`const` and r-value overloads *are*
+    part of function signature.
 -   For better visual alignment, function listing is done using the C++11
     trailing return type (:cpp:`auto` in front) and typedef listing is done
     with :cpp:`using`). However, the detailed documentation is kept in the
@@ -211,7 +212,8 @@ If you see something unexpected or not see something expected, check the
     search results; :cpp:`delete`\ d functions are marked in search as well
 -   Information about which file to :cpp:`#include` for given symbol is
     provided also for free functions, enums, typedefs and variables (or
-    namespaces, in case all contents of the namespace are in a single file)
+    namespaces, in case all contents of the namespace are in a single file).
+    See `Include files`_ for more information.
 
 `Intentionally unsupported features`_
 -------------------------------------
@@ -679,6 +681,28 @@ its XML output. To match the behavior of stock HTML output, enable the
 
     In order to use the :ini:`XML_NS_MEMB_FILE_SCOPE` option, you need Doxygen
     1.8.15 (released December 2018).
+
+`Private virtual functions`_
+----------------------------
+
+Private virtual functions, if documented, are shown in the output as well, so
+codebases can properly follow (`Virtuality guidelines by Herb Sutter <http://www.gotw.ca/publications/mill18.htm>`_)
+To avoid also undocumented :cpp:`override`\ s showing in the output, you may
+want to disable the :ini:`INHERIT_DOCS` option (which is enabled by default).
+Also, please note that while privates are currently unconditionally exported to
+the XML output, Doxygen doesn't allow linking to them by default and you have
+to enable the :ini:`EXTRACT_PRIV_VIRTUAL` option:
+
+.. code:: ini
+
+    INHERIT_DOCS = NO
+    EXTRACT_PRIV_VIRTUAL = YES
+
+.. note-warning:: Doxygen patches
+
+    In order to use the :ini:`EXTRACT_PRIV_VIRTUAL` option, you need Doxygen
+    with :gh:`doxygen/doxygen#6729` integrated, the 1.8.15 release does not
+    have this option yet.
 
 `Include files`_
 ----------------
