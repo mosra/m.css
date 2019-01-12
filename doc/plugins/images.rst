@@ -157,4 +157,4 @@ with non-repeating images, head over to `my blog <http://blog.mosra.cz/cesty/mai
     Unlike with the image and figure directives above, Pelican *needs* to have
     the images present on a filesystem to extract size information. It's
     advised to use the builtin *absolute* ``{static}`` or ``{attach}`` syntax
-    for `linking to internal content <http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
+    for `linking to internal content <https://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.

@@ -267,7 +267,7 @@ By default, link expansion works only in document content and fields that are
 referenced in the :py:`FORMATTED_FIELDS` (such as article summaries). In order
 to expand links in additional fields and arbitrary strings, this plugin
 provides two Jinja2 filters, producing results equivalent to
-`links expanded by Pelican <http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
+`links expanded by Pelican <https://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
 
 For formatted fields, one can use the ``expand_links`` Jinja2 filter in the
 template. The link expansion needs the content object (either ``article`` or

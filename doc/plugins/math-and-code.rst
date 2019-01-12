@@ -288,7 +288,7 @@ it via ``pip`` or your distribution package manager:
 The plugin overrides the builtin docutils
 `code directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#code>`_
 and `code interpreted text role <http://docutils.sourceforge.net/docs/ref/rst/roles.html#code>`_,
-replaces `Pelican code-block directive <http://docs.getpelican.com/en/3.6.3/content.html#syntax-highlighting>`_ and:
+replaces `Pelican code-block directive <https://docs.getpelican.com/en/stable/content.html#syntax-highlighting>`_ and:
 
 -   Wraps Pygments output in :html:`<code>` element for inline code and
     :html:`<pre>` element for code blocks with :css:`.m-code` CSS class

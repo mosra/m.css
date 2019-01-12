@@ -137,7 +137,7 @@ contents. Consecutive indented lines are treated as part of the same field.
 
     Article content starts here.
 
-See the `Pelican documentation <http://docs.getpelican.com/en/stable/content.html>`_
+See the `Pelican documentation <https://docs.getpelican.com/en/stable/content.html>`_
 for details about recognized fields and how various metadata can be also
 automatically extracted from the filesystem. The
 `m.css Pelican theme <{filename}/pelican/theme.rst>`_ recognizes a few more
@@ -419,7 +419,7 @@ created using the :rst:`.. _anchor:` syntax.
         </section>
 
 There are some special features in Pelican for easier linking to internal
-content, be sure to `check out the documentation <http://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
+content, be sure to `check out the documentation <https://docs.getpelican.com/en/stable/content.html#linking-to-internal-content>`_.
 The :abbr:`reST <reStructuredText>` documentation also offers more detailed
 info about `inline markup <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#inline-markup>`_.
 

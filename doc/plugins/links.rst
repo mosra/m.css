@@ -332,7 +332,7 @@ assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
     PLUGINS += ['m.htmlsanity', 'm.abbr']
 
 The plugin overrides the builtin Pelican
-`abbr interpreted text role <http://docs.getpelican.com/en/stable/content.html#file-metadata>`_
+`abbr interpreted text role <https://docs.getpelican.com/en/stable/content.html#file-metadata>`_
 and makes its syntax consistent with other common roles of :abbr:`reST <reStructuredText>`
 and m.css.
 
