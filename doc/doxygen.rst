@@ -211,9 +211,8 @@ If you see something unexpected or not see something expected, check the
 -   Deprecation markers are propagated to member and compound listing pages and
     search results; :cpp:`delete`\ d functions are marked in search as well
 -   Information about which file to :cpp:`#include` for given symbol is
-    provided also for free functions, enums, typedefs and variables (or
-    namespaces, in case all contents of the namespace are in a single file).
-    See `Include files`_ for more information.
+    provided also for namespaces, free and related functions, enums, typedefs
+    and variables. See `Include files`_ for more information.
 
 `Intentionally unsupported features`_
 -------------------------------------
@@ -721,6 +720,9 @@ typedefs, variables and :cpp:`#define`\ s. The rules are:
 -   Files don't show any include information, as it is known implicitly
 -   In case of modules (grouped using ``@defgroup``), the :cpp:`#include` info
     is always shown locally for each member. This includes also :cpp:`#define`\ s.
+-   In case of enums, typedefs, variables, functions and defines ``@related``
+    to some class, these also have the :cpp:`#include` shown in case it's
+    different from the class :cpp:`include`.
 
 This feature is enabled by default, disable :ini:`SHOW_INCLUDE_FILES` to hide
 all :cpp:`#include`-related information:

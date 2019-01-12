@@ -17,4 +17,29 @@ enum Flag {};
 
 /*@}*/
 
+/** @related Class
+ * @brief A related enum in a different file. Shouldn't be shown in namespace docs but it is :(
+ */
+enum RelatedEnum {};
+
+/** @related Class
+ * @brief A related typedef in a different file
+ */
+typedef int RelatedInt;
+
+/** @related Class
+ * @brief A related variable in a different file
+ */
+constexpr const int RelatedVar = 3;
+
+/** @related Class
+ * @brief A related function in a different file
+ */
+void relatedFunc();
+
+/** @related Class
+ * @brief A related define in a different file
+ */
+#define RELATED_DEFINE
+
 }

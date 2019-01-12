@@ -466,7 +466,7 @@ def make_include(state: State, file) -> Tuple[str, str]:
         return (html.escape('<{}>'.format(file)), state.compounds[state.includes[file]].url)
     return None
 
-def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str]]:
+def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str], bool]:
     # Returns URL base (usually saved to state.current_definition_url_base and
     # used by extract_id_hash() later), base URL (with file extension), and the
     # actual ID
@@ -476,6 +476,7 @@ def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, s
     # Extract the corresponding include, if the current compound is a namespace
     # or a module
     include = None
+    has_details = False
     if state.current_kind in ['namespace', 'group']:
         location_attribs = element.find('location').attrib
         file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
@@ -498,7 +499,18 @@ def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, s
         elif state.current_include and state.current_include != file:
             state.current_include = None
 
-    return id[:i], id[:i] + '.html', id[i+2:], include
+    # Extract corresponding include also for class/struct/union "relateds", if
+    # it's different from what the class has. This also forcibly enables
+    # has_details (unlike the case above, where has_details will be enabled
+    # only if all members don't have the same include)
+    if state.current_kind in ['class', 'struct', 'union']:
+        location_attribs = element.find('location').attrib
+        file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
+        if state.current_include != file:
+            include = make_include(state, file)
+            has_details = True
+
+    return id[:i], id[:i] + '.html', id[i+2:], include, has_details
 
 def extract_id_hash(state: State, element: ET.Element) -> str:
     # Can't use parse_id() here as sections with _1 in it have it verbatim
@@ -1667,7 +1679,7 @@ def parse_enum(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'enum'
 
     enum = Empty()
-    state.current_definition_url_base, enum.base_url, enum.id, enum.include = parse_id_and_include(state, element)
+    state.current_definition_url_base, enum.base_url, enum.id, enum.include, enum.has_details = parse_id_and_include(state, element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
@@ -1705,7 +1717,8 @@ def parse_enum(state: State, element: ET.Element):
                 state.search += [result]
         enum.values += [value]
 
-    enum.has_details = enum.base_url == state.current_compound_url and (enum.description or enum.has_value_details)
+    if enum.base_url == state.current_compound_url and (enum.description or enum.has_value_details):
+        enum.has_details = True # has_details might already be True from above
     if enum.brief or enum.has_details or enum.has_value_details:
         if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
@@ -1769,7 +1782,7 @@ def parse_typedef(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'typedef'
 
     typedef = Empty()
-    state.current_definition_url_base, typedef.base_url, typedef.id, typedef.include = parse_id_and_include(state, element)
+    state.current_definition_url_base, typedef.base_url, typedef.id, typedef.include, typedef.has_details = parse_id_and_include(state, element)
     typedef.is_using = element.findtext('definition', '').startswith('using')
     typedef.type = parse_type(state, element.find('type'))
     typedef.args = parse_type(state, element.find('argsstring'))
@@ -1779,7 +1792,8 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.is_protected = element.attrib['prot'] == 'protected'
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
-    typedef.has_details = typedef.base_url == state.current_compound_url and (typedef.description or typedef.has_template_details)
+    if typedef.base_url == state.current_compound_url and (typedef.description or typedef.has_template_details):
+        typedef.has_details = True # has_details might already be True from above
     if typedef.brief or typedef.has_details:
         # Avoid duplicates in search
         if typedef.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
@@ -1797,7 +1811,7 @@ def parse_func(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] in ['function', 'friend', 'signal', 'slot']
 
     func = Empty()
-    state.current_definition_url_base, func.base_url, func.id, func.include = parse_id_and_include(state, element)
+    state.current_definition_url_base, func.base_url, func.id, func.include, func.has_details = parse_id_and_include(state, element)
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
@@ -1915,7 +1929,8 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    func.has_details = func.base_url == state.current_compound_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions)
+    if func.base_url == state.current_compound_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions):
+        func.has_details = True # has_details might already be True from above
     if func.brief or func.has_details:
         # Avoid duplicates in search
         if func.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
@@ -1935,7 +1950,7 @@ def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
 
     var = Empty()
-    state.current_definition_url_base, var.base_url, var.id, var.include = parse_id_and_include(state, element)
+    state.current_definition_url_base, var.base_url, var.id, var.include, var.has_details = parse_id_and_include(state, element)
     var.type = parse_type(state, element.find('type'))
     if var.type.startswith('constexpr'):
         var.type = var.type[10:]
@@ -1950,7 +1965,8 @@ def parse_var(state: State, element: ET.Element):
     var.description, templates, search_keywords, var.is_deprecated = parse_var_desc(state, element)
     var.has_template_details, var.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
-    var.has_details = var.base_url == state.current_compound_url and (var.description or var.has_template_details)
+    if var.base_url == state.current_compound_url and (var.description or var.has_template_details):
+        var.has_details = True # has_details might already be True from above
     if var.brief or var.has_details:
         # Avoid duplicates in search
         if var.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
@@ -1972,7 +1988,7 @@ def parse_define(state: State, element: ET.Element):
     # so we don't need to have define.base_url. Can't use extract_id_hash()
     # here because current_definition_url_base might be stale. See a test in
     # compound_namespace_members_in_file_scope_define_base_url.
-    state.current_definition_url_base, _, define.id, define.include = parse_id_and_include(state, element)
+    state.current_definition_url_base, _, define.id, define.include, define.has_details = parse_id_and_include(state, element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
     define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
@@ -1993,7 +2009,8 @@ def parse_define(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: define parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    define.has_details = define.description or define.return_value
+    if define.description or define.return_value:
+        define.has_details = True # has_details might already be True from above
     if define.brief or define.has_details:
         if not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
