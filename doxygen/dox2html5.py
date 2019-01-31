@@ -1604,7 +1604,7 @@ def parse_desc(state: State, element: ET.Element) -> str:
     assert not parsed.section # might be problematic
     return parsed.parsed
 
-def parse_desc_keywords(state: State, element: ET.Element) -> str:
+def parse_desc_keywords(state: State, element: ET.Element) -> Tuple[str, List[Tuple[str, str, int]], bool]:
     if element is None: return ''
 
     # Verify that we didn't ignore any important info by accident
@@ -1613,58 +1613,58 @@ def parse_desc_keywords(state: State, element: ET.Element) -> str:
     assert not parsed.section # might be problematic
     return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords
 
-def parse_enum_desc(state: State, element: ET.Element) -> str:
+def parse_enum_desc(state: State, element: ET.Element) -> Tuple[str, List[Tuple[str, str, int]], bool, bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in enum description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.is_deprecated
 
-def parse_enum_value_desc(state: State, element: ET.Element) -> str:
+def parse_enum_value_desc(state: State, element: ET.Element) -> Tuple[str, List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in enum value description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.search_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.search_keywords, parsed.is_deprecated
 
-def parse_var_desc(state: State, element: ET.Element) -> str:
+def parse_var_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @param / @return / @retval / @exception found in variable description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated
 
-def parse_toplevel_desc(state: State, element: ET.Element):
+def parse_toplevel_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], str, Any, Any, List[Tuple[str, str, int]], bool]:
     state.parsing_toplevel_desc = True
     parsed = parse_desc_internal(state, element)
     state.parsing_toplevel_desc = False
     if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @param / @return / @retval / @exception found in top-level description, ignoring".format(state.current))
-    return (parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.is_deprecated
 
-def parse_typedef_desc(state: State, element: ET.Element):
+def parse_typedef_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @param / @return / @retval / @exception found in typedef description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated
 
-def parse_func_desc(state: State, element: ET.Element):
+def parse_func_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], List[Any], str, List[Any], List[Any], List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.exceptions, parsed.search_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.exceptions, parsed.search_keywords, parsed.is_deprecated
 
-def parse_define_desc(state: State, element: ET.Element):
+def parse_define_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], str, List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     if parsed.templates or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @tparam / @retval / @exception found in macro description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return (parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated)
+    return parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated
 
 def parse_inline_desc(state: State, element: ET.Element) -> str:
     if element is None: return ''
