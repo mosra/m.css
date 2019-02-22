@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 
 import ansilexer
 
-def _highlight(code, language, options):
+def _highlight(code, language, options, is_block):
     # Use our own lexer for ANSI
     if language == 'ansi':
         lexer = ansilexer.AnsiLexer()
@@ -60,7 +60,9 @@ def _highlight(code, language, options):
         class_ = 'm-code'
 
     formatter = HtmlFormatter(nowrap=True, **options)
-    parsed = highlight(code, lexer, formatter).strip()
+    parsed = highlight(code, lexer, formatter).rstrip()
+    if not is_block: parsed.lstrip()
+
     return class_, parsed
 
 class Code(Directive):
@@ -82,7 +84,7 @@ class Code(Directive):
             classes += self.options['classes']
             del self.options['classes']
 
-        class_, highlighted = _highlight('\n'.join(self.content), self.arguments[0], self.options)
+        class_, highlighted = _highlight('\n'.join(self.content), self.arguments[0], self.options, is_block=True)
         classes += [class_]
 
         content = nodes.raw('', highlighted, format='html')
@@ -195,7 +197,7 @@ def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     # Not sure why language is duplicated in classes?
     if language in classes: classes.remove(language)
 
-    class_, highlighted = _highlight(utils.unescape(text), language, options)
+    class_, highlighted = _highlight(utils.unescape(text), language, options, is_block=False)
     classes += [class_]
 
     content = nodes.raw('', highlighted, format='html')

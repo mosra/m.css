@@ -31,3 +31,11 @@ rendered as plain monospace text: :code:`code`.
     // this language is not highlighted
 
 Properly preserve backslashes: :tex:`\frac{a}{b}`
+
+Don't trim leading spaces in blocks:
+
+.. code:: c++
+
+            nope();
+        return false;
+    }

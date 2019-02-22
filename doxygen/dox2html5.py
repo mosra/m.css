@@ -1425,7 +1425,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             highlighted = highlight(code, lexer, formatter)
             # Strip whitespace around if inline code, strip only trailing
             # whitespace if a block
-            highlighted = highlighted.rstrip() if code_block else highlighted.strip()
+            highlighted = highlighted.rstrip()
+            if code_block: highlighted = highlighted.lstrip()
             out.parsed += '<{0} class="{1}{2}">{3}</{0}>'.format(
                 'pre' if code_block else 'code',
                 class_,
