@@ -25,3 +25,11 @@ Image that doesn't exist:
 @image html nonexistent.png
 
 */
+
+/** @page imagelink Image link
+
+Broken in 1.8.15 and below.
+
+<a href="https://mcss.mosra.cz"><img src="tiny.png" /></a>
+
+*/

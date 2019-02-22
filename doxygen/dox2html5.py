@@ -1200,7 +1200,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed += '<pre>{}</pre>'.format(html.escape(i.text or ''))
 
         elif i.tag == 'image':
-            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div', 'ulink']
             has_block_elements = True
 
             name = i.attrib['name']

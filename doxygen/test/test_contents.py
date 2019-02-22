@@ -117,6 +117,12 @@ class Image(IntegrationTestCase):
         self.run_dox2html5(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.15"),
+                         "fully fixed after 1:8.15")
+    def test_imagelink(self):
+        self.run_dox2html5(wildcard='imagelink.xml')
+        self.assertEqual(*self.actual_expected_contents('imagelink.html'))
+
 class Math(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'math', *args, **kwargs)
