@@ -1565,20 +1565,22 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     # Brief description always needs to be single paragraph because we're
     # sending it out without enclosing <p>.
     if element.tag == 'briefdescription':
-        # JAVADOC_AUTOBRIEF is *bad*
-        if state.doxyfile.get('JAVADOC_AUTOBRIEF', False):
+        # JAVADOC_AUTOBRIEF / QT_AUTOBRIEF is *bad*
+        if state.doxyfile.get('JAVADOC_AUTOBRIEF', False) or state.doxyfile.get('QT_AUTOBRIEF', False):
             # See the contents_autobrief_heading / contents_autobrief_hr test
             # for details (only on Doxygen <= 1.8.14, 1.8.15 doesn't seem to
             # put block elements into brief anymore)
             # TODO: remove along with the related test cases once 1.8.14
             # support can be dropped
             if has_block_elements:
-                logging.warning("{}: JAVADOC_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of {}".format(state.current, out.parsed))
+                logging.warning("{}: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of {}".format(state.current, out.parsed))
                 out.parsed = ''
 
-            # See the contents_autobrief_multiline test for details
+            # See the contents_autobrief_multiline test for details. This also
+            # blows up on 1.8.14 when \defgroup is followed by multiple lines
+            # of text.
             elif paragraph_count > 1:
-                logging.warning("{}: JAVADOC_AUTOBRIEF produced a multi-line brief description. That's not supported, using just the first paragraph of {}".format(state.current, out.parsed))
+                logging.warning("{}: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a multi-line brief description. That's not supported, using just the first paragraph of {}".format(state.current, out.parsed))
 
                 end = out.parsed.find('</p>')
                 assert out.parsed.startswith('<p>') and end != -1
@@ -3379,6 +3381,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
     # Boolean values that we want
     for i in ['CREATE_SUBDIRS',
               'JAVADOC_AUTOBRIEF',
+              'QT_AUTOBRIEF',
               'SHOW_INCLUDE_FILES',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
