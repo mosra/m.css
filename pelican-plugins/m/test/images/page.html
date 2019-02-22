@@ -35,6 +35,12 @@
 <div class="m-image m-fullwidth">
 <a href="./ship.jpg"><img src="./ship.jpg" /></a>
 </div>
+<p>Image with custom width, height and scale (scale gets picked):</p>
+<img class="m-image" src="./ship.jpg" style="width: 384px" />
+<p>Image with custom width and height (width gets picked):</p>
+<img class="m-image" src="./ship.jpg" style="width: 300px" />
+<p>Image with custom height:</p>
+<img class="m-image" src="./ship.jpg" style="height: 100px" />
 <p>Figure:</p>
 <figure class="m-figure">
 <img src="./ship.jpg" />
@@ -42,14 +48,24 @@
 <span>
 Yes.</span>
 </figure>
-<p>Figure with link and only a caption:</p>
+<p>Figure with link, scale and only a caption:</p>
 <figure class="m-figure">
-<a href="./ship.jpg"><img src="./ship.jpg" /></a>
+<a href="./ship.jpg"><img src="./ship.jpg" style="width: 568px" /></a>
 <figcaption>A Ship</figcaption>
 </figure>
 <p>Figure with link and class on top:</p>
 <figure class="m-fullwidth m-figure">
 <a href="./ship.jpg"><img src="./ship.jpg" /></a>
+<figcaption>A Ship</figcaption>
+</figure>
+<p>Figure with a width:</p>
+<figure class="m-figure">
+<img src="./ship.jpg" style="width: 250px" />
+<figcaption>A Ship</figcaption>
+</figure>
+<p>Figure with a height:</p>
+<figure class="m-figure">
+<a href="./ship.jpg"><img src="./ship.jpg" style="height: 200px" /></a>
 <figcaption>A Ship</figcaption>
 </figure>
 <p>Image grid:</p>

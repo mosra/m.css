@@ -263,8 +263,8 @@ class SaneHtmlTranslator(HTMLTranslator):
     def depart_abbreviation(self, node):
         self.body.append('</abbr>')
 
-    # Remove useless cruft from images, such as width, height, scale; don't put
-    # URI in alt text.
+    # Convert outdated width/height attributes to CSS styles, handle the scale
+    # directly inside m.images; don't put URI in alt text.
     def visit_image(self, node):
         atts = {}
         uri = node['uri']
@@ -275,6 +275,13 @@ class SaneHtmlTranslator(HTMLTranslator):
         else:
             atts['src'] = uri
             if 'alt' in node: atts['alt'] = node['alt']
+        style = []
+        if node.get('width'):
+            style += ['width: {}'.format(node['width'])]
+        if node.get('height'):
+            style += ['height: {}'.format(node['height'])]
+        if style:
+            atts['style'] = '; '.join(style)
         if (isinstance(node.parent, nodes.TextElement) or
             (isinstance(node.parent, nodes.reference) and
              not isinstance(node.parent.parent, nodes.TextElement))):
@@ -412,8 +419,11 @@ class SaneHtmlTranslator(HTMLTranslator):
         atts = {}
         if node.get('id'):
             atts['ids'] = [node['id']]
+        style = []
         if node.get('width'):
-            atts['style'] = 'width: %s' % node['width']
+            style += ['width: {}'.format(node['width'])]
+        if style:
+            atts['style'] = '; '.join(style)
         self.body.append(self.starttag(node, 'figure', **atts))
 
     def depart_figure(self, node):

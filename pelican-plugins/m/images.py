@@ -33,7 +33,7 @@ from pelican import signals
 from pelican import StaticGenerator
 
 # If Pillow is not available, it's not an error unless one uses the image grid
-# functionality
+# functionality (or :scale: option for Image)
 try:
     import PIL.Image
     import PIL.ExifTags
@@ -47,8 +47,9 @@ class Image(Directive):
 
     Copy of docutils.parsers.rst.directives.Image with:
 
-    -   the align, scale, width, height options removed (handled better by
-        m.css)
+    -   the align option removed (handled better by m.css)
+    -   moved the implementation of scale here instead of it being handled in
+        the HTML writer
     -   .m-image CSS class added
     -   adding a outer container for clickable image to make the clickable area
         cover only the image
@@ -60,6 +61,9 @@ class Image(Directive):
     final_argument_whitespace = True
     option_spec = {'alt': directives.unchanged_required,
                    'name': directives.unchanged,
+                   'height': directives.length_or_unitless,
+                   'width': directives.length_or_percentage_or_unitless,
+                   'scale': directives.percentage,
                    'class': directives.class_option,
                    'target': directives.unchanged_required}
 
@@ -89,12 +93,32 @@ class Image(Directive):
                 messages.append(data)       # data is a system message
             del self.options['target']
 
+        width = None
+        height = None
+        # If scaling requested, open the files and calculate the scaled size
+        # Support both {filename} (3.7.1) and {static} (3.8) placeholders. In
+        # all cases use only width and not both so the max-width can correctly
+        # scale the image down on smaller screen sizes.
+        # TODO: implement ratio-preserving scaling to avoid jumps on load using
+        # the margin-bottom hack
+        if 'scale' in self.options:
+            file = os.path.join(os.getcwd(), settings['PATH'])
+            absuri = reference.format(filename=file, static=file)
+            im = PIL.Image.open(absuri)
+            width = "{}px".format(int(im.width*self.options['scale']/100.0))
+        elif 'width' in self.options:
+            width = self.options['width']
+        elif 'height' in self.options:
+            height = self.options['height'] # TODO: convert to width instead?
+
         # Remove the classes from the image element, will be added either to it
         # or to the wrapping element later
         set_classes(self.options)
         classes = self.options.get('classes', [])
         if 'classes' in self.options: del self.options['classes']
-        image_node = nodes.image(self.block_text, **self.options)
+        if 'width' in self.options: del self.options['width']
+        if 'height' in self.options: del self.options['height']
+        image_node = nodes.image(self.block_text, width=width, height=height, **self.options)
 
         if not 'alt' in self.options and settings['M_IMAGES_REQUIRE_ALT_TEXT']:
             error = self.state_machine.reporter.error(
@@ -123,7 +147,9 @@ class Figure(Image):
 
     Copy of docutils.parsers.rst.directives.Figure with:
 
-    -   the align, figwidth options removed (handled better by m.css)
+    -   the align option removed (handled better by m.css)
+    -   the redundant figwidth option removed (use width/scale/height from the
+        Image directive instead)
     -   .m-figure CSS class added
     """
 

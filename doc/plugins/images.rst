@@ -58,9 +58,9 @@ presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
     PLUGINS += ['m.htmlsanity', 'm.images']
     M_IMAGES_REQUIRE_ALT_TEXT = False
 
-To use the image grid feature (see below), in addition you need the
-`Pillow <https://pypi.python.org/pypi/Pillow>`_ library installed. Get it via
-``pip`` or your distribution package manager:
+To use the image grid feature and image/figure :rst:`:scale:` option (see
+below), in addition you need the `Pillow <https://pypi.python.org/pypi/Pillow>`_
+library installed. Get it via ``pip`` or your distribution package manager:
 
 .. code:: sh
 
@@ -77,8 +77,13 @@ directives and:
 -   Adds :css:`.m-image` / :css:`.m-figure` CSS classes to them so they have
     the expected m.css `image <{filename}/css/components.rst#images>`_ and
     `figure <{filename}/css/components.rst#figures>`_ styling.
--   Removes the :rst:`:align:`, :rst:`:figwidth:` and :rst:`:scale:` options,
-    as this is better handled by m.css features.
+-   Removes the :rst:`:align:` option, as this is better handled by m.css
+    features and removes the redundant :rst:`:figwidth:` option (use
+    :rst:`:width:` instead).
+-   The original :rst:`:width:`, :rst:`:height:` and :rst:`:scale:` options are
+    supported, only converted to a CSS ``style`` attribute instead of using
+    deprecated HTML attributes. The width/height options take CSS units, the
+    scale takes a percentage.
 -   To maintain accessibility easier, makes it possible to enforce :rst:`:alt:`
     text for every image and figure by setting :py:`M_IMAGES_REQUIRE_ALT_TEXT`
     to :py:`True`.
