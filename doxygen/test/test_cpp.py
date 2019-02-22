@@ -101,3 +101,11 @@ class FunctionAttributes(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classBase.html'))
         self.assertEqual(*self.actual_expected_contents('classDerived.html'))
         self.assertEqual(*self.actual_expected_contents('structFinal.html'))
+
+class FunctionAttributesNospace(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'function_attributes_nospace', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='structFoo.xml')
+        self.assertEqual(*self.actual_expected_contents('structFoo.html'))

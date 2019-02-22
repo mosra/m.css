@@ -1839,6 +1839,8 @@ def parse_func(state: State, element: ET.Element):
     if func.type.startswith('friend '):
         func.type = func.type[7:]
 
+    def is_identifier(a): return a == '_' or a.isalnum()
+
     # Extract function signature to prefix, suffix and various flags. Important
     # things affecting caller such as static or const (and rvalue overloads)
     # are put into signature prefix/suffix, other things to various is_*
@@ -1882,24 +1884,24 @@ def parse_func(state: State, element: ET.Element):
         func.is_pure_virtual = False
     # Final tested twice because it can be both `override final`
     func.is_final = False
-    if signature.endswith(' final'):
-        signature = signature[:-6]
+    if signature.endswith('final') and not is_identifier(signature[-6]):
+        signature = signature[:-5].rstrip()
         func.is_final = True
-    if signature.endswith(' override'):
-        signature = signature[:-9]
+    if signature.endswith('override') and not is_identifier(signature[-9]):
+        signature = signature[:-8].rstrip()
         func.is_override = True
     else:
         func.is_override = False
     # ... and `final override`
-    if signature.endswith(' final'):
-        signature = signature[:-6]
+    if signature.endswith('final') and not is_identifier(signature[-6]):
+        signature = signature[:-5].rstrip()
         func.is_final = True
-    if signature.endswith(' noexcept'):
-        signature = signature[:-9]
+    if signature.endswith('noexcept') and not is_identifier(signature[-9]):
+        signature = signature[:-8].rstrip()
         func.is_noexcept = True
         func.is_conditional_noexcept = False
-    elif ' noexcept(' in signature:
-        signature = signature[:signature.index(' noexcept(')]
+    elif 'noexcept(' in signature and not is_identifier(signature[signature.index('noexcept(') - 1]):
+        signature = signature[:signature.index('noexcept(')].rstrip()
         func.is_noexcept = True
         func.is_conditional_noexcept = True
     else:
