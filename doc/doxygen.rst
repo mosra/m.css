@@ -244,6 +244,9 @@ amount of generated content for no added value.
     option would be too much effort for too little gain and so m.css simply
     aborts if it discovers this option being enabled. Set it back to ``NO`` it
     in your ``Doxyfile-mcss`` override.
+-   The :ini:`SHOW_NAMESPACES = NO` Doxyfile option is not supported as the
+    theme provides a much more flexible configuration of what's shown in the
+    top navbar. See `Navbar links`_ for more information.
 
 `Not yet implemented features`_
 -------------------------------
