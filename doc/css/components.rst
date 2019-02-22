@@ -333,22 +333,6 @@ to make the text appear smaller or larger.
         adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra
         imperdiet tortor sed vehicula.</p>
 
-Besides :html:`<strong>` and :html:`<em>` you can use :css:`.m-strong` or
-:css:`.m-em` CSS class together with :css:`.m-text` to achieve the same effect
-without using those particular tags.
-
-.. code-figure::
-
-    .. code:: html
-
-        <p>Lorem ipsum dolor sit amet; <span class="m-text m-strong">strong text</span>;
-        consectetur adipiscing elit. <span class="m-text m-em">Emphasised.</span></p>
-
-    .. raw:: html
-
-        <p>Lorem ipsum dolor sit amet; <span class="m-text m-strong">strong text</span>;
-        consectetur adipiscing elit. <span class="m-text m-em">Emphasised.</span></p>
-
 `Button links`_
 ===============
 

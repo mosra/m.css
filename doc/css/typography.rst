@@ -407,6 +407,11 @@ useful where underlines would be too distracting:
           There is a <a href="#" class="m-flat">hidden</a> link.
         </p>
 
+For cases where you can't use the native HTML tags for emphasis, strong text,
+strikethrough and subscript/superscript, the equivalent is available through
+:css:`.m-em`, :css:`.m-strong`, :css:`.m-s`, :css:`.m-sup` and :css:`.m-sub`
+CSS classes used together with :css:`.m-text`.
+
 .. note-info::
 
     The Components page has additional information about

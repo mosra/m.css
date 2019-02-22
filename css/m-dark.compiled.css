@@ -403,18 +403,21 @@ pre {
 pre.m-console {
   background-color: #000000;
 }
-abbr {
-  cursor: help;
-  text-decoration: underline dotted;
-}
-sub, sup {
+strong, .m-text.m-strong { font-weight: bold; }
+em, .m-text.m-em { font-style: italic; }
+s, .m-text.m-s { text-decoration: line-through; }
+sub, sup, .m-text.m-sub, .m-text.m-sup {
   font-size: 0.75rem;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
 }
-sup { top: -0.35rem; }
-sub { bottom: -0.2rem; }
+sup, .m-text.m-sup { top: -0.35rem; }
+sub, .m-text.m-sub { bottom: -0.2rem; }
+abbr {
+  cursor: help;
+  text-decoration: underline dotted;
+}
 a {
   color: #5b9dd9;
 }
@@ -475,12 +478,6 @@ div.m-scroll {
 }
 .m-text.m-big {
   font-size: 117%;
-}
-.m-text.m-strong {
-  font-weight: bold;
-}
-.m-text.m-em {
-  font-style: italic;
 }
 h1 .m-thin, h2 .m-thin, h3 .m-thin, h4 .m-thin, h5 .m-thin, h6 .m-thin {
   font-weight: normal;
