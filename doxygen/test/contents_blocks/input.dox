@@ -124,6 +124,10 @@ Hello!
 
 Here is something inside that paragraph block.
 @endparblock
+
+@internal
+This gets hidden because internal docs are not enabled by default.
+@endinternal
 */
 
 /** @page other Other page

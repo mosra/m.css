@@ -70,6 +70,14 @@ class Blocks(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
         self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
+class Internal(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'internal', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
 class Code(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'code', *args, **kwargs)

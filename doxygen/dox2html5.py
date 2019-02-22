@@ -1275,6 +1275,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             if i.text: out.parsed += i.text
 
+        # Internal docs, parse only if these are enabled
+        elif i.tag == 'internal':
+            if state.doxyfile['INTERNAL_DOCS']:
+                parsed = parse_desc_internal(state, i)
+                merge_parsed_subsections(parsed)
+                out.parsed += parsed.parsed
+
         # Custom <div> with CSS classes (for making dim notes etc)
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}div':
             has_block_elements = True
@@ -3398,6 +3405,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
     for i in ['CREATE_SUBDIRS',
               'JAVADOC_AUTOBRIEF',
               'QT_AUTOBRIEF',
+              'INTERNAL_DOCS',
               'SHOW_INCLUDE_FILES',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
