@@ -414,3 +414,11 @@ class Htmlinclude(IntegrationTestCase):
     def test_warnings(self):
         self.run_dox2html5(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+
+class BriefMultilineIngroup(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'brief_multiline_ingroup', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='group__thatgroup.xml')
+        self.assertEqual(*self.actual_expected_contents('group__thatgroup.html'))
