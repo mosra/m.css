@@ -1463,7 +1463,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.parsed = out.parsed.rstrip() + '<br />'
 
         elif i.tag == 'anchor':
-            out.parsed += '<a name="{}"></a>'.format(extract_id_hash(state, i))
+            # Doxygen doesn't prefix HTML <a name=""> anchors the same way as
+            # for @anchor (WHO WOULD HAVE THOUGHT, RIGHT), it just fully omits
+            # the prefix. So allow that -- thus we can't just extract_id_hash()
+            id = i.attrib['id']
+            if id[:2] == '_1':
+                id = id[2:]
+            else:
+                assert id.startswith(state.current_definition_url_base)
+                id = id[len(state.current_definition_url_base)+2:]
+            out.parsed += '<a name="{}"></a>'.format(id)
 
         elif i.tag == 'computeroutput':
             content = parse_inline_desc(state, i).strip()

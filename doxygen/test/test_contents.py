@@ -367,6 +367,14 @@ class AnchorInBothGroupAndNamespace(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
         self.assertEqual(*self.actual_expected_contents('group__fizzbuzz.html'))
 
+class AnchorHtmlNoPrefixBug(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'anchor_html_no_prefix_bug', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='some-long-page-name.xml')
+        self.assertEqual(*self.actual_expected_contents('some-long-page-name.html'))
+
 class UnexpectedSections(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'unexpected_sections', *args, **kwargs)
