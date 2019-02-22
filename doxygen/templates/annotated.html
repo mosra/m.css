@@ -13,7 +13,7 @@
             </ul>
           </li>
           {% else %}
-          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %} <span class="m-dox">{{ i.brief }}</span></li>
+          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-dox">{{ i.name }}</a>{% if i.is_final %} <span class="m-label m-flat m-warning">final</span>{% endif %}{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %} <span class="m-dox">{{ i.brief }}</span></li>
           {% endif %}
           {% endfor %}
         </ul>

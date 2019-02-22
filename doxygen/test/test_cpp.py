@@ -62,6 +62,8 @@ class Derived(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classBaseOutsideANamespace.html'))
         self.assertEqual(*self.actual_expected_contents('classDerivedOutsideANamespace.html'))
         self.assertEqual(*self.actual_expected_contents('structAnother_1_1Final.html'))
+        # For the final label in the tree
+        self.assertEqual(*self.actual_expected_contents('annotated.html'))
 
 class Friends(IntegrationTestCase):
     def __init__(self, *args, **kwargs):

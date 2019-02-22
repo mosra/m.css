@@ -3163,6 +3163,8 @@ def parse_index_xml(state: State, xml):
         entry.children = []
         entry.is_deprecated = compound.is_deprecated
         entry.has_nestable_children = False
+        if compound.kind in ['class', 'struct', 'union']:
+            entry.is_final = compound.is_final
 
         # If a top-level thing, put it directly into the list
         if not compound.parent:

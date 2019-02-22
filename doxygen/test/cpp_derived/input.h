@@ -29,6 +29,7 @@ class A: PrivateBase, protected Another::ProtectedBase, public UndocumentedBase,
 
 }
 
+/** @brief Another namespace */
 namespace Another {
 
 /** @brief A derived class */

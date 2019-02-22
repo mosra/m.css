@@ -2089,6 +2089,8 @@ Property                        Description
 :py:`i.url`                     URL of the file with detailed documentation
 :py:`i.brief`                   Brief documentation
 :py:`i.is_deprecated`           Whether the entry is deprecated. [7]_
+:py:`i.is_final`                Whether the class is :cpp:`final`. Set only for
+                                classes.
 :py:`i.has_nestable_children`   If the list has nestable children (i.e., dirs
                                 or namespaces)
 :py:`i.children`                Recursive list of child entries
