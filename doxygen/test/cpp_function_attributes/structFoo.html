@@ -59,6 +59,14 @@
               <span class="m-dox-wrap-bumper">void <a href="#a67e9f6865d19c8e7734b182143d5e9b3" class="m-dox">foo</a>(</span><span class="m-dox-wrap">) const <span class="m-label m-flat m-warning">pure virtual</span> <span class="m-label m-flat m-success">noexcept(…)</span></span>
             </dt>
             <dd>Const, conditional noexcept and a pure virtual.</dd>
+            <dt>
+              <span class="m-dox-wrap-bumper">auto <a href="#a6c32baeb1c9a472657fd3ee8c191aa07" class="m-dox">bar</a>(</span><span class="m-dox-wrap">) -&gt; <a href="structFoo.html" class="m-dox">Foo</a>&amp; <span class="m-label m-flat m-primary">constexpr</span> <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>Random type and constexpr together.</dd>
+            <dt>
+              <span class="m-dox-wrap-bumper">auto <a href="#aab09b9411135eae10f8c3abab0a0db54" class="m-dox">baz</a>(</span><span class="m-dox-wrap">) -&gt; decltype(auto) <span class="m-label m-flat m-primary">constexpr</span> <span class="m-label m-flat m-success">noexcept</span></span>
+            </dt>
+            <dd>decltype(auto) and constexpr together</dd>
           </dl>
         </section>
         <section>
@@ -90,6 +98,20 @@
             </h3>
             <p>Const, conditional noexcept and a pure virtual.</p>
 <p>Details.</p>
+          </div></section>
+          <section class="m-dox-details" id="a6c32baeb1c9a472657fd3ee8c191aa07"><div>
+            <h3>
+              <span class="m-dox-wrap-bumper"><a href="structFoo.html" class="m-dox">Foo</a>&amp; Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#a6c32baeb1c9a472657fd3ee8c191aa07" class="m-dox-self">bar</a>(</span><span class="m-dox-wrap">) <span class="m-label m-primary">constexpr</span> <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>Random type and constexpr together.</p>
+<p>This is okay.</p>
+          </div></section>
+          <section class="m-dox-details" id="aab09b9411135eae10f8c3abab0a0db54"><div>
+            <h3>
+              <span class="m-dox-wrap-bumper">decltype(auto) Foo::<wbr /></span><span class="m-dox-wrap"><span class="m-dox-wrap-bumper"><a href="#aab09b9411135eae10f8c3abab0a0db54" class="m-dox-self">baz</a>(</span><span class="m-dox-wrap">) <span class="m-label m-primary">constexpr</span> <span class="m-label m-success">noexcept</span></span></span>
+            </h3>
+            <p>decltype(auto) and constexpr together</p>
+<p>For some reason, due to decltype(auto), Doxygen swaps the order, causing the constexpr to be hard to detect. Don&#x27;t even ask how it handles trailing return types. It&#x27;s just HORRIBLE.</p>
           </div></section>
         </section>
       </div>

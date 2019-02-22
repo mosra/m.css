@@ -1849,6 +1849,12 @@ def parse_func(state: State, element: ET.Element):
     elif func.type.startswith('constexpr'):
         func.type = func.type[10:]
         func.is_constexpr = True
+    # For some effing reason, when a constexpr function has decltype(auto)
+    # return type, Doxygen swaps the order of those two, causing the constexpr
+    # to be last. See the cpp_function_attributes test for a verification.
+    elif func.type.endswith('constexpr'):
+        func.type = func.type[:-10]
+        func.is_constexpr = True
     else:
         func.is_constexpr = False
     func.prefix = ''

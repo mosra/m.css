@@ -29,6 +29,22 @@ struct Foo {
      * Details.
      */
     virtual void foo() const noexcept(false) = 0;
+
+    /**
+     * @brief Random type and constexpr together
+     *
+     * This is okay.
+     */
+    constexpr Foo& bar() noexcept;
+
+    /**
+     * @brief decltype(auto) and constexpr together
+     *
+     * For some reason, due to decltype(auto), Doxygen swaps the order, causing
+     * the constexpr to be hard to detect. Don't even ask how it handles
+     * trailing return types. It's just HORRIBLE.
+     */
+    constexpr decltype(auto) baz() noexcept;
 };
 
 /** @brief Base class */
