@@ -80,8 +80,9 @@ def init(pelicanobj):
 
                 # Linking to files
                 if child.attrib['kind'] == 'file':
+                    file_path = child.find('path')
                     link = path + child.find('filename').text + ".html"
-                    symbol_mapping[child.find('path').text + child.find('name').text] = (None, link, css_classes)
+                    symbol_mapping[(file_path.text if file_path is not None else '') + child.find('name').text] = (None, link, css_classes)
 
                     for member in child.findall('member'):
                         if not 'kind' in member.attrib: continue
