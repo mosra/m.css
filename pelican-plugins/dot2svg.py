@@ -42,7 +42,7 @@ _comment_src = re.compile(r"""<!--[^-]+-->\n""")
 # Graphviz < 2.40 (Ubuntu 16.04 and older) doesn't have a linebreak between <g>
 # and <title>
 _class_src = re.compile(r"""<g id="(edge|node)\d+" class="(?P<type>edge|node)(?P<classes>[^"]*)">[\n]?<title>(?P<title>[^<]*)</title>
-<(?P<element>ellipse|polygon|path) fill="(?P<fill>[^"]+)" stroke="[^"]+" """)
+<(?P<element>ellipse|polygon|path|text)( fill="(?P<fill>[^"]+)" stroke="[^"]+")? """)
 
 _class_dst = r"""<g class="{classes}">
 <title>{title}</title>
@@ -99,7 +99,10 @@ def dot2svg(source, size=None, attribs=''):
     def element_repl(match):
         classes = ['m-' + match.group('type')] + match.group('classes').replace('&#45;', '-').split()
         # distinguish between solid and filled nodes
-        if match.group('type') == 'node' and match.group('fill') == 'none':
+        if ((match.group('type') == 'node' and match.group('fill') == 'none') or
+            # a plaintext node is also flat
+            match.group('element') == 'text'
+        ):
             classes += ['m-flat']
 
         return _class_dst.format(

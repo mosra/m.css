@@ -18,6 +18,10 @@ and the arrowheads, nothing else. Non-default font size should be preserved.
     b -> c [label="0" fontsize=40]
     c -> c [label="1"]
 
+.. digraph:: More shapes
+
+    d [shape=plaintext label="outsider"]
+
 Colors:
 
 .. digraph:: Colors
