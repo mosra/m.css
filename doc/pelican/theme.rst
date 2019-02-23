@@ -32,6 +32,8 @@ Theme
 
         `« Writing content <{filename}/pelican/writing-content.rst>`_ | `Pelican <{filename}/pelican.rst>`_
 
+.. role:: html(code)
+    :language: html
 .. role:: py(code)
     :language: py
 .. role:: rst(code)

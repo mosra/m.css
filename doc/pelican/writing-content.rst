@@ -32,6 +32,8 @@ Writing content
 
         `Pelican <{filename}/pelican.rst>`_ | `Theme » <{filename}/pelican/theme.rst>`_
 
+.. role:: html(code)
+    :language: html
 .. role:: rst(code)
     :language: rst
 
