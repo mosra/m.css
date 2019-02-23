@@ -40,47 +40,8 @@ Show builds for:
 
     .. container:: m-scroll
 
-        .. raw:: html
+        .. can't name it HTML, because then Pelican tries to parse it (and
+            can't disable HTML parsing because we need that for layout tests)
 
-            <table class="m-table build-status">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Python<br />3.4</th>
-                  <th>Python<br />3.5</th>
-                  <th>Python<br />3.6</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th class="m-text-right">Pelican theme</th>
-                  <td rowspan="2" id="mcss-py34"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
-                  <td rowspan="3" id="mcss-py35"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
-                  <td rowspan="4" id="mcss-py36"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
-                </tr>
-                <tr>
-                  <th class="m-text-right">Pelican plugins</th>
-                </tr>
-                <tr>
-                  <th class="m-text-right">Graph rendering</th>
-                  <td class="m-dim"></td>
-                </tr>
-                <tr>
-                  <th class="m-text-right">Doxygen theme</th>
-                  <td class="m-dim"></td>
-                  <td class="m-dim"></td>
-                </tr>
-                <tr>
-                  <th class="m-text-right">Doxygen theme<br/>client search</th>
-                  <td class="m-dim"></td>
-                  <td class="m-dim"></td>
-                  <td id="mcss-js"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
-                </tr>
-                <tr>
-                  <th class="m-text-right">Math rendering</th>
-                  <td class="m-dim"></td>
-                  <td class="m-dim"></td>
-                  <td class="m-dim"></td>
-                </tr>
-              </tbody>
-            </table>
+        .. raw:: html
+            :file: build-status.html.in

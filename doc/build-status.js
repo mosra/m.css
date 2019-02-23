@@ -119,6 +119,39 @@ function fetchLatestTravisJobs(project, branch) {
     req.send();
 }
 
+function fetchLatestCodecovJobs(project, branch) {
+    var req = window.XDomainRequest ? new XDomainRequest() : new XMLHttpRequest();
+    if(!req) return;
+
+    req.open("GET", 'https://codecov.io/api/gh/' + project + '/branch/' + branch, true);
+    req.responseType = 'json';
+    req.onreadystatechange = function() {
+        if(req.readyState != 4) return;
+
+        //console.log(req.response);
+
+        var repo = req.response['repo']['name'];
+        var id = 'coverage-' + repo.replace("m.css", "mcss");
+        var elem = document.getElementById(id);
+
+        var commit = req.response['commit'];
+        var coverage = (commit['totals']['c']*1.0).toFixed(1);
+        var type;
+        if(commit['state'] != 'complete') type = 'm-info';
+        else if(Math.round(coverage) > 90) type = 'm-success';
+        else if(Math.round(coverage) > 50) type = 'm-warning';
+        else type = 'm-danger';
+
+        var date = commit['updatestamp'];
+        var age = timeDiff(new Date(Date.parse(date)), new Date(Date.now()));
+
+        elem.innerHTML = '<a href="https://codecov.io/gh/mosra/' + repo + '/tree/' + commit['commitid'] + '" title="@ ' + date + '"><strong>' + coverage + '</strong>%<br /><span class="m-text m-small">' + age + '</span></a>';
+        elem.className = type;
+    };
+    req.send();
+}
+
 for(var i = 0; i != projects.length; ++i) {
     fetchLatestTravisJobs(projects[i][0], projects[i][1]);
+    fetchLatestCodecovJobs(projects[i][0], projects[i][1]);
 }
