@@ -59,6 +59,14 @@ class Minimal(BaseTestCase):
         self.run_dox2html5(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
+class TemplateFallback(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'template_fallback', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(templates=self.path, wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
 class NavbarSingleColumn(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'navbar_single_column', *args, **kwargs)

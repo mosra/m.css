@@ -3458,7 +3458,11 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     if not os.path.exists(html_output):
         os.makedirs(html_output)
 
-    env = Environment(loader=FileSystemLoader(templates),
+    # If custom template dir was supplied, use the default template directory
+    # as a fallback
+    template_paths = [templates]
+    if templates != default_templates: template_paths += [default_templates]
+    env = Environment(loader=FileSystemLoader(template_paths),
                       trim_blocks=True, lstrip_blocks=True, enable_async=True)
 
     # Filter to return file basename or the full URL, if absolute
