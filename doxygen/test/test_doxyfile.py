@@ -73,6 +73,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
 <span class="m-label m-dim">M</span> produces a Markdown link.</p>
 """,
+            'M_SHOW_UNDOCUMENTED': False,
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',

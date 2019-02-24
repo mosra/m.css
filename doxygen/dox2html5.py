@@ -1505,9 +1505,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 ' class="{}"'.format(add_inline_css_class) if add_inline_css_class else '',
                 add_wbr(parse_inline_desc(state, i).strip()))
 
-        # <span> with custom CSS classes
+        # <span> with custom CSS classes. This is (ab)used by the
+        # M_SHOW_UNDOCUMENTED option to make things appear to be documented
+        # in _document_all_stuff(). In that case the class attribute is not
+        # present.
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}span':
-            out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], parse_inline_desc(state, i).strip())
+            content = parse_inline_desc(state, i).strip()
+            if '{http://mcss.mosra.cz/doxygen/}class' in i.attrib:
+                out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], content)
+            else:
+                out.parsed += '<span>{}</span>'.format(content)
 
         # WHAT THE HELL WHY IS THIS NOT AN XML ENTITY
         elif i.tag in ['mdash', 'ndash', 'laquo', 'raquo']:
@@ -2057,6 +2064,20 @@ def parse_define(state: State, element: ET.Element):
         return define
     return None
 
+# Used for the M_SHOW_UNDOCUMENTED option
+def _document_all_stuff(compounddef: ET.Element):
+    for i in compounddef.findall('.//briefdescription/..'):
+        brief = i.find('briefdescription')
+        if not brief and not i.find('detaileddescription'):
+            # Add an empty <span> to the paragraph so it doesn't look empty.
+            # Can't use strong/emphasis, as those are collapsed if empty as
+            # well; on the other hand it's very unlikely that someone would
+            # want to use @m_span with empty contents.
+            dim = ET.Element('{http://mcss.mosra.cz/doxygen/}span')
+            para = ET.Element('para')
+            para.append(dim)
+            brief.append(para)
+
 def extract_metadata(state: State, xml):
     logging.debug("Extracting metadata from {}".format(os.path.basename(xml)))
 
@@ -2084,6 +2105,11 @@ def extract_metadata(state: State, xml):
     if compounddef.attrib['kind'] not in ['namespace', 'group', 'class', 'struct', 'union', 'dir', 'file', 'page']:
         logging.debug("No useful info in {}, skipping".format(os.path.basename(xml)))
         return
+
+    # In order to show also undocumented members, go through all empty
+    # <briefdescription>s and fill them with a generic text.
+    if state.doxyfile['M_SHOW_UNDOCUMENTED']:
+        _document_all_stuff(compounddef)
 
     compound = StateCompound()
     compound.id  = compounddef.attrib['id']
@@ -2391,6 +2417,11 @@ def parse_xml(state: State, xml: str):
         (compounddef.attrib['kind'] == 'namespace' and '@' in compounddef.find('compoundname').text)):
         logging.debug("{}: only private things, skipping".format(state.current))
         return None
+
+    # In order to show also undocumented members, go through all empty
+    # <briefdescription>s and fill them with a generic text.
+    if state.doxyfile['M_SHOW_UNDOCUMENTED']:
+        _document_all_stuff(compounddef)
 
     # Ignoring compounds w/o any description, except for pages and groups,
     # which are created explicitly
@@ -3291,7 +3322,8 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 <span class="m-label m-dim">M</span> produces a Markdown link.</p>
 """],
         'M_SEARCH_BASE_URL': [''],
-        'M_SEARCH_EXTERNAL_URL': ['']
+        'M_SEARCH_EXTERNAL_URL': [''],
+        'M_SHOW_UNDOCUMENTED': ['NO']
     }
 
     # Defaults so we don't fail with minimal Doxyfiles and also that the
@@ -3409,7 +3441,8 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
               'SHOW_INCLUDE_FILES',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
-              'M_SEARCH_DOWNLOAD_BINARY']:
+              'M_SEARCH_DOWNLOAD_BINARY',
+              'M_SHOW_UNDOCUMENTED']:
         if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
 
     # List values that we want. Drop empty lines.
