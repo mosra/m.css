@@ -10,7 +10,6 @@ is inside of @code{.cpp} true || false @endcode a text, should be delimited by
 spaces. But not when it is in (@code{.cpp} std::exit(2); @endcode) parentheses.
 
 @code{.cpp}
-    {
         // a block
             // that is indented
         // but has a lot of trailing whitespace which should be removed
