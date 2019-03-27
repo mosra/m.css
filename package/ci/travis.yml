@@ -17,6 +17,15 @@ matrix:
         apt:
           packages:
           - graphviz
+          - texlive-base
+          - texlive-latex-extra
+          - texlive-fonts-extra
+          - texlive-fonts-recommended
+          # it's only recommended by texlive-fonts-recommended (so Travis won't
+          # install it) but without it the math rendering blows up with
+          # ! Font TS1/ntxtlf/m/n/12=ts1-qtmr at 12.0pt not loadable: Metric (TFM) file not found.
+          # Wasted four hours on this damn thing. Ungoogleable errors FTW.
+          - tex-gyre
       env:
       - WITH_THEME=ON
       - WITH_DOXYGEN=OFF
@@ -28,6 +37,15 @@ matrix:
         apt:
           packages:
           - graphviz
+          - texlive-base
+          - texlive-latex-extra
+          - texlive-fonts-extra
+          - texlive-fonts-recommended
+          # it's only recommended by texlive-fonts-recommended (so Travis won't
+          # install it) but without it the math rendering blows up with
+          # ! Font TS1/ntxtlf/m/n/12=ts1-qtmr at 12.0pt not loadable: Metric (TFM) file not found.
+          # Wasted four hours on this damn thing. Ungoogleable errors FTW.
+          - tex-gyre
       env:
       - WITH_THEME=ON
       - WITH_DOXYGEN=ON
