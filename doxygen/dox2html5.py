@@ -1332,7 +1332,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # Either block or inline
         elif i.tag == 'programlisting':
-            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
+            assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div', '{http://mcss.mosra.cz/doxygen/}span']
 
             # We should have decided about block/inline above
             assert code_block is not None
