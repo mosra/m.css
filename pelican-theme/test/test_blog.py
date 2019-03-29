@@ -130,7 +130,7 @@ class Pagination(BlogTestCase):
                 [(1, 'index.html', '{name}.html'),
                  (2, 'index{number}.html', '{name}{number}.html')],
             'DIRECT_TEMPLATES': ['index', 'archives'],
-            'PAGINATED_DIRECT_TEMPLATES': ['index', 'archives'],
+            'PAGINATED_TEMPLATES': {'index': None, 'archives': None, 'tag': None, 'category': None, 'author': None},
 
             # verify that og:url doesn't take pagination into account
             'M_DISABLE_SOCIAL_META_TAGS': False
@@ -171,7 +171,7 @@ class PaginationDisabled(BlogTestCase):
     def test(self):
         self.run_pelican({
             'DEFAULT_PAGINATION': 1,
-            'PAGINATED_DIRECT_TEMPLATES': []
+            'PAGINATED_TEMPLATES': {'tag': None, 'category': None, 'author': None}
         })
 
         # Nothing is paginated
@@ -462,7 +462,7 @@ class HtmlEscape(BlogTestCase):
                 [(1, 'index.html?and&in&url=""', '{name}.html'),
                  (2, 'index{number}.html?and&in&url=""', '{name}{number}.html')],
             'DIRECT_TEMPLATES': ['index', 'archives'],
-            'PAGINATED_DIRECT_TEMPLATES': ['index', 'archives'],
+            'PAGINATED_TEMPLATES': {'index': None, 'archives': None, 'tag': None, 'category': None, 'author': None},
             'FORMATTED_FIELDS': ['summary', 'description']
         })
 

@@ -790,8 +790,8 @@ pagination for the archives, as that's not enabled by default:
     # Defaults to ['index', 'categories', 'authors', 'archives']
     DIRECT_TEMPLATES = ['archives']
 
-    # Defaults to ['index']
-    PAGINATED_DIRECT_TEMPLATES = ['archives']
+    # Defaults to {'index': None, 'tag': None, 'category': None, 'author': None}
+    PAGINATED_TEMPLATES = {'archives': None, 'tag': None, 'category': None, 'author': None}
 
 .. note-warning::
 
