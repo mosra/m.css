@@ -357,6 +357,81 @@ will have negative margin to make its contents aligned with surrounding text.
     The Components page has additional information about
     `code block styling <{filename}/css/components.rst#code>`_.
 
+`Footnotes and footnote references`_
+====================================
+
+Applying :css:`.m-footnote` to a link will turn it into a footnote reference
+--- a superscript, wrapped in brackets. For the actual footnotes use
+:html:`<dl class="m-footnote">`; :html:`<dt>` contains footnote ID and
+:html:`<dd>` the footnote text. You can add a :html:`<span class="m-footnote">`
+inside the :html:`<dd>` to provide styled back-references to the original text.
+
+.. code-figure::
+
+    .. code:: html
+
+        <p>
+          As also noted in the court case of <em>Mondays vs The Working People</em>
+          <a href="#ref1" class="m-footnote" id="ref1-backref">1</a>, the transition
+          between the weekend and a working day has a similar impact on overall
+          happines as a transition between holidays and working days, however not as
+          significant <a href="#ref2" class="m-footnote" id="ref2-backref">2</a>.
+          This is a common theme of small talk conversations, together with
+          weather <a href="#ref1" class="m-footnote" id="ref1-backref2">1</a>
+          <a href="#ref3" class="m-footnote" id="ref3-backref">3</a>.
+        </p>
+        <dl class="m-footnote">
+          <dt id="ref1">1.</dt>
+          <dd>
+            <span class="m-footnote">^ <a href="#ref1-backref">a</a>
+            <a href="#ref1-backref2">b</a></span> Mondays vs The Working People,
+            The Arizona Highest Court, 2019
+          </dd>
+          <dt id="ref2">2.</dt>
+          <dd>
+            <span class="m-footnote"><a href="#ref2-backref">^</a></span>
+            <a href="https://garfield.com/comic/2014/05/26">Garfield; Monday,
+            May 26, 2014</a>
+          </dd>
+          <dt id="ref3">3.</dt>
+          <dd>
+            <span class="m-footnote"><a href="#ref3-backref">^</a></span> From a
+            conversation overheard this very morning.
+          </dd>
+        </dl>
+
+    .. raw:: html
+
+        <p>
+          As also noted in the court case of <em>Mondays vs The Working People</em>
+          <a href="#ref1" class="m-footnote" id="ref1-backref">1</a>, the transition
+          between the weekend and a working day has a similar impact on overall
+          happines as a transition between holidays and working days, however not as
+          significant <a href="#ref2" class="m-footnote" id="ref2-backref">2</a>.
+          This is a common theme of small talk conversations, together with
+          weather <a href="#ref1" class="m-footnote" id="ref1-backref2">1</a>
+          <a href="#ref3" class="m-footnote" id="ref3-backref">3</a>.
+        </p>
+        <dl class="m-footnote">
+          <dt id="ref1">1.</dt>
+          <dd>
+            <span class="m-footnote">^ <a href="#ref1-backref">a</a>
+            <a href="#ref1-backref2">b</a></span> Mondays vs The Working People,
+            The Arizona Highest Court, 2019
+          </dd>
+          <dt id="ref2">2.</dt>
+          <dd>
+            <span class="m-footnote"><a href="#ref2-backref">^</a></span>
+            <a href="https://garfield.com/comic/2014/05/26">Garfield; Monday,
+            May 26, 2014</a>
+          </dd>
+          <dt id="ref3">3.</dt>
+          <dd>
+            <span class="m-footnote"><a href="#ref3-backref">^</a></span> From a
+            conversation overheard this very morning.
+          </dd>
+        </dl>
+
 `Text alignment`_
 =================
 

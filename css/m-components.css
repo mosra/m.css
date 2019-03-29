@@ -254,6 +254,35 @@ dl.m-diary dd {
   padding-left: 3.5rem;
 }
 
+/* Footnotes, footnote references */
+a.m-footnote, dl.m-footnote dd span.m-footnote {
+  top: -0.35rem; /* Same as .m-text.m-sup */
+  font-size: 0.75rem;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+a.m-footnote, dl.m-footnote dd span.m-footnote a {
+  text-decoration: none;
+}
+a.m-footnote::before { content: '['; }
+a.m-footnote::after { content: ']'; }
+dl.m-footnote dt {
+  width: 1.5rem;
+  float: left;
+  clear: both;
+}
+dl.m-footnote dd {
+  margin-left: 1.5rem;
+}
+dl.m-footnote { /* Same as .m-small */
+  font-size: 85.4%;
+}
+dl.m-footnote dd span.m-footnote a {
+  font-weight: bold;
+  font-style: italic;
+}
+
 /* Note, frame, block */
 .m-note {
   border-radius: var(--border-radius);
