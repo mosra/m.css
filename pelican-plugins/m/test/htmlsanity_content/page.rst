@@ -48,9 +48,10 @@ Section title
 An *emphasised text*, **strong text** and a ``literal``. Link to
 `Google <https://google.com>`_, `the heading below <#a-heading>`_ or just an
 URL as-is: https://mcss.mosra.cz/. `E-mail <mosra@centrum.cz>`_. A footnote
-reference: [1]_
+reference on a single thing [1]_ and more things [1]_ [2]_
 
 .. [1] A footnote description
+.. [2] Second thing description
 
 `Section title with link`_
 --------------------------

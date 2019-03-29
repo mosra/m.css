@@ -443,6 +443,44 @@ class SaneHtmlTranslator(HTMLTranslator):
     def depart_line(self, node):
         self.body.append('<br />\n')
 
+    # Footnote list. Replacing the classes with just .m-footnote.
+    def visit_footnote(self, node):
+        if not self.in_footnote_list:
+            self.body.append('<dl class="m-footnote">\n')
+            self.in_footnote_list = True
+
+    def depart_footnote(self, node):
+        self.body.append('</dd>\n')
+        if not isinstance(node.next_node(descend=False, siblings=True),
+                          nodes.footnote):
+            self.body.append('</dl>\n')
+            self.in_footnote_list = False
+
+    # Footnote reference
+    def visit_footnote_reference(self, node):
+        href = '#' + node['refid']
+        self.body.append(self.starttag(node, 'a', '', CLASS='m-footnote', href=href))
+
+    def depart_footnote_reference(self, node):
+        self.body.append('</a>')
+
+    # Footnote and citation labels
+    def visit_label(self, node):
+        self.body.append(self.starttag(node.parent, 'dt', ''))
+
+    def depart_label(self, node):
+        if self.settings.footnote_backlinks:
+            backrefs = node.parent['backrefs']
+            if len(backrefs) == 1:
+                self.body.append('</a>')
+        self.body.append('.</dt>\n<dd><span class="m-footnote">')
+        if len(backrefs) == 1:
+            self.body.append('<a href="#{}">^</a>'.format(backrefs[0]))
+        else:
+            self.body.append('^ ')
+            self.body.append(format(' '.join('<a href="#{}">{}</a>'.format(ref, chr(ord('a') + i)) for i, ref in enumerate(backrefs))))
+        self.body.append('</span> ')
+
     def visit_line_block(self, node):
         self.body.append(self.starttag(node, 'p'))
 
