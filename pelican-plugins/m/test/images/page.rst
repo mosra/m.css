@@ -81,15 +81,15 @@ Figure with a height:
 
     A Ship
 
-Image grid:
+Image grid, second row with a custom title and no title:
 
 .. image-grid::
 
     {static}/ship.jpg
     {static}/flowers.jpg
 
-    {static}/flowers.jpg
-    {static}/ship.jpg
+    {static}/flowers.jpg A custom title
+    {static}/ship.jpg ..
 
 Image grid with a PNG file, JPEG with sparse EXIF data, JPEG with no EXIF data
 and long exposure (>1 second):

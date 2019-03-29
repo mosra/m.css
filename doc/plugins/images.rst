@@ -130,10 +130,13 @@ option for both images and figures.
 Use the :rst:`.. image-grid::` directive for creating
 `image grid <{filename}/css/components.rst#image-grid>`_. Directive contents
 are a list of image URLs, blank lines separate grid rows. The plugin
-automatically extracts size information and scales the images accordingly. If
-the image has EXIF information, properties such as aperture, shutter speed and
-ISO are extracted and displayed in the caption on hover. The images are also
-made clickable, the target is the image file itself.
+automatically extracts size information and scales the images accordingly. The images are made clickable, the target is the image file itself.
+
+If the image has EXIF information, properties such as aperture, shutter speed
+and ISO are extracted and displayed in the caption on hover. It's also possible
+to provide a custom title --- everything after the filename will be taken as
+a title. If you use ``..`` as a title (a reST comment), it will disable EXIF
+extraction and no title will be shown.
 
 Example of a two-row image grid is below. Sorry for reusing the same two images
 all over (I'm making it easier for myself); if you want to see a live example
@@ -146,16 +149,16 @@ with non-repeating images, head over to `my blog <http://blog.mosra.cz/cesty/mai
         {static}/ship.jpg
         {static}/flowers.jpg
 
-        {static}/flowers.jpg
-        {static}/ship.jpg
+        {static}/flowers.jpg A custom title
+        {static}/ship.jpg ..
 
 .. image-grid::
 
     {static}/static/ship.jpg
     {static}/static/flowers.jpg
 
-    {static}/static/flowers.jpg
-    {static}/static/ship.jpg
+    {static}/static/flowers.jpg A custom title
+    {static}/static/ship.jpg ..
 
 .. note-warning::
 

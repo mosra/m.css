@@ -199,12 +199,14 @@ class ImageGrid(rst.Directive):
 
         rows = [[]]
         total_widths = [0]
-        for uri in self.content:
+        for uri_caption in self.content:
             # New line, calculating width from 0 again
-            if not uri:
+            if not uri_caption:
                 rows.append([])
                 total_widths.append(0)
                 continue
+
+            uri, _, caption = uri_caption.partition(' ')
 
             # Open the files and calculate the overall width
             # Support both {filename} (3.7.1) and {static} (3.8) placeholders
@@ -212,8 +214,8 @@ class ImageGrid(rst.Directive):
             absuri = uri.format(filename=file, static=file)
             im = PIL.Image.open(absuri)
 
-            # Get EXIF info, if it's there
-            if hasattr(im, '_getexif') and im._getexif() is not None:
+            # If no caption provided, get EXIF info, if it's there
+            if not caption and hasattr(im, '_getexif') and im._getexif() is not None:
                 exif = {
                     PIL.ExifTags.TAGS[k]: v
                     for k, v in im._getexif().items()
@@ -234,8 +236,8 @@ class ImageGrid(rst.Directive):
                     caption += ["ISO {}".format(exif['ISOSpeedRatings'])]
                 caption = ', '.join(caption)
 
-            # It's not (e.g. a PNG file), empty caption
-            else: caption = ""
+            # If the caption is `..`, it's meant to be explicitly disabled
+            if caption == '..': caption = ''
 
             rel_width = float(im.width)/im.height
             total_widths[-1] += rel_width
