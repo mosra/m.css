@@ -329,7 +329,7 @@ fancy transition, use :css:`.m-transition` on a paragraph.
 `Preformatted blocks`_
 ======================
 
-The :html:`pre` element preserves your whitespace and adds a convenient
+The :html:`<pre>` element preserves your whitespace and adds a convenient
 scrollbar if the content is too wide. If inside an
 `inflatable nested grid <{filename}/css/grid.rst#inflatable-nested-grid>`_, it
 will have negative margin to make its contents aligned with surrounding text.
