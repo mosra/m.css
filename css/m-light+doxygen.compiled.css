@@ -581,9 +581,6 @@ dl.m-footnote dd span.m-footnote a {
   border-radius: 0.2rem;
   padding: 1rem;
 }
-.m-note pre, .m-note code {
-  background-color: rgba(251, 240, 236, 0.5);
-}
 .m-frame {
   background-color: #ffffff;
   border-style: solid;
@@ -741,6 +738,30 @@ table.m-table tr.m-info th, table.m-table th.m-info,
 table.m-table tr.m-dim td, table.m-table td.m-dim,
 table.m-table tr.m-dim th, table.m-table th.m-dim {
   border-color: #ffffff;
+}
+.m-note pre, .m-note code,
+table.m-table tr.m-default pre, table.m-table tr.m-default code,
+table.m-table td.m-default pre, table.m-table td.m-default code,
+table.m-table th.m-default pre, table.m-table th.m-default code,
+table.m-table tr.m-primary pre, table.m-table tr.m-primary code,
+table.m-table td.m-primary pre, table.m-table td.m-primary code,
+table.m-table th.m-primary pre, table.m-table th.m-primary code,
+table.m-table tr.m-success pre, table.m-table tr.m-success code,
+table.m-table td.m-success pre, table.m-table td.m-success code,
+table.m-table th.m-success pre, table.m-table th.m-success code,
+table.m-table tr.m-warning pre, table.m-table tr.m-warning code,
+table.m-table td.m-warning pre, table.m-table td.m-warning code,
+table.m-table th.m-warning pre, table.m-table th.m-warning code,
+table.m-table tr.m-danger pre, table.m-table tr.m-danger code,
+table.m-table td.m-danger pre, table.m-table td.m-danger code,
+table.m-table th.m-danger pre, table.m-table th.m-danger code,
+table.m-table tr.m-info pre, table.m-table tr.m-info code,
+table.m-table td.m-info pre, table.m-table td.m-info code,
+table.m-table th.m-info pre, table.m-table th.m-info code,
+table.m-table tr.m-dim pre, table.m-table tr.m-dim code,
+table.m-table td.m-dim pre, table.m-table td.m-dim code,
+table.m-table th.m-dim pre, table.m-table th.m-dim code {
+  background-color: rgba(251, 240, 236, 0.5);
 }
 img.m-image, svg.m-image {
   display: block;
