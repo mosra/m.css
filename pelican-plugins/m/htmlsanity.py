@@ -565,7 +565,6 @@ class SaneHtmlTranslator(HTMLTranslator):
                   self.starttag(node, 'h%s' % h_level, '', **atts))
             atts = {}
             if node.hasattr('refid'):
-                atts['class'] = 'toc-backref'
                 atts['href'] = '#' + node['refid']
             if atts:
                 self.body.append(self.starttag({}, 'a', '', **atts))
