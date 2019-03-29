@@ -656,7 +656,8 @@ def render_rst(value):
                     'syntax_highlight': 'short',
                     'input_encoding': 'utf-8',
                     'language_code': settings['DEFAULT_LANG'],
-                    'exit_status_level': 2,
+                    'halt_level': 2,
+                    'traceback': True,
                     'embed_stylesheet': False}
     if settings['DOCUTILS_SETTINGS']:
         extra_params.update(settings['DOCUTILS_SETTINGS'])

@@ -109,3 +109,20 @@ class TypographyGlobalLang(PluginTestCase):
         # The <html> lang element should be set correctly and the &shy; should
         # be at proper places and not where it shouldn't be.
         self.assertEqual(*self.actual_expected_contents('page.html'))
+
+class RenderRst(PluginTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'parse_error', *args, **kwargs)
+
+    def test_parse_error(self):
+        # Verify that the parse error in M_FINE_PRINT raises an Exception, not
+        # nothing and not SystemExit or some such
+        with self.assertRaisesRegex(Exception, "underline too short"):
+            self.run_pelican({
+                'PLUGINS': ['m.htmlsanity'],
+                'M_FINE_PRINT': """
+Page with a parse error
+#############
+
+The underline is too short.
+"""})
