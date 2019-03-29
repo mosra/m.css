@@ -305,3 +305,13 @@ class IncludesTemplated(IntegrationTestCase):
         # All entries should have the includes next to the template
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('structStruct.html'))
+
+class BaseDerivedInRootNamespace(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'base_derived_in_root_namespace', *args, **kwargs)
+
+    def test(self):
+        self.run_dox2html5(wildcard='*.xml')
+
+        # Shouldn't crash or anything
+        self.assertEqual(*self.actual_expected_contents('structNamespace_1_1BothBaseAndDerivedInRootNamespace.html'))
