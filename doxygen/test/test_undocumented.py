@@ -57,4 +57,4 @@ class Test(IntegrationTestCase):
         with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
             serialized = f.read()
             magic, version, symbol_count, map_offset = search_data_header_struct.unpack_from(serialized)
-            self.assertEqual(symbol_count, 38)
+            self.assertEqual(symbol_count, 44)

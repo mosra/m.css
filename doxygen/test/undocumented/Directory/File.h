@@ -12,7 +12,17 @@ struct Struct {};
 union Union {};
 
 /* An undocumented enum in the root namespace */
-enum Enum {};
+enum Enum {
+    A,
+
+    /**
+     * This value is documented so the enum *should* be present in detailed
+     * docs.
+     */
+    B,
+
+    C
+};
 
 /* An undocumented typedef in the root namespace */
 typedef int Int;
@@ -51,7 +61,11 @@ struct ClassInANamespace {
 };
 
 /* An undocumented enum */
-enum EnumInANamespace {};
+enum EnumInANamespace {
+    /* None of these are documented so the enum shouldn't be present in
+       detailed docs */
+    A, B, C
+};
 
 /* An undocumented typedef */
 typedef int IntInANamespace;

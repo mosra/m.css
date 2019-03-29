@@ -1736,7 +1736,6 @@ def parse_enum(state: State, element: ET.Element):
         value.brief = parse_desc(state, enumvalue.find('briefdescription'))
         value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
         if value.brief or value.description:
-            enum.has_value_details = True
             if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
                 result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
@@ -1747,6 +1746,16 @@ def parse_enum(state: State, element: ET.Element):
                 if search_enum_values_as_keywords and value.initializer.startswith('='):
                     result.keywords += [(value.initializer[1:].lstrip(), '', 0)]
                 state.search += [result]
+
+            # If either brief or description for this value is present, we want
+            # to show the detailed enum docs. However, in
+            # case M_SHOW_UNDOCUMENTED is enabled, the values might have just
+            # a dummy <span></span> content in order to make them "appear
+            # documented". Then it doesn't make sense to repeat the same list
+            # twice.
+            if not state.doxyfile['M_SHOW_UNDOCUMENTED'] or value.brief != '<span></span>':
+                enum.has_value_details = True
+
         enum.values += [value]
 
     if enum.base_url == state.current_compound_url and (enum.description or enum.has_value_details):
