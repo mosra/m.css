@@ -83,10 +83,11 @@ If you are like me, you want a website that presents your main work, not that
 your main work is presenting websites. So remove the unneeded hassle of paying
 extra for a dynamic webhosting, installing and maintaining a huge CMS and
 patching it twice a month for a neverending stream new CVEs. Together with
-`Pelican <{filename}/pelican.rst>`_, m.css provides a solution harnessing the
-endless possibilities of your local machine to generate a bunch of static HTML
-files, which you can then upload *anywhere*. And as a bonus, you have the full
-control over your content --- nothing's hidden in opaque databases.
+`Pelican <{filename}/themes/pelican.rst>`_, m.css provides a solution
+harnessing the endless possibilities of your local machine to generate a bunch
+of static HTML files, which you can then upload *anywhere*. And as a bonus, you
+have the full control over your content --- nothing's hidden in opaque
+databases.
 
 .. note-success::
 

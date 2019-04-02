@@ -26,7 +26,6 @@ import os
 import shutil
 import subprocess
 import unittest
-import xml.etree.ElementTree as ET
 
 from doxygen import run, default_templates, default_wildcard, default_index_pages
 

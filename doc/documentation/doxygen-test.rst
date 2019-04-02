@@ -25,8 +25,10 @@
 Test
 ####
 
-:save_as: doxygen/test/index.html
-:breadcrumb: {filename}/doxygen.rst Doxygen theme
+:save_as: documentation/doxygen/test/index.html
+:breadcrumb:
+    {filename}/documentation.rst Doc themes
+    {filename}/documentation/doxygen.rst Doxygen
 :css: {static}/static/m-dark.doxygen.compiled.css
 
 Lists

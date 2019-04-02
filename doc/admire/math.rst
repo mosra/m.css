@@ -106,7 +106,7 @@ m.css math
             LaTeX formulas to vector graphics locally, your viewers are saved
             from needless HTTP requests and heavy JavaScript processing.
 
-            .. button-success:: {filename}/pelican.rst
+            .. button-success:: {filename}/themes/pelican.rst
                 :class: m-fullwidth
 
                 Start using Pelican

@@ -25,12 +25,12 @@
 Images
 ######
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Components <{filename}/plugins/components.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Math and code » <{filename}/plugins/math-and-code.rst>`_
+        `« Components <{filename}/plugins/components.rst>`_ | `Plugins <{filename}/plugins.rst>`_ | `Math and code » <{filename}/plugins/math-and-code.rst>`_
 
 .. role:: css(code)
     :language: css
@@ -47,6 +47,9 @@ beautiful image galleries.
 
 `How to use`_
 =============
+
+`Pelican`_
+----------
 
 Download the `m/images.py <{filename}/plugins.rst>`_ file, put it including the
 ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.images``
@@ -65,6 +68,17 @@ library installed. Get it via ``pip`` or your distribution package manager:
 .. code:: sh
 
     pip3 install Pillow
+
+`Doxygen theme`_
+----------------
+
+The Doxygen theme makes the builtin ``@image`` command behave similarly to
+the :rst:`.. image::` directive of this plugin, if you add a title to it, it
+behaves like :rst:`.. figure::`. It's possible to add extra CSS classes by
+placing ``@m_class`` in a paragraph before the actual image, see the
+`Doxygen theme-specific commands <http://localhost:8000/documentation/doxygen/#theme-specific-commands>`_
+for more information. The :rst:`.. image-grid::` functionality is not available
+in the Doxygen theme.
 
 `Images, figures`_
 ==================

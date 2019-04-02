@@ -26,7 +26,7 @@ Test
 ####
 
 :save_as: plugins/components/test/index.html
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
              {filename}/plugins/components.rst Components
 
 Should match the rendering of

@@ -26,7 +26,7 @@ Test
 ####
 
 :save_as: plugins/images/test/index.html
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
              {filename}/plugins/images.rst Images
 
 `Images, figures`_

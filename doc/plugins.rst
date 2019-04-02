@@ -22,29 +22,33 @@
     DEALINGS IN THE SOFTWARE.
 ..
 
-Pelican plugins
-###############
+Plugins
+#######
 
 .. role:: py(code)
     :language: py
 
-The `Pelican theme <{filename}/pelican/theme.rst>`_ provided by m.css uses only
-a part of the functionality on its own, the rest is exposed by various plugins.
+In addition to providing a theme for `Pelican <{filename}/themes/pelican.rst>`_
+or `Doxygen <{filename}/documentation/doxygen.rst>`_  that styles the overall
+page layout and basic typography, m.css also contains a collection of plugins,
+extending the capabilities futher.
 
 `Usage`_
 ========
 
-Each plugin is a standalone ``*.py`` file that is meant to be downloaded and
-put into a ``m/`` subdirectory into one of your :py:`PLUGIN_PATHS`. Then you
-add given :py:`m.something` package to your :py:`PLUGINS` in ``pelicanconf.py``
-and restart Pelican. Download the plugins below or
-:gh:`grab the whole Git repository <mosra/m.css>`:
+For use with Pelican, each plugin is a standalone ``*.py`` file that is meant
+to be downloaded and put into a ``m/`` subdirectory into one of your
+:py:`PLUGIN_PATHS`. Then you add given :py:`m.something` package to your
+:py:`PLUGINS` in ``pelicanconf.py`` and restart Pelican. Download the plugins
+below or :gh:`grab the whole Git repository <mosra/m.css>`:
 
 -   :gh:`m.htmlsanity <mosra/m.css$master/plugins/m/htmlsanity.py>`
 -   :gh:`m.components <mosra/m.css$master/plugins/m/components.py>`
 -   :gh:`m.images <mosra/m.css$master/plugins/m/images.py>`
--   :gh:`m.math  <mosra/m.css$master/plugins/m/math.py>` (needs also :gh:`latex2svg <mosra/m.css$master/plugins/latex2svg.py>`),
-    :gh:`m.code <mosra/m.css$master/plugins/m/code.py>` (needs also :gh:`ansilexer <mosra/m.css$master/plugins/ansilexer.py>`)
+-   :gh:`m.math  <mosra/m.css$master/plugins/m/math.py>` (needs also
+    :gh:`latex2svg <mosra/m.css$master/plugins/latex2svg.py>`),
+    :gh:`m.code <mosra/m.css$master/plugins/m/code.py>` (needs also
+    :gh:`ansilexer <mosra/m.css$master/plugins/ansilexer.py>`)
 -   :gh:`m.plots <mosra/m.css$master/plugins/m/plots.py>`,
     :gh:`m.dot <mosra/m.css$master/plugins/m/dot.py>`
 -   :gh:`m.link <mosra/m.css$master/plugins/m/link.py>`,
@@ -57,9 +61,13 @@ and restart Pelican. Download the plugins below or
     :gh:`m.alias <mosra/m.css$master/plugins/m/alias.py>`
 -   :gh:`m.metadata <mosra/m.css$master/plugins/m/metadata.py>`
 
-Click on the headings below to get to know more. Note that particular plugins
-can have additional dependencies besides just Pelican, see documentation of
-each of them to see more.
+All plugins that make sense in the context of the
+`Doxygen theme <{filename}/documentation/doxygen.rst>`_ are implicitly exposed
+to it, without needing to explicitly enable them.
+
+Note that particular plugins can have additional dependencies, see
+documentation of each of them to see more. Click on the headings below to get
+to know more.
 
 `HTML sanity » <{filename}/plugins/htmlsanity.rst>`_
 ====================================================

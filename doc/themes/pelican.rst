@@ -22,15 +22,18 @@
     DEALINGS IN THE SOFTWARE.
 ..
 
-Theme
-#####
+Pelican
+#######
 
-:breadcrumb: {filename}/pelican.rst Pelican
+:alias:
+    /pelican/index.html
+    /pelican/theme/index.html
+:breadcrumb: {filename}/themes.rst Themes
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Writing content <{filename}/pelican/writing-content.rst>`_ | `Pelican <{filename}/pelican.rst>`_
+        `« Writing reST content <{filename}/themes/writing-rst-content.rst>`_ | `Themes <{filename}/themes.rst>`_
 
 .. role:: html(code)
     :language: html
@@ -38,22 +41,97 @@ Theme
     :language: py
 .. role:: rst(code)
     :language: rst
+.. role:: sh(code)
+    :language: sh
 .. |x| unicode:: U+00D7 .. nicer multiply sign
 
-The second largest offering of m.css is a full-featured theme for the
-`Pelican static site generator <https://getpelican.com/>`_. The theme is
-designed to fit both the use case of a simple blog consisting of just articles
-or a full product/project/portfolio website where the blog is only a side dish.
+`Pelican <https://getpelican.com/>`_ is a static site generator powered by
+Python and unlike most other static site generators, it uses
+`reStructuredText <http://docutils.sourceforge.net/rst.html>`_ instead of
+Markdown for authoring content. m.css provides a theme for it, together with a
+set of useful plugins. The theme is designed to fit both the use case of a
+simple blog consisting of just articles or a full product/project/portfolio
+website where the blog is only a side dish.
+
+.. button-success:: https://magnum.graphics
+
+    Live demo
+
+    magnum.graphics
 
 .. contents::
     :class: m-block m-default
 
-`Quick start`_
-==============
+`First steps with Pelican`_
+===========================
 
-Following the `Pelican quick start guide <{filename}/pelican.rst#quick-start>`_,
-it's assumed you already have at least Python 3.4 and the Python 3 version of
-Pelican installed. The easiest way to start is putting the
+Install Pelican either via ``pip`` or using your system package manager.
+
+.. note-danger::
+
+    In order to use the m.css theme or `plugins <{filename}/plugins.rst>`_, you
+    need to install Pelican 4 and the Python 3 version of it. Most of the
+    plugins work with Python 3.4, while some (such as the
+    `math plugin <{filename}/plugins/math-and-code.rst#math>`_) need 3.5.
+    Python 2 is not supported and compatibility with Pelican 3.7 has been
+    dropped.
+
+.. code:: sh
+
+    # You may need sudo here
+    pip3 install pelican
+
+Note that using the m.css theme or Pelican plugins may require additional
+dependencies than just Pelican --- documentation of each lists the additional
+requirements, if any. Once you have Pelican installed, create a directory for
+your website and bootstrap it:
+
+.. code:: sh
+
+    mkdir ~/my-cool-site/
+    cd ~/my-cool-site/
+    pelican-quickstart
+
+This command will ask you a few questions. Leave most of the questions at their
+defaults, you can change them later. Once the quickstart script finishes, you
+can generate the website and spin up a auto-reload webserver for it with the
+following command:
+
+.. code:: sh
+
+    pelican -Dlr
+
+It will print quite some output about processing things and serving the data to
+the console. Open your fresh website at http://localhost:8000. The site is now
+empty, so let's create a simple article and put it into ``content/``
+subdirectory with a ``.rst`` extension. For this example that would be
+``~/my-cool-site/content/my-cool-article.rst``:
+
+.. code:: rst
+
+    My cool article
+    ###############
+
+    :date: 2017-09-14 23:04
+    :category: Cool things
+    :tags: cool, article, mine
+    :summary: This article has a cool summary.
+
+    This article has not only cool summary, but also has cool contents. Lorem?
+    *Ipsum.* `Hi, google! <https://google.com>`_
+
+If you did everything right, the auto-reload script should pick the file up and
+process it (check the console output). Then it's just a matter of refreshing
+your browser to see it on the page.
+
+*That's it!* Congratulations, you successfully made your first steps with
+Pelican. Well, apart from the fact that the default theme is a bit
+underwhelming --- so let's fix that.
+
+`Basic theme setup`_
+====================
+
+The easiest way to start is putting the
 :gh:`whole Git repository <mosra/m.css>` of m.css into your project, for
 example as a submodule:
 

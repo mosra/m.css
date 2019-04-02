@@ -25,12 +25,12 @@
 Plots and graphs
 ################
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Links and other » <{filename}/plugins/math-and-code.rst>`_
+        `« Math and code <{filename}/plugins/math-and-code.rst>`_ | `Plugins <{filename}/plugins.rst>`_ | `Links and other » <{filename}/plugins/math-and-code.rst>`_
 
 .. role:: dot(code)
     :language: dot
@@ -57,14 +57,16 @@ the graphics is rendered to a SVG that's embedded directly in the HTML markup.
 `Plots`_
 ========
 
-Download the `m/plots.py <{filename}/plugins.rst>`_ file, put it including the
-``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.plots``
-package to your :py:`PLUGINS` in ``pelicanconf.py``.
+For Pelican, download the `m/plots.py <{filename}/plugins.rst>`_ file, put it
+including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+``m.plots`` package to your :py:`PLUGINS` in ``pelicanconf.py``.
 
 .. code:: python
 
     PLUGINS += ['m.plots']
     M_PLOTS_FONT = 'Source Sans Pro'
+
+This feature has no equivalent in the `Doxygen theme <{filename}/documentation/doxygen.rst>`_.
 
 Set :py:`M_PLOTS_FONT` to a font that matches your CSS theme (it's Source Sans
 Pro for `builtin m.css themes <{filename}/css/themes.rst>`_), note that you
@@ -170,9 +172,9 @@ comment :rst:`..`.
 `Graphs`_
 =========
 
-Download the `m/dot.py <{filename}/plugins.rst>`_ file, put it including the
-``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.dot``
-package to your :py:`PLUGINS` in ``pelicanconf.py``.
+For Pelican, ownload the `m/dot.py <{filename}/plugins.rst>`_ file, put it
+including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+``m.dot`` package to your :py:`PLUGINS` in ``pelicanconf.py``.
 
 .. note-danger::
 
@@ -190,7 +192,16 @@ theme (it's Source Sans Pro at :css:`16px` for
 `builtin m.css themes <{filename}/css/themes.rst>`_), note that you *need to
 have the font installed* on your system, otherwise it will fall back to
 whatever system font it finds instead (for example DejaVu Sans) and the output
-won't look as expected. In addition you need the
+won't look as expected.
+
+In case of Doxygen, this feature is builtin. Use the ``@dot`` and ``@dotfile``
+commands. It's possible to add extra CSS classes by placing ``@m_class`` in a
+paragraph before the actual graph block, see the
+`Doxygen theme-specific commands <http://localhost:8000/documentation/doxygen/#theme-specific-commands>`_
+for more information. Font name and size is controlled using the builtin
+:ini:`DOT_FONTNAME` and :ini:`DOT_FONTSIZE` options.
+
+In addition you need the
 `Graphviz <https://graphviz.org/>`_ library installed. Get it via your
 distribution package manager, for example on Ubuntu:
 

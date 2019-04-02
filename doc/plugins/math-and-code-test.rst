@@ -26,7 +26,7 @@ Test
 ####
 
 :save_as: plugins/math-and-code/test/index.html
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
              {filename}/plugins/math-and-code.rst Math and code
 
 Math

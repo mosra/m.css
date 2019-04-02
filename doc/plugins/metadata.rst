@@ -25,14 +25,14 @@
 Metadata
 ########
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :summary: Assigns additional description and images to categories, authors and
-    tags.
+    tags in Pelican-powered sites.
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Links and other <{filename}/plugins/links.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_
+        `« Links and other <{filename}/plugins/links.rst>`_ | `Plugins <{filename}/plugins.rst>`_
 
 .. role:: html(code)
     :language: html
@@ -41,7 +41,9 @@ Metadata
 .. role:: rst(code)
     :language: rst
 
-Assigns additional description and images to categories, authors and tags.
+Assigns additional description and images to categories, authors and tags in
+Pelican-powered sites. As it extends a Pelican-specific feature, it has no
+equivalent for other themes.
 
 .. contents::
     :class: m-block m-default
@@ -72,8 +74,9 @@ directories are as follows and can be configured with these settings:
 
 The m.css Pelican theme recognizes presence of this plugin and renders the
 additional metadata both in the page and in the `Open Graph <http://ogp.me/>`_
-and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_ social :html:`<meta>` tags, in addition to tags rendered by
-`articles themselves <{filename}/pelican/theme.rst#social-meta-tags-for-articles>`_.
+and `Twitter Card <https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/summary-card-with-large-image>`_
+social :html:`<meta>` tags, in addition to tags rendered by
+`articles themselves <{filename}/themes/pelican.rst#social-meta-tags-for-articles>`_.
 See below for more information.
 
 `Author metadata`_
@@ -115,7 +118,7 @@ following metadata are recognized:
     badge on articles, to author details on author page and in ``og:image`` /
     ``twitter:image`` social :html:`<meta>` tags on author page, overriding the
     global :py:`M_SOCIAL_IMAGE`. It's expected to be smaller and square
-    similarly to the :py:`M_SOCIAL_IMAGE` `described in the theme documentation <{filename}/pelican/theme.rst#global-site-image>`_.
+    similarly to the :py:`M_SOCIAL_IMAGE` `described in the theme documentation <{filename}/themes/pelican.rst#global-site-image>`_.
     If not set, the details and badges are rendered without images and no
     social tag is present. Does not affect ``twitter:card``, it's set to
     ``summary`` regardless of whether the image is present or not.
@@ -188,11 +191,11 @@ for category named *Guest posts* will be in a file named
     being in given category. The m.css Pelican theme uses it to add an image to
     category badges on articles, to category details on category page and
     in ``og:image`` / ``twitter:image`` social :html:`<meta>` tags on category
-    page. If `article cover image <{filename}/pelican/theme.rst#jumbo-articles>`_
+    page. If `article cover image <{filename}/themes/pelican.rst#jumbo-articles>`_
     is not specified, the image is used also for ``og:image`` / ``twitter:image``
     on given article, overriding the global :py:`M_SOCIAL_IMAGE`. It's expected
     to be smaller and square similarly to the
-    :py:`M_SOCIAL_IMAGE` `described in the theme documentation <{filename}/pelican/theme.rst#global-site-image>`_.
+    :py:`M_SOCIAL_IMAGE` `described in the theme documentation <{filename}/themes/pelican.rst#global-site-image>`_.
     If not set, the details and badges are rendered without images and no
     social tag is present. Does not affect ``twitter:card``, it's set to
     ``summary`` or ``summary_large_image`` depending only on presence of

@@ -19,7 +19,7 @@
       <td rowspan="4" id="mcss-py36"><a>&nbsp;<br/><span class="m-text m-small">&nbsp;</span></a></td>
     </tr>
     <tr>
-      <th class="m-text-right">Pelican plugins</th>
+      <th class="m-text-right">Plugins</th>
     </tr>
     <tr>
       <th class="m-text-right">Graph rendering</th>

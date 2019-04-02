@@ -26,7 +26,7 @@ Test
 ####
 
 :save_as: plugins/plots-and-graphs/test/index.html
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
              {filename}/plugins/plots-and-graphs.rst Plots and graphs
 
 Plots

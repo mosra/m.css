@@ -86,7 +86,7 @@ m.css
             don't need forms, progressbars, popups, dropdowns or other cruft.
             You want fast iteration times.
 
-            .. button-warning:: {filename}/pelican.rst
+            .. button-warning:: {filename}/themes/pelican.rst
                 :class: m-fullwidth
 
                 Use it with Pelican

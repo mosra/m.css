@@ -25,12 +25,12 @@
 Math and code
 #############
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Images <{filename}/plugins/images.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Plots and graphs » <{filename}/plugins/plots-and-graphs.rst>`_
+        `« Images <{filename}/plugins/images.rst>`_ | `Plugins <{filename}/plugins.rst>`_ | `Plots and graphs » <{filename}/plugins/plots-and-graphs.rst>`_
 
 .. role:: css(code)
     :language: css
@@ -52,10 +52,11 @@ rendering directly from your :abbr:`reST <reStructuredText>` sources.
 `Math`_
 =======
 
-Download the `m/math.py and latex2svg.py <{filename}/plugins.rst>`_ files, put
-them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.math` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
-assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+For Pelican, download the `m/math.py and latex2svg.py <{filename}/plugins.rst>`_
+files, put them including the ``m/`` directory into one of your
+:py:`PLUGIN_PATHS` and add :py:`m.math` package to your :py:`PLUGINS` in
+``pelicanconf.py``. This plugin assumes presence of
+`m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. note-danger::
 
@@ -67,6 +68,15 @@ assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
     PLUGINS += ['m.htmlsanity', 'm.math']
     M_MATH_RENDER_AS_CODE = False
     M_MATH_CACHE_FILE = 'm.math.cache'
+
+For the Doxygen theme, this feature is builtin. Use either the ``@f[`` command
+for block-level math or the ``@f$`` command for inline math. It's possible to
+add extra CSS classes by placing ``@m_class`` in a paragraph before the actual
+math block (or right before inline math), see the
+`Doxygen theme-specific commands <http://localhost:8000/documentation/doxygen/#theme-specific-commands>`_
+for more information. The :ini:`M_MATH_CACHE_FILE` option is supported as well;
+there's no equivalent to the :ini:`M_MATH_RENDER_AS_CODE` option implemented at
+this point.
 
 In addition you need some LaTeX distribution installed. Use your distribution
 package manager, for example on Ubuntu:
@@ -269,14 +279,24 @@ directive.
 `Code`_
 =======
 
-Download the `m/code.py and ansilexer.py <{filename}/plugins.rst>`_ files, put
-them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.code` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
-assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+For Pelican, download the `m/code.py and ansilexer.py <{filename}/plugins.rst>`_
+files, put them including the ``m/`` directory into one of your :py:`PLUGIN_PATHS`
+and add :py:`m.code` package to your :py:`PLUGINS` in ``pelicanconf.py``. This
+plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
 .. code:: python
 
     PLUGINS += ['m-htmlsanity', 'm.code']
+
+For the Doxygen theme, this feature is builtin. Use the ``@code{.ext}`` command
+either in a block or inline, the various ``@include`` and ``@snippet`` commands
+support it as well. Language detection is done from the value of ``.ext`` in
+the ``@code`` command and from the include/snippet filename for the others.
+It's possible to add extra CSS classes by placing ``@m_class`` in a paragraph
+before the actual code block (or right before inline code), see the
+`Doxygen theme-specific commands <http://localhost:8000/documentation/doxygen/#theme-specific-commands>`_
+for more information. There's no possibility to highlight particular code
+lines.
 
 In addition you need to have `Pygments <http://pygments.org>`_ installed. Get
 it via ``pip`` or your distribution package manager:

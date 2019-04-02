@@ -78,11 +78,13 @@ M_LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
                         ('Components', 'css/components/', 'css/components'),
                         ('Page layout', 'css/page-layout/', 'css/page-layout'),
                         ('Themes', 'css/themes/', 'css/themes')]),
-                   ('Pelican', 'pelican/', 'pelican', [
-                        ('Writing content', 'pelican/writing-content/', 'pelican/writing-content'),
-                        ('Theme', 'pelican/theme/', 'pelican/theme')])]
+                   ('Themes', 'themes/', 'themes', [
+                        ('Writing reST content', 'themes/writing-rst-content/', 'pelican/writing-content'),
+                        ('Pelican', 'themes/pelican/', 'themes/pelican')])]
 
-M_LINKS_NAVBAR2 = [('Plugins', 'plugins/', 'plugins', [
+M_LINKS_NAVBAR2 = [('Doc generators', 'documentation/', 'documentation', [
+                        ('Doxygen C++ theme', 'documentation/doxygen/', 'documentation/doxygen')]),
+                   ('Plugins', 'plugins/', 'plugins', [
                         ('HTML sanity', 'plugins/htmlsanity/', 'plugins/htmlsanity'),
                         ('Components', 'plugins/components/', 'plugins/components'),
                         ('Images', 'plugins/images/', 'plugins/images'),
@@ -90,7 +92,6 @@ M_LINKS_NAVBAR2 = [('Plugins', 'plugins/', 'plugins', [
                         ('Links and other', 'plugins/links/', 'plugins/links'),
                         ('Plots and graphs', 'plugins/plots-and-graphs/', 'plugins/plots-and-graphs'),
                         ('Metadata', 'plugins/metadata/', 'plugins/metadata')]),
-                   ('Doxygen theme', 'doxygen/', 'doxygen', []),
                    ('GitHub', 'https://github.com/mosra/m.css', '', [])]
 
 M_LINKS_FOOTER1 = [('m.css', '/'),
@@ -108,11 +109,12 @@ M_LINKS_FOOTER2 = [('CSS', 'css/'),
                    ('Page layout', 'css/page-layout/'),
                    ('Themes', 'css/themes/')]
 
-M_LINKS_FOOTER3 = [('Pelican', 'pelican/'),
-                   ('Writing content', 'pelican/writing-content/'),
-                   ('Theme', 'pelican/theme/'),
+M_LINKS_FOOTER3 = [('Themes', 'themes/'),
+                   ('Writing reST content', 'themes/writing-rst-content/'),
+                   ('Pelican', 'themes/pelican/'),
                    ('', ''),
-                   ('Doxygen theme', 'doxygen/')]
+                   ('Doc generators', 'documentation/'),
+                   ('Doxygen C++ theme', 'documentation/doxygen/')]
 
 M_LINKS_FOOTER4 = [('Plugins', 'plugins/'),
                    ('HTML sanity', 'plugins/htmlsanity/'),
@@ -138,6 +140,7 @@ EXTRA_PATH_METADATA = {'static/favicon.ico': {'path': 'favicon.ico'}}
 
 PLUGIN_PATHS = ['../plugins']
 PLUGINS = ['m.abbr',
+           'm.alias',
            'm.code',
            'm.components',
            'm.dox',

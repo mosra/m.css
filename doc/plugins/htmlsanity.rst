@@ -25,12 +25,12 @@
 HTML sanity
 ###########
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `Pelican plugins <{filename}/plugins.rst>`_ | `Components » <{filename}/plugins/components.rst>`_
+        `Plugins <{filename}/plugins.rst>`_ | `Components » <{filename}/plugins/components.rst>`_
 
 .. role:: html(code)
     :language: html
@@ -50,6 +50,9 @@ the current century.
 `How to use`_
 =============
 
+`Pelican`_
+----------
+
 Download the `m/htmlsanity.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.htmlsanity` package to your :py:`PLUGINS` in ``pelicanconf.py``.
@@ -67,6 +70,12 @@ it with the above setting.
 .. code:: sh
 
     pip3 install Pyphen
+
+`Doxygen theme`_
+----------------
+
+The Doxygen theme generates the HTML output directly, without docutils in the
+mix, which means there's no need for this particular plugin there.
 
 `What it does`_
 ===============
@@ -363,7 +372,7 @@ from passed text. The ``enable`` argument works the same as with the
 There are already
 `numerous <https://github.com/getpelican/pelican-plugins/tree/master/better_figures_and_images>`_
 `Pelican <https://github.com/classner/better_code_samples/tree/91717a204bbd0ae4a1af6fe25ac5dd783fb4a7db>`_
-`plugins <https://github.com/getpelican/pelican-plugins/tree/master/better_tables>`_
+`plugins <https://github.com/getpelican/pelican-plugins/tree/master/better_tables>`__
 that try to do similar things, but they *attempt* to fix it using BeautifulSoup
 on top of the generated HTML. That's a horrendous thing to do, so why not just
 prevent the horror from happening?

@@ -25,12 +25,12 @@
 Components
 ##########
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« HTML sanity <{filename}/plugins/htmlsanity.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Images » <{filename}/plugins/images.rst>`_
+        `« HTML sanity <{filename}/plugins/htmlsanity.rst>`_ | `Plugins <{filename}/plugins.rst>`_ | `Images » <{filename}/plugins/images.rst>`_
 
 .. role:: html(code)
     :language: html
@@ -50,6 +50,9 @@ which is the most important thing when authoring content.
 `How to use`_
 =============
 
+`Pelican`_
+----------
+
 Download the `m/components.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.components` package to your :py:`PLUGINS` in ``pelicanconf.py``. This
@@ -58,6 +61,16 @@ plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 .. code:: python
 
     PLUGINS += ['m.htmlsanity', 'm.components']
+
+`Doxygen theme`_
+----------------
+
+Unfortunately, due to a lack of extensibility of the Doxygen markup language,
+it's not possible to provide the components through easy-to-use commands. All
+you have is the ability to apply CSS classes using ``@m_class``, ``@m_span``
+and ``@m_div``. See the
+`Doxygen theme-specific commands <http://localhost:8000/documentation/doxygen/#theme-specific-commands>`_
+for more information.
 
 `Transitions`_
 ==============

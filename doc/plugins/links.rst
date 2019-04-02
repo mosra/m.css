@@ -25,12 +25,12 @@
 Links and other
 ###############
 
-:breadcrumb: {filename}/plugins.rst Pelican plugins
+:breadcrumb: {filename}/plugins.rst Plugins
 :footer:
     .. note-dim::
         :class: m-text-center
 
-        `« Plots and graphs <{filename}/plugins/plots-and-graphs.rst>`_ | `Pelican plugins <{filename}/plugins.rst>`_ | `Metadata » <{filename}/plugins/metadata.rst>`_
+        `« Plots and graphs <{filename}/plugins/plots-and-graphs.rst>`_ | `Plugins <{filename}/plugins.rst>`_ | `Metadata » <{filename}/plugins/metadata.rst>`_
 
 .. role:: html(code)
     :language: html
@@ -38,6 +38,8 @@ Links and other
     :language: py
 .. role:: rst(code)
     :language: rst
+.. role:: ini(code)
+    :language: ini
 
 m.css plugins make linking to external content almost too easy. If your website
 is about coding, chances are quite high that you will be linking to
@@ -52,12 +54,19 @@ own requirements.
 .. contents::
     :class: m-block m-default
 
+.. note-warning::
+
+    None of these plugins can be supported in the Doxygen theme (except the
+    `Doxygen documentation`_ links, which are builtin). Instead, you can have
+    some limited templating options by adding a custom command to the
+    :ini:`ALIASES` Doxyfile option.
+
 `Stylable links`_
 =================
 
-Download the `m/link.py <{filename}/plugins.rst>`_ file, put it including the
-``m/`` directory into one of your :py:`PLUGIN_PATHS` and add :py:`m.link`
-package to your :py:`PLUGINS` in ``pelicanconf.py``:
+For Pelican, download the `m/link.py <{filename}/plugins.rst>`_ file, put it
+including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+:py:`m.link` package to your :py:`PLUGINS` in ``pelicanconf.py``:
 
 .. code:: python
 
@@ -84,7 +93,7 @@ additional CSS classes. At the moment the plugin knows only external URLs.
 `GitHub`_
 =========
 
-Download the `m/gh.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/gh.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.gh` package to your :py:`PLUGINS` in ``pelicanconf.py``:
 
@@ -141,7 +150,7 @@ CSS classes by deriving the role and adding the :rst:`:class:` option.
 `OpenGL functions and extensions`_
 ==================================
 
-Download the `m/gl.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/gl.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.gl` package to your :py:`PLUGINS` in ``pelicanconf.py``:
 
@@ -189,7 +198,7 @@ and adding the :rst:`:class:` option.
 `Vulkan functions and extensions`_
 ==================================
 
-Download the `m/vk.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/vk.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.vk` package to your :py:`PLUGINS` in ``pelicanconf.py``:
 
@@ -234,7 +243,7 @@ possible to specify alternate link text using the well-known syntax.
 `Doxygen documentation`_
 ========================
 
-Download the `m/dox.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/dox.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.dox` package to your plugins in ``pelicanconf.py``. The plugin uses
 Doxygen tag files to get a list of linkable symbols and you need to provide
@@ -313,8 +322,8 @@ external not), you could do this:
 .. note-success::
 
     If you haven't noticed yet, m.css also provides a
-    `full-featured Doxygen theme <{filename}/doxygen.rst>`_ with first-class
-    search functionality. Check it out!
+    `full-featured Doxygen theme <{filename}/documentation/doxygen.rst>`_ with
+    first-class search functionality. Check it out!
 
 `Abbreviations`_
 ================
@@ -322,7 +331,7 @@ external not), you could do this:
 While not exactly a link but rather a way to produce correct :html:`<abbr>`
 elements, it belongs here as it shares a similar syntax.
 
-Download the `m/abbr.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/abbr.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.abbr` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
 assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
@@ -362,7 +371,7 @@ role and adding the :rst:`:class:` option.
 Okay, this is not a link at all, but --- sometimes you might want to display
 size of a file, for example to tell the users how big the download will be.
 
-Download the `m/filesize.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, ownload the `m/filesize.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.filesize` package to your :py:`PLUGINS` in ``pelicanconf.py``.
 
@@ -403,7 +412,7 @@ and preserving old links for backwards compatibility is a vital thing for user
 friendliness. This plugin allows you to create a redirect alias URLs for your
 pages and articles.
 
-Download the `m/alias.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/alias.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.alias` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
 assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.

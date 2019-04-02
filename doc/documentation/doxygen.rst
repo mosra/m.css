@@ -22,9 +22,11 @@
     DEALINGS IN THE SOFTWARE.
 ..
 
-Doxygen theme
-#############
+Doxygen C++ theme
+#################
 
+:alias: /doxygen/index.html
+:breadcrumb: {filename}/documentation.rst Doc generators
 :summary: A modern, mobile-friendly drop-in replacement for the stock Doxygen
     HTML output with a first-class search functionality
 
@@ -76,13 +78,13 @@ switch.
 The base is contained in a single Python script and related style/template
 files, for advanced features such as math rendering it'll make use of internals
 of some `m.css plugins <{filename}/plugins.rst>`_. Clone
-:gh:`the m.css GitHub repository <mosra/m.css$master/doxygen>` and look into
-the ``doxygen/`` directory:
+:gh:`the m.css GitHub repository <mosra/m.css$master/documentation>` and look
+into the ``documentation/`` directory:
 
 .. code:: sh
 
     git clone git://github.com/mosra/m.css
-    cd m.css/doxygen
+    cd m.css/documentation
 
 The script requires Python 3.6, depends on `Jinja2 <http://jinja.pocoo.org/>`_
 for templating and `Pygments <http://pygments.org/>`_ for code block
@@ -125,12 +127,12 @@ inside:
 
 This will derive the configuration from the original ``Doxyfile``, disables
 builtin Doxygen HTML output and enables XML output instead, with some unneeded
-features disabled for faster processing. Now run ``dox2html5.py`` and point it
+features disabled for faster processing. Now run ``doxygen.py`` and point it
 to your ``Doxyfile-mcss``:
 
 .. code:: sh
 
-    ./dox2html5.py path/to/your/Doxyfile-mcss
+    ./doxygen.py path/to/your/Doxyfile-mcss
 
 It will run ``doxygen`` to generate the XML output, processes it and generates
 the HTML output in the configured output directory. After the script is done,
@@ -142,38 +144,13 @@ If you see something unexpected or not see something expected, check the
 `Features`_
 ===========
 
+In addition to features `shared by all doc generators <{filename}/documentation.rst#features>`_:
+
 -   Modern, valid, mobile-friendly HTML5 markup without table layouts
--   Minimalistic design without unnecessary chrome and UI elements
 -   URLs fully compatible with stock Doxygen HTML output to preserve existing
     links
 -   Focused on presenting the actual written documentation while reducing
     questionable auto-generated content
--   Math rendered as embedded SVG instead of raster images / MathJax. The
-    supported feature set is equivalent to the `m.math Pelican plugin <{filename}/plugins/math-and-code.rst#math>`_,
-    see its documentation for more information.
--   Graphviz / Dot diagrams rendered as embedded SVG. The supported feature set
-    is equivalent to the `m.dot Pelican plugin <{filename}/plugins/plots-and-graphs.rst#graphs>`_,
-    see its documentation for more information.
--   Uses Pygments for better code highlighting. The supported feature set is
-    equivalent to the `m.code Pelican plugin <{filename}/plugins/math-and-code.rst#code>`_,
-    see its documentation for more information.
-
-`Search`_
----------
-
--   Vastly superior search capabilities with immediate feedback
--   Search anywhere from a page by opening a popup using a hotkey
--   Lookahead with instant feedback without requiring any server-side backend
--   Search for symbols using any prefix
--   Fully controllable by keyboard
-
-.. image:: {static}/static/opengl-search.png
-
-.. note-success::
-
-    If you want to know more, the search functionality implementation and
-    features are detailed
-    `in this blog post <https://blog.magnum.graphics/meta/implementing-a-fast-doxygen-search/>`_.
 
 `Important differences to stock HTML output`_
 ---------------------------------------------
@@ -289,14 +266,14 @@ Variable                        Description
                                 external references
 :ini:`HTML_EXTRA_STYLESHEET`    List of CSS files to include. Relative paths
                                 are searched relative to the Doxyfile base dir
-                                and to the ``dox2html5.py`` script dir as a
+                                and to the ``doxygen.py`` script dir as a
                                 fallback. See `Theme selection`_ for more
                                 information.
 :ini:`HTML_EXTRA_FILES`         List of extra files to copy (for example
                                 additional CSS files that are :css:`@import`\ ed
                                 from the primary one). Relative paths are
                                 searched relative to the Doxyfile base dir and
-                                to the ``dox2html5.py`` script dir as a
+                                to the ``doxygen.py`` script dir as a
                                 fallback.
 :ini:`DOT_FONTNAME`             Font name to use for ``@dot`` and ``@dotfile``
                                 commands. To ensure consistent look with the
@@ -333,7 +310,7 @@ Variable                            Description
                                     :html:`<link rel="icon" />`. If empty, no
                                     :html:`<link>` tag is rendered. Relative
                                     paths are searched relative to the Doxyfile
-                                    base dir and to the ``dox2html5.py`` script
+                                    base dir and to the ``doxygen.py`` script
                                     dir as a fallback. See `Theme selection`_
                                     for more information.
 :ini:`M_LINKS_NAVBAR1`              Left navbar column links. See
@@ -1203,13 +1180,13 @@ suffix of the title.
 
 .. code:: sh
 
-    ./dox2html5.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
-                   [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
-                   [--no-doxygen] [--search-no-subtree-merging]
-                   [--search-no-lookahead-barriers]
-                   [--search-no-prefix-merging] [--sort-globbed-files]
-                   [--debug]
-                   doxyfile
+    ./doxygen.py [-h] [--templates TEMPLATES] [--wildcard WILDCARD]
+                 [--index-pages INDEX_PAGES [INDEX_PAGES ...]]
+                 [--no-doxygen] [--search-no-subtree-merging]
+                 [--search-no-lookahead-barriers]
+                 [--search-no-prefix-merging] [--sort-globbed-files]
+                 [--debug]
+                 doxyfile
 
 Arguments:
 
@@ -1282,7 +1259,7 @@ file / symbol tree:
 
         ...
 
-To help you debugging this, run ``dox2html5.py`` with the ``--debug`` option.
+To help you debugging this, run ``doxygen.py`` with the ``--debug`` option.
 and look for entries that look like below. Because there are many false
 positives, this information is not present in the non-verbose output.
 

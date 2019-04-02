@@ -49,7 +49,7 @@ active section highlighting and more.
 .. note-success::
 
     The whole CSS page layout functionality is also available through a
-    `m.css Pelican theme <{filename}/pelican/theme.rst>`_. Check it out!
+    `m.css Pelican theme <{filename}/themes/pelican.rst>`_. Check it out!
 
 .. contents::
     :class: m-block m-default
