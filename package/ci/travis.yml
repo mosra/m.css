@@ -60,7 +60,7 @@ script:
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/pelican-theme && python -m unittest; fi
 
   # Test plugins. Math plugin is not tested as dvisvgm on 14.04 is unusable.
-  - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/pelican-plugins && coverage run -m unittest && cp .coverage ../.coverage.plugins; fi
+  - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/plugins && coverage run -m unittest && cp .coverage ../.coverage.plugins; fi
 
   # Test doxygen theme. Math rendering is not tested as dvisvgm on 14.04 is
   # unusable.

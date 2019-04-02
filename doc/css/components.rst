@@ -898,12 +898,12 @@ Besides code, it's also possible to "highlight" ANSI-colored terminal output.
 For that, m.css provides a custom Pygments lexer that's together with
 `pygments-console.css <{filename}/css.rst>`_ able to detect and highlight the
 basic 4-bit color codes (8 foreground colors in either normal or bright
-version). Download the :gh:`ansilexer.py <mosra/m.css$master/pelican-plugins/m/ansilexer.py>`
+version). Download the :gh:`ansilexer.py <mosra/m.css$master/plugins/m/ansilexer.py>`
 file or use it directly from your Git clone of m.css. Example usage:
 
 .. code:: sh
 
-    ls -C --color=always | pygmentize -l pelican-plugins/ansilexer.py:AnsiLexer -x -f html -O nowrap
+    ls -C --color=always | pygmentize -l plugins/ansilexer.py:AnsiLexer -x -f html -O nowrap
 
 Wrap the HTML output in either :html:`<pre class="m-console">` for a block
 listing or :html:`<code class="m-console">` for inline listing. The output
@@ -913,13 +913,13 @@ might then look similarly to this:
 
     .. code:: html
 
-        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">pelican-plugins</span>  README.rst
-        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>    <span class="g g-AnsiBrightBlue">site</span></pre>
+        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
+        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
 
     .. raw:: html
 
-        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">pelican-plugins</span>  README.rst
-        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>    <span class="g g-AnsiBrightBlue">site</span></pre>
+        <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>      <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
+        COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">doxygen</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
 
 .. note-success::
 
@@ -979,7 +979,7 @@ distribution and `dvisvgm <https://dvisvgm.de/>`_ installed, the usage is:
 
 .. code:: sh
 
-    echo "\$\$ a^2 = b^2 + c^2 \$\$" | python pelican-plugins/latex2svg.py > formula.svg
+    echo "\$\$ a^2 = b^2 + c^2 \$\$" | python plugins/latex2svg.py > formula.svg
 
 The ``formula.svg`` file will then contain the rendered formula, which with
 some minor patching (removing the XML preamble etc.) can be pasted directly

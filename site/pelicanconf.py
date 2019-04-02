@@ -82,7 +82,7 @@ M_LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
                         ('Writing content', 'pelican/writing-content/', 'pelican/writing-content'),
                         ('Theme', 'pelican/theme/', 'pelican/theme')])]
 
-M_LINKS_NAVBAR2 = [('Pelican plugins', 'plugins/', 'plugins', [
+M_LINKS_NAVBAR2 = [('Plugins', 'plugins/', 'plugins', [
                         ('HTML sanity', 'plugins/htmlsanity/', 'plugins/htmlsanity'),
                         ('Components', 'plugins/components/', 'plugins/components'),
                         ('Images', 'plugins/images/', 'plugins/images'),
@@ -114,7 +114,7 @@ M_LINKS_FOOTER3 = [('Pelican', 'pelican/'),
                    ('', ''),
                    ('Doxygen theme', 'doxygen/')]
 
-M_LINKS_FOOTER4 = [('Pelican plugins', 'plugins/'),
+M_LINKS_FOOTER4 = [('Plugins', 'plugins/'),
                    ('HTML sanity', 'plugins/htmlsanity/'),
                    ('Components', 'plugins/components/'),
                    ('Images', 'plugins/images/'),
@@ -136,7 +136,7 @@ DEFAULT_PAGINATION = 10
 STATIC_PATHS = ['static']
 EXTRA_PATH_METADATA = {'static/favicon.ico': {'path': 'favicon.ico'}}
 
-PLUGIN_PATHS = ['../pelican-plugins']
+PLUGIN_PATHS = ['../plugins']
 PLUGINS = ['m.abbr',
            'm.code',
            'm.components',

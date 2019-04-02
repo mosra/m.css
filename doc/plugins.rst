@@ -40,22 +40,22 @@ add given :py:`m.something` package to your :py:`PLUGINS` in ``pelicanconf.py``
 and restart Pelican. Download the plugins below or
 :gh:`grab the whole Git repository <mosra/m.css>`:
 
--   :gh:`m.htmlsanity <mosra/m.css$master/pelican-plugins/m/htmlsanity.py>`
--   :gh:`m.components <mosra/m.css$master/pelican-plugins/m/components.py>`
--   :gh:`m.images <mosra/m.css$master/pelican-plugins/m/images.py>`
--   :gh:`m.math  <mosra/m.css$master/pelican-plugins/m/math.py>` (needs also :gh:`latex2svg <mosra/m.css$master/pelican-plugins/latex2svg.py>`),
-    :gh:`m.code <mosra/m.css$master/pelican-plugins/m/code.py>` (needs also :gh:`ansilexer <mosra/m.css$master/pelican-plugins/ansilexer.py>`)
--   :gh:`m.plots <mosra/m.css$master/pelican-plugins/m/plots.py>`,
-    :gh:`m.dot <mosra/m.css$master/pelican-plugins/m/dot.py>`
--   :gh:`m.link <mosra/m.css$master/pelican-plugins/m/link.py>`,
-    :gh:`m.gh <mosra/m.css$master/pelican-plugins/m/gh.py>`,
-    :gh:`m.dox <mosra/m.css$master/pelican-plugins/m/dox.py>`,
-    :gh:`m.gl <mosra/m.css$master/pelican-plugins/m/gl.py>`,
-    :gh:`m.vk <mosra/m.css$master/pelican-plugins/m/vk.py>`,
-    :gh:`m.abbr <mosra/m.css$master/pelican-plugins/m/abbr.py>`,
-    :gh:`m.filesize <mosra/m.css$master/pelican-plugins/m/filesize.py>`,
-    :gh:`m.alias <mosra/m.css$master/pelican-plugins/m/alias.py>`
--   :gh:`m.metadata <mosra/m.css$master/pelican-plugins/m/metadata.py>`
+-   :gh:`m.htmlsanity <mosra/m.css$master/plugins/m/htmlsanity.py>`
+-   :gh:`m.components <mosra/m.css$master/plugins/m/components.py>`
+-   :gh:`m.images <mosra/m.css$master/plugins/m/images.py>`
+-   :gh:`m.math  <mosra/m.css$master/plugins/m/math.py>` (needs also :gh:`latex2svg <mosra/m.css$master/plugins/latex2svg.py>`),
+    :gh:`m.code <mosra/m.css$master/plugins/m/code.py>` (needs also :gh:`ansilexer <mosra/m.css$master/plugins/ansilexer.py>`)
+-   :gh:`m.plots <mosra/m.css$master/plugins/m/plots.py>`,
+    :gh:`m.dot <mosra/m.css$master/plugins/m/dot.py>`
+-   :gh:`m.link <mosra/m.css$master/plugins/m/link.py>`,
+    :gh:`m.gh <mosra/m.css$master/plugins/m/gh.py>`,
+    :gh:`m.dox <mosra/m.css$master/plugins/m/dox.py>`,
+    :gh:`m.gl <mosra/m.css$master/plugins/m/gl.py>`,
+    :gh:`m.vk <mosra/m.css$master/plugins/m/vk.py>`,
+    :gh:`m.abbr <mosra/m.css$master/plugins/m/abbr.py>`,
+    :gh:`m.filesize <mosra/m.css$master/plugins/m/filesize.py>`,
+    :gh:`m.alias <mosra/m.css$master/plugins/m/alias.py>`
+-   :gh:`m.metadata <mosra/m.css$master/plugins/m/metadata.py>`
 
 Click on the headings below to get to know more. Note that particular plugins
 can have additional dependencies besides just Pelican, see documentation of

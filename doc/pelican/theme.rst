@@ -83,7 +83,7 @@ plugin, so that plugin needs to be loaded as well.
                    '/static/m-dark.css']
     M_THEME_COLOR = '#22272e'
 
-    PLUGIN_PATHS = ['m.css/pelican-plugins']
+    PLUGIN_PATHS = ['m.css/plugins']
     PLUGINS = ['m.htmlsanity']
 
 Here you can take advantage of the ``pelicanconf.py`` and ``publishconf.py``

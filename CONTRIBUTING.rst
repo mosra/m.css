@@ -92,7 +92,7 @@ There are no visual tests for the CSS style at the moment. Run tests:
     cd pelican-theme
     python -m unittest
 
-    cd pelican-plugins
+    cd plugins
     python -m unittest
 
     cd doxygen
@@ -122,7 +122,7 @@ possibility of getting code coverage for Jinja2 templates, though.
     node ./node_modules/istanbul/lib/cli.js cover test/test-search.js
     # open coverage/lcov-report/index.html in your browser
 
-    cd pelican-plugins
+    cd plugins
     coverage run -m unittest ; coverage html
     # open htmlcov/index.html in your browser
 
