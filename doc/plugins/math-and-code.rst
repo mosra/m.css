@@ -36,6 +36,8 @@ Math and code
     :language: css
 .. role:: html(code)
     :language: html
+.. role:: ini(code)
+    :language: ini
 .. role:: py(code)
     :language: py
 .. role:: rst(code)

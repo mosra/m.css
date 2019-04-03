@@ -34,6 +34,8 @@ Plots and graphs
 
 .. role:: dot(code)
     :language: dot
+.. role:: ini(code)
+    :language: ini
 .. role:: py(code)
     :language: py
 .. role:: rst(code)
