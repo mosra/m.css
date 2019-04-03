@@ -173,7 +173,7 @@ FORMATTED_FIELDS = ['summary', 'landing', 'header', 'footer', 'description', 'ba
 M_HTMLSANITY_SMART_QUOTES = True
 M_HTMLSANITY_HYPHENATION = True
 M_DOX_TAGFILES = [
-    ('../doc/doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'])]
+    ('../doc/documentation/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'])]
 
 if not shutil.which('latex'):
     logging.warning("LaTeX not found, fallback to rendering math as code")

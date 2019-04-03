@@ -1,5 +1,5 @@
 INPUT                   = input.dox
-TAGFILES                = ../../../doc/doxygen/corrade.tag=https://doc.magnum.graphics/corrade/
+TAGFILES                = ../../../doc/documentation/corrade.tag=https://doc.magnum.graphics/corrade/
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
