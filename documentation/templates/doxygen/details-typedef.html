@@ -1,10 +1,10 @@
-          <section class="m-dox-details" id="{{ typedef.id }}"><div>
+          <section class="m-doc-details" id="{{ typedef.id }}"><div>
             <h3>
               {% if compound.templates != None or typedef.templates != None %}
               {% if typedef.include %}
-              <div class="m-dox-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ typedef.include[1] }}">{{ typedef.include[0] }}</a></div>
+              <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ typedef.include[1] }}">{{ typedef.include[0] }}</a></div>
               {% endif %}
-              <div class="m-dox-template">
+              <div class="m-doc-template">
                 {% if compound.templates != None %}
                 {% set j = joiner(', ') %}
                 template&lt;{% for t in compound.templates %}{{ j() }}{{ t.type }} {% if t.name %}{{ t.name }}{% else %}_{{ loop.index }}{% endif %}{% endfor %}&gt;
@@ -16,14 +16,14 @@
               </div>
               {% endif %}
               {% if typedef.is_using %}
-              using {{ prefix }}<a href="#{{ typedef.id }}" class="m-dox-self">{{ typedef.name }}</a> = {{ typedef.type }}{{ typedef.args }}{% if typedef.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}
+              using {{ prefix }}<a href="#{{ typedef.id }}" class="m-doc-self">{{ typedef.name }}</a> = {{ typedef.type }}{{ typedef.args }}{% if typedef.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}
               {% else %}
-              typedef {{ typedef.type }}{% if not typedef.args %} {% endif %}{{ prefix }}<a href="#{{ typedef.id }}" class="m-dox-self">{{ typedef.name }}</a>{{ typedef.args }}{% if typedef.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}
+              typedef {{ typedef.type }}{% if not typedef.args %} {% endif %}{{ prefix }}<a href="#{{ typedef.id }}" class="m-doc-self">{{ typedef.name }}</a>{{ typedef.args }}{% if typedef.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}
               {% endif %}
               {# the empty line has to be here to prevent the lines from merging #}
 
               {% if typedef.include and compound.templates == None and typedef.templates == None %}
-              <div class="m-dox-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ typedef.include[1] }}">{{ typedef.include[0] }}</a></div>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ typedef.include[1] }}">{{ typedef.include[0] }}</a></div>
               {% endif %}
             </h3>
             {% if typedef.brief %}

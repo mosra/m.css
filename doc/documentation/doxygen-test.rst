@@ -29,7 +29,7 @@ Test
 :breadcrumb:
     {filename}/documentation.rst Doc themes
     {filename}/documentation/doxygen.rst Doxygen
-:css: {static}/static/m-dark.doxygen.compiled.css
+:css: {static}/static/m-dark.documentation.compiled.css
 
 Lists
 =====
@@ -47,18 +47,18 @@ Compound lists should have the same indentation as normal ones.
       <li>Another</li>
     </ul>
 
-    <ul class="m-dox">
+    <ul class="m-doc">
       <li>An item</li>
-      <li class="m-dox-expansible"><a href="#"></a>An expansible item. Verify that the indentation works. <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit.</span>
-        <ul class="m-dox">
+      <li class="m-doc-expansible"><a href="#"></a>An expansible item. Verify that the indentation works. <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ultrices a erat eu suscipit.</span>
+        <ul class="m-doc">
           <li>Subitem</li>
           <li>Subitem</li>
           <li>Subitem</li>
           <li>Subitem</li>
         </ul>
       </li>
-      <li class="m-dox-collapsible"><a href="#"></a>A collapsible item
-        <ul class="m-dox">
+      <li class="m-doc-collapsible"><a href="#"></a>A collapsible item
+        <ul class="m-doc">
           <li>Subitem</li>
         </ul>
       </li>

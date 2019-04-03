@@ -3,8 +3,8 @@
 {% block main %}
         <script>
         function toggle(e) {
-            e.parentElement.className = e.parentElement.className == 'm-dox-collapsible' ?
-                'm-dox-expansible' : 'm-dox-collapsible';
+            e.parentElement.className = e.parentElement.className == 'm-doc-collapsible' ?
+                'm-doc-expansible' : 'm-doc-collapsible';
             return false;
         }
         /* Collapse all nodes marked as such. Doing it via JS instead of directly in
@@ -14,6 +14,6 @@
            I am going backwards in that list to be sure.  */
         var collapsed = document.getElementsByClassName("collapsed");
         for(var i = collapsed.length - 1; i >= 0; --i)
-            collapsed[i].className = 'm-dox-expansible';
+            collapsed[i].className = 'm-doc-expansible';
         </script>
 {% endblock %}

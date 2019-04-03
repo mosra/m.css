@@ -1,10 +1,10 @@
-          <section class="m-dox-details" id="{{ var.id }}"><div>
+          <section class="m-doc-details" id="{{ var.id }}"><div>
             <h3>
               {% if compound.templates != None or var.templates != None  %}
               {% if var.include %}
-              <div class="m-dox-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ var.include[1] }}">{{ var.include[0] }}</a></div>
+              <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ var.include[1] }}">{{ var.include[0] }}</a></div>
               {% endif %}
-              <div class="m-dox-template">
+              <div class="m-doc-template">
                 {% if compound.templates != None %}
                 {% set j = joiner(', ') %}
                 template&lt;{% for t in compound.templates %}{{ j() }}{{ t.type }} {% if t.name %}{{ t.name }}{% else %}_{{ loop.index }}{% endif %}{% endfor %}&gt;
@@ -15,11 +15,11 @@
                 {% endif %}
               </div>
               {% endif %}
-              {%+ if var.is_static %}static {% endif %}{{ var.type }} {{ prefix }}<a href="#{{ var.id }}" class="m-dox-self">{{ var.name }}</a>{% if var.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}{% if var.is_constexpr %} <span class="m-label m-primary">constexpr</span>{% endif %}
+              {%+ if var.is_static %}static {% endif %}{{ var.type }} {{ prefix }}<a href="#{{ var.id }}" class="m-doc-self">{{ var.name }}</a>{% if var.is_protected %} <span class="m-label m-warning">protected</span>{% endif %}{% if var.is_constexpr %} <span class="m-label m-primary">constexpr</span>{% endif %}
               {# the empty line needs to be here to prevent the lines from merging #}
 
               {% if var.include and compound.templates == None and var.templates == None %}
-              <div class="m-dox-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ var.include[1] }}">{{ var.include[0] }}</a></div>
+              <div class="m-doc-include m-code m-inverted m-text-right"><span class="cp">#include</span> <a class="cpf" href="{{ var.include[1] }}">{{ var.include[0] }}</a></div>
               {% endif %}
             </h3>
             {% if var.brief %}

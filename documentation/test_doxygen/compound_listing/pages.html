@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>My Project</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
-  <link rel="stylesheet" href="m-dark+doxygen.compiled.css" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
@@ -36,13 +36,13 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>Pages</h2>
-        <ul class="m-dox">
-          <li><a href="page-no-toc.html" class="m-dox">Page without TOC</a> <span class="m-dox"></span></li>
+        <ul class="m-doc">
+          <li><a href="page-no-toc.html" class="m-doc">Page without TOC</a> <span class="m-doc"></span></li>
         </ul>
         <script>
         function toggle(e) {
-            e.parentElement.className = e.parentElement.className == 'm-dox-collapsible' ?
-                'm-dox-expansible' : 'm-dox-collapsible';
+            e.parentElement.className = e.parentElement.className == 'm-doc-collapsible' ?
+                'm-doc-expansible' : 'm-doc-collapsible';
             return false;
         }
         /* Collapse all nodes marked as such. Doing it via JS instead of directly in
@@ -52,7 +52,7 @@
            I am going backwards in that list to be sure.  */
         var collapsed = document.getElementsByClassName("collapsed");
         for(var i = collapsed.length - 1; i >= 0; --i)
-            collapsed[i].className = 'm-dox-expansible';
+            collapsed[i].className = 'm-doc-expansible';
         </script>
       </div>
     </div>

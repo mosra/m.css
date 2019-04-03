@@ -455,9 +455,9 @@ def parse_ref(state: State, element: ET.Element) -> str:
         else: # pragma: no cover
             logging.critical("{}: tagfile {} not specified in Doxyfile".format(state.current, element.attrib['external']))
             assert False
-        class_ = 'm-dox-external'
+        class_ = 'm-doc-external'
     else:
-        class_ = 'm-dox'
+        class_ = 'm-doc'
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
@@ -1143,7 +1143,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     css_class += 'm-dim'
                 else:
                     css_class += 'm-default'
-            out.parsed += '<aside class="{css_class}"><{heading}><a href="{file}.html#{anchor}" class="m-dox">{title}</a></{heading}>{description}</aside>'.format(
+            out.parsed += '<aside class="{css_class}"><{heading}><a href="{file}.html#{anchor}" class="m-doc">{title}</a></{heading}>{description}</aside>'.format(
                 css_class=css_class,
                 heading=heading,
                 file=file,
@@ -1183,7 +1183,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'variablelist':
             assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
-            out.parsed += '<dl class="m-dox">'
+            out.parsed += '<dl class="m-doc">'
 
             for var in i:
                 if var.tag == 'varlistentry':
@@ -3300,7 +3300,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'HTML_OUTPUT': ['html'],
         'HTML_EXTRA_STYLESHEET': [
             'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
-            '../css/m-dark+doxygen.compiled.css'],
+            '../css/m-dark+documentation.compiled.css'],
         'HTML_EXTRA_FILES': [],
         'DOT_FONTNAME': ['Helvetica'],
         'DOT_FONTSIZE': ['10'],

@@ -413,13 +413,13 @@ following configuration:
 
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600 \
-        ../css/m-dark+doxygen.compiled.css
+        ../css/m-dark+documentation.compiled.css
     M_THEME_COLOR = #22272e
     M_FAVICON = favicon-dark.png
 
 If you have a site already using the ``m-dark.compiled.css`` file, there's
-another file called ``m-dark.doxygen.compiled.css``, which contains just the
-Doxygen-theme-specific additions so you can reuse the already cached
+another file called ``m-dark.documentation.compiled.css``, which contains just
+the Doxygen-theme-specific additions so you can reuse the already cached
 ``m-dark.compiled.css`` file from your main site:
 
 .. code:: ini
@@ -427,19 +427,19 @@ Doxygen-theme-specific additions so you can reuse the already cached
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600 \
         ../css/m-dark.compiled.css \
-        ../css/m-dark.doxygen.compiled.css
+        ../css/m-dark.documentation.compiled.css
     M_THEME_COLOR = #22272e
 
 If you prefer the `light m.css theme <{filename}/css/themes.rst#light>`_
 instead, use the following configuration (and, similarly, you can use
-``m-light.compiled.css`` together with ``m-light.doxygen.compiled-css`` in
-place of ``m-light+doxygen.compiled.css``:
+``m-light.compiled.css`` together with ``m-light.documentation.compiled-css``
+in place of ``m-light+documentation.compiled.css``:
 
 .. code:: ini
 
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600 \
-        ../css/m-light+doxygen.compiled.css
+        ../css/m-light+documentation.compiled.css
     M_THEME_COLOR = #cb4b16
     M_FAVICON = favicon-light.png
 
@@ -1330,7 +1330,7 @@ is an example configuration corresponding to the dark theme:
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600 \
         ../css/m-dark.css \
-        ../css/m-doxygen.css
+        ../css/m-documentation.css
     HTML_EXTRA_FILES = \
         ../css/m-grid.css \
         ../css/m-components.css \
@@ -1341,14 +1341,14 @@ is an example configuration corresponding to the dark theme:
 After making desired changes to the source files, it's possible to postprocess
 them back to the compiled version using the ``postprocess.py`` utility as
 explained in the `CSS themes <{filename}/css/themes.rst#make-your-own>`_
-documentation. In case of the dark theme, the ``m-dark+doxygen.compiled.css``
-and ``m-dark.doxygen.compiled.css`` files are produced like this:
+documentation. In case of the dark theme, the ``m-dark+documentation.compiled.css``
+and ``m-dark.documentation.compiled.css`` files are produced like this:
 
 .. code:: sh
 
     cd css
-    ./postprocess.py m-dark.css m-doxygen.css -o m-dark+doxygen.compiled.css
-    ./postprocess.py m-dark.css m-doxygen.css --no-import -o m-dark.doxygen.compiled.css
+    ./postprocess.py m-dark.css m-documentation.css -o m-dark+documentation.compiled.css
+    ./postprocess.py m-dark.css m-documentation.css --no-import -o m-dark.documentation.compiled.css
 
 `Compound documentation template`_
 ----------------------------------
