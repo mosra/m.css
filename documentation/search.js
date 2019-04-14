@@ -518,12 +518,12 @@ var Search = {
 
                 /* Render the alias (cut off from the right) */
                 if(results[i].alias) {
-                    list += '<div class="m-dox-search-alias"><span class="m-text m-dim">' + this.escape(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '<span class="m-text m-dim">: ' + this.escape(results[i].alias) + '</span>';
+                    list += '<div class="m-doc-search-alias"><span class="m-text m-dim">' + this.escape(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-doc-search-typed">' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '<span class="m-text m-dim">: ' + this.escape(results[i].alias) + '</span>';
 
                 /* Render the normal thing (cut off from the left, have to
                    escape for RTL) */
                 } else {
-                    list += '<div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-dox-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength));
+                    list += '<div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-doc-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength));
                 }
 
                 /* The closing */
@@ -633,7 +633,7 @@ function hideSearch() {
 function copyToKeyboard(text) {
     /* Append to the popup, appending to document.body would cause it to
        scroll when focused */
-    let searchPopup = document.getElementsByClassName('m-dox-search')[0];
+    let searchPopup = document.getElementsByClassName('m-doc-search')[0];
     let textarea = document.createElement("textarea");
     textarea.value = text;
     searchPopup.appendChild(textarea);
@@ -725,8 +725,8 @@ if(typeof document !== 'undefined') {
                     /* Add CSS class to the element for visual feedback (this
                        will get removed on keyup), but only if it's not already
                        there (in case of key repeat, e.g.) */
-                    if(result.className.indexOf('m-dox-search-copied') == -1)
-                        result.className += ' m-dox-search-copied';
+                    if(result.className.indexOf('m-doc-search-copied') == -1)
+                        result.className += ' m-doc-search-copied';
                     console.log("Copied " +  (plain ? "link" : "Markdown link") + " to " + result.firstElementChild.dataset.mdLinkTitle);
                 }
 
@@ -766,7 +766,7 @@ if(typeof document !== 'undefined') {
         /* Remove highlight after key is released after a link copy */
         if((event.key.toLowerCase() == 'l' || event.key.toLowerCase() == 'm') && event.metaKey) {
             let result = document.getElementById('search-current');
-            if(result) result.className = result.className.replace(' m-dox-search-copied', '');
+            if(result) result.className = result.className.replace(' m-doc-search-copied', '');
         }
     };
 
