@@ -8,28 +8,28 @@ Reporting bugs, requesting features
 ===================================
 
 -   Best way to report bugs and request new features is to use GitHub
-    `issues <https://github.com/mosra/m.css/issues>`_, but you can contact me
-    also any other way.
+    `issues <https://github.com/mosra/m.css/issues>`_, but you can contact the
+    author also in any other way.
 
 Code contribution
 =================
 
 -   Setting up and using m.css for your own project is described in the
     `documentation <https://mcss.mosra.cz/>`_.
--   Documentation and the website is essential part of the project and every
-    larger Pelican theme, plugin code or CSS contribution should be reflected
-    there. Documentation and website content is written in reStructuredText and
-    resides in `doc/ <doc>`_ subdirectory. Please verify that all your changes
-    there do not break the website build; see `Building the site`_ below for a
-    guide how to build it.
+-   Documentation and the website is an essential part of the project and every
+    larger theme, code or CSS contribution should be reflected there.
+    Documentation and website content is written in reStructuredText and
+    resides in the `doc/ <doc>`_ subdirectory. Please verify that all your
+    changes there do not break the website build; see `Building the site`_
+    below for a guide how to build it.
 -   Python code and Jinja2 templates should be accompanied by tests. See
     `Running tests`_ below for a guide.
--   Best way to contribute is by using GitHub `pull requests <https://github.com/mosra/m.css/pulls>`_
-    --- fork the repository and make pull request from feature branch. You can
-    also send patches via e-mail or contact me any other way.
+-   Best way to contribute is using GitHub `pull requests <https://github.com/mosra/m.css/pulls>`_
+    --- fork the repository and make a pull request from a feature branch. You
+    can also send patches via e-mail or contact the author in any other way.
 -   All your code will be released under license of the project (see `COPYING <COPYING>`_
     file for details), so make sure you and your collaborators (or employers)
-    have no problems with it. If you create new files, don't forget to add
+    have no problems with it. If you create new files, don't forget to add a
     license header (verbatim copied from other files) and don't forget to add
     yourself to license header of files you added or significantly modified
     (including documentation pages), for example::
@@ -72,20 +72,11 @@ http://localhost:8000.
     cd site
     pelican -Dlr
 
-Publishing the website with ``make publish`` depends on a few patches that are
-not in any stable Pelican release yet (most importantly
-https://github.com/getpelican/pelican/pull/2246), in order to have them,
-install Pelican from my local fork instead:
-
-.. code:: sh
-
-    pip install git+https://github.com/mosra/pelican.git@mosra-master
-
 Running tests
 =============
 
 Each bigger lump of Python code, Jinja2 template markup or JS code has tests.
-There are no visual tests for the CSS style at the moment. Run tests:
+There are no visual tests for the CSS style at the moment. Running the tests:
 
 .. code:: sh
 
@@ -109,8 +100,7 @@ to avoid polluting the whole system with crap:
     cd documentation
     npm install istanbul
 
-There is no
-possibility of getting code coverage for Jinja2 templates, though.
+There is no possibility of getting code coverage for Jinja2 templates, though.
 
 .. code:: sh
 
@@ -119,7 +109,7 @@ possibility of getting code coverage for Jinja2 templates, though.
     # open htmlcov/index.html in your browser
 
     cd documentation
-    node ./node_modules/istanbul/lib/cli.js cover test/test-search.js
+    node ./node_modules/istanbul/lib/cli.js cover test_doxygen/test-search.js
     # open coverage/lcov-report/index.html in your browser
 
     cd plugins
@@ -133,8 +123,8 @@ case of Doxygen, comment-out the line that removes the ``html`` directory in
 
 The project is built on Travis CI on Linux with Python 3.4, 3.5 and 3.6;
 Doxygen theme is tested only on 3.6 and math rendering is disabled as it's
-impossible to get it working on the old Ubuntu 14.04 LTS. Build status is over
-at https://mcss.mosra.cz/build-status/.
+impossible to get it working on Travis (https://github.com/mosra/m.css/pull/75).
+Build and coverage status is presented at https://mcss.mosra.cz/build-status/.
 
 Contact
 =======
@@ -142,6 +132,6 @@ Contact
 -   Website --- https://mcss.mosra.cz
 -   GitHub --- https://github.com/mosra/m.css
 -   Gitter --- https://gitter.im/mosra/m.css
--   Twitter --- https://twitter.com/czmosra
+-   Author's Twitter --- https://twitter.com/czmosra
 -   E-mail --- mosra@centrum.cz
 -   Jabber --- mosra@jabbim.cz
