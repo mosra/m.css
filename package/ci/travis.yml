@@ -8,7 +8,7 @@ matrix:
       python: 3.4
       env:
       - WITH_THEME=ON
-      - WITH_DOXYGEN=OFF
+      - WITH_DOCUMENTATION=OFF
       - WITH_NODE=OFF
       - JOBID=py34
     - language: python
@@ -19,7 +19,7 @@ matrix:
           - graphviz
       env:
       - WITH_THEME=ON
-      - WITH_DOXYGEN=OFF
+      - WITH_DOCUMENTATION=OFF
       - WITH_NODE=OFF
       - JOBID=py35
     - language: python
@@ -30,7 +30,7 @@ matrix:
           - graphviz
       env:
       - WITH_THEME=ON
-      - WITH_DOXYGEN=ON
+      - WITH_DOCUMENTATION=ON
       - WITH_NODE=OFF
       - TRAVIS_BROKEN_MATPLOTLIB_SEED=YES
       - JOBID=py36
@@ -38,7 +38,7 @@ matrix:
       node_js: 8
       env:
       - WITH_THEME=OFF
-      - WITH_DOXYGEN=OFF
+      - WITH_DOCUMENTATION=OFF
       - WITH_NODE=ON
       - JOBID=js
 
@@ -50,21 +50,22 @@ install:
   - if [ "$WITH_NODE" == "ON" ]; then npm install istanbul codecov; fi
 
   # Needed for doxygen binaries
-  - if [ "$WITH_DOXYGEN" == "ON" ]; then mkdir -p $HOME/bin && export PATH=$HOME/bin:$PATH; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then mkdir -p $HOME/bin && export PATH=$HOME/bin:$PATH; fi
 
   # Download newer Doxygen, as I don't want to care for the old bugs
-  - if [ "$WITH_DOXYGEN" == "ON" ] && [ ! -f $HOME/bin/doxygen ]; then wget "http://doxygen.nl/files/doxygen-1.8.15.linux.bin.tar.gz" && tar -xzf doxygen-1.8.15.linux.bin.tar.gz && cp doxygen-1.8.15/bin/doxygen $HOME/bin && doxygen -v; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ] && [ ! -f $HOME/bin/doxygen ]; then wget "http://doxygen.nl/files/doxygen-1.8.15.linux.bin.tar.gz" && tar -xzf doxygen-1.8.15.linux.bin.tar.gz && cp doxygen-1.8.15/bin/doxygen $HOME/bin && doxygen -v; fi
 
 script:
   # Test the theme. No code coverage there.
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/pelican-theme && python -m unittest; fi
 
-  # Test plugins. Math plugin is not tested as dvisvgm on 14.04 is unusable.
+  # Test plugins. Math plugin is not tested as dvisvgm is unusable even on
+  # 16.04.
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/plugins && coverage run -m unittest && cp .coverage ../.coverage.plugins; fi
 
-  # Test doxygen theme. Math rendering is not tested as dvisvgm on 14.04 is
-  # unusable.
-  - if [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
+  # Test documentation themes. Math rendering is not tested as dvisvgm is
+  # unusable even on 16.04.
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
   # Test client doxygen JS
   - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && node ../node_modules/istanbul/lib/cli.js cover test_doxygen/test-search.js; fi
@@ -89,5 +90,5 @@ notifications:
     on_start: never
 
 after_success:
-  - if [ "$WITH_THEME" == "ON" ] || [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR && coverage combine && codecov; fi
+  - if [ "$WITH_THEME" == "ON" ] || [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR && coverage combine && codecov; fi
   - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR && codecov; fi

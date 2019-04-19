@@ -83,7 +83,8 @@ M_LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
                         ('Pelican', 'themes/pelican/', 'themes/pelican')])]
 
 M_LINKS_NAVBAR2 = [('Doc generators', 'documentation/', 'documentation', [
-                        ('Doxygen C++ theme', 'documentation/doxygen/', 'documentation/doxygen')]),
+                        ('Doxygen C++ theme', 'documentation/doxygen/', 'documentation/doxygen'),
+                        ('Python doc theme', 'documentation/python/', 'documentation/python')]),
                    ('Plugins', 'plugins/', 'plugins', [
                         ('HTML sanity', 'plugins/htmlsanity/', 'plugins/htmlsanity'),
                         ('Components', 'plugins/components/', 'plugins/components'),
@@ -114,7 +115,8 @@ M_LINKS_FOOTER3 = [('Themes', 'themes/'),
                    ('Pelican', 'themes/pelican/'),
                    ('', ''),
                    ('Doc generators', 'documentation/'),
-                   ('Doxygen C++ theme', 'documentation/doxygen/')]
+                   ('Doxygen C++ theme', 'documentation/doxygen/'),
+                   ('Python documentation', 'documentation/python/')]
 
 M_LINKS_FOOTER4 = [('Plugins', 'plugins/'),
                    ('HTML sanity', 'plugins/htmlsanity/'),

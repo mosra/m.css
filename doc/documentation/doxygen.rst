@@ -29,6 +29,11 @@ Doxygen C++ theme
 :breadcrumb: {filename}/documentation.rst Doc generators
 :summary: A modern, mobile-friendly drop-in replacement for the stock Doxygen
     HTML output with a first-class search functionality
+:footer:
+    .. note-dim::
+        :class: m-text-center
+
+        `Doc generators <{filename}/documentation.rst>`_ | `Python doc theme » <{filename}/documentation/python.rst>`_
 
 .. role:: cpp(code)
     :language: cpp
@@ -245,7 +250,9 @@ amount of generated content for no added value.
 ================
 
 The script takes most of the configuration from the ``Doxyfile`` itself,
-(ab)using the following builtin options:
+(ab)using the following builtin options. The used options are similar to the
+`Python config <{filename}python.rst#configuration>`_, but with Doxygen-imposed
+naming and constraints.
 
 .. class:: m-table m-fullwidth
 

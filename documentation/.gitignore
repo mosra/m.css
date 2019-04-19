@@ -5,3 +5,4 @@ test_doxygen/layout_generated_doxyfile/Doxyfile
 node_modules/
 package-lock.json
 test_doxygen/package-lock.json
+test_python/*/output/
