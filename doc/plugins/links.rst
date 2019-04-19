@@ -414,12 +414,11 @@ pages and articles.
 
 For Pelican, download the `m/alias.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.alias` package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin
-assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+:py:`m.alias` package to your :py:`PLUGINS` in ``pelicanconf.py``.
 
 .. code:: python
 
-    PLUGINS += ['m.htmlsanity', 'm.alias']
+    PLUGINS += ['m.alias']
 
 .. note-success::
 

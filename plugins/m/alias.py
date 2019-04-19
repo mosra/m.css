@@ -28,8 +28,7 @@
 import os
 import logging
 from pelican import signals
-
-from m.htmlsanity import format_siteurl
+from urllib.parse import urljoin
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +36,11 @@ class AliasGenerator:
     def __init__(self, context, settings, path, theme, output_path, *args):
         self.output_path = output_path
         self.context = context
+        self.siteurl = settings['SITEURL']
+
+    # Keep consistent with m.htmlsanity
+    def format_siteurl(self, url):
+        return urljoin(self.siteurl + ('/' if not self.siteurl.endswith('/') else ''), url)
 
     def generate_output(self, writer):
         for page in self.context['pages'] + self.context['articles']:
@@ -54,7 +58,7 @@ class AliasGenerator:
                 if not filename: filename = 'index.html'
 
                 alias_file = os.path.join(directory, filename)
-                alias_target = format_siteurl(page.url)
+                alias_target = self.format_siteurl(page.url)
                 logger.info('m.alias: creating alias {} -> {}'.format(alias_file[len(self.output_path):], alias_target))
 
                 # Write the redirect file

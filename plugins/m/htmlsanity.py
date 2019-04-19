@@ -721,7 +721,8 @@ def expand_links(text, content):
     return content._update_content(text, content.get_siteurl())
 
 # To be consistent with both what Pelican does now with '/'.join(SITEURL, url)
-# and with https://github.com/getpelican/pelican/pull/2196
+# and with https://github.com/getpelican/pelican/pull/2196. Keep consistent
+# with m.alias.
 def format_siteurl(url):
     return urljoin(pelican_settings['SITEURL'] + ('/' if not pelican_settings['SITEURL'].endswith('/') else ''), url)
 
