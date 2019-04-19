@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import logging
 import os.path
 import re
 
@@ -32,19 +33,27 @@ from docutils import nodes, utils
 from docutils.utils import smartquotes
 from urllib.parse import urljoin
 
-import pelican.signals
-from pelican.readers import RstReader
-
-import logging
-
-logger = logging.getLogger(__name__)
-
 try:
     import pyphen
 except ImportError:
     pyphen = None
 
-settings = {}
+logger = logging.getLogger(__name__)
+
+settings = {
+    # Language used for hyphenation and smart quotes
+    'M_HTMLSANITY_LANGUAGE': 'en',
+    # Extra docutils settings
+    'M_HTMLSANITY_DOCUTILS_SETTINGS': {},
+    # Whether hyphenation is enabled
+    'M_HTMLSANITY_HYPHENATION': False,
+    # Whether smart quotes are enabled
+    'M_HTMLSANITY_SMART_QUOTES': False,
+    # List of formatted document-level fields (which should get hyphenation
+    # and smart quotes applied as well)
+    'M_HTMLSANITY_FORMATTED_FIELDS': []
+}
+
 words_re = re.compile(r'\w+', re.UNICODE|re.X)
 
 def extract_document_language(document):
@@ -76,10 +85,10 @@ def can_apply_typography(txtnode):
             (txtnode.astext() == txtnode.parent.get('refuri', '') or 'mailto:' + txtnode.astext() == txtnode.parent.get('refuri', ''))):
         return False
 
-    # From fields include only the ones that are in FORMATTED_FIELDS
+    # From fields include only the ones that are in M_HTMLSANITY_FORMATTED_FIELDS
     if isinstance(txtnode.parent.parent, nodes.field_body):
         field_name_index = txtnode.parent.parent.parent.first_child_matching_class(nodes.field_name)
-        if txtnode.parent.parent.parent[field_name_index][0] in settings['FORMATTED_FIELDS']:
+        if txtnode.parent.parent.parent[field_name_index][0] in settings['M_HTMLSANITY_FORMATTED_FIELDS']:
             return True
         return False
 
@@ -647,20 +656,16 @@ class SaneHtmlWriter(docutils.writers.html5_polyglot.Writer):
     def get_transforms(self):
         return docutils.writers.html5_polyglot.Writer.get_transforms(self) + [SmartQuotes, Pyphen]
 
-class SaneRstReader(RstReader):
-    writer_class = SaneHtmlWriter
-    field_body_translator_class = _SaneFieldBodyTranslator
-
 def render_rst(value):
     extra_params = {'initial_header_level': '2',
                     'syntax_highlight': 'short',
                     'input_encoding': 'utf-8',
-                    'language_code': settings['DEFAULT_LANG'],
+                    'language_code': settings['M_HTMLSANITY_LANGUAGE'],
                     'halt_level': 2,
                     'traceback': True,
                     'embed_stylesheet': False}
-    if settings['DOCUTILS_SETTINGS']:
-        extra_params.update(settings['DOCUTILS_SETTINGS'])
+    if settings['M_HTMLSANITY_DOCUTILS_SETTINGS']:
+        extra_params.update(settings['M_HTMLSANITY_DOCUTILS_SETTINGS'])
 
     pub = docutils.core.Publisher(
         writer=SaneHtmlWriter(),
@@ -675,7 +680,7 @@ def render_rst(value):
 
 def hyphenate(value, enable=None, lang=None):
     if enable is None: enable = settings['M_HTMLSANITY_HYPHENATION']
-    if lang is None: lang = settings['DEFAULT_LANG']
+    if lang is None: lang = settings['M_HTMLSANITY_LANGUAGE']
     if not enable or not pyphen: return value
     pyphen_ = pyphen.Pyphen(lang=lang)
     return words_re.sub(lambda m: pyphen_.inserted(m.group(0), '&shy;'), str(value))
@@ -685,11 +690,24 @@ def dehyphenate(value, enable=None):
     if not enable: return value
     return value.replace('&shy;', '')
 
+# Below is only Pelican-specific functionality and plugin registration
+try:
+    import pelican.signals
+    from pelican.readers import RstReader
+except ImportError:
+    pass
+
+class SaneRstReader(RstReader):
+    writer_class = SaneHtmlWriter
+    field_body_translator_class = _SaneFieldBodyTranslator
+
+pelican_settings = {}
+
 def expand_link(link, content):
     link_regex = r"""^
         (?P<markup>)(?P<quote>)
         (?P<path>{0}(?P<value>.*))
-        $""".format(settings['INTRASITE_LINK_REGEX'])
+        $""".format(pelican_settings['INTRASITE_LINK_REGEX'])
     links = re.compile(link_regex, re.X)
     return links.sub(
         lambda m: content._link_replacer(content.get_siteurl(), m),
@@ -705,7 +723,7 @@ def expand_links(text, content):
 # To be consistent with both what Pelican does now with '/'.join(SITEURL, url)
 # and with https://github.com/getpelican/pelican/pull/2196
 def format_siteurl(url):
-    return urljoin(settings['SITEURL'] + ('/' if not settings['SITEURL'].endswith('/') else ''), url)
+    return urljoin(pelican_settings['SITEURL'] + ('/' if not pelican_settings['SITEURL'].endswith('/') else ''), url)
 
 def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
@@ -715,11 +733,24 @@ def configure_pelican(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
     pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
 
+    # Map the setting key names from Pelican's own
     global settings
-    settings['M_HTMLSANITY_HYPHENATION'] = pelicanobj.settings.get('M_HTMLSANITY_HYPHENATION', False)
-    settings['M_HTMLSANITY_SMART_QUOTES'] = pelicanobj.settings.get('M_HTMLSANITY_SMART_QUOTES', False)
-    for i in 'DEFAULT_LANG', 'DOCUTILS_SETTINGS', 'INTRASITE_LINK_REGEX', 'SITEURL', 'FORMATTED_FIELDS':
-        settings[i] = pelicanobj.settings[i]
+    for key, pelicankey, default in [
+        ('M_HTMLSANITY_LANGUAGE', 'DEFAULT_LANG', None),
+        ('M_HTMLSANITY_DOCUTILS_SETTINGS', 'DOCUTILS_SETTINGS', None),
+        ('M_HTMLSANITY_HYPHENATION', None, False),
+        ('M_HTMLSANITY_SMART_QUOTES', None, False),
+        ('M_HTMLSANITY_FORMATTED_FIELDS', 'FORMATTED_FIELDS', None)]:
+        if default is None:
+            settings[key] = pelicanobj.settings[pelicankey]
+        else:
+            if not pelicankey: pelicankey = key
+            settings[key] = pelicanobj.settings.get(pelicankey, default)
+
+    # Save settings needed only for Pelican-specific functionality
+    global pelican_settings
+    for key in 'INTRASITE_LINK_REGEX', 'SITEURL':
+        pelican_settings[key] = pelicanobj.settings[key]
 
 def add_reader(readers):
     readers.reader_classes['rst'] = SaneRstReader
