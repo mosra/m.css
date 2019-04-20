@@ -67,7 +67,7 @@ script:
   - if [ "$WITH_DOXYGEN" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
   # Test client doxygen JS
-  - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR && istanbul cover documentation/test_doxygen/test-search.js; fi
+  - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && node ../node_modules/istanbul/lib/cli.js cover test_doxygen/test-search.js; fi
 
   # Test that compiled CSS is up-to-date. First display the diff, then check
   # with diff-index which should print what's wrong and return with non-zero
