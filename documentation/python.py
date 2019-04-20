@@ -34,6 +34,7 @@ import inspect
 import logging
 import mimetypes
 import os
+import re
 import sys
 import shutil
 
@@ -159,6 +160,128 @@ def is_enum(state: State, object) -> bool:
 def make_url(path: List[str]) -> str:
     return '.'.join(path) + '.html'
 
+_pybind_name_rx = re.compile('[a-zA-Z0-9_]+')
+_pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
+_pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
+_pybind_default_value_rx = re.compile('[^,)]+')
+
+def parse_pybind_type(signature: str) -> str:
+    type = _pybind_type_rx.match(signature).group(0)
+    signature = signature[len(type):]
+    if signature and signature[0] == '[':
+        type += '['
+        signature = signature[1:]
+        while signature[0] != ']':
+            inner_type = parse_pybind_type(signature)
+            type +=  inner_type
+            signature = signature[len(inner_type):]
+
+            if signature[0] == ']': break
+            assert signature.startswith(', ')
+            signature = signature[2:]
+            type += ', '
+
+        assert signature[0] == ']'
+        type += ']'
+
+    return type
+
+def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, str, str]], str]:
+    original_signature = signature # For error reporting
+    name = _pybind_name_rx.match(signature).group(0)
+    signature = signature[len(name):]
+    args = []
+    assert signature[0] == '('
+    signature = signature[1:]
+
+    # Arguments
+    while signature[0] != ')':
+        # Name
+        arg_name = _pybind_arg_name_rx.match(signature).group(0)
+        assert arg_name
+        signature = signature[len(arg_name):]
+
+        # Type (optional)
+        if signature.startswith(': '):
+            signature = signature[2:]
+            arg_type = parse_pybind_type(signature)
+            signature = signature[len(arg_type):]
+        else:
+            arg_type = None
+
+        # Default (optional) -- for now take everything until the next comma
+        # TODO: ugh, do properly
+        if signature.startswith('='):
+            signature = signature[1:]
+            default = _pybind_default_value_rx.match(signature).group(0)
+            signature = signature[len(default):]
+        else:
+            default = None
+
+        args += [(arg_name, arg_type, default)]
+
+        if signature[0] == ')': break
+
+        # Failed to parse, return an ellipsis and docs
+        if not signature.startswith(', '):
+            end = original_signature.find('\n')
+            logging.warning("cannot parse pybind11 function signature %s", original_signature[:end])
+            if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
+                brief = extract_brief(original_signature[end + 1:])
+            else:
+                brief = ''
+            return (name, brief, [('…', None, None)], None)
+
+        signature = signature[2:]
+
+    assert signature[0] == ')'
+    signature = signature[1:]
+
+    # Return type (optional)
+    if signature.startswith(' -> '):
+        signature = signature[4:]
+        return_type = parse_pybind_type(signature)
+        signature = signature[len(return_type):]
+    else:
+        return_type = None
+
+    assert not signature or signature[0] == '\n'
+    if len(signature) > 1 and signature[1] == '\n':
+        brief = extract_brief(signature[2:])
+    else:
+        brief = ''
+
+    return (name, brief, args, return_type)
+
+def parse_pybind_docstring(name: str, doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
+    # Multiple overloads, parse each separately
+    overload_header = "{}(*args, **kwargs)\nOverloaded function.\n\n".format(name);
+    if doc.startswith(overload_header):
+        doc = doc[len(overload_header):]
+        overloads = []
+        id = 1
+        while True:
+            assert doc.startswith('{}. {}('.format(id, name))
+            id = id + 1
+            next = doc.find('{}. {}('.format(id, name))
+
+            # Parse the signature and docs from known slice
+            overloads += [parse_pybind_signature(doc[3:next])]
+            assert overloads[-1][0] == name
+            if next == -1: break
+
+            # Continue to the next signature. Sorry, didn't bother to check how
+            # docstrings for more than 9 overloads look yet, that's why the
+            # assert
+            assert id < 10
+            doc = doc[next:]
+
+        return overloads
+
+    # Normal function, parse and return the first signature
+    else:
+        return [parse_pybind_signature(doc)]
+
 def extract_brief(doc: str) -> str:
     if not doc: return '' # some modules (xml.etree) have that :(
     doc = inspect.cleandoc(doc)
@@ -264,43 +387,130 @@ def extract_enum_doc(state: State, path: List[str], enum_):
 
     return out
 
-def extract_function_doc(path: List[str], function):
+def extract_function_doc(state: State, parent, path: List[str], function) -> List[Any]:
     assert inspect.isfunction(function) or inspect.ismethod(function) or inspect.isroutine(function)
 
-    out = Empty()
-    out.name = path[-1]
-    out.brief = extract_brief(function.__doc__)
-    out.params = []
-    out.has_complex_params = False
-    out.has_details = False
+    # Extract the signature from the docstring for pybind11, since it can't
+    # expose it to the metadata: https://github.com/pybind/pybind11/issues/990
+    # What's not solvable with metadata, however, are function overloads ---
+    # one function in Python may equal more than one function on the C++ side.
+    # To make the docs usable, list all overloads separately.
+    if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__.startswith(path[-1]):
+        funcs = parse_pybind_docstring(path[-1], function.__doc__)
+        overloads = []
+        for name, brief, args, type in funcs:
+            out = Empty()
+            out.name = path[-1]
+            out.params = []
+            out.has_complex_params = False
+            out.has_details = False
+            out.brief = brief
 
-    try:
-        signature = inspect.signature(function)
-        out.type = extract_annotation(signature.return_annotation)
-        for i in signature.parameters.values():
-            param = Empty()
-            param.name = i.name
-            param.type = extract_annotation(i.annotation)
-            if param.type:
-                out.has_complex_params = True
-            if i.default is inspect.Signature.empty:
-                param.default = None
+            # Don't show None return type for void functions
+            out.type = None if type == 'None' else type
+
+            # There's no other way to check staticmethods than to check for
+            # self being the name of first parameter :( No support for
+            # classmethods, as C++11 doesn't have that
+            out.is_classmethod = False
+            if inspect.isclass(parent) and args and args[0][0] == 'self':
+                out.is_staticmethod = False
             else:
-                param.default = repr(i.default)
-                out.has_complex_params = True
-            param.kind = str(i.kind)
-            out.params += [param]
+                out.is_staticmethod = True
 
-    # In CPython, some builtin functions (such as math.log) do not provide
-    # metadata about their arguments. Source:
-    # https://docs.python.org/3/library/inspect.html#inspect.signature
-    except ValueError:
-        param = Empty()
-        param.name = '...'
-        param.name_type = param.name
-        out.params = [param]
+            # Guesstimate whether the arguments are positional-only or
+            # position-or-keyword. It's either all or none. This is a brown
+            # magic, sorry.
 
-    return out
+            # For instance methods positional-only argument names are either
+            # self (for the first argument) or arg(I-1) (for second
+            # argument and further). Also, the `self` argument is
+            # positional-or-keyword only if there are positional-or-keyword
+            # arguments afgter it, otherwise it's positional-only.
+            if inspect.isclass(parent) and not out.is_staticmethod:
+                assert args and args[0][0] == 'self'
+
+                positional_only = True
+                for i, arg in enumerate(args[1:]):
+                    name, type, default = arg
+                    if name != 'arg{}'.format(i):
+                        positional_only = False
+                        break
+
+            # For static methods or free functions positional-only arguments
+            # are argI.
+            else:
+                positional_only = True
+                for i, arg in enumerate(args):
+                    name, type, default = arg
+                    if name != 'arg{}'.format(i):
+                        positional_only = False
+                        break
+
+            for i, arg in enumerate(args):
+                name, type, default = arg
+                param = Empty()
+                param.name = name
+                # Don't include redundant type for the self argument
+                if name == 'self': param.type = None
+                else: param.type = type
+                param.default = default
+                if type or default: out.has_complex_params = True
+
+                # *args / **kwargs are shown in the signature only for
+                # overloaded functions and we are expanding those
+                assert name not in ['*args', '**kwargs']
+
+                param.kind = 'POSITIONAL_ONLY' if positional_only else 'POSITIONAL_OR_KEYWORD'
+
+                out.params += [param]
+
+            overloads += [out]
+
+        return overloads
+
+    # Sane introspection path for non-pybind11 code
+    else:
+        out = Empty()
+        out.name = path[-1]
+        out.params = []
+        out.has_complex_params = False
+        out.has_details = False
+        out.brief = extract_brief(function.__doc__)
+
+        # Decide if classmethod or staticmethod in case this is a method
+        if inspect.isclass(parent):
+            out.is_classmethod = inspect.ismethod(function)
+            out.is_staticmethod = out.name in parent.__dict__ and isinstance(parent.__dict__[out.name], staticmethod)
+
+        try:
+            signature = inspect.signature(function)
+            out.type = extract_annotation(signature.return_annotation)
+            for i in signature.parameters.values():
+                param = Empty()
+                param.name = i.name
+                param.type = extract_annotation(i.annotation)
+                if param.type:
+                    out.has_complex_params = True
+                if i.default is inspect.Signature.empty:
+                    param.default = None
+                else:
+                    param.default = repr(i.default)
+                    out.has_complex_params = True
+                param.kind = str(i.kind)
+                out.params += [param]
+
+        # In CPython, some builtin functions (such as math.log) do not provide
+        # metadata about their arguments. Source:
+        # https://docs.python.org/3/library/inspect.html#inspect.signature
+        except ValueError:
+            param = Empty()
+            param.name = '...'
+            param.name_type = param.name
+            out.params = [param]
+            out.type = None
+
+        return [out]
 
 def extract_property_doc(path: List[str], property):
     assert inspect.isdatadescriptor(property)
@@ -393,7 +603,7 @@ def render_module(state: State, path, module, env):
                 page.enums += [enum_]
                 if enum_.has_details: page.has_enum_details = True
             elif inspect.isfunction(object) or inspect.isbuiltin(object):
-                page.functions += [extract_function_doc(subpath, object)]
+                page.functions += extract_function_doc(state, module, subpath, object)
             # Assume everything else is data. The builtin help help() (from
             # pydoc) does the same:
             # https://github.com/python/cpython/blob/d29b3dd9227cfc4a23f77e99d62e20e063272de1/Lib/pydoc.py#L113
@@ -443,7 +653,7 @@ def render_module(state: State, path, module, env):
             subpath = path + [name]
             if not object.__doc__: logging.warning("%s() is undocumented", '.'.join(subpath))
 
-            page.functions += [extract_function_doc(subpath, object)]
+            page.functions += extract_function_doc(state, module, subpath, object)
 
         # Get data
         # TODO: unify this query
@@ -571,18 +781,15 @@ def render_class(state: State, path, class_, env):
         subpath = path + [name]
         if not object.__doc__: logging.warning("%s() is undocumented", '.'.join(subpath))
 
-        function = extract_function_doc(subpath, object)
-        function.is_classmethod = inspect.ismethod(object)
-        function.is_staticmethod = name in class_.__dict__ and isinstance(class_.__dict__[name], staticmethod)
-
-        if name.startswith('__'):
-            page.dunder_methods += [function]
-        elif function.is_classmethod:
-            page.classmethods += [function]
-        elif function.is_staticmethod:
-            page.staticmethods += [function]
-        else:
-            page.methods += [function]
+        for function in extract_function_doc(state, class_, subpath, object):
+            if name.startswith('__'):
+                page.dunder_methods += [function]
+            elif function.is_classmethod:
+                page.classmethods += [function]
+            elif function.is_staticmethod:
+                page.staticmethods += [function]
+            else:
+                page.methods += [function]
 
     # Get properties
     for name, object in inspect.getmembers(class_, inspect.isdatadescriptor):
