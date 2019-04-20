@@ -33,3 +33,13 @@ class Enums(BaseTestCase):
             'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('pybind_enums.html'))
+
+class Submodules(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'submodules', *args, **kwargs)
+
+    def test(self):
+        self.run_python({
+            'PYBIND11_COMPATIBILITY': True
+        })
+        self.assertEqual(*self.actual_expected_contents('pybind_submodules.html'))

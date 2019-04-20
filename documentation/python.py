@@ -113,7 +113,7 @@ def is_internal_function_name(name: str) -> bool:
     """
     return name.startswith('_') and not (name.startswith('__') and name.endswith('__'))
 
-def is_internal_or_imported_module_member(parent, path: str, name: str, object) -> bool:
+def is_internal_or_imported_module_member(state: State, parent, path: str, name: str, object) -> bool:
     """If the module member is internal or imported."""
 
     if name.startswith('_'): return True
@@ -135,6 +135,11 @@ def is_internal_or_imported_module_member(parent, path: str, name: str, object) 
     # handle modules and packages differently. See also for more info:
     # https://stackoverflow.com/a/7948672
     else:
+        # pybind11 submodules have __package__ set to None for nested modules,
+        # the top-level __package__ is '' though. Allow these if parent
+        # __package__ is empty (either '' or None).
+        if state.config['PYBIND11_COMPATIBILITY'] and object.__package__ is None and not parent.__package__: return False
+
         # The parent is a single-file module (not a package), these don't have
         # submodules so this is most definitely an imported module. Source:
         # https://docs.python.org/3/reference/import.html#packages
@@ -404,7 +409,7 @@ def render_module(state: State, path, module, env):
     else:
         # Get (and render) inner modules
         for name, object in inspect.getmembers(module, inspect.ismodule):
-            if is_internal_or_imported_module_member(module, path, name, object): continue
+            if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
             subpath = path + [name]
             page.modules += [extract_module_doc(subpath, object)]
@@ -412,7 +417,7 @@ def render_module(state: State, path, module, env):
 
         # Get (and render) inner classes
         for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not is_enum(state, o)):
-            if is_internal_or_imported_module_member(module, path, name, object): continue
+            if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
             subpath = path + [name]
             if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
@@ -422,7 +427,7 @@ def render_module(state: State, path, module, env):
 
         # Get enums
         for name, object in inspect.getmembers(module, lambda o: is_enum(state, o)):
-            if is_internal_or_imported_module_member(module, path, name, object): continue
+            if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
             subpath = path + [name]
             if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
@@ -433,7 +438,7 @@ def render_module(state: State, path, module, env):
 
         # Get inner functions
         for name, object in inspect.getmembers(module, lambda o: inspect.isfunction(o) or inspect.isbuiltin(o)):
-            if is_internal_or_imported_module_member(module, path, name, object): continue
+            if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
             subpath = path + [name]
             if not object.__doc__: logging.warning("%s() is undocumented", '.'.join(subpath))
@@ -443,7 +448,7 @@ def render_module(state: State, path, module, env):
         # Get data
         # TODO: unify this query
         for name, object in inspect.getmembers(module, lambda o: not inspect.ismodule(o) and not inspect.isclass(o) and not inspect.isroutine(o) and not inspect.isframe(o) and not inspect.istraceback(o) and not inspect.iscode(o)):
-            if is_internal_or_imported_module_member(module, path, name, object): continue
+            if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
             page.data += [extract_data_doc(module, path + [name], object)]
 
