@@ -71,6 +71,7 @@ default_config = {
     'FINE_PRINT': '[default]',
     'CLASS_INDEX_EXPAND_LEVELS': 1,
     'CLASS_INDEX_EXPAND_INNER': False,
+    'PYBIND11_COMPATIBILITY': False,
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
     'SEARCH_HELP': """.. raw:: html

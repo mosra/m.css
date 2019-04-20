@@ -194,6 +194,11 @@ Variable                            Description
 :py:`CLASS_INDEX_EXPAND_INNER`      Whether to expand inner classes in the
                                     class index. If not set, :py:`False` is
                                     used.
+:py:`PYBIND11_COMPATIBILITY`        Enable some additional tricks for better
+                                    compatibility with pybind11. If not set,
+                                    :py:`False` is used. See
+                                    `pybind11 compatibility`_ for more
+                                    information.
 :py:`SEARCH_DISABLED: bool`         Disable search functionality. If this
                                     option is set, no search data is compiled
                                     and the rendered HTML does not contain
@@ -513,6 +518,15 @@ non-obvious way to document enum values as well.
 
 The documentation output for enums includes enum value values and the class it
 was derived from, so it's possible to know whether it's an enum or a flag.
+
+`pybind11 compatibility`_
+=========================
+
+C++ bindings generated using `pybind11 <https://pybind11.readthedocs.io/>`_ do
+not have all information accessible through introspection and thus the script
+has to do a few pybind11-specific workarounds to generate expected output. This
+behavior is not enabled by default as it *might* have unwanted consequences in
+pure Python code, enable it using the :py:`PYBIND11_COMPATIBILITY` option.
 
 `Command-line options`_
 =======================
