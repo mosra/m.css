@@ -528,6 +528,21 @@ has to do a few pybind11-specific workarounds to generate expected output. This
 behavior is not enabled by default as it *might* have unwanted consequences in
 pure Python code, enable it using the :py:`PYBIND11_COMPATIBILITY` option.
 
+`Enums`_
+--------
+
+Enums in pybind11 are not derived from :py:`enum.Enum`, but rather are plain
+classes. The only reliable way to detect a pybind11 enum is by looking for a
+``__members__`` member, which is a dict providing string names and their
+corresponding values. With pybind 2.2, it's only possible to document the
+enum class itself, not the values.
+
+.. note-info::
+
+    pybind 2.3 (not released yet) is scheduled to support docstrings for enum
+    values (see :gh:`pybind/pybind11#1160`). Support for this feature is not
+    done on the script side yet.
+
 `Command-line options`_
 =======================
 
@@ -729,7 +744,8 @@ Property                                Description
 :py:`enum.name`                         Enum name
 :py:`enum.brief`                        Brief docs
 :py:`enum.base`                         Base class from which the enum is
-                                        derived
+                                        derived. Set to :py:`None` if no base
+                                        class information is available.
 :py:`enum.values`                       List of enum values
 :py:`enum.has_details`                  If there is enough content for the full
                                         description block. [2]_

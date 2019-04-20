@@ -148,6 +148,9 @@ def is_internal_or_imported_module_member(parent, path: str, name: str, object) 
     # If nothing of the above matched, then it's a thing we want to document
     return False
 
+def is_enum(state: State, object) -> bool:
+    return (inspect.isclass(object) and issubclass(object, enum.Enum)) or (state.config['PYBIND11_COMPATIBILITY'] and hasattr(object, '__members__'))
+
 def make_url(path: List[str]) -> str:
     return '.'.join(path) + '.html'
 
@@ -204,38 +207,55 @@ def extract_class_doc(path: List[str], class_):
     out.brief = extract_brief(class_.__doc__)
     return out
 
-def extract_enum_doc(path: List[str], enum_):
-    assert issubclass(enum_, enum.Enum)
-
+def extract_enum_doc(state: State, path: List[str], enum_):
     out = Empty()
     out.name = path[-1]
-
-    # Enum doc is by default set to a generic value. That's useless as well.
-    if enum_.__doc__ == 'An enumeration.':
-        out.brief = ''
-    else:
-        out.brief = extract_brief(enum_.__doc__)
-
-    out.base = extract_type(enum_.__base__)
     out.values = []
     out.has_details = False
     out.has_value_details = False
 
-    for i in enum_:
-        value = Empty()
-        value.name = i.name
-        value.value = html.escape(repr(i.value))
-
-        # Value doc gets by default inherited from the enum, that's useless
-        if i.__doc__ == enum_.__doc__:
-            value.brief = ''
+    # The happy case
+    if issubclass(enum_, enum.Enum):
+        # Enum doc is by default set to a generic value. That's useless as well.
+        if enum_.__doc__ == 'An enumeration.':
+            out.brief = ''
         else:
-            value.brief = extract_brief(i.__doc__)
+            out.brief = extract_brief(enum_.__doc__)
 
-        if value.brief:
-            out.has_details = True
-            out.has_value_details = True
-        out.values += [value]
+        out.base = extract_type(enum_.__base__)
+
+        for i in enum_:
+            value = Empty()
+            value.name = i.name
+            value.value = html.escape(repr(i.value))
+
+            # Value doc gets by default inherited from the enum, that's useless
+            if i.__doc__ == enum_.__doc__:
+                value.brief = ''
+            else:
+                value.brief = extract_brief(i.__doc__)
+
+            if value.brief:
+                out.has_details = True
+                out.has_value_details = True
+            out.values += [value]
+
+    # Pybind11 enums are ... different
+    elif state.config['PYBIND11_COMPATIBILITY']:
+        assert hasattr(enum_, '__members__')
+
+        out.brief = extract_brief(enum_.__doc__)
+        out.base = None
+
+        for name, v in enum_.__members__.items():
+            value = Empty()
+            value. name = name
+            value.value = int(v)
+            # TODO: once https://github.com/pybind/pybind11/pull/1160 is
+            #       released, extract from class docs (until then the class
+            #       docstring is duplicated here, which is useless)
+            value.brief = ''
+            out.values += [value]
 
     return out
 
@@ -360,11 +380,11 @@ def render_module(state: State, path, module, env):
             if inspect.ismodule(object):
                 page.modules += [extract_module_doc(subpath, object)]
                 index_entry.children += [render_module(state, subpath, object, env)]
-            elif inspect.isclass(object) and not issubclass(object, enum.Enum):
+            elif inspect.isclass(object) and not is_enum(state, object):
                 page.classes += [extract_class_doc(subpath, object)]
                 index_entry.children += [render_class(state, subpath, object, env)]
-            elif inspect.isclass(object) and issubclass(object, enum.Enum):
-                enum_ = extract_enum_doc(subpath, object)
+            elif inspect.isclass(object) and is_enum(state, object):
+                enum_ = extract_enum_doc(state, subpath, object)
                 page.enums += [enum_]
                 if enum_.has_details: page.has_enum_details = True
             elif inspect.isfunction(object) or inspect.isbuiltin(object):
@@ -391,7 +411,7 @@ def render_module(state: State, path, module, env):
             index_entry.children += [render_module(state, subpath, object, env)]
 
         # Get (and render) inner classes
-        for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not issubclass(o, enum.Enum)):
+        for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not is_enum(state, o)):
             if is_internal_or_imported_module_member(module, path, name, object): continue
 
             subpath = path + [name]
@@ -401,13 +421,13 @@ def render_module(state: State, path, module, env):
             index_entry.children += [render_class(state, subpath, object, env)]
 
         # Get enums
-        for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and issubclass(o, enum.Enum)):
+        for name, object in inspect.getmembers(module, lambda o: is_enum(state, o)):
             if is_internal_or_imported_module_member(module, path, name, object): continue
 
             subpath = path + [name]
             if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
-            enum_ = extract_enum_doc(subpath, object)
+            enum_ = extract_enum_doc(state, subpath, object)
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
 
@@ -514,7 +534,7 @@ def render_class(state: State, path, class_, env):
     index_entry.brief = page.brief
 
     # Get inner classes
-    for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not issubclass(o, enum.Enum)):
+    for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not is_enum(state, o)):
         if name in ['__base__', '__class__']: continue # TODO
         if name.startswith('_'): continue
 
@@ -525,13 +545,13 @@ def render_class(state: State, path, class_, env):
         index_entry.children += [render_class(state, subpath, object, env)]
 
     # Get enums
-    for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and issubclass(o, enum.Enum)):
+    for name, object in inspect.getmembers(class_, lambda o: is_enum(state, o)):
         if name.startswith('_'): continue
 
         subpath = path + [name]
         if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
-        enum_ = extract_enum_doc(subpath, object)
+        enum_ = extract_enum_doc(state, subpath, object)
         page.enums += [enum_]
         if enum_.has_details: page.has_enum_details = True
 
