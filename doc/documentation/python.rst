@@ -481,6 +481,32 @@ extracted from the property getter.
     would require parsing Python code directly (which is what Sphinx has to do
     to support these).
 
+`Documenting enum values`_
+--------------------------
+
+Python supplies an implicit docstrings for enums derived from :py:`enum.Enum`
+and enum values implicitly inherit the docstring of the enum class. If either
+is detected to be the case, docstring of the enum or the value is ignored.
+While it's possible to document enum classes the usual way, there's a
+non-obvious way to document enum values as well.
+
+.. code:: py
+
+    import enum
+
+    class MyEnum(enum.Enum):
+        """My enum"""
+
+        ZERO = 0
+        TWO = 3
+        CONSISTENCY = -73
+
+    MyEnum.ZERO.__doc__ = "Zero value"
+    MyEnum.TWO.__doc__ = "Three, but named TWO for compatibility"
+
+The documentation output for enums includes enum value values and the class it
+was derived from, so it's possible to know whether it's an enum or a flag.
+
 `Command-line options`_
 =======================
 
@@ -595,14 +621,21 @@ Each module page has the following additional properties:
 ======================================= =======================================
 Property                                Description
 ======================================= =======================================
+:py:`page.prefix_wbr`                   Fully-qualified symbol prefix for given
+                                        compound with trailing ``.`` with
+                                        :html:`<wbr/>` tag after every ``.``.
 :py:`page.modules`                      List of inner modules. See
                                         `Module properties`_ for details.
 :py:`page.classes`                      List of classes. See
                                         `Class properties`_ for details.
+:py:`page.enums`                        List of enums. See
+                                        `Enum properties`_ for details.
 :py:`page.functions`                    List of module-level functions. See
                                         `Function properties`_ for details.
 :py:`page.data`                         List of module-level data. See
                                         `Data properties`_ for details.
+:py:`page.has_enum_details`             If there is at least one enum with full
+                                        description block [2]_
 ======================================= =======================================
 
 Each class page has the following additional properties:
@@ -612,8 +645,13 @@ Each class page has the following additional properties:
 ======================================= =======================================
 Property                                Description
 ======================================= =======================================
+:py:`page.prefix_wbr`                   Fully-qualified symbol prefix for given
+                                        compound with trailing ``.`` with
+                                        :html:`<wbr/>` tag after every ``.``.
 :py:`page.classes`                      List of classes. See
                                         `Class properties`_ for details.
+:py:`page.enums`                        List of enums. See
+                                        `Enum properties`_ for details.
 :py:`page.classmethods`                 List of class methods (annotated with
                                         :py:`@classmethod`). See
                                         `Function properties`_ for details.
@@ -629,6 +667,8 @@ Property                                Description
                                         `Property properties`_ for details.
 :py:`page.data`                         List of data. See `Data properties`_
                                         for details.
+:py:`page.has_enum_details`             If there is at least one enum with full
+                                        description block [2]_
 ======================================= =======================================
 
 `Module properties`_
@@ -656,6 +696,38 @@ Property                                Description
 :py:`class_.name`                       Class name
 :py:`class_.brief`                      Brief docs
 ======================================= =======================================
+
+`Enum properties`_
+```````````````````
+
+.. class:: m-table m-fullwidth
+
+======================================= =======================================
+Property                                Description
+======================================= =======================================
+:py:`enum.name`                         Enum name
+:py:`enum.brief`                        Brief docs
+:py:`enum.base`                         Base class from which the enum is
+                                        derived
+:py:`enum.values`                       List of enum values
+:py:`enum.has_details`                  If there is enough content for the full
+                                        description block. [2]_
+:py:`enum.has_value_details`            If the enum values have description.
+                                        Impies :py:`enum.has_details`.
+======================================= =======================================
+
+Every item of :py:`enum.values` has the following properties:
+
+.. class:: m-table m-fullwidth
+
+=========================== ===================================================
+Property                    Description
+=========================== ===================================================
+:py:`value.name`            Value name
+:py:`value.value`           Value value. Set to :py:`None` if no value is
+                            available.
+:py:`value.brief`           Value brief docs
+=========================== ===================================================
 
 `Function properties`_
 ``````````````````````

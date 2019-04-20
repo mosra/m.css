@@ -23,6 +23,20 @@ class Foo:
 
     A_DATA = 'BOO'
 
+    class InnerEnum(enum.Enum):
+        """Inner enum"""
+
+        VALUE = 0
+        ANOTHER = 1
+        YAY = 2
+
+    InnerEnum.VALUE.__doc__ = "A value"
+    InnerEnum.ANOTHER.__doc__ = "Another value"
+
+    class UndocumentedInnerEnum(enum.IntFlag):
+        FLAG_ONE = 1
+        FLAG_SEVENTEEN = 17
+
     class Subclass:
         """A subclass of Foo"""
         pass
@@ -102,6 +116,20 @@ class Specials:
         # Undocumented, but should be present
         pass
 
+class MyEnum(enum.Enum):
+    """An enum"""
+
+    VALUE = 0
+    ANOTHER = 1
+    YAY = 2
+
+MyEnum.VALUE.__doc__ = "A value"
+MyEnum.ANOTHER.__doc__ = "Another value"
+
+class UndocumentedEnum(enum.IntFlag):
+    FLAG_ONE = 1
+    FLAG_SEVENTEEN = 17
+
 class _PrivateClass:
     """Private class"""
     pass
@@ -115,6 +143,8 @@ def _private_function():
     pass
 
 A_CONSTANT = 3.24
+
+ENUM_THING = MyEnum.YAY
 
 _PRIVATE_CONSTANT = -3
 

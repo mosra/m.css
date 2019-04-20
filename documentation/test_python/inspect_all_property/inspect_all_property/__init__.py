@@ -1,3 +1,5 @@
+import enum
+
 from . import hidden
 from . import _private_but_exposed
 
@@ -21,4 +23,19 @@ hidden_data = 34
 
 _private_data = 'Hey!'
 
-__all__ = ['_private_but_exposed', '_PrivateButExposedClass', '_private_but_exposed_func', '_private_data']
+class _MyPrivateEnum(enum.Enum):
+    VALUE = 1
+    ANOTHER = 2
+    YAY = 3
+
+_MyPrivateEnum.VALUE.__doc__ = "A value"
+_MyPrivateEnum.ANOTHER.__doc__ = "Another value"
+
+class UndocumentedEnum(enum.IntFlag):
+    FLAG_ONE = 1
+    FLAG_SEVENTEEN = 17
+
+class HiddenEnum(enum.Flag):
+    pass
+
+__all__ = ['_private_but_exposed', '_PrivateButExposedClass', '_private_but_exposed_func', '_private_data', '_MyPrivateEnum', 'UndocumentedEnum']

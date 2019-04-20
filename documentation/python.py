@@ -26,6 +26,7 @@
 
 import argparse
 import copy
+import enum
 import urllib.parse
 import html
 import importlib
@@ -181,6 +182,41 @@ def extract_class_doc(path: List[str], class_):
     out.brief = extract_brief(class_.__doc__)
     return out
 
+def extract_enum_doc(path: List[str], enum_):
+    assert issubclass(enum_, enum.Enum)
+
+    out = Empty()
+    out.name = path[-1]
+
+    # Enum doc is by default set to a generic value. That's useless as well.
+    if enum_.__doc__ == 'An enumeration.':
+        out.brief = ''
+    else:
+        out.brief = extract_brief(enum_.__doc__)
+
+    out.base = extract_type(enum_.__base__)
+    out.values = []
+    out.has_details = False
+    out.has_value_details = False
+
+    for i in enum_:
+        value = Empty()
+        value.name = i.name
+        value.value = html.escape(repr(i.value))
+
+        # Value doc gets by default inherited from the enum, that's useless
+        if i.__doc__ == enum_.__doc__:
+            value.brief = ''
+        else:
+            value.brief = extract_brief(i.__doc__)
+
+        if value.brief:
+            out.has_details = True
+            out.has_value_details = True
+        out.values += [value]
+
+    return out
+
 def extract_function_doc(path: List[str], function):
     assert inspect.isfunction(function) or inspect.ismethod(function) or inspect.isroutine(function)
 
@@ -271,10 +307,13 @@ def render_module(config, path, module, env):
     page.brief = extract_brief(module.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
+    page.prefix_wbr = '.<wbr />'.join(path + [''])
     page.modules = []
     page.classes = []
+    page.enums = []
     page.functions = []
     page.data = []
+    page.has_enum_details = False
 
     # This is actually complicated -- if the module defines __all__, use that.
     # The __all__ is meant to expose the public API, so we don't filter out
@@ -292,9 +331,13 @@ def render_module(config, path, module, env):
             if inspect.ismodule(object):
                 page.modules += [extract_module_doc(subpath, object)]
                 render_module(config, subpath, object, env)
-            elif inspect.isclass(object):
+            elif inspect.isclass(object) and not issubclass(object, enum.Enum):
                 page.classes += [extract_class_doc(subpath, object)]
                 render_class(config, subpath, object, env)
+            elif inspect.isclass(object) and issubclass(object, enum.Enum):
+                enum_ = extract_enum_doc(subpath, object)
+                page.enums += [enum_]
+                if enum_.has_details: page.has_enum_details = True
             elif inspect.isfunction(object) or inspect.isbuiltin(object):
                 page.functions += [extract_function_doc(subpath, object)]
             # Assume everything else is data. The builtin help help() (from
@@ -319,7 +362,7 @@ def render_module(config, path, module, env):
             render_module(config, subpath, object, env)
 
         # Get (and render) inner classes
-        for name, object in inspect.getmembers(module, inspect.isclass):
+        for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not issubclass(o, enum.Enum)):
             if is_internal_or_imported_module_member(module, path, name, object): continue
 
             subpath = path + [name]
@@ -327,6 +370,17 @@ def render_module(config, path, module, env):
 
             page.classes += [extract_class_doc(subpath, object)]
             render_class(config, subpath, object, env)
+
+        # Get enums
+        for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and issubclass(o, enum.Enum)):
+            if is_internal_or_imported_module_member(module, path, name, object): continue
+
+            subpath = path + [name]
+            if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
+
+            enum_ = extract_enum_doc(subpath, object)
+            page.enums += [enum_]
+            if enum_.has_details: page.has_enum_details = True
 
         # Get inner functions
         for name, object in inspect.getmembers(module, lambda o: inspect.isfunction(o) or inspect.isbuiltin(o)):
@@ -398,16 +452,19 @@ def render_class(config, path, class_, env):
     page.brief = extract_brief(class_.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
+    page.prefix_wbr = '.<wbr />'.join(path + [''])
     page.classes = []
+    page.enums = []
     page.classmethods = []
     page.staticmethods = []
     page.dunder_methods = []
     page.methods = []
     page.properties = []
     page.data = []
+    page.has_enum_details = False
 
     # Get inner classes
-    for name, object in inspect.getmembers(class_, inspect.isclass):
+    for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not issubclass(o, enum.Enum)):
         if name in ['__base__', '__class__']: continue # TODO
         if name.startswith('_'): continue
 
@@ -416,6 +473,17 @@ def render_class(config, path, class_, env):
 
         page.classes += [extract_class_doc(subpath, object)]
         render_class(config, subpath, object, env)
+
+    # Get enums
+    for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and issubclass(o, enum.Enum)):
+        if name.startswith('_'): continue
+
+        subpath = path + [name]
+        if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
+
+        enum_ = extract_enum_doc(subpath, object)
+        page.enums += [enum_]
+        if enum_.has_details: page.has_enum_details = True
 
     # Get methods
     for name, object in inspect.getmembers(class_, inspect.isroutine):

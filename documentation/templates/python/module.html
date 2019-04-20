@@ -2,8 +2,11 @@
 
 {% macro entry_module(module) %}{% include 'entry-module.html' %}{% endmacro %}
 {% macro entry_class(class) %}{% include 'entry-class.html' %}{% endmacro %}
+{% macro entry_enum(enum) %}{% include 'entry-enum.html' %}{% endmacro %}
 {% macro entry_function(function) %}{% include 'entry-function.html' %}{% endmacro %}
 {% macro entry_data(data) %}{% include 'entry-data.html' %}{% endmacro %}
+
+{% macro details_enum(enum, prefix) %}{% include 'details-enum.html' %}{% endmacro %}
 
 {% block title %}{% set j = joiner('.') %}{% for name, _ in page.breadcrumb %}{{ j() }}{{ name }}{% endfor %} | {{ super() }}{% endblock %}
 
@@ -26,6 +29,9 @@
                 {% endif %}
                 {% if page.classes %}
                 <li><a href="#classes">Classes</a></li>
+                {% endif %}
+                {% if page.enums %}
+                <li><a href="#enums">Enums</a></li>
                 {% endif %}
                 {% if page.functions %}
                 <li><a href="#functions">Functions</a></li>
@@ -58,6 +64,16 @@
           </dl>
         </section>
         {% endif %}
+        {% if page.enums %}
+        <section id="enums">
+          <h2><a href="#enums">Enums</a></h2>
+          <dl class="m-doc">
+            {% for enum in page.enums %}
+{{ entry_enum(enum) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
         {% if page.functions %}
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
@@ -76,6 +92,16 @@
 {{ entry_data(data) }}
             {% endfor %}
           </dl>
+        </section>
+        {% endif %}
+        {% if page.has_enum_details %}
+        <section>
+          <h2>Enum documentation</h2>
+          {% for enum in page.enums %}
+          {% if enum.has_details %}
+{{ details_enum(enum, page.prefix_wbr) }}
+          {% endif %}
+          {% endfor %}
         </section>
         {% endif %}
 {% endblock %}
