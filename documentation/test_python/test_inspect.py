@@ -22,9 +22,12 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import math
 import os
 import sys
-import math
+import unittest
+
+from distutils.version import LooseVersion
 
 from . import BaseTestCase
 
@@ -75,6 +78,8 @@ class Annotations(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
 
+    @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7'),
+        "signature with / for pow() is not present in 3.6")
     def test_math(self):
         # From math export only pow() so we have the verification easier, and
         # in addition log() because it doesn't provide any signature metadata
@@ -89,3 +94,20 @@ class Annotations(BaseTestCase):
         assert not hasattr(math, '__all__')
 
         self.assertEqual(*self.actual_expected_contents('math.html'))
+
+    @unittest.skipUnless(LooseVersion(sys.version) < LooseVersion('3.7'),
+        "docstring for log() is different in 3.7")
+    def test_math36(self):
+        # From math export only pow() so we have the verification easier, and
+        # in addition log() because it doesn't provide any signature metadata
+        assert not hasattr(math, '__all__')
+        math.__all__ = ['log']
+
+        self.run_python({
+            'INPUT_MODULES': [math]
+        })
+
+        del math.__all__
+        assert not hasattr(math, '__all__')
+
+        self.assertEqual(*self.actual_expected_contents('math.html', 'math36.html'))

@@ -41,6 +41,7 @@ from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Any, List
 from urllib.parse import urljoin
+from distutils.version import LooseVersion
 
 import jinja2
 
@@ -147,11 +148,14 @@ def extract_annotation(annotation) -> str:
     # TODO: why this is not None directly?
     if annotation is inspect.Signature.empty: return None
 
-    # To avoid getting <class 'foo.bar'> for classes (and getting foo.bar
+    # To avoid getting <class 'foo.bar'> for types (and getting foo.bar
     # instead) but getting the actual type for types annotated with e.g.
-    # List[int], we need to branch on isclass()
-    if inspect.isclass(annotation): return extract_type(annotation)
-    return str(annotation)
+    # List[int], we need to check if the annotation is actually from the
+    # typing module or it's directly a type. In Python 3.7 this worked with
+    # inspect.isclass(annotation), but on 3.6 that gives True for annotations
+    # as well and then we would get just List instead of List[int].
+    if annotation.__module__ == 'typing': return str(annotation)
+    return extract_type(annotation)
 
 def render(config, template: str, page, env: jinja2.Environment):
     template = env.get_template(template)
@@ -404,9 +408,7 @@ def render_module(config, path, module, env):
 # to have in the docs, so filter them out. Uh... kinda ugly.
 _filtered_builtin_functions = set([
     ('__delattr__', "Implement delattr(self, name)."),
-    ('__dir__', "Default dir() implementation."),
     ('__eq__', "Return self==value."),
-    ('__format__', "Default object formatter."),
     ('__ge__', "Return self>=value."),
     ('__getattribute__', "Return getattr(self, name)."),
     ('__gt__', "Return self>value."),
@@ -421,11 +423,8 @@ _filtered_builtin_functions = set([
     ('__ne__', "Return self!=value."),
     ('__new__',
         "Create and return a new object.  See help(type) for accurate signature."),
-    ('__reduce__', "Helper for pickle."),
-    ('__reduce_ex__', "Helper for pickle."),
     ('__repr__', "Return repr(self)."),
     ('__setattr__', "Implement setattr(self, name, value)."),
-    ('__sizeof__', "Size of object in memory, in bytes."),
     ('__str__', "Return str(self)."),
     ('__subclasshook__',
         "Abstract classes can override this to customize issubclass().\n\n"
@@ -434,6 +433,24 @@ _filtered_builtin_functions = set([
         "NotImplemented, the normal algorithm is used.  Otherwise, it\n"
         "overrides the normal algorithm (and the outcome is cached).\n")
 ])
+
+# Python 3.6 has slightly different docstrings than 3.7
+if LooseVersion(sys.version) >= LooseVersion("3.7"):
+    _filtered_builtin_functions.update({
+        ('__dir__', "Default dir() implementation."),
+        ('__format__', "Default object formatter."),
+        ('__reduce__', "Helper for pickle."),
+        ('__reduce_ex__', "Helper for pickle."),
+        ('__sizeof__', "Size of object in memory, in bytes."),
+    })
+else:
+    _filtered_builtin_functions.update({
+        ('__dir__', "__dir__() -> list\ndefault dir() implementation"),
+        ('__format__', "default object formatter"),
+        ('__reduce__', "helper for pickle"),
+        ('__reduce_ex__', "helper for pickle"),
+        ('__sizeof__', "__sizeof__() -> int\nsize of object in memory, in bytes")
+    })
 
 _filtered_builtin_properties = set([
     ('__weakref__', "list of weak references to the object (if defined)")
