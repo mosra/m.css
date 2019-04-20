@@ -187,6 +187,13 @@ Variable                            Description
                                     put into the footer. If not set, a default
                                     generic text is used. If empty, no footer
                                     is rendered at all.
+:py:`CLASS_INDEX_EXPAND_LEVELS`     How many levels of the class index tree to
+                                    expand. :py:`0` means only the top-level
+                                    symbols are shown. If not set, :py:`1` is
+                                    used.
+:py:`CLASS_INDEX_EXPAND_INNER`      Whether to expand inner classes in the
+                                    class index. If not set, :py:`False` is
+                                    used.
 :py:`SEARCH_DISABLED: bool`         Disable search functionality. If this
                                     option is set, no search data is compiled
                                     and the rendered HTML does not contain
@@ -814,6 +821,54 @@ Property                            Description
                                     description block. Currently always set to
                                     :py:`False`. [2]_
 =================================== ===========================================
+
+`Index page templates`_
+-----------------------
+
+The following index pages are provided, showing a expandable tree of the
+contents:
+
+.. class:: m-table m-fullwidth
+
+======================= =======================================================
+Filename                Use
+======================= =======================================================
+``classes.html``        Class listing
+``modules.html``        Module listing
+``pages.html``          Page listing
+======================= =======================================================
+
+Each template is passed all configuration values from the `Configuration`_
+table as-is, together with a :py:`FILENAME`, as above. The navigation tree is
+provided in an :py:`index` object, which has the following properties:
+
+.. class:: m-table m-fullwidth
+
+=========================== ===================================================
+Property                    Description
+=========================== ===================================================
+:py:`index.classes`         List of all modules + classes
+:py:`index.pages`           List of all pages
+=========================== ===================================================
+
+The form of each list entry is the same:
+
+.. class:: m-table m-fullwidth
+
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`i.kind`                    Entry kind (one of :py:`'module'`,
+                                :py:`'class'` or :py:`'page'`)
+:py:`i.name`                    Name
+:py:`i.url`                     URL of the file with detailed documentation
+:py:`i.brief`                   Brief documentation
+:py:`i.has_nestable_children`   If the list has nestable children (i.e., dirs
+                                or namespaces)
+:py:`i.children`                Recursive list of child entries
+=============================== ===============================================
+
+Module/class list is ordered in a way that all modules are before all classes.
 
 -------------------------------
 

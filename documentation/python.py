@@ -69,6 +69,8 @@ default_config = {
     'LINKS_NAVBAR2': [],
     'PAGE_HEADER': None,
     'FINE_PRINT': '[default]',
+    'CLASS_INDEX_EXPAND_LEVELS': 1,
+    'CLASS_INDEX_EXPAND_INNER': False,
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
     'SEARCH_HELP': """.. raw:: html
@@ -87,6 +89,21 @@ default_config = {
     'SEARCH_BASE_URL': None,
     'SEARCH_EXTERNAL_URL': None,
 }
+
+class IndexEntry:
+    def __init__(self):
+        self.kind: str
+        self.name: str
+        self.url: str
+        self.brief: str
+        self.has_nestaable_children: bool = False
+        self.children: List[IndexEntry] = []
+
+class State:
+    def __init__(self, config):
+        self.config = config
+        self.class_index: List[IndexEntry] = []
+        self.page_index: List[IndexEntry] = []
 
 def is_internal_function_name(name: str) -> bool:
     """If the function name is internal.
@@ -298,7 +315,7 @@ def extract_data_doc(parent, path: List[str], data):
 
     return out
 
-def render_module(config, path, module, env):
+def render_module(state: State, path, module, env):
     logging.debug("generating %s.html", '.'.join(path))
 
     url_base = ''
@@ -319,6 +336,13 @@ def render_module(config, path, module, env):
     page.data = []
     page.has_enum_details = False
 
+    # Index entry for this module, returned together with children at the end
+    index_entry = IndexEntry()
+    index_entry.kind = 'module'
+    index_entry.name = breadcrumb[-1][0]
+    index_entry.url = page.url
+    index_entry.brief = page.brief
+
     # This is actually complicated -- if the module defines __all__, use that.
     # The __all__ is meant to expose the public API, so we don't filter out
     # underscored things.
@@ -334,10 +358,10 @@ def render_module(config, path, module, env):
             # submodules and subclasses recursively.
             if inspect.ismodule(object):
                 page.modules += [extract_module_doc(subpath, object)]
-                render_module(config, subpath, object, env)
+                index_entry.children += [render_module(state, subpath, object, env)]
             elif inspect.isclass(object) and not issubclass(object, enum.Enum):
                 page.classes += [extract_class_doc(subpath, object)]
-                render_class(config, subpath, object, env)
+                index_entry.children += [render_class(state, subpath, object, env)]
             elif inspect.isclass(object) and issubclass(object, enum.Enum):
                 enum_ = extract_enum_doc(subpath, object)
                 page.enums += [enum_]
@@ -363,7 +387,7 @@ def render_module(config, path, module, env):
 
             subpath = path + [name]
             page.modules += [extract_module_doc(subpath, object)]
-            render_module(config, subpath, object, env)
+            index_entry.children += [render_module(state, subpath, object, env)]
 
         # Get (and render) inner classes
         for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not issubclass(o, enum.Enum)):
@@ -373,7 +397,7 @@ def render_module(config, path, module, env):
             if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
             page.classes += [extract_class_doc(subpath, object)]
-            render_class(config, subpath, object, env)
+            index_entry.children += [render_class(state, subpath, object, env)]
 
         # Get enums
         for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and issubclass(o, enum.Enum)):
@@ -402,7 +426,8 @@ def render_module(config, path, module, env):
 
             page.data += [extract_data_doc(module, path + [name], object)]
 
-    render(config, 'module.html', page, env)
+    render(state.config, 'module.html', page, env)
+    return index_entry
 
 # Builtin dunder functions have hardcoded docstrings. This is totally useless
 # to have in the docs, so filter them out. Uh... kinda ugly.
@@ -456,7 +481,7 @@ _filtered_builtin_properties = set([
     ('__weakref__', "list of weak references to the object (if defined)")
 ])
 
-def render_class(config, path, class_, env):
+def render_class(state: State, path, class_, env):
     logging.debug("generating %s.html", '.'.join(path))
 
     url_base = ''
@@ -480,6 +505,13 @@ def render_class(config, path, class_, env):
     page.data = []
     page.has_enum_details = False
 
+    # Index entry for this module, returned together with children at the end
+    index_entry = IndexEntry()
+    index_entry.kind = 'class'
+    index_entry.name = breadcrumb[-1][0]
+    index_entry.url = page.url
+    index_entry.brief = page.brief
+
     # Get inner classes
     for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not issubclass(o, enum.Enum)):
         if name in ['__base__', '__class__']: continue # TODO
@@ -489,7 +521,7 @@ def render_class(config, path, class_, env):
         if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
         page.classes += [extract_class_doc(subpath, object)]
-        render_class(config, subpath, object, env)
+        index_entry.children += [render_class(state, subpath, object, env)]
 
     # Get enums
     for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and issubclass(o, enum.Enum)):
@@ -545,7 +577,8 @@ def render_class(config, path, class_, env):
         subpath = path + [name]
         page.data += [extract_data_doc(class_, subpath, object)]
 
-    render(config, 'class.html', page, env)
+    render(state.config, 'class.html', page, env)
+    return index_entry
 
 def run(basedir, config, templates):
     # Prepare Jinja environment
@@ -573,6 +606,8 @@ def run(basedir, config, templates):
     if config['FAVICON']:
         config['FAVICON'] = (config['FAVICON'], mimetypes.guess_type(config['FAVICON'])[0])
 
+    state = State(config)
+
     for module in config['INPUT_MODULES']:
         if isinstance(module, str):
             module_name = module
@@ -580,7 +615,33 @@ def run(basedir, config, templates):
         else:
             module_name = module.__name__
 
-        render_module(config, [module_name], module, env)
+        state.class_index += [render_module(state, [module_name], module, env)]
+
+    # Recurse into the tree and mark every node that has nested modules with
+    # has_nestaable_children.
+    def mark_nested_modules(list: List[IndexEntry]):
+        has_nestaable_children = False
+        for i in list:
+            if i.kind != 'module': continue
+            has_nestaable_children = True
+            mark_nested_modules(i.children)
+        return has_nestaable_children
+    mark_nested_modules(state.class_index)
+
+    # Create module and class index
+    index = Empty()
+    index.classes = state.class_index
+    index.pages = state.page_index
+    for file in ['modules.html', 'classes.html', 'pages.html']:
+        template = env.get_template(file)
+        rendered = template.render(index=index, FILENAME=file, **config)
+        with open(os.path.join(config['OUTPUT'], file), 'wb') as f:
+            f.write(rendered.encode('utf-8'))
+            # Add back a trailing newline so we don't need to bother with
+            # patching test files to include a trailing newline to make Git
+            # happy
+            # TODO could keep_trailing_newline fix this better?
+            f.write(b'\n')
 
     # Create index.html
     # TODO: use actual reST source and have this just as a fallback

@@ -36,11 +36,18 @@ class String(BaseTestCase):
         super().__init__(__file__, 'string', *args, **kwargs)
 
     def test(self):
-        self.run_python()
+        self.run_python({
+            'LINKS_NAVBAR1': [
+                ('Modules', 'modules', []),
+                ('Classes', 'classes', [])],
+        })
         self.assertEqual(*self.actual_expected_contents('inspect_string.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Specials.html'))
+
+        self.assertEqual(*self.actual_expected_contents('classes.html'))
+        self.assertEqual(*self.actual_expected_contents('modules.html'))
 
 class Object(BaseTestCase):
     def __init__(self, *args, **kwargs):
@@ -52,6 +59,9 @@ class Object(BaseTestCase):
         sys.path.append(os.path.join(os.path.dirname(self.path), 'inspect_string'))
         import inspect_string
         self.run_python({
+            'LINKS_NAVBAR1': [
+                ('Modules', 'modules', []),
+                ('Classes', 'classes', [])],
             'INPUT_MODULES': [inspect_string]
         })
 
@@ -60,6 +70,9 @@ class Object(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html', '../inspect_string/inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html', '../inspect_string/inspect_string.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Specials.html', '../inspect_string/inspect_string.Specials.html'))
+
+        self.assertEqual(*self.actual_expected_contents('classes.html', '../inspect_string/classes.html'))
+        self.assertEqual(*self.actual_expected_contents('modules.html', '../inspect_string/modules.html'))
 
 class AllProperty(BaseTestCase):
     def __init__(self, *args, **kwargs):
