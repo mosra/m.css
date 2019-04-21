@@ -28,6 +28,8 @@ matrix:
         apt:
           packages:
           - graphviz
+          - cmake
+          - ninja-build
       env:
       - WITH_THEME=ON
       - WITH_DOCUMENTATION=ON
@@ -63,8 +65,11 @@ script:
   # 16.04.
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/plugins && coverage run -m unittest && cp .coverage ../.coverage.plugins; fi
 
-  # Test documentation themes. Math rendering is not tested as dvisvgm is
-  # unusable even on 16.04.
+  # Test documentation themes. Needs also to compile a bunch of things for the
+  # pybind11 tests. Math rendering is not tested as dvisvgm is unusable even on
+  # 16.04.
+  - if [ "$WITH_DOCUMENTATION" == "ON" ] && [ ! -f $HOME/pybind11/include ]; then $TRAVIS_BUILD_DIR/package/ci/setup-pybind11.sh; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_python && mkdir -p build && cd build && cmake -DCMAKE_PREFIX_PATH=$HOME/pybind11 -DPYBIND11_PYTHON_VERSION=3.6 -G Ninja .. && ninja; fi
   - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
   # Test client doxygen JS
@@ -76,10 +81,11 @@ script:
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/css && ./postprocess.sh && git diff --color=always . | cat; fi
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/css && git diff-index --exit-code HEAD -- .; fi
 
-# Cache the downloaded doxygen
+# Cache the downloaded doxygen and pybind11
 cache:
   directories:
   - $HOME/bin
+  - $HOME/pybind11
 
 notifications:
   webhooks:
