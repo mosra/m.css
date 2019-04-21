@@ -116,6 +116,16 @@ class Signature(unittest.TestCase):
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)\n\nThis is text!!'),
             ('foo', 'This is text!!', [('…', None, None)], None))
 
+    def test_crazy_return(self):
+        self.assertEqual(parse_pybind_signature(
+            'foo(a: int) -> Math::Vector<4, UnsignedInt>'),
+            ('foo', '', [('…', None, None)], None))
+
+    def test_crazy_return_docs(self):
+        self.assertEqual(parse_pybind_signature(
+            'foo(a: int) -> Math::Vector<4, UnsignedInt>\n\nThis returns!'),
+            ('foo', 'This returns!', [('…', None, None)], None))
+
     def test_no_name(self):
         self.assertEqual(parse_pybind_signature(
             '(arg0: MyClass) -> float'),

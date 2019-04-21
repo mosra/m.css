@@ -245,7 +245,15 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
     else:
         return_type = None
 
-    assert not signature or signature[0] == '\n'
+    if signature and signature[0] != '\n':
+        end = original_signature.find('\n')
+        logging.warning("cannot parse pybind11 function signature %s", original_signature[:end])
+        if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
+            brief = extract_brief(original_signature[end + 1:])
+        else:
+            brief = ''
+        return (name, brief, [('…', None, None)], None)
+
     if len(signature) > 1 and signature[1] == '\n':
         brief = extract_brief(signature[2:])
     else:
