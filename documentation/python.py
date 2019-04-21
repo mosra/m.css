@@ -160,7 +160,7 @@ def is_enum(state: State, object) -> bool:
 def make_url(path: List[str]) -> str:
     return '.'.join(path) + '.html'
 
-_pybind_name_rx = re.compile('[a-zA-Z0-9_]+')
+_pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
 _pybind_default_value_rx = re.compile('[^,)]+')
@@ -512,7 +512,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
         return [out]
 
-def extract_property_doc(path: List[str], property):
+def extract_property_doc(state: State, path: List[str], property):
     assert inspect.isdatadescriptor(property)
 
     out = Empty()
@@ -526,7 +526,11 @@ def extract_property_doc(path: List[str], property):
         signature = inspect.signature(property.fget)
         out.type = extract_annotation(signature.return_annotation)
     except ValueError:
-        out.type = None
+        # pybind11 properties have the type in the docstring
+        if state.config['PYBIND11_COMPATIBILITY']:
+            out.type = parse_pybind_signature(property.fget.__doc__)[3]
+        else:
+            out.type = None
 
     return out
 
@@ -800,7 +804,7 @@ def render_class(state: State, path, class_, env):
         subpath = path + [name]
         if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
-        page.properties += [extract_property_doc(subpath, object)]
+        page.properties += [extract_property_doc(state, subpath, object)]
 
     # Get data
     # TODO: unify this query

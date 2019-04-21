@@ -26,6 +26,11 @@ struct MyClass {
     std::pair<float, int> instanceFunction(int, const std::string&) { return {0.5f, 42}; }
 
     int another() { return 42; }
+
+    float foo() const { return _foo; }
+    void setFoo(float foo) { _foo = foo; }
+
+    private: float _foo = 0.0f;
 };
 
 PYBIND11_MODULE(pybind_signatures, m) {
@@ -45,5 +50,6 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def(py::init(), "Constructor")
         .def("instance_function", &MyClass::instanceFunction, "Instance method with positional-only args")
         .def("instance_function_kwargs", &MyClass::instanceFunction, "Instance method with position or keyword args", py::arg("hey"), py::arg("what") = "eh?")
-        .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only");
+        .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only")
+        .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property");
 }

@@ -116,6 +116,11 @@ class Signature(unittest.TestCase):
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)\n\nThis is text!!'),
             ('foo', 'This is text!!', [('…', None, None)], None))
 
+    def test_no_name(self):
+        self.assertEqual(parse_pybind_signature(
+            '(arg0: MyClass) -> float'),
+            ('', '', [('arg0', 'MyClass', None)], 'float'))
+
 class Signatures(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'signatures', *args, **kwargs)

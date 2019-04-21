@@ -528,8 +528,8 @@ has to do a few pybind11-specific workarounds to generate expected output. This
 behavior is not enabled by default as it *might* have unwanted consequences in
 pure Python code, enable it using the :py:`PYBIND11_COMPATIBILITY` option.
 
-`Function signatures`_
-----------------------
+`Function signatures, property annotations`_
+--------------------------------------------
 
 For reasons explained in :gh:`pybind/pybind11#990`, pybind11 is not able to
 provide function signatures through introspection and thus the script falls
@@ -537,6 +537,8 @@ back to parsing argument names, type annotations and default values from the
 docstring instead. By default, unless :cpp:`py::arg()` is used, function
 arguments are positional-only (shown as :py:`arg0`, :py:`arg1`, ...) and marked
 as such in the output.
+
+Similarly, property types are extracted from getter docstrings.
 
 The signature parsing can't handle all cases and, especially when templated C++
 type names leak through, it may fail to extract the argument names. If that
