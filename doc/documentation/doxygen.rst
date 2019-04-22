@@ -406,7 +406,7 @@ these are not expected to be excessively large.
 ------------------
 
 By default, the `dark m.css theme <{filename}/css/themes.rst#dark>`_ together
-with Doxygen-theme-specific additions is used, which corresponds to the
+with documentation-theme-specific additions is used, which corresponds to the
 following configuration:
 
 .. code:: ini
@@ -419,7 +419,7 @@ following configuration:
 
 If you have a site already using the ``m-dark.compiled.css`` file, there's
 another file called ``m-dark.documentation.compiled.css``, which contains just
-the Doxygen-theme-specific additions so you can reuse the already cached
+the documentation-theme-specific additions so you can reuse the already cached
 ``m-dark.compiled.css`` file from your main site:
 
 .. code:: ini
@@ -1196,7 +1196,7 @@ Options:
 
 -   ``-h``, ``--help`` --- show this help message and exit
 -   ``--templates TEMPLATES`` --- template directory. Defaults to the
-    ``templates/`` subdirectory if not set.
+    ``templates/doxygen/`` subdirectory if not set.
 -   ``--wildcard WILDCARD`` --- only process files matching the wildcard.
     Useful for debugging to speed up / restrict the processing to a subset of
     files. Defaults to ``*.xml`` if not set.
@@ -1213,7 +1213,7 @@ Options:
     barriers that improve search result relevance
 -   ``--search-no-prefix-merging`` --- don't merge search result prefixes
 -   ``--sort-globbed-files`` --- sort globbed files for better reproducibility
--   ``--debug`` --- verbose debug output. Useful for debugging.
+-   ``--debug`` --- verbose logging output. Useful for debugging.
 
 `Troubleshooting`_
 ==================
@@ -1332,8 +1332,10 @@ is an example configuration corresponding to the dark theme:
         ../css/m-dark.css \
         ../css/m-documentation.css
     HTML_EXTRA_FILES = \
+        ../css/m-theme-dark.css \
         ../css/m-grid.css \
         ../css/m-components.css \
+        ../css/m-layout.css \
         ../css/pygments-dark.css \
         ../css/pygments-console.css
     M_THEME_COLOR = #22272e
