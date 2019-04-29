@@ -14,6 +14,8 @@ Listing only people with code contributions, because otherwise there's too many
 -   Arvid Gerstmann (`@Leandros <https://github.com/Leandros>`_) ---
     Windows-related fixes, bugreports
 -   `@Bridouz <https://github.com/Bridouz>`_ --- documentation improvements
+-   Cris Luengo (`@crisluengo <https://github.com/crisluengo>`_) ---
+    complete handling of Doxygen entities and super/subscript elements
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
