@@ -419,6 +419,16 @@ terminal, it's best to have the listings in external files and use
 
     .. include:: math-and-code-console.ansi
         :code: ansi
+        :class: m-nopad
+
+Apart from the basic color set there's also a very rudimentary support for
+24bit colors using the ``\033[{?};2;{r};{g};{b}m`` color sequence --- currently
+either just the foreground (the ``\033[38;2;`` prefix) or foreground
+immediately followed by background color specification (the
+``\033[48;2;`` prefix):
+
+.. include:: math-and-code-console-colors.ansi
+    :code: ansi
 
 `Code figure`_
 --------------

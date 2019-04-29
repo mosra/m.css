@@ -898,8 +898,9 @@ Besides code, it's also possible to "highlight" ANSI-colored terminal output.
 For that, m.css provides a custom Pygments lexer that's together with
 `pygments-console.css <{filename}/css.rst>`_ able to detect and highlight the
 basic 4-bit color codes (8 foreground colors in either normal or bright
-version). Download the :gh:`ansilexer.py <mosra/m.css$master/plugins/m/ansilexer.py>`
-file or use it directly from your Git clone of m.css. Example usage:
+version) and a tiny subset of the 24-bit color scheme as well. Download the
+:gh:`ansilexer.py <mosra/m.css$master/plugins/m/ansilexer.py>` file or use it
+directly from your Git clone of m.css. Example usage:
 
 .. code:: sh
 

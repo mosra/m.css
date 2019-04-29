@@ -1428,7 +1428,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             else:
                 class_ = 'm-code'
 
-            formatter = HtmlFormatter(nowrap=True)
+            if isinstance(lexer, ansilexer.AnsiLexer):
+                formatter = ansilexer.HtmlAnsiFormatter()
+            else:
+                formatter = HtmlFormatter(nowrap=True)
             highlighted = highlight(code, lexer, formatter)
             # Strip whitespace around if inline code, strip only trailing
             # whitespace if a block

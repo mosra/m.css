@@ -26,6 +26,11 @@ rendered as plain monospace text: :code:`code`.
 .. include:: console.ansi
     :code: ansi
 
+Console colors:
+
+.. include:: console-colors.ansi
+    :code: ansi
+
 .. code:: whatthefuck
 
     // this language is not highlighted

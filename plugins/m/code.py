@@ -59,7 +59,10 @@ def _highlight(code, language, options, is_block):
     else:
         class_ = 'm-code'
 
-    formatter = HtmlFormatter(nowrap=True, **options)
+    if isinstance(lexer, ansilexer.AnsiLexer):
+        formatter = ansilexer.HtmlAnsiFormatter(**options)
+    else:
+        formatter = HtmlFormatter(nowrap=True, **options)
     parsed = highlight(code, lexer, formatter).rstrip()
     if not is_block: parsed.lstrip()
 

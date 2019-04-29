@@ -22,7 +22,10 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import re
+
 from pygments.lexer import RegexLexer
+from pygments.formatters import HtmlFormatter
 from pygments.token import *
 
 class AnsiLexer(RegexLexer):
@@ -65,8 +68,35 @@ class AnsiLexer(RegexLexer):
 
         yield (match.start(), string_to_tokentype(token), text)
 
+    def callback_fg_color(lexer, match):
+        token = 'Generic.AnsiForegroundColor{:02x}{:02x}{:02x}'.format(
+            int(match.group(1)), int(match.group(2)), int(match.group(3)))
+        yield (match.start, string_to_tokentype(token), match.group(4))
+
+    def callback_fg_bg_color(lexer, match):
+        token = 'Generic.AnsiForegroundBackgroundColor{:02x}{:02x}{:02x}'.format(
+            int(match.group(1)), int(match.group(2)), int(match.group(3)))
+        yield (match.start, string_to_tokentype(token), match.group(4))
+
     tokens = {
         'root': [
             ('[^\x1b]+', Text),
+            ('\x1b\\[38;2;(\\d+);(\\d+);(\\d+)m\x1b\\[48;2;\\d+;\\d+;\\d+m([^\x1b]+)\x1b\\[0m', callback_fg_bg_color),
+            ('\x1b\\[38;2;(\\d+);(\\d+);(\\d+)m([^\x1b]+)\x1b\\[0m', callback_fg_color),
             ('\x1b\\[(\\d+)(;\\d+)?m([^\x1b]*)', callback)]
     }
+
+_ansi_fg_color_re = re.compile('class="g g-AnsiForegroundColor([0-9a-f]{6})"')
+_ansi_fg_bg_color_re = re.compile('class="g g-AnsiForegroundBackgroundColor([0-9a-f]{6})"')
+
+class HtmlAnsiFormatter(HtmlFormatter):
+    def wrap(self, source, outfile):
+        return self._wrap_code(source)
+
+    def _wrap_code(self, source):
+        for i, t in source:
+            if i == 1: # it's a line of formatted code
+                t = _ansi_fg_bg_color_re.sub('style="color: #\\1; background-color: #\\1"', t)
+                t = _ansi_fg_color_re.sub('style="color: #\\1"', t)
+                #t += 'H'
+            yield i, t
