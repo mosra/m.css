@@ -880,6 +880,13 @@ figure.m-figure.m-fullwidth:after {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
+.m-code-figure > pre.m-nopad, .m-console-figure > pre.m-nopad {
+  margin-left: -0.875rem;
+  margin-right: -0.875rem;
+  margin-top: -1rem;
+  margin-bottom: -0.875rem;
+  padding-left: 0.875rem;
+}
 figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcaption {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -2250,6 +2257,11 @@ article:last-child, article section:last-child { margin-bottom: 0; }
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
+}
+.m-container-inflatable section:target > .m-code-figure > pre.m-nopad,
+.m-container-inflatable section:target > .m-console-figure > pre.m-nopad {
+  margin-left: -0.75rem;
+  padding-left: -0.75rem;
 }
 @media screen and (min-width: 576px) {
   .m-container-inflatable section:target .m-center-s > .m-note,

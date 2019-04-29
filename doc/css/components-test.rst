@@ -1266,6 +1266,28 @@ should not affect it.
         <pre>And a resulting output.</pre>
     </figure>
 
+Code figure with a "nopad" console output inside:
+
+.. raw:: html
+
+    <figure class="m-code-figure">
+        <pre class="m-code">Some
+        code
+    snippet</pre>
+        <pre class="m-console m-nopad">And a resulting output.</pre>
+    </figure>
+
+Console figure with a "nopad" code output inside:
+
+.. raw:: html
+
+    <figure class="m-console-figure">
+        <pre class="m-console">Some
+        console
+    output</pre>
+        <pre class="m-code m-nopad">And the code that goes out.</pre>
+    </figure>
+
 Console figure:
 
 .. raw:: html

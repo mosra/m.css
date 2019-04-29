@@ -963,6 +963,28 @@ bit of a figure inception shown here):
 
 It's also possible to have matching border for a console output. Just use
 :css:`.m-console-figure` instead of :css:`.m-code-figure` on the outer element.
+For reduced clutter when combining a code figure with console output (and vice
+versa), mark the second :html:`<pre>` with :css:`.m-nopad`:
+
+.. code-figure::
+
+    .. code:: html
+
+        <figure class="m-code-figure">
+            <pre class="m-code">Some
+            code
+        snippet</pre>
+            <pre class="m-console m-nopad">And a resulting output.</pre>
+        </figure>
+
+    .. raw:: html
+
+        <figure class="m-code-figure">
+            <pre class="m-code">Some
+            code
+        snippet</pre>
+            <pre class="m-console m-nopad">And a resulting output.</pre>
+        </figure>
 
 .. note-info::
 

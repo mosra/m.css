@@ -541,6 +541,11 @@ article:last-child, article section:last-child { margin-bottom: 0; }
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
 }
+.m-container-inflatable section:target > .m-code-figure > pre.m-nopad,
+.m-container-inflatable section:target > .m-console-figure > pre.m-nopad {
+  margin-left: -0.75rem;
+  padding-left: -0.75rem;
+}
 /* Center/left/right are tied to particular breakpoint so we need to
    conditionally revert that. Left-aligned content is touching the left border
    both in full size and aligned, so we revert it only for center and right. */
