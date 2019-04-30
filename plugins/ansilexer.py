@@ -86,8 +86,8 @@ class AnsiLexer(RegexLexer):
             ('\x1b\\[(\\d+)(;\\d+)?m([^\x1b]*)', callback)]
     }
 
-_ansi_fg_color_re = re.compile('class="g g-AnsiForegroundColor([0-9a-f]{6})"')
-_ansi_fg_bg_color_re = re.compile('class="g g-AnsiForegroundBackgroundColor([0-9a-f]{6})"')
+_ansi_fg_color_re = re.compile('class="g g-AnsiForegroundColor([0-9a-f]{6})">')
+_ansi_fg_bg_color_re = re.compile('class="g g-AnsiForegroundBackgroundColor([0-9a-f]{6})">')
 
 class HtmlAnsiFormatter(HtmlFormatter):
     def wrap(self, source, outfile):
@@ -96,7 +96,12 @@ class HtmlAnsiFormatter(HtmlFormatter):
     def _wrap_code(self, source):
         for i, t in source:
             if i == 1: # it's a line of formatted code
-                t = _ansi_fg_bg_color_re.sub('style="color: #\\1; background-color: #\\1"', t)
-                t = _ansi_fg_color_re.sub('style="color: #\\1"', t)
+                # Add ZWNJ for before each character because otherwise it's
+                # somehow impossible to wrap even with word-break: break-all.
+                # Not sure why (and not sure if this is the best solution), but
+                # had to ship a thing so there it is. Adding <wbr/> did not
+                # help.
+                t = _ansi_fg_bg_color_re.sub('style="color: #\\1; background-color: #\\1">&zwnj;', t)
+                t = _ansi_fg_color_re.sub('style="color: #\\1">&zwnj;', t)
                 #t += 'H'
             yield i, t
