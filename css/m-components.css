@@ -174,12 +174,9 @@ div.m-scroll {
 .m-text-bottom, table.m-table th.m-text-bottom, table.m-table td.m-text-bottom {
   vertical-align: bottom;
 }
-.m-text.m-small {
-  font-size: 85.4%;
-}
-.m-text.m-big {
-  font-size: 117%;
-}
+.m-text.m-tiny { font-size: 50.0%; }
+.m-text.m-small { font-size: 85.4%; }
+.m-text.m-big { font-size: 117%; }
 h1 .m-thin, h2 .m-thin, h3 .m-thin, h4 .m-thin, h5 .m-thin, h6 .m-thin {
   font-weight: normal;
 }

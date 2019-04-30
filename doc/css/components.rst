@@ -310,8 +310,8 @@ paragraph or inline text.
     directives in your :abbr:`reST <reStructuredText>` markup using the
     `Pelican Components plugin <{filename}/plugins/components.rst#text>`__.
 
-Apply :css:`.m-small` or :css:`.m-big` CSS class together with :css:`.m-text`
-to make the text appear smaller or larger.
+Apply :css:`.m-tiny`, :css:`.m-small` or :css:`.m-big` CSS class together with
+:css:`.m-text` to make the text appear smaller or larger.
 
 .. code-figure::
 
@@ -323,6 +323,9 @@ to make the text appear smaller or larger.
         <p class="m-text m-small">Smaller text. Lorem ipsum dolor sit amet, consectetur
         adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra
         imperdiet tortor sed vehicula.</p>
+        <p class="m-text m-tiny">Tiny text. Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra
+        imperdiet tortor sed vehicula.</p>
 
     .. raw:: html
 
@@ -330,6 +333,9 @@ to make the text appear smaller or larger.
         adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra
         imperdiet tortor sed vehicula.</p>
         <p class="m-text m-small">Smaller text. Lorem ipsum dolor sit amet, consectetur
+        adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra
+        imperdiet tortor sed vehicula.</p>
+        <p class="m-text m-tiny">Tiny text. Lorem ipsum dolor sit amet, consectetur
         adipiscing elit. Vivamus ultrices a erat eu suscipit. Aliquam pharetra
         imperdiet tortor sed vehicula.</p>
 
