@@ -36,6 +36,8 @@ Python docs
 
 .. role:: cpp(code)
     :language: cpp
+.. role:: css(code)
+    :language: css
 .. role:: js(code)
     :language: js
 .. role:: py(code)
