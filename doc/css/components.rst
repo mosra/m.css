@@ -1001,7 +1001,7 @@ versa), mark the second :html:`<pre>` with :css:`.m-nopad`:
 
     Code figures can be conveniently created with a :rst:`.. code-figure::`
     directive in your :abbr:`reST <reStructuredText>` markup using the
-    `Pelican Components plugin <{filename}/plugins/components.rst#code-figure>`_.
+    `Pelican Components plugin <{filename}/plugins/components.rst#code-math-and-graph-figure>`_.
 
 `Math`_
 =======
