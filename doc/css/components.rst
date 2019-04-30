@@ -922,6 +922,10 @@ might then look similarly to this:
         <pre class="m-console">CONTRIBUTING.rst  CREDITS.rst  <span class="g g-AnsiBrightBlue">doc</span>            <span class="g g-AnsiBrightBlue">plugins</span>        README.rst
         COPYING           <span class="g g-AnsiBrightBlue">css</span>          <span class="g g-AnsiBrightBlue">documentation</span>  <span class="g g-AnsiBrightBlue">pelican-theme</span>  <span class="g g-AnsiBrightBlue">site</span></pre>
 
+It's sometimes desirable to have console output wrapped to the available
+container width (like terminals do). Add :css:`.m-console-wrap` to the
+:html:`<pre>` to achieve that effect.
+
 .. note-success::
 
     The Pelican Code plugin mentioned above is able to do

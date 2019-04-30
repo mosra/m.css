@@ -88,6 +88,10 @@ pre {
   overflow-x: auto;
   margin-top: 0; /* stupid defaults */
 }
+pre.m-console-wrap {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
 pre.m-console {
   background-color: var(--console-background-color);
 }

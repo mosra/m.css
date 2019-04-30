@@ -400,6 +400,10 @@ pre {
   overflow-x: auto;
   margin-top: 0;
 }
+pre.m-console-wrap {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
 pre.m-console {
   background-color: #000000;
 }
