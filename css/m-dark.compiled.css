@@ -345,6 +345,7 @@ html {
 body {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 1rem;
+  line-height: normal;
   color: #dcdcdc;
 }
 h1, h2, h3, h4, h5, h6 {

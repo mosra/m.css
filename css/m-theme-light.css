@@ -28,6 +28,7 @@
   --code-font: 'Source Code Pro', monospace;
   --font-size: 14px;
   --code-font-size: 1em; /* *not* rem, so it follows surrounding font size */
+  --line-height: normal;
   --paragraph-indent: 1.5rem;
   --paragraph-align: justify;
   --link-decoration: underline;
