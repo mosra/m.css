@@ -462,7 +462,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
                 # Don't include redundant type for the self argument
                 if name == 'self': param.type = None
                 else: param.type = type
-                param.default = default
+                param.default = html.escape(default or '')
                 if type or default: out.has_complex_params = True
 
                 # *args / **kwargs can still appear in the parsed signatures if

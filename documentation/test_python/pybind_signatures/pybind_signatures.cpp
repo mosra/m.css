@@ -52,7 +52,7 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def_static("static_function", &MyClass::staticFunction, "Static method with positional-only args")
         .def(py::init(), "Constructor")
         .def("instance_function", &MyClass::instanceFunction, "Instance method with positional-only args")
-        .def("instance_function_kwargs", &MyClass::instanceFunction, "Instance method with position or keyword args", py::arg("hey"), py::arg("what") = "eh?")
+        .def("instance_function_kwargs", &MyClass::instanceFunction, "Instance method with position or keyword args", py::arg("hey"), py::arg("what") = "<eh?>")
         .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only")
         .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property");
 }
