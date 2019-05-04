@@ -465,11 +465,16 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
                 param.default = default
                 if type or default: out.has_complex_params = True
 
-                # *args / **kwargs are shown in the signature only for
-                # overloaded functions and we are expanding those
-                assert name not in ['*args', '**kwargs']
-
-                param.kind = 'POSITIONAL_ONLY' if positional_only else 'POSITIONAL_OR_KEYWORD'
+                # *args / **kwargs can still appear in the parsed signatures if
+                # the function accepts py::args / py::kwargs directly
+                if name == '*args':
+                    param.name = 'args'
+                    param.kind = 'VAR_POSITIONAL'
+                elif name == '**kwargs':
+                    param.name = 'kwargs'
+                    param.kind = 'VAR_KEYWORD'
+                else:
+                    param.kind = 'POSITIONAL_ONLY' if positional_only else 'POSITIONAL_OR_KEYWORD'
 
                 out.params += [param]
 

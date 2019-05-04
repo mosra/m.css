@@ -33,6 +33,8 @@ struct MyClass {
     private: float _foo = 0.0f;
 };
 
+void duck(py::args, py::kwargs) {}
+
 PYBIND11_MODULE(pybind_signatures, m) {
     m.doc() = "pybind11 function signature extraction";
 
@@ -43,7 +45,8 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("taking_a_list_returning_a_tuple", &takingAListReturningATuple, "Takes a list, returns a tuple")
         .def("crazy_signature", &crazySignature, "Function that failed to get parsed")
         .def("overloaded", static_cast<std::string(*)(int)>(&overloaded), "Overloaded for ints")
-        .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats");
+        .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats")
+        .def("duck", &duck, "A function taking args/kwargs directly");
 
     py::class_<MyClass>(m, "MyClass", "My fun class!")
         .def_static("static_function", &MyClass::staticFunction, "Static method with positional-only args")
