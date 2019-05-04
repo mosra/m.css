@@ -2,8 +2,8 @@
             <h3>
               class {{ prefix }}<a href="" class="m-doc-self">{{ enum.name }}</a>({{ enum.base }})
             </h3>
-            {% if enum.brief %}
-            <p>{{ enum.brief }}</p>
+            {% if enum.summary %}
+            <p>{{ enum.summary }}</p>
             {% endif %}
             {% if enum.has_value_details %}
             <table class="m-table m-fullwidth m-flat m-doc">
@@ -13,8 +13,8 @@
                 <tr>
                   <td><a href="" class="m-doc-self">{{ value.name }}</a></td>
                   <td>
-                  {% if value.brief %}
-                  <p>{{ value.brief }}</p>
+                  {% if value.summary %}
+                  <p>{{ value.summary }}</p>
                   {% endif %}
                   </td>
                 </tr>

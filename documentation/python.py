@@ -97,7 +97,7 @@ class IndexEntry:
         self.kind: str
         self.name: str
         self.url: str
-        self.brief: str
+        self.summary: str
         self.has_nestaable_children: bool = False
         self.children: List[IndexEntry] = []
 
@@ -227,10 +227,10 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
             end = original_signature.find('\n')
             logging.warning("cannot parse pybind11 function signature %s", original_signature[:end])
             if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-                brief = extract_brief(original_signature[end + 1:])
+                summary = extract_summary(original_signature[end + 1:])
             else:
-                brief = ''
-            return (name, brief, [('…', None, None)], None)
+                summary = ''
+            return (name, summary, [('…', None, None)], None)
 
         signature = signature[2:]
 
@@ -249,17 +249,17 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-            brief = extract_brief(original_signature[end + 1:])
+            summary = extract_summary(original_signature[end + 1:])
         else:
-            brief = ''
-        return (name, brief, [('…', None, None)], None)
+            summary = ''
+        return (name, summary, [('…', None, None)], None)
 
     if len(signature) > 1 and signature[1] == '\n':
-        brief = extract_brief(signature[2:])
+        summary = extract_summary(signature[2:])
     else:
-        brief = ''
+        summary = ''
 
-    return (name, brief, args, return_type)
+    return (name, summary, args, return_type)
 
 def parse_pybind_docstring(name: str, doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
     # Multiple overloads, parse each separately
@@ -290,7 +290,7 @@ def parse_pybind_docstring(name: str, doc: str) -> List[Tuple[str, str, List[Tup
     else:
         return [parse_pybind_signature(doc)]
 
-def extract_brief(doc: str) -> str:
+def extract_summary(doc: str) -> str:
     if not doc: return '' # some modules (xml.etree) have that :(
     doc = inspect.cleandoc(doc)
     end = doc.find('\n\n')
@@ -331,7 +331,7 @@ def extract_module_doc(path: List[str], module):
     out = Empty()
     out.url = make_url(path)
     out.name = path[-1]
-    out.brief = extract_brief(module.__doc__)
+    out.summary = extract_summary(module.__doc__)
     return out
 
 def extract_class_doc(path: List[str], class_):
@@ -340,7 +340,7 @@ def extract_class_doc(path: List[str], class_):
     out = Empty()
     out.url = make_url(path)
     out.name = path[-1]
-    out.brief = extract_brief(class_.__doc__)
+    out.summary = extract_summary(class_.__doc__)
     return out
 
 def extract_enum_doc(state: State, path: List[str], enum_):
@@ -354,9 +354,9 @@ def extract_enum_doc(state: State, path: List[str], enum_):
     if issubclass(enum_, enum.Enum):
         # Enum doc is by default set to a generic value. That's useless as well.
         if enum_.__doc__ == 'An enumeration.':
-            out.brief = ''
+            out.summary = ''
         else:
-            out.brief = extract_brief(enum_.__doc__)
+            out.summary = extract_summary(enum_.__doc__)
 
         out.base = extract_type(enum_.__base__)
 
@@ -367,11 +367,11 @@ def extract_enum_doc(state: State, path: List[str], enum_):
 
             # Value doc gets by default inherited from the enum, that's useless
             if i.__doc__ == enum_.__doc__:
-                value.brief = ''
+                value.summary = ''
             else:
-                value.brief = extract_brief(i.__doc__)
+                value.summary = extract_summary(i.__doc__)
 
-            if value.brief:
+            if value.summary:
                 out.has_details = True
                 out.has_value_details = True
             out.values += [value]
@@ -380,7 +380,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
     elif state.config['PYBIND11_COMPATIBILITY']:
         assert hasattr(enum_, '__members__')
 
-        out.brief = extract_brief(enum_.__doc__)
+        out.summary = extract_summary(enum_.__doc__)
         out.base = None
 
         for name, v in enum_.__members__.items():
@@ -390,7 +390,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
             # TODO: once https://github.com/pybind/pybind11/pull/1160 is
             #       released, extract from class docs (until then the class
             #       docstring is duplicated here, which is useless)
-            value.brief = ''
+            value.summary = ''
             out.values += [value]
 
     return out
@@ -406,13 +406,13 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__.startswith(path[-1]):
         funcs = parse_pybind_docstring(path[-1], function.__doc__)
         overloads = []
-        for name, brief, args, type in funcs:
+        for name, summary, args, type in funcs:
             out = Empty()
             out.name = path[-1]
             out.params = []
             out.has_complex_params = False
             out.has_details = False
-            out.brief = brief
+            out.summary = summary
 
             # Don't show None return type for void functions
             out.type = None if type == 'None' else type
@@ -489,7 +489,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
         out.params = []
         out.has_complex_params = False
         out.has_details = False
-        out.brief = extract_brief(function.__doc__)
+        out.summary = extract_summary(function.__doc__)
 
         # Decide if classmethod or staticmethod in case this is a method
         if inspect.isclass(parent):
@@ -530,7 +530,7 @@ def extract_property_doc(state: State, path: List[str], property):
 
     out = Empty()
     out.name = path[-1]
-    out.brief = extract_brief(property.__doc__)
+    out.summary = extract_summary(property.__doc__)
     out.is_settable = property.fset is not None
     out.is_deletable = property.fdel is not None
     out.has_details = False
@@ -553,7 +553,7 @@ def extract_data_doc(parent, path: List[str], data):
     out = Empty()
     out.name = path[-1]
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
-    out.brief = ''
+    out.summary = ''
     out.has_details = False
     if hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
         out.type = extract_annotation(parent.__annotations__[out.name])
@@ -578,7 +578,7 @@ def render_module(state: State, path, module, env):
         breadcrumb += [(i, url_base + 'html')]
 
     page = Empty()
-    page.brief = extract_brief(module.__doc__)
+    page.summary = extract_summary(module.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
@@ -594,7 +594,7 @@ def render_module(state: State, path, module, env):
     index_entry.kind = 'module'
     index_entry.name = breadcrumb[-1][0]
     index_entry.url = page.url
-    index_entry.brief = page.brief
+    index_entry.summary = page.summary
 
     # This is actually complicated -- if the module defines __all__, use that.
     # The __all__ is meant to expose the public API, so we don't filter out
@@ -744,7 +744,7 @@ def render_class(state: State, path, class_, env):
         breadcrumb += [(i, url_base + 'html')]
 
     page = Empty()
-    page.brief = extract_brief(class_.__doc__)
+    page.summary = extract_summary(class_.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
@@ -763,7 +763,7 @@ def render_class(state: State, path, class_, env):
     index_entry.kind = 'class'
     index_entry.name = breadcrumb[-1][0]
     index_entry.url = page.url
-    index_entry.brief = page.brief
+    index_entry.summary = page.summary
 
     # Get inner classes
     for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not is_enum(state, o)):

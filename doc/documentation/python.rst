@@ -386,18 +386,18 @@ all found submodules in it are ignored.
 -------------
 
 The first paragraph of a module-level, class-level and function-level docstring
-is used as a brief documentation, copied as-is to the output without formatting
-it in any way.
+is used as a doc summary, copied as-is to the output without formatting it in
+any way.
 
 .. code:: py
 
-    """Module brief docs"""
+    """Module summary"""
 
     class Foo:
-        """Class brief docs"""
+        """Class summary"""
 
         def bar(self):
-            """Function brief docs"""
+            """Function summary"""
 
 .. block-warning:: Limitations
 
@@ -681,7 +681,7 @@ HTML markup without any additional escaping.
 ======================================= =======================================
 Property                                Description
 ======================================= =======================================
-:py:`page.brief`                        Brief docs
+:py:`page.summary`                      Doc summary
 :py:`page.url`                          File URL
 :py:`page.breadcrumb`                   List of :py:`(title, URL)` tuples for
                                         breadcrumb navigation.
@@ -754,7 +754,7 @@ Property                                Description
 ======================================= =======================================
 :py:`module.url`                        URL of detailed module documentation
 :py:`module.name`                       Module name
-:py:`module.brief`                      Brief docs
+:py:`module.summary`                    Doc summary
 ======================================= =======================================
 
 `Class properties`_
@@ -767,7 +767,7 @@ Property                                Description
 ======================================= =======================================
 :py:`class_.url`                        URL of detailed class documentation
 :py:`class_.name`                       Class name
-:py:`class_.brief`                      Brief docs
+:py:`class_.summary`                    Doc summary
 ======================================= =======================================
 
 `Enum properties`_
@@ -779,7 +779,7 @@ Property                                Description
 Property                                Description
 ======================================= =======================================
 :py:`enum.name`                         Enum name
-:py:`enum.brief`                        Brief docs
+:py:`enum.summary`                      Doc summary
 :py:`enum.base`                         Base class from which the enum is
                                         derived. Set to :py:`None` if no base
                                         class information is available.
@@ -800,7 +800,7 @@ Property                    Description
 :py:`value.name`            Value name
 :py:`value.value`           Value value. Set to :py:`None` if no value is
                             available.
-:py:`value.brief`           Value brief docs
+:py:`value.summary`         Value doc summary
 =========================== ===================================================
 
 `Function properties`_
@@ -812,7 +812,7 @@ Property                    Description
 Property                            Description
 =================================== ===========================================
 :py:`function.name`                 Function name
-:py:`function.brief`                Brief docs
+:py:`function.summary`              Doc summary
 :py:`function.type`                 Function return type annotation [1]_
 :py:`function.params`               List of function parameters. See below for
                                     details.
@@ -864,7 +864,7 @@ Property                            Description
 =================================== ===========================================
 :py:`property.name`                 Property name
 :py:`property.type`                 Property getter return type annotation [1]_
-:py:`property.brief`                Brief docs
+:py:`property.summary`              Doc summary
 :py:`property.is_writable`          If the property is writable
 :py:`property.is_deletable`         If the property is deletable with :py:`del`
 :py:`property.has_details`          If there is enough content for the full
@@ -882,7 +882,7 @@ Property                            Description
 =================================== ===========================================
 :py:`data.name`                     Data name
 :py:`data.type`                     Data type
-:py:`data.brief`                    Brief docs. Currently always empty.
+:py:`data.summary`                  Doc summary. Currently always empty.
 :py:`data.value`                    Data value representation
 :py:`data.has_details`              If there is enough content for the full
                                     description block. Currently always set to
@@ -929,7 +929,7 @@ Property                        Description
                                 :py:`'class'` or :py:`'page'`)
 :py:`i.name`                    Name
 :py:`i.url`                     URL of the file with detailed documentation
-:py:`i.brief`                   Brief documentation
+:py:`i.summary`                 Doc summary
 :py:`i.has_nestable_children`   If the list has nestable children (i.e., dirs
                                 or namespaces)
 :py:`i.children`                Recursive list of child entries
@@ -945,4 +945,4 @@ Module/class list is ordered in a way that all modules are before all classes.
     there is detailed description, function parameter documentation or
     *documented* enum value listing that makes it worth to render the full
     description block. If :py:`False`, the member should be included only in
-    the brief listing on top of the page to avoid unnecessary repetition.
+    the summary listing on top of the page to avoid unnecessary repetition.

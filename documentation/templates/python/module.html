@@ -14,8 +14,8 @@
         <h1>
           {%+ for name, target in page.breadcrumb[:-1] %}<span class="m-breadcrumb"><a href="{{ target }}">{{ name }}</a>.<wbr/></span>{% endfor %}{{ page.breadcrumb[-1][0] }} <span class="m-thin">module</span>
         </h1>
-        {% if page.brief %}
-        <p>{{ page.brief }}</p>
+        {% if page.summary %}
+        <p>{{ page.summary }}</p>
         {% endif %}
         {% if page.modules or page.classes or page.functions or page.data %}
         <div class="m-block m-default">
