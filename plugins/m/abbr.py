@@ -45,5 +45,7 @@ def abbr(name, rawtext, text, lineno, inliner, options={}, content=[]):
         return [nodes.abbreviation(title, title, **options)], []
     return [nodes.abbreviation(abbr, abbr, title=title, **options)], []
 
-def register():
+def register_mcss(**kwargs):
     rst.roles.register_local_role('abbr', abbr)
+
+register = register_mcss # for Pelican

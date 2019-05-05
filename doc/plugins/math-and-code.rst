@@ -71,6 +71,13 @@ files, put them including the ``m/`` directory into one of your
     M_MATH_RENDER_AS_CODE = False
     M_MATH_CACHE_FILE = 'm.math.cache'
 
+For the Python doc theme, it's enough to mention it in :py:`PLUGINS`. The
+`m.htmlsanity`_ plugin is available always, no need to mention it explicitly:
+
+.. code:: py
+
+    PLUGINS += ['m.code']
+
 For the Doxygen theme, this feature is builtin. Use either the ``@f[`` command
 for block-level math or the ``@f$`` command for inline math. It's possible to
 add extra CSS classes by placing ``@m_class`` in a paragraph before the actual
@@ -289,6 +296,13 @@ plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 .. code:: python
 
     PLUGINS += ['m-htmlsanity', 'm.code']
+
+For the Python doc theme, it's enough to mention it in :py:`PLUGINS`. The
+`m.htmlsanity`_ plugin is available always, no need to mention it explicitly:
+
+.. code:: py
+
+    PLUGINS += ['m.code']
 
 For the Doxygen theme, this feature is builtin. Use the ``@code{.ext}`` command
 either in a block or inline, the various ``@include`` and ``@snippet`` commands

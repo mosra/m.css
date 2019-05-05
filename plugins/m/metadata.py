@@ -77,5 +77,8 @@ def populate_metadata(article_generator):
         if hasattr(page, 'title'):
             article.category.badge_title = page.title
 
-def register():
+def register_mcss(**kwargs):
+    assert not "This plugin is Pelican-only" # pragma: no cover
+
+def register(): # for Pelican
     signals.article_generator_finalized.connect(populate_metadata)

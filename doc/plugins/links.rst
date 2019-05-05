@@ -66,7 +66,8 @@ own requirements.
 
 For Pelican, download the `m/link.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.link` package to your :py:`PLUGINS` in ``pelicanconf.py``:
+:py:`m.link` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the
+Python doc theme, it's enough to just list it in :py:`PLUGINS`:
 
 .. code:: python
 
@@ -95,7 +96,8 @@ additional CSS classes. At the moment the plugin knows only external URLs.
 
 For Pelican, download the `m/gh.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.gh` package to your :py:`PLUGINS` in ``pelicanconf.py``:
+:py:`m.gh` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the Python
+doc theme, it's enough to just list it in :py:`PLUGINS`:
 
 .. code:: python
 
@@ -152,7 +154,8 @@ CSS classes by deriving the role and adding the :rst:`:class:` option.
 
 For Pelican, download the `m/gl.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.gl` package to your :py:`PLUGINS` in ``pelicanconf.py``:
+:py:`m.gl` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the Python
+doc theme, it's enough to just list it in :py:`PLUGINS`:
 
 .. code:: python
 
@@ -200,7 +203,8 @@ and adding the :rst:`:class:` option.
 
 For Pelican, download the `m/vk.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.vk` package to your :py:`PLUGINS` in ``pelicanconf.py``:
+:py:`m.vk` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the Python
+doc theme, it's enough to just list it in :py:`PLUGINS`:
 
 .. code:: python
 
@@ -258,6 +262,9 @@ the plugin work. Example configuration:
         ('doxygen/stl.tag', 'https://en.cppreference.com/w/'),
         ('doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::']),
         ('doxygen/magnum.tag', 'https://doc.magnum.graphics/magnum/', ['Magnum::'])]
+
+For the Python doc theme, the configuration is the same. Tag file paths are
+relative to the configuration file location or to :py:`PATH`, if specified.
 
 Use the :rst:`:dox:` interpreted text role for linking to documented symbols.
 All link targets understood by Doxygen's ``@ref`` or ``@link`` commands are

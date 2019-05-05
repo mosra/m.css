@@ -69,6 +69,18 @@ library installed. Get it via ``pip`` or your distribution package manager:
 
     pip3 install Pillow
 
+`Python doc theme`_
+-------------------
+
+Simply list the plugin in your :py:`PLUGINS`. The `m.htmlsanity`_ plugin is
+available always, no need to mention it explicitly. The same dependencies as
+for `Pelican`_ apply here.
+
+.. code:: py
+
+    PLUGINS += ['m.images']
+    M_IMAGES_REQUIRE_ALT_TEXT = False
+
 `Doxygen theme`_
 ----------------
 

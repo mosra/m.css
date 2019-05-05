@@ -71,6 +71,18 @@ it with the above setting.
 
     pip3 install Pyphen
 
+`Python doc theme`_
+-------------------
+
+The ``m.htmlsanity`` plugin is available always, no need to mention it
+explicitly. However, the options aren't, so you might want to supply them.
+The same dependencies as for `Pelican`_ apply here.
+
+.. code:: py
+
+    M_HTMLSANITY_SMART_QUOTES = True
+    M_HTMLSANITY_HYPHENATION = True
+
 `Doxygen theme`_
 ----------------
 

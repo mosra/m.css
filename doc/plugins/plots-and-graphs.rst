@@ -61,7 +61,8 @@ the graphics is rendered to a SVG that's embedded directly in the HTML markup.
 
 For Pelican, download the `m/plots.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-``m.plots`` package to your :py:`PLUGINS` in ``pelicanconf.py``.
+``m.plots`` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the
+Python doc theme, it's enough to just list it in :py:`PLUGINS`:
 
 .. code:: python
 

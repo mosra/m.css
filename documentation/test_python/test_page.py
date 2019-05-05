@@ -22,7 +22,16 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os
+import re
+import subprocess
+
+from distutils.version import LooseVersion
+
 from . import BaseTestCase
+
+def dot_version():
+    return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
 
 class Page(BaseTestCase):
     def __init__(self, *args, **kwargs):
@@ -47,3 +56,36 @@ class PageInputSubdir(BaseTestCase):
         })
         # The same output as Page, just the file is taken from elsewhere
         self.assertEqual(*self.actual_expected_contents('index.html', '../page/index.html'))
+
+class Plugins(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'plugins', *args, **kwargs)
+
+    def test(self):
+        self.run_python({
+            # Test all of them to check the registration works well
+            'PLUGINS': [
+                'm.abbr',
+                'm.code',
+                'm.components',
+                'm.dot',
+                'm.dox',
+                'm.gh',
+                'm.gl',
+                'm.link',
+                'm.plots',
+                'm.vk',
+                'fancyline'
+            ],
+            'PLUGIN_PATHS': ['plugins'],
+            'INPUT_PAGES': ['index.rst', 'dot.rst'],
+            'M_HTMLSANITY_SMART_QUOTES': True,
+            'M_DOT_FONT': 'DejaVu Sans',
+            'M_PLOTS_FONT': 'DejaVu Sans',
+            'M_DOX_TAGFILES': [
+                (os.path.join(self.path, '../../../doc/documentation/corrade.tag'), 'https://doc.magnum.graphics/corrade/')
+            ]
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        # The output is different for older Graphviz
+        self.assertEqual(*self.actual_expected_contents('dot.html', 'dot.html' if LooseVersion(dot_version()) >= LooseVersion("2.40.1") else 'dot-238.html'))

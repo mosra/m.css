@@ -366,7 +366,7 @@ def label_flat_info(name, rawtext, text, lineno, inliner, options={}, content=[]
 def label_flat_dim(name, rawtext, text, lineno, inliner, options={}, content=[]):
     return label(['m-flat', 'm-dim'], name, rawtext, text, lineno, inliner, options, content)
 
-def register():
+def register_mcss(**kwargs):
     rst.directives.register_directive('transition', Transition)
 
     rst.directives.register_directive('note-default', DefaultNote)
@@ -424,3 +424,5 @@ def register():
     rst.roles.register_canonical_role('label-flat-danger', label_flat_danger)
     rst.roles.register_canonical_role('label-flat-info', label_flat_info)
     rst.roles.register_canonical_role('label-flat-dim', label_flat_dim)
+
+register = register_mcss # for Pelican

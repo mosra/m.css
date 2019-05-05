@@ -71,8 +71,10 @@ def glfnext(name, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.reference(rawtext, "gl" + title + prefix + "()", refuri=url, **options)
     return [node], []
 
-def register():
+def register_mcss(**kwargs):
     rst.roles.register_local_role('glext', glext)
     rst.roles.register_local_role('webglext', webglext)
     rst.roles.register_local_role('glfn', glfn)
     rst.roles.register_local_role('glfnext', glfnext)
+
+register = register_mcss # for Pelican

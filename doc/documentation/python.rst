@@ -200,6 +200,11 @@ Variable                            Description
 :py:`FORMATTED_METADATA: List[str]` Which meatadata fields should be formatted
                                     in documentation pages. By default only
                                     the ``summary`` field is.
+:py:`PLUGINS: List[str]`            List of `plugins <{filename}/plugins.rst>`_
+                                    to use. See `Plugins`_ for more
+                                    information.
+:py:`PLUGIN_PATHS: List[str]`       Additional plugin search paths. Relative
+                                    paths are relative to :py:`INPUT`.
 :py:`CLASS_INDEX_EXPAND_LEVELS`     How many levels of the class index tree to
                                     expand. :py:`0` means only the top-level
                                     symbols are shown. If not set, :py:`1` is
@@ -568,6 +573,54 @@ of them exposed as properties of ``page`` in the `output templates`_. Fields
 listed in :py:`FORMATTED_METADATA` (the :py:`:summary:` is among them) are
 expected to be formatted as :abbr:`reST <reStructuredText>` and exposed as
 HTML, otherwise as a plain text.
+
+`Plugins`_
+==========
+
+The :abbr:`reST <reStructuredText>` content is not limited to just the builtin
+functionality and it's possible to extend it via plugins eiter
+`from m.css itself <{filename}/plugins.rst>`_ or 3rd party ones. See
+documentation of each plugin to see its usage; the
+`m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_ plugin is used
+unconditionally while all others are optional. For example, enabling the common
+m.css plugins might look like this:
+
+.. code:: py
+
+    PLUGINS = ['m.code', 'm.components', 'm.dox']
+
+`Implementing custom plugins`_
+------------------------------
+
+Other plugins can be loaded from paths specified in :py:`PLUGIN_PATHS`. Custom
+plugins need to implement a registration function named :py:`register_mcss()`.
+It gets passed the following named arguments and the plugin might or might not
+use them.
+
+.. class:: m-table
+
+=========================== ===================================================
+Keyword argument            Content
+=========================== ===================================================
+:py:`mcss_settings`         Dict containing all m.css settings
+:py:`jinja_environment`     Jinja2 environment. Useful for adding new filters
+                            etc.
+=========================== ===================================================
+
+Registration function for a plugin that needs to query the :py:`OUTPUT` setting
+might look like this --- the remaining keyword arguments will collapse into
+the :py:`**kwargs` parameter. See code of various m.css plugins for actual
+examples.
+
+.. code:: py
+
+    output_dir = None
+
+    …
+
+    def register_mcss(mcss_settings, **kwargs):
+        global output_dir
+        output_dir = mcss_settings['OUTPUT']
 
 `pybind11 compatibility`_
 =========================

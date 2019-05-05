@@ -62,6 +62,16 @@ plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
     PLUGINS += ['m.htmlsanity', 'm.components']
 
+`Python doc theme`_
+-------------------
+
+Simply list the plugin in your :py:`PLUGINS`. The `m.htmlsanity`_ plugin is
+available always, no need to mention it explicitly:
+
+.. code:: py
+
+    PLUGINS += ['m.components']
+
 `Doxygen theme`_
 ----------------
 

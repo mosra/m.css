@@ -211,7 +211,9 @@ def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
 code.options = {'class': directives.class_option,
                 'language': directives.unchanged}
 
-def register():
+def register_mcss(**kwargs):
     rst.directives.register_directive('code', Code)
     rst.directives.register_directive('include', Include)
     rst.roles.register_canonical_role('code', code)
+
+register = register_mcss # for Pelican

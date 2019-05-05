@@ -61,9 +61,10 @@ below or :gh:`grab the whole Git repository <mosra/m.css>`:
     :gh:`m.alias <mosra/m.css$master/plugins/m/alias.py>`
 -   :gh:`m.metadata <mosra/m.css$master/plugins/m/metadata.py>`
 
-All plugins that make sense in the context of the
-`Doxygen theme <{filename}/documentation/doxygen.rst>`_ are implicitly exposed
-to it, without needing to explicitly enable them.
+For the `Python doc theme <{filename}/documentation/python.rst>`_ it's enough
+to simply list them in :py:`PLUGINS`. For the `Doxygen theme <{filename}/documentation/doxygen.rst>`_,
+all plugins that make sense in its context are implicitly exposed to it,
+without needing to explicitly enable them.
 
 Note that particular plugins can have additional dependencies, see
 documentation of each of them to see more. Click on the headings below to get

@@ -31,13 +31,9 @@ from pelican import signals
 
 settings = {}
 
-def init(pelicanobj):
-    settings['path'] = pelicanobj.settings.get('PATH', 'content')
-
 def filesize(name, rawtext, text, lineno, inliner, options={}, content=[]):
     # Support both {filename} (3.7.1) and {static} (3.8) placeholders
-    file = os.path.join(os.getcwd(), settings['path'])
-    size = os.path.getsize(text.format(filename=file, static=file))
+    size = os.path.getsize(text.format(filename=settings['INPUT'], static=settings['INPUT']))
 
     for unit in ['','k','M','G','T']:
         if abs(size) < 1024.0:
@@ -51,8 +47,7 @@ def filesize(name, rawtext, text, lineno, inliner, options={}, content=[]):
 
 def filesize_gz(name, rawtext, text, lineno, inliner, options={}, content=[]):
     # Support both {filename} (3.7.1) and {static} (3.8) placeholders
-    file = os.path.join(os.getcwd(), settings['path'])
-    with open(text.format(filename=file, static=file), mode='rb') as f:
+    with open(text.format(filename=settings['INPUT'], static=settings['INPUT']), mode='rb') as f:
         size = len(gzip.compress(f.read()))
 
     for unit in ['','k','M','G','T']:
@@ -65,8 +60,17 @@ def filesize_gz(name, rawtext, text, lineno, inliner, options={}, content=[]):
     set_classes(options)
     return [nodes.inline(size_string, size_string, **options)], []
 
-def register():
-    signals.initialized.connect(init)
-
+def register_mcss(mcss_settings, **kwargs):
+    global settings
+    settings['INPUT'] = mcss_settings['INPUT']
     rst.roles.register_local_role('filesize', filesize)
     rst.roles.register_local_role('filesize-gz', filesize_gz)
+
+def _pelican_configure(pelicanobj):
+    settings = {
+        'INPUT': os.path.join(os.getcwd(), pelicanobj.settings['PATH'])
+    }
+    register_mcss(mcss_settings=settings)
+
+def register(): # for Pelican
+    signals.initialized.connect(_pelican_configure)

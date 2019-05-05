@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import copy
 import html
 import os
 import re
@@ -36,7 +37,13 @@ import pelican.signals
 import latex2svg
 import latex2svgextra
 
-render_as_code = False
+default_settings = {
+    'INPUT': '',
+    'M_MATH_RENDER_AS_CODE': False,
+    'M_MATH_CACHE_FILE': 'm.math.cache'
+}
+
+settings = None
 
 def _is_math_figure(parent):
     # The parent has to be a figure, marked as m-figure
@@ -61,7 +68,7 @@ class Math(rst.Directive):
         parent = self.state.parent
 
         # Fallback rendering as code requested
-        if render_as_code:
+        if settings['M_MATH_RENDER_AS_CODE']:
             # If this is a math figure, replace the figure CSS class to have a
             # matching border
             if _is_math_figure(parent):
@@ -102,7 +109,7 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     text = rawtext.split('`')[1]
 
     # Fallback rendering as code requested
-    if render_as_code:
+    if settings['M_MATH_RENDER_AS_CODE']:
         set_classes(options)
         classes = []
         if 'classes' in options:
@@ -127,22 +134,31 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.raw(rawtext, latex2svgextra.patch(text, svg, depth, attribs), format='html', **options)
     return [node], []
 
-def configure_pelican(pelicanobj):
-    global render_as_code
-    render_as_code = pelicanobj.settings.get('M_MATH_RENDER_AS_CODE', False)
-    cache_file = pelicanobj.settings.get('M_MATH_CACHE_FILE', 'm.math.cache')
-    if cache_file and os.path.exists(cache_file):
-        latex2svgextra.unpickle_cache(cache_file)
-    else:
-        latex2svgextra.unpickle_cache(None)
-
 def save_cache(pelicanobj):
-    cache_file = pelicanobj.settings.get('M_MATH_CACHE_FILE', 'm.math.cache')
-    if cache_file: latex2svgextra.pickle_cache(cache_file)
+    if settings['M_MATH_CACHE_FILE']:
+        latex2svgextra.pickle_cache(settings['M_MATH_CACHE_FILE'])
 
-def register():
-    pelican.signals.initialized.connect(configure_pelican)
-    pelican.signals.finalized.connect(save_cache)
-    pelican.signals.content_object_init.connect(new_page)
+def register_mcss(mcss_settings, **kwargs):
+    global default_settings, settings
+    settings = copy.deepcopy(default_settings)
+    for key in settings.keys():
+        if key in mcss_settings: settings[key] = mcss_settings[key]
+
+    if settings['M_MATH_CACHE_FILE']:
+        settings['M_MATH_CACHE_FILE'] = os.path.join(settings['INPUT'], settings['M_MATH_CACHE_FILE'])
+
+        if os.path.exists(settings['M_MATH_CACHE_FILE']):
+            latex2svgextra.unpickle_cache(settings['M_MATH_CACHE_FILE'])
+        else:
+            latex2svgextra.unpickle_cache(None)
+
     rst.directives.register_directive('math', Math)
     rst.roles.register_canonical_role('math', math)
+
+def _configure_pelican(pelicanobj):
+    register_mcss(mcss_settings=pelicanobj.settings)
+
+def register():
+    pelican.signals.initialized.connect(_configure_pelican)
+    pelican.signals.finalized.connect(save_cache)
+    pelican.signals.content_object_init.connect(new_page)

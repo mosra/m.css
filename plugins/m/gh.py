@@ -77,5 +77,7 @@ def gh(name, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
-def register():
+def register_mcss(**kwargs):
     rst.roles.register_local_role('gh', gh)
+
+register = register_mcss # for Pelican

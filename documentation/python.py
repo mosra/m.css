@@ -76,6 +76,9 @@ default_config = {
     'FINE_PRINT': '[default]',
     'FORMATTED_METADATA': ['summary'],
 
+    'PLUGINS': [],
+    'PLUGIN_PATHS': [],
+
     'CLASS_INDEX_EXPAND_LEVELS': 1,
     'CLASS_INDEX_EXPAND_INNER': False,
 
@@ -922,9 +925,6 @@ def run(basedir, config, templates):
     env.filters['path_to_url'] = path_to_url
     env.filters['urljoin'] = urljoin
 
-    # Set up the plugins
-    m.htmlsanity.register_mcss(config, env)
-
     # Populate the INPUT, if not specified, make it absolute
     if config['INPUT'] is None: config['INPUT'] = basedir
     else: config['INPUT'] = os.path.join(basedir, config['INPUT'])
@@ -938,6 +938,15 @@ def run(basedir, config, templates):
         config['FAVICON'] = (config['FAVICON'], mimetypes.guess_type(config['FAVICON'])[0])
 
     state = State(config)
+
+    # Set up extra plugin paths. The one for m.css plugins was added above.
+    for path in config['PLUGIN_PATHS']:
+        if path not in sys.path: sys.path.append(os.path.join(config['INPUT'], path))
+
+    # Import plugins
+    for plugin in ['m.htmlsanity'] + config['PLUGINS']:
+        module = importlib.import_module(plugin)
+        module.register_mcss(mcss_settings=config, jinja_environment=env)
 
     for module in config['INPUT_MODULES']:
         if isinstance(module, str):

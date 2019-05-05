@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import copy
 import os
 from docutils.parsers import rst
 from docutils.parsers.rst import Directive
@@ -40,7 +41,12 @@ try:
 except ImportError:
     PIL = None
 
-settings = {}
+default_settings = {
+    'INPUT': None,
+    'M_IMAGES_REQUIRE_ALT_TEXT': False
+}
+
+settings = None
 
 class Image(Directive):
     """Image directive
@@ -96,14 +102,15 @@ class Image(Directive):
         width = None
         height = None
         # If scaling requested, open the files and calculate the scaled size
-        # Support both {filename} (3.7.1) and {static} (3.8) placeholders. In
-        # all cases use only width and not both so the max-width can correctly
+        # Support both {filename} (3.7.1) and {static} (3.8) placeholders,
+        # also prepend the absolute path in case we're not Pelican. In all
+        # cases use only width and not both so the max-width can correctly
         # scale the image down on smaller screen sizes.
         # TODO: implement ratio-preserving scaling to avoid jumps on load using
         # the margin-bottom hack
         if 'scale' in self.options:
-            file = os.path.join(os.getcwd(), settings['PATH'])
-            absuri = reference.format(filename=file, static=file)
+            file = os.path.join(os.getcwd(), settings['INPUT'])
+            absuri = os.path.join(file, reference.format(filename=file, static=file))
             im = PIL.Image.open(absuri)
             width = "{}px".format(int(im.width*self.options['scale']/100.0))
         elif 'width' in self.options:
@@ -209,9 +216,10 @@ class ImageGrid(rst.Directive):
             uri, _, caption = uri_caption.partition(' ')
 
             # Open the files and calculate the overall width
-            # Support both {filename} (3.7.1) and {static} (3.8) placeholders
-            file = os.path.join(os.getcwd(), settings['PATH'])
-            absuri = uri.format(filename=file, static=file)
+            # Support both {filename} (3.7.1) and {static} (3.8) placeholders,
+            # also prepend the absolute path in case we're not Pelican
+            file = os.path.join(os.getcwd(), settings['INPUT'])
+            absuri = os.path.join(file, uri.format(filename=file, static=file))
             im = PIL.Image.open(absuri)
 
             # If no caption provided, get EXIF info, if it's there
@@ -271,13 +279,24 @@ class ImageGrid(rst.Directive):
 
         return [grid_node]
 
-def configure(pelicanobj):
-    settings['PATH'] = pelicanobj.settings.get('PATH', 'content')
-    settings['M_IMAGES_REQUIRE_ALT_TEXT'] = pelicanobj.settings.get('M_IMAGES_REQUIRE_ALT_TEXT', False)
-
-def register():
-    signals.initialized.connect(configure)
+def register_mcss(mcss_settings, **kwargs):
+    global default_settings, settings
+    settings = copy.deepcopy(default_settings)
+    for key in settings.keys():
+        if key in mcss_settings: settings[key] = mcss_settings[key]
 
     rst.directives.register_directive('image', Image)
     rst.directives.register_directive('figure', Figure)
     rst.directives.register_directive('image-grid', ImageGrid)
+
+def _pelican_configure(pelicanobj):
+    settings = {
+        'INPUT': pelicanobj.settings['PATH'],
+    }
+    for key in 'M_IMAGES_REQUIRE_ALT_TEXT':
+        if key in pelicanobj.settings: settings[key] = pelicanobj.settings[key]
+
+    register_mcss(mcss_settings=settings)
+
+def register(): # for Pelican
+    signals.initialized.connect(_pelican_configure)

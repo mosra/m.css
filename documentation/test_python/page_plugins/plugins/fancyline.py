@@ -22,31 +22,22 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-import re
-from docutils import nodes, utils
 from docutils.parsers import rst
+from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
+from docutils import nodes
 
-# to avoid dependencies, link_regexp and parse_link() is common for m.abbr,
-# m.gh, m.gl, m.link and m.vk
+class FancyLine(rst.Directive):
+    final_argument_whitespace = True
+    has_content = False
+    required_arguments = 1
 
-link_regexp = re.compile(r'(?P<title>.*) <(?P<link>.+)>')
-
-def parse_link(text):
-    link = utils.unescape(text)
-    m = link_regexp.match(link)
-    if m: return m.group('title', 'link')
-    return None, link
-
-def link(name, rawtext, text, lineno, inliner, options={}, content=[]):
-    title, url = parse_link(text)
-    if not title: title = url
-    # TODO: mailto URLs, internal links (need to gut out docutils for that)
-    set_classes(options)
-    node = nodes.reference(rawtext, title, refuri=url, **options)
-    return [node], []
+    def run(self):
+        text = '~~~ {} ~~~'.format(self.arguments[0])
+        title_nodes, _ = self.state.inline_text(text, self.lineno)
+        node = nodes.paragraph('', '', *title_nodes)
+        node['classes'] += ['m-transition']
+        return [node]
 
 def register_mcss(**kwargs):
-    rst.roles.register_local_role('link', link)
-
-register = register_mcss # for Pelican
+    rst.directives.register_directive('fancy-line', FancyLine)

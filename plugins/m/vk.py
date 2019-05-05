@@ -62,7 +62,9 @@ def vktype(name, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.reference(rawtext, title, refuri=url, **options)
     return [node], []
 
-def register():
+def register_mcss(**kwargs):
     rst.roles.register_local_role('vkext', vkext)
     rst.roles.register_local_role('vkfn', vkfn)
     rst.roles.register_local_role('vktype', vktype)
+
+register = register_mcss # for Pelican

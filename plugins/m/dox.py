@@ -50,10 +50,10 @@ def parse_link(text):
 
     return title, link, hash
 
-def init(pelicanobj):
-    global symbol_mapping, symbol_prefixes, tagfile_basenames
+def init(tagfiles, input):
+    rst.roles.register_local_role('dox', dox)
 
-    tagfiles = pelicanobj.settings.get('M_DOX_TAGFILES', [])
+    global symbol_mapping, symbol_prefixes, tagfile_basenames
 
     # Pre-round to populate subclasses. Clear everything in case we init'd
     # before already.
@@ -69,7 +69,7 @@ def init(pelicanobj):
         tagfile_basenames += [(os.path.splitext(os.path.basename(tagfile))[0], path, css_classes)]
         symbol_prefixes += prefixes
 
-        tree = ET.parse(tagfile)
+        tree = ET.parse(os.path.join(input, tagfile))
         root = tree.getroot()
         for child in root:
             if child.tag == 'compound' and 'kind' in child.attrib:
@@ -170,7 +170,19 @@ def dox(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
 
-def register():
-    signals.initialized.connect(init)
+def register_mcss(mcss_settings, **kwargs):
+    init(input=mcss_settings['INPUT'],
+         tagfiles=mcss_settings.get('M_DOX_TAGFILES', []))
 
-    rst.roles.register_local_role('dox', dox)
+def _pelican_configure(pelicanobj):
+    settings = {
+        # For backwards compatibility, the input directory is pelican's CWD
+        'INPUT': os.getcwd(),
+    }
+    for key in ['M_DOX_TAGFILES']:
+        if key in pelicanobj.settings: settings[key] = pelicanobj.settings[key]
+
+    register_mcss(mcss_settings=settings)
+
+def register(): # for Pelican
+    signals.initialized.connect(_pelican_configure)
