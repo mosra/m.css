@@ -514,10 +514,8 @@ class SaneHtmlTranslator(HTMLTranslator):
         Determine if the <p> tags around paragraph ``node`` can be omitted.
         """
         if (isinstance(node.parent, nodes.document) or
-            isinstance(node.parent, nodes.compound) or
-            isinstance(node.parent, nodes.field_body)):
-            # Never compact paragraphs in document, compound or directly in
-            # field bodies (such as article summary or page footer)
+            isinstance(node.parent, nodes.compound)):
+            # Never compact paragraphs in document or compound
             return False
         for key, value in node.attlist():
             if (node.is_not_default(key) and
@@ -647,6 +645,16 @@ class _SaneFieldBodyTranslator(SaneHtmlTranslator):
 
     def __init__(self, document):
         SaneHtmlTranslator.__init__(self, document)
+
+    # Overriding the function in SaneHtmlTranslator, in addition never
+    # compacting paragraphs directly in field bodies (such as article summary
+    # or page footer) unless explicitly told it so. The sad thing is that the
+    # Pelican theme currently always expects the summaries to be wrapped in
+    # <p>, while the Python docs expect exactly the other case.
+    def should_be_compact_paragraph(self, node):
+        if isinstance(node.parent, nodes.field_body) and not self.compact_field_list:
+            return False
+        return SaneHtmlTranslator.should_be_compact_paragraph(self, node)
 
     def astext(self):
         return ''.join(self.body)
