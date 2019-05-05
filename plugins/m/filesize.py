@@ -33,7 +33,6 @@ settings = {}
 
 def init(pelicanobj):
     settings['path'] = pelicanobj.settings.get('PATH', 'content')
-    pass
 
 def filesize(name, rawtext, text, lineno, inliner, options={}, content=[]):
     # Support both {filename} (3.7.1) and {static} (3.8) placeholders
