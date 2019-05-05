@@ -659,7 +659,7 @@ class _SaneFieldBodyTranslator(SaneHtmlTranslator):
     def astext(self):
         return ''.join(self.body)
 
-    # Not sure why this is here
+    # If this wouldn't be here, the output would have <dd> around. Not useful.
     def visit_field_body(self, node):
         pass
 
