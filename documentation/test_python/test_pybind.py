@@ -27,7 +27,7 @@ import unittest
 
 from python import parse_pybind_signature
 
-from . import BaseTestCase
+from . import BaseInspectTestCase
 
 class Signature(unittest.TestCase):
     def test(self):
@@ -131,7 +131,7 @@ class Signature(unittest.TestCase):
             '(arg0: MyClass) -> float'),
             ('', '', [('arg0', 'MyClass', None)], 'float'))
 
-class Signatures(BaseTestCase):
+class Signatures(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'signatures', *args, **kwargs)
 
@@ -173,7 +173,7 @@ class Signatures(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass.html'))
 
-class Enums(BaseTestCase):
+class Enums(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'enums', *args, **kwargs)
 
@@ -183,7 +183,7 @@ class Enums(BaseTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_enums.html'))
 
-class Submodules(BaseTestCase):
+class Submodules(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'submodules', *args, **kwargs)
 

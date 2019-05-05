@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import copy
 import math
 import os
 import sys
@@ -29,9 +30,10 @@ import unittest
 
 from distutils.version import LooseVersion
 
-from . import BaseTestCase
+from python import default_templates
+from . import BaseInspectTestCase
 
-class String(BaseTestCase):
+class String(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'string', *args, **kwargs)
 
@@ -49,7 +51,7 @@ class String(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('classes.html'))
         self.assertEqual(*self.actual_expected_contents('modules.html'))
 
-class Object(BaseTestCase):
+class Object(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'object', *args, **kwargs)
 
@@ -74,7 +76,7 @@ class Object(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('classes.html', '../inspect_string/classes.html'))
         self.assertEqual(*self.actual_expected_contents('modules.html', '../inspect_string/modules.html'))
 
-class AllProperty(BaseTestCase):
+class AllProperty(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'all_property', *args, **kwargs)
 
@@ -82,7 +84,7 @@ class AllProperty(BaseTestCase):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_all_property.html'))
 
-class Annotations(BaseTestCase):
+class Annotations(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'annotations', *args, **kwargs)
 

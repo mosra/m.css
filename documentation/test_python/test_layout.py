@@ -35,8 +35,6 @@ class Layout(BaseTestCase):
             'PROJECT_TITLE': "A project",
             'PROJECT_SUBTITLE': "is cool",
 
-            'INPUT_MODULES': [], # Explicitly none
-
             'THEME_COLOR': '#00ffff',
             'FAVICON': 'favicon-light.png',
             'PAGE_HEADER': "`A self link <{filename}>`_",

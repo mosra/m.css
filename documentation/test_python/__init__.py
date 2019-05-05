@@ -54,18 +54,12 @@ class BaseTestCase(unittest.TestCase):
             'FAVICON': None,
             'LINKS_NAVBAR1': None,
             'LINKS_NAVBAR2': None,
-            # None instead of [] so we can detect even an empty override
-            'INPUT_MODULES': None,
             'SEARCH_DISABLED': True,
             'OUTPUT': os.path.join(self.path, 'output')
         })
 
-        # Update it with config overrides, specify the input module if not
-        # already
+        # Update it with config overrides
         config.update(config_overrides)
-        if config['INPUT_MODULES'] is None:
-            sys.path.append(self.path)
-            config['INPUT_MODULES'] = [self.dirname]
 
         run(self.path, config, templates=templates)
 
@@ -77,3 +71,16 @@ class BaseTestCase(unittest.TestCase):
         with open(os.path.join(self.path, 'output', actual)) as f:
             actual_contents = f.read().strip()
         return actual_contents, expected_contents
+
+class BaseInspectTestCase(BaseTestCase):
+    def run_python(self, config_overrides={}, templates=default_templates):
+        if 'INPUT_MODULES' not in config_overrides:
+            sys.path.append(self.path)
+
+            # Have to do a deep copy to avoid overwriting the parameter default
+            # value. UGH.
+            config = copy.deepcopy(config_overrides)
+            config['INPUT_MODULES'] = [self.dirname]
+            config_overrides = config
+
+        BaseTestCase.run_python(self, config_overrides, templates)
