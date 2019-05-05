@@ -53,6 +53,9 @@
           </ul>
         </div>
         {% endif %}
+        {% if page.content %}
+{{ page.content }}
+        {% endif %}
         {% if page.classes %}
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>

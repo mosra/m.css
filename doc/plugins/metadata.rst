@@ -32,7 +32,7 @@ Metadata
     .. note-dim::
         :class: m-text-center
 
-        `« Links and other <{filename}/plugins/links.rst>`_ | `Plugins <{filename}/plugins.rst>`_
+        `« Links and other <{filename}/plugins/links.rst>`_ | `Plugins <{filename}/plugins.rst>`_ | `Sphinx » <{filename}/plugins/sphinx.rst>`_
 
 .. role:: html(code)
     :language: html

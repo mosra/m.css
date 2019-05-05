@@ -44,6 +44,9 @@
           </ul>
         </div>
         {% endif %}
+        {% if page.content %}
+{{ page.content }}
+        {% endif %}
         {% if page.modules %}
         <section id="namespaces">
           <h2><a href="#namespaces">Modules</a></h2>

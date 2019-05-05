@@ -80,19 +80,20 @@ M_LINKS_NAVBAR1 = [('Why?', 'why/', 'why', []),
                         ('Themes', 'css/themes/', 'css/themes')]),
                    ('Themes', 'themes/', 'themes', [
                         ('Writing reST content', 'themes/writing-rst-content/', 'pelican/writing-content'),
-                        ('Pelican', 'themes/pelican/', 'themes/pelican')])]
-
-M_LINKS_NAVBAR2 = [('Doc generators', 'documentation/', 'documentation', [
+                        ('Pelican', 'themes/pelican/', 'themes/pelican')]),
+                   ('Doc generators', 'documentation/', 'documentation', [
                         ('Doxygen C++ theme', 'documentation/doxygen/', 'documentation/doxygen'),
-                        ('Python doc theme', 'documentation/python/', 'documentation/python')]),
-                   ('Plugins', 'plugins/', 'plugins', [
+                        ('Python doc theme', 'documentation/python/', 'documentation/python')])]
+
+M_LINKS_NAVBAR2 = [('Plugins', 'plugins/', 'plugins', [
                         ('HTML sanity', 'plugins/htmlsanity/', 'plugins/htmlsanity'),
                         ('Components', 'plugins/components/', 'plugins/components'),
                         ('Images', 'plugins/images/', 'plugins/images'),
                         ('Math and code', 'plugins/math-and-code/', 'plugins/math-and-code'),
                         ('Links and other', 'plugins/links/', 'plugins/links'),
                         ('Plots and graphs', 'plugins/plots-and-graphs/', 'plugins/plots-and-graphs'),
-                        ('Metadata', 'plugins/metadata/', 'plugins/metadata')]),
+                        ('Metadata', 'plugins/metadata/', 'plugins/metadata'),
+                        ('Sphinx', 'plugins/sphinx/', 'plugins/sphinx')]),
                    ('GitHub', 'https://github.com/mosra/m.css', '', [])]
 
 M_LINKS_FOOTER1 = [('m.css', '/'),
@@ -125,7 +126,8 @@ M_LINKS_FOOTER4 = [('Plugins', 'plugins/'),
                    ('Math and code', 'plugins/math-and-code/'),
                    ('Plots and graphs', 'plugins/plots-and-graphs/'),
                    ('Links and other', 'plugins/links/'),
-                   ('Metadata', 'plugins/metadata/')]
+                   ('Metadata', 'plugins/metadata/'),
+                   ('Sphinx', 'plugins/sphinx/')]
 
 M_FINE_PRINT = """
 | m.css. Copyright © `Vladimír Vondruš <http://mosra.cz>`_, 2017--2019. Site

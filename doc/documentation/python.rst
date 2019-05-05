@@ -605,7 +605,25 @@ Keyword argument            Content
 :py:`mcss_settings`         Dict containing all m.css settings
 :py:`jinja_environment`     Jinja2 environment. Useful for adding new filters
                             etc.
+:py:`module_doc_contents`   Module documentation contents
+:py:`class_doc_contents`    Class documentation contents
+:py:`data_doc_contents`     Data documentation contents
 =========================== ===================================================
+
+The :py:`module_doc_contents`, :py:`class_doc_contents` and
+:py:`data_doc_contents` variables are :py:`Dict[str, Dict[str, str]]`, where
+the first level is a name and second level are key/value pairs of the actual
+HTML documentation content. Plugins that parse extra documentation inputs (such
+as `m.sphinx`_) are supposed to add to the dict, which is then used to fill the
+actual documentation contents. The following corresponds to the documentation
+source shown in the `External documentation content`_ section below.
+
+.. code:: py
+
+    class_doc_contents['mymodule.sub.Class'] = {
+        'summary': "A pretty class",
+        'details': "This class is *pretty*."
+    }
 
 Registration function for a plugin that needs to query the :py:`OUTPUT` setting
 might look like this --- the remaining keyword arguments will collapse into
@@ -621,6 +639,29 @@ examples.
     def register_mcss(mcss_settings, **kwargs):
         global output_dir
         output_dir = mcss_settings['OUTPUT']
+
+`External documentation content`_
+=================================
+
+Because it's often not feasible to have the whole documentation stored in
+Python docstrings, the generator allows you to supply documentation from
+external files. Similarly to `pages`_, the :py:`INPUT_DOCS` setting is a list
+of :abbr:`reST <reStructuredText>` files that contain documentation for
+particular names using custom directives. This is handled by the bundled
+`m.sphinx <{filename}/plugins/sphinx.rst>`_ plugin. See its documentation for
+detailed description of all features, below is a simple example of using it to
+document a class:
+
+.. code:: py
+
+    PLUGINS = ['m.sphinx']
+
+.. code:: rst
+
+    .. py:class:: mymodule.sub.Class
+        :summary: A pretty class
+
+        This class is *pretty*.
 
 `pybind11 compatibility`_
 =========================

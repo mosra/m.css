@@ -57,9 +57,13 @@ below or :gh:`grab the whole Git repository <mosra/m.css>`:
     :gh:`m.gl <mosra/m.css$master/plugins/m/gl.py>`,
     :gh:`m.vk <mosra/m.css$master/plugins/m/vk.py>`,
     :gh:`m.abbr <mosra/m.css$master/plugins/m/abbr.py>`,
-    :gh:`m.filesize <mosra/m.css$master/plugins/m/filesize.py>`,
-    :gh:`m.alias <mosra/m.css$master/plugins/m/alias.py>`
+    :gh:`m.filesize <mosra/m.css$master/plugins/m/filesize.py>`
+-   :gh:`m.alias <mosra/m.css$master/plugins/m/alias.py>`
+    :label-flat-primary:`pelican only`
 -   :gh:`m.metadata <mosra/m.css$master/plugins/m/metadata.py>`
+    :label-flat-primary:`pelican only`
+-   :gh:`m.sphinx <mosra/m.css$master/plugins/m/metadata.py>`
+    :label-flat-warning:`python doc only`
 
 For the `Python doc theme <{filename}/documentation/python.rst>`_ it's enough
 to simply list them in :py:`PLUGINS`. For the `Doxygen theme <{filename}/documentation/doxygen.rst>`_,
@@ -122,3 +126,9 @@ With the :py:`m.metadata` plugin it's possible to assign additional description
 and images to authors, categories and tags. The information can then appear on
 article listing page, as a badge under the article or be added to social meta
 tags.
+
+`Sphinx » <{filename}/plugins/sphinx.rst>`_
+===========================================
+
+The :py:`m.sphinx` plugin brings Sphinx-compatible directives for documenting
+modules, classes and other to the `Python doc theme`_.

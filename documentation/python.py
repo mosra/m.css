@@ -60,6 +60,8 @@ default_config = {
     'OUTPUT': 'output',
     'INPUT_MODULES': [],
     'INPUT_PAGES': [],
+    'INPUT_DOCS': [],
+    'OUTPUT': 'output',
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
     'STYLESHEETS': [
@@ -118,6 +120,9 @@ class State:
         self.class_index: List[IndexEntry] = []
         self.page_index: List[IndexEntry] = []
         self.module_mapping: Dict[str, str] = {}
+        self.module_docs: Dict[str, Dict[str, str]] = {}
+        self.class_docs: Dict[str, Dict[str, str]] = {}
+        self.data_docs: Dict[str, Dict[str, str]] = {}
 
 def is_internal_function_name(name: str) -> bool:
     """If the function name is internal.
@@ -247,7 +252,7 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
             end = original_signature.find('\n')
             logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
             if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-                summary = extract_summary(original_signature[end + 1:])
+                summary = extract_summary({}, [], original_signature[end + 1:])
             else:
                 summary = ''
             return (name, summary, [('…', None, None)], None)
@@ -268,13 +273,13 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-            summary = extract_summary(original_signature[end + 1:])
+            summary = extract_summary({}, [], original_signature[end + 1:])
         else:
             summary = ''
         return (name, summary, [('…', None, None)], None)
 
     if len(signature) > 1 and signature[1] == '\n':
-        summary = extract_summary(signature[2:])
+        summary = extract_summary({}, [], signature[2:])
     else:
         summary = ''
 
@@ -306,7 +311,12 @@ def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str,
     else:
         return [parse_pybind_signature(state, doc)]
 
-def extract_summary(doc: str) -> str:
+def extract_summary(external_docs, path: List[str], doc: str) -> str:
+    # Prefer external docs, if available
+    path_str = '.'.join(path)
+    if path_str in external_docs:
+        return render_inline_rst(external_docs[path_str]['summary'])
+
     if not doc: return '' # some modules (xml.etree) have that :(
     doc = inspect.cleandoc(doc)
     end = doc.find('\n\n')
@@ -344,22 +354,22 @@ def render(config, template: str, page, env: jinja2.Environment):
         # TODO could keep_trailing_newline fix this better?
         f.write(b'\n')
 
-def extract_module_doc(path: List[str], module):
+def extract_module_doc(state: State, path: List[str], module):
     assert inspect.ismodule(module)
 
     out = Empty()
     out.url = make_url(path)
     out.name = path[-1]
-    out.summary = extract_summary(module.__doc__)
+    out.summary = extract_summary(state.class_docs, path, module.__doc__)
     return out
 
-def extract_class_doc(path: List[str], class_):
+def extract_class_doc(state: State, path: List[str], class_):
     assert inspect.isclass(class_)
 
     out = Empty()
     out.url = make_url(path)
     out.name = path[-1]
-    out.summary = extract_summary(class_.__doc__)
+    out.summary = extract_summary(state.class_docs, path, class_.__doc__)
     return out
 
 def extract_enum_doc(state: State, path: List[str], enum_):
@@ -375,7 +385,8 @@ def extract_enum_doc(state: State, path: List[str], enum_):
         if enum_.__doc__ == 'An enumeration.':
             out.summary = ''
         else:
-            out.summary = extract_summary(enum_.__doc__)
+            # TODO: external summary for enums
+            out.summary = extract_summary({}, [], enum_.__doc__)
 
         out.base = extract_type(enum_.__base__)
 
@@ -388,7 +399,8 @@ def extract_enum_doc(state: State, path: List[str], enum_):
             if i.__doc__ == enum_.__doc__:
                 value.summary = ''
             else:
-                value.summary = extract_summary(i.__doc__)
+                # TODO: external summary for enum values
+                value.summary = extract_summary({}, [], i.__doc__)
 
             if value.summary:
                 out.has_details = True
@@ -399,7 +411,8 @@ def extract_enum_doc(state: State, path: List[str], enum_):
     elif state.config['PYBIND11_COMPATIBILITY']:
         assert hasattr(enum_, '__members__')
 
-        out.summary = extract_summary(enum_.__doc__)
+        # TODO: external summary for enums
+        out.summary = extract_summary({}, [], enum_.__doc__)
         out.base = None
 
         for name, v in enum_.__members__.items():
@@ -431,6 +444,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
             out.params = []
             out.has_complex_params = False
             out.has_details = False
+            # TODO: external summary for functions
             out.summary = summary
 
             # Don't show None return type for void functions
@@ -508,7 +522,8 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
         out.params = []
         out.has_complex_params = False
         out.has_details = False
-        out.summary = extract_summary(function.__doc__)
+        # TODO: external summary for functions
+        out.summary = extract_summary({}, [], function.__doc__)
 
         # Decide if classmethod or staticmethod in case this is a method
         if inspect.isclass(parent):
@@ -549,7 +564,8 @@ def extract_property_doc(state: State, path: List[str], property):
 
     out = Empty()
     out.name = path[-1]
-    out.summary = extract_summary(property.__doc__)
+    # TODO: external summary for properties
+    out.summary = extract_summary({}, [], property.__doc__)
     out.is_settable = property.fset is not None
     out.is_deletable = property.fdel is not None
     out.has_details = False
@@ -585,6 +601,13 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     else:
         out.value = None
 
+    # External data summary, if provided
+    path_str = '.'.join(path)
+    if path_str in state.data_docs:
+        # TODO: use also the contents
+        out.summary = render_inline_rst(state.data_docs[path_str]['summary'])
+        del state.data_docs[path_str]
+
     return out
 
 def render_module(state: State, path, module, env):
@@ -597,7 +620,7 @@ def render_module(state: State, path, module, env):
         breadcrumb += [(i, url_base + 'html')]
 
     page = Empty()
-    page.summary = extract_summary(module.__doc__)
+    page.summary = extract_summary(state.module_docs, path, module.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
@@ -607,6 +630,12 @@ def render_module(state: State, path, module, env):
     page.functions = []
     page.data = []
     page.has_enum_details = False
+
+    # External page content, if provided
+    path_str = '.'.join(path)
+    if path_str in state.module_docs:
+        page.content = render_rst(state.module_docs[path_str]['content'])
+        state.module_docs[path_str]['used'] = True
 
     # Index entry for this module, returned together with children at the end
     index_entry = IndexEntry()
@@ -657,10 +686,10 @@ def render_module(state: State, path, module, env):
             # standard lib), but not undocumented classes etc. Render the
             # submodules and subclasses recursively.
             if inspect.ismodule(object):
-                page.modules += [extract_module_doc(subpath, object)]
+                page.modules += [extract_module_doc(state, subpath, object)]
                 index_entry.children += [render_module(state, subpath, object, env)]
             elif inspect.isclass(object) and not is_enum(state, object):
-                page.classes += [extract_class_doc(subpath, object)]
+                page.classes += [extract_class_doc(state, subpath, object)]
                 index_entry.children += [render_class(state, subpath, object, env)]
             elif inspect.isclass(object) and is_enum(state, object):
                 enum_ = extract_enum_doc(state, subpath, object)
@@ -686,7 +715,7 @@ def render_module(state: State, path, module, env):
             if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
             subpath = path + [name]
-            page.modules += [extract_module_doc(subpath, object)]
+            page.modules += [extract_module_doc(state, subpath, object)]
             index_entry.children += [render_module(state, subpath, object, env)]
 
         # Get (and render) inner classes
@@ -696,7 +725,7 @@ def render_module(state: State, path, module, env):
             subpath = path + [name]
             if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
-            page.classes += [extract_class_doc(subpath, object)]
+            page.classes += [extract_class_doc(state, subpath, object)]
             index_entry.children += [render_class(state, subpath, object, env)]
 
         # Get enums
@@ -791,7 +820,7 @@ def render_class(state: State, path, class_, env):
         breadcrumb += [(i, url_base + 'html')]
 
     page = Empty()
-    page.summary = extract_summary(class_.__doc__)
+    page.summary = extract_summary(state.class_docs, path, class_.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
@@ -804,6 +833,12 @@ def render_class(state: State, path, class_, env):
     page.properties = []
     page.data = []
     page.has_enum_details = False
+
+    # External page content, if provided
+    path_str = '.'.join(path)
+    if path_str in state.class_docs:
+        page.content = render_rst(state.class_docs[path_str]['content'])
+        state.class_docs[path_str]['used'] = True
 
     # Index entry for this module, returned together with children at the end
     index_entry = IndexEntry()
@@ -820,7 +855,7 @@ def render_class(state: State, path, class_, env):
         subpath = path + [name]
         if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
-        page.classes += [extract_class_doc(subpath, object)]
+        page.classes += [extract_class_doc(state, subpath, object)]
         index_entry.children += [render_class(state, subpath, object, env)]
 
     # Get enums
@@ -877,20 +912,41 @@ def render_class(state: State, path, class_, env):
     render(state.config, 'class.html', page, env)
     return index_entry
 
-def publish_rst(source):
+def publish_rst(source, translator_class=m.htmlsanity.SaneHtmlTranslator):
     pub = docutils.core.Publisher(
         writer=m.htmlsanity.SaneHtmlWriter(),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
-    #pub.writer.translator_class = m.htmlsanity.SaneHtmlTranslator
+    pub.writer.translator_class = translator_class
     pub.process_programmatic_settings(None, m.htmlsanity.docutils_settings, None)
     # Docutils uses a deprecated U mode for opening files, so instead of
     # monkey-patching docutils.io.FileInput to not do that (like Pelican does),
     # I just read the thing myself.
+    # TODO *somehow* need to supply the filename to it for better error
+    # reporting, this is too awful
     pub.set_source(source=source)
     pub.publish()
     return pub
+
+def render_rst(source):
+    return publish_rst(source).writer.parts.get('body').rstrip()
+
+class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
+    # Unconditionally force compact paragraphs. This means the inline HTML
+    # won't be wrapped in a <p> which is exactly what we want.
+    def should_be_compact_paragraph(self, node):
+        return True
+
+def render_inline_rst(source):
+    return publish_rst(source, _SaneInlineHtmlTranslator).writer.parts.get('body').rstrip()
+
+def render_doc(state: State, filename):
+    logging.debug("parsing docs from %s", filename)
+
+    # Render the file. The directives should take care of everything, so just
+    # discard the output afterwards.
+    with open(filename, 'r') as f: publish_rst(f.read())
 
 def render_page(state: State, path, filename, env):
     logging.debug("generating %s.html", '.'.join(path))
@@ -982,7 +1038,17 @@ def run(basedir, config, templates):
     # Import plugins
     for plugin in ['m.htmlsanity'] + config['PLUGINS']:
         module = importlib.import_module(plugin)
-        module.register_mcss(mcss_settings=config, jinja_environment=env)
+        module.register_mcss(
+            mcss_settings=config,
+            jinja_environment=env,
+            module_doc_contents=state.module_docs,
+            class_doc_contents=state.class_docs,
+            data_doc_contents=state.data_docs)
+
+    # First process the doc input files so we have all data for rendering
+    # module pages
+    for file in config['INPUT_DOCS']:
+        render_doc(state, os.path.join(basedir, file))
 
     for module in config['INPUT_MODULES']:
         if isinstance(module, str):
@@ -992,6 +1058,17 @@ def run(basedir, config, templates):
             module_name = module.__name__
 
         state.class_index += [render_module(state, [module_name], module, env)]
+
+    # Warn if there are any unused contents left after processing everything
+    unused_module_docs = [key for key, value in state.module_docs.items() if not 'used' in value]
+    unused_class_docs = [key for key, value in state.class_docs.items() if not 'used' in value]
+    unused_data_docs = [key for key, value in state.data_docs.items() if not 'used' in value]
+    if unused_module_docs:
+        logging.warning("The following module doc contents were unused: %s", unused_module_docs)
+    if unused_class_docs:
+        logging.warning("The following class doc contents were unused: %s", unused_class_docs)
+    if unused_data_docs:
+        logging.warning("The following data doc contents were unused: %s", unused_data_docs)
 
     for page in config['INPUT_PAGES']:
         state.page_index += render_page(state, [os.path.splitext(os.path.basename(page))[0]], os.path.join(config['INPUT'], page), env)
