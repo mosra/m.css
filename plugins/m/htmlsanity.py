@@ -54,6 +54,17 @@ settings = {
     'M_HTMLSANITY_FORMATTED_FIELDS': []
 }
 
+# Default docutils settings. Some things added in register() / register_mcss(),
+# and from the M_HTMLSANITY_DOCUTILS_SETTINGS option.
+docutils_settings = {
+    'initial_header_level': '2',
+    'syntax_highlight': 'short',
+    'input_encoding': 'utf-8',
+    'halt_level': 2,
+    'traceback': True,
+    'embed_stylesheet': False
+}
+
 words_re = re.compile(r'\w+', re.UNICODE|re.X)
 
 def extract_document_language(document):
@@ -657,23 +668,13 @@ class SaneHtmlWriter(docutils.writers.html5_polyglot.Writer):
         return docutils.writers.html5_polyglot.Writer.get_transforms(self) + [SmartQuotes, Pyphen]
 
 def render_rst(value):
-    extra_params = {'initial_header_level': '2',
-                    'syntax_highlight': 'short',
-                    'input_encoding': 'utf-8',
-                    'language_code': settings['M_HTMLSANITY_LANGUAGE'],
-                    'halt_level': 2,
-                    'traceback': True,
-                    'embed_stylesheet': False}
-    if settings['M_HTMLSANITY_DOCUTILS_SETTINGS']:
-        extra_params.update(settings['M_HTMLSANITY_DOCUTILS_SETTINGS'])
-
     pub = docutils.core.Publisher(
         writer=SaneHtmlWriter(),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
     pub.writer.translator_class = _SaneFieldBodyTranslator
-    pub.process_programmatic_settings(None, extra_params, None)
+    pub.process_programmatic_settings(None, docutils_settings, None)
     pub.set_source(source=value)
     pub.publish(enable_exit_status=True)
     return pub.writer.parts.get('body').strip()
@@ -752,6 +753,10 @@ def configure_pelican(pelicanobj):
     global pelican_settings
     for key in 'INTRASITE_LINK_REGEX', 'SITEURL':
         pelican_settings[key] = pelicanobj.settings[key]
+
+    # Update the docutils settings using the above
+    docutils_settings['language_code'] = settings['M_HTMLSANITY_LANGUAGE']
+    docutils_settings.update(settings['M_HTMLSANITY_DOCUTILS_SETTINGS'])
 
 def add_reader(readers):
     readers.reader_classes['rst'] = SaneRstReader
