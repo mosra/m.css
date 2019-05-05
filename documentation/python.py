@@ -846,7 +846,9 @@ def run(basedir, config, templates):
     env.filters['basename_or_url'] = basename_or_url
     env.filters['path_to_url'] = path_to_url
     env.filters['urljoin'] = urljoin
-    env.filters['render_rst'] = m.htmlsanity.render_rst
+
+    # Set up the plugins
+    m.htmlsanity.register_mcss(config, env)
 
     # Make the output dir absolute
     config['OUTPUT'] = os.path.join(basedir, config['OUTPUT'])

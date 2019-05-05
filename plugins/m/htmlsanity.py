@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import copy
 import logging
 import os.path
 import re
@@ -40,7 +41,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-settings = {
+default_settings = {
     # Language used for hyphenation and smart quotes
     'M_HTMLSANITY_LANGUAGE': 'en',
     # Extra docutils settings
@@ -53,6 +54,8 @@ settings = {
     # and smart quotes applied as well)
     'M_HTMLSANITY_FORMATTED_FIELDS': []
 }
+
+settings = None
 
 # Default docutils settings. Some things added in register() / register_mcss(),
 # and from the M_HTMLSANITY_DOCUTILS_SETTINGS option.
@@ -699,6 +702,18 @@ def dehyphenate(value, enable=None):
     if not enable: return value
     return value.replace('&shy;', '')
 
+def register_mcss(mcss_settings, jinja_environment, **kwargs):
+    global default_settings, settings
+    settings = copy.deepcopy(default_settings)
+    for key in settings.keys():
+        if key in mcss_settings: settings[key] = mcss_settings[key]
+    docutils_settings['language_code'] = settings['M_HTMLSANITY_LANGUAGE']
+    docutils_settings.update(settings['M_HTMLSANITY_DOCUTILS_SETTINGS'])
+
+    jinja_environment.filters['render_rst'] = render_rst
+    jinja_environment.filters['hyphenate'] = hyphenate
+    jinja_environment.filters['dehyphenate'] = dehyphenate
+
 # Below is only Pelican-specific functionality and plugin registration
 try:
     import pelican.signals
@@ -706,13 +721,13 @@ try:
 except ImportError:
     pass
 
-class SaneRstReader(RstReader):
+class PelicanSaneRstReader(RstReader):
     writer_class = SaneHtmlWriter
     field_body_translator_class = _SaneFieldBodyTranslator
 
 pelican_settings = {}
 
-def expand_link(link, content):
+def pelican_expand_link(link, content):
     link_regex = r"""^
         (?P<markup>)(?P<quote>)
         (?P<path>{0}(?P<value>.*))
@@ -722,7 +737,7 @@ def expand_link(link, content):
         lambda m: content._link_replacer(content.get_siteurl(), m),
         link)
 
-def expand_links(text, content):
+def pelican_expand_links(text, content):
     # TODO: fields that are in FORMATTED_FIELDS are already expanded, but that
     # requires extra work on user side. Ideal would be to handle that all on
     # template side, so keeping this one for the time when we can replace
@@ -732,30 +747,29 @@ def expand_links(text, content):
 # To be consistent with both what Pelican does now with '/'.join(SITEURL, url)
 # and with https://github.com/getpelican/pelican/pull/2196. Keep consistent
 # with m.alias.
-def format_siteurl(url):
+def pelican_format_siteurl(url):
     return urljoin(pelican_settings['SITEURL'] + ('/' if not pelican_settings['SITEURL'].endswith('/') else ''), url)
 
-def configure_pelican(pelicanobj):
+def _pelican_configure(pelicanobj):
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
-    pelicanobj.settings['JINJA_FILTERS']['expand_link'] = expand_link
-    pelicanobj.settings['JINJA_FILTERS']['expand_links'] = expand_links
-    pelicanobj.settings['JINJA_FILTERS']['format_siteurl'] = format_siteurl
+    pelicanobj.settings['JINJA_FILTERS']['expand_link'] = pelican_expand_link
+    pelicanobj.settings['JINJA_FILTERS']['expand_links'] = pelican_expand_links
+    pelicanobj.settings['JINJA_FILTERS']['format_siteurl'] = pelican_format_siteurl
     pelicanobj.settings['JINJA_FILTERS']['hyphenate'] = hyphenate
     pelicanobj.settings['JINJA_FILTERS']['dehyphenate'] = dehyphenate
 
     # Map the setting key names from Pelican's own
-    global settings
-    for key, pelicankey, default in [
-        ('M_HTMLSANITY_LANGUAGE', 'DEFAULT_LANG', None),
-        ('M_HTMLSANITY_DOCUTILS_SETTINGS', 'DOCUTILS_SETTINGS', None),
-        ('M_HTMLSANITY_HYPHENATION', None, False),
-        ('M_HTMLSANITY_SMART_QUOTES', None, False),
-        ('M_HTMLSANITY_FORMATTED_FIELDS', 'FORMATTED_FIELDS', None)]:
-        if default is None:
-            settings[key] = pelicanobj.settings[pelicankey]
-        else:
-            if not pelicankey: pelicankey = key
-            settings[key] = pelicanobj.settings.get(pelicankey, default)
+    global default_settings, settings
+    settings = copy.deepcopy(default_settings)
+    for key, pelicankey in [
+        ('M_HTMLSANITY_LANGUAGE', 'DEFAULT_LANG'),
+        ('M_HTMLSANITY_DOCUTILS_SETTINGS', 'DOCUTILS_SETTINGS'),
+        ('M_HTMLSANITY_FORMATTED_FIELDS', 'FORMATTED_FIELDS')]:
+        settings[key] = pelicanobj.settings[pelicankey]
+
+    # Settings with the same name both here and in Pelican
+    for key in 'M_HTMLSANITY_HYPHENATION', 'M_HTMLSANITY_SMART_QUOTES':
+        if key in pelicanobj.settings: settings[key] = pelicanobj.settings[key]
 
     # Save settings needed only for Pelican-specific functionality
     global pelican_settings
@@ -766,9 +780,9 @@ def configure_pelican(pelicanobj):
     docutils_settings['language_code'] = settings['M_HTMLSANITY_LANGUAGE']
     docutils_settings.update(settings['M_HTMLSANITY_DOCUTILS_SETTINGS'])
 
-def add_reader(readers):
-    readers.reader_classes['rst'] = SaneRstReader
+def _pelican_add_reader(readers):
+    readers.reader_classes['rst'] = PelicanSaneRstReader
 
-def register():
-    pelican.signals.initialized.connect(configure_pelican)
-    pelican.signals.readers_init.connect(add_reader)
+def register(): # for Pelican
+    pelican.signals.initialized.connect(_pelican_configure)
+    pelican.signals.readers_init.connect(_pelican_add_reader)
