@@ -26,6 +26,7 @@
 
 import argparse
 import copy
+import docutils
 import enum
 import urllib.parse
 import html
@@ -56,6 +57,7 @@ default_config = {
     'PROJECT_SUBTITLE': None,
     'MAIN_PROJECT_URL': None,
     'INPUT_MODULES': [],
+    'INPUT_PAGES': [],
     'OUTPUT': 'output',
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
@@ -68,11 +70,16 @@ default_config = {
         ('Modules', 'modules', []),
         ('Classes', 'classes', [])],
     'LINKS_NAVBAR2': [],
+
     'PAGE_HEADER': None,
     'FINE_PRINT': '[default]',
+    'FORMATTED_METADATA': ['summary'],
+
     'CLASS_INDEX_EXPAND_LEVELS': 1,
     'CLASS_INDEX_EXPAND_INNER': False,
+
     'PYBIND11_COMPATIBILITY': False,
+
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
     'SEARCH_HELP': """.. raw:: html
@@ -830,6 +837,73 @@ def render_class(state: State, path, class_, env):
     render(state.config, 'class.html', page, env)
     return index_entry
 
+def publish_rst(source):
+    pub = docutils.core.Publisher(
+        writer=m.htmlsanity.SaneHtmlWriter(),
+        source_class=docutils.io.StringInput,
+        destination_class=docutils.io.StringOutput)
+    pub.set_components('standalone', 'restructuredtext', 'html')
+    #pub.writer.translator_class = m.htmlsanity.SaneHtmlTranslator
+    pub.process_programmatic_settings(None, m.htmlsanity.docutils_settings, None)
+    # Docutils uses a deprecated U mode for opening files, so instead of
+    # monkey-patching docutils.io.FileInput to not do that (like Pelican does),
+    # I just read the thing myself.
+    pub.set_source(source=source)
+    pub.publish()
+    return pub
+
+def render_page(state: State, path, filename, env):
+    logging.debug("generating %s.html", '.'.join(path))
+
+    # Render the file
+    with open(filename, 'r') as f: pub = publish_rst(f.read())
+
+    # Extract metadata from the page
+    metadata = {}
+    for docinfo in pub.document.traverse(docutils.nodes.docinfo):
+        for element in docinfo.children:
+            if element.tagname == 'field':
+                name_elem, body_elem = element.children
+                name = name_elem.astext()
+                if name in state.config['FORMATTED_METADATA']:
+                    # If the metadata are formatted, format them. Use a special
+                    # translator that doesn't add <dd> tags around the content,
+                    # also explicitly disable the <p> around as we not need it
+                    # always.
+                    # TODO: uncrapify this a bit
+                    visitor = m.htmlsanity._SaneFieldBodyTranslator(pub.document)
+                    visitor.compact_field_list = True
+                    body_elem.walkabout(visitor)
+                    value = visitor.astext()
+                else:
+                    value = body_elem.astext()
+                metadata[name.lower()] = value
+
+    # Breadcrumb, we don't do page hierarchy yet
+    assert len(path) == 1
+    breadcrumb = [(pub.writer.parts.get('title'), path[0] + '.html')]
+
+    page = Empty()
+    page.url = breadcrumb[-1][1]
+    page.breadcrumb = breadcrumb
+    page.prefix_wbr = path[0]
+
+    # Set page content and add extra metadata from there
+    page.content = pub.writer.parts.get('body').rstrip()
+    for key, value in metadata.items(): setattr(page, key, value)
+    if not hasattr(page, 'summary'): page.summary = ''
+
+    render(state.config, 'page.html', page, env)
+
+    # Index entry for this page, return only if it's not an index
+    if path == ['index']: return []
+    index_entry = IndexEntry()
+    index_entry.kind = 'page'
+    index_entry.name = breadcrumb[-1][0]
+    index_entry.url = page.url
+    index_entry.summary = page.summary
+    return [index_entry]
+
 def run(basedir, config, templates):
     # Prepare Jinja environment
     env = jinja2.Environment(
@@ -869,6 +943,9 @@ def run(basedir, config, templates):
 
         state.class_index += [render_module(state, [module_name], module, env)]
 
+    for page in config['INPUT_PAGES']:
+        state.page_index += render_page(state, [os.path.splitext(os.path.basename(page))[0]], os.path.join(basedir, page), env)
+
     # Recurse into the tree and mark every node that has nested modules with
     # has_nestaable_children.
     def mark_nested_modules(list: List[IndexEntry]):
@@ -895,12 +972,14 @@ def run(basedir, config, templates):
             # TODO could keep_trailing_newline fix this better?
             f.write(b'\n')
 
-    # Create index.html
-    # TODO: use actual reST source and have this just as a fallback
-    page = Empty()
-    page.breadcrumb = [(config['PROJECT_TITLE'], 'index.html')]
-    page.url = page.breadcrumb[-1][1]
-    render(config, 'page.html', page, env)
+    # Create index.html if it was not provided by the user
+    if 'index.rst' not in [os.path.basename(i) for i in config['INPUT_PAGES']]:
+        logging.debug("writing index.html for an empty main page")
+
+        page = Empty()
+        page.breadcrumb = [(config['PROJECT_TITLE'], 'index.html')]
+        page.url = page.breadcrumb[-1][1]
+        render(config, 'page.html', page, env)
 
     # Copy referenced files
     for i in config['STYLESHEETS'] + config['EXTRA_FILES'] + ([config['FAVICON'][0]] if config['FAVICON'] else []) + ([] if config['SEARCH_DISABLED'] else ['search.js']):
