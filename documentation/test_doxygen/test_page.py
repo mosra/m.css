@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os
 import unittest
 
 from distutils.version import LooseVersion
@@ -99,4 +100,13 @@ class SubpageOfIndex(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('page.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
+
+class EmptyPage(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'empty_page', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'group__bla_md_input.html')))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
