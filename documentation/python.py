@@ -999,12 +999,12 @@ def run(basedir, config, templates):
     # Recurse into the tree and mark every node that has nested modules with
     # has_nestaable_children.
     def mark_nested_modules(list: List[IndexEntry]):
-        has_nestaable_children = False
+        has_nestable_children = False
         for i in list:
             if i.kind != 'module': continue
-            has_nestaable_children = True
-            mark_nested_modules(i.children)
-        return has_nestaable_children
+            has_nestable_children = True
+            i.has_nestable_children = mark_nested_modules(i.children)
+        return has_nestable_children
     mark_nested_modules(state.class_index)
 
     # Create module and class index
