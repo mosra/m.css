@@ -315,3 +315,14 @@ class BaseDerivedInRootNamespace(IntegrationTestCase):
 
         # Shouldn't crash or anything
         self.assertEqual(*self.actual_expected_contents('structNamespace_1_1BothBaseAndDerivedInRootNamespace.html'))
+
+class NamespaceMembersInTwoModules(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'namespace_members_in_two_modules', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('group__group1.html'))
+        self.assertEqual(*self.actual_expected_contents('group__group2.html'))
+        self.assertEqual(*self.actual_expected_contents('namespacenp.html'))
+        self.assertEqual(*self.actual_expected_contents('file3_8h.html'))
