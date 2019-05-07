@@ -8,6 +8,12 @@ class Foo:
         """A property with a type annotation"""
         pass
 
+    # Self-reference is only possible with a string in Py3
+    # https://stackoverflow.com/a/33533514
+    def string_annotation(self: 'inspect_annotations.Foo'):
+        """String annotations"""
+        pass
+
 def annotation(param: List[int], another: bool, third: str = "hello") -> Foo:
     """An annotated function"""
     pass

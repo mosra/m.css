@@ -316,6 +316,9 @@ def extract_annotation(annotation) -> str:
     # TODO: why this is not None directly?
     if annotation is inspect.Signature.empty: return None
 
+    # Annotations can be strings, also https://stackoverflow.com/a/33533514
+    if type(annotation) == str: return annotation
+
     # To avoid getting <class 'foo.bar'> for types (and getting foo.bar
     # instead) but getting the actual type for types annotated with e.g.
     # List[int], we need to check if the annotation is actually from the
