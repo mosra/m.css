@@ -117,6 +117,7 @@ class State:
         self.config = config
         self.class_index: List[IndexEntry] = []
         self.page_index: List[IndexEntry] = []
+        self.module_mapping: Dict[str, str] = {}
 
 def is_internal_function_name(name: str) -> bool:
     """If the function name is internal.
@@ -124,6 +125,14 @@ def is_internal_function_name(name: str) -> bool:
     Skips underscored functions but keeps special functions such as __init__.
     """
     return name.startswith('_') and not (name.startswith('__') and name.endswith('__'))
+
+def map_name_prefix(state: State, type: str) -> str:
+    for prefix, replace in state.module_mapping.items():
+        if type == prefix or type.startswith(prefix + '.'):
+            return replace + type[len(prefix):]
+
+    # No mapping found, return the type as-is
+    return type
 
 def is_internal_or_imported_module_member(state: State, parent, path: str, name: str, object) -> bool:
     """If the module member is internal or imported."""
@@ -140,7 +149,7 @@ def is_internal_or_imported_module_member(state: State, parent, path: str, name:
         # Variables don't have the __module__ attribute, so check for its
         # presence. Right now *any* variable will be present in the output, as
         # there is no way to check where it comes from.
-        if hasattr(object, '__module__') and object.__module__ != '.'.join(path):
+        if hasattr(object, '__module__') and map_name_prefix(state, object.__module__) != '.'.join(path):
             return True
 
     # If this is a module, then things get complicated again and we need to
@@ -176,16 +185,16 @@ _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
 _pybind_default_value_rx = re.compile('[^,)]+')
 
-def parse_pybind_type(signature: str) -> str:
-    type = _pybind_type_rx.match(signature).group(0)
-    signature = signature[len(type):]
+def parse_pybind_type(state: State, signature: str) -> str:
+    input_type = _pybind_type_rx.match(signature).group(0)
+    signature = signature[len(input_type):]
+    type = map_name_prefix(state, input_type)
     if signature and signature[0] == '[':
         type += '['
         signature = signature[1:]
         while signature[0] != ']':
-            inner_type = parse_pybind_type(signature)
-            type +=  inner_type
-            signature = signature[len(inner_type):]
+            signature, inner_type = parse_pybind_type(state, signature)
+            type += inner_type
 
             if signature[0] == ']': break
             assert signature.startswith(', ')
@@ -193,11 +202,12 @@ def parse_pybind_type(signature: str) -> str:
             type += ', '
 
         assert signature[0] == ']'
+        signature = signature[1:]
         type += ']'
 
-    return type
+    return signature, type
 
-def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, str, str]], str]:
+def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List[Tuple[str, str, str]], str]:
     original_signature = signature # For error reporting
     name = _pybind_name_rx.match(signature).group(0)
     signature = signature[len(name):]
@@ -215,8 +225,7 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
         # Type (optional)
         if signature.startswith(': '):
             signature = signature[2:]
-            arg_type = parse_pybind_type(signature)
-            signature = signature[len(arg_type):]
+            signature, arg_type = parse_pybind_type(state, signature)
         else:
             arg_type = None
 
@@ -251,8 +260,7 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
     # Return type (optional)
     if signature.startswith(' -> '):
         signature = signature[4:]
-        return_type = parse_pybind_type(signature)
-        signature = signature[len(return_type):]
+        signature, return_type = parse_pybind_type(state, signature)
     else:
         return_type = None
 
@@ -272,7 +280,7 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
 
     return (name, summary, args, return_type)
 
-def parse_pybind_docstring(name: str, doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
+def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
     # Multiple overloads, parse each separately
     overload_header = "{}(*args, **kwargs)\nOverloaded function.\n\n".format(name);
     if doc.startswith(overload_header):
@@ -285,7 +293,7 @@ def parse_pybind_docstring(name: str, doc: str) -> List[Tuple[str, str, List[Tup
             next = doc.find('{}. {}('.format(id, name))
 
             # Parse the signature and docs from known slice
-            overloads += [parse_pybind_signature(doc[3:next])]
+            overloads += [parse_pybind_signature(state, doc[3:next])]
             assert overloads[-1][0] == name
             if next == -1: break
 
@@ -299,7 +307,7 @@ def parse_pybind_docstring(name: str, doc: str) -> List[Tuple[str, str, List[Tup
 
     # Normal function, parse and return the first signature
     else:
-        return [parse_pybind_signature(doc)]
+        return [parse_pybind_signature(state, doc)]
 
 def extract_summary(doc: str) -> str:
     if not doc: return '' # some modules (xml.etree) have that :(
@@ -312,12 +320,12 @@ def extract_type(type) -> str:
     # builtins (i.e., we want re.Match but not builtins.int).
     return (type.__module__ + '.' if type.__module__ != 'builtins' else '') + type.__name__
 
-def extract_annotation(annotation) -> str:
+def extract_annotation(state: State, annotation) -> str:
     # TODO: why this is not None directly?
     if annotation is inspect.Signature.empty: return None
 
     # Annotations can be strings, also https://stackoverflow.com/a/33533514
-    if type(annotation) == str: return annotation
+    if type(annotation) == str: return map_name_prefix(state, annotation)
 
     # To avoid getting <class 'foo.bar'> for types (and getting foo.bar
     # instead) but getting the actual type for types annotated with e.g.
@@ -325,8 +333,8 @@ def extract_annotation(annotation) -> str:
     # typing module or it's directly a type. In Python 3.7 this worked with
     # inspect.isclass(annotation), but on 3.6 that gives True for annotations
     # as well and then we would get just List instead of List[int].
-    if annotation.__module__ == 'typing': return str(annotation)
-    return extract_type(annotation)
+    if annotation.__module__ == 'typing': return map_name_prefix(state, str(annotation))
+    return map_name_prefix(state, extract_type(annotation))
 
 def render(config, template: str, page, env: jinja2.Environment):
     template = env.get_template(template)
@@ -418,7 +426,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     # one function in Python may equal more than one function on the C++ side.
     # To make the docs usable, list all overloads separately.
     if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__.startswith(path[-1]):
-        funcs = parse_pybind_docstring(path[-1], function.__doc__)
+        funcs = parse_pybind_docstring(state, path[-1], function.__doc__)
         overloads = []
         for name, summary, args, type in funcs:
             out = Empty()
@@ -512,11 +520,11 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
         try:
             signature = inspect.signature(function)
-            out.type = extract_annotation(signature.return_annotation)
+            out.type = extract_annotation(state, signature.return_annotation)
             for i in signature.parameters.values():
                 param = Empty()
                 param.name = i.name
-                param.type = extract_annotation(i.annotation)
+                param.type = extract_annotation(state, i.annotation)
                 if param.type:
                     out.has_complex_params = True
                 if i.default is inspect.Signature.empty:
@@ -551,17 +559,17 @@ def extract_property_doc(state: State, path: List[str], property):
 
     try:
         signature = inspect.signature(property.fget)
-        out.type = extract_annotation(signature.return_annotation)
+        out.type = extract_annotation(state, signature.return_annotation)
     except ValueError:
         # pybind11 properties have the type in the docstring
         if state.config['PYBIND11_COMPATIBILITY']:
-            out.type = parse_pybind_signature(property.fget.__doc__)[3]
+            out.type = parse_pybind_signature(state, property.fget.__doc__)[3]
         else:
             out.type = None
 
     return out
 
-def extract_data_doc(parent, path: List[str], data):
+def extract_data_doc(state: State, parent, path: List[str], data):
     assert not inspect.ismodule(data) and not inspect.isclass(data) and not inspect.isroutine(data) and not inspect.isframe(data) and not inspect.istraceback(data) and not inspect.iscode(data)
 
     out = Empty()
@@ -570,7 +578,7 @@ def extract_data_doc(parent, path: List[str], data):
     out.summary = ''
     out.has_details = False
     if hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
-        out.type = extract_annotation(parent.__annotations__[out.name])
+        out.type = extract_annotation(state, parent.__annotations__[out.name])
     else:
         out.type = None
     # The autogenerated <foo.bar at 0xbadbeef> is useless, so provide the value
@@ -614,9 +622,37 @@ def render_module(state: State, path, module, env):
     # The __all__ is meant to expose the public API, so we don't filter out
     # underscored things.
     if hasattr(module, '__all__'):
+        # Names exposed in __all__ could be also imported from elsewhere, for
+        # example this is a common pattern with native libraries and we want
+        # Foo, Bar, submodule and *everything* in submodule to be referred to
+        # as `library.RealName` (`library.submodule.func()`, etc.) instead of
+        # `library._native.Foo`, `library._native.sub.func()` etc.
+        #
+        #   from ._native import Foo as PublicName
+        #   from ._native import sub as submodule
+        #   __all__ = ['PublicName', 'submodule']
+        #
+        # The name references can be cyclic so extract the mapping in a
+        # separate pass before everything else.
         for name in module.__all__:
             # Everything available in __all__ is already imported, so get those
             # directly
+            object = getattr(module, name)
+            subpath = path + [name]
+
+            # Modules have __name__ while other objects have __module__, need
+            # to check both.
+            if inspect.ismodule(object) and object.__name__ != '.'.join(subpath):
+                assert object.__name__ not in state.module_mapping
+                state.module_mapping[object.__name__] = '.'.join(subpath)
+            elif hasattr(object, '__module__'):
+                subname = object.__module__ + '.' + object.__name__
+                if subname != '.'.join(subpath):
+                    assert subname not in state.module_mapping
+                    state.module_mapping[subname] = '.'.join(subpath)
+
+        # Now extract the actual docs
+        for name in module.__all__:
             object = getattr(module, name)
             subpath = path + [name]
 
@@ -640,7 +676,7 @@ def render_module(state: State, path, module, env):
             # https://github.com/python/cpython/blob/d29b3dd9227cfc4a23f77e99d62e20e063272de1/Lib/pydoc.py#L113
             # TODO: unify this query
             elif not inspect.isframe(object) and not inspect.istraceback(object) and not inspect.iscode(object):
-                page.data += [extract_data_doc(module, subpath, object)]
+                page.data += [extract_data_doc(state, module, subpath, object)]
             else: # pragma: no cover
                 logging.warning("unknown symbol %s in %s", name, '.'.join(path))
 
@@ -691,7 +727,7 @@ def render_module(state: State, path, module, env):
         for name, object in inspect.getmembers(module, lambda o: not inspect.ismodule(o) and not inspect.isclass(o) and not inspect.isroutine(o) and not inspect.isframe(o) and not inspect.istraceback(o) and not inspect.iscode(o)):
             if is_internal_or_imported_module_member(state, module, path, name, object): continue
 
-            page.data += [extract_data_doc(module, path + [name], object)]
+            page.data += [extract_data_doc(state, module, path + [name], object)]
 
     render(state.config, 'module.html', page, env)
     return index_entry
@@ -839,7 +875,7 @@ def render_class(state: State, path, class_, env):
         if name.startswith('_'): continue
 
         subpath = path + [name]
-        page.data += [extract_data_doc(class_, subpath, object)]
+        page.data += [extract_data_doc(state, class_, subpath, object)]
 
     render(state.config, 'class.html', page, env)
     return index_entry

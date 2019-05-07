@@ -126,3 +126,13 @@ class Annotations(BaseInspectTestCase):
         assert not hasattr(math, '__all__')
 
         self.assertEqual(*self.actual_expected_contents('math.html', 'math36.html'))
+
+class NameMapping(BaseInspectTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'name_mapping', *args, **kwargs)
+
+    def test(self):
+        self.run_python()
+        self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.Class.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.submodule.html'))
