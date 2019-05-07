@@ -293,14 +293,11 @@ def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str,
             next = doc.find('{}. {}('.format(id, name))
 
             # Parse the signature and docs from known slice
-            overloads += [parse_pybind_signature(state, doc[3:next])]
+            overloads += [parse_pybind_signature(state, doc[len(str(id - 1)) + 2:next])]
             assert overloads[-1][0] == name
             if next == -1: break
 
-            # Continue to the next signature. Sorry, didn't bother to check how
-            # docstrings for more than 9 overloads look yet, that's why the
-            # assert
-            assert id < 10
+            # Continue to the next signature
             doc = doc[next:]
 
         return overloads

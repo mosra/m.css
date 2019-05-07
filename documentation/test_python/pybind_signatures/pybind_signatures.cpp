@@ -35,6 +35,8 @@ struct MyClass {
 
 void duck(py::args, py::kwargs) {}
 
+template<class T, class U> void tenOverloads(T, U) {}
+
 PYBIND11_MODULE(pybind_signatures, m) {
     m.doc() = "pybind11 function signature extraction";
 
@@ -46,7 +48,18 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("crazy_signature", &crazySignature, "Function that failed to get parsed")
         .def("overloaded", static_cast<std::string(*)(int)>(&overloaded), "Overloaded for ints")
         .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats")
-        .def("duck", &duck, "A function taking args/kwargs directly");
+        .def("duck", &duck, "A function taking args/kwargs directly")
+
+        .def("tenOverloads", &tenOverloads<float, float>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<int, float>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<bool, float>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<float, int>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<int, int>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<bool, int>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<float, bool>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<int, bool>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<bool, bool>, "Ten overloads of a function")
+        .def("tenOverloads", &tenOverloads<std::string, std::string>, "Ten overloads of a function");
 
     py::class_<MyClass>(m, "MyClass", "My fun class!")
         .def_static("static_function", &MyClass::staticFunction, "Static method with positional-only args")
