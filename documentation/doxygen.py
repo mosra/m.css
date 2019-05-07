@@ -520,7 +520,7 @@ def extract_id_hash(state: State, element: ET.Element) -> str:
     # namespace one, depending on what's documented better. Ugh. See the
     # contents_section_underscore_one test for a verification.
     #
-    # Can't use current compount URL base here, as definitions can have
+    # Can't use current compound URL base here, as definitions can have
     # different URL base (again an enum being present in both file and
     # namespace documentation). The state.current_definition_url_base usually
     # comes from parse_id()[0]. See the
@@ -3188,6 +3188,9 @@ def parse_xml(state: State, xml: str):
                             compound.friend_funcs += [func]
                             if func.has_details: compound.has_func_details = True
 
+            # These are *both* things listed in a class (namespace) member
+            # group (things inside plain @{ @name foo ... @}) and members of a
+            # top-level group (defined with @defgroup).
             elif compounddef_child.attrib['kind'] == 'user-defined':
                 list = []
 
@@ -3196,12 +3199,18 @@ def parse_xml(state: State, xml: str):
                     if memberdef.attrib['kind'] == 'enum':
                         enum = parse_enum(state, memberdef)
                         if enum:
-                            list += [('enum', enum)]
+                            if compound.kind == 'group':
+                                compound.enums += [enum]
+                            else:
+                                list += [('enum', enum)]
                             if enum.has_details: compound.has_enum_details = True
                     elif memberdef.attrib['kind'] == 'typedef':
                         typedef = parse_typedef(state, memberdef)
                         if typedef:
-                            list += [('typedef', typedef)]
+                            if compound.kind == 'group':
+                                compound.typedefs += [typedef]
+                            else:
+                                list += [('typedef', typedef)]
                             if typedef.has_details: compound.has_typedef_details = True
                     elif memberdef.attrib['kind'] in ['function', 'signal', 'slot']:
                         # Gather only private functions that are virtual and
@@ -3212,17 +3221,26 @@ def parse_xml(state: State, xml: str):
 
                         func = parse_func(state, memberdef)
                         if func:
-                            list += [('func', func)]
+                            if compound.kind == 'group':
+                                compound.funcs += [func]
+                            else:
+                                list += [('func', func)]
                             if func.has_details: compound.has_func_details = True
                     elif memberdef.attrib['kind'] == 'variable':
                         var = parse_var(state, memberdef)
                         if var:
-                            list += [('var', var)]
+                            if compound.kind == 'group':
+                                compound.vars += [var]
+                            else:
+                                list += [('var', var)]
                             if var.has_details: compound.has_var_details = True
                     elif memberdef.attrib['kind'] == 'define':
                         define = parse_define(state, memberdef)
                         if define:
-                            list += [('define', define)]
+                            if compound.kind == 'group':
+                                compound.defines += [define]
+                            else:
+                                list += [('define', define)]
                             if define.has_details: compound.has_define_details = True
                     elif memberdef.attrib['kind'] == 'friend':
                         # Ignore friend classes. This does not ignore friend
@@ -3234,12 +3252,16 @@ def parse_xml(state: State, xml: str):
                         else:
                             func = parse_func(state, memberdef)
                             if func:
-                                list += [('func', func)]
+                                if compound.kind == 'group':
+                                    compound.funcs += [func]
+                                else:
+                                    list += [('func', func)]
                                 if func.has_details: compound.has_func_details = True
                     else: # pragma: no cover
                         logging.warning("{}: unknown user-defined <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 
                 if list:
+                    assert compound.kind != 'group'
                     header = compounddef_child.find('header')
                     if header is None:
                         logging.error("{}: member groups without @name are not supported, ignoring".format(state.current))
@@ -3351,37 +3373,38 @@ def parse_xml(state: State, xml: str):
             compound.include = make_include(state, state.current_include)
 
         # If we discovered that entries of this compound don't have a common
-        # #include, flip on has_details of all entries and wipe the compound
-        # include. Otherwise wipe the include information from everywhere but
-        # the compound.
+        # #include (and the entry isn't just a reference to a definition in
+        # some other page), flip on has_details of all entries and wipe the
+        # compound include. Otherwise wipe the include information from
+        # everywhere but the compound.
         if not state.current_include:
             compound.include = None
         for entry in compound.enums:
-            if entry.include and not state.current_include:
+            if entry.include and not state.current_include and entry.base_url == compound.url:
                 entry.has_details = True
                 compound.has_enum_details = True
             else:
                 entry.include = None
         for entry in compound.typedefs:
-            if entry.include and not state.current_include:
+            if entry.include and not state.current_include and entry.base_url == compound.url:
                 entry.has_details = True
                 compound.has_typedef_details = True
             else:
                 entry.include = None
         for entry in compound.funcs:
-            if entry.include and not state.current_include:
+            if entry.include and not state.current_include and entry.base_url == compound.url:
                 entry.has_details = True
                 compound.has_func_details = True
             else:
                 entry.include = None
         for entry in compound.vars:
-            if entry.include and not state.current_include:
+            if entry.include and not state.current_include and entry.base_url == compound.url:
                 entry.has_details = True
                 compound.has_var_details = True
             else:
                 entry.include = None
         for entry in compound.defines:
-            if entry.include and not state.current_include:
+            if entry.include and not state.current_include and entry.base_url == compound.url:
                 entry.has_details = True
                 compound.has_define_details = True
             else:
@@ -3390,7 +3413,7 @@ def parse_xml(state: State, xml: str):
         # global include anyway
         for group in compound.groups:
             for kind, entry in group.members:
-                if entry.include and not state.current_include:
+                if entry.include and not state.current_include and entry.base_url == compound.url:
                     entry.has_details = True
                     setattr(compound, 'has_{}_details'.format(kind), True)
                 else:
@@ -3782,7 +3805,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     #   the brief desc is not part of the <inner*> tag
     # - template specifications of all classes so we can include that in the
     #   linking pages
-    # - get URLs of namespace, classe, file docs and pages so we can link to
+    # - get URLs of namespace, class, file docs and pages so we can link to
     #   them from breadcrumb navigation
     file: str
     for file in xml_files_metadata:
