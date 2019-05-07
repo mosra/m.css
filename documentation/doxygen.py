@@ -2384,9 +2384,9 @@ def extract_metadata(state: State, xml):
     # This is similar to compound.url_base handling in parse_xml() below.
     compound.url = 'index.html' if compound.kind == 'page' and compound.id == 'indexpage' else compound.id + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    # Groups and pages are explicitly created so they *have details*, other
+    # Groups are explicitly created so they *have details*, other
     # things need to have at least some documentation
-    compound.has_details = compound.kind in ['group', 'page'] or compound.brief or compounddef.find('detaileddescription')
+    compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')
     compound.children = []
 
     # Deprecation status
@@ -2684,9 +2684,9 @@ def parse_xml(state: State, xml: str):
     if state.doxyfile['M_SHOW_UNDOCUMENTED']:
         _document_all_stuff(compounddef)
 
-    # Ignoring compounds w/o any description, except for pages and groups,
+    # Ignoring compounds w/o any description, except for groups,
     # which are created explicitly
-    if not compounddef.find('briefdescription') and not compounddef.find('detaileddescription') and not compounddef.attrib['kind'] in ['page', 'group']:
+    if not compounddef.find('briefdescription') and not compounddef.find('detaileddescription') and not compounddef.attrib['kind'] == 'group':
         logging.debug("{}: neither brief nor detailed description present, skipping".format(state.current))
         return None
 
