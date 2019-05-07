@@ -153,6 +153,17 @@ class Modules(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('group__subgroup.html'))
         self.assertEqual(*self.actual_expected_contents('modules.html'))
 
+class ModulesInNamespace(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'modules_in_namespace', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('group__group1.html'))
+        self.assertEqual(*self.actual_expected_contents('group__group2.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+        self.assertEqual(*self.actual_expected_contents('file3_8h.html'))
+
 class Deprecated(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'deprecated', *args, **kwargs)
