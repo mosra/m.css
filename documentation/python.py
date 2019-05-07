@@ -236,7 +236,7 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
         # Failed to parse, return an ellipsis and docs
         if not signature.startswith(', '):
             end = original_signature.find('\n')
-            logging.warning("cannot parse pybind11 function signature %s", original_signature[:end])
+            logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
             if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
                 summary = extract_summary(original_signature[end + 1:])
             else:
@@ -258,7 +258,7 @@ def parse_pybind_signature(signature: str) -> Tuple[str, str, List[Tuple[str, st
 
     if signature and signature[0] != '\n':
         end = original_signature.find('\n')
-        logging.warning("cannot parse pybind11 function signature %s", original_signature[:end])
+        logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
             summary = extract_summary(original_signature[end + 1:])
         else:
