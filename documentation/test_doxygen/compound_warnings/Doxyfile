@@ -5,6 +5,7 @@ GENERATE_LATEX          = NO
 GENERATE_XML            = YES
 XML_PROGRAMLISTING      = NO
 PREDEFINED              = DOXYGEN_GENERATING_OUTPUT
+CASE_SENSE_NAMES        = YES
 
 # Enable to get rid of the MAGNUM_EXPORT macro in the output
 # MACRO_EXPANSION         = YES

@@ -4,6 +4,7 @@ GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
 GENERATE_XML            = YES
 XML_PROGRAMLISTING      = NO
+CASE_SENSE_NAMES        = YES
 
 # Verify that this doesn't cause duplicated items
 XML_NS_MEMB_FILE_SCOPE  = YES
