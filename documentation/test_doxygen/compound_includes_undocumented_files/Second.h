@@ -18,7 +18,7 @@ enum Flag {};
 /*@}*/
 
 /** @related Class
- * @brief A related enum in a different file. Shouldn't be shown in namespace docs but it is :(
+ * @brief A related enum in a different file
  */
 enum RelatedEnum {};
 
