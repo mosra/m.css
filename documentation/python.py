@@ -41,7 +41,7 @@ import shutil
 
 from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
-from typing import Tuple, Dict, Any, List
+from typing import Tuple, Dict, Set, Any, List
 from urllib.parse import urljoin
 from distutils.version import LooseVersion
 
@@ -123,6 +123,7 @@ class State:
         self.module_docs: Dict[str, Dict[str, str]] = {}
         self.class_docs: Dict[str, Dict[str, str]] = {}
         self.data_docs: Dict[str, Dict[str, str]] = {}
+        self.external_data: Set[str] = set()
 
 def is_internal_function_name(name: str) -> bool:
     """If the function name is internal.
@@ -252,7 +253,7 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
             end = original_signature.find('\n')
             logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
             if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-                summary = extract_summary({}, [], original_signature[end + 1:])
+                summary = extract_summary(state, {}, [], original_signature[end + 1:])
             else:
                 summary = ''
             return (name, summary, [('…', None, None)], None)
@@ -273,13 +274,13 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-            summary = extract_summary({}, [], original_signature[end + 1:])
+            summary = extract_summary(state, {}, [], original_signature[end + 1:])
         else:
             summary = ''
         return (name, summary, [('…', None, None)], None)
 
     if len(signature) > 1 and signature[1] == '\n':
-        summary = extract_summary({}, [], signature[2:])
+        summary = extract_summary(state, {}, [], signature[2:])
     else:
         summary = ''
 
@@ -311,11 +312,11 @@ def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str,
     else:
         return [parse_pybind_signature(state, doc)]
 
-def extract_summary(external_docs, path: List[str], doc: str) -> str:
+def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
     # Prefer external docs, if available
     path_str = '.'.join(path)
     if path_str in external_docs:
-        return render_inline_rst(external_docs[path_str]['summary'])
+        return render_inline_rst(state, external_docs[path_str]['summary'])
 
     if not doc: return '' # some modules (xml.etree) have that :(
     doc = inspect.cleandoc(doc)
@@ -360,7 +361,7 @@ def extract_module_doc(state: State, path: List[str], module):
     out = Empty()
     out.url = make_url(path)
     out.name = path[-1]
-    out.summary = extract_summary(state.class_docs, path, module.__doc__)
+    out.summary = extract_summary(state, state.class_docs, path, module.__doc__)
     return out
 
 def extract_class_doc(state: State, path: List[str], class_):
@@ -369,7 +370,7 @@ def extract_class_doc(state: State, path: List[str], class_):
     out = Empty()
     out.url = make_url(path)
     out.name = path[-1]
-    out.summary = extract_summary(state.class_docs, path, class_.__doc__)
+    out.summary = extract_summary(state, state.class_docs, path, class_.__doc__)
     return out
 
 def extract_enum_doc(state: State, path: List[str], enum_):
@@ -386,7 +387,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
             out.summary = ''
         else:
             # TODO: external summary for enums
-            out.summary = extract_summary({}, [], enum_.__doc__)
+            out.summary = extract_summary(state, {}, [], enum_.__doc__)
 
         out.base = extract_type(enum_.__base__)
 
@@ -400,7 +401,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
                 value.summary = ''
             else:
                 # TODO: external summary for enum values
-                value.summary = extract_summary({}, [], i.__doc__)
+                value.summary = extract_summary(state, {}, [], i.__doc__)
 
             if value.summary:
                 out.has_details = True
@@ -412,7 +413,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
         assert hasattr(enum_, '__members__')
 
         # TODO: external summary for enums
-        out.summary = extract_summary({}, [], enum_.__doc__)
+        out.summary = extract_summary(state, {}, [], enum_.__doc__)
         out.base = None
 
         for name, v in enum_.__members__.items():
@@ -523,7 +524,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
         out.has_complex_params = False
         out.has_details = False
         # TODO: external summary for functions
-        out.summary = extract_summary({}, [], function.__doc__)
+        out.summary = extract_summary(state, {}, [], function.__doc__)
 
         # Decide if classmethod or staticmethod in case this is a method
         if inspect.isclass(parent):
@@ -565,7 +566,7 @@ def extract_property_doc(state: State, path: List[str], property):
     out = Empty()
     out.name = path[-1]
     # TODO: external summary for properties
-    out.summary = extract_summary({}, [], property.__doc__)
+    out.summary = extract_summary(state, {}, [], property.__doc__)
     out.is_settable = property.fset is not None
     out.is_deletable = property.fdel is not None
     out.has_details = False
@@ -605,7 +606,7 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     path_str = '.'.join(path)
     if path_str in state.data_docs:
         # TODO: use also the contents
-        out.summary = render_inline_rst(state.data_docs[path_str]['summary'])
+        out.summary = render_inline_rst(state, state.data_docs[path_str]['summary'])
         del state.data_docs[path_str]
 
     return out
@@ -620,7 +621,7 @@ def render_module(state: State, path, module, env):
         breadcrumb += [(i, url_base + 'html')]
 
     page = Empty()
-    page.summary = extract_summary(state.module_docs, path, module.__doc__)
+    page.summary = extract_summary(state, state.module_docs, path, module.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
@@ -634,7 +635,7 @@ def render_module(state: State, path, module, env):
     # External page content, if provided
     path_str = '.'.join(path)
     if path_str in state.module_docs:
-        page.content = render_rst(state.module_docs[path_str]['content'])
+        page.content = render_rst(state, state.module_docs[path_str]['content'])
         state.module_docs[path_str]['used'] = True
 
     # Index entry for this module, returned together with children at the end
@@ -820,7 +821,7 @@ def render_class(state: State, path, class_, env):
         breadcrumb += [(i, url_base + 'html')]
 
     page = Empty()
-    page.summary = extract_summary(state.class_docs, path, class_.__doc__)
+    page.summary = extract_summary(state, state.class_docs, path, class_.__doc__)
     page.url = breadcrumb[-1][1]
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
@@ -837,7 +838,7 @@ def render_class(state: State, path, class_, env):
     # External page content, if provided
     path_str = '.'.join(path)
     if path_str in state.class_docs:
-        page.content = render_rst(state.class_docs[path_str]['content'])
+        page.content = render_rst(state, state.class_docs[path_str]['content'])
         state.class_docs[path_str]['used'] = True
 
     # Index entry for this module, returned together with children at the end
@@ -912,7 +913,7 @@ def render_class(state: State, path, class_, env):
     render(state.config, 'class.html', page, env)
     return index_entry
 
-def publish_rst(source, translator_class=m.htmlsanity.SaneHtmlTranslator):
+def publish_rst(state: State, source, translator_class=m.htmlsanity.SaneHtmlTranslator):
     pub = docutils.core.Publisher(
         writer=m.htmlsanity.SaneHtmlWriter(),
         source_class=docutils.io.StringInput,
@@ -927,10 +928,16 @@ def publish_rst(source, translator_class=m.htmlsanity.SaneHtmlTranslator):
     # reporting, this is too awful
     pub.set_source(source=source)
     pub.publish()
+
+    # External images to pull later
+    # TODO: some actual path handling
+    for image in pub.document.traverse(docutils.nodes.image):
+        state.external_data.add(image['uri'])
+
     return pub
 
-def render_rst(source):
-    return publish_rst(source).writer.parts.get('body').rstrip()
+def render_rst(state: State, source):
+    return publish_rst(state, source).writer.parts.get('body').rstrip()
 
 class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
     # Unconditionally force compact paragraphs. This means the inline HTML
@@ -938,21 +945,21 @@ class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
     def should_be_compact_paragraph(self, node):
         return True
 
-def render_inline_rst(source):
-    return publish_rst(source, _SaneInlineHtmlTranslator).writer.parts.get('body').rstrip()
+def render_inline_rst(state: State, source):
+    return publish_rst(state, source, _SaneInlineHtmlTranslator).writer.parts.get('body').rstrip()
 
 def render_doc(state: State, filename):
     logging.debug("parsing docs from %s", filename)
 
     # Render the file. The directives should take care of everything, so just
     # discard the output afterwards.
-    with open(filename, 'r') as f: publish_rst(f.read())
+    with open(filename, 'r') as f: publish_rst(state, f.read())
 
 def render_page(state: State, path, filename, env):
     logging.debug("generating %s.html", '.'.join(path))
 
     # Render the file
-    with open(filename, 'r') as f: pub = publish_rst(f.read())
+    with open(filename, 'r') as f: pub = publish_rst(state, f.read())
 
     # Extract metadata from the page
     metadata = {}
@@ -1109,7 +1116,7 @@ def run(basedir, config, templates):
         render(config, 'page.html', page, env)
 
     # Copy referenced files
-    for i in config['STYLESHEETS'] + config['EXTRA_FILES'] + ([config['FAVICON'][0]] if config['FAVICON'] else []) + ([] if config['SEARCH_DISABLED'] else ['search.js']):
+    for i in config['STYLESHEETS'] + config['EXTRA_FILES'] + ([config['FAVICON'][0]] if config['FAVICON'] else []) + list(state.external_data) + ([] if config['SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 

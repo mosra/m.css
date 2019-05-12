@@ -30,6 +30,11 @@ See, :glfn:`DrawElements` is the grandpa of :vkfn:`CmdDraw`. But
     >>> a.dot()
     14.0
 
+Images!
+
+.. image:: tiny.png
+    :scale: 2000%
+
 .. fancy-line:: Custom plugins!
 
 And now something totally different:

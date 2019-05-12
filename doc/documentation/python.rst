@@ -574,6 +574,10 @@ listed in :py:`FORMATTED_METADATA` (the :py:`:summary:` is among them) are
 expected to be formatted as :abbr:`reST <reStructuredText>` and exposed as
 HTML, otherwise as a plain text.
 
+All referenced images are expected to have either an absolute URL or be
+relative to :py:`INPUT`, the ones with relative paths are then copied to
+:py:`OUTPUT`.
+
 `Plugins`_
 ==========
 

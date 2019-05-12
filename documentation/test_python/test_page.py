@@ -72,6 +72,7 @@ class Plugins(BaseTestCase):
                 'm.dox',
                 'm.gh',
                 'm.gl',
+                'm.images',
                 'm.link',
                 'm.plots',
                 'm.vk',
@@ -89,3 +90,4 @@ class Plugins(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
         # The output is different for older Graphviz
         self.assertEqual(*self.actual_expected_contents('dot.html', 'dot.html' if LooseVersion(dot_version()) >= LooseVersion("2.40.1") else 'dot-238.html'))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
