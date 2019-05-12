@@ -53,6 +53,12 @@ files to populate the documentation.
 One of the design goals is providing a similar user experience to the
 `Doxygen documentation theme <{filename}doxygen.rst>`_.
 
+.. button-success:: https://doc.magnum.graphics/python/
+
+    Live demo
+
+    doc.magnum.graphics
+
 .. note-danger:: Heavily experimental
 
     This functionality is *heavily* experimental at the moment. It's being used
