@@ -22,9 +22,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-from m.test import PluginTestCase
+from . import PelicanPluginTestCase
 
-class Metadata(PluginTestCase):
+class Metadata(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 
@@ -62,7 +62,7 @@ class Metadata(PluginTestCase):
         self.assertEqual(*self.actual_expected_contents('tag-a-tag.html'))
         self.assertEqual(*self.actual_expected_contents('tag-minimal-tag.html'))
 
-class TypographyHtmlEscape(PluginTestCase):
+class TypographyHtmlEscape(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'typography_html_escape', *args, **kwargs)
 

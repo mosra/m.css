@@ -22,9 +22,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-from . import PluginTestCase
+from . import PelicanPluginTestCase
 
-class Link(PluginTestCase):
+class Link(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 

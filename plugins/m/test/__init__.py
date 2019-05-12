@@ -28,7 +28,7 @@ import unittest
 
 from pelican import read_settings, Pelican
 
-class PluginTestCase(unittest.TestCase):
+class PelicanPluginTestCase(unittest.TestCase):
     def __init__(self, path, dir, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
         # Source files for test_something.py are in something_{dir}/ subdirectory

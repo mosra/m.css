@@ -32,9 +32,9 @@ from hashlib import sha1
 
 from distutils.version import LooseVersion
 
-from . import PluginTestCase
+from . import PelicanPluginTestCase
 
-class Math(PluginTestCase):
+class Math(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 
@@ -105,7 +105,7 @@ fermat = """<?xml version='1.0' encoding='UTF-8'?>
 </g>
 </svg>"""
 
-class Cached(PluginTestCase):
+class Cached(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'cached', *args, **kwargs)
 
@@ -136,7 +136,7 @@ class Cached(PluginTestCase):
             fermat_hash: (6, 0.0, fermat)})
         self.assertEqual(math_cache_actual, math_cache_expected)
 
-class Uncached(PluginTestCase):
+class Uncached(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'uncached', *args, **kwargs)
 

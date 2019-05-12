@@ -25,9 +25,9 @@
 import os
 import unittest
 
-from . import PluginTestCase
+from . import PelicanPluginTestCase
 
-class Plots(PluginTestCase):
+class Plots(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 

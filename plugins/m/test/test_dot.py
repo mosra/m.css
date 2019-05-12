@@ -29,12 +29,12 @@ import unittest
 
 from distutils.version import LooseVersion
 
-from m.test import PluginTestCase
+from . import PelicanPluginTestCase
 
 def dot_version():
     return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
 
-class Dot(PluginTestCase):
+class Dot(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 

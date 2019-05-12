@@ -22,9 +22,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-from m.test import PluginTestCase
+from . import PelicanPluginTestCase
 
-class Content(PluginTestCase):
+class Content(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'content', *args, **kwargs)
 
@@ -39,7 +39,7 @@ class Content(PluginTestCase):
         # Verify there's no superfluous markup or useless classes
         self.assertEqual(*self.actual_expected_contents('page.html'))
 
-class Typography(PluginTestCase):
+class Typography(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'typography', *args, **kwargs)
 
@@ -89,7 +89,7 @@ class Typography(PluginTestCase):
         self.assertEqual(*self.actual_expected_contents('category-a-category.html'))
         self.assertEqual(*self.actual_expected_contents('tag-tagging-a-name.html'))
 
-class TypographyGlobalLang(PluginTestCase):
+class TypographyGlobalLang(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'typography_global_lang', *args, **kwargs)
 
@@ -110,7 +110,7 @@ class TypographyGlobalLang(PluginTestCase):
         # be at proper places and not where it shouldn't be.
         self.assertEqual(*self.actual_expected_contents('page.html'))
 
-class RenderRst(PluginTestCase):
+class RenderRst(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'parse_error', *args, **kwargs)
 

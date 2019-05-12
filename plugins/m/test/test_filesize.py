@@ -22,9 +22,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-from m.test import PluginTestCase
+from . import PelicanPluginTestCase
 
-class Filesize(PluginTestCase):
+class Filesize(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 
