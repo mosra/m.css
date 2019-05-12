@@ -645,6 +645,12 @@ def render_module(state: State, path, module, env):
     index_entry.url = page.url
     index_entry.summary = page.summary
 
+    # List of inner modules and classes to render, these will be done after the
+    # current class introspection is done to have some better memory allocation
+    # pattern
+    modules_to_render = []
+    classes_to_render = []
+
     # This is actually complicated -- if the module defines __all__, use that.
     # The __all__ is meant to expose the public API, so we don't filter out
     # underscored things.
@@ -717,7 +723,7 @@ def render_module(state: State, path, module, env):
 
             subpath = path + [name]
             page.modules += [extract_module_doc(state, subpath, object)]
-            index_entry.children += [render_module(state, subpath, object, env)]
+            modules_to_render += [(subpath, object)]
 
         # Get (and render) inner classes
         for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not is_enum(state, o)):
@@ -727,7 +733,7 @@ def render_module(state: State, path, module, env):
             if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
             page.classes += [extract_class_doc(state, subpath, object)]
-            index_entry.children += [render_class(state, subpath, object, env)]
+            classes_to_render += [(subpath, object)]
 
         # Get enums
         for name, object in inspect.getmembers(module, lambda o: is_enum(state, o)):
@@ -756,7 +762,16 @@ def render_module(state: State, path, module, env):
 
             page.data += [extract_data_doc(state, module, path + [name], object)]
 
+    # Render the module, free the page data to avoid memory rising indefinitely
     render(state.config, 'module.html', page, env)
+    del page
+
+    # Render submodules and subclasses
+    for subpath, object in modules_to_render:
+        index_entry.children += [render_module(state, subpath, object, env)]
+    for subpath, object in classes_to_render:
+        index_entry.children += [render_class(state, subpath, object, env)]
+
     return index_entry
 
 # Builtin dunder functions have hardcoded docstrings. This is totally useless
@@ -848,6 +863,10 @@ def render_class(state: State, path, class_, env):
     index_entry.url = page.url
     index_entry.summary = page.summary
 
+    # List of inner classes to render, these will be done after the current
+    # class introspection is done to have some better memory allocation pattern
+    classes_to_render = []
+
     # Get inner classes
     for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not is_enum(state, o)):
         if name in ['__base__', '__class__']: continue # TODO
@@ -857,7 +876,7 @@ def render_class(state: State, path, class_, env):
         if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
 
         page.classes += [extract_class_doc(state, subpath, object)]
-        index_entry.children += [render_class(state, subpath, object, env)]
+        classes_to_render += [(subpath, object)]
 
     # Get enums
     for name, object in inspect.getmembers(class_, lambda o: is_enum(state, o)):
@@ -910,7 +929,14 @@ def render_class(state: State, path, class_, env):
         subpath = path + [name]
         page.data += [extract_data_doc(state, class_, subpath, object)]
 
+    # Render the class, free the page data to avoid memory rising indefinitely
     render(state.config, 'class.html', page, env)
+    del page
+
+    # Render subclasses
+    for subpath, object in classes_to_render:
+        index_entry.children += [render_class(state, subpath, object, env)]
+
     return index_entry
 
 def publish_rst(state: State, source, translator_class=m.htmlsanity.SaneHtmlTranslator):
