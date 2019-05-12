@@ -158,6 +158,7 @@ PLUGINS = ['m.abbr',
            'm.math',
            'm.metadata',
            'm.plots',
+           'm.qr',
            'm.vk']
 
 THEME = '../pelican-theme'

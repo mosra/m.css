@@ -50,7 +50,8 @@ below or :gh:`grab the whole Git repository <mosra/m.css>`:
     :gh:`m.code <mosra/m.css$master/plugins/m/code.py>` (needs also
     :gh:`ansilexer <mosra/m.css$master/plugins/ansilexer.py>`)
 -   :gh:`m.plots <mosra/m.css$master/plugins/m/plots.py>`,
-    :gh:`m.dot <mosra/m.css$master/plugins/m/dot.py>`
+    :gh:`m.dot <mosra/m.css$master/plugins/m/dot.py>`,
+    :gh:`m.qr <mosra/m.css$master/plugins/m/qr.py>`
 -   :gh:`m.link <mosra/m.css$master/plugins/m/link.py>`,
     :gh:`m.gh <mosra/m.css$master/plugins/m/gh.py>`,
     :gh:`m.dox <mosra/m.css$master/plugins/m/dox.py>`,
@@ -106,10 +107,10 @@ entered directly in your :abbr:`reST <reStructuredText>` sources.
 `Plots and graphs » <{filename}/plugins/plots-and-graphs.rst>`_
 ===============================================================
 
-With :py:`m.plots` and :py:`m.dot` you can render various graphs and charts
-directly from values in your :abbr:`reST <reStructuredText>` sources. The
-result is embedded as an inline SVG and can be styled using CSS like everything
-else.
+With :py:`m.plots`, :py:`m.dot` and :py:`m.qr` you can render various graphs,
+charts and QR codes directly from values in your :abbr:`reST <reStructuredText>`
+sources. The result is embedded as an inline SVG and can be styled using CSS
+like everything else.
 
 `Links and other » <{filename}/plugins/links.rst>`_
 ===================================================

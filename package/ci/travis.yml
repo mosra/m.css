@@ -48,7 +48,7 @@ install:
   # Jinja 2.10 has some weird behavior, putting a lot of empty lines into the
   # output. Need to fix that. Matplotlib 3.0.0 (released 2018-09-18) has vastly
   # different output, need to adapt the rgexps and everything to it first.
-  - if [ "$WITH_THEME" == "ON" ]; then pip install jinja2==2.9.6 pelican Pyphen Pillow coverage codecov matplotlib==2.2.3; fi
+  - if [ "$WITH_THEME" == "ON" ]; then pip install jinja2==2.9.6 pelican Pyphen Pillow coverage codecov matplotlib==2.2.3 qrcode; fi
   - if [ "$WITH_NODE" == "ON" ]; then npm install istanbul codecov; fi
 
   # Needed for doxygen binaries

@@ -43,8 +43,8 @@ Plots and graphs
 .. role:: css(code)
     :language: css
 
-These plugin allow you to render plots and graphs directly from data specified
-inline in the page source. Similarly to `math rendering <{filename}/admire/math.rst>`_,
+These plugin allow you to render plots, graphs or QR codes directly from data
+specified inline in the page source. Similarly to `math rendering <{filename}/admire/math.rst>`_,
 the graphics is rendered to a SVG that's embedded directly in the HTML markup.
 
 .. note-danger:: Experimental features
@@ -177,7 +177,8 @@ comment :rst:`..`.
 
 For Pelican, ownload the `m/dot.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-``m.dot`` package to your :py:`PLUGINS` in ``pelicanconf.py``.
+``m.dot`` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the
+Python doc theme, it's enough to just list it in :py:`PLUGINS`.
 
 .. note-danger::
 
@@ -340,3 +341,40 @@ directive.
         .. class:: m-noindent
 
         No.
+
+`QR code`_
+==========
+
+For Pelican, download the `m/qr.py <{filename}/plugins.rst>`_ file, put it
+including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
+``m.qr`` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the
+Python doc theme, it's enough to just list it in :py:`PLUGINS`:
+
+.. code:: python
+
+    PLUGINS += ['m.qr']
+
+This feature has no equivalent in the `Doxygen theme <{filename}/documentation/doxygen.rst>`_.
+
+In addition you need the :gh:`qrcode <lincolnloop/python-qrcode>` Python
+package installed. Get it via ``pip`` or your distribution package manager:
+
+.. code:: sh
+
+    pip3 install qrcode
+
+The QR code is rendered using the :rst:`.. qr::` directive. Directive argument
+is the data to render. The library will auto-scale the image based on the input
+data size, you can override it using the optional :rst:`:size:` parameter.
+Resulting SVG has the :css:`.m-image` class, meaning it's centered and at most
+100% of page width.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. qr:: https://mcss.mosra.cz/plugins/plots-and-graphs/#qr-code
+            :size: 256px
+
+    .. qr:: https://mcss.mosra.cz/plugins/plots-and-graphs/#qr-code
+        :size: 256px
