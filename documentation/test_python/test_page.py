@@ -35,3 +35,15 @@ class Page(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertEqual(*self.actual_expected_contents('another.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
+
+class PageInputSubdir(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'input_subdir', *args, **kwargs)
+
+    def test(self):
+        self.run_python({
+            'INPUT': 'sub',
+            'INPUT_PAGES': ['index.rst']
+        })
+        # The same output as Page, just the file is taken from elsewhere
+        self.assertEqual(*self.actual_expected_contents('index.html', '../page/index.html'))

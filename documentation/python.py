@@ -56,9 +56,10 @@ default_config = {
     'PROJECT_TITLE': 'My Python Project',
     'PROJECT_SUBTITLE': None,
     'MAIN_PROJECT_URL': None,
+    'INPUT': None,
+    'OUTPUT': 'output',
     'INPUT_MODULES': [],
     'INPUT_PAGES': [],
-    'OUTPUT': 'output',
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
     'STYLESHEETS': [
@@ -924,8 +925,12 @@ def run(basedir, config, templates):
     # Set up the plugins
     m.htmlsanity.register_mcss(config, env)
 
+    # Populate the INPUT, if not specified, make it absolute
+    if config['INPUT'] is None: config['INPUT'] = basedir
+    else: config['INPUT'] = os.path.join(basedir, config['INPUT'])
+
     # Make the output dir absolute
-    config['OUTPUT'] = os.path.join(basedir, config['OUTPUT'])
+    config['OUTPUT'] = os.path.join(config['INPUT'], config['OUTPUT'])
     if not os.path.exists(config['OUTPUT']): os.makedirs(config['OUTPUT'])
 
     # Guess MIME type of the favicon
@@ -944,7 +949,7 @@ def run(basedir, config, templates):
         state.class_index += [render_module(state, [module_name], module, env)]
 
     for page in config['INPUT_PAGES']:
-        state.page_index += render_page(state, [os.path.splitext(os.path.basename(page))[0]], os.path.join(basedir, page), env)
+        state.page_index += render_page(state, [os.path.splitext(os.path.basename(page))[0]], os.path.join(config['INPUT'], page), env)
 
     # Recurse into the tree and mark every node that has nested modules with
     # has_nestaable_children.
@@ -987,8 +992,8 @@ def run(basedir, config, templates):
         if urllib.parse.urlparse(i).netloc: continue
 
         # If file is found relative to the conf file, use that
-        if os.path.exists(os.path.join(basedir, i)):
-            i = os.path.join(basedir, i)
+        if os.path.exists(os.path.join(config['INPUT'], i)):
+            i = os.path.join(config['INPUT'], i)
 
         # Otherwise use path relative to script directory
         else:

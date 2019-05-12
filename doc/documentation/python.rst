@@ -143,6 +143,12 @@ Variable                            Description
                                     :py:`PROJECT_SUBTITLE` to the documentation
                                     main page, similarly as
                                     `shown here <{filename}/css/page-layout.rst#link-back-to-main-site-from-a-subsite>`_.
+:py:`INPUT: str`                    Base input directory. If not set, config
+                                    file base dir is used. Relative paths are
+                                    relative to config file base dir.
+:py:`OUTPUT: str`                   Where to save the output. Relative paths
+                                    are relative to :py:`INPUT`; if not set,
+                                    ``output/`` is used.
 :py:`INPUT_MODULES: List[Any]`      List of modules to generate the docs from.
                                     Values can be either strings or module
                                     objects. See `Module inspection`_ for more
@@ -150,9 +156,6 @@ Variable                            Description
 :py:`INPUT_PAGES: List[str]`        List of :abbr:`reST <reStructuredText>`
                                     files for standalone pages. See `Pages`_
                                     for more information.
-:py:`OUTPUT: str`                   Where to save the output. Relative paths
-                                    relative are to the config file base dir;
-                                    if not set, ``output/`` is used.
 :py:`THEME_COLOR: str`              Color for :html:`<meta name="theme-color" />`,
                                     corresponding to the CSS style. If empty,
                                     no :html:`<meta>` tag is rendered. See
@@ -160,15 +163,15 @@ Variable                            Description
 :py:`FAVICON: str`                  Favicon URL, used to populate
                                     :html:`<link rel="icon" />`. If empty, no
                                     :html:`<link>` tag is rendered. Relative
-                                    paths are searched relative to the config
-                                    file base dir and to the ``python.py``
-                                    script dir as a fallback. See
-                                    `Theme selection`_ for more information.
+                                    paths are searched relative to :py:`INPUT`
+                                    and to the ``python.py`` script dir as a
+                                    fallback. See `Theme selection`_ for more
+                                    information.
 :py:`STYLESHEETS: List[str]`        List of CSS files to include. Relative
-                                    paths are searched relative to the config
-                                    file base dir and to the ``python.py``
-                                    script dir as a fallback. See `Theme selection`_
-                                    for more information.
+                                    paths are searched relative to :py:`INPUT`
+                                    and to the ``python.py`` script dir as a
+                                    fallback. See `Theme selection`_ for more
+                                    information.
 :py:`HTML_HEADER: str`              HTML code to put at the end of the
                                     :html:`<head>` element. Useful for linking
                                     arbitrary JavaScript code or, for example,
@@ -179,9 +182,8 @@ Variable                            Description
 :py:`EXTRA_FILES: List[str]`        List of extra files to copy (for example
                                     additional CSS files that are :css:`@import`\ ed
                                     from the primary one). Relative paths are
-                                    searched relative to the config file base
-                                    dir and to the ``python.py`` script dir as
-                                    a fallback.
+                                    searched relative to :py:`INPUT` and to the
+                                    ``python.py`` script dir as a fallback.
 :py:`LINKS_NAVBAR1: List[Any]`      Left navbar column links. See
                                     `Navbar links`_ for more information.
 :py:`LINKS_NAVBAR2: List[Any]`      Right navbar column links. See
