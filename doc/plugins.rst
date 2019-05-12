@@ -115,7 +115,7 @@ else.
 ===================================================
 
 The :py:`m.link`, :py:`m.gh`, :py:`m.dox`, :py:`m.gl`, :py:`m.vk`, :py:`m.abbr`,
-:py:`m.fiilesize` and :py:`m.alias` plugins make it easy for you to link to
+:py:`m.filesize` and :py:`m.alias` plugins make it easy for you to link to
 GitHub projects, issues or PRs, to Doxygen documentation, query file sizes and
 provide URL aliases to preserve link compatibility.
 
