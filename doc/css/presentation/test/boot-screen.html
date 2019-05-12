@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en"><!-- kate: indent-width 2; -->
+<head>
+  <title>A presentation</title>
+  <meta name="template" content="passthrough" />
+  <meta name="css" content="
+    /static/m-dark-presentation.css
+    https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i&amp;subset=latin-ext
+    " />
+  <meta name="js" content="/static/presentation.js" />
+</head>
+<body>
+<div class="m-container m-container-inflatable">
+<div class="m-row">
+<div class="m-col-l-12">
+<article>
+  <aside>
+    <h1>A presentation title</h1>
+    <div class="m-row">
+      <div class="m-col-t-5 m-push-t-1">
+        <div class="m-button m-primary"><a href="#cover">
+          <div class="m-big">Start the presentation</div>
+          <div class="m-small">from the beginning</div>
+        </a></div>
+      </div>
+      <div class="m-col-t-5 m-push-t-1">
+        <div class="m-button m-success"><a href="{filename}/css/presentation/example-presenter.html#cover" onclick="return openPresenterView(this);">
+          <div class="m-big">Open presenter view</div>
+          <div class="m-small">in a new window</div>
+        </a></div>
+      </div>
+    </div>
+    <div class="m-text m-text-center m-small m-dim">Powered by <a href="http://mcss.mosra.cz">m.css</a>, copyright © <a href="http://mcss.mosra.cz">Vladimír Vondruš</a>, 2017&ndash;2018.</div>
+  </aside>
+  <section id="cover">
+    <h1>A presentation</h1>
+    <h2>With a boot screen</h2>
+    <aside class="m-presenter">
+      Presenter notes.
+    </aside>
+  </section>
+  <section id="slide0">
+    <h2>Slide zero</h2>
+    <ul>
+      <li>Content</li>
+    </ul>
+    <aside class="m-presenter">
+      Presenter notes.
+    </aside>
+  </section>
+  <section id="slide1">
+    <h2>Slide one</h2>
+    <ul>
+      <li>Content</li>
+    </ul>
+    <aside class="m-presenter">
+      More presenter notes.
+    </aside>
+  </section>
+  <section id="slide2">
+    <h1>Thank you!</h1>
+    <h2>huh this goes where exactly?</h2>
+  </section>
+</article>
+</div>
+</div>
+</div>
+</body>
+</html>

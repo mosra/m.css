@@ -31,7 +31,7 @@ Themes
     .. note-dim::
         :class: m-text-center
 
-        `« Page layout <{filename}/css/page-layout.rst>`_ | `CSS <{filename}/css.rst>`_
+        `« Presentation <{filename}/css/presentation.rst>`_ | `CSS <{filename}/css.rst>`_
 
 .. role:: css(code)
     :language: css
