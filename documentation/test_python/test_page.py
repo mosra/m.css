@@ -91,3 +91,7 @@ class Plugins(BaseTestCase):
         # The output is different for older Graphviz
         self.assertEqual(*self.actual_expected_contents('dot.html', 'dot.html' if LooseVersion(dot_version()) >= LooseVersion("2.40.1") else 'dot-238.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
+
+        import fancyline
+        self.assertEqual(fancyline.pre_page_call_count, 3)
+        self.assertEqual(fancyline.post_run_call_count, 1)

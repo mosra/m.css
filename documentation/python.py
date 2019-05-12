@@ -125,6 +125,9 @@ class State:
         self.data_docs: Dict[str, Dict[str, str]] = {}
         self.external_data: Set[str] = set()
 
+        self.hooks_pre_page: List = []
+        self.hooks_post_run: List = []
+
 def is_internal_function_name(name: str) -> bool:
     """If the function name is internal.
 
@@ -614,6 +617,9 @@ def extract_data_doc(state: State, parent, path: List[str], data):
 def render_module(state: State, path, module, env):
     logging.debug("generating %s.html", '.'.join(path))
 
+    # Call all registered page begin hooks
+    for hook in state.hooks_pre_page: hook()
+
     url_base = ''
     breadcrumb = []
     for i in path:
@@ -829,6 +835,9 @@ _filtered_builtin_properties = set([
 def render_class(state: State, path, class_, env):
     logging.debug("generating %s.html", '.'.join(path))
 
+    # Call all registered page begin hooks
+    for hook in state.hooks_pre_page: hook()
+
     url_base = ''
     breadcrumb = []
     for i in path:
@@ -977,12 +986,18 @@ def render_inline_rst(state: State, source):
 def render_doc(state: State, filename):
     logging.debug("parsing docs from %s", filename)
 
+    # Page begin hooks are called before this in run(), once for all docs since
+    # these functions are not generating any pages
+
     # Render the file. The directives should take care of everything, so just
     # discard the output afterwards.
     with open(filename, 'r') as f: publish_rst(state, f.read())
 
 def render_page(state: State, path, filename, env):
     logging.debug("generating %s.html", '.'.join(path))
+
+    # Call all registered page begin hooks
+    for hook in state.hooks_pre_page: hook()
 
     # Render the file
     with open(filename, 'r') as f: pub = publish_rst(state, f.read())
@@ -1076,7 +1091,12 @@ def run(basedir, config, templates):
             jinja_environment=env,
             module_doc_contents=state.module_docs,
             class_doc_contents=state.class_docs,
-            data_doc_contents=state.data_docs)
+            data_doc_contents=state.data_docs,
+            hooks_pre_page=state.hooks_pre_page,
+            hooks_post_run=state.hooks_post_run)
+
+    # Call all registered page begin hooks for the first time
+    for hook in state.hooks_pre_page: hook()
 
     # First process the doc input files so we have all data for rendering
     # module pages
@@ -1156,6 +1176,9 @@ def run(basedir, config, templates):
 
         logging.debug("copying %s to output", i)
         shutil.copy(i, os.path.join(config['OUTPUT'], os.path.basename(i)))
+
+    # Call all registered finalization hooks for the first time
+    for hook in state.hooks_post_run: hook()
 
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()

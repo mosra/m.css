@@ -39,5 +39,19 @@ class FancyLine(rst.Directive):
         node['classes'] += ['m-transition']
         return [node]
 
-def register_mcss(**kwargs):
+pre_page_call_count = 0
+post_run_call_count = 0
+
+def _pre_page():
+    global pre_page_call_count
+    pre_page_call_count = pre_page_call_count + 1
+
+def _post_run():
+    global post_run_call_count
+    post_run_call_count = post_run_call_count + 1
+
+def register_mcss(hooks_pre_page, hooks_post_run, **kwargs):
+    hooks_pre_page += [_pre_page]
+    hooks_post_run += [_post_run]
+
     rst.directives.register_directive('fancy-line', FancyLine)

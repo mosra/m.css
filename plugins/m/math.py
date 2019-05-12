@@ -100,7 +100,7 @@ class Math(rst.Directive):
         container.append(node)
         return [container]
 
-def new_page(content):
+def new_page(*args):
     latex2svgextra.counter = 0
 
 def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -134,11 +134,11 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.raw(rawtext, latex2svgextra.patch(text, svg, depth, attribs), format='html', **options)
     return [node], []
 
-def save_cache(pelicanobj):
+def save_cache(*args):
     if settings['M_MATH_CACHE_FILE']:
         latex2svgextra.pickle_cache(settings['M_MATH_CACHE_FILE'])
 
-def register_mcss(mcss_settings, **kwargs):
+def register_mcss(mcss_settings, hooks_pre_page, hooks_post_run, **kwargs):
     global default_settings, settings
     settings = copy.deepcopy(default_settings)
     for key in settings.keys():
@@ -152,11 +152,14 @@ def register_mcss(mcss_settings, **kwargs):
         else:
             latex2svgextra.unpickle_cache(None)
 
+    hooks_pre_page += [new_page]
+    hooks_post_run += [save_cache]
+
     rst.directives.register_directive('math', Math)
     rst.roles.register_canonical_role('math', math)
 
 def _configure_pelican(pelicanobj):
-    register_mcss(mcss_settings=pelicanobj.settings)
+    register_mcss(mcss_settings=pelicanobj.settings, hooks_pre_page=[], hooks_post_run=[])
 
 def register():
     pelican.signals.initialized.connect(_configure_pelican)

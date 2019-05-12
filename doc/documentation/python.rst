@@ -618,6 +618,8 @@ Keyword argument            Content
 :py:`module_doc_contents`   Module documentation contents
 :py:`class_doc_contents`    Class documentation contents
 :py:`data_doc_contents`     Data documentation contents
+:py:`hooks_pre_page`        Hooks to call before each page gets rendered
+:py:`hooks_post_run`        Hooks to call at the very end of the script run
 =========================== ===================================================
 
 The :py:`module_doc_contents`, :py:`class_doc_contents` and
@@ -635,10 +637,18 @@ source shown in the `External documentation content`_ section below.
         'details': "This class is *pretty*."
     }
 
+The :py:`hooks_pre_page` and :py:`hooks_post_run` variables are lists of
+parameter-less functions. Plugins that need to do something before each page
+of output gets rendered (for example, resetting an some internal counter for
+page-wide unique element IDs) or after the whole run is done (for example to
+serialize cached internal state) are supposed to add functions to the list.
+
 Registration function for a plugin that needs to query the :py:`OUTPUT` setting
 might look like this --- the remaining keyword arguments will collapse into
 the :py:`**kwargs` parameter. See code of various m.css plugins for actual
-examples.
+examples. The below example shows registration of a hypothetic HTML validator
+plugin --- it saves the output path from settings and registers a post-run hook
+that validates everything in given output directory.
 
 .. code:: py
 
@@ -646,9 +656,13 @@ examples.
 
     …
 
-    def register_mcss(mcss_settings, **kwargs):
+    def _validate_output():
+        validate_all_html_files(output_dir)
+
+    def register_mcss(mcss_settings, hooks_post_run, **kwargs):
         global output_dir
         output_dir = mcss_settings['OUTPUT']
+        hooks_post_run += [_validate_output]
 
 `External documentation content`_
 =================================

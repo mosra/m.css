@@ -238,20 +238,22 @@ class Plot(rst.Directive):
         container.append(node)
         return [container]
 
-def new_page(content):
+def new_page(*args):
     mpl.rcParams['svg.hashsalt'] = 0
 
-def register_mcss(mcss_settings, **kwargs):
+def register_mcss(mcss_settings, hooks_pre_page, **kwargs):
     font = mcss_settings.get('M_PLOTS_FONT', 'Source Sans Pro')
     for i in range(len(_class_mapping)):
         src, dst = _class_mapping[i]
         _class_mapping[i] = (src.format(font=font), dst)
     mpl.rcParams['font.family'] = font
 
+    hooks_pre_page += [new_page]
+
     rst.directives.register_directive('plot', Plot)
 
 def _pelican_configure(pelicanobj):
-    register_mcss(mcss_settings=pelicanobj.settings)
+    register_mcss(mcss_settings=pelicanobj.settings, hooks_pre_page=[])
 
 def register(): # for Pelican
     pelican.signals.initialized.connect(_pelican_configure)
