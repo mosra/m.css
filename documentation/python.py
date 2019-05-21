@@ -165,10 +165,11 @@ def is_internal_or_imported_module_member(state: State, parent, path: str, name:
     # handle modules and packages differently. See also for more info:
     # https://stackoverflow.com/a/7948672
     else:
-        # pybind11 submodules have __package__ set to None for nested modules,
-        # the top-level __package__ is '' though. Allow these if parent
-        # __package__ is empty (either '' or None).
-        if state.config['PYBIND11_COMPATIBILITY'] and object.__package__ is None and not parent.__package__: return False
+        # pybind11 submodules have __package__ set to None (instead of '') for
+        # nested modules. Allow these. The parent's __package__ can be None (if
+        # it's a nested submodule), '' (if it's a top-level module) or a string
+        # (if the parent is a Python package), can't really check further.
+        if state.config['PYBIND11_COMPATIBILITY'] and object.__package__ is None: return False
 
         # The parent is a single-file module (not a package), these don't have
         # submodules so this is most definitely an imported module. Source:

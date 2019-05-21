@@ -202,6 +202,16 @@ class Submodules(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_submodules.html'))
 
+class SubmodulesPackage(BaseInspectTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'submodules_package', *args, **kwargs)
+
+    def test(self):
+        self.run_python({
+            'PYBIND11_COMPATIBILITY': True
+        })
+        self.assertEqual(*self.actual_expected_contents('pybind_submodules_package.sub.html'))
+
 class NameMapping(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'name_mapping', *args, **kwargs)

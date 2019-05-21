@@ -37,3 +37,9 @@ pybind11_add_module(pybind_name_mapping pybind_name_mapping/sub.cpp)
 set_target_properties(pybind_name_mapping PROPERTIES
     OUTPUT_NAME _sub
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_name_mapping/pybind_name_mapping)
+
+# Need a special name for this one
+pybind11_add_module(pybind_submodules_package pybind_submodules_package/sub.cpp)
+set_target_properties(pybind_submodules_package PROPERTIES
+    OUTPUT_NAME sub
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_submodules_package/pybind_submodules_package)
