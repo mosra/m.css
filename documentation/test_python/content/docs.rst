@@ -10,5 +10,9 @@
     This is detailed class docs. Here I *also* hate how it needs to be
     indented.
 
+.. py:class:: content.AnotherClass
+
+    This class has external details but summary from the docstring.
+
 .. py:data:: content.CONSTANT
     :summary: This is finally a docstring for ``content.CONSTANT``

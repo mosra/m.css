@@ -38,3 +38,4 @@ class Content(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('classes.html'))
         self.assertEqual(*self.actual_expected_contents('content.html'))
         self.assertEqual(*self.actual_expected_contents('content.Class.html'))
+        self.assertEqual(*self.actual_expected_contents('content.AnotherClass.html'))

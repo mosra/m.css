@@ -3,4 +3,7 @@
 class Class:
     """And this class summary, not shown either"""
 
+class AnotherClass:
+    """This class has summary from the docstring"""
+
 CONSTANT: float = 3.14

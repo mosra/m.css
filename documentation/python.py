@@ -318,7 +318,7 @@ def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str,
 def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
     # Prefer external docs, if available
     path_str = '.'.join(path)
-    if path_str in external_docs:
+    if path_str in external_docs and external_docs[path_str]['summary']:
         return render_inline_rst(state, external_docs[path_str]['summary'])
 
     if not doc: return '' # some modules (xml.etree) have that :(
