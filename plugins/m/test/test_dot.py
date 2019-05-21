@@ -40,7 +40,7 @@ class Dot(PelicanPluginTestCase):
 
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion("3.5") and
                          LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
-                         "The math plugin requires at least Python 3.5 installed. Dot < 2.40.1 has a completely different output.")
+                         "The dot plugin requires at least Python 3.5 installed. Dot < 2.40.1 has a completely different output.")
     def test(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
@@ -51,7 +51,7 @@ class Dot(PelicanPluginTestCase):
 
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion("3.5") and
                          LooseVersion(dot_version()) < LooseVersion("2.40.1"),
-                         "The math plugin requires at least Python 3.5 installed. Dot < 2.40.1 has a completely different output.")
+                         "The dot plugin requires at least Python 3.5 installed. Dot < 2.40.1 has a completely different output.")
     def test_238(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
