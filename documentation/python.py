@@ -44,6 +44,7 @@ from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Set, Any, List
 from urllib.parse import urljoin
 from distutils.version import LooseVersion
+from docutils.transforms import Transform
 
 import jinja2
 
@@ -949,9 +950,40 @@ def render_class(state: State, path, class_, env):
 
     return index_entry
 
-def publish_rst(state: State, source, translator_class=m.htmlsanity.SaneHtmlTranslator):
+# Extracts image paths and transforms them to just the filenames
+class ExtractImages(Transform):
+    # Max Docutils priority is 990, be sure that this is applied at the very
+    # last
+    default_priority = 991
+
+    # There is no simple way to have stateful transforms (the publisher always
+    # gets just the class, not the instance) so we have to use this
+    # TODO: maybe the pending nodes could solve this?
+    external_data = set()
+
+    def __init__(self, document, startnode):
+        Transform.__init__(self, document, startnode=startnode)
+
+    def apply(self):
+        ExtractImages._external_data = set()
+        for image in self.document.traverse(docutils.nodes.image):
+            # Skip absolute URLs
+            if urllib.parse.urlparse(image['uri']).netloc: continue
+
+            # TODO: is there a non-private access to current document source
+            # path?
+            ExtractImages._external_data.add(os.path.join(os.path.dirname(self.document.settings._source), image['uri']) if isinstance(self.document.settings._source, str) else image['uri'])
+
+            # Patch the URL to be just the filename
+            image['uri'] = os.path.basename(image['uri'])
+
+class DocumentationWriter(m.htmlsanity.SaneHtmlWriter):
+    def get_transforms(self):
+        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages]
+
+def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator):
     pub = docutils.core.Publisher(
-        writer=m.htmlsanity.SaneHtmlWriter(),
+        writer=DocumentationWriter(),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
@@ -960,20 +992,18 @@ def publish_rst(state: State, source, translator_class=m.htmlsanity.SaneHtmlTran
     # Docutils uses a deprecated U mode for opening files, so instead of
     # monkey-patching docutils.io.FileInput to not do that (like Pelican does),
     # I just read the thing myself.
-    # TODO *somehow* need to supply the filename to it for better error
-    # reporting, this is too awful
-    pub.set_source(source=source)
+    # TODO for external docs it *somehow* needs to supply the filename and line
+    # range to it for better error reporting, this is too awful
+    pub.set_source(source=source, source_path=source_path)
     pub.publish()
 
     # External images to pull later
-    # TODO: some actual path handling
-    for image in pub.document.traverse(docutils.nodes.image):
-        state.external_data.add(image['uri'])
+    state.external_data = state.external_data.union(ExtractImages._external_data)
 
     return pub
 
 def render_rst(state: State, source):
-    return publish_rst(state, source).writer.parts.get('body').rstrip()
+    return publish_rst(state, source, source_path=None).writer.parts.get('body').rstrip()
 
 class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
     # Unconditionally force compact paragraphs. This means the inline HTML
@@ -982,7 +1012,7 @@ class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
         return True
 
 def render_inline_rst(state: State, source):
-    return publish_rst(state, source, _SaneInlineHtmlTranslator).writer.parts.get('body').rstrip()
+    return publish_rst(state, source, translator_class=_SaneInlineHtmlTranslator).writer.parts.get('body').rstrip()
 
 def render_doc(state: State, filename):
     logging.debug("parsing docs from %s", filename)
@@ -1001,7 +1031,7 @@ def render_page(state: State, path, filename, env):
     for hook in state.hooks_pre_page: hook()
 
     # Render the file
-    with open(filename, 'r') as f: pub = publish_rst(state, f.read())
+    with open(filename, 'r') as f: pub = publish_rst(state, f.read(), source_path=filename)
 
     # Extract metadata from the page
     metadata = {}

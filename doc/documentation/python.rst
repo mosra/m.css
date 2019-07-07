@@ -581,8 +581,8 @@ expected to be formatted as :abbr:`reST <reStructuredText>` and exposed as
 HTML, otherwise as a plain text.
 
 All referenced images are expected to have either an absolute URL or be
-relative to :py:`INPUT`, the ones with relative paths are then copied to
-:py:`OUTPUT`.
+relative to :py:`INPUT`, the ones with relative paths are then copied directly
+to :py:`OUTPUT` with the leading dirs stripped from the path.
 
 `Plugins`_
 ==========

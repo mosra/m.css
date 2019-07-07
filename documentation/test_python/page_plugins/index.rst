@@ -35,6 +35,11 @@ Images!
 .. image:: tiny.png
     :scale: 2000%
 
+.. figure:: subdir/tiny.png
+    :width: 200px
+
+    Image in a subdir
+
 .. fancy-line:: Custom plugins!
 
 And now something totally different:
