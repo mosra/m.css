@@ -45,9 +45,7 @@ matrix:
       - JOBID=js
 
 install:
-  # Matplotlib 3.0.0 (released 2018-09-18) has vastly different output, need to
-  # adapt the rgexps and everything to it first.
-  - if [ "$WITH_THEME" == "ON" ]; then pip install jinja2 pelican Pyphen Pillow coverage codecov matplotlib==2.2.3 qrcode; fi
+  - if [ "$WITH_THEME" == "ON" ]; then pip install jinja2 pelican Pyphen Pillow coverage codecov matplotlib qrcode; fi
   - if [ "$WITH_NODE" == "ON" ]; then npm install istanbul codecov; fi
 
   # Needed for doxygen binaries
