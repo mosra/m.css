@@ -3188,9 +3188,6 @@ def parse_xml(state: State, xml: str):
                             compound.friend_funcs += [func]
                             if func.has_details: compound.has_func_details = True
 
-            # These are *both* things listed in a class (namespace) member
-            # group (things inside plain @{ @name foo ... @}) and members of a
-            # top-level group (defined with @defgroup).
             elif compounddef_child.attrib['kind'] == 'user-defined':
                 list = []
 
@@ -3199,18 +3196,12 @@ def parse_xml(state: State, xml: str):
                     if memberdef.attrib['kind'] == 'enum':
                         enum = parse_enum(state, memberdef)
                         if enum:
-                            if compound.kind == 'group':
-                                compound.enums += [enum]
-                            else:
-                                list += [('enum', enum)]
+                            list += [('enum', enum)]
                             if enum.has_details: compound.has_enum_details = True
                     elif memberdef.attrib['kind'] == 'typedef':
                         typedef = parse_typedef(state, memberdef)
                         if typedef:
-                            if compound.kind == 'group':
-                                compound.typedefs += [typedef]
-                            else:
-                                list += [('typedef', typedef)]
+                            list += [('typedef', typedef)]
                             if typedef.has_details: compound.has_typedef_details = True
                     elif memberdef.attrib['kind'] in ['function', 'signal', 'slot']:
                         # Gather only private functions that are virtual and
@@ -3221,26 +3212,17 @@ def parse_xml(state: State, xml: str):
 
                         func = parse_func(state, memberdef)
                         if func:
-                            if compound.kind == 'group':
-                                compound.funcs += [func]
-                            else:
-                                list += [('func', func)]
+                            list += [('func', func)]
                             if func.has_details: compound.has_func_details = True
                     elif memberdef.attrib['kind'] == 'variable':
                         var = parse_var(state, memberdef)
                         if var:
-                            if compound.kind == 'group':
-                                compound.vars += [var]
-                            else:
-                                list += [('var', var)]
+                            list += [('var', var)]
                             if var.has_details: compound.has_var_details = True
                     elif memberdef.attrib['kind'] == 'define':
                         define = parse_define(state, memberdef)
                         if define:
-                            if compound.kind == 'group':
-                                compound.defines += [define]
-                            else:
-                                list += [('define', define)]
+                            list += [('define', define)]
                             if define.has_details: compound.has_define_details = True
                     elif memberdef.attrib['kind'] == 'friend':
                         # Ignore friend classes. This does not ignore friend
@@ -3252,16 +3234,12 @@ def parse_xml(state: State, xml: str):
                         else:
                             func = parse_func(state, memberdef)
                             if func:
-                                if compound.kind == 'group':
-                                    compound.funcs += [func]
-                                else:
-                                    list += [('func', func)]
+                                list += [('func', func)]
                                 if func.has_details: compound.has_func_details = True
                     else: # pragma: no cover
                         logging.warning("{}: unknown user-defined <memberdef> kind {}".format(state.current, memberdef.attrib['kind']))
 
                 if list:
-                    assert compound.kind != 'group'
                     header = compounddef_child.find('header')
                     if header is None:
                         logging.error("{}: member groups without @name are not supported, ignoring".format(state.current))
