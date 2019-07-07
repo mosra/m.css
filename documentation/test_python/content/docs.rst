@@ -16,3 +16,12 @@
 
 .. py:data:: content.CONSTANT
     :summary: This is finally a docstring for ``content.CONSTANT``
+
+.. py:module:: thismoduledoesnotexist
+    :summary: This docs get unused and produce a warning
+
+.. py:class:: content.ThisDoesNotExist
+    :summary: This docs get unused and produce a warning
+
+.. py:data:: content.THIS_DOES_NOT_EXIST
+    :summary: This docs get unused and produce a warning
