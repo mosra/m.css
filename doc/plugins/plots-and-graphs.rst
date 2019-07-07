@@ -129,7 +129,8 @@ height is calculated automatically based on amount of values, you can adjust
 the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
 
 It's possible to add an extra line of labels using :rst:`:labels_extra:`.
-Again, there should be as many entries as primary labels and values. To omit an extra label for a value, specify it as the :abbr:`reST <reStructuredText>`
+Again, there should be as many entries as primary labels and values. To omit an
+extra label for a value, specify it as the :abbr:`reST <reStructuredText>`
 comment :rst:`..`.
 
 .. code-figure::
@@ -171,6 +172,64 @@ comment :rst:`..`.
         :errors: 0.74 3.65 9.45 25.66
         :colors: success info danger dim
         :bar_height: 0.6
+
+`Stacked values`_
+-----------------
+
+It's possible to stack several values on each other by providing a second
+(third, ...) like for :rst:`:values:` (and :rst:`:errors:` as well). The values
+are added together --- not overlapped --- so e.g. showing values of 20 and 40
+stacked together will result in the bar being 60 units long in total. Hovering
+over the stacked values will show magnitude of just given part, not the summed
+value.
+
+The :rst:`:colors:` option works for these as well, either have each line a
+single value on each line to color each "slice" differently, or have one color
+per value like shown above.
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. plot:: Download size (*.js, *.wasm)
+            :type: barh
+            :labels:
+                Sdl2Application
+                Sdl2Application
+                EmscriptenApplication
+            :labels_extra:
+                -s USE_SDL=2
+                -s USE_SDL=1
+                ..
+            :units: kB
+            :values:
+                111.9 74.4 52.1
+                731.2 226.3 226.0
+            :colors:
+                success
+                info
+
+    .. plot:: Download size (*.js, *.wasm)
+        :type: barh
+        :labels:
+            Sdl2Application
+            Sdl2Application
+            EmscriptenApplication
+        :labels_extra:
+            -s USE_SDL=2
+            -s USE_SDL=1
+            ..
+        :units: kB
+        :values:
+            111.9 74.4 52.1
+            731.2 226.3 226.0
+        :colors:
+            success
+            info
+
+    .. class:: m-text-center m-text m-dim m-small
+
+    (graph source: https://blog.magnum.graphics/announcements/new-emscripten-application-implementation/)
 
 `Graphs`_
 =========

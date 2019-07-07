@@ -126,9 +126,9 @@ _class_mapping = [
 ]
 
 # Titles for bars
-_bar_titles_src = '<g id="plot{}-value{}">'
-_bar_titles_dst = '<g id="plot{}-value{}"><title>{} {}</title>'
-_bar_titles_dst_error = '<g id="plot{}-value{}"><title>{} ± {} {}</title>'
+_bar_titles_src = '<g id="plot{}-value{}-{}">'
+_bar_titles_dst = '<g id="plot{}-value{}-{}"><title>{} {}</title>'
+_bar_titles_dst_error = '<g id="plot{}-value{}-{}"><title>{} ± {} {}</title>'
 
 class Plot(rst.Directive):
     required_arguments = 1
@@ -164,20 +164,36 @@ class Plot(rst.Directive):
         else:
             labels_extra = None
 
-        # Values. Should be one for each label.
-        values = [float(v) for v in self.options['values'].split()]
-        assert len(values) == len(labels)
+        # Values. Should be one for each label, if there are multiple lines
+        # then the values get stacked.
+        value_sets = []
+        for row in self.options['values'].split('\n'):
+            values = [float(v) for v in row.split()]
+            assert len(values) == len(labels)
+            value_sets += [values]
 
         # Optional errors
         if 'errors' in self.options:
-            errors = [float(e) for e in self.options['errors'].split()]
+            error_sets = []
+            for row in self.options['errors'].split('\n'):
+                errors = [float(e) for e in row.split()]
+                assert len(errors) == len(values)
+                error_sets += [errors]
+            assert len(error_sets) == len(value_sets)
         else:
-            errors = None
+            error_sets = [None]*len(value_sets)
 
         # Colors. Should be either one for all or one for every value
-        colors = [style_mapping[c] for c in self.options.get('colors', 'default').split()]
-        if len(colors) == 1: colors = colors[0]
-        else: assert len(colors) == len(labels)
+        if 'colors' in self.options:
+            color_sets = []
+            for row in self.options['colors'].split('\n'):
+                colors = [style_mapping[c] for c in row.split()]
+                if len(colors) == 1: colors = colors[0]
+                else: assert len(colors) == len(labels)
+                color_sets += [colors]
+            assert len(color_sets) == len(value_sets)
+        else:
+            color_sets = [style_mapping['default']]*len(value_sets)
 
         # Bar height
         bar_height = float(self.options.get('bar_height', '0.4'))
@@ -188,12 +204,15 @@ class Plot(rst.Directive):
         # Setup the graph
         fig, ax = plt.subplots()
         # TODO: let matplotlib calculate the height somehow
-        fig.set_size_inches(8, 0.78 + len(values)*bar_height)
+        fig.set_size_inches(8, 0.78 + len(labels)*bar_height)
         yticks = np.arange(len(labels))
-        plot = ax.barh(yticks, values, xerr=errors,
-                       align='center', color=colors, ecolor='#cafe0a', capsize=5*bar_height/0.4)
-        for i, v in enumerate(plot):
-            v.set_gid('plot{}-value{}'.format(mpl.rcParams['svg.hashsalt'], i))
+        left = np.array([0.0]*len(labels))
+        for i in range(len(value_sets)):
+            plot = ax.barh(yticks, value_sets[i], xerr=error_sets[i],
+                           align='center', color=color_sets[i], ecolor='#cafe0a', capsize=5*bar_height/0.4, left=left)
+            left += np.array(value_sets[i])
+            for j, v in enumerate(plot):
+                v.set_gid('plot{}-value{}-{}'.format(mpl.rcParams['svg.hashsalt'], i, j))
         ax.set_yticks(yticks)
         ax.invert_yaxis() # top-to-bottom
         ax.set_xlabel(units)
@@ -224,13 +243,15 @@ class Plot(rst.Directive):
         # Replace color codes with CSS classes
         for src, dst in _class_mapping: imgdata = imgdata.replace(src, dst)
         # Add titles for bars
-        for i in range(len(values)):
-            if errors: imgdata = imgdata.replace(
-                _bar_titles_src.format(mpl.rcParams['svg.hashsalt'], i),
-                _bar_titles_dst_error.format(mpl.rcParams['svg.hashsalt'], i, values[i], errors[i], units))
-            else: imgdata = imgdata.replace(
-                _bar_titles_src.format(mpl.rcParams['svg.hashsalt'], i),
-                _bar_titles_dst.format(mpl.rcParams['svg.hashsalt'], i, values[i], units))
+        for i in range(len(value_sets)):
+            for j in range(len(labels)):
+                id = i*len(labels) + j
+                if error_sets[i]: imgdata = imgdata.replace(
+                    _bar_titles_src.format(mpl.rcParams['svg.hashsalt'], i, j),
+                    _bar_titles_dst_error.format(mpl.rcParams['svg.hashsalt'], i, j, value_sets[i][j], error_sets[i][j], units))
+                else: imgdata = imgdata.replace(
+                    _bar_titles_src.format(mpl.rcParams['svg.hashsalt'], i, j),
+                    _bar_titles_dst.format(mpl.rcParams['svg.hashsalt'], i, j, value_sets[i][j], units))
 
         container = nodes.container(**self.options)
         container['classes'] += ['m-plot']
