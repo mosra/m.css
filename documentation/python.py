@@ -112,7 +112,7 @@ class IndexEntry:
         self.name: str
         self.url: str
         self.summary: str
-        self.has_nestaable_children: bool = False
+        self.has_nestable_children: bool = False
         self.children: List[IndexEntry] = []
 
 class State:
@@ -1158,7 +1158,7 @@ def run(basedir, config, templates):
         state.page_index += render_page(state, [os.path.splitext(os.path.basename(page))[0]], os.path.join(config['INPUT'], page), env)
 
     # Recurse into the tree and mark every node that has nested modules with
-    # has_nestaable_children.
+    # has_nestable_children.
     def mark_nested_modules(list: List[IndexEntry]):
         has_nestable_children = False
         for i in list:
