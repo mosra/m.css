@@ -3811,8 +3811,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                     f.write(rendered.encode('utf-8'))
                     # Add back a trailing newline so we don't need to bother
                     # with patching test files to include a trailing newline to
-                    # make Git happy
-                    # TODO could keep_trailing_newline fix this better?
+                    # make Git happy. Can't use keep_trailing_newline because
+                    # that'd add it also for nested templates :(
                     f.write(b'\n')
         else:
             parsed = parse_xml(state, file)
@@ -3829,8 +3829,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                 f.write(rendered.encode('utf-8'))
                 # Add back a trailing newline so we don't need to bother with
                 # patching test files to include a trailing newline to make Git
-                # happy
-                # TODO could keep_trailing_newline fix this better?
+                # happy. Can't use keep_trailing_newline because that'd add it
+                # also for nested templates :(
                 f.write(b'\n')
 
     # Empty index page in case no mainpage documentation was provided so
@@ -3854,8 +3854,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             f.write(rendered.encode('utf-8'))
             # Add back a trailing newline so we don't need to bother with
             # patching test files to include a trailing newline to make Git
-            # happy
-            # TODO could keep_trailing_newline fix this better?
+            # happy. Can't use keep_trailing_newline because that'd add it
+            # also for nested templates :(
             f.write(b'\n')
 
     if not state.doxyfile['M_SEARCH_DISABLED']:
@@ -3881,8 +3881,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                 f.write(rendered.encode('utf-8'))
                 # Add back a trailing newline so we don't need to bother with
                 # patching test files to include a trailing newline to make Git
-                # happy
-                # TODO could keep_trailing_newline fix this better?
+                # happy. Can't use keep_trailing_newline because that'd add it
+                # also for nested templates :(
                 f.write(b'\n')
 
     # Copy all referenced files

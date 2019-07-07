@@ -356,8 +356,8 @@ def render(config, template: str, page, env: jinja2.Environment):
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with
         # patching test files to include a trailing newline to make Git
-        # happy
-        # TODO could keep_trailing_newline fix this better?
+        # happy. Can't use keep_trailing_newline because that'd add it
+        # also for nested templates :(
         f.write(b'\n')
 
 def extract_module_doc(state: State, path: List[str], module):
@@ -1179,8 +1179,8 @@ def run(basedir, config, templates):
             f.write(rendered.encode('utf-8'))
             # Add back a trailing newline so we don't need to bother with
             # patching test files to include a trailing newline to make Git
-            # happy
-            # TODO could keep_trailing_newline fix this better?
+            # happy. Can't use keep_trailing_newline because that'd add it
+            # also for nested templates :(
             f.write(b'\n')
 
     # Create index.html if it was not provided by the user
