@@ -4,7 +4,7 @@
   <img src="{{ article.author.image|expand_link(article)|e }}" alt="{{ article.author|e }}" />
   {% endif %}
   <h3>About the author</h3>
-  {{ article.author.badge|expand_links(article)|indent(2) }}
+  {{ article.author.badge|expand_links(article)|rtrim|indent(2) }}
 </div>
 {% endif %}
 {% if article.category.badge %}
@@ -13,6 +13,6 @@
   <img src="{{ article.category.image|expand_link(article)|e }}" alt="{{ article.category|e }}" />
   {% endif %}
   <h3>{% if article.category.badge_title %}{{ article.category.badge_title }}{% else %}{{ article.category|e }}{% endif %}</h3>
-  {{ article.category.badge|expand_links(article)|indent(2) }}
+  {{ article.category.badge|expand_links(article)|rtrim|indent(2) }}
 </div>
 {% endif %}

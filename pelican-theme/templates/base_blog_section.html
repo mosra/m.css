@@ -25,17 +25,17 @@
       {% for article in articles_page.object_list %}
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
-        {{ header()|indent(8) }}
+        {{ header()|rtrim|indent(8) }}
         <footer>
           {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
-          {{ footer()|indent(10) }}
+          {{ footer()|rtrim|indent(10) }}
         </footer>
         <div class="m-clearfix-l"></div>
       </article>
       {% endfor %}
       {% if articles_page.has_other_pages() %}
       {% macro pagination() %}{% include 'pagination.html' %}{% endmacro %}
-      {{ pagination()|indent(6) }}
+      {{ pagination()|rtrim|indent(6) }}
       {% endif %}
     </div>
 {% endblock %}

@@ -29,7 +29,7 @@
       {% if tag.page and tag.page.content and articles_page.number == 1 %}
       <div class="m-block m-info">
         <h3>{% if tag.page.title %}{{ tag.page.title }}{% else %}{{ tag|e }}{% endif %}</h3>
-        {{ tag.page.content|indent(8) }}
+        {{ tag.page.content|rtrim|indent(8) }}
       </div>
       {% endif %}
 {% endblock %}

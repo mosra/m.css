@@ -54,7 +54,7 @@
       {% for article in article_list %}
       <article>
         {% macro header() %}{% include "article_header.html" %}{% endmacro %}
-        {{ header()|indent(8) }}
+        {{ header()|rtrim|indent(8) }}
         {% set show_content =
             article.content and loop.first and (not articles_page or articles_page.number == 1) and
             ((article.collapse_first is defined and article.collapse_first != 'True') or
@@ -67,7 +67,7 @@
         {% endif %}
         <footer>
           {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
-          {{ footer()|indent(10) }}
+          {{ footer()|rtrim|indent(10) }}
         </footer>
         {% if not show_content %}
         <div class="m-clearfix-l"></div>
@@ -76,7 +76,7 @@
       {% endfor %}
       {% if articles_page and articles_page.has_other_pages() %}
       {% macro pagination() %}{% include 'pagination.html' %}{% endmacro %}
-      {{ pagination()|indent(6) }}
+      {{ pagination()|rtrim|indent(6) }}
       {% endif %}
     </div>
 {% endblock %}

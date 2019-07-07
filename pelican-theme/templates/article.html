@@ -96,7 +96,7 @@
 {{ article.content|trim }}
 <!-- /content -->
           {% if article.category.badge or (article.author and article.author.badge) %}
-          {{ badges()|indent(10) }}
+          {{ badges()|rtrim|indent(10) }}
           {% endif %}
         </div>
       </div>
@@ -106,7 +106,7 @@
       <div class="m-row">
         <div class="m-col-m-10 m-push-m-1 m-nopadb">
           {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
-          {{ footer()|indent(10) }}
+          {{ footer()|rtrim|indent(10) }}
         </div>
       </div>
     </footer>
@@ -114,10 +114,10 @@
   {% else %}
     <article class="m-col-m-10 m-nopadb">
       {% macro header() %}{% include "article_header.html" %}{% endmacro %}
-      {{ header()|indent(6) }}
+      {{ header()|rtrim|indent(6) }}
       <div class="m-clearfix-l"></div>
       {% if article.archived == 'True' and M_ARCHIVED_ARTICLE_BADGE %}
-      {{ M_ARCHIVED_ARTICLE_BADGE|render_rst|replace('{year}', article.date.year)|indent(6) }}
+      {{ M_ARCHIVED_ARTICLE_BADGE|render_rst|replace('{year}', article.date.year)|rtrim|indent(6) }}
       {% endif %}
       {% if article.content %}
 <!-- content -->
@@ -125,11 +125,11 @@
 <!-- /content -->
       {% endif %}
       {% if article.category.badge or (article.author and article.author.badge) %}
-      {{ badges()|indent(6) }}
+      {{ badges()|rtrim|indent(6) }}
       {% endif %}
       <footer>
         {% macro footer() %}{% include "article_footer.html" %}{% endmacro %}
-        {{ footer()|indent(8) }}
+        {{ footer()|rtrim|indent(8) }}
       </footer>
     </article>
     {% endif %}

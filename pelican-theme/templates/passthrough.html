@@ -17,7 +17,7 @@
   {% endfor %}
   {% endif %}
   {% if page.html_header %}
-  {{ page.html_header.strip()|indent(2) }}
+  {{ page.html_header|trim|indent(2) }}
   {% endif %}
 </head>
 <body>

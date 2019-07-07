@@ -58,7 +58,7 @@
             <li>
               <a href="#{{ id }}">{{ name }}</a>
               <ul>
-{{ loop(children)|indent(4, true) }}
+{{ loop(children)|rtrim|indent(4, true) }}
               </ul>
             </li>
             {% else %}

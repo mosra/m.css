@@ -41,7 +41,7 @@
         <img src="{{ author.page.image|expand_link(author.page)|e }}" alt="{{ author|e }}" />
         {% endif %}
         <h3>{% if author.page.title %}{{ author.page.title }}{% else %}{{ author|e }}{% endif %}</h3>
-        {{ author.page.content|indent(8) }}
+        {{ author.page.content|rtrim|indent(8) }}
       </div>
       {% endif %}
 {% endblock %}

@@ -63,7 +63,7 @@
   {% endfor %}
   {% endif %}
   {% if page.html_header %}
-  {{ page.html_header|indent(2) }}
+  {{ page.html_header|rtrim|indent(2) }}
   {% endif %}
 {% endblock %}
 

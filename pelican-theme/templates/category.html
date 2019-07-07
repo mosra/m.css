@@ -35,7 +35,7 @@
         <img src="{{ category.page.image|expand_link(category.page)|e }}" alt="{{ category|e }}" />
         {% endif %}
         <h3>{% if category.page.title %}{{ category.page.title }}{% else %}{{ category|e }}{% endif %}</h3>
-        {{ category.page.content|indent(8) }}
+        {{ category.page.content|rtrim|indent(8) }}
       </div>
       {% endif %}
 {% endblock %}

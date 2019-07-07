@@ -19,7 +19,7 @@
   <meta name="theme-color" content="{{ THEME_COLOR }}" />
   {% endif %}
   {% if HTML_HEADER %}
-  {{ HTML_HEADER|indent(2) }}
+  {{ HTML_HEADER|rtrim|indent(2) }}
   {% endif %}
 </head>
 <body>
@@ -120,7 +120,7 @@
           </form>
           <noscript class="m-text m-danger m-text-center">Unlike everything else in the docs, the search functionality <em>requires</em> JavaScript.{% if SEARCH_EXTERNAL_URL %} Enable it or <a href="{{ SEARCH_EXTERNAL_URL|replace('{query}', '') }}">use an external search engine</a>.{% endif %}</noscript>
           <div id="search-help" class="m-text m-dim m-text-center">
-            {{ SEARCH_HELP|render_rst|indent(12) }}
+            {{ SEARCH_HELP|render_rst|rtrim|indent(12) }}
           </div>
           <div id="search-notfound" class="m-text m-warning m-text-center">Sorry, nothing was found.{% if SEARCH_EXTERNAL_URL %}<br />Maybe try a full-text <a href="#" id="search-external" data-search-engine="{{ SEARCH_EXTERNAL_URL }}">search with external engine</a>?{% endif %}</div>
           <ul id="search-results"></ul>
@@ -146,7 +146,7 @@
         {% if FINE_PRINT == '[default]' %}
         <p>{{ PROJECT_TITLE }}{% if PROJECT_SUBTITLE %} {{ PROJECT_SUBTITLE }}{% endif %}. Created with <a href="https://mcss.mosra.cz/documentation/python/">m.css Python doc generator</a>.</p>
         {% else %}
-        {{ FINE_PRINT|render_rst|indent(8) }}
+        {{ FINE_PRINT|render_rst|rtrim|indent(8) }}
         {% endif %}
       </div>
     </div>
