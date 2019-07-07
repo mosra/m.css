@@ -73,11 +73,12 @@ style_mapping = {
     'dim': '#cafe09'
 }
 
-# Patch to remove preamble and hardcoded sizes
+# Patch to remove preamble and hardcoded sizes. Matplotlib 2.2 has a http URL
+# while matplotlib 3 has a https URL, check for both.
 _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="utf-8" standalone="no"\?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1\.1//EN"
   "http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd">
-<!-- Created with matplotlib \(http://matplotlib.org/\) -->
+<!-- Created with matplotlib \(https?://matplotlib.org/\) -->
 <svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">
 """)
 _patch_dst = r"""<svg \g<viewBox>>

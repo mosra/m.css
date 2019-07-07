@@ -22,8 +22,12 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import matplotlib
 import os
+import sys
 import unittest
+
+from distutils.version import LooseVersion
 
 from . import PelicanPluginTestCase
 
@@ -37,4 +41,11 @@ class Plots(PelicanPluginTestCase):
             'M_PLOTS_FONT': 'DejaVu Sans'
         })
 
-        self.assertEqual(*self.actual_expected_contents('page.html'))
+        # FUCK this is annoying
+        if LooseVersion(matplotlib.__version__) >= LooseVersion("3.0"):
+            if LooseVersion(sys.version) >= LooseVersion("3.6"):
+                self.assertEqual(*self.actual_expected_contents('page.html'))
+            else:
+                self.assertEqual(*self.actual_expected_contents('page.html', 'page-py35.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-22.html'))
