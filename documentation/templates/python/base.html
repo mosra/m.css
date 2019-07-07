@@ -144,7 +144,7 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         {% if FINE_PRINT == '[default]' %}
-        <p>{{ PROJECT_TITLE }}{% if PROJECT_SUBTITLE %} {{ PROJECT_SUBTITLE }}{% endif %}. Created by <a href="https://mcss.mosra.cz/documentation/python/">m.css Python doc generator</a>.</p>
+        <p>{{ PROJECT_TITLE }}{% if PROJECT_SUBTITLE %} {{ PROJECT_SUBTITLE }}{% endif %}. Created with <a href="https://mcss.mosra.cz/documentation/python/">m.css Python doc generator</a>.</p>
         {% else %}
         {{ FINE_PRINT|render_rst|indent(8) }}
         {% endif %}
