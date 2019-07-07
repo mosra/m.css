@@ -2285,11 +2285,7 @@ def parse_define(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'define'
 
     define = Empty()
-    # defines are always only defined in files, never duplicated to namespaces,
-    # so we don't need to have define.base_url. Can't use extract_id_hash()
-    # here because current_definition_url_base might be stale. See a test in
-    # compound_namespace_members_in_file_scope_define_base_url.
-    state.current_definition_url_base, _, define.id, define.include, define.has_details = parse_id_and_include(state, element)
+    state.current_definition_url_base, define.base_url, define.id, define.include, define.has_details = parse_id_and_include(state, element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
     define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
@@ -2310,13 +2306,14 @@ def parse_define(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: define parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    if define.description or define.return_value:
+    if define.base_url == state.current_compound_url and (define.description or define.return_value):
         define.has_details = True # has_details might already be True from above
     if define.brief or define.has_details:
-        if not state.doxyfile['M_SEARCH_DISABLED']:
+        # Avoid duplicates in search
+        if define.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.DEFINE|(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0))
-            result.url = state.current_compound_url + '#' + define.id
+            result.url = define.base_url + '#' + define.id
             result.prefix = []
             result.name = define.name
             result.keywords = search_keywords
