@@ -109,4 +109,5 @@ class EmptyPage(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'group__bla_md_input.html')))
+        self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'md_subdir_otherinput.html')))
         self.assertEqual(*self.actual_expected_contents('pages.html'))

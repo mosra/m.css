@@ -2339,6 +2339,18 @@ def _document_all_stuff(compounddef: ET.Element):
             para.append(dim)
             brief.append(para)
 
+def is_a_stupid_empty_markdown_page(compounddef: ET.Element):
+    assert compounddef.attrib['kind'] == 'page'
+
+    # Doxygen creates a page for *all* markdown files even thought they
+    # otherwise contain absolutely NOTHING except for symbol documentation.
+    # And of course it's nearly impossible to distinguish those unwanted pages
+    # from actually wanted (but empty) pages so at least I'm filtering out
+    # everything that starts with md_ and ends with the same thing as the title
+    # (which means there's no explicit title). We *do* want to preserve empty
+    # pages with custom titles.
+    return compounddef.find('compoundname').text.startswith('md_') and compounddef.find('compoundname').text.endswith(compounddef.find('title').text) and not compounddef.find('briefdescription') and not compounddef.find('detaileddescription')
+
 def extract_metadata(state: State, xml):
     logging.debug("Extracting metadata from {}".format(os.path.basename(xml)))
 
@@ -2385,8 +2397,9 @@ def extract_metadata(state: State, xml):
     compound.url = 'index.html' if compound.kind == 'page' and compound.id == 'indexpage' else compound.id + '.html'
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
     # Groups are explicitly created so they *have details*, other
-    # things need to have at least some documentation
-    compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')
+    # things need to have at least some documentation. Pages are treated as
+    # having something unless they're stupid. See the function for details.
+    compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription') or (compound.kind == 'page' and not is_a_stupid_empty_markdown_page(compounddef))
     compound.children = []
 
     # Deprecation status
@@ -2685,8 +2698,9 @@ def parse_xml(state: State, xml: str):
         _document_all_stuff(compounddef)
 
     # Ignoring compounds w/o any description, except for groups,
-    # which are created explicitly
-    if not compounddef.find('briefdescription') and not compounddef.find('detaileddescription') and not compounddef.attrib['kind'] == 'group':
+    # which are created explicitly. Pages are treated as having something
+    # unless they're stupid. See the function for details.
+    if not compounddef.find('briefdescription') and not compounddef.find('detaileddescription') and not compounddef.attrib['kind'] == 'group' and (not compounddef.attrib['kind'] == 'page' or is_a_stupid_empty_markdown_page(compounddef)):
         logging.debug("{}: neither brief nor detailed description present, skipping".format(state.current))
         return None
 

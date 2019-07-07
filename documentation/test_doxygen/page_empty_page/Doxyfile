@@ -1,4 +1,4 @@
-INPUT                   = input.h input.md
+INPUT                   = input.h input.md subdir/otherinput.md
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
