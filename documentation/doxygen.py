@@ -3775,6 +3775,8 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
     def basename_or_url(path):
         if urllib.parse.urlparse(path).netloc: return path
         return os.path.basename(path)
+    def rtrim(value): return value.rstrip()
+    env.filters['rtrim'] = rtrim
     env.filters['basename_or_url'] = basename_or_url
     env.filters['urljoin'] = urllib.parse.urljoin
 

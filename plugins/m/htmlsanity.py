@@ -690,6 +690,9 @@ def render_rst(value):
     pub.publish(enable_exit_status=True)
     return pub.writer.parts.get('body').strip()
 
+def rtrim(value):
+    return value.rstrip()
+
 def hyphenate(value, enable=None, lang=None):
     if enable is None: enable = settings['M_HTMLSANITY_HYPHENATION']
     if lang is None: lang = settings['M_HTMLSANITY_LANGUAGE']
@@ -710,6 +713,7 @@ def register_mcss(mcss_settings, jinja_environment, **kwargs):
     docutils_settings['language_code'] = settings['M_HTMLSANITY_LANGUAGE']
     docutils_settings.update(settings['M_HTMLSANITY_DOCUTILS_SETTINGS'])
 
+    jinja_environment.filters['rtrim'] = rtrim
     jinja_environment.filters['render_rst'] = render_rst
     jinja_environment.filters['hyphenate'] = hyphenate
     jinja_environment.filters['dehyphenate'] = dehyphenate
@@ -751,6 +755,7 @@ def pelican_format_siteurl(url):
     return urljoin(pelican_settings['SITEURL'] + ('/' if not pelican_settings['SITEURL'].endswith('/') else ''), url)
 
 def _pelican_configure(pelicanobj):
+    pelicanobj.settings['JINJA_FILTERS']['rtrim'] = rtrim
     pelicanobj.settings['JINJA_FILTERS']['render_rst'] = render_rst
     pelicanobj.settings['JINJA_FILTERS']['expand_link'] = pelican_expand_link
     pelicanobj.settings['JINJA_FILTERS']['expand_links'] = pelican_expand_links

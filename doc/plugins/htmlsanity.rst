@@ -254,6 +254,9 @@ option, which also defaults to :py:`False`.
 `Jinja2 goodies`_
 =================
 
+This plugin adds a ``rtrim`` filter to Jinja. It's like the builtin ``trim``,
+but working only on the right side to get rid of excessive newlines at the end.
+
 `reST rendering`_
 -----------------
 
