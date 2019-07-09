@@ -98,9 +98,19 @@ class Signature(unittest.TestCase):
                 ('**kwargs', None, None),
             ], None))
 
-    def test_default_values(self):
+    # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8,
+    # released in 2.3.0. We want to support both, so test both.
+    def test_default_values_pybind22(self):
         self.assertEqual(parse_pybind_signature(State({}),
             'foo(a: float=1.0, b: str=\'hello\')'),
+            ('foo', '', [
+                ('a', 'float', '1.0'),
+                ('b', 'str', '\'hello\''),
+            ], None))
+
+    def test_default_values_pybind23(self):
+        self.assertEqual(parse_pybind_signature(State({}),
+            'foo(a: float = 1.0, b: str = \'hello\')'),
             ('foo', '', [
                 ('a', 'float', '1.0'),
                 ('b', 'str', '\'hello\''),

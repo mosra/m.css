@@ -242,8 +242,10 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
 
         # Default (optional) -- for now take everything until the next comma
         # TODO: ugh, do properly
-        if signature.startswith('='):
-            signature = signature[1:]
+        # The equals has spaces around since 2.3.0, preserve 2.2 compatibility.
+        # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
+        if signature.startswith(('=', ' = ')):
+            signature = signature[1 if signature[0] == '=' else 3:]
             default = _pybind_default_value_rx.match(signature).group(0)
             signature = signature[len(default):]
         else:
