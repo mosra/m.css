@@ -187,6 +187,58 @@ def object_type(state: State, object) -> EntryType:
     # caller should print a warning in this case
     return None # pragma: no cover
 
+# Builtin dunder functions have hardcoded docstrings. This is totally useless
+# to have in the docs, so filter them out. Uh... kinda ugly.
+_filtered_builtin_functions = set([
+    ('__delattr__', "Implement delattr(self, name)."),
+    ('__eq__', "Return self==value."),
+    ('__ge__', "Return self>=value."),
+    ('__getattribute__', "Return getattr(self, name)."),
+    ('__gt__', "Return self>value."),
+    ('__hash__', "Return hash(self)."),
+    ('__init__', "Initialize self.  See help(type(self)) for accurate signature."),
+    ('__init_subclass__',
+        "This method is called when a class is subclassed.\n\n"
+        "The default implementation does nothing. It may be\n"
+        "overridden to extend subclasses.\n"),
+    ('__le__', "Return self<=value."),
+    ('__lt__', "Return self<value."),
+    ('__ne__', "Return self!=value."),
+    ('__new__',
+        "Create and return a new object.  See help(type) for accurate signature."),
+    ('__repr__', "Return repr(self)."),
+    ('__setattr__', "Implement setattr(self, name, value)."),
+    ('__str__', "Return str(self)."),
+    ('__subclasshook__',
+        "Abstract classes can override this to customize issubclass().\n\n"
+        "This is invoked early on by abc.ABCMeta.__subclasscheck__().\n"
+        "It should return True, False or NotImplemented.  If it returns\n"
+        "NotImplemented, the normal algorithm is used.  Otherwise, it\n"
+        "overrides the normal algorithm (and the outcome is cached).\n")
+])
+
+# Python 3.6 has slightly different docstrings than 3.7
+if LooseVersion(sys.version) >= LooseVersion("3.7"):
+    _filtered_builtin_functions.update({
+        ('__dir__', "Default dir() implementation."),
+        ('__format__', "Default object formatter."),
+        ('__reduce__', "Helper for pickle."),
+        ('__reduce_ex__', "Helper for pickle."),
+        ('__sizeof__', "Size of object in memory, in bytes."),
+    })
+else:
+    _filtered_builtin_functions.update({
+        ('__dir__', "__dir__() -> list\ndefault dir() implementation"),
+        ('__format__', "default object formatter"),
+        ('__reduce__', "helper for pickle"),
+        ('__reduce_ex__', "helper for pickle"),
+        ('__sizeof__', "__sizeof__() -> int\nsize of object in memory, in bytes")
+    })
+
+_filtered_builtin_properties = set([
+    ('__weakref__', "list of weak references to the object (if defined)")
+])
+
 def crawl_class(state: State, path: List[str], class_):
     class_entry = Empty()
     class_entry.type = EntryType.CLASS
@@ -529,17 +581,6 @@ def extract_annotation(state: State, annotation) -> str:
     if annotation.__module__ == 'typing': return map_name_prefix(state, str(annotation))
     return map_name_prefix(state, extract_type(annotation))
 
-def render(config, template: str, page, env: jinja2.Environment):
-    template = env.get_template(template)
-    rendered = template.render(page=page, URL=page.url, **config)
-    with open(os.path.join(config['OUTPUT'], page.filename), 'wb') as f:
-        f.write(rendered.encode('utf-8'))
-        # Add back a trailing newline so we don't need to bother with
-        # patching test files to include a trailing newline to make Git
-        # happy. Can't use keep_trailing_newline because that'd add it
-        # also for nested templates :(
-        f.write(b'\n')
-
 def extract_module_doc(state: State, path: List[str], module):
     assert inspect.ismodule(module)
 
@@ -806,6 +847,17 @@ def extract_data_doc(state: State, parent, path: List[str], data):
 
     return out
 
+def render(config, template: str, page, env: jinja2.Environment):
+    template = env.get_template(template)
+    rendered = template.render(page=page, URL=page.url, **config)
+    with open(os.path.join(config['OUTPUT'], page.filename), 'wb') as f:
+        f.write(rendered.encode('utf-8'))
+        # Add back a trailing newline so we don't need to bother with
+        # patching test files to include a trailing newline to make Git
+        # happy. Can't use keep_trailing_newline because that'd add it
+        # also for nested templates :(
+        f.write(b'\n')
+
 def render_module(state: State, path, module, env):
     # Generate breadcrumb as the first thing as it generates the output
     # filename as a side effect
@@ -869,58 +921,6 @@ def render_module(state: State, path, module, env):
             assert False
 
     render(state.config, 'module.html', page, env)
-
-# Builtin dunder functions have hardcoded docstrings. This is totally useless
-# to have in the docs, so filter them out. Uh... kinda ugly.
-_filtered_builtin_functions = set([
-    ('__delattr__', "Implement delattr(self, name)."),
-    ('__eq__', "Return self==value."),
-    ('__ge__', "Return self>=value."),
-    ('__getattribute__', "Return getattr(self, name)."),
-    ('__gt__', "Return self>value."),
-    ('__hash__', "Return hash(self)."),
-    ('__init__', "Initialize self.  See help(type(self)) for accurate signature."),
-    ('__init_subclass__',
-        "This method is called when a class is subclassed.\n\n"
-        "The default implementation does nothing. It may be\n"
-        "overridden to extend subclasses.\n"),
-    ('__le__', "Return self<=value."),
-    ('__lt__', "Return self<value."),
-    ('__ne__', "Return self!=value."),
-    ('__new__',
-        "Create and return a new object.  See help(type) for accurate signature."),
-    ('__repr__', "Return repr(self)."),
-    ('__setattr__', "Implement setattr(self, name, value)."),
-    ('__str__', "Return str(self)."),
-    ('__subclasshook__',
-        "Abstract classes can override this to customize issubclass().\n\n"
-        "This is invoked early on by abc.ABCMeta.__subclasscheck__().\n"
-        "It should return True, False or NotImplemented.  If it returns\n"
-        "NotImplemented, the normal algorithm is used.  Otherwise, it\n"
-        "overrides the normal algorithm (and the outcome is cached).\n")
-])
-
-# Python 3.6 has slightly different docstrings than 3.7
-if LooseVersion(sys.version) >= LooseVersion("3.7"):
-    _filtered_builtin_functions.update({
-        ('__dir__', "Default dir() implementation."),
-        ('__format__', "Default object formatter."),
-        ('__reduce__', "Helper for pickle."),
-        ('__reduce_ex__', "Helper for pickle."),
-        ('__sizeof__', "Size of object in memory, in bytes."),
-    })
-else:
-    _filtered_builtin_functions.update({
-        ('__dir__', "__dir__() -> list\ndefault dir() implementation"),
-        ('__format__', "default object formatter"),
-        ('__reduce__', "helper for pickle"),
-        ('__reduce_ex__', "helper for pickle"),
-        ('__sizeof__', "__sizeof__() -> int\nsize of object in memory, in bytes")
-    })
-
-_filtered_builtin_properties = set([
-    ('__weakref__', "list of weak references to the object (if defined)")
-])
 
 def render_class(state: State, path, class_, env):
     # Generate breadcrumb as the first thing as it generates the output
