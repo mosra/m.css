@@ -42,7 +42,7 @@ import shutil
 from enum import Enum
 from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
-from typing import Tuple, Dict, Set, Any, List
+from typing import Tuple, Dict, Set, Any, List, Callable
 from urllib.parse import urljoin
 from distutils.version import LooseVersion
 from docutils.transforms import Transform
@@ -54,15 +54,24 @@ import m.htmlsanity
 
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/python/')
 
+special_pages = ['index', 'modules', 'classes', 'pages']
+
 class EntryType(Enum):
-    PAGE = 0
-    MODULE = 1
-    CLASS = 2
-    ENUM = 3
-    ENUM_VALUE = 4
-    FUNCTION = 5
-    PROPERTY = 6
-    DATA = 7
+    SPECIAL = 0 # one of files from special_pages
+    PAGE = 1
+    MODULE = 2
+    CLASS = 3
+    ENUM = 4
+    ENUM_VALUE = 5
+    FUNCTION = 6
+    PROPERTY = 7
+    DATA = 8
+
+def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
+    # TODO: what about nested pages, how to format?
+    url = '.'.join(path) + '.html'
+    assert '/' not in url # TODO
+    return url, url
 
 default_config = {
     'PROJECT_TITLE': 'My Python Project',
@@ -115,6 +124,8 @@ default_config = {
 """,
     'SEARCH_BASE_URL': None,
     'SEARCH_EXTERNAL_URL': None,
+
+    'URL_FORMATTER': default_url_formatter
 }
 
 class State:
@@ -189,9 +200,6 @@ def is_internal_or_imported_module_member(state: State, parent, path: str, name:
 
 def is_enum(state: State, object) -> bool:
     return (inspect.isclass(object) and issubclass(object, enum.Enum)) or (state.config['PYBIND11_COMPATIBILITY'] and hasattr(object, '__members__'))
-
-def make_url(path: List[str]) -> str:
-    return '.'.join(path) + '.html'
 
 def object_type(state: State, object) -> EntryType:
     if inspect.ismodule(object): return EntryType.MODULE
@@ -517,8 +525,8 @@ def extract_annotation(state: State, annotation) -> str:
 
 def render(config, template: str, page, env: jinja2.Environment):
     template = env.get_template(template)
-    rendered = template.render(page=page, FILENAME=page.url, **config)
-    with open(os.path.join(config['OUTPUT'], page.url), 'wb') as f:
+    rendered = template.render(page=page, URL=page.url, **config)
+    with open(os.path.join(config['OUTPUT'], page.filename), 'wb') as f:
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with
         # patching test files to include a trailing newline to make Git
@@ -530,7 +538,7 @@ def extract_module_doc(state: State, path: List[str], module):
     assert inspect.ismodule(module)
 
     out = Empty()
-    out.url = make_url(path)
+    out.url = state.config['URL_FORMATTER'](EntryType.MODULE, path)[1]
     out.name = path[-1]
     out.summary = extract_summary(state, state.class_docs, path, module.__doc__)
     return out
@@ -539,7 +547,7 @@ def extract_class_doc(state: State, path: List[str], class_):
     assert inspect.isclass(class_)
 
     out = Empty()
-    out.url = make_url(path)
+    out.url = state.config['URL_FORMATTER'](EntryType.CLASS, path)[1]
     out.name = path[-1]
     out.summary = extract_summary(state, state.class_docs, path, class_.__doc__)
     return out
@@ -783,20 +791,24 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     return out
 
 def render_module(state: State, path, module, env):
-    logging.debug("generating %s.html", '.'.join(path))
+    # Generate breadcrumb as the first thing as it generates the output
+    # filename as a side effect
+    breadcrumb = []
+    filename: str
+    url: str
+    for i in range(len(path)):
+        filename, url = state.config['URL_FORMATTER'](EntryType.MODULE, path[:i + 1])
+        breadcrumb += [(path[i], url)]
+
+    logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
     for hook in state.hooks_pre_page: hook()
 
-    url_base = ''
-    breadcrumb = []
-    for i in path:
-        url_base += i + '.'
-        breadcrumb += [(i, url_base + 'html')]
-
     page = Empty()
     page.summary = extract_summary(state, state.module_docs, path, module.__doc__)
-    page.url = breadcrumb[-1][1]
+    page.filename = filename
+    page.url = url
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
     page.modules = []
@@ -895,20 +907,26 @@ _filtered_builtin_properties = set([
 ])
 
 def render_class(state: State, path, class_, env):
-    logging.debug("generating %s.html", '.'.join(path))
+    # Generate breadcrumb as the first thing as it generates the output
+    # filename as a side effect. It's a bit hairy because we need to figure out
+    # proper entry type for the URL formatter for each part of the breadcrumb.
+    breadcrumb = []
+    filename: str
+    url: str
+    for i in range(len(path)):
+        type = state.name_map['.'.join(path[:i + 1])].type
+        filename, url = state.config['URL_FORMATTER'](type, path[:i + 1])
+        breadcrumb += [(path[i], url)]
+
+    logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
     for hook in state.hooks_pre_page: hook()
 
-    url_base = ''
-    breadcrumb = []
-    for i in path:
-        url_base += i + '.'
-        breadcrumb += [(i, url_base + 'html')]
-
     page = Empty()
     page.summary = extract_summary(state, state.class_docs, path, class_.__doc__)
-    page.url = breadcrumb[-1][1]
+    page.filename = filename
+    page.url = url
     page.breadcrumb = breadcrumb
     page.prefix_wbr = '.<wbr />'.join(path + [''])
     page.classes = []
@@ -1040,14 +1058,16 @@ def render_doc(state: State, filename):
     # discard the output afterwards.
     with open(filename, 'r') as f: publish_rst(state, f.read())
 
-def render_page(state: State, path, filename, env):
-    logging.debug("generating %s.html", '.'.join(path))
+def render_page(state: State, path, input_filename, env):
+    filename, url = state.config['URL_FORMATTER'](EntryType.PAGE, path)
+
+    logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
     for hook in state.hooks_pre_page: hook()
 
     # Render the file
-    with open(filename, 'r') as f: pub = publish_rst(state, f.read(), source_path=filename)
+    with open(input_filename, 'r') as f: pub = publish_rst(state, f.read(), source_path=input_filename)
 
     # Extract metadata from the page
     metadata = {}
@@ -1072,10 +1092,11 @@ def render_page(state: State, path, filename, env):
 
     # Breadcrumb, we don't do page hierarchy yet
     assert len(path) == 1
-    breadcrumb = [(pub.writer.parts.get('title'), path[0] + '.html')]
+    breadcrumb = [(pub.writer.parts.get('title'), url)]
 
     page = Empty()
-    page.url = breadcrumb[-1][1]
+    page.filename = filename
+    page.url = url
     page.breadcrumb = breadcrumb
     page.prefix_wbr = path[0]
 
@@ -1094,22 +1115,6 @@ def render_page(state: State, path, filename, env):
     render(state.config, 'page.html', page, env)
 
 def run(basedir, config, templates):
-    # Prepare Jinja environment
-    env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(templates), trim_blocks=True,
-        lstrip_blocks=True, enable_async=True)
-    # Filter to return file basename or the full URL, if absolute
-    def basename_or_url(path):
-        if urllib.parse.urlparse(path).netloc: return path
-        return os.path.basename(path)
-    # Filter to return URL for given symbol or the full URL, if absolute
-    def path_to_url(path):
-        if urllib.parse.urlparse(path).netloc: return path
-        return path + '.html'
-    env.filters['basename_or_url'] = basename_or_url
-    env.filters['path_to_url'] = path_to_url
-    env.filters['urljoin'] = urljoin
-
     # Populate the INPUT, if not specified, make it absolute
     if config['INPUT'] is None: config['INPUT'] = basedir
     else: config['INPUT'] = os.path.join(basedir, config['INPUT'])
@@ -1123,6 +1128,28 @@ def run(basedir, config, templates):
         config['FAVICON'] = (config['FAVICON'], mimetypes.guess_type(config['FAVICON'])[0])
 
     state = State(config)
+
+    # Prepare Jinja environment
+    env = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(templates), trim_blocks=True,
+        lstrip_blocks=True, enable_async=True)
+    # Filter to return file basename or the full URL, if absolute
+    def basename_or_url(path):
+        if urllib.parse.urlparse(path).netloc: return path
+        return os.path.basename(path)
+    # Filter to return URL for given symbol. If the path is a string, first try
+    # to treat it as an URL. If that fails, turn it into a list and try to look
+    # it up in various dicts.
+    def path_to_url(path):
+        if isinstance(path, str):
+            if urllib.parse.urlparse(path).netloc: return path
+            path = [path]
+        entry = state.name_map['.'.join(path)]
+        return state.config['URL_FORMATTER'](entry.type, entry.path)[1]
+
+    env.filters['basename_or_url'] = basename_or_url
+    env.filters['path_to_url'] = path_to_url
+    env.filters['urljoin'] = urljoin
 
     # Set up extra plugin paths. The one for m.css plugins was added above.
     for path in config['PLUGIN_PATHS']:
@@ -1155,6 +1182,14 @@ def run(basedir, config, templates):
 
         crawl_module(state, [module_name], module)
         class_index += [module_name]
+
+    # Add special pages to the name map. The pages are done after so they can
+    # override these.
+    for page in special_pages:
+        entry = Empty()
+        entry.type = EntryType.SPECIAL
+        entry.path = [page]
+        state.name_map[page] = entry
 
     # Do the same for pages
     # TODO: turn also into some crawl_page() function? once we have subpages?
@@ -1205,7 +1240,7 @@ def run(basedir, config, templates):
         index_entry = Empty()
         index_entry.kind = 'module' if entry.type == EntryType.MODULE else 'class'
         index_entry.name = entry.path[-1]
-        index_entry.url = make_url(entry.path)
+        index_entry.url = state.config['URL_FORMATTER'](entry.type, entry.path)[1]
         index_entry.summary = entry.summary
         index_entry.has_nestable_children = False
         index_entry.children = []
@@ -1236,7 +1271,7 @@ def run(basedir, config, templates):
         index_entry = Empty()
         index_entry.kind = 'page'
         index_entry.name = entry.name
-        index_entry.url = make_url(entry.path)
+        index_entry.url = state.config['URL_FORMATTER'](entry.type, entry.path)[1]
         index_entry.summary = entry.summary
         index_entry.has_nestable_children = False
         index_entry.children = []
@@ -1246,10 +1281,11 @@ def run(basedir, config, templates):
     index = Empty()
     index.classes = class_index
     index.pages = page_index
-    for file in ['modules.html', 'classes.html', 'pages.html']:
-        template = env.get_template(file)
-        rendered = template.render(index=index, FILENAME=file, **config)
-        with open(os.path.join(config['OUTPUT'], file), 'wb') as f:
+    for file in special_pages[1:]: # exclude index
+        template = env.get_template(file + '.html')
+        filename, url = state.config['URL_FORMATTER'](EntryType.SPECIAL, [file])
+        rendered = template.render(index=index, URL=url, **config)
+        with open(os.path.join(config['OUTPUT'], filename), 'wb') as f:
             f.write(rendered.encode('utf-8'))
             # Add back a trailing newline so we don't need to bother with
             # patching test files to include a trailing newline to make Git
@@ -1261,9 +1297,12 @@ def run(basedir, config, templates):
     if 'index.rst' not in [os.path.basename(i) for i in config['INPUT_PAGES']]:
         logging.debug("writing index.html for an empty main page")
 
+        filename, url = state.config['URL_FORMATTER'](EntryType.SPECIAL, ['index'])
+
         page = Empty()
-        page.breadcrumb = [(config['PROJECT_TITLE'], 'index.html')]
-        page.url = page.breadcrumb[-1][1]
+        page.filename = filename
+        page.url = url
+        page.breadcrumb = [(config['PROJECT_TITLE'], url)]
         render(config, 'page.html', page, env)
 
     # Copy referenced files

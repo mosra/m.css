@@ -197,8 +197,8 @@ Variable                            Description
 :py:`PAGE_HEADER: str`              :abbr:`reST <reStructuredText>` markup to
                                     put at the top of every page. If not set,
                                     nothing is added anywhere. The
-                                    ``{filename}`` placeholder is replaced with
-                                    current file name.
+                                    ``{url}`` placeholder is replaced with
+                                    current file URL.
 :py:`FINE_PRINT: str`               :abbr:`reST <reStructuredText>` markup to
                                     put into the footer. If not set, a default
                                     generic text is used. If empty, no footer
@@ -250,6 +250,10 @@ Variable                            Description
                                     :py:`SEARCH_DISABLED` is not :py:`True`.
 :py:`DOCUTILS_SETTINGS: Dict[Any]`  Additional docutils settings. Key/value
                                     pairs as described in `the docs <http://docutils.sourceforge.net/docs/user/config.html>`_.
+:py:`URL_FORMATTER: Callable`       Function for creating filenames and URLs
+                                    for modules, classes, pages and index
+                                    pages. See `Custom URL formatters`_ for
+                                    more information.
 =================================== ===========================================
 
 `Theme selection`_
@@ -303,12 +307,14 @@ CSS files.
 The :py:`LINKS_NAVBAR1` and :py:`LINKS_NAVBAR2` options define which links are
 shown on the top navbar, split into left and right column on small screen
 sizes. These options take a list of :py:`(title, path, sub)` tuples ---
-``title`` is the link title, ``path`` is path to a particular page or
-module/class (in the form of ``module.sub.ClassName``, for example) and ``sub``
-is an optional submenu, containing :py:`(title, path)` tuples. The ``path`` can
-be also one of ``pages``, ``modules`` or ``classes``, linking to the page /
-module / class index. When rendering, the path is converted to an actual URL to
-the destination file.
+``title`` is the link title; ``path`` is either one of :py:`'index'`,
+:py:`'pages'`, :py:`'modules'` or :py:`'classes'` (linking to the main page or
+page / module / class index path), a full URL (pasted as-is) or a *path* to a
+particular page or module/class (in the form of
+:py:`['module', 'sub', 'ClassName']` for :py:`module.sub.ClassName`, which then
+gets formatted according to `URL formatting rules <#custom-url-formatters>`_);
+and ``sub`` is an optional submenu, containing :py:`(title, path)` tuples, with
+``path`` being interpreted the same way.
 
 By default the variables are defined like following --- there's just three
 items in the left column, with no submenus and the right column is empty:
@@ -371,6 +377,30 @@ search to a subdomain:
 .. code:: py
 
     SEARCH_EXTERNAL_URL = 'https://google.com/search?q=site:doc.magnum.graphics+{query}'
+
+`Custom URL formatters`_
+------------------------
+
+The :py:`URL_FORMATTER` option allows you to control how *all* filenames and
+generated URLs look like. It takes an entry type and a "path" as a list of
+strings (so for example :py:`my.module.Class` is represented as
+:py:`['my', 'module', 'Class']`), returning a tuple a filename and an URL.
+Those can be the same, but also different (for example a file getting saved
+into ``my/module/Class/index.html`` but the actual URL being
+``https://docs.my.module/Class/``). The default implementation looks like this,
+producing both filenames and URLs in the form of ``my.module.Class.html``:
+
+.. code:: py
+
+    def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
+        url = '.'.join(path) + '.html'
+        return url, url
+
+The ``type`` is an enum, if you don't want to fiddle with imports, compare
+:py:`str(type)` against a string, which is one of :py:`'PAGE'`, :py:`'MODULE'`,
+:py:`'CLASS'` or :py:`'SPECIAL'`. The :py:`'SPECIAL'` is for index pages and in
+that case the ``path`` has always just one item, one of :py:`'pages'`,
+:py:`'modules'` or :py:`'classes'`.
 
 `Module inspection`_
 ====================
@@ -824,10 +854,10 @@ Filename                Use
 ======================= =======================================================
 
 Each template gets passed all configuration values from the `Configuration`_
-table as-is, together with a :py:`FILENAME` variable with name of given output
-file. In addition to builtin Jinja2 filters, the ``basename_or_url`` filter
-returns either a basename of file path, if the path is relative; or a full URL,
-if the argument is an absolute URL. It's useful in cases like this:
+table as-is, together with a :py:`URL` variable with URL of given output file.
+In addition to builtin Jinja2 filters, the ``basename_or_url`` filter returns
+either a basename of file path, if the path is relative; or a full URL, if the
+argument is an absolute URL. It's useful in cases like this:
 
 .. code:: html+jinja
 
@@ -845,7 +875,8 @@ HTML markup without any additional escaping.
 Property                                Description
 ======================================= =======================================
 :py:`page.summary`                      Doc summary
-:py:`page.url`                          File URL
+:py:`page.filename`                     File name [3]_
+:py:`page.url`                          File URL [3]_
 :py:`page.breadcrumb`                   List of :py:`(title, URL)` tuples for
                                         breadcrumb navigation.
 :py:`page.content`                      Detailed documentation, if any
@@ -1077,7 +1108,7 @@ Filename                Use
 ======================= =======================================================
 
 Each template is passed all configuration values from the `Configuration`_
-table as-is, together with a :py:`FILENAME`, as above. The navigation tree is
+table as-is, together with an :py:`URL`, as above. The navigation tree is
 provided in an :py:`index` object, which has the following properties:
 
 .. class:: m-table m-fullwidth
@@ -1117,3 +1148,5 @@ Module/class list is ordered in a way that all modules are before all classes.
     *documented* enum value listing that makes it worth to render the full
     description block. If :py:`False`, the member should be included only in
     the summary listing on top of the page to avoid unnecessary repetition.
+.. [3] :py:`page.filename` and :py:`page.url` is generated by an URL formatter,
+    see `Custom URL formatters`_ for more information

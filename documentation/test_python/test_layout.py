@@ -37,8 +37,9 @@ class Layout(BaseTestCase):
 
             'THEME_COLOR': '#00ffff',
             'FAVICON': 'favicon-light.png',
-            'PAGE_HEADER': "`A self link <{filename}>`_",
+            'PAGE_HEADER': "`A self link <{url}>`_",
             'FINE_PRINT': "This beautiful thing is done thanks to\n`m.css <https://mcss.mosra.cz>`_.",
+            'INPUT_PAGES': ['getting-started.rst', 'troubleshooting.rst', 'about.rst'],
             'LINKS_NAVBAR1': [
                 ('Pages', 'pages', [
                     ('Getting started', 'getting-started'),
