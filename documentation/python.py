@@ -161,13 +161,6 @@ class State:
 
         self.name_map: Dict[str, Empty] = {}
 
-def is_internal_function_name(name: str) -> bool:
-    """If the function name is internal.
-
-    Skips underscored functions but keeps special functions such as __init__.
-    """
-    return name.startswith('_') and not (name.startswith('__') and name.endswith('__'))
-
 def map_name_prefix(state: State, type: str) -> str:
     for prefix, replace in state.module_mapping.items():
         if type == prefix or type.startswith(prefix + '.'):
@@ -176,54 +169,11 @@ def map_name_prefix(state: State, type: str) -> str:
     # No mapping found, return the type as-is
     return type
 
-def is_internal_or_imported_module_member(state: State, parent, path: str, name: str, object) -> bool:
-    """If the module member is internal or imported."""
-
-    if name.startswith('_'): return True
-
-    # If this is not a module, check if the enclosing module of the object is
-    # what expected. If not, it's a class/function/... imported from elsewhere
-    # and we don't want those.
-    # TODO: xml.dom.domreg says the things from it should be imported as
-    #   xml.dom.foo() and this check discards them, can it be done without
-    #   manually adding __all__?
-    if not inspect.ismodule(object):
-        # Variables don't have the __module__ attribute, so check for its
-        # presence. Right now *any* variable will be present in the output, as
-        # there is no way to check where it comes from.
-        if hasattr(object, '__module__') and map_name_prefix(state, object.__module__) != '.'.join(path):
-            return True
-
-    # If this is a module, then things get complicated again and we need to
-    # handle modules and packages differently. See also for more info:
-    # https://stackoverflow.com/a/7948672
-    else:
-        # pybind11 submodules have __package__ set to None (instead of '') for
-        # nested modules. Allow these. The parent's __package__ can be None (if
-        # it's a nested submodule), '' (if it's a top-level module) or a string
-        # (if the parent is a Python package), can't really check further.
-        if state.config['PYBIND11_COMPATIBILITY'] and object.__package__ is None: return False
-
-        # The parent is a single-file module (not a package), these don't have
-        # submodules so this is most definitely an imported module. Source:
-        # https://docs.python.org/3/reference/import.html#packages
-        if not parent.__package__: return True
-
-        # The parent is a package and this is either a submodule or a
-        # subpackage. Check that the __package__ of parent and child is either
-        # the same or it's parent + child name
-        if object.__package__ not in [parent.__package__, parent.__package__ + '.' + name]: return True
-
-    # If nothing of the above matched, then it's a thing we want to document
-    return False
-
-def is_enum(state: State, object) -> bool:
-    return (inspect.isclass(object) and issubclass(object, enum.Enum)) or (state.config['PYBIND11_COMPATIBILITY'] and hasattr(object, '__members__'))
-
 def object_type(state: State, object) -> EntryType:
     if inspect.ismodule(object): return EntryType.MODULE
     if inspect.isclass(object):
-        if is_enum(state, object): return EntryType.ENUM
+        if (inspect.isclass(object) and issubclass(object, enum.Enum)) or (state.config['PYBIND11_COMPATIBILITY'] and hasattr(object, '__members__')):
+            return EntryType.ENUM
         else: return EntryType.CLASS
     if inspect.isfunction(object) or inspect.isbuiltin(object) or inspect.isroutine(object):
         return EntryType.FUNCTION
@@ -262,8 +212,9 @@ def crawl_class(state: State, path: List[str], class_):
             if type == EntryType.ENUM:
                 if name.startswith('_'): continue
             elif type == EntryType.FUNCTION:
-                # Filter out underscored methods (but not dunder methods)
-                if is_internal_function_name(name): continue
+                # Filter out underscored methods (but not dunder methods such
+                # as __init__)
+                if name.startswith('_') and not (name.startswith('__') and name.endswith('__')): continue
                 # Filter out dunder methods that don't have their own docs
                 if name.startswith('__') and (name, object.__doc__) in _filtered_builtin_functions: continue
             elif type == EntryType.PROPERTY:
@@ -355,7 +306,43 @@ def crawl_module(state: State, path: List[str], module):
     # have __module__ equivalent to `path`.
     else:
         for name, object in inspect.getmembers(module):
-            if is_internal_or_imported_module_member(state, module, path, name, object): continue
+            # Filter out underscored names
+            if name.startswith('_'): continue
+
+            # If this is not a module, check if the enclosing module of the
+            # object is what expected. If not, it's a class/function/...
+            # imported from elsewhere and we don't want those.
+            # TODO: xml.dom.domreg says the things from it should be imported
+            #   as xml.dom.foo() and this check discards them, can it be done
+            #   without manually adding __all__?
+            if not inspect.ismodule(object):
+                # Variables don't have the __module__ attribute, so check for
+                # its presence. Right now *any* variable will be present in the
+                # output, as there is no way to check where it comes from.
+                if hasattr(object, '__module__') and map_name_prefix(state, object.__module__) != '.'.join(path):
+                    continue
+
+            # If this is a module, then things get complicated again and we
+            # need to handle modules and packages differently. See also for
+            # more info: https://stackoverflow.com/a/7948672
+            else:
+                # pybind11 submodules have __package__ set to None (instead of
+                # '') for nested modules. Allow these. The parent's __package__
+                # can be None (if it's a nested submodule), '' (if it's a
+                # top-level module) or a string (if the parent is a Python
+                # package), can't really check further.
+                if state.config['PYBIND11_COMPATIBILITY'] and object.__package__ is None:
+                    pass # yes, do nothing
+
+                # The parent is a single-file module (not a package), these
+                # don't have submodules so this is most definitely an imported
+                # module. Source: https://docs.python.org/3/reference/import.html#packages
+                elif not module.__package__: continue
+
+                # The parent is a package and this is either a submodule or a
+                # subpackage. Check that the __package__ of parent and child is
+                # either the same or it's parent + child name
+                elif object.__package__ not in [module.__package__, module.__package__ + '.' + name]: continue
 
             type = object_type(state, object)
             subpath = path + [name]
