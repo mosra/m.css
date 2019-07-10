@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>link_formatting | My Python Project</title>
+  <title>link_formatting.pybind.Foo | My Python Project</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -38,66 +38,43 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          link_formatting <span class="m-thin">module</span>
+          <span class="m-breadcrumb"><a href="m.link_formatting.html#this-is-an-url">link_formatting</a>.<wbr/></span><span class="m-breadcrumb"><a href="m.link_formatting.pybind.html#this-is-an-url">pybind</a>.<wbr/></span>Foo <span class="m-thin">class</span>
         </h1>
-        <p>This is a module.</p>
+        <p>A class</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#packages">Modules</a></li>
-                <li><a href="#classes">Classes</a></li>
-                <li><a href="#enums">Enums</a></li>
-                <li><a href="#functions">Functions</a></li>
-                <li><a href="#data">Data</a></li>
+                <li><a href="#staticmethods">Static methods</a></li>
+                <li><a href="#methods">Methods</a></li>
               </ul>
             </li>
           </ul>
         </div>
-        <section id="namespaces">
-          <h2><a href="#namespaces">Modules</a></h2>
-          <dl class="m-doc">
-            <dt>module <a href="m.link_formatting.pybind.html#this-is-an-url" class="m-doc">pybind</a></dt>
-            <dd>pybind11 overloaded function link formatting</dd>
-            <dt>module <a href="m.link_formatting.sub.html#this-is-an-url" class="m-doc">sub</a></dt>
-            <dd>This is a nice submodule.</dd>
-          </dl>
-        </section>
-        <section id="classes">
-          <h2><a href="#classes">Classes</a></h2>
-          <dl class="m-doc">
-            <dt>class <a href="c.link_formatting.Class.html#this-is-an-url" class="m-doc">Class</a></dt>
-            <dd>This is a nice class.</dd>
-          </dl>
-        </section>
-        <section id="enums">
-          <h2><a href="#enums">Enums</a></h2>
+        <section id="staticmethods">
+          <h2><a href="#staticmethods">Static methods</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">class <a href="#e-Enum" class="m-doc-self" id="e-Enum">Enum</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#v-Enum-FIRST_VALUE" class="m-doc-self" id="v-Enum-FIRST_VALUE">FIRST_VALUE</a> = 1
-              <a href="#v-Enum-SECOND_VALUE" class="m-doc-self" id="v-Enum-SECOND_VALUE">SECOND_VALUE</a> = 2</span>
+              <span class="m-doc-wrap-bumper">def <a href="#o-a_function-46f8a" class="m-doc-self" id="o-a_function-46f8a">a_function</a>(</span><span class="m-doc-wrap">arg0: int<span class="m-text m-dim">, /</span>) -&gt; int</span>
             </dt>
-            <dd></dd>
+            <dd>A static function that should have the same hash as takes_int()</dd>
           </dl>
         </section>
-        <section id="functions">
-          <h2><a href="#functions">Functions</a></h2>
+        <section id="methods">
+          <h2><a href="#methods">Methods</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">def <a href="#f-function" class="m-doc-self" id="f-function">function</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper">def <a href="#o-bar-745a3" class="m-doc-self" id="o-bar-745a3">bar</a>(</span><span class="m-doc-wrap">self,
+              arg0: int<span class="m-text m-dim">, /</span>) -&gt; int</span>
             </dt>
-            <dd>A function.</dd>
-          </dl>
-        </section>
-        <section id="data">
-          <h2><a href="#data">Data</a></h2>
-          <dl class="m-doc">
+            <dd>Should have the same hash as foo() but not as a_function()</dd>
             <dt>
-              <a href="#d-SOME_DATA" class="m-doc-self" id="d-SOME_DATA">SOME_DATA</a> = 3.14
+              <span class="m-doc-wrap-bumper">def <a href="#o-foo-745a3" class="m-doc-self" id="o-foo-745a3">foo</a>(</span><span class="m-doc-wrap">self,
+              arg0: int<span class="m-text m-dim">, /</span>) -&gt; int</span>
             </dt>
-            <dd></dd>
+            <dd>Should have the same hash as bar() but not as a_function()</dd>
           </dl>
         </section>
       </div>

@@ -32,6 +32,12 @@ foreach(target signatures enums submodules)
     set_target_properties(pybind_${target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_${target})
 endforeach()
 
+# Need a special location for this one
+pybind11_add_module(pybind_link_formatting link_formatting/link_formatting/pybind.cpp)
+set_target_properties(pybind_link_formatting PROPERTIES
+    OUTPUT_NAME pybind
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/link_formatting/link_formatting)
+
 # Need a special name for this one
 pybind11_add_module(pybind_name_mapping pybind_name_mapping/sub.cpp)
 set_target_properties(pybind_name_mapping PROPERTIES

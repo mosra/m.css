@@ -28,7 +28,7 @@ import unittest
 from typing import List
 
 from . import BaseInspectTestCase
-from python import EntryType
+from python import EntryType, default_id_formatter
 
 def custom_url_formatter(type: EntryType, path: List[str]) -> str:
     if type == EntryType.CLASS:
@@ -43,6 +43,23 @@ def custom_url_formatter(type: EntryType, path: List[str]) -> str:
 
     return filename, filename + "#this-is-an-url"
 
+def custom_id_formatter(type: EntryType, path: List[str]) -> str:
+    if type == EntryType.FUNCTION:
+        return 'f-' + '-'.join(path)
+    if type == EntryType.OVERLOADED_FUNCTION:
+        # Reuse the original hasher so we can test its behavior
+        return 'o-' + default_id_formatter(type, path)
+    if type == EntryType.PROPERTY:
+        return 'p-' + '-'.join(path)
+    if type == EntryType.ENUM:
+        return 'e-' + '-'.join(path)
+    if type == EntryType.ENUM_VALUE:
+        return 'v-' + '-'.join(path)
+    if type == EntryType.DATA:
+        return 'd-' + '-'.join(path)
+
+    assert False
+
 class Test(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
@@ -51,13 +68,15 @@ class Test(BaseInspectTestCase):
         self.run_python({
             'INPUT_PAGES': ['page.rst'],
             'URL_FORMATTER': custom_url_formatter,
+            'ID_FORMATTER': custom_id_formatter,
             'LINKS_NAVBAR1': [
                 ('Pages', 'pages', []),
                 ('Modules', 'modules', []),
                 ('Classes', 'classes', [])],
             'LINKS_NAVBAR2': [('A page', 'page', []),
                               ('A module', 'link_formatting', []),
-                              ('The class', ['link_formatting', 'Class'], [])]
+                              ('The class', ['link_formatting', 'Class'], [])],
+            'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('m.link_formatting.html'))
         self.assertEqual(*self.actual_expected_contents('m.link_formatting.sub.html'))
@@ -75,3 +94,7 @@ class Test(BaseInspectTestCase):
         # There's nothing inside s.index.html that wouldn't be already covered
         # by others
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/s.index.html')))
+
+        # Verify pybind11 overloaded function hashing as well
+        self.assertEqual(*self.actual_expected_contents('m.link_formatting.pybind.html'))
+        self.assertEqual(*self.actual_expected_contents('c.link_formatting.pybind.Foo.html'))

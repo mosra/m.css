@@ -1,4 +1,4 @@
             <dt>
-              <a href="" class="m-doc{% if not property.has_details %}-self{% endif %}">{{ property.name }}</a>{% if property.type %}: {{ property.type }}{% endif %} <span class="m-label m-flat {% if property.is_settable %}m-success{% else %}m-warning{% endif %}">get{% if property.is_settable %} set{% endif %}{% if property.is_deletable %} del{% endif %}</span>
+              <a href="#{{ property.id }}" {% if property.has_details %}class="m-doc"{% else %}class="m-doc-self" id="{{ property.id }}"{% endif %}>{{ property.name }}</a>{% if property.type %}: {{ property.type }}{% endif %} <span class="m-label m-flat {% if property.is_settable %}m-success{% else %}m-warning{% endif %}">get{% if property.is_settable %} set{% endif %}{% if property.is_deletable %} del{% endif %}</span>
             </dt>
             <dd>{{ property.summary }}</dd>

@@ -29,6 +29,7 @@ import copy
 import docutils
 import enum
 import urllib.parse
+import hashlib
 import html
 import importlib
 import inspect
@@ -64,14 +65,31 @@ class EntryType(Enum):
     ENUM = 4
     ENUM_VALUE = 5
     FUNCTION = 6
-    PROPERTY = 7
-    DATA = 8
+    # Denotes a potentially overloaded pybind11 function. Has to be here to
+    # be able to distinguish between zero-argument normal and pybind11
+    # functions.
+    OVERLOADED_FUNCTION = 7
+    PROPERTY = 8
+    DATA = 9
 
 def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
     # TODO: what about nested pages, how to format?
     url = '.'.join(path) + '.html'
     assert '/' not in url # TODO
     return url, url
+
+def default_id_formatter(type: EntryType, path: List[str]) -> str:
+    # Encode pybind11 function overloads into the anchor (hash them, like Rust
+    # does)
+    if type == EntryType.OVERLOADED_FUNCTION:
+        return path[0] + '-' + hashlib.sha1(', '.join([str(i) for i in path[1:]]).encode('utf-8')).hexdigest()[:5]
+
+    if type == EntryType.ENUM_VALUE:
+        assert len(path) == 2
+        return '-'.join(path)
+
+    assert len(path) == 1
+    return path[0]
 
 default_config = {
     'PROJECT_TITLE': 'My Python Project',
@@ -125,7 +143,8 @@ default_config = {
     'SEARCH_BASE_URL': None,
     'SEARCH_EXTERNAL_URL': None,
 
-    'URL_FORMATTER': default_url_formatter
+    'URL_FORMATTER': default_url_formatter,
+    'ID_FORMATTER': default_id_formatter
 }
 
 class State:
@@ -555,6 +574,7 @@ def extract_class_doc(state: State, path: List[str], class_):
 def extract_enum_doc(state: State, path: List[str], enum_):
     out = Empty()
     out.name = path[-1]
+    out.id = state.config['ID_FORMATTER'](EntryType.ENUM, path[-1:])
     out.values = []
     out.has_details = False
     out.has_value_details = False
@@ -573,6 +593,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
         for i in enum_:
             value = Empty()
             value.name = i.name
+            value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, path[-1:] + [i.name])
             value.value = html.escape(repr(i.value))
 
             # Value doc gets by default inherited from the enum, that's useless
@@ -598,6 +619,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
         for name, v in enum_.__members__.items():
             value = Empty()
             value. name = name
+            value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, path[-1:] + [name])
             value.value = int(v)
             # TODO: once https://github.com/pybind/pybind11/pull/1160 is
             #       released, extract from class docs (until then the class
@@ -691,6 +713,10 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
                 out.params += [param]
 
+            # Format the anchor. Pybind11 functions are sometimes overloaded,
+            # thus name alone is not enough.
+            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, path[-1:] + [param.type for param in out.params])
+
             overloads += [out]
 
         return overloads
@@ -699,6 +725,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     else:
         out = Empty()
         out.name = path[-1]
+        out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, path[-1:])
         out.params = []
         out.has_complex_params = False
         out.has_details = False
@@ -744,6 +771,7 @@ def extract_property_doc(state: State, path: List[str], property):
 
     out = Empty()
     out.name = path[-1]
+    out.id = state.config['ID_FORMATTER'](EntryType.PROPERTY, path[-1:])
     # TODO: external summary for properties
     out.summary = extract_summary(state, {}, [], property.__doc__)
     out.is_settable = property.fset is not None
@@ -767,6 +795,7 @@ def extract_data_doc(state: State, parent, path: List[str], data):
 
     out = Empty()
     out.name = path[-1]
+    out.id = state.config['ID_FORMATTER'](EntryType.DATA, path[-1:])
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
     out.summary = ''
     out.has_details = False
