@@ -39,6 +39,7 @@ import re
 import sys
 import shutil
 
+from enum import Enum
 from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Set, Any, List
@@ -52,6 +53,16 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../pl
 import m.htmlsanity
 
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/python/')
+
+class EntryType(Enum):
+    PAGE = 0
+    MODULE = 1
+    CLASS = 2
+    ENUM = 3
+    ENUM_VALUE = 4
+    FUNCTION = 5
+    PROPERTY = 6
+    DATA = 7
 
 default_config = {
     'PROJECT_TITLE': 'My Python Project',
@@ -106,20 +117,9 @@ default_config = {
     'SEARCH_EXTERNAL_URL': None,
 }
 
-class IndexEntry:
-    def __init__(self):
-        self.kind: str
-        self.name: str
-        self.url: str
-        self.summary: str
-        self.has_nestable_children: bool = False
-        self.children: List[IndexEntry] = []
-
 class State:
     def __init__(self, config):
         self.config = config
-        self.class_index: List[IndexEntry] = []
-        self.page_index: List[IndexEntry] = []
         self.module_mapping: Dict[str, str] = {}
         self.module_docs: Dict[str, Dict[str, str]] = {}
         self.class_docs: Dict[str, Dict[str, str]] = {}
@@ -128,6 +128,8 @@ class State:
 
         self.hooks_pre_page: List = []
         self.hooks_post_run: List = []
+
+        self.name_map: Dict[str, Empty] = {}
 
 def is_internal_function_name(name: str) -> bool:
     """If the function name is internal.
@@ -190,6 +192,168 @@ def is_enum(state: State, object) -> bool:
 
 def make_url(path: List[str]) -> str:
     return '.'.join(path) + '.html'
+
+def object_type(state: State, object) -> EntryType:
+    if inspect.ismodule(object): return EntryType.MODULE
+    if inspect.isclass(object):
+        if is_enum(state, object): return EntryType.ENUM
+        else: return EntryType.CLASS
+    if inspect.isfunction(object) or inspect.isbuiltin(object) or inspect.isroutine(object):
+        return EntryType.FUNCTION
+    if inspect.isdatadescriptor(object):
+        return EntryType.PROPERTY
+    # Assume everything else is data. The builtin help help() (from pydoc) does
+    # the same: https://github.com/python/cpython/blob/d29b3dd9227cfc4a23f77e99d62e20e063272de1/Lib/pydoc.py#L113
+    if not inspect.isframe(object) and not inspect.istraceback(object) and not inspect.iscode(object):
+        return EntryType.DATA
+
+    # caller should print a warning in this case
+    return None # pragma: no cover
+
+def crawl_class(state: State, path: List[str], class_):
+    class_entry = Empty()
+    class_entry.type = EntryType.CLASS
+    class_entry.object = class_
+    class_entry.path = path
+    class_entry.members = []
+
+    for name, object in inspect.getmembers(class_):
+        type = object_type(state, object)
+        subpath = path + [name]
+
+        # Crawl the subclasses recursively (they also add itself to the
+        # name_map)
+        if type == EntryType.CLASS:
+            if name in ['__base__', '__class__']: continue # TODO
+            if name.startswith('_'): continue
+
+            crawl_class(state, subpath, object)
+
+        # Add other members directly
+        else:
+            # Filter out private / unwanted members
+            if type == EntryType.ENUM:
+                if name.startswith('_'): continue
+            elif type == EntryType.FUNCTION:
+                # Filter out underscored methods (but not dunder methods)
+                if is_internal_function_name(name): continue
+                # Filter out dunder methods that don't have their own docs
+                if name.startswith('__') and (name, object.__doc__) in _filtered_builtin_functions: continue
+            elif type == EntryType.PROPERTY:
+                if (name, object.__doc__) in _filtered_builtin_properties: continue
+                if name.startswith('_'): continue # TODO: are there any dunder props?
+            elif type == EntryType.DATA:
+                if name.startswith('_'): continue
+            else: # pragma: no cover
+                assert type is None; continue # ignore unknown object types
+
+            entry = Empty()
+            entry.type = type
+            entry.object = object
+            entry.path = subpath
+            state.name_map['.'.join(subpath)] = entry
+
+        class_entry.members += [name]
+
+    # Add itself to the name map
+    state.name_map['.'.join(path)] = class_entry
+
+def crawl_module(state: State, path: List[str], module):
+    module_entry = Empty()
+    module_entry.type = EntryType.MODULE
+    module_entry.object = module
+    module_entry.path = path
+    module_entry.members = []
+
+    # This is actually complicated -- if the module defines __all__, use that.
+    # The __all__ is meant to expose the public API, so we don't filter out
+    # underscored things.
+    if hasattr(module, '__all__'):
+        # Names exposed in __all__ could be also imported from elsewhere, for
+        # example this is a common pattern with native libraries and we want
+        # Foo, Bar, submodule and *everything* in submodule to be referred to
+        # as `library.RealName` (`library.submodule.func()`, etc.) instead of
+        # `library._native.Foo`, `library._native.sub.func()` etc.
+        #
+        #   from ._native import Foo as PublicName
+        #   from ._native import sub as submodule
+        #   __all__ = ['PublicName', 'submodule']
+        #
+        # The name references can be cyclic so extract the mapping in a
+        # separate pass before everything else.
+        for name in module.__all__:
+            # Everything available in __all__ is already imported, so get those
+            # directly
+            object = getattr(module, name)
+            subpath = path + [name]
+
+            # Modules have __name__ while other objects have __module__, need
+            # to check both.
+            if inspect.ismodule(object) and object.__name__ != '.'.join(subpath):
+                assert object.__name__ not in state.module_mapping
+                state.module_mapping[object.__name__] = '.'.join(subpath)
+            elif hasattr(object, '__module__'):
+                subname = object.__module__ + '.' + object.__name__
+                if subname != '.'.join(subpath):
+                    assert subname not in state.module_mapping
+                    state.module_mapping[subname] = '.'.join(subpath)
+
+        # Now extract the actual docs
+        for name in module.__all__:
+            object = getattr(module, name)
+            subpath = path + [name]
+            type = object_type(state, object)
+
+            # Crawl the submodules and subclasses recursively (they also add
+            # itself to the name_map), add other members directly.
+            if not type: # pragma: no cover
+                logging.warning("unknown symbol %s in %s", name, '.'.join(path))
+                continue
+            elif type == EntryType.MODULE:
+                crawl_module(state, subpath, object)
+            elif type == EntryType.CLASS:
+                crawl_class(state, subpath, object)
+            else:
+                assert type in [EntryType.ENUM, EntryType.FUNCTION, EntryType.DATA]
+                entry = Empty()
+                entry.type = type
+                entry.object = object
+                entry.path = subpath
+                state.name_map['.'.join(subpath)] = entry
+
+            module_entry.members += [name]
+
+    # Otherwise, enumerate the members using inspect. However, inspect lists
+    # also imported modules, functions and classes, so take only those which
+    # have __module__ equivalent to `path`.
+    else:
+        for name, object in inspect.getmembers(module):
+            if is_internal_or_imported_module_member(state, module, path, name, object): continue
+
+            type = object_type(state, object)
+            subpath = path + [name]
+
+            # Crawl the submodules and subclasses recursively (they also add
+            # itself to the name_map), add other members directly.
+            if not type: # pragma: no cover
+                # Ignore unknown object types (with __all__ we warn instead)
+                continue
+            elif type == EntryType.MODULE:
+                crawl_module(state, subpath, object)
+            elif type == EntryType.CLASS:
+                crawl_class(state, subpath, object)
+            else:
+                assert type in [EntryType.ENUM, EntryType.FUNCTION, EntryType.DATA]
+                entry = Empty()
+                entry.type = type
+                entry.object = object
+                entry.path = subpath
+                state.name_map['.'.join(subpath)] = entry
+
+            module_entry.members += [name]
+
+    # Add itself to the name map
+    state.name_map['.'.join(path)] = module_entry
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
@@ -648,141 +812,35 @@ def render_module(state: State, path, module, env):
         page.content = render_rst(state, state.module_docs[path_str]['content'])
         state.module_docs[path_str]['used'] = True
 
-    # Index entry for this module, returned together with children at the end
-    index_entry = IndexEntry()
-    index_entry.kind = 'module'
-    index_entry.name = breadcrumb[-1][0]
-    index_entry.url = page.url
-    index_entry.summary = page.summary
+    # Find itself in the global map, save the summary back there for index
+    module_entry = state.name_map[path_str]
+    module_entry.summary = page.summary
 
-    # List of inner modules and classes to render, these will be done after the
-    # current class introspection is done to have some better memory allocation
-    # pattern
-    modules_to_render = []
-    classes_to_render = []
+    # Extract docs for all members
+    for name in module_entry.members:
+        subpath = path + [name]
+        subpath_str = '.'.join(subpath)
+        member_entry = state.name_map[subpath_str]
 
-    # This is actually complicated -- if the module defines __all__, use that.
-    # The __all__ is meant to expose the public API, so we don't filter out
-    # underscored things.
-    if hasattr(module, '__all__'):
-        # Names exposed in __all__ could be also imported from elsewhere, for
-        # example this is a common pattern with native libraries and we want
-        # Foo, Bar, submodule and *everything* in submodule to be referred to
-        # as `library.RealName` (`library.submodule.func()`, etc.) instead of
-        # `library._native.Foo`, `library._native.sub.func()` etc.
-        #
-        #   from ._native import Foo as PublicName
-        #   from ._native import sub as submodule
-        #   __all__ = ['PublicName', 'submodule']
-        #
-        # The name references can be cyclic so extract the mapping in a
-        # separate pass before everything else.
-        for name in module.__all__:
-            # Everything available in __all__ is already imported, so get those
-            # directly
-            object = getattr(module, name)
-            subpath = path + [name]
+        if member_entry.type != EntryType.DATA and not object.__doc__: # pragma: no cover
+            logging.warning("%s is undocumented", subpath_str)
 
-            # Modules have __name__ while other objects have __module__, need
-            # to check both.
-            if inspect.ismodule(object) and object.__name__ != '.'.join(subpath):
-                assert object.__name__ not in state.module_mapping
-                state.module_mapping[object.__name__] = '.'.join(subpath)
-            elif hasattr(object, '__module__'):
-                subname = object.__module__ + '.' + object.__name__
-                if subname != '.'.join(subpath):
-                    assert subname not in state.module_mapping
-                    state.module_mapping[subname] = '.'.join(subpath)
-
-        # Now extract the actual docs
-        for name in module.__all__:
-            object = getattr(module, name)
-            subpath = path + [name]
-
-            # We allow undocumented submodules (since they're often in the
-            # standard lib), but not undocumented classes etc. Render the
-            # submodules and subclasses recursively.
-            if inspect.ismodule(object):
-                page.modules += [extract_module_doc(state, subpath, object)]
-                index_entry.children += [render_module(state, subpath, object, env)]
-            elif inspect.isclass(object) and not is_enum(state, object):
-                page.classes += [extract_class_doc(state, subpath, object)]
-                index_entry.children += [render_class(state, subpath, object, env)]
-            elif inspect.isclass(object) and is_enum(state, object):
-                enum_ = extract_enum_doc(state, subpath, object)
-                page.enums += [enum_]
-                if enum_.has_details: page.has_enum_details = True
-            elif inspect.isfunction(object) or inspect.isbuiltin(object):
-                page.functions += extract_function_doc(state, module, subpath, object)
-            # Assume everything else is data. The builtin help help() (from
-            # pydoc) does the same:
-            # https://github.com/python/cpython/blob/d29b3dd9227cfc4a23f77e99d62e20e063272de1/Lib/pydoc.py#L113
-            # TODO: unify this query
-            elif not inspect.isframe(object) and not inspect.istraceback(object) and not inspect.iscode(object):
-                page.data += [extract_data_doc(state, module, subpath, object)]
-            else: # pragma: no cover
-                logging.warning("unknown symbol %s in %s", name, '.'.join(path))
-
-    # Otherwise, enumerate the members using inspect. However, inspect lists
-    # also imported modules, functions and classes, so take only those which
-    # have __module__ equivalent to `path`.
-    else:
-        # Get (and render) inner modules
-        for name, object in inspect.getmembers(module, inspect.ismodule):
-            if is_internal_or_imported_module_member(state, module, path, name, object): continue
-
-            subpath = path + [name]
-            page.modules += [extract_module_doc(state, subpath, object)]
-            modules_to_render += [(subpath, object)]
-
-        # Get (and render) inner classes
-        for name, object in inspect.getmembers(module, lambda o: inspect.isclass(o) and not is_enum(state, o)):
-            if is_internal_or_imported_module_member(state, module, path, name, object): continue
-
-            subpath = path + [name]
-            if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
-
-            page.classes += [extract_class_doc(state, subpath, object)]
-            classes_to_render += [(subpath, object)]
-
-        # Get enums
-        for name, object in inspect.getmembers(module, lambda o: is_enum(state, o)):
-            if is_internal_or_imported_module_member(state, module, path, name, object): continue
-
-            subpath = path + [name]
-            if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
-
-            enum_ = extract_enum_doc(state, subpath, object)
+        if member_entry.type == EntryType.MODULE:
+            page.modules += [extract_module_doc(state, subpath, member_entry.object)]
+        elif member_entry.type == EntryType.CLASS:
+            page.classes += [extract_class_doc(state, subpath, member_entry.object)]
+        elif member_entry.type == EntryType.ENUM:
+            enum_ = extract_enum_doc(state, subpath, member_entry.object)
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
+        elif member_entry.type == EntryType.FUNCTION:
+            page.functions += extract_function_doc(state, module, subpath, member_entry.object)
+        elif member_entry.type == EntryType.DATA:
+            page.data += [extract_data_doc(state, module, subpath, member_entry.object)]
+        else: # pragma: no cover
+            assert False
 
-        # Get inner functions
-        for name, object in inspect.getmembers(module, lambda o: inspect.isfunction(o) or inspect.isbuiltin(o)):
-            if is_internal_or_imported_module_member(state, module, path, name, object): continue
-
-            subpath = path + [name]
-            if not object.__doc__: logging.warning("%s() is undocumented", '.'.join(subpath))
-
-            page.functions += extract_function_doc(state, module, subpath, object)
-
-        # Get data
-        # TODO: unify this query
-        for name, object in inspect.getmembers(module, lambda o: not inspect.ismodule(o) and not inspect.isclass(o) and not inspect.isroutine(o) and not inspect.isframe(o) and not inspect.istraceback(o) and not inspect.iscode(o)):
-            if is_internal_or_imported_module_member(state, module, path, name, object): continue
-
-            page.data += [extract_data_doc(state, module, path + [name], object)]
-
-    # Render the module, free the page data to avoid memory rising indefinitely
     render(state.config, 'module.html', page, env)
-    del page
-
-    # Render submodules and subclasses
-    for subpath, object in modules_to_render:
-        index_entry.children += [render_module(state, subpath, object, env)]
-    for subpath, object in classes_to_render:
-        index_entry.children += [render_class(state, subpath, object, env)]
-
-    return index_entry
 
 # Builtin dunder functions have hardcoded docstrings. This is totally useless
 # to have in the docs, so filter them out. Uh... kinda ugly.
@@ -869,88 +927,44 @@ def render_class(state: State, path, class_, env):
         page.content = render_rst(state, state.class_docs[path_str]['content'])
         state.class_docs[path_str]['used'] = True
 
-    # Index entry for this module, returned together with children at the end
-    index_entry = IndexEntry()
-    index_entry.kind = 'class'
-    index_entry.name = breadcrumb[-1][0]
-    index_entry.url = page.url
-    index_entry.summary = page.summary
+    # Find itself in the global map, save the summary back there for index
+    module_entry = state.name_map[path_str]
+    module_entry.summary = page.summary
 
-    # List of inner classes to render, these will be done after the current
-    # class introspection is done to have some better memory allocation pattern
-    classes_to_render = []
-
-    # Get inner classes
-    for name, object in inspect.getmembers(class_, lambda o: inspect.isclass(o) and not is_enum(state, o)):
-        if name in ['__base__', '__class__']: continue # TODO
-        if name.startswith('_'): continue
-
+    # Extract docs for all members
+    for name in module_entry.members:
         subpath = path + [name]
-        if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
+        subpath_str = '.'.join(subpath)
+        member_entry = state.name_map[subpath_str]
 
-        page.classes += [extract_class_doc(state, subpath, object)]
-        classes_to_render += [(subpath, object)]
+        # TODO: yell only if there's also no external doc content
+        if member_entry.type != EntryType.DATA and not object.__doc__: # pragma: no cover
+            logging.warning("%s is undocumented", subpath_str)
 
-    # Get enums
-    for name, object in inspect.getmembers(class_, lambda o: is_enum(state, o)):
-        if name.startswith('_'): continue
+        if member_entry.type == EntryType.CLASS:
+            page.classes += [extract_class_doc(state, subpath, member_entry.object)]
+        elif member_entry.type == EntryType.ENUM:
+            enum_ = extract_enum_doc(state, subpath, member_entry.object)
+            page.enums += [enum_]
+            if enum_.has_details: page.has_enum_details = True
+        elif member_entry.type == EntryType.FUNCTION:
+            for function in extract_function_doc(state, class_, subpath, member_entry.object):
+                if name.startswith('__'):
+                    page.dunder_methods += [function]
+                elif function.is_classmethod:
+                    page.classmethods += [function]
+                elif function.is_staticmethod:
+                    page.staticmethods += [function]
+                else:
+                    page.methods += [function]
+        elif member_entry.type == EntryType.PROPERTY:
+            page.properties += [extract_property_doc(state, subpath, member_entry.object)]
+        elif member_entry.type == EntryType.DATA:
+            page.data += [extract_data_doc(state, class_, subpath, member_entry.object)]
+        else: # pragma: no cover
+            assert False
 
-        subpath = path + [name]
-        if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
-
-        enum_ = extract_enum_doc(state, subpath, object)
-        page.enums += [enum_]
-        if enum_.has_details: page.has_enum_details = True
-
-    # Get methods
-    for name, object in inspect.getmembers(class_, inspect.isroutine):
-        # Filter out underscored methods (but not dunder methods)
-        if is_internal_function_name(name): continue
-
-        # Filter out dunder methods that don't have their own docs
-        if name.startswith('__') and (name, object.__doc__) in _filtered_builtin_functions: continue
-
-        subpath = path + [name]
-        if not object.__doc__: logging.warning("%s() is undocumented", '.'.join(subpath))
-
-        for function in extract_function_doc(state, class_, subpath, object):
-            if name.startswith('__'):
-                page.dunder_methods += [function]
-            elif function.is_classmethod:
-                page.classmethods += [function]
-            elif function.is_staticmethod:
-                page.staticmethods += [function]
-            else:
-                page.methods += [function]
-
-    # Get properties
-    for name, object in inspect.getmembers(class_, inspect.isdatadescriptor):
-        if (name, object.__doc__) in _filtered_builtin_properties:
-            continue
-        if name.startswith('_'): continue # TODO: are there any dunder props?
-
-        subpath = path + [name]
-        if not object.__doc__: logging.warning("%s is undocumented", '.'.join(subpath))
-
-        page.properties += [extract_property_doc(state, subpath, object)]
-
-    # Get data
-    # TODO: unify this query
-    for name, object in inspect.getmembers(class_, lambda o: not inspect.ismodule(o) and not inspect.isclass(o) and not inspect.isroutine(o) and not inspect.isframe(o) and not inspect.istraceback(o) and not inspect.iscode(o) and not inspect.isdatadescriptor(o)):
-        if name.startswith('_'): continue
-
-        subpath = path + [name]
-        page.data += [extract_data_doc(state, class_, subpath, object)]
-
-    # Render the class, free the page data to avoid memory rising indefinitely
     render(state.config, 'class.html', page, env)
-    del page
-
-    # Render subclasses
-    for subpath, object in classes_to_render:
-        index_entry.children += [render_class(state, subpath, object, env)]
-
-    return index_entry
 
 # Extracts image paths and transforms them to just the filenames
 class ExtractImages(Transform):
@@ -1070,16 +1084,14 @@ def render_page(state: State, path, filename, env):
     for key, value in metadata.items(): setattr(page, key, value)
     if not hasattr(page, 'summary'): page.summary = ''
 
-    render(state.config, 'page.html', page, env)
+    # Find itself in the global map, save the page title and summary back there
+    # for index
+    module_entry = state.name_map['.'.join(path)]
+    module_entry.summary = page.summary
+    module_entry.name = breadcrumb[-1][0]
 
-    # Index entry for this page, return only if it's not an index
-    if path == ['index']: return []
-    index_entry = IndexEntry()
-    index_entry.kind = 'page'
-    index_entry.name = breadcrumb[-1][0]
-    index_entry.url = page.url
-    index_entry.summary = page.summary
-    return [index_entry]
+    # Render the output file
+    render(state.config, 'page.html', page, env)
 
 def run(basedir, config, templates):
     # Prepare Jinja environment
@@ -1131,11 +1143,9 @@ def run(basedir, config, templates):
     # Call all registered page begin hooks for the first time
     for hook in state.hooks_pre_page: hook()
 
-    # First process the doc input files so we have all data for rendering
-    # module pages
-    for file in config['INPUT_DOCS']:
-        render_doc(state, os.path.join(basedir, file))
-
+    # Crawl all input modules to gather the name tree, put their names into a
+    # list for the index
+    class_index = []
     for module in config['INPUT_MODULES']:
         if isinstance(module, str):
             module_name = module
@@ -1143,7 +1153,40 @@ def run(basedir, config, templates):
         else:
             module_name = module.__name__
 
-        state.class_index += [render_module(state, [module_name], module, env)]
+        crawl_module(state, [module_name], module)
+        class_index += [module_name]
+
+    # Do the same for pages
+    # TODO: turn also into some crawl_page() function? once we have subpages?
+    page_index = []
+    for page in config['INPUT_PAGES']:
+        page_name = os.path.splitext(os.path.basename(page))[0]
+
+        entry = Empty()
+        entry.type = EntryType.PAGE
+        entry.path = [page_name]
+        entry.filename = os.path.join(config['INPUT'], page)
+        state.name_map[page_name] = entry
+
+        # The index page doesn't go to the index
+        if page_name != 'index': page_index += [page_name]
+
+    # Then process the doc input files so we have all data for rendering
+    # module pages. This needs to be done *after* the initial crawl so
+    # cross-linking works as expected.
+    for file in config['INPUT_DOCS']:
+        render_doc(state, os.path.join(basedir, file))
+
+    # Go through all crawled names and render modules, classes and pages. A
+    # side effect of the render is entry.summary (and entry.name for pages)
+    # being filled.
+    for entry in state.name_map.values():
+        if entry.type == EntryType.MODULE:
+            render_module(state, entry.path, entry.object, env)
+        elif entry.type == EntryType.CLASS:
+            render_class(state, entry.path, entry.object, env)
+        elif entry.type == EntryType.PAGE:
+            render_page(state, entry.path, entry.filename, env)
 
     # Warn if there are any unused contents left after processing everything
     unused_module_docs = [key for key, value in state.module_docs.items() if not 'used' in value]
@@ -1156,24 +1199,53 @@ def run(basedir, config, templates):
     if unused_data_docs:
         logging.warning("The following data doc contents were unused: %s", unused_data_docs)
 
-    for page in config['INPUT_PAGES']:
-        state.page_index += render_page(state, [os.path.splitext(os.path.basename(page))[0]], os.path.join(config['INPUT'], page), env)
+    # Create module and class index from the toplevel name list. Recursively go
+    # from the top-level index list and gather all class/module children.
+    def fetch_class_index(entry):
+        index_entry = Empty()
+        index_entry.kind = 'module' if entry.type == EntryType.MODULE else 'class'
+        index_entry.name = entry.path[-1]
+        index_entry.url = make_url(entry.path)
+        index_entry.summary = entry.summary
+        index_entry.has_nestable_children = False
+        index_entry.children = []
 
-    # Recurse into the tree and mark every node that has nested modules with
-    # has_nestable_children.
-    def mark_nested_modules(list: List[IndexEntry]):
-        has_nestable_children = False
-        for i in list:
-            if i.kind != 'module': continue
-            has_nestable_children = True
-            i.has_nestable_children = mark_nested_modules(i.children)
-        return has_nestable_children
-    mark_nested_modules(state.class_index)
+        # Module children should go before class children, put them in a
+        # separate list and then concatenate at the end
+        class_children = []
+        for member in entry.members:
+            member_entry = state.name_map['.'.join(entry.path + [member])]
+            if member_entry.type == EntryType.MODULE:
+                index_entry.has_nestable_children = True
+                index_entry.children += [fetch_class_index(state.name_map['.'.join(member_entry.path)])]
+            elif member_entry.type == EntryType.CLASS:
+                class_children += [fetch_class_index(state.name_map['.'.join(member_entry.path)])]
+        index_entry.children += class_children
 
-    # Create module and class index
+        return index_entry
+
+    for i in range(len(class_index)):
+        class_index[i] = fetch_class_index(state.name_map[class_index[i]])
+
+    # Create page index from the toplevel name list
+    # TODO: rework when we have nested page support
+    for i in range(len(page_index)):
+        entry = state.name_map[page_index[i]]
+        assert entry.type == EntryType.PAGE
+
+        index_entry = Empty()
+        index_entry.kind = 'page'
+        index_entry.name = entry.name
+        index_entry.url = make_url(entry.path)
+        index_entry.summary = entry.summary
+        index_entry.has_nestable_children = False
+        index_entry.children = []
+
+        page_index[i] = index_entry
+
     index = Empty()
-    index.classes = state.class_index
-    index.pages = state.page_index
+    index.classes = class_index
+    index.pages = page_index
     for file in ['modules.html', 'classes.html', 'pages.html']:
         template = env.get_template(file)
         rendered = template.render(index=index, FILENAME=file, **config)
