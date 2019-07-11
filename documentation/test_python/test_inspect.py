@@ -136,3 +136,13 @@ class NameMapping(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.Class.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.submodule.html'))
+
+class Recursive(BaseInspectTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'recursive', *args, **kwargs)
+
+    def test(self):
+        self.run_python()
+        self.assertEqual(*self.actual_expected_contents('inspect_recursive.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_recursive.first.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_recursive.a.html'))

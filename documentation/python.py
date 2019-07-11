@@ -161,6 +161,8 @@ class State:
 
         self.name_map: Dict[str, Empty] = {}
 
+        self.crawled: Set[object] = set()
+
 def map_name_prefix(state: State, type: str) -> str:
     for prefix, replace in state.module_mapping.items():
         if type == prefix or type.startswith(prefix + '.'):
@@ -240,6 +242,14 @@ _filtered_builtin_properties = set([
 ])
 
 def crawl_class(state: State, path: List[str], class_):
+    assert inspect.isclass(class_)
+
+    # TODO: if this fires, it means there's a class duplicated in more than one
+    # __all__ (or it gets picked up implicitly and then in __all__) -- how to
+    # handle gracefully?
+    assert id(class_) not in state.crawled
+    state.crawled.add(id(class_))
+
     class_entry = Empty()
     class_entry.type = EntryType.CLASS
     class_entry.object = class_
@@ -288,12 +298,28 @@ def crawl_class(state: State, path: List[str], class_):
     # Add itself to the name map
     state.name_map['.'.join(path)] = class_entry
 
-def crawl_module(state: State, path: List[str], module):
+def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str], object]]:
+    assert inspect.ismodule(module)
+
+    # Assume this module is not crawled yet -- the parent crawl shouldn't even
+    # put it to members if it's crawled already. Otherwise add itself to
+    # the list of crawled objects to avoid going through it again.
+    assert id(module) not in state.crawled
+    state.crawled.add(id(module))
+
+    # This module isn't a duplicate, thus we can now safely add itself to
+    # parent's members (if there's a parent)
+    if len(path) > 1: state.name_map['.'.join(path[:-1])].members += [path[-1]]
+
     module_entry = Empty()
     module_entry.type = EntryType.MODULE
     module_entry.object = module
     module_entry.path = path
     module_entry.members = []
+
+    # This gets returned to ensure the modules get processed in a breadth-first
+    # order
+    submodules_to_crawl: List[Tuple[List[str], object]] = []
 
     # This is actually complicated -- if the module defines __all__, use that.
     # The __all__ is meant to expose the public API, so we don't filter out
@@ -340,7 +366,14 @@ def crawl_module(state: State, path: List[str], module):
                 logging.warning("unknown symbol %s in %s", name, '.'.join(path))
                 continue
             elif type == EntryType.MODULE:
-                crawl_module(state, subpath, object)
+                # TODO: this might fire if a module is in __all__ after it was
+                # picked up implicitly before -- how to handle gracefully?
+                assert id(object) not in state.crawled
+                submodules_to_crawl += [(subpath, object)]
+                # Not adding to module_entry.members, done by the nested
+                # crawl_module() itself if it is sure that it isn't a
+                # duplicated module
+                continue
             elif type == EntryType.CLASS:
                 crawl_class(state, subpath, object)
             else:
@@ -405,7 +438,11 @@ def crawl_module(state: State, path: List[str], module):
                 # Ignore unknown object types (with __all__ we warn instead)
                 continue
             elif type == EntryType.MODULE:
-                crawl_module(state, subpath, object)
+                submodules_to_crawl += [(subpath, object)]
+                # Not adding to module_entry.members, done by the nested
+                # crawl_module() itself if it is sure that it isn't a
+                # duplicated module
+                continue
             elif type == EntryType.CLASS:
                 crawl_class(state, subpath, object)
             else:
@@ -420,6 +457,8 @@ def crawl_module(state: State, path: List[str], module):
 
     # Add itself to the name map
     state.name_map['.'.join(path)] = module_entry
+
+    return submodules_to_crawl
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
@@ -1187,17 +1226,22 @@ def run(basedir, config, templates):
     for hook in state.hooks_pre_page: hook()
 
     # Crawl all input modules to gather the name tree, put their names into a
-    # list for the index
+    # list for the index. The crawl is done breadth-first, so the function
+    # returns a list of submodules to be crawled next.
     class_index = []
+    modules_to_crawl = []
     for module in config['INPUT_MODULES']:
         if isinstance(module, str):
             module_name = module
             module = importlib.import_module(module)
         else:
             module_name = module.__name__
-
-        crawl_module(state, [module_name], module)
+        modules_to_crawl += [([module_name], module)]
         class_index += [module_name]
+    while modules_to_crawl:
+        path, object = modules_to_crawl.pop(0)
+        if id(object) in state.crawled: continue
+        modules_to_crawl += crawl_module(state, path, object)
 
     # Add special pages to the name map. The pages are done after so they can
     # override these.
