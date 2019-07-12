@@ -27,7 +27,7 @@ project(McssDocumentationPybindTests)
 
 find_package(pybind11 CONFIG REQUIRED)
 
-foreach(target signatures enums submodules)
+foreach(target signatures enums submodules type_links)
     pybind11_add_module(pybind_${target} pybind_${target}/pybind_${target}.cpp)
     set_target_properties(pybind_${target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_${target})
 endforeach()

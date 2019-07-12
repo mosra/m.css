@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>pybind_name_mapping | My Python Project</title>
+  <title>inspect_type_links.first.sub | My Python Project</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,42 +20,41 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          pybind_name_mapping <span class="m-thin">module</span>
+          <span class="m-breadcrumb"><a href="inspect_type_links.html">inspect_type_links</a>.<wbr/></span><span class="m-breadcrumb"><a href="inspect_type_links.first.html">first</a>.<wbr/></span>sub <span class="m-thin">module</span>
         </h1>
+        <p>Submodule</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#packages">Modules</a></li>
                 <li><a href="#classes">Classes</a></li>
                 <li><a href="#functions">Functions</a></li>
               </ul>
             </li>
           </ul>
         </div>
-        <section id="namespaces">
-          <h2><a href="#namespaces">Modules</a></h2>
-          <dl class="m-doc">
-            <dt>module <a href="pybind_name_mapping.submodule.html" class="m-doc">submodule</a></dt>
-            <dd>This submodule is renamed from bar to submodule and should have a function member.</dd>
-          </dl>
-        </section>
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>
           <dl class="m-doc">
-            <dt>class <a href="pybind_name_mapping.Class.html" class="m-doc">Class</a></dt>
-            <dd>A class, renamed from Foo to Class</dd>
+            <dt>class <a href="inspect_type_links.first.sub.Foo.html" class="m-doc">Foo</a></dt>
+            <dd>A class in the submodule</dd>
           </dl>
         </section>
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">def <a href="#foo" class="m-doc-self" id="foo">foo</a>(</span><span class="m-doc-wrap">) -&gt; <a href="pybind_name_mapping.Class.html" class="m-doc">Class</a></span>
+              <span class="m-doc-wrap-bumper">def <a href="#reference_parent" class="m-doc-self" id="reference_parent">reference_parent</a>(</span><span class="m-doc-wrap">a: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>,
+              b: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>)</span>
             </dt>
-            <dd>This function returns Class, *not* _sub.Foo</dd>
+            <dd>A function referencing a type in a parent module</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#reference_self" class="m-doc-self" id="reference_self">reference_self</a>(</span><span class="m-doc-wrap">a: <a href="inspect_type_links.first.sub.Foo.html" class="m-doc">Foo</a>,
+              b: <a href="inspect_type_links.first.sub.Foo.html" class="m-doc">Foo</a>)</span>
+            </dt>
+            <dd>A function referencing a type in this submodule</dd>
           </dl>
         </section>
       </div>

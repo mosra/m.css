@@ -146,3 +146,18 @@ class Recursive(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_recursive.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_recursive.first.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_recursive.a.html'))
+
+class TypeLinks(BaseInspectTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'type_links', *args, **kwargs)
+
+    def test(self):
+        self.run_python()
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.Foo.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.Foo.Foo.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.sub.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.sub.Foo.html'))
+
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.Foo.html'))

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>inspect_name_mapping | My Python Project</title>
+  <title>pybind_type_links | My Python Project</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
   <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,42 +20,50 @@
     <div class="m-row">
       <div class="m-col-l-10 m-push-l-1">
         <h1>
-          inspect_name_mapping <span class="m-thin">module</span>
+          pybind_type_links <span class="m-thin">module</span>
         </h1>
+        <p>pybind11 type linking</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
               Reference
               <ul>
-                <li><a href="#packages">Modules</a></li>
                 <li><a href="#classes">Classes</a></li>
+                <li><a href="#enums">Enums</a></li>
                 <li><a href="#functions">Functions</a></li>
               </ul>
             </li>
           </ul>
         </div>
-        <section id="namespaces">
-          <h2><a href="#namespaces">Modules</a></h2>
-          <dl class="m-doc">
-            <dt>module <a href="inspect_name_mapping.submodule.html" class="m-doc">submodule</a></dt>
-            <dd>This submodule is renamed from bar to submodule and should have a function member.</dd>
-          </dl>
-        </section>
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>
           <dl class="m-doc">
-            <dt>class <a href="inspect_name_mapping.Class.html" class="m-doc">Class</a></dt>
+            <dt>class <a href="pybind_type_links.Foo.html" class="m-doc">Foo</a></dt>
             <dd>A class</dd>
+          </dl>
+        </section>
+        <section id="enums">
+          <h2><a href="#enums">Enums</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">class <a href="#Enum" class="m-doc-self" id="Enum">Enum</a>: </span><span class="m-doc-wrap"><a href="#Enum-FIRST" class="m-doc-self" id="Enum-FIRST">FIRST</a> = 0
+              <a href="#Enum-SECOND" class="m-doc-self" id="Enum-SECOND">SECOND</a> = 1</span>
+            </dt>
+            <dd>An enum</dd>
           </dl>
         </section>
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">def <a href="#foo" class="m-doc-self" id="foo">foo</a>(</span><span class="m-doc-wrap">) -&gt; <a href="inspect_name_mapping.Class.html" class="m-doc">Class</a></span>
+              <span class="m-doc-wrap-bumper">def <a href="#type_enum-3b87d" class="m-doc-self" id="type_enum-3b87d">type_enum</a>(</span><span class="m-doc-wrap">arg0: <a href="pybind_type_links.html#Enum" class="m-doc">Enum</a><span class="m-text m-dim">, /</span>)</span>
             </dt>
-            <dd>This function returns Class, *not* _sub.Foo</dd>
+            <dd>A function taking an enum</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#type_return-da39a" class="m-doc-self" id="type_return-da39a">type_return</a>(</span><span class="m-doc-wrap">) -&gt; <a href="pybind_type_links.Foo.html" class="m-doc">Foo</a></span>
+            </dt>
+            <dd>A function returning a type</dd>
           </dl>
         </section>
       </div>

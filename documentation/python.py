@@ -460,34 +460,95 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
 
     return submodules_to_crawl
 
+def make_type_link(state: State, referrer_path: List[str], type) -> str:
+    if type is None: return None
+    assert isinstance(type, str)
+
+    # Not found, return as-is
+    if not type in state.name_map: return type
+
+    entry = state.name_map[type]
+
+    # Strip common prefix from both paths. We always want to keep at least one
+    # element from the entry path, so strip the last element off.
+    common_prefix_length = len(os.path.commonprefix([referrer_path, entry.path[:-1]]))
+
+    # Check for ambiguity of the shortened path -- for example, with referrer
+    # being `module.sub.Foo`, target `module.Foo`, the path will get shortened
+    # to `Foo`, making it seem like the target is `module.sub.Foo` instead of
+    # `module.Foo`. To fix that, the shortened path needs to be `sub.Foo`
+    # instead of `Foo`.
+    def is_ambiguous(shortened_path):
+        # Concatenate the shortened path with a prefix of the referrer path,
+        # going from longest to shortest, until we find a name that exists. If
+        # the first found name is the actual target, it's not ambiguous --
+        # for example, linking from `module.sub` to `module.sub.Foo` can be
+        # done just with `Foo` even though `module.Foo` exists as well, as it's
+        # "closer" to the referrer.
+        # TODO: See test cases in `inspect_type_links.first.Foo` for very
+        #  *very* pathological cases where we're referencing `Foo` from
+        # `module.Foo` and there's also `module.Foo.Foo`. Not sure which way is
+        # better.
+        for i in reversed(range(len(referrer_path))):
+            potentially_ambiguous = referrer_path[:i] + shortened_path
+            if '.'.join(potentially_ambiguous) in state.name_map:
+                if potentially_ambiguous == entry.path: return False
+                else: return True
+        # the target *has to be* found
+        assert False # pragma: no cover
+    shortened_path = entry.path[common_prefix_length:]
+    while common_prefix_length and is_ambiguous(shortened_path):
+        common_prefix_length -= 1
+        shortened_path = entry.path[common_prefix_length:]
+
+    # Format the URL
+    if entry.type == EntryType.CLASS:
+        url = state.config['URL_FORMATTER'](entry.type, entry.path)[1]
+    else:
+        assert entry.type == EntryType.ENUM
+        parent_entry = state.name_map['.'.join(entry.path[:-1])]
+        url = '{}#{}'.format(
+            state.config['URL_FORMATTER'](parent_entry.type, parent_entry.path)[1],
+            state.config['ID_FORMATTER'](entry.type, entry.path[-1:]))
+
+    return '<a href="{}" class="m-doc">{}</a>'.format(url, '.'.join(shortened_path))
+
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
 _pybind_default_value_rx = re.compile('[^,)]+')
 
-def parse_pybind_type(state: State, signature: str) -> str:
+def parse_pybind_type(state: State, referrer_path: List[str], signature: str) -> str:
     input_type = _pybind_type_rx.match(signature).group(0)
     signature = signature[len(input_type):]
     type = map_name_prefix(state, input_type)
+    type_link = make_type_link(state, referrer_path, type)
     if signature and signature[0] == '[':
         type += '['
+        type_link += '['
         signature = signature[1:]
         while signature[0] != ']':
-            signature, inner_type = parse_pybind_type(state, signature)
+            signature, inner_type, inner_type_link = parse_pybind_type(state, referrer_path, signature)
             type += inner_type
+            type_link += inner_type_link
 
             if signature[0] == ']': break
             assert signature.startswith(', ')
             signature = signature[2:]
             type += ', '
+            type_link += ', '
 
         assert signature[0] == ']'
         signature = signature[1:]
         type += ']'
+        type_link += ']'
 
-    return signature, type
+    return signature, type, type_link
 
-def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List[Tuple[str, str, str]], str]:
+# Returns function name, summary, list of arguments (name, type, type with HTML
+# links, default value) and return type. If argument parsing failed, the
+# argument list is a single "ellipsis" item.
+def parse_pybind_signature(state: State, referrer_path: List[str], signature: str) -> Tuple[str, str, List[Tuple[str, str, str, str]], str]:
     original_signature = signature # For error reporting
     name = _pybind_name_rx.match(signature).group(0)
     signature = signature[len(name):]
@@ -505,9 +566,10 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
         # Type (optional)
         if signature.startswith(': '):
             signature = signature[2:]
-            signature, arg_type = parse_pybind_type(state, signature)
+            signature, arg_type, arg_type_link = parse_pybind_type(state, referrer_path, signature)
         else:
             arg_type = None
+            arg_type_link = None
 
         # Default (optional) -- for now take everything until the next comma
         # TODO: ugh, do properly
@@ -520,7 +582,7 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
         else:
             default = None
 
-        args += [(arg_name, arg_type, default)]
+        args += [(arg_name, arg_type, arg_type_link, default)]
 
         if signature[0] == ')': break
 
@@ -532,7 +594,7 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
                 summary = extract_summary(state, {}, [], original_signature[end + 1:])
             else:
                 summary = ''
-            return (name, summary, [('…', None, None)], None)
+            return (name, summary, [('…', None, None, None)], None)
 
         signature = signature[2:]
 
@@ -542,9 +604,9 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
     # Return type (optional)
     if signature.startswith(' -> '):
         signature = signature[4:]
-        signature, return_type = parse_pybind_type(state, signature)
+        signature, _, return_type_link = parse_pybind_type(state, referrer_path, signature)
     else:
-        return_type = None
+        return_type_link = None
 
     if signature and signature[0] != '\n':
         end = original_signature.find('\n')
@@ -553,16 +615,18 @@ def parse_pybind_signature(state: State, signature: str) -> Tuple[str, str, List
             summary = extract_summary(state, {}, [], original_signature[end + 1:])
         else:
             summary = ''
-        return (name, summary, [('…', None, None)], None)
+        return (name, summary, [('…', None, None, None)], None)
 
     if len(signature) > 1 and signature[1] == '\n':
         summary = extract_summary(state, {}, [], signature[2:])
     else:
         summary = ''
 
-    return (name, summary, args, return_type)
+    return (name, summary, args, return_type_link)
 
-def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
+def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
+    name = referrer_path[-1]
+
     # Multiple overloads, parse each separately
     overload_header = "{}(*args, **kwargs)\nOverloaded function.\n\n".format(name);
     if doc.startswith(overload_header):
@@ -575,7 +639,7 @@ def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str,
             next = doc.find('{}. {}('.format(id, name))
 
             # Parse the signature and docs from known slice
-            overloads += [parse_pybind_signature(state, doc[len(str(id - 1)) + 2:next])]
+            overloads += [parse_pybind_signature(state, referrer_path, doc[len(str(id - 1)) + 2:next])]
             assert overloads[-1][0] == name
             if next == -1: break
 
@@ -586,7 +650,7 @@ def parse_pybind_docstring(state: State, name: str, doc: str) -> List[Tuple[str,
 
     # Normal function, parse and return the first signature
     else:
-        return [parse_pybind_signature(state, doc)]
+        return [parse_pybind_signature(state, referrer_path, doc)]
 
 def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
     # Prefer external docs, if available
@@ -604,12 +668,12 @@ def extract_type(type) -> str:
     # builtins (i.e., we want re.Match but not builtins.int).
     return (type.__module__ + '.' if type.__module__ != 'builtins' else '') + type.__name__
 
-def extract_annotation(state: State, annotation) -> str:
+def extract_annotation(state: State, referrer_path: List[str], annotation) -> str:
     # TODO: why this is not None directly?
     if annotation is inspect.Signature.empty: return None
 
     # Annotations can be strings, also https://stackoverflow.com/a/33533514
-    if type(annotation) == str: return map_name_prefix(state, annotation)
+    if type(annotation) == str: out = annotation
 
     # To avoid getting <class 'foo.bar'> for types (and getting foo.bar
     # instead) but getting the actual type for types annotated with e.g.
@@ -617,8 +681,11 @@ def extract_annotation(state: State, annotation) -> str:
     # typing module or it's directly a type. In Python 3.7 this worked with
     # inspect.isclass(annotation), but on 3.6 that gives True for annotations
     # as well and then we would get just List instead of List[int].
-    if annotation.__module__ == 'typing': return map_name_prefix(state, str(annotation))
-    return map_name_prefix(state, extract_type(annotation))
+    elif annotation.__module__ == 'typing': out = str(annotation)
+    else: out = extract_type(annotation)
+
+    # Map name prefix, add links to the result
+    return make_type_link(state, referrer_path, map_name_prefix(state, out))
 
 def extract_module_doc(state: State, path: List[str], module):
     assert inspect.ismodule(module)
@@ -656,6 +723,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
             out.summary = extract_summary(state, {}, [], enum_.__doc__)
 
         out.base = extract_type(enum_.__base__)
+        if out.base: out.base = make_type_link(state, path, out.base)
 
         for i in enum_:
             value = Empty()
@@ -705,7 +773,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     # one function in Python may equal more than one function on the C++ side.
     # To make the docs usable, list all overloads separately.
     if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__.startswith(path[-1]):
-        funcs = parse_pybind_docstring(state, path[-1], function.__doc__)
+        funcs = parse_pybind_docstring(state, path, function.__doc__)
         overloads = []
         for name, summary, args, type in funcs:
             out = Empty()
@@ -718,6 +786,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
             # Don't show None return type for void functions
             out.type = None if type == 'None' else type
+            if out.type: out.type = make_type_link(state, path, out.type)
 
             # There's no other way to check staticmethods than to check for
             # self being the name of first parameter :( No support for
@@ -742,7 +811,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
                 positional_only = True
                 for i, arg in enumerate(args[1:]):
-                    name, type, default = arg
+                    name, type, type_link, default = arg
                     if name != 'arg{}'.format(i):
                         positional_only = False
                         break
@@ -752,18 +821,23 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
             else:
                 positional_only = True
                 for i, arg in enumerate(args):
-                    name, type, default = arg
+                    name, type, type_link, default = arg
                     if name != 'arg{}'.format(i):
                         positional_only = False
                         break
 
+            arg_types = []
             for i, arg in enumerate(args):
-                name, type, default = arg
+                name, type, type_link, default = arg
                 param = Empty()
                 param.name = name
                 # Don't include redundant type for the self argument
-                if name == 'self': param.type = None
-                else: param.type = type
+                if name == 'self':
+                    param.type = None
+                    arg_types += [None]
+                else:
+                    param.type = type_link
+                    arg_types += [type]
                 param.default = html.escape(default or '')
                 if type or default: out.has_complex_params = True
 
@@ -782,7 +856,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
             # Format the anchor. Pybind11 functions are sometimes overloaded,
             # thus name alone is not enough.
-            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, path[-1:] + [param.type for param in out.params])
+            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, path[-1:] + arg_types)
 
             overloads += [out]
 
@@ -806,11 +880,11 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
         try:
             signature = inspect.signature(function)
-            out.type = extract_annotation(state, signature.return_annotation)
+            out.type = extract_annotation(state, path, signature.return_annotation)
             for i in signature.parameters.values():
                 param = Empty()
                 param.name = i.name
-                param.type = extract_annotation(state, i.annotation)
+                param.type = extract_annotation(state, path, i.annotation)
                 if param.type:
                     out.has_complex_params = True
                 if i.default is inspect.Signature.empty:
@@ -847,11 +921,11 @@ def extract_property_doc(state: State, path: List[str], property):
 
     try:
         signature = inspect.signature(property.fget)
-        out.type = extract_annotation(state, signature.return_annotation)
+        out.type = extract_annotation(state, path, signature.return_annotation)
     except ValueError:
         # pybind11 properties have the type in the docstring
         if state.config['PYBIND11_COMPATIBILITY']:
-            out.type = parse_pybind_signature(state, property.fget.__doc__)[3]
+            out.type = parse_pybind_signature(state, path, property.fget.__doc__)[3]
         else:
             out.type = None
 
@@ -867,7 +941,7 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     out.summary = ''
     out.has_details = False
     if hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
-        out.type = extract_annotation(state, parent.__annotations__[out.name])
+        out.type = extract_annotation(state, path, parent.__annotations__[out.name])
     else:
         out.type = None
     # The autogenerated <foo.bar at 0xbadbeef> is useless, so provide the value
