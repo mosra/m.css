@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 
@@ -16,6 +17,8 @@ struct Foo {
 
 Foo typeReturn() { return {}; }
 
+void typeNested(const std::pair<Foo, std::vector<Enum>>&) {}
+
 }
 
 PYBIND11_MODULE(pybind_type_links, m) {
@@ -31,5 +34,6 @@ PYBIND11_MODULE(pybind_type_links, m) {
 
     m
         .def("type_enum", &typeEnum, "A function taking an enum")
-        .def("type_return", &typeReturn, "A function returning a type");
+        .def("type_return", &typeReturn, "A function returning a type")
+        .def("type_nested", &typeNested, "A function with nested type annotation");
 }

@@ -39,6 +39,7 @@ import os
 import re
 import sys
 import shutil
+import typing
 
 from enum import Enum
 from types import SimpleNamespace as Empty
@@ -665,27 +666,47 @@ def extract_summary(state: State, external_docs, path: List[str], doc: str) -> s
 
 def extract_type(type) -> str:
     # For types we concatenate the type name with its module unless it's
-    # builtins (i.e., we want re.Match but not builtins.int).
-    return (type.__module__ + '.' if type.__module__ != 'builtins' else '') + type.__name__
+    # builtins (i.e., we want re.Match but not builtins.int). We need to use
+    # __qualname__ instead of __name__ because __name__ doesn't take nested
+    # classes into account.
+    return (type.__module__ + '.' if type.__module__ != 'builtins' else '') + type.__qualname__
+
+def get_type_hints_or_nothing(path: List[str], object):
+    try:
+        return typing.get_type_hints(object)
+    except Exception as e:
+        # Gracefully handle an invalid name or a missing attribute, give up on
+        # everything else (syntax error and so)
+        if not isinstance(e, (AttributeError, NameError)): raise e
+        logging.warning("failed to dereference type hints for %s (%s), falling back to non-dereferenced", '.'.join(path), e.__class__.__name__)
+        return {}
 
 def extract_annotation(state: State, referrer_path: List[str], annotation) -> str:
     # TODO: why this is not None directly?
     if annotation is inspect.Signature.empty: return None
 
-    # Annotations can be strings, also https://stackoverflow.com/a/33533514
-    if type(annotation) == str: out = annotation
+    # If dereferencing with typing.get_type_hints() failed, we might end up
+    # with forward-referenced types being plain strings. Keep them as is, since
+    # those are most probably an error.
+    if type(annotation) == str: return annotation
 
-    # To avoid getting <class 'foo.bar'> for types (and getting foo.bar
-    # instead) but getting the actual type for types annotated with e.g.
-    # List[int], we need to check if the annotation is actually from the
-    # typing module or it's directly a type. In Python 3.7 this worked with
-    # inspect.isclass(annotation), but on 3.6 that gives True for annotations
-    # as well and then we would get just List instead of List[int].
-    elif annotation.__module__ == 'typing': out = str(annotation)
-    else: out = extract_type(annotation)
+    # Or the plain strings might be inside (e.g. List['Foo']), which gets
+    # converted by Python to ForwardRef. Hammer out the actual string and again
+    # leave it as-is, since it's most probably an error.
+    elif isinstance(annotation, typing.ForwardRef):
+        return annotation.__forward_arg__
 
-    # Map name prefix, add links to the result
-    return make_type_link(state, referrer_path, map_name_prefix(state, out))
+    # If the annotation is from the typing module, it could be a "bracketed"
+    # type, in which case we want to recurse to its types as well. Otherwise
+    # just get its name.
+    elif annotation.__module__ == 'typing':
+        if hasattr(annotation, '__args__'):
+            return 'typing.{}[{}]'.format(annotation._name, ', '.join([extract_annotation(state, referrer_path, i) for i in annotation.__args__]))
+        else:
+            return 'typing.' + annotation._name
+
+    # Otherwise it's a plain type. Turn it into a link.
+    return make_type_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
 
 def extract_module_doc(state: State, path: List[str], module):
     assert inspect.ismodule(module)
@@ -878,13 +899,26 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
             out.is_classmethod = inspect.ismethod(function)
             out.is_staticmethod = out.name in parent.__dict__ and isinstance(parent.__dict__[out.name], staticmethod)
 
+        # First try to get fully dereferenced type hints (with strings
+        # converted to actual annotations). If that fails (e.g. because a type
+        # doesn't exist), we'll take the non-dereferenced annotations from
+        # inspect instead.
+        type_hints = get_type_hints_or_nothing(path, function)
+
         try:
             signature = inspect.signature(function)
-            out.type = extract_annotation(state, path, signature.return_annotation)
+
+            if 'return' in type_hints:
+                out.type = extract_annotation(state, path, type_hints['return'])
+            else:
+                out.type = extract_annotation(state, path, signature.return_annotation)
             for i in signature.parameters.values():
                 param = Empty()
                 param.name = i.name
-                param.type = extract_annotation(state, path, i.annotation)
+                if i.name in type_hints:
+                    param.type = extract_annotation(state, path, type_hints[i.name])
+                else:
+                    param.type = extract_annotation(state, path, i.annotation)
                 if param.type:
                     out.has_complex_params = True
                 if i.default is inspect.Signature.empty:
@@ -921,7 +955,20 @@ def extract_property_doc(state: State, path: List[str], property):
 
     try:
         signature = inspect.signature(property.fget)
-        out.type = extract_annotation(state, path, signature.return_annotation)
+
+        # First try to get fully dereferenced type hints (with strings
+        # converted to actual annotations). If that fails (e.g. because a type
+        # doesn't exist), we'll take the non-dereferenced annotations from
+        # inspect instead. This is deliberately done *after* inspecting the
+        # signature because pybind11 properties would throw TypeError from
+        # typing.get_type_hints(). This way they throw ValueError from inspect
+        # and we don't need to handle TypeError in get_type_hints_or_nothing().
+        if property.fget: type_hints = get_type_hints_or_nothing(path, property.fget)
+
+        if 'return' in type_hints:
+            out.type = extract_annotation(state, path, type_hints['return'])
+        else:
+            out.type = extract_annotation(state, path, signature.return_annotation)
     except ValueError:
         # pybind11 properties have the type in the docstring
         if state.config['PYBIND11_COMPATIBILITY']:
@@ -940,10 +987,19 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
     out.summary = ''
     out.has_details = False
-    if hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
+
+    # First try to get fully dereferenced type hints (with strings converted to
+    # actual annotations). If that fails (e.g. because a type doesn't exist),
+    # we'll take the non-dereferenced annotations instead.
+    type_hints = get_type_hints_or_nothing(path, parent)
+
+    if out.name in type_hints:
+        out.type = extract_annotation(state, path, type_hints[out.name])
+    elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
         out.type = extract_annotation(state, path, parent.__annotations__[out.name])
     else:
         out.type = None
+
     # The autogenerated <foo.bar at 0xbadbeef> is useless, so provide the value
     # only if __repr__ is implemented for given type
     if '__repr__' in type(data).__dict__:

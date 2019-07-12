@@ -10,7 +10,7 @@ class Foo:
 
     # Self-reference is only possible with a string in Py3
     # https://stackoverflow.com/a/33533514
-    def string_annotation(self: 'inspect_annotations.Foo'):
+    def string_annotation(self: 'Foo'):
         """String annotations"""
         pass
 
