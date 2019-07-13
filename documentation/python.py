@@ -847,7 +847,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
             # TODO: external summary for functions
             out.summary = summary
 
-            # Don't show None return type for void functions
+            # Don't show None return type for functions w/o a return
             out.type = None if type == 'None' else type
             if out.type: out.type = make_name_link(state, path, out.type)
 
@@ -1372,6 +1372,8 @@ def run(basedir, config, templates):
             if urllib.parse.urlparse(path).netloc: return path
             path = [path]
         entry = state.name_map['.'.join(path)]
+        # TODO: this will blow up if linking to something that's not a module,
+        # class or a page
         return state.config['URL_FORMATTER'](entry.type, entry.path)[1]
 
     env.filters['basename_or_url'] = basename_or_url
