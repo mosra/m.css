@@ -73,7 +73,8 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("instance_function", &MyClass::instanceFunction, "Instance method with positional-only args")
         .def("instance_function_kwargs", &MyClass::instanceFunction, "Instance method with position or keyword args", py::arg("hey"), py::arg("what") = "<eh?>")
         .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only")
-        .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property");
+        .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property")
+        .def_property_readonly("bar", &MyClass::foo, "A read-only property");
 
     py::class_<MyClass23> pybind23{m, "MyClass23", "Testing pybind 2.3 features"};
 
