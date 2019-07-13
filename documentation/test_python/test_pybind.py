@@ -154,10 +154,8 @@ class Signatures(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'signatures', *args, **kwargs)
 
-        sys.path.append(self.path)
-        import pybind_signatures
-
     def test_positional_args(self):
+        sys.path.append(self.path)
         import pybind_signatures
 
         # Verify that the assumptions are correct -- not using py::arg() makes
@@ -184,9 +182,7 @@ class Signatures(BaseInspectTestCase):
             pybind_signatures.MyClass.another(self=a)
 
     def test(self):
-        import pybind_signatures
         self.run_python({
-            'INPUT_MODULES': ['pybind_signatures'],
             'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.html'))
