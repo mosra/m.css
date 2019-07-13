@@ -693,17 +693,23 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
     # Or the plain strings might be inside (e.g. List['Foo']), which gets
     # converted by Python to ForwardRef. Hammer out the actual string and again
     # leave it as-is, since it's most probably an error.
-    elif isinstance(annotation, typing.ForwardRef):
+    elif isinstance(annotation, typing.ForwardRef if sys.version_info >= (3, 7) else typing._ForwardRef):
         return annotation.__forward_arg__
 
     # If the annotation is from the typing module, it could be a "bracketed"
     # type, in which case we want to recurse to its types as well. Otherwise
     # just get its name.
     elif annotation.__module__ == 'typing':
-        if hasattr(annotation, '__args__'):
-            return 'typing.{}[{}]'.format(annotation._name, ', '.join([extract_annotation(state, referrer_path, i) for i in annotation.__args__]))
+        if sys.version_info >= (3, 7):
+            name = annotation._name
+        elif annotation is typing.Any:
+            name = 'Any' # Any doesn't have __name__ in 3.6
         else:
-            return 'typing.' + annotation._name
+            name = annotation.__name__
+        if hasattr(annotation, '__args__'):
+            return 'typing.{}[{}]'.format(name, ', '.join([extract_annotation(state, referrer_path, i) for i in annotation.__args__]))
+        else:
+            return 'typing.' + name
 
     # Otherwise it's a plain type. Turn it into a link.
     return make_type_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
