@@ -28,6 +28,18 @@ class Foo:
     def type_property_string_invalid(self) -> 'FooBar':
         """A property"""
 
+    def type_property_writeonly(self, a: Enum):
+        """A writeonly property"""
+    type_property_writeonly = property(None, type_property_writeonly)
+
+    def type_property_writeonly_string_nested(self, a: 'Tuple[Foo, List[Enum], Any]'):
+        """A writeonly property with a string nested type"""
+    type_property_writeonly_string_nested = property(None, type_property_writeonly_string_nested)
+
+    def type_property_writeonly_string_invalid(self, a: 'Foo.Bar'):
+        """A writeonly property with invalid string type"""
+    type_property_writeonly_string_invalid = property(None, type_property_writeonly_string_invalid)
+
     # Has to be here, because if it would be globally, it would prevent all
     # other data annotations from being retrieved
     TYPE_DATA_STRING_INVALID: 'Foo.Bar' = 3

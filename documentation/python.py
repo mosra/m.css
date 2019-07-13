@@ -1027,31 +1027,65 @@ def extract_property_doc(state: State, path: List[str], property):
     out.name = path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.PROPERTY, path[-1:])
     # TODO: external summary for properties
-    out.summary = extract_summary(state, {}, [], property.__doc__)
+    out.is_gettable = property.fget is not None
+    if property.fget or (property.fset and property.__doc__):
+        out.summary = extract_summary(state, {}, [], property.__doc__)
+    else:
+        assert property.fset
+        out.summary = extract_summary(state, {}, [], property.fset.__doc__)
     out.is_settable = property.fset is not None
     out.is_deletable = property.fdel is not None
     out.has_details = False
 
+    # For the type, if the property is gettable, get it from getters's return
+    # type. For write-only properties get it from setter's second argument
+    # annotation.
+
     try:
-        signature = inspect.signature(property.fget)
+        if property.fget:
+            signature = inspect.signature(property.fget)
 
-        # First try to get fully dereferenced type hints (with strings
-        # converted to actual annotations). If that fails (e.g. because a type
-        # doesn't exist), we'll take the non-dereferenced annotations from
-        # inspect instead. This is deliberately done *after* inspecting the
-        # signature because pybind11 properties would throw TypeError from
-        # typing.get_type_hints(). This way they throw ValueError from inspect
-        # and we don't need to handle TypeError in get_type_hints_or_nothing().
-        if property.fget: type_hints = get_type_hints_or_nothing(state, path, property.fget)
+            # First try to get fully dereferenced type hints (with strings
+            # converted to actual annotations). If that fails (e.g. because a
+            # type doesn't exist), we'll take the non-dereferenced annotations
+            # from inspect instead. This is deliberately done *after*
+            # inspecting the signature because pybind11 properties would throw
+            # TypeError from typing.get_type_hints(). This way they throw
+            # ValueError from inspect and we don't need to handle TypeError in
+            # get_type_hints_or_nothing().
+            type_hints = get_type_hints_or_nothing(state, path, property.fget)
 
-        if 'return' in type_hints:
-            out.type = extract_annotation(state, path, type_hints['return'])
+            if 'return' in type_hints:
+                out.type = extract_annotation(state, path, type_hints['return'])
+            else:
+                out.type = extract_annotation(state, path, signature.return_annotation)
         else:
-            out.type = extract_annotation(state, path, signature.return_annotation)
+            assert property.fset
+            signature = inspect.signature(property.fset)
+
+            # Same as the lengthy comment above
+            type_hints = get_type_hints_or_nothing(state, path, property.fset)
+
+            # Get second parameter name, then try to fetch it from type_hints
+            # and if that fails get its annotation from the non-dereferenced
+            # version
+            value_parameter = list(signature.parameters.values())[1]
+            if value_parameter.name in type_hints:
+                out.type = extract_annotation(state, path, type_hints[value_parameter.name])
+            else:
+                out.type = extract_annotation(state, path, value_parameter.annotation)
+
     except ValueError:
         # pybind11 properties have the type in the docstring
         if state.config['PYBIND11_COMPATIBILITY']:
-            out.type = parse_pybind_signature(state, path, property.fget.__doc__)[3]
+            if property.fget:
+                out.type = parse_pybind_signature(state, path, property.fget.__doc__)[3]
+            else:
+                assert property.fset
+                parsed_args = parse_pybind_signature(state, path, property.fset.__doc__)[2]
+                # If argument parsing failed, we're screwed
+                if len(parsed_args) == 1: out.type = None
+                else: out.type = parsed_args[1][2]
         else:
             out.type = None
 

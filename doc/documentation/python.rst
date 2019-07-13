@@ -1090,7 +1090,8 @@ Property                            Description
 :py:`property.id`                   Property ID [4]_
 :py:`property.type`                 Property getter return type annotation [1]_
 :py:`property.summary`              Doc summary
-:py:`property.is_writable`          If the property is writable
+:py:`property.is_gettable`          If the property is gettable
+:py:`property.is_settable`          If the property is settable
 :py:`property.is_deletable`         If the property is deletable with :py:`del`
 :py:`property.has_details`          If there is enough content for the full
                                     description block. Currently always set to

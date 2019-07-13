@@ -33,6 +33,12 @@ struct MyClass {
     private: float _foo = 0.0f;
 };
 
+struct MyClass23 {
+    void setFoo(float) {}
+
+    void setFooCrazy(const Crazy<3, int>&) {}
+};
+
 void duck(py::args, py::kwargs) {}
 
 template<class T, class U> void tenOverloads(T, U) {}
@@ -68,4 +74,22 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("instance_function_kwargs", &MyClass::instanceFunction, "Instance method with position or keyword args", py::arg("hey"), py::arg("what") = "<eh?>")
         .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only")
         .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property");
+
+    py::class_<MyClass23> pybind23{m, "MyClass23", "Testing pybind 2.3 features"};
+
+    /* Checker so the Python side can detect if testing pybind 2.3 features is
+       feasible */
+    pybind23.attr("is_pybind23") =
+        #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 203
+        true
+        #else
+        false
+        #endif
+        ;
+
+    #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 203
+    pybind23
+        .def_property("writeonly", nullptr, &MyClass23::setFoo, "A write-only property")
+        .def_property("writeonly_crazy", nullptr, &MyClass23::setFooCrazy, "A write-only property with a type that can't be parsed");
+    #endif
 }

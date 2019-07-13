@@ -192,6 +192,11 @@ class Signatures(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass.html'))
 
+        sys.path.append(self.path)
+        import pybind_signatures
+        if pybind_signatures.MyClass23.is_pybind23:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass23.html'))
+
 class Enums(BaseInspectTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'enums', *args, **kwargs)

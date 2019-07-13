@@ -96,6 +96,12 @@ class Foo:
     def deletable_property(self):
         pass
 
+    def writeonly_property(self, a):
+        """Write-only property"""
+        pass
+
+    writeonly_property = property(None, writeonly_property)
+
     @property
     def _private_property(self):
         """A private property"""
