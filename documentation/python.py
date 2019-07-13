@@ -497,7 +497,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
 
     return submodules_to_crawl
 
-def make_type_link(state: State, referrer_path: List[str], type) -> str:
+def make_name_link(state: State, referrer_path: List[str], type) -> str:
     if type is None: return None
     assert isinstance(type, str)
 
@@ -559,7 +559,7 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str) ->
     input_type = _pybind_type_rx.match(signature).group(0)
     signature = signature[len(input_type):]
     type = map_name_prefix(state, input_type)
-    type_link = make_type_link(state, referrer_path, type)
+    type_link = make_name_link(state, referrer_path, type)
     if signature and signature[0] == '[':
         type += '['
         type_link += '['
@@ -748,7 +748,7 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
             return 'typing.' + name
 
     # Otherwise it's a plain type. Turn it into a link.
-    return make_type_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
+    return make_name_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
 
 def extract_module_doc(state: State, path: List[str], module):
     assert inspect.ismodule(module)
@@ -786,7 +786,7 @@ def extract_enum_doc(state: State, path: List[str], enum_):
             out.summary = extract_summary(state, {}, [], enum_.__doc__)
 
         out.base = extract_type(enum_.__base__)
-        if out.base: out.base = make_type_link(state, path, out.base)
+        if out.base: out.base = make_name_link(state, path, out.base)
 
         for i in enum_:
             value = Empty()
@@ -849,7 +849,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
             # Don't show None return type for void functions
             out.type = None if type == 'None' else type
-            if out.type: out.type = make_type_link(state, path, out.type)
+            if out.type: out.type = make_name_link(state, path, out.type)
 
             # There's no other way to check staticmethods than to check for
             # self being the name of first parameter :( No support for
