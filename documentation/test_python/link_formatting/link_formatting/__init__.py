@@ -22,5 +22,5 @@ class Class:
     def property(self) -> Enum:
         """A property."""
 
-def function(a: Class) -> Enum:
+def function(a: Enum = Enum.SECOND_VALUE) -> Class:
     """A function."""

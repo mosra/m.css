@@ -34,7 +34,7 @@ PYBIND11_MODULE(pybind_type_links, m) {
         .def_readwrite("property", &Foo::property, "A property");
 
     m
-        .def("type_enum", &typeEnum, "A function taking an enum")
+        .def("type_enum", &typeEnum, "A function taking an enum", py::arg("value") = Enum::Second)
         .def("type_return", &typeReturn, "A function returning a type")
         .def("type_nested", &typeNested, "A function with nested type annotation");
 

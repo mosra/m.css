@@ -59,6 +59,11 @@ def type_return_string_nested() -> 'Tuple[Foo, List[Enum], Any]':
 def type_return_string_invalid(a: Foo) -> 'FooBar':
     """A function with invalid return string type annotation"""
 
+def type_default_values(a: Enum = Enum.SECOND, b: Tuple[Foo] = (Foo, ), c: Foo = Foo()):
+    """A function with default values, one enum, one tuple and the third nonrepresentable (yes, the tuple looks ugly)"""
+
 TYPE_DATA: Foo = Foo()
 
 TYPE_DATA_STRING_NESTED: 'Tuple[Foo, List[Enum], Any]' = {}
+
+TYPE_DATA_ENUM: Enum = Enum.SECOND

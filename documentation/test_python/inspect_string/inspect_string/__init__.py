@@ -146,6 +146,12 @@ A_CONSTANT = 3.24
 
 ENUM_THING = MyEnum.YAY
 
+# These should have their value shown in the docs as well, even though they are
+# not true-ish
+A_ZERO_VALUE = 0
+A_FALSE_VALUE = False
+A_NONE_VALUE = None
+
 _PRIVATE_CONSTANT = -3
 
 foo = Foo()
