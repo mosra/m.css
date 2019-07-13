@@ -1365,11 +1365,13 @@ def run(basedir, config, templates):
         if urllib.parse.urlparse(path).netloc: return path
         return os.path.basename(path)
     # Filter to return URL for given symbol. If the path is a string, first try
-    # to treat it as an URL. If that fails, turn it into a list and try to look
-    # it up in various dicts.
+    # to treat it as an URL -- either it needs to have the scheme or at least
+    # one slash for relative links (in contrast, Python names don't have
+    # slashes). If that fails,  turn it into a list and try to look it up in
+    # various dicts.
     def path_to_url(path):
         if isinstance(path, str):
-            if urllib.parse.urlparse(path).netloc: return path
+            if urllib.parse.urlparse(path).netloc or '/' in path: return path
             path = [path]
         entry = state.name_map['.'.join(path)]
         # TODO: this will blow up if linking to something that's not a module,
