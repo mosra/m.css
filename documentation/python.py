@@ -242,6 +242,34 @@ _filtered_builtin_properties = set([
     ('__weakref__', "list of weak references to the object (if defined)")
 ])
 
+def crawl_enum(state: State, path: List[str], enum_):
+    enum_entry = Empty()
+    enum_entry.type = EntryType.ENUM
+    enum_entry.object = enum_
+    enum_entry.path = path
+    enum_entry.values = []
+
+    if issubclass(enum_, enum.Enum):
+        for i in enum_:
+            subpath = path + [i.name]
+            entry = Empty()
+            entry.type = EntryType.ENUM_VALUE
+            entry.path = subpath
+            state.name_map['.'.join(subpath)] = entry
+
+    elif state.config['PYBIND11_COMPATIBILITY']:
+        assert hasattr(enum_, '__members__')
+
+        for name in enum_.__members__:
+            subpath = path + [name]
+            entry = Empty()
+            entry.type = EntryType.ENUM_VALUE
+            entry.path = subpath
+            state.name_map['.'.join(subpath)] = entry
+
+    # Add itself to the name map
+    state.name_map['.'.join(path)] = enum_entry
+
 def crawl_class(state: State, path: List[str], class_):
     assert inspect.isclass(class_)
 
@@ -269,12 +297,16 @@ def crawl_class(state: State, path: List[str], class_):
 
             crawl_class(state, subpath, object)
 
+        # Crawl enum values (they also add itself ot the name_map)
+        elif type == EntryType.ENUM:
+            if name.startswith('_'): continue
+
+            crawl_enum(state, subpath, object)
+
         # Add other members directly
         else:
             # Filter out private / unwanted members
-            if type == EntryType.ENUM:
-                if name.startswith('_'): continue
-            elif type == EntryType.FUNCTION:
+            if type == EntryType.FUNCTION:
                 # Filter out underscored methods (but not dunder methods such
                 # as __init__)
                 if name.startswith('_') and not (name.startswith('__') and name.endswith('__')): continue
@@ -377,8 +409,10 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 continue
             elif type == EntryType.CLASS:
                 crawl_class(state, subpath, object)
+            elif type == EntryType.ENUM:
+                crawl_enum(state, subpath, object)
             else:
-                assert type in [EntryType.ENUM, EntryType.FUNCTION, EntryType.DATA]
+                assert type in [EntryType.FUNCTION, EntryType.DATA]
                 entry = Empty()
                 entry.type = type
                 entry.object = object
@@ -446,8 +480,10 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 continue
             elif type == EntryType.CLASS:
                 crawl_class(state, subpath, object)
+            elif type == EntryType.ENUM:
+                crawl_enum(state, subpath, object)
             else:
-                assert type in [EntryType.ENUM, EntryType.FUNCTION, EntryType.DATA]
+                assert type in [EntryType.FUNCTION, EntryType.DATA]
                 entry = Empty()
                 entry.type = type
                 entry.object = object
