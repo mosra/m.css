@@ -239,7 +239,15 @@ class TypeLinks(BaseInspectTestCase):
         super().__init__(__file__, 'type_links', *args, **kwargs)
 
     def test(self):
+        sys.path.append(self.path)
+        import pybind_type_links
+        # Annotate the type of TYPE_DATA (TODO: can this be done from pybind?)
+        pybind_type_links.__annotations__ = {}
+        pybind_type_links.__annotations__['TYPE_DATA'] = pybind_type_links.Foo
+        pybind_type_links.Foo.__annotations__ = {}
+        pybind_type_links.Foo.__annotations__['TYPE_DATA'] = pybind_type_links.Enum
         self.run_python({
+            'INPUT_MODULES': [pybind_type_links],
             'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('pybind_type_links.html'))

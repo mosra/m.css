@@ -707,7 +707,13 @@ def extract_type(type) -> str:
     # classes into account.
     return (type.__module__ + '.' if type.__module__ != 'builtins' else '') + type.__qualname__
 
-def get_type_hints_or_nothing(path: List[str], object):
+def get_type_hints_or_nothing(state: State, path: List[str], object) -> Dict:
+    # Calling get_type_hints on a pybind11 type (from extract_data_doc())
+    # results in KeyError because there's no sys.modules['pybind11_builtins'].
+    # Be pro-active and return an empty dict if that's the case.
+    if state.config['PYBIND11_COMPATIBILITY'] and isinstance(object, type) and 'pybind11_builtins' in [a.__module__ for a in object.__mro__]:
+        return {}
+
     try:
         return typing.get_type_hints(object)
     except Exception as e:
@@ -945,7 +951,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
         # converted to actual annotations). If that fails (e.g. because a type
         # doesn't exist), we'll take the non-dereferenced annotations from
         # inspect instead.
-        type_hints = get_type_hints_or_nothing(path, function)
+        type_hints = get_type_hints_or_nothing(state, path, function)
 
         try:
             signature = inspect.signature(function)
@@ -1005,7 +1011,7 @@ def extract_property_doc(state: State, path: List[str], property):
         # signature because pybind11 properties would throw TypeError from
         # typing.get_type_hints(). This way they throw ValueError from inspect
         # and we don't need to handle TypeError in get_type_hints_or_nothing().
-        if property.fget: type_hints = get_type_hints_or_nothing(path, property.fget)
+        if property.fget: type_hints = get_type_hints_or_nothing(state, path, property.fget)
 
         if 'return' in type_hints:
             out.type = extract_annotation(state, path, type_hints['return'])
@@ -1033,7 +1039,7 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     # First try to get fully dereferenced type hints (with strings converted to
     # actual annotations). If that fails (e.g. because a type doesn't exist),
     # we'll take the non-dereferenced annotations instead.
-    type_hints = get_type_hints_or_nothing(path, parent)
+    type_hints = get_type_hints_or_nothing(state, path, parent)
 
     if out.name in type_hints:
         out.type = extract_annotation(state, path, type_hints[out.name])

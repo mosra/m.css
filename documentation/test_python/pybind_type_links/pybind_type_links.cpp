@@ -28,7 +28,8 @@ PYBIND11_MODULE(pybind_type_links, m) {
         .value("FIRST", Enum::First)
         .value("SECOND", Enum::Second);
 
-    py::class_<Foo>{m, "Foo", "A class"}
+    py::class_<Foo> foo{m, "Foo", "A class"};
+    foo
         .def(py::init<Enum>(), "Constructor")
         .def_readwrite("property", &Foo::property, "A property");
 
@@ -36,4 +37,8 @@ PYBIND11_MODULE(pybind_type_links, m) {
         .def("type_enum", &typeEnum, "A function taking an enum")
         .def("type_return", &typeReturn, "A function returning a type")
         .def("type_nested", &typeNested, "A function with nested type annotation");
+
+    /* Test also attributes (annotated from within Python) */
+    m.attr("TYPE_DATA") = Foo{Enum::First};
+    foo.attr("TYPE_DATA") = Enum::Second;
 }
