@@ -23,7 +23,7 @@ def no_annotation(a, b, z):
     pass
 
 def no_annotation_default_param(param, another, third = "hello"):
-    """Non-annotated function"""
+    """Non-annotated function with a default parameter"""
     pass
 
 def partial_annotation(foo, param: Tuple[int, int], unannotated, cls: Foo):
