@@ -147,10 +147,12 @@ def register_mcss(mcss_settings, hooks_pre_page, hooks_post_run, **kwargs):
     if settings['M_MATH_CACHE_FILE']:
         settings['M_MATH_CACHE_FILE'] = os.path.join(settings['INPUT'], settings['M_MATH_CACHE_FILE'])
 
-        if os.path.exists(settings['M_MATH_CACHE_FILE']):
-            latex2svgextra.unpickle_cache(settings['M_MATH_CACHE_FILE'])
-        else:
-            latex2svgextra.unpickle_cache(None)
+    # Ensure that cache is unpickled again if M_MATH_CACHE_FILE is *not* set --
+    # otherwise tests will sporadically fail.
+    if settings['M_MATH_CACHE_FILE'] and os.path.exists(settings['M_MATH_CACHE_FILE']):
+        latex2svgextra.unpickle_cache(settings['M_MATH_CACHE_FILE'])
+    else:
+        latex2svgextra.unpickle_cache(None)
 
     hooks_pre_page += [new_page]
     hooks_post_run += [save_cache]
