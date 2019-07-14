@@ -5,13 +5,6 @@ dist: xenial
 matrix:
   include:
     - language: python
-      python: 3.4
-      env:
-      - WITH_THEME=ON
-      - WITH_DOCUMENTATION=OFF
-      - WITH_NODE=OFF
-      - JOBID=py34
-    - language: python
       python: 3.5
       addons:
         apt:
@@ -35,7 +28,23 @@ matrix:
       - WITH_DOCUMENTATION=ON
       - WITH_NODE=OFF
       - TRAVIS_BROKEN_MATPLOTLIB_SEED=YES
+      - PYBIND_VERSION=2.2.4
       - JOBID=py36
+    - language: python
+      python: 3.7
+      addons:
+        apt:
+          packages:
+          - graphviz
+          - cmake
+          - ninja-build
+      env:
+      - WITH_THEME=ON
+      - WITH_DOCUMENTATION=ON
+      - WITH_NODE=OFF
+      - TRAVIS_BROKEN_MATPLOTLIB_SEED=YES
+      - PYBIND_VERSION=2.3.0
+      - JOBID=py37
     - language: node_js
       node_js: 8
       env:
@@ -66,7 +75,7 @@ script:
   # pybind11 tests. Math rendering is not tested as dvisvgm is unusable even on
   # 16.04.
   - if [ "$WITH_DOCUMENTATION" == "ON" ] && [ ! -f $HOME/pybind11/include ]; then $TRAVIS_BUILD_DIR/package/ci/setup-pybind11.sh; fi
-  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_python && mkdir -p build && cd build && cmake -DCMAKE_PREFIX_PATH=$HOME/pybind11 -DPYBIND11_PYTHON_VERSION=3.6 -G Ninja .. && ninja; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_python && mkdir -p build && cd build && cmake -DCMAKE_PREFIX_PATH=$HOME/pybind$PYBIND_VERSION -DPYBIND11_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION -G Ninja .. && ninja; fi
   - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
   # Test client doxygen JS
@@ -82,7 +91,8 @@ script:
 cache:
   directories:
   - $HOME/bin
-  - $HOME/pybind11
+  - $HOME/pybind2.2.4
+  - $HOME/pybind2.3.0
 
 notifications:
   webhooks:
