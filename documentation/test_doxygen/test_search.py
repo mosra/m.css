@@ -30,137 +30,10 @@ import sys
 import unittest
 from types import SimpleNamespace as Empty
 
-from _search import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
+from doxygen import EntryType
+from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print
 
 from test_doxygen import IntegrationTestCase
-
-def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, show_merged, show_lookahead_barriers, color_map) -> str:
-    # Visualize where the trees were merged
-    if show_merged and base_offset in hashtable:
-        return color_map['red'] + '#' + color_map['reset']
-
-    stats.node_count += 1
-
-    out = ''
-    result_count, child_count = Trie.header_struct.unpack_from(serialized, base_offset)
-    stats.max_node_results = max(result_count, stats.max_node_results)
-    stats.max_node_children = max(child_count, stats.max_node_children)
-    offset = base_offset + Trie.header_struct.size
-
-    # print results, if any
-    if result_count:
-        out += color_map['blue'] + ' ['
-        for i in range(result_count):
-            if i: out += color_map['blue']+', '
-            result = Trie.result_struct.unpack_from(serialized, offset)[0]
-            stats.max_node_result_index = max(result, stats.max_node_result_index)
-            out += color_map['cyan'] + str(result)
-            offset += Trie.result_struct.size
-        out += color_map['blue'] + ']'
-
-    # print children, if any
-    for i in range(child_count):
-        if result_count or i:
-            out += color_map['reset'] + '\n'
-            out += color_map['blue'] + indent + color_map['white']
-        char = Trie.child_char_struct.unpack_from(serialized, offset + 3)[0]
-        if char <= 127:
-            out += chr(char)
-        else:
-            out += color_map['reset'] + hex(char)
-        if (show_lookahead_barriers and Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000):
-            out += color_map['green'] + '$'
-        if char > 127 or (show_lookahead_barriers and Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000):
-            out += color_map['reset'] + '\n' + color_map['blue'] + indent + ' ' + color_map['white']
-        child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x007fffff
-        stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
-        offset += Trie.child_struct.size
-        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if child_count > 1 else ' '), show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
-        child_count += 1
-
-    hashtable[base_offset] = True
-    return out
-
-color_map_colors = {'blue': '\033[0;34m',
-                    'white': '\033[1;39m',
-                    'red': '\033[1;31m',
-                    'green': '\033[1;32m',
-                    'cyan': '\033[1;36m',
-                    'yellow': '\033[1;33m',
-                    'reset': '\033[0m'}
-
-color_map_dummy = {'blue': '',
-                   'white': '',
-                   'red': '',
-                   'green': '',
-                   'cyan': '',
-                   'yellow': '',
-                   'reset': ''}
-
-def pretty_print_trie(serialized: bytes, show_merged=False, show_lookahead_barriers=True, colors=False):
-    color_map = color_map_colors if colors else color_map_dummy
-
-    hashtable = {}
-
-    stats = Empty()
-    stats.node_count = 0
-    stats.max_node_results = 0
-    stats.max_node_children = 0
-    stats.max_node_result_index = 0
-    stats.max_node_child_offset = 0
-
-    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
-    if out: out = color_map['white'] + out
-    stats = """
-node count:             {}
-max node results:       {}
-max node children:      {}
-max node result index:  {}
-max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_results, stats.max_node_children, stats.max_node_result_index, stats.max_node_child_offset)
-    return out, stats
-
-def pretty_print_map(serialized: bytes, colors=False):
-    color_map = color_map_colors if colors else color_map_dummy
-
-    # The first item gives out offset of first value, which can be used to
-    # calculate total value count
-    offset = ResultMap.offset_struct.unpack_from(serialized, 0)[0] & 0x00ffffff
-    size = int(offset/4 - 1)
-
-    out = ''
-    for i in range(size):
-        if i: out += '\n'
-        flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
-        extra = []
-        if flags & ResultFlag._TYPE == ResultFlag.ALIAS:
-            extra += ['alias={}'.format(ResultMap.alias_struct.unpack_from(serialized, offset)[0])]
-            offset += ResultMap.alias_struct.size
-        if flags & ResultFlag.HAS_PREFIX:
-            extra += ['prefix={}[:{}]'.format(*ResultMap.prefix_struct.unpack_from(serialized, offset))]
-            offset += ResultMap.prefix_struct.size
-        if flags & ResultFlag.HAS_SUFFIX:
-            extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
-            offset += ResultMap.suffix_length_struct.size
-        if flags & ResultFlag.DEPRECATED:
-            extra += ['deprecated']
-        if flags & ResultFlag.DELETED:
-            extra += ['deleted']
-        if flags & ResultFlag._TYPE:
-            extra += ['type={}'.format((flags & ResultFlag._TYPE).name)]
-        next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
-        name, _, url = serialized[offset:next_offset].partition(b'\0')
-        out += color_map['cyan'] + str(i) + color_map['blue'] + ': ' + color_map['white'] + name.decode('utf-8') + color_map['blue'] + ' [' + color_map['yellow'] + (color_map['blue'] + ', ' + color_map['yellow']).join(extra) + color_map['blue'] + '] ->' + (' ' + color_map['reset'] + url.decode('utf-8') if url else '')
-        offset = next_offset
-    return out
-
-def pretty_print(serialized: bytes, show_merged=False, show_lookahead_barriers=True, colors=False):
-    magic, version, symbol_count, map_offset = search_data_header_struct.unpack_from(serialized)
-    assert magic == b'MCS'
-    assert version == 0
-
-    pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, colors=colors)
-    pretty_map = pretty_print_map(serialized[map_offset:], colors=colors)
-    return '{} symbols\n'.format(symbol_count) + pretty_trie + '\n' + pretty_map, stats
 
 class TrieSerialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -283,7 +156,7 @@ class MapSerialization(unittest.TestCase):
         self.maxDiff = None
 
     def compare(self, serialized: bytes, expected: str):
-        pretty = pretty_print_map(serialized)
+        pretty = pretty_print_map(serialized, entryTypeClass=EntryType)
         #print(pretty)
         self.assertEqual(pretty, expected.strip())
 
@@ -296,7 +169,7 @@ class MapSerialization(unittest.TestCase):
 
     def test_single(self):
         map = ResultMap()
-        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", suffix_length=11, flags=ResultFlag.NAMESPACE), 0)
+        self.assertEqual(map.add("Magnum", "namespaceMagnum.html", suffix_length=11, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)), 0)
 
         serialized = map.serialize()
         self.compare(serialized, """
@@ -307,11 +180,11 @@ class MapSerialization(unittest.TestCase):
     def test_multiple(self):
         map = ResultMap()
 
-        self.assertEqual(map.add("Math", "namespaceMath.html", flags=ResultFlag.NAMESPACE), 0)
-        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS), 1)
-        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS), 2)
-        self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875", flags=ResultFlag.FUNC), 3)
-        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef1234", suffix_length=8, flags=ResultFlag.FUNC|ResultFlag.DEPRECATED|ResultFlag.DELETED), 4)
+        self.assertEqual(map.add("Math", "namespaceMath.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)), 0)
+        self.assertEqual(map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)), 1)
+        self.assertEqual(map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)), 2)
+        self.assertEqual(map.add("Math::min()", "namespaceMath.html#abcdef2875", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC)), 3)
+        self.assertEqual(map.add("Math::max(int, int)", "namespaceMath.html#abcdef1234", suffix_length=8, flags=ResultFlag.from_type(ResultFlag.DEPRECATED|ResultFlag.DELETED, EntryType.FUNC)), 4)
         self.assertEqual(map.add("Rectangle", "", alias=2), 5)
         self.assertEqual(map.add("Rectangle::Rect()", "", suffix_length=2, alias=2), 6)
 
@@ -333,7 +206,7 @@ class Serialization(unittest.TestCase):
         self.maxDiff = None
 
     def compare(self, serialized: bytes, expected: str):
-        pretty = pretty_print(serialized)[0]
+        pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(pretty)
         self.assertEqual(pretty, expected.strip())
 
@@ -341,11 +214,11 @@ class Serialization(unittest.TestCase):
         trie = Trie()
         map = ResultMap()
 
-        trie.insert("math", map.add("Math", "namespaceMath.html", flags=ResultFlag.NAMESPACE))
-        index = map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.CLASS)
+        trie.insert("math", map.add("Math", "namespaceMath.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)))
+        index = map.add("Math::Vector", "classMath_1_1Vector.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
         trie.insert("math::vector", index)
         trie.insert("vector", index)
-        index = map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.CLASS)
+        index = map.add("Math::Range", "classMath_1_1Range.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
         trie.insert("math::range", index)
         trie.insert("range", index)
 
@@ -372,7 +245,7 @@ class Search(IntegrationTestCase):
 
         with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
             serialized = f.read()
-            search_data_pretty = pretty_print(serialized)[0]
+            search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
         self.assertEqual(len(serialized), 4695)
         self.assertEqual(search_data_pretty, """
@@ -549,7 +422,7 @@ class SearchLongSuffixLength(IntegrationTestCase):
 
         with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
             serialized = f.read()
-            search_data_pretty = pretty_print(serialized)[0]
+            search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
         self.assertEqual(len(serialized), 382)
         # The parameters get cut off with an ellipsis
@@ -578,6 +451,6 @@ if __name__ == '__main__': # pragma: no cover
     args = parser.parse_args()
 
     with open(args.file, 'rb') as f:
-        out, stats = pretty_print(f.read(), show_merged=args.show_merged, show_lookahead_barriers=args.show_lookahead_barriers, colors=args.colors)
+        out, stats = pretty_print(f.read(), entryTypeClass=EntryType, show_merged=args.show_merged, show_lookahead_barriers=args.show_lookahead_barriers, colors=args.colors)
         print(out)
         if args.show_stats: print(stats, file=sys.stderr)

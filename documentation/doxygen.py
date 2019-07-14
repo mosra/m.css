@@ -27,6 +27,7 @@
 import xml.etree.ElementTree as ET
 import argparse
 import copy
+import enum
 import sys
 import re
 import html
@@ -53,6 +54,22 @@ import dot2svg
 import latex2svg
 import latex2svgextra
 import ansilexer
+
+class EntryType(enum.Enum):
+    PAGE = 1
+    NAMESPACE = 2
+    GROUP = 3
+    CLASS = 4
+    STRUCT = 5
+    UNION = 6
+    TYPEDEF = 7
+    DIR = 8
+    FILE = 9
+    FUNC = 10
+    DEFINE = 11
+    ENUM = 12
+    ENUM_VALUE = 13
+    VAR = 14
 
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+|@)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
@@ -1671,7 +1688,7 @@ def parse_enum(state: State, element: ET.Element):
         if value.brief or value.description:
             if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
-                result.flags = ResultFlag.ENUM_VALUE|(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0))
+                result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0), EntryType.ENUM_VALUE)
                 result.url = enum.base_url + '#' + value.id
                 result.prefix = state.current_prefix + [enum.name]
                 result.name = value.name
@@ -1696,7 +1713,7 @@ def parse_enum(state: State, element: ET.Element):
     if enum.brief or enum.has_details or enum.has_value_details:
         if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.ENUM|(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0), EntryType.ENUM)
             result.url = enum.base_url + '#' + enum.id
             result.prefix = state.current_prefix
             result.name = enum.name
@@ -1772,7 +1789,7 @@ def parse_typedef(state: State, element: ET.Element):
         # Avoid duplicates in search
         if typedef.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.TYPEDEF|(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0), EntryType.TYPEDEF)
             result.url = typedef.base_url + '#' + typedef.id
             result.prefix = state.current_prefix
             result.name = typedef.name
@@ -1917,7 +1934,7 @@ def parse_func(state: State, element: ET.Element):
         # Avoid duplicates in search
         if func.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.FUNC|(ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0))
+            result.flags = ResultFlag.from_type((ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0)), EntryType.FUNC)
             result.url = func.base_url + '#' + func.id
             result.prefix = state.current_prefix
             result.name = func.name
@@ -1953,7 +1970,7 @@ def parse_var(state: State, element: ET.Element):
         # Avoid duplicates in search
         if var.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.VAR|(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0), EntryType.VAR)
             result.url = var.base_url + '#' + var.id
             result.prefix = state.current_prefix
             result.name = var.name
@@ -1993,7 +2010,7 @@ def parse_define(state: State, element: ET.Element):
         # Avoid duplicates in search
         if define.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.DEFINE|(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0))
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0), EntryType.DEFINE)
             result.url = define.base_url + '#' + define.id
             result.prefix = []
             result.name = define.name
@@ -2250,11 +2267,11 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
         # Decide on prefix joiner. Defines are among the :: ones as well,
         # because we need to add the function macros twice -- but they have no
         # prefix, so it's okay.
-        if result.flags & ResultFlag._TYPE in [ResultFlag.NAMESPACE, ResultFlag.CLASS, ResultFlag.STRUCT, ResultFlag.UNION, ResultFlag.TYPEDEF, ResultFlag.FUNC, ResultFlag.VAR, ResultFlag.ENUM, ResultFlag.ENUM_VALUE, ResultFlag.DEFINE]:
+        if EntryType(result.flags.type) in [EntryType.NAMESPACE, EntryType.CLASS, EntryType.STRUCT, EntryType.UNION, EntryType.TYPEDEF, EntryType.FUNC, EntryType.VAR, EntryType.ENUM, EntryType.ENUM_VALUE, EntryType.DEFINE]:
             joiner = result_joiner = '::'
-        elif result.flags & ResultFlag._TYPE in [ResultFlag.DIR, ResultFlag.FILE]:
+        elif EntryType(result.flags.type) in [EntryType.DIR, EntryType.FILE]:
             joiner = result_joiner = '/'
-        elif result.flags & ResultFlag._TYPE in [ResultFlag.PAGE, ResultFlag.GROUP]:
+        elif EntryType(result.flags.type) in [EntryType.PAGE, EntryType.GROUP]:
             joiner = ''
             result_joiner = ' » '
         else:
@@ -3078,25 +3095,25 @@ def parse_xml(state: State, xml: str):
     # TODO: add example sources there? how?
     if not state.doxyfile['M_SEARCH_DISABLED'] and not compound.kind == 'example' and (compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')):
         if compound.kind == 'namespace':
-            kind = ResultFlag.NAMESPACE
+            kind = EntryType.NAMESPACE
         elif compound.kind == 'struct':
-            kind = ResultFlag.STRUCT
+            kind = EntryType.STRUCT
         elif compound.kind == 'class':
-            kind = ResultFlag.CLASS
+            kind = EntryType.CLASS
         elif compound.kind == 'union':
-            kind = ResultFlag.UNION
+            kind = EntryType.UNION
         elif compound.kind == 'dir':
-            kind = ResultFlag.DIR
+            kind = EntryType.DIR
         elif compound.kind == 'file':
-            kind = ResultFlag.FILE
+            kind = EntryType.FILE
         elif compound.kind == 'page':
-            kind = ResultFlag.PAGE
+            kind = EntryType.PAGE
         elif compound.kind == 'group':
-            kind = ResultFlag.GROUP
+            kind = EntryType.GROUP
         else: assert False # pragma: no cover
 
         result = Empty()
-        result.flags = kind|(ResultFlag.DEPRECATED if compound.is_deprecated else ResultFlag(0))
+        result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if compound.is_deprecated else ResultFlag(0), kind)
         result.url = compound.url
         result.prefix = state.current_prefix[:-1]
         result.name = state.current_prefix[-1]
