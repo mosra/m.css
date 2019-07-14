@@ -87,6 +87,12 @@ script:
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/css && ./postprocess.sh && git diff --color=always . | cat; fi
   - if [ "$WITH_THEME" == "ON" ]; then cd $TRAVIS_BUILD_DIR/css && git diff-index --exit-code HEAD -- .; fi
 
+  # Test that JS search test data are up-to-date as well. Would be best to do
+  # it on the Node.js job but that one has just Python 3.5 which doesn't know
+  # enum.Flag.
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_doxygen && ./populate-js-test-data.py && git diff --color=always . | cat; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_doxygen/js-test-data && git diff-index --exit-code HEAD -- .; fi
+
 # Cache the downloaded doxygen and pybind11
 cache:
   directories:

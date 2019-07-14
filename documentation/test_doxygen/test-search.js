@@ -122,19 +122,19 @@ const { StringDecoder } = require('string_decoder');
     let resultsForM = [[
         { name: 'Math',
           url: 'namespaceMath.html',
-          flags: 16,
+          flags: 32,
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 10 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 109,
+          flags: 173,
           suffixLength: 10 }], ''];
     assert.deepEqual(Search.search('m'), resultsForM);
 
@@ -142,15 +142,15 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('min'), [[
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 10 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 109,
+          flags: 173,
           suffixLength: 8 }], '()']);
 
     /* Go back, get the same thing */
@@ -160,7 +160,7 @@ const { StringDecoder } = require('string_decoder');
     let resultsForVec = [[
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
-          flags: 40|2, /* Deprecated */
+          flags: 72|2, /* Deprecated */
           suffixLength: 3 }], 'tor'];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 
@@ -174,7 +174,7 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('su'), [[
         { name: Search.toUtf8('Page » Subpage'),
           url: 'subpage.html',
-          flags: 192,
+          flags: 16,
           suffixLength: 5 }], 'bpage']);
 
     /* Alias */
@@ -182,16 +182,16 @@ const { StringDecoder } = require('string_decoder');
         { name: 'Rectangle::Rect()',
           alias: 'Math::Range',
           url: 'classMath_1_1Range.html',
-          flags: 40,
+          flags: 72,
           suffixLength: 5 },
         { name: 'Math::Range',
           url: 'classMath_1_1Range.html',
-          flags: 40,
+          flags: 72,
           suffixLength: 4 },
         { name: 'Rectangle',
           alias: 'Math::Range',
           url: 'classMath_1_1Range.html',
-          flags: 40,
+          flags: 72,
           suffixLength: 8 }], '']);
 }
 
@@ -205,15 +205,15 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('m'), [[
         { name: 'Math',
           url: 'namespaceMath.html',
-          flags: 16,
+          flags: 32,
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 10 }], '']);
 }
 
@@ -227,15 +227,15 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('min'), [[
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 10 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 105,
+          flags: 169,
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 109,
+          flags: 173,
           suffixLength: 8 }], '()']);
 }
 
@@ -250,22 +250,22 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('h'), [[
         { name: Search.toUtf8('Hárá'),
           url: '#b',
-          flags: 192,
+          flags: 16,
           suffixLength: 5 },
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
-          flags: 192,
+          flags: 16,
           suffixLength: 7 }], '']);
     /* These autocompletions are valid UTF-8, so nothing gets truncated */
     assert.deepEqual(Search.search('hý'), [[
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
-          flags: 192,
+          flags: 16,
           suffixLength: 5 }], 'ždě']);
     assert.deepEqual(Search.search('há'), [[
         { name: Search.toUtf8('Hárá'),
           url: '#b',
-          flags: 192,
+          flags: 16,
           suffixLength: 3 }], 'rá']);
 }
 
@@ -278,13 +278,13 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('geo'), [[
         { name: 'Magnum::Math::Geometry',
           url: 'namespaceMagnum_1_1Math_1_1Geometry.html',
-          flags: 24,
+          flags: 40,
           suffixLength: 5 }], 'metry']);
 
     assert.deepEqual(Search.search('ra'), [[
         { name: 'Magnum::Math::Range',
           url: 'classMagnum_1_1Math_1_1Range.html',
-          flags: 40,
+          flags: 72,
           suffixLength: 3 }], 'nge']);
 }
 
