@@ -174,9 +174,6 @@ class Signature(unittest.TestCase):
                          ('b', 'Tuple[int, module.Bar]', 'Tuple[int, module.Bar]', None)], 'module.Baz'))
 
 class Signatures(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'signatures', *args, **kwargs)
-
     def test_positional_args(self):
         sys.path.append(self.path)
         import pybind_signatures
@@ -217,9 +214,6 @@ class Signatures(BaseInspectTestCase):
             self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass23.html'))
 
 class Enums(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'enums', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'PYBIND11_COMPATIBILITY': True
@@ -227,9 +221,6 @@ class Enums(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_enums.html'))
 
 class Submodules(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'submodules', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'PYBIND11_COMPATIBILITY': True
@@ -237,9 +228,6 @@ class Submodules(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_submodules.html'))
 
 class SubmodulesPackage(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'submodules_package', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'PYBIND11_COMPATIBILITY': True
@@ -247,9 +235,6 @@ class SubmodulesPackage(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_submodules_package.sub.html'))
 
 class NameMapping(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'name_mapping', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'PYBIND11_COMPATIBILITY': True
@@ -259,9 +244,6 @@ class NameMapping(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_name_mapping.submodule.html'))
 
 class TypeLinks(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'type_links', *args, **kwargs)
-
     def test(self):
         sys.path.append(self.path)
         import pybind_type_links

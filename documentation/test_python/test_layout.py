@@ -27,9 +27,6 @@ import os
 from . import BaseTestCase
 
 class Layout(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'PROJECT_TITLE': "A project",

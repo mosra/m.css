@@ -60,10 +60,7 @@ def custom_id_formatter(type: EntryType, path: List[str]) -> str:
 
     assert False
 
-class Test(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
+class LinkFormatting(BaseInspectTestCase):
     def test(self):
         self.run_python({
             'INPUT_PAGES': ['page.rst'],

@@ -34,9 +34,6 @@ from python import default_templates
 from . import BaseInspectTestCase
 
 class String(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'string', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'LINKS_NAVBAR1': [
@@ -52,9 +49,6 @@ class String(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('modules.html'))
 
 class Object(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'object', *args, **kwargs)
-
     def test(self):
         # Reuse the stuff from inspect_string, but this time reference it via
         # an object and not a string
@@ -77,17 +71,11 @@ class Object(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('modules.html', '../inspect_string/modules.html'))
 
 class AllProperty(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'all_property', *args, **kwargs)
-
     def test(self):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_all_property.html'))
 
 class Annotations(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'annotations', *args, **kwargs)
-
     def test(self):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
@@ -128,9 +116,6 @@ class Annotations(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('math.html', 'math36.html'))
 
 class NameMapping(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'name_mapping', *args, **kwargs)
-
     def test(self):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.html'))
@@ -138,9 +123,6 @@ class NameMapping(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.submodule.html'))
 
 class Recursive(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'recursive', *args, **kwargs)
-
     def test(self):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_recursive.html'))
@@ -148,9 +130,6 @@ class Recursive(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_recursive.a.html'))
 
 class TypeLinks(BaseInspectTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'type_links', *args, **kwargs)
-
     def test(self):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.html'))

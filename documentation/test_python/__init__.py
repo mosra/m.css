@@ -26,18 +26,42 @@ import copy
 import sys
 import os
 import inspect
+import re
 import shutil
 import unittest
 
 from python import run, default_templates, default_config
 
+# https://stackoverflow.com/a/12867228
+_camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
+
+# The test files are automatically detected from derived class name and
+# filesystem location. For a `test_inspect.NameMapping` class, it will look
+# for the `inspect_name_mapping` directory. If the class name is equivalent to
+# the filename (e.g. `test_page.Page`), then it will be looking for just `page`
+# instead of `page_page`. If needed, the directory name can be overriden by
+# passing it via dir to __init__().
 class BaseTestCase(unittest.TestCase):
-    def __init__(self, path, dir, *args, **kwargs):
+    def __init__(self, *args, dir=None, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
-        # Full directory name (for test_something.py the directory is something_dir{}
-        self.dirname = os.path.splitext(os.path.basename(path))[0][5:] + ('_' + dir if dir else '')
+
+        # Get the test filename from the derived class module file. If path is
+        # not supplied, get it from derived class name converted to snake_case
+        path = sys.modules[self.__class__.__module__].__file__
+        if not dir: dir = _camelcase_to_snakecase.sub('_\\1', self.__class__.__name__).lower()
+
+        # Full directory name (for test_something.py the directory is
+        # something_{dir}
+        dir_prefix = os.path.splitext(os.path.basename(path))[0][5:]
+        if dir and dir_prefix != dir:
+            self.dirname = dir_prefix + '_' + dir
+        else:
+            self.dirname = dir_prefix
         # Absolute path to this directory
         self.path = os.path.join(os.path.dirname(os.path.realpath(path)), self.dirname)
+
+        if not os.path.exists(self.path):
+            raise AssertionError("autodetected path {} doesn't exist".format(self.path))
 
         # Display ALL THE DIFFS
         self.maxDiff = None
@@ -72,6 +96,8 @@ class BaseTestCase(unittest.TestCase):
             actual_contents = f.read().strip()
         return actual_contents, expected_contents
 
+# On top of the automagic of BaseTestCase this automatically sets INPUT_MODULES
+# to detected `dirname`, if not set already.
 class BaseInspectTestCase(BaseTestCase):
     def run_python(self, config_overrides={}, templates=default_templates):
         if 'INPUT_MODULES' not in config_overrides:

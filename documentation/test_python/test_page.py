@@ -35,9 +35,6 @@ def dot_version():
     return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
 
 class Page(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
     def test(self):
         self.run_python({
             'INPUT_PAGES': ['index.rst', 'another.rst']
@@ -46,10 +43,7 @@ class Page(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('another.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
-class PageInputSubdir(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'input_subdir', *args, **kwargs)
-
+class InputSubdir(BaseTestCase):
     def test(self):
         self.run_python({
             'INPUT': 'sub',
@@ -59,9 +53,6 @@ class PageInputSubdir(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html', '../page/index.html'))
 
 class Plugins(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'plugins', *args, **kwargs)
-
     def test(self):
         self.run_python({
             # Test all of them to check the registration works well
