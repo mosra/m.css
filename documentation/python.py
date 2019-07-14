@@ -913,7 +913,10 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     # What's not solvable with metadata, however, are function overloads ---
     # one function in Python may equal more than one function on the C++ side.
     # To make the docs usable, list all overloads separately.
-    if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__.startswith(path[-1]):
+    #
+    # Some shitty packages might be setting __doc__ to None (attrs is one of
+    # them), explicitly check for that first.
+    if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__ and function.__doc__.startswith(path[-1]):
         funcs = parse_pybind_docstring(state, path, function.__doc__)
         overloads = []
         for name, summary, args, type in funcs:
