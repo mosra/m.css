@@ -560,10 +560,19 @@ _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
 _pybind_default_value_rx = re.compile('[^,)]+')
 
 def parse_pybind_type(state: State, referrer_path: List[str], signature: str) -> str:
-    input_type = _pybind_type_rx.match(signature).group(0)
-    signature = signature[len(input_type):]
-    type = map_name_prefix(state, input_type)
-    type_link = make_name_link(state, referrer_path, type)
+    # If this doesn't match, it's because we're in Callable[[arg, ...], retval]
+    match = _pybind_type_rx.match(signature)
+    if match:
+        input_type = match.group(0)
+        signature = signature[len(input_type):]
+        type = map_name_prefix(state, input_type)
+        type_link = make_name_link(state, referrer_path, type)
+    else:
+        assert signature[0] == '['
+        type = ''
+        type_link = ''
+
+    # This is a generic type (or the list in Callable)
     if signature and signature[0] == '[':
         type += '['
         type_link += '['

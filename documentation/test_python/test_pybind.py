@@ -90,6 +90,14 @@ class Signature(unittest.TestCase):
                 ('another', 'float', 'float', None),
             ], 'Union[str, Any]'))
 
+    def test_callable(self):
+        self.assertEqual(parse_pybind_signature(State({}), [],
+            'foo(a: Callable[[int, Tuple[int, int]], float], another: float)'),
+            ('foo', '', [
+                ('a', 'Callable[[int, Tuple[int, int]], float]', 'Callable[[int, Tuple[int, int]], float]', None),
+                ('another', 'float', 'float', None),
+            ], None))
+
     def test_kwargs(self):
         self.assertEqual(parse_pybind_signature(State({}), [],
             'foo(*args, **kwargs)'),

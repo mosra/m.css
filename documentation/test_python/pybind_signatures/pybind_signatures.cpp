@@ -1,5 +1,7 @@
+#include <functional>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> /* needed for std::vector! */
+#include <pybind11/functional.h> /* for std::function */
 
 namespace py = pybind11;
 
@@ -19,6 +21,9 @@ void crazySignature(const Crazy<3, int>&) {}
 
 std::string overloaded(int) { return {}; }
 bool overloaded(float) { return {}; }
+
+// Doesn't work with just a plain function pointer, MEH
+void takesAFunction(std::function<int(float, std::vector<float>&)>) {}
 
 struct MyClass {
     static MyClass staticFunction(int, float) { return {}; }
@@ -55,6 +60,7 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("overloaded", static_cast<std::string(*)(int)>(&overloaded), "Overloaded for ints")
         .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats")
         .def("duck", &duck, "A function taking args/kwargs directly")
+        .def("takes_a_function", &takesAFunction, "A function taking a Callable")
 
         .def("tenOverloads", &tenOverloads<float, float>, "Ten overloads of a function")
         .def("tenOverloads", &tenOverloads<int, float>, "Ten overloads of a function")
