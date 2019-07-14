@@ -12,6 +12,13 @@ class Foo:
         """A property with a type annotation"""
         pass
 
+class FooSlots:
+    """A class with slots"""
+
+    __slots__ = ['unannotated', 'annotated']
+
+    annotated: List[str]
+
 def annotation(param: List[int], another: bool, third: str = "hello") -> float:
     """An annotated function"""
     pass

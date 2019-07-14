@@ -43,6 +43,7 @@ class String(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_string.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_string.FooSlots.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Specials.html'))
 
         self.assertEqual(*self.actual_expected_contents('classes.html'))
@@ -65,6 +66,7 @@ class Object(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_string.html', '../inspect_string/inspect_string.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html', '../inspect_string/inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html', '../inspect_string/inspect_string.Foo.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_string.FooSlots.html', '../inspect_string/inspect_string.FooSlots.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Specials.html', '../inspect_string/inspect_string.Specials.html'))
 
         self.assertEqual(*self.actual_expected_contents('classes.html', '../inspect_string/classes.html'))
@@ -80,6 +82,7 @@ class Annotations(BaseInspectTestCase):
         self.run_python()
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
 
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7'),
         "signature with / for pow() is not present in 3.6")
@@ -140,3 +143,5 @@ class TypeLinks(BaseInspectTestCase):
 
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.Foo.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.FooSlots.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.FooSlotsInvalid.html'))

@@ -1085,12 +1085,42 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
         return [out]
 
-def extract_property_doc(state: State, path: List[str], property):
+def extract_property_doc(state: State, parent, path: List[str], property):
     assert inspect.isdatadescriptor(property)
 
     out = Empty()
     out.name = path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.PROPERTY, path[-1:])
+
+    # If this is a slot, there won't be any fget / fset / fdel. Assume they're
+    # gettable and settable (couldn't find any way to make them *inspectably*
+    # readonly, all solutions involved throwing from __setattr__()) and
+    # deletable as well (calling del on it seems to simply remove any
+    # previously set value). Unfortunately we can't get any docstring for these
+    # either.
+    # TODO: any better way to detect that those are slots?
+    if property.__class__.__name__ == 'member_descriptor' and property.__class__.__module__ == 'builtins':
+        out.is_gettable = True
+        out.is_settable = True
+        out.is_deletable = True
+        # TODO: external summary for properties
+        out.summary = ''
+        out.has_details = False
+
+        # First try to get fully dereferenced type hints (with strings
+        # converted to actual annotations). If that fails (e.g. because a type
+        # doesn't exist), we'll take the non-dereferenced annotations instead.
+        type_hints = get_type_hints_or_nothing(state, path, parent)
+
+        if out.name in type_hints:
+            out.type = extract_annotation(state, path, type_hints[out.name])
+        elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
+            out.type = extract_annotation(state, path, parent.__annotations__[out.name])
+        else:
+            out.type = None
+
+        return out
+
     # TODO: external summary for properties
     out.is_gettable = property.fget is not None
     if property.fget or (property.fset and property.__doc__):
@@ -1334,7 +1364,7 @@ def render_class(state: State, path, class_, env):
                 else:
                     page.methods += [function]
         elif member_entry.type == EntryType.PROPERTY:
-            page.properties += [extract_property_doc(state, subpath, member_entry.object)]
+            page.properties += [extract_property_doc(state, class_, subpath, member_entry.object)]
         elif member_entry.type == EntryType.DATA:
             page.data += [extract_data_doc(state, class_, subpath, member_entry.object)]
         else: # pragma: no cover

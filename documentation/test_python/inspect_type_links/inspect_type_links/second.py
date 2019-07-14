@@ -44,6 +44,21 @@ class Foo:
     # other data annotations from being retrieved
     TYPE_DATA_STRING_INVALID: 'Foo.Bar' = 3
 
+class FooSlots:
+    """A slot class"""
+
+    __slots__ = ['type_slot', 'type_slot_string_nested']
+
+    type_slot: Enum
+    type_slot_string_nested: 'Tuple[Foo, List[Enum], Any]'
+
+class FooSlotsInvalid:
+    """A slot class with an invalid annotation. Has to be separate because otherwise it would invalidate all other slot annotations in FooSlots as well."""
+
+    __slots__ = ['type_slot_string_invalid']
+
+    type_slot_string_invalid: List['FooBar']
+
 def type_string(a: 'Foo'):
     """A function with string type annotation"""
 

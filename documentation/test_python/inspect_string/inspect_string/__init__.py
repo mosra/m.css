@@ -107,6 +107,11 @@ class Foo:
         """A private property"""
         pass
 
+class FooSlots:
+    """A class with slots. Can't have docstrings for these."""
+
+    __slots__ = ['first', 'second']
+
 class Specials:
     """Special class members"""
 
