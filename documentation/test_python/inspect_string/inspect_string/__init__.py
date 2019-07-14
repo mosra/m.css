@@ -112,6 +112,12 @@ class FooSlots:
 
     __slots__ = ['first', 'second']
 
+class DerivedException(BaseException):
+    """A class deriving from BaseException, which has the weird args getset_descriptor"""
+
+    # Note: once we properly handle properties of base classes, we might want
+    # to import BaseException and add it to __all__ so it gets parsed directly
+
 class Specials:
     """Special class members"""
 

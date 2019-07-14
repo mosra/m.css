@@ -1121,6 +1121,21 @@ def extract_property_doc(state: State, parent, path: List[str], property):
 
         return out
 
+    # The properties can be defined using the low-level descriptor protocol
+    # instead of the higher-level property() decorator. That means there's no
+    # fget / fset / fdel, instead we need to look into __get__ / __set__ /
+    # __delete__ directly. This is fairly rare (datetime.date is one and
+    # BaseException.args is another I could find), so don't bother with it much
+    # --- assume readonly and no docstrings / annotations whatsoever.
+    if property.__class__.__name__ == 'getset_descriptor' and property.__class__.__module__ == 'builtins':
+        out.is_gettable = True
+        out.is_settable = False
+        out.is_deletable = False
+        out.summary = ''
+        out.has_details = False
+        out.type = None
+        return out
+
     # TODO: external summary for properties
     out.is_gettable = property.fget is not None
     if property.fget or (property.fset and property.__doc__):
