@@ -58,13 +58,41 @@
             </dt>
             <dd>An annotated function</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_any" class="m-doc-self" id="annotation_any">annotation_any</a>(</span><span class="m-doc-wrap">a: typing.Any)</span>
+            </dt>
+            <dd>Annotation with the Any type</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_callable" class="m-doc-self" id="annotation_callable">annotation_callable</a>(</span><span class="m-doc-wrap">a: typing.Callable[[float, int], str])</span>
+            </dt>
+            <dd>Annotation with the Callable type</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_callable_no_args" class="m-doc-self" id="annotation_callable_no_args">annotation_callable_no_args</a>(</span><span class="m-doc-wrap">a: typing.Callable[[], typing.Dict[int, float]])</span>
+            </dt>
+            <dd>Annotation with the Callable type w/o arguments</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">def <a href="#annotation_func_instead_of_type" class="m-doc-self" id="annotation_func_instead_of_type">annotation_func_instead_of_type</a>(</span><span class="m-doc-wrap">a)</span>
             </dt>
             <dd>Annotation with a function instead of a type, ignored</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_generic" class="m-doc-self" id="annotation_generic">annotation_generic</a>(</span><span class="m-doc-wrap">a: typing.List[Tp]) -&gt; Tp</span>
+            </dt>
+            <dd>Annotation with a generic type</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_list_noparam" class="m-doc-self" id="annotation_list_noparam">annotation_list_noparam</a>(</span><span class="m-doc-wrap">a: typing.List[T])</span>
+            </dt>
+            <dd>Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_optional" class="m-doc-self" id="annotation_optional">annotation_optional</a>(</span><span class="m-doc-wrap">a: typing.Optional[float])</span>
+            </dt>
+            <dd>Annotation with the Optional type</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">def <a href="#annotation_tuple_instead_of_tuple" class="m-doc-self" id="annotation_tuple_instead_of_tuple">annotation_tuple_instead_of_tuple</a>(</span><span class="m-doc-wrap">a)</span>
             </dt>
             <dd>Annotation with a tuple instead of Tuple, ignored</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_union" class="m-doc-self" id="annotation_union">annotation_union</a>(</span><span class="m-doc-wrap">a: typing.Union[float, int])</span>
+            </dt>
+            <dd>Annotation with the Union type</dd>
             <dt>
               <span class="m-doc-wrap-bumper">def <a href="#args_kwargs" class="m-doc-self" id="args_kwargs">args_kwargs</a>(</span><span class="m-doc-wrap">a, b, *args, **kwargs)</span>
             </dt>

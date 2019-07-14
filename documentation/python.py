@@ -770,20 +770,54 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
     elif isinstance(annotation, typing.ForwardRef if sys.version_info >= (3, 7) else typing._ForwardRef):
         return annotation.__forward_arg__
 
-    # If the annotation is from the typing module, it could be a "bracketed"
-    # type, in which case we want to recurse to its types as well. Otherwise
-    # just get its name.
-    elif hasattr(annotation, '__module__') and annotation.__module__ == 'typing':
-        if sys.version_info >= (3, 7):
-            name = annotation._name
-        elif annotation is typing.Any:
-            name = 'Any' # Any doesn't have __name__ in 3.6
+    # Generic type names -- use their name directly
+    elif isinstance(annotation, typing.TypeVar):
+        return annotation.__name__
+
+    # If the annotation is from the typing module, it ... gets complicated. It
+    # could be a "bracketed" type, in which case we want to recurse to its
+    # types as well.
+    elif (hasattr(annotation, '__module__') and annotation.__module__ == 'typing'):
+        # Optional or Union, handle those first
+        if hasattr(annotation, '__origin__') and annotation.__origin__ is typing.Union:
+            # FOR SOME REASON `annotation.__args__[1] is None` is always False
+            if len(annotation.__args__) == 2 and isinstance(None, annotation.__args__[1]):
+                name = 'typing.Optional'
+                args = annotation.__args__[:1]
+            else:
+                name = 'typing.Union'
+                args = annotation.__args__
+        elif sys.version_info >= (3, 7) and hasattr(annotation, '_name') and annotation._name:
+            name = 'typing.' + annotation._name
+            # Any doesn't have __args__
+            args = annotation.__args__ if hasattr(annotation, '__args__') else None
+        # Python 3.6 has __name__ instead of _name
+        elif sys.version_info < (3, 7) and hasattr(annotation, '__name__'):
+            name = 'typing.' + annotation.__name__
+            args = annotation.__args__
+        # Any doesn't have __name__ in 3.6
+        elif sys.version_info < (3, 7) and annotation is typing.Any:
+            name = 'typing.Any'
+            args = None
+        # Whoops, something we don't know yet. Warn and return a string
+        # representation at least.
+        else: # pragma: no cover
+            logging.warning("can't inspect annotation %s for %s, falling back to a string representation", annotation, '.'.join(referrer_path))
+            return str(annotation)
+
+        # Arguments of generic types, recurse inside
+        if args:
+            # For Callable, put the arguments into a nested list to separate
+            # them from the return type
+            if name == 'typing.Callable':
+                assert len(args) >= 1
+                return '{}[[{}], {}]'.format(name,
+                    ', '.join([extract_annotation(state, referrer_path, i) for i in args[:-1]]),
+                    extract_annotation(state, referrer_path, args[-1]))
+            else:
+                return '{}[{}]'.format(name, ', '.join([extract_annotation(state, referrer_path, i) for i in args]))
         else:
-            name = annotation.__name__
-        if hasattr(annotation, '__args__'):
-            return 'typing.{}[{}]'.format(name, ', '.join([extract_annotation(state, referrer_path, i) for i in annotation.__args__]))
-        else:
-            return 'typing.' + name
+            return name
 
     # Things like (float, int) instead of Tuple[float, int] or using np.array
     # instead of np.ndarray. Ignore with a warning.

@@ -1,4 +1,6 @@
-from typing import List, Tuple
+import sys
+
+from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar
 
 class Foo:
     """A class with properties"""
@@ -35,6 +37,31 @@ def annotation_tuple_instead_of_tuple(a: (float, int)):
 
 def annotation_func_instead_of_type(a: open):
     """Annotation with a function instead of a type, ignored"""
+
+def annotation_any(a: Any):
+    """Annotation with the Any type"""
+
+def annotation_union(a: Union[float, int]):
+    """Annotation with the Union type"""
+
+def annotation_list_noparam(a: List):
+    """Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions"""
+if sys.version_info < (3, 7):
+    annotation_list_noparam.__annotations__['a'] = List[TypeVar('T')]
+
+_T = TypeVar('Tp')
+
+def annotation_generic(a: List[_T]) -> _T:
+    """Annotation with a generic type"""
+
+def annotation_optional(a: Optional[float]):
+    """Annotation with the Optional type"""
+
+def annotation_callable(a: Callable[[float, int], str]):
+    """Annotation with the Callable type"""
+
+def annotation_callable_no_args(a: Callable[[], Dict[int, float]]):
+    """Annotation with the Callable type w/o arguments"""
 
 # Only possible with native code now, https://www.python.org/dev/peps/pep-0570/
 #def positionals_only(positional_only, /, positional_kw):
