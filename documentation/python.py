@@ -583,8 +583,11 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str) ->
             type_link += inner_type_link
 
             if signature[0] == ']': break
-            assert signature.startswith(', ')
+
+            # Expecting the next item now, if not there, we failed
+            if not signature.startswith(', '): raise SyntaxError()
             signature = signature[2:]
+
             type += ', '
             type_link += ', '
 
@@ -606,59 +609,58 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
     assert signature[0] == '('
     signature = signature[1:]
 
-    # Arguments
-    while signature[0] != ')':
-        # Name
-        arg_name = _pybind_arg_name_rx.match(signature).group(0)
-        assert arg_name
-        signature = signature[len(arg_name):]
+    # parse_pybind_type() can throw a SyntaxError in case it gets confused,
+    # provide graceful handling for that along with own parse errors
+    try:
+        # Arguments
+        while signature[0] != ')':
+            # Name
+            arg_name = _pybind_arg_name_rx.match(signature).group(0)
+            assert arg_name
+            signature = signature[len(arg_name):]
 
-        # Type (optional)
-        if signature.startswith(': '):
-            signature = signature[2:]
-            signature, arg_type, arg_type_link = parse_pybind_type(state, referrer_path, signature)
-        else:
-            arg_type = None
-            arg_type_link = None
-
-        # Default (optional) -- for now take everything until the next comma
-        # TODO: ugh, do properly
-        # The equals has spaces around since 2.3.0, preserve 2.2 compatibility.
-        # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
-        if signature.startswith(('=', ' = ')):
-            signature = signature[1 if signature[0] == '=' else 3:]
-            default = _pybind_default_value_rx.match(signature).group(0)
-            signature = signature[len(default):]
-        else:
-            default = None
-
-        args += [(arg_name, arg_type, arg_type_link, default)]
-
-        if signature[0] == ')': break
-
-        # Failed to parse, return an ellipsis and docs
-        if not signature.startswith(', '):
-            end = original_signature.find('\n')
-            logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
-            if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-                summary = extract_summary(state, {}, [], original_signature[end + 1:])
+            # Type (optional)
+            if signature.startswith(': '):
+                signature = signature[2:]
+                signature, arg_type, arg_type_link = parse_pybind_type(state, referrer_path, signature)
             else:
-                summary = ''
-            return (name, summary, [('…', None, None, None)], None)
+                arg_type = None
+                arg_type_link = None
 
-        signature = signature[2:]
+            # Default (optional) -- for now take everything until the next comma
+            # TODO: ugh, do properly
+            # The equals has spaces around since 2.3.0, preserve 2.2 compatibility.
+            # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
+            if signature.startswith(('=', ' = ')):
+                signature = signature[1 if signature[0] == '=' else 3:]
+                default = _pybind_default_value_rx.match(signature).group(0)
+                signature = signature[len(default):]
+            else:
+                default = None
 
-    assert signature[0] == ')'
-    signature = signature[1:]
+            args += [(arg_name, arg_type, arg_type_link, default)]
 
-    # Return type (optional)
-    if signature.startswith(' -> '):
-        signature = signature[4:]
-        signature, _, return_type_link = parse_pybind_type(state, referrer_path, signature)
-    else:
-        return_type_link = None
+            if signature[0] == ')': break
 
-    if signature and signature[0] != '\n':
+            # Expecting the next argument now, if not there, we failed
+            if not signature.startswith(', '): raise SyntaxError()
+            signature = signature[2:]
+
+        assert signature[0] == ')'
+        signature = signature[1:]
+
+        # Return type (optional)
+        if signature.startswith(' -> '):
+            signature = signature[4:]
+            signature, _, return_type_link = parse_pybind_type(state, referrer_path, signature)
+        else:
+            return_type_link = None
+
+        # Expecting end of the signature line now, if not there, we failed
+        if signature and signature[0] != '\n': raise SyntaxError()
+
+    # Failed to parse, return an ellipsis and docs
+    except SyntaxError:
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':

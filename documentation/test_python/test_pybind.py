@@ -129,6 +129,11 @@ class Signature(unittest.TestCase):
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)'),
             ('foo', '', [('…', None, None, None)], None))
 
+    def test_crazy_stuff_nested(self):
+        self.assertEqual(parse_pybind_signature(State({}), [],
+            'foo(a: int, b: List[Math::Vector<4, UnsignedInt>])'),
+            ('foo', '', [('…', None, None, None)], None))
+
     def test_crazy_stuff_docs(self):
         self.assertEqual(parse_pybind_signature(State({}), [],
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)\n\nThis is text!!'),
@@ -137,6 +142,11 @@ class Signature(unittest.TestCase):
     def test_crazy_return(self):
         self.assertEqual(parse_pybind_signature(State({}), [],
             'foo(a: int) -> Math::Vector<4, UnsignedInt>'),
+            ('foo', '', [('…', None, None, None)], None))
+
+    def test_crazy_return_nested(self):
+        self.assertEqual(parse_pybind_signature(State({}), [],
+            'foo(a: int) -> List[Math::Vector<4, UnsignedInt>]'),
             ('foo', '', [('…', None, None, None)], None))
 
     def test_crazy_return_docs(self):
