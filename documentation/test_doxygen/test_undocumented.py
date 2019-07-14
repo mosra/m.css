@@ -26,7 +26,7 @@
 
 import os
 
-from doxygen import search_data_header_struct
+from _search import search_data_header_struct
 
 from . import IntegrationTestCase
 

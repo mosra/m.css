@@ -30,7 +30,7 @@ import sys
 import unittest
 from types import SimpleNamespace as Empty
 
-from doxygen import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
+from _search import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
 
 from test_doxygen import IntegrationTestCase
 
