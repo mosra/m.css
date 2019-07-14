@@ -71,6 +71,12 @@ def type_return_string_nested() -> 'Tuple[Foo, List[Enum], Any]':
 def type_return_string_invalid(a: Foo) -> 'FooBar':
     """A function with invalid return string type annotation"""
 
+class _Hidden:
+    pass
+
+def type_cant_link(a: _Hidden):
+    """Annotation linking to a type that's a part of INPUT_MODULES but not known"""
+
 def type_default_values(a: Enum = Enum.SECOND, b: Tuple[Foo] = (Foo, ), c: Foo = Foo()):
     """A function with default values, one enum, one tuple and the third nonrepresentable (yes, the tuple looks ugly)"""
 

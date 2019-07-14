@@ -501,8 +501,19 @@ def make_name_link(state: State, referrer_path: List[str], type) -> str:
     if type is None: return None
     assert isinstance(type, str)
 
-    # Not found, return as-is
-    if not type in state.name_map: return type
+    # Not found, return as-is. However, if the prefix is one of the
+    # INPUT_MODULES, emit a warning to notify the user of a potentially missing
+    # stuff from the docs.
+    if not type in state.name_map:
+        for module in state.config['INPUT_MODULES']:
+            if isinstance(module, str):
+                module_name = module
+            else:
+                module_name = module.__name__
+            if type.startswith(module_name + '.'):
+                logging.warning("could not resolve a link to %s which is among INPUT_MODULES (referred from %s), possibly hidden/undocumented?", type, '.'.join(referrer_path))
+                break
+        return type
 
     entry = state.name_map[type]
 
