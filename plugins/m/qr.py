@@ -74,6 +74,10 @@ class Qr(rst.Directive):
                 '{:.2f}rem'.format(float(match.group('width'))*9.6/2.54/16.0, 2),
             viewBox=match.group('viewBox'))
         svg = _svg_preamble_src.sub(preamble_repl, svg)
+        # There's a pointless difference between what qrcode 6.1 generates on
+        # my Python 3.7 (w/o space) and on Travis Python 3.7. I don't know
+        # what's to blame, so just patch that.
+        svg = svg.replace(' />', '/>')
         return [nodes.raw('', svg, format='html')]
 
 def register_mcss(**kwargs):
