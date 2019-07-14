@@ -1,3 +1,5 @@
+"""Annotation parsing. For links inside annotations see test_inspect.TypeLinks."""
+
 import sys
 
 from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar
@@ -10,13 +12,7 @@ class Foo:
         """A property with a type annotation"""
         pass
 
-    # Self-reference is only possible with a string in Py3
-    # https://stackoverflow.com/a/33533514
-    def string_annotation(self: 'Foo'):
-        """String annotations"""
-        pass
-
-def annotation(param: List[int], another: bool, third: str = "hello") -> Foo:
+def annotation(param: List[int], another: bool, third: str = "hello") -> float:
     """An annotated function"""
     pass
 
@@ -28,7 +24,7 @@ def no_annotation_default_param(param, another, third = "hello"):
     """Non-annotated function with a default parameter"""
     pass
 
-def partial_annotation(foo, param: Tuple[int, int], unannotated, cls: Foo):
+def partial_annotation(foo, param: Tuple[int, int], unannotated, cls: object):
     """Partially annotated function"""
     pass
 
