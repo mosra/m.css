@@ -30,6 +30,12 @@ def partial_annotation(foo, param: Tuple[int, int], unannotated, cls: Foo):
     """Partially annotated function"""
     pass
 
+def annotation_tuple_instead_of_tuple(a: (float, int)):
+    """Annotation with a tuple instead of Tuple, ignored"""
+
+def annotation_func_instead_of_type(a: open):
+    """Annotation with a function instead of a type, ignored"""
+
 # Only possible with native code now, https://www.python.org/dev/peps/pep-0570/
 #def positionals_only(positional_only, /, positional_kw):
     #"""Function with explicitly delimited positional args"""

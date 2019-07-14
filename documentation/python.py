@@ -773,7 +773,7 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
     # If the annotation is from the typing module, it could be a "bracketed"
     # type, in which case we want to recurse to its types as well. Otherwise
     # just get its name.
-    elif annotation.__module__ == 'typing':
+    elif hasattr(annotation, '__module__') and annotation.__module__ == 'typing':
         if sys.version_info >= (3, 7):
             name = annotation._name
         elif annotation is typing.Any:
@@ -784,6 +784,12 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
             return 'typing.{}[{}]'.format(name, ', '.join([extract_annotation(state, referrer_path, i) for i in annotation.__args__]))
         else:
             return 'typing.' + name
+
+    # Things like (float, int) instead of Tuple[float, int] or using np.array
+    # instead of np.ndarray. Ignore with a warning.
+    elif not isinstance(annotation, type):
+        logging.warning("invalid annotation %s in %s, ignoring", annotation, '.'.join(referrer_path))
+        return None
 
     # Otherwise it's a plain type. Turn it into a link.
     return make_name_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
