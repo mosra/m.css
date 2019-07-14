@@ -60,11 +60,6 @@ files, put them including the ``m/`` directory into one of your
 ``pelicanconf.py``. This plugin assumes presence of
 `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 
-.. note-danger::
-
-    Note that this plugin, unlike most of the others, requires at least Python
-    3.5 to run properly.
-
 .. code:: python
 
     PLUGINS += ['m.htmlsanity', 'm.math']

@@ -239,11 +239,6 @@ including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 ``m.dot`` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the
 Python doc theme, it's enough to just list it in :py:`PLUGINS`.
 
-.. note-danger::
-
-    Note that this plugin, unlike most of the others, requires at least Python
-    3.5 to run properly.
-
 .. code:: python
 
     PLUGINS += ['m.dot']

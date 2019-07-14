@@ -24,13 +24,10 @@
 
 import os
 import pickle
-import sys
 import shutil
 import unittest
 
 from hashlib import sha1
-
-from distutils.version import LooseVersion
 
 from . import PelicanPluginTestCase
 
@@ -38,8 +35,8 @@ class Math(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 
-    @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion("3.5") and shutil.which('latex'),
-                         "The math plugin requires at least Python 3.5 and LaTeX installed")
+    @unittest.skipUnless(shutil.which('latex'),
+                         "The math plugin requires LaTeX installed")
     def test(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.components', 'm.math'],
