@@ -155,3 +155,5 @@
 {% endif %}
 </body>
 </html>
+{#- sanity checks for variables that should be always defined -#}
+{% if URL is not defined %}{{ URL.is_not_defined_the_script_is_broken }}{% endif %}
