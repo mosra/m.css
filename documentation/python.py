@@ -51,6 +51,8 @@ from docutils.transforms import Transform
 
 import jinja2
 
+from _search import searchdata_format_version
+
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../plugins'))
 import m.htmlsanity
 
@@ -1236,7 +1238,9 @@ def extract_data_doc(state: State, parent, path: List[str], data):
 
 def render(config, template: str, page, env: jinja2.Environment):
     template = env.get_template(template)
-    rendered = template.render(page=page, URL=page.url, **config)
+    rendered = template.render(page=page,
+        URL=page.url,
+        SEARCHDATA_FORMAT_VERSION=searchdata_format_version, **config)
     with open(os.path.join(config['OUTPUT'], page.filename), 'wb') as f:
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with

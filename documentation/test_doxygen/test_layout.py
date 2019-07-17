@@ -25,6 +25,7 @@
 import os
 import subprocess
 
+from _search import searchdata_filename, searchdata_filename_b85
 from . import BaseTestCase
 
 class Layout(BaseTestCase):
@@ -36,7 +37,7 @@ class Layout(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('pages.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'm-dark+documentation.compiled.css')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'search.js')))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename_b85)))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'favicon-light.png')))
 
 class GeneratedDoxyfile(BaseTestCase):
@@ -98,7 +99,7 @@ class SearchBinary(BaseTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'searchdata.bin')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename)))
 
 class SearchOpenSearch(BaseTestCase):
     def __init__(self, *args, **kwargs):

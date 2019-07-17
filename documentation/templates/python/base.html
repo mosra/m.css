@@ -132,10 +132,10 @@
 <script src="search.js"></script>
 {% if SEARCH_DOWNLOAD_BINARY %}
 <script>
-  Search.download(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1) + "searchdata.bin");
+  Search.download(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1));
 </script>
 {% else %}
-<script src="searchdata.js" async="async"></script>
+<script src="searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.js" async="async"></script>
 {% endif %}
 {% endif %}
 {% if FINE_PRINT %}
@@ -157,3 +157,4 @@
 </html>
 {#- sanity checks for variables that should be always defined -#}
 {% if URL is not defined %}{{ URL.is_not_defined_the_script_is_broken }}{% endif %}
+{% if SEARCHDATA_FORMAT_VERSION is defined %}{{ SEARCHDATA_FORMAT_VERSION.is_not_defined_the_script_is_broken }}{% endif %}

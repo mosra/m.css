@@ -25,6 +25,8 @@
 "use strict"; /* it summons the Cthulhu in a proper way, they say */
 
 var Search = {
+    formatVersion: 0, /* the data filename contains this number too */
+
     trie: null,
     map: null,
     dataSize: 0,
@@ -65,7 +67,7 @@ var Search = {
             return false;
         }
 
-        if(view.getUint8(3) != 0) {
+        if(view.getUint8(3) != this.formatVersion) {
             console.error("Invalid search data version");
             return false;
         }
@@ -112,11 +114,11 @@ var Search = {
         return true;
     },
 
-    download: /* istanbul ignore next */ function(url) {
+    download: /* istanbul ignore next */ function(urlBase) {
         var req = window.XDomainRequest ? new XDomainRequest() : new XMLHttpRequest();
         if(!req) return;
 
-        req.open("GET", url, true);
+        req.open("GET", urlBase + "searchdata-v" + this.formatVersion + ".bin", true);
         req.responseType = 'arraybuffer';
         req.onreadystatechange = function() {
             if(req.readyState != 4) return;

@@ -47,7 +47,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
-from _search import ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data
+from _search import ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_filename, searchdata_filename_b85, searchdata_format_version
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../plugins'))
 import dot2svg
@@ -3498,6 +3498,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
                 rendered = template.render(index=parsed.index,
                     DOXYGEN_VERSION=parsed.version,
                     FILENAME=file,
+                    SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
                     **state.doxyfile)
 
                 output = os.path.join(html_output, file)
@@ -3516,6 +3517,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
             rendered = template.render(compound=parsed.compound,
                 DOXYGEN_VERSION=parsed.version,
                 FILENAME=parsed.compound.url,
+                SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
                 **state.doxyfile)
 
             output = os.path.join(html_output, parsed.compound.url)
@@ -3542,6 +3544,7 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         rendered = template.render(compound=compound,
             DOXYGEN_VERSION='0',
             FILENAME='index.html',
+            SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
             **state.doxyfile)
         output = os.path.join(html_output, 'index.html')
         with open(output, 'wb') as f:
@@ -3558,10 +3561,10 @@ def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         if state.doxyfile['M_SEARCH_DOWNLOAD_BINARY']:
-            with open(os.path.join(html_output, "searchdata.bin"), 'wb') as f:
+            with open(os.path.join(html_output, searchdata_filename), 'wb') as f:
                 f.write(data)
         else:
-            with open(os.path.join(html_output, "searchdata.js"), 'wb') as f:
+            with open(os.path.join(html_output, searchdata_filename_b85), 'wb') as f:
                 f.write(base85encode_search_data(data))
 
         # OpenSearch metadata, in case we have the base URL

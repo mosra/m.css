@@ -31,7 +31,7 @@ import unittest
 from types import SimpleNamespace as Empty
 
 from doxygen import EntryType
-from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print
+from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print, searchdata_filename
 
 from test_doxygen import IntegrationTestCase
 
@@ -243,7 +243,7 @@ class Search(IntegrationTestCase):
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
-        with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
+        with open(os.path.join(self.path, 'html', searchdata_filename), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
@@ -420,7 +420,7 @@ class SearchLongSuffixLength(IntegrationTestCase):
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
-        with open(os.path.join(self.path, 'html', 'searchdata.bin'), 'rb') as f:
+        with open(os.path.join(self.path, 'html', searchdata_filename), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
