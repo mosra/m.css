@@ -841,52 +841,52 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
     # Otherwise it's a plain type. Turn it into a link.
     return make_name_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
 
-def extract_module_doc(state: State, path: List[str], module):
-    assert inspect.ismodule(module)
+def extract_module_doc(state: State, entry: Empty):
+    assert inspect.ismodule(entry.object)
 
     out = Empty()
-    out.url = state.config['URL_FORMATTER'](EntryType.MODULE, path)[1]
-    out.name = path[-1]
-    out.summary = extract_summary(state, state.class_docs, path, module.__doc__)
+    out.url = entry.url
+    out.name = entry.path[-1]
+    out.summary = extract_summary(state, state.class_docs, entry.path, entry.object.__doc__)
     return out
 
-def extract_class_doc(state: State, path: List[str], class_):
-    assert inspect.isclass(class_)
+def extract_class_doc(state: State, entry: Empty):
+    assert inspect.isclass(entry.object)
 
     out = Empty()
-    out.url = state.config['URL_FORMATTER'](EntryType.CLASS, path)[1]
-    out.name = path[-1]
-    out.summary = extract_summary(state, state.class_docs, path, class_.__doc__)
+    out.url = entry.url
+    out.name = entry.path[-1]
+    out.summary = extract_summary(state, state.class_docs, entry.path, entry.object.__doc__)
     return out
 
-def extract_enum_doc(state: State, path: List[str], enum_):
+def extract_enum_doc(state: State, entry: Empty):
     out = Empty()
-    out.name = path[-1]
-    out.id = state.config['ID_FORMATTER'](EntryType.ENUM, path[-1:])
+    out.name = entry.path[-1]
+    out.id = state.config['ID_FORMATTER'](EntryType.ENUM, entry.path[-1:])
     out.values = []
     out.has_details = False
     out.has_value_details = False
 
     # The happy case
-    if issubclass(enum_, enum.Enum):
+    if issubclass(entry.object, enum.Enum):
         # Enum doc is by default set to a generic value. That's useless as well.
-        if enum_.__doc__ == 'An enumeration.':
+        if entry.object.__doc__ == 'An enumeration.':
             out.summary = ''
         else:
             # TODO: external summary for enums
-            out.summary = extract_summary(state, {}, [], enum_.__doc__)
+            out.summary = extract_summary(state, {}, [], entry.object.__doc__)
 
-        out.base = extract_type(enum_.__base__)
-        if out.base: out.base = make_name_link(state, path, out.base)
+        out.base = extract_type(entry.object.__base__)
+        if out.base: out.base = make_name_link(state, entry.path, out.base)
 
-        for i in enum_:
+        for i in entry.object:
             value = Empty()
             value.name = i.name
-            value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, path[-1:] + [i.name])
+            value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, entry.path[-1:] + [i.name])
             value.value = html.escape(repr(i.value))
 
             # Value doc gets by default inherited from the enum, that's useless
-            if i.__doc__ == enum_.__doc__:
+            if i.__doc__ == entry.object.__doc__:
                 value.summary = ''
             else:
                 # TODO: external summary for enum values
@@ -899,16 +899,16 @@ def extract_enum_doc(state: State, path: List[str], enum_):
 
     # Pybind11 enums are ... different
     elif state.config['PYBIND11_COMPATIBILITY']:
-        assert hasattr(enum_, '__members__')
+        assert hasattr(entry.object, '__members__')
 
         # TODO: external summary for enums
-        out.summary = extract_summary(state, {}, [], enum_.__doc__)
+        out.summary = extract_summary(state, {}, [], entry.object.__doc__)
         out.base = None
 
-        for name, v in enum_.__members__.items():
+        for name, v in entry.object.__members__.items():
             value = Empty()
             value. name = name
-            value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, path[-1:] + [name])
+            value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, entry.path[-1:] + [name])
             value.value = int(v)
             # TODO: once https://github.com/pybind/pybind11/pull/1160 is
             #       released, extract from class docs (until then the class
@@ -918,8 +918,8 @@ def extract_enum_doc(state: State, path: List[str], enum_):
 
     return out
 
-def extract_function_doc(state: State, parent, path: List[str], function) -> List[Any]:
-    assert inspect.isfunction(function) or inspect.ismethod(function) or inspect.isroutine(function)
+def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
+    assert inspect.isfunction(entry.object) or inspect.ismethod(entry.object) or inspect.isroutine(entry.object)
 
     # Extract the signature from the docstring for pybind11, since it can't
     # expose it to the metadata: https://github.com/pybind/pybind11/issues/990
@@ -929,12 +929,12 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     #
     # Some shitty packages might be setting __doc__ to None (attrs is one of
     # them), explicitly check for that first.
-    if state.config['PYBIND11_COMPATIBILITY'] and function.__doc__ and function.__doc__.startswith(path[-1]):
-        funcs = parse_pybind_docstring(state, path, function.__doc__)
+    if state.config['PYBIND11_COMPATIBILITY'] and entry.object.__doc__ and entry.object.__doc__.startswith(entry.path[-1]):
+        funcs = parse_pybind_docstring(state, entry.path, entry.object.__doc__)
         overloads = []
         for name, summary, args, type in funcs:
             out = Empty()
-            out.name = path[-1]
+            out.name = entry.path[-1]
             out.params = []
             out.has_complex_params = False
             out.has_details = False
@@ -943,7 +943,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
             # Don't show None return type for functions w/o a return
             out.type = None if type == 'None' else type
-            if out.type: out.type = make_name_link(state, path, out.type)
+            if out.type: out.type = make_name_link(state, entry.path, out.type)
 
             # There's no other way to check staticmethods than to check for
             # self being the name of first parameter :( No support for
@@ -1002,7 +1002,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
                     # fully qualified), concatenate it together to have
                     # `module.EnumType.VALUE`
                     if type in state.name_map and state.name_map[type].type == EntryType.ENUM:
-                        param.default = make_name_link(state, path, '.'.join(state.name_map[type].path[:-1] + [default]))
+                        param.default = make_name_link(state, entry.path, '.'.join(state.name_map[type].path[:-1] + [default]))
                     else: param.default = html.escape(default)
                 else:
                     param.default = None
@@ -1023,7 +1023,7 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
             # Format the anchor. Pybind11 functions are sometimes overloaded,
             # thus name alone is not enough.
-            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, path[-1:] + arg_types)
+            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + arg_types)
 
             overloads += [out]
 
@@ -1032,45 +1032,45 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
     # Sane introspection path for non-pybind11 code
     else:
         out = Empty()
-        out.name = path[-1]
-        out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, path[-1:])
+        out.name = entry.path[-1]
+        out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, entry.path[-1:])
         out.params = []
         out.has_complex_params = False
         out.has_details = False
         # TODO: external summary for functions
-        out.summary = extract_summary(state, {}, [], function.__doc__)
+        out.summary = extract_summary(state, {}, [], entry.object.__doc__)
 
         # Decide if classmethod or staticmethod in case this is a method
         if inspect.isclass(parent):
-            out.is_classmethod = inspect.ismethod(function)
+            out.is_classmethod = inspect.ismethod(entry.object)
             out.is_staticmethod = out.name in parent.__dict__ and isinstance(parent.__dict__[out.name], staticmethod)
 
         # First try to get fully dereferenced type hints (with strings
         # converted to actual annotations). If that fails (e.g. because a type
         # doesn't exist), we'll take the non-dereferenced annotations from
         # inspect instead.
-        type_hints = get_type_hints_or_nothing(state, path, function)
+        type_hints = get_type_hints_or_nothing(state, entry.path, entry.object)
 
         try:
-            signature = inspect.signature(function)
+            signature = inspect.signature(entry.object)
 
             if 'return' in type_hints:
-                out.type = extract_annotation(state, path, type_hints['return'])
+                out.type = extract_annotation(state, entry.path, type_hints['return'])
             else:
-                out.type = extract_annotation(state, path, signature.return_annotation)
+                out.type = extract_annotation(state, entry.path, signature.return_annotation)
             for i in signature.parameters.values():
                 param = Empty()
                 param.name = i.name
                 if i.name in type_hints:
-                    param.type = extract_annotation(state, path, type_hints[i.name])
+                    param.type = extract_annotation(state, entry.path, type_hints[i.name])
                 else:
-                    param.type = extract_annotation(state, path, i.annotation)
+                    param.type = extract_annotation(state, entry.path, i.annotation)
                 if param.type:
                     out.has_complex_params = True
                 if i.default is inspect.Signature.empty:
                     param.default = None
                 else:
-                    param.default = format_value(state, path, i.default) or '…'
+                    param.default = format_value(state, entry.path, i.default) or '…'
                     out.has_complex_params = True
                 param.kind = str(i.kind)
                 out.params += [param]
@@ -1087,12 +1087,12 @@ def extract_function_doc(state: State, parent, path: List[str], function) -> Lis
 
         return [out]
 
-def extract_property_doc(state: State, parent, path: List[str], property):
-    assert inspect.isdatadescriptor(property)
+def extract_property_doc(state: State, parent, entry: Empty):
+    assert inspect.isdatadescriptor(entry.object)
 
     out = Empty()
-    out.name = path[-1]
-    out.id = state.config['ID_FORMATTER'](EntryType.PROPERTY, path[-1:])
+    out.name = entry.path[-1]
+    out.id = state.config['ID_FORMATTER'](EntryType.PROPERTY, entry.path[-1:])
 
     # If this is a slot, there won't be any fget / fset / fdel. Assume they're
     # gettable and settable (couldn't find any way to make them *inspectably*
@@ -1101,7 +1101,7 @@ def extract_property_doc(state: State, parent, path: List[str], property):
     # previously set value). Unfortunately we can't get any docstring for these
     # either.
     # TODO: any better way to detect that those are slots?
-    if property.__class__.__name__ == 'member_descriptor' and property.__class__.__module__ == 'builtins':
+    if entry.object.__class__.__name__ == 'member_descriptor' and entry.object.__class__.__module__ == 'builtins':
         out.is_gettable = True
         out.is_settable = True
         out.is_deletable = True
@@ -1112,12 +1112,12 @@ def extract_property_doc(state: State, parent, path: List[str], property):
         # First try to get fully dereferenced type hints (with strings
         # converted to actual annotations). If that fails (e.g. because a type
         # doesn't exist), we'll take the non-dereferenced annotations instead.
-        type_hints = get_type_hints_or_nothing(state, path, parent)
+        type_hints = get_type_hints_or_nothing(state, entry.path, parent)
 
         if out.name in type_hints:
-            out.type = extract_annotation(state, path, type_hints[out.name])
+            out.type = extract_annotation(state, entry.path, type_hints[out.name])
         elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
-            out.type = extract_annotation(state, path, parent.__annotations__[out.name])
+            out.type = extract_annotation(state, entry.path, parent.__annotations__[out.name])
         else:
             out.type = None
 
@@ -1129,7 +1129,7 @@ def extract_property_doc(state: State, parent, path: List[str], property):
     # __delete__ directly. This is fairly rare (datetime.date is one and
     # BaseException.args is another I could find), so don't bother with it much
     # --- assume readonly and no docstrings / annotations whatsoever.
-    if property.__class__.__name__ == 'getset_descriptor' and property.__class__.__module__ == 'builtins':
+    if entry.object.__class__.__name__ == 'getset_descriptor' and entry.object.__class__.__module__ == 'builtins':
         out.is_gettable = True
         out.is_settable = False
         out.is_deletable = False
@@ -1139,14 +1139,14 @@ def extract_property_doc(state: State, parent, path: List[str], property):
         return out
 
     # TODO: external summary for properties
-    out.is_gettable = property.fget is not None
-    if property.fget or (property.fset and property.__doc__):
-        out.summary = extract_summary(state, {}, [], property.__doc__)
+    out.is_gettable = entry.object.fget is not None
+    if entry.object.fget or (entry.object.fset and entry.object.__doc__):
+        out.summary = extract_summary(state, {}, [], entry.object.__doc__)
     else:
-        assert property.fset
-        out.summary = extract_summary(state, {}, [], property.fset.__doc__)
-    out.is_settable = property.fset is not None
-    out.is_deletable = property.fdel is not None
+        assert entry.object.fset
+        out.summary = extract_summary(state, {}, [], entry.object.fset.__doc__)
+    out.is_settable = entry.object.fset is not None
+    out.is_deletable = entry.object.fdel is not None
     out.has_details = False
 
     # For the type, if the property is gettable, get it from getters's return
@@ -1154,8 +1154,8 @@ def extract_property_doc(state: State, parent, path: List[str], property):
     # annotation.
 
     try:
-        if property.fget:
-            signature = inspect.signature(property.fget)
+        if entry.object.fget:
+            signature = inspect.signature(entry.object.fget)
 
             # First try to get fully dereferenced type hints (with strings
             # converted to actual annotations). If that fails (e.g. because a
@@ -1165,36 +1165,36 @@ def extract_property_doc(state: State, parent, path: List[str], property):
             # TypeError from typing.get_type_hints(). This way they throw
             # ValueError from inspect and we don't need to handle TypeError in
             # get_type_hints_or_nothing().
-            type_hints = get_type_hints_or_nothing(state, path, property.fget)
+            type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fget)
 
             if 'return' in type_hints:
-                out.type = extract_annotation(state, path, type_hints['return'])
+                out.type = extract_annotation(state, entry.path, type_hints['return'])
             else:
-                out.type = extract_annotation(state, path, signature.return_annotation)
+                out.type = extract_annotation(state, entry.path, signature.return_annotation)
         else:
-            assert property.fset
-            signature = inspect.signature(property.fset)
+            assert entry.object.fset
+            signature = inspect.signature(entry.object.fset)
 
             # Same as the lengthy comment above
-            type_hints = get_type_hints_or_nothing(state, path, property.fset)
+            type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fset)
 
             # Get second parameter name, then try to fetch it from type_hints
             # and if that fails get its annotation from the non-dereferenced
             # version
             value_parameter = list(signature.parameters.values())[1]
             if value_parameter.name in type_hints:
-                out.type = extract_annotation(state, path, type_hints[value_parameter.name])
+                out.type = extract_annotation(state, entry.path, type_hints[value_parameter.name])
             else:
-                out.type = extract_annotation(state, path, value_parameter.annotation)
+                out.type = extract_annotation(state, entry.path, value_parameter.annotation)
 
     except ValueError:
         # pybind11 properties have the type in the docstring
         if state.config['PYBIND11_COMPATIBILITY']:
-            if property.fget:
-                out.type = parse_pybind_signature(state, path, property.fget.__doc__)[3]
+            if entry.object.fget:
+                out.type = parse_pybind_signature(state, entry.path, entry.object.fget.__doc__)[3]
             else:
-                assert property.fset
-                parsed_args = parse_pybind_signature(state, path, property.fset.__doc__)[2]
+                assert entry.object.fset
+                parsed_args = parse_pybind_signature(state, entry.path, entry.object.fset.__doc__)[2]
                 # If argument parsing failed, we're screwed
                 if len(parsed_args) == 1: out.type = None
                 else: out.type = parsed_args[1][2]
@@ -1203,12 +1203,12 @@ def extract_property_doc(state: State, parent, path: List[str], property):
 
     return out
 
-def extract_data_doc(state: State, parent, path: List[str], data):
-    assert not inspect.ismodule(data) and not inspect.isclass(data) and not inspect.isroutine(data) and not inspect.isframe(data) and not inspect.istraceback(data) and not inspect.iscode(data)
+def extract_data_doc(state: State, parent, entry: Empty):
+    assert not inspect.ismodule(entry.object) and not inspect.isclass(entry.object) and not inspect.isroutine(entry.object) and not inspect.isframe(entry.object) and not inspect.istraceback(entry.object) and not inspect.iscode(entry.object)
 
     out = Empty()
-    out.name = path[-1]
-    out.id = state.config['ID_FORMATTER'](EntryType.DATA, path[-1:])
+    out.name = entry.path[-1]
+    out.id = state.config['ID_FORMATTER'](EntryType.DATA, entry.path[-1:])
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
     out.summary = ''
     out.has_details = False
@@ -1216,19 +1216,19 @@ def extract_data_doc(state: State, parent, path: List[str], data):
     # First try to get fully dereferenced type hints (with strings converted to
     # actual annotations). If that fails (e.g. because a type doesn't exist),
     # we'll take the non-dereferenced annotations instead.
-    type_hints = get_type_hints_or_nothing(state, path, parent)
+    type_hints = get_type_hints_or_nothing(state, entry.path, parent)
 
     if out.name in type_hints:
-        out.type = extract_annotation(state, path, type_hints[out.name])
+        out.type = extract_annotation(state, entry.path, type_hints[out.name])
     elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
-        out.type = extract_annotation(state, path, parent.__annotations__[out.name])
+        out.type = extract_annotation(state, entry.path, parent.__annotations__[out.name])
     else:
         out.type = None
 
-    out.value = format_value(state, path, data)
+    out.value = format_value(state, entry.path, entry.object)
 
     # External data summary, if provided
-    path_str = '.'.join(path)
+    path_str = '.'.join(entry.path)
     if path_str in state.data_docs:
         # TODO: use also the contents
         out.summary = render_inline_rst(state, state.data_docs[path_str]['summary'])
@@ -1297,17 +1297,17 @@ def render_module(state: State, path, module, env):
             logging.warning("%s is undocumented", subpath_str)
 
         if member_entry.type == EntryType.MODULE:
-            page.modules += [extract_module_doc(state, subpath, member_entry.object)]
+            page.modules += [extract_module_doc(state, member_entry)]
         elif member_entry.type == EntryType.CLASS:
-            page.classes += [extract_class_doc(state, subpath, member_entry.object)]
+            page.classes += [extract_class_doc(state, member_entry)]
         elif member_entry.type == EntryType.ENUM:
-            enum_ = extract_enum_doc(state, subpath, member_entry.object)
+            enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
         elif member_entry.type == EntryType.FUNCTION:
-            page.functions += extract_function_doc(state, module, subpath, member_entry.object)
+            page.functions += extract_function_doc(state, module, member_entry)
         elif member_entry.type == EntryType.DATA:
-            page.data += [extract_data_doc(state, module, subpath, member_entry.object)]
+            page.data += [extract_data_doc(state, module, member_entry)]
         else: # pragma: no cover
             assert False
 
@@ -1367,13 +1367,13 @@ def render_class(state: State, path, class_, env):
             logging.warning("%s is undocumented", subpath_str)
 
         if member_entry.type == EntryType.CLASS:
-            page.classes += [extract_class_doc(state, subpath, member_entry.object)]
+            page.classes += [extract_class_doc(state, member_entry)]
         elif member_entry.type == EntryType.ENUM:
-            enum_ = extract_enum_doc(state, subpath, member_entry.object)
+            enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
         elif member_entry.type == EntryType.FUNCTION:
-            for function in extract_function_doc(state, class_, subpath, member_entry.object):
+            for function in extract_function_doc(state, class_, member_entry):
                 if name.startswith('__'):
                     page.dunder_methods += [function]
                 elif function.is_classmethod:
@@ -1383,9 +1383,9 @@ def render_class(state: State, path, class_, env):
                 else:
                     page.methods += [function]
         elif member_entry.type == EntryType.PROPERTY:
-            page.properties += [extract_property_doc(state, class_, subpath, member_entry.object)]
+            page.properties += [extract_property_doc(state, class_, member_entry)]
         elif member_entry.type == EntryType.DATA:
-            page.data += [extract_data_doc(state, class_, subpath, member_entry.object)]
+            page.data += [extract_data_doc(state, class_, member_entry)]
         else: # pragma: no cover
             assert False
 
