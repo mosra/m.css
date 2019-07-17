@@ -285,6 +285,7 @@ def crawl_class(state: State, path: List[str], class_):
     class_entry.type = EntryType.CLASS
     class_entry.object = class_
     class_entry.path = path
+    class_entry.url = state.config['URL_FORMATTER'](EntryType.CLASS, path)[1]
     class_entry.members = []
 
     for name, object in inspect.getmembers(class_):
@@ -350,6 +351,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
     module_entry.type = EntryType.MODULE
     module_entry.object = module
     module_entry.path = path
+    module_entry.url = state.config['URL_FORMATTER'](EntryType.MODULE, path)[1]
     module_entry.members = []
 
     # This gets returned to ensure the modules get processed in a breadth-first
@@ -553,17 +555,15 @@ def make_name_link(state: State, referrer_path: List[str], type) -> str:
 
     # Format the URL
     if entry.type == EntryType.CLASS:
-        url = state.config['URL_FORMATTER'](entry.type, entry.path)[1]
+        url = entry.url
     else:
         if entry.type == EntryType.ENUM:
             parent_index = -1
         else:
             assert entry.type == EntryType.ENUM_VALUE
             parent_index = -2
-        parent_entry = state.name_map['.'.join(entry.path[:parent_index])]
-        url = '{}#{}'.format(
-            state.config['URL_FORMATTER'](parent_entry.type, parent_entry.path)[1],
-            state.config['ID_FORMATTER'](entry.type, entry.path[parent_index:]))
+        parent_url = state.name_map['.'.join(entry.path[:parent_index])].url
+        url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](entry.type, entry.path[parent_index:]))
 
     return '<a href="{}" class="m-doc">{}</a>'.format(url, '.'.join(shortened_path))
 
@@ -1616,6 +1616,7 @@ def run(basedir, config, templates):
         entry = Empty()
         entry.type = EntryType.PAGE
         entry.path = [page_name]
+        entry.url = config['URL_FORMATTER'](EntryType.PAGE, [page_name])[1]
         entry.filename = os.path.join(config['INPUT'], page)
         state.name_map[page_name] = entry
 
