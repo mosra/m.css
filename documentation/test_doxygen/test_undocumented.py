@@ -56,5 +56,5 @@ class Test(IntegrationTestCase):
         # TODO: reuse the search data deserialization API once done
         with open(os.path.join(self.path, 'html', searchdata_filename), 'rb') as f:
             serialized = f.read()
-            magic, version, symbol_count, map_offset = search_data_header_struct.unpack_from(serialized)
+            magic, version, symbol_count, map_offset, type_map_offset = search_data_header_struct.unpack_from(serialized)
             self.assertEqual(symbol_count, 44)

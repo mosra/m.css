@@ -30,7 +30,7 @@ import sys
 import pathlib
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from doxygen import EntryType
+from doxygen import EntryType, search_type_map
 from _search import Trie, ResultMap, ResultFlag, serialize_search_data
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'
@@ -38,11 +38,11 @@ basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-dat
 with open(basedir/'short.bin', 'wb') as f:
     f.write(b'')
 with open(basedir/'wrong-magic.bin', 'wb') as f:
-    f.write(b'MOS\0                ')
+    f.write(b'MOS\1                      ')
 with open(basedir/'wrong-version.bin', 'wb') as f:
-    f.write(b'MCS\1                ')
+    f.write(b'MCS\0                      ')
 with open(basedir/'empty.bin', 'wb') as f:
-    f.write(serialize_search_data(Trie(), ResultMap(), 0))
+    f.write(serialize_search_data(Trie(), ResultMap(), [], 0))
 
 trie = Trie()
 map = ResultMap()
@@ -71,9 +71,9 @@ trie.insert("rectangle", map.add("Rectangle", "", alias=range_index))
 trie.insert("rect", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))
 
 with open(basedir/'searchdata.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, 7))
+    f.write(serialize_search_data(trie, map, search_type_map, 7))
 with open(basedir/'searchdata.b85', 'wb') as f:
-    f.write(base64.b85encode(serialize_search_data(trie, map, 7), True))
+    f.write(base64.b85encode(serialize_search_data(trie, map, search_type_map, 7), True))
 
 trie = Trie()
 map = ResultMap()
@@ -82,7 +82,7 @@ trie.insert("hýždě", map.add("Hýždě", "#a", flags=ResultFlag.from_type(Res
 trie.insert("hárá", map.add("Hárá", "#b", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)))
 
 with open(basedir/'unicode.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, 2))
+    f.write(serialize_search_data(trie, map, search_type_map, 2))
 
 trie = Trie()
 map = ResultMap()
@@ -92,4 +92,4 @@ trie.insert("geometry", map.add("Magnum::Math::Geometry", "namespaceMagnum_1_1Ma
 trie.insert("range", map.add("Magnum::Math::Range", "classMagnum_1_1Math_1_1Range.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)))
 
 with open(basedir/'nested.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, 4))
+    f.write(serialize_search_data(trie, map, search_type_map, 4))

@@ -47,7 +47,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
-from _search import ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_filename, searchdata_filename_b85, searchdata_format_version
+from _search import CssClass, ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_filename, searchdata_filename_b85, searchdata_format_version
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../plugins'))
 import dot2svg
@@ -56,6 +56,8 @@ import latex2svgextra
 import ansilexer
 
 class EntryType(enum.Enum):
+    # Order must match the search_type_map below; first value is reserved for
+    # ResultFlag.ALIAS
     PAGE = 1
     NAMESPACE = 2
     GROUP = 3
@@ -70,6 +72,24 @@ class EntryType(enum.Enum):
     ENUM = 12
     ENUM_VALUE = 13
     VAR = 14
+
+# Order must match the EntryType above
+search_type_map = [
+    (CssClass.SUCCESS, "page"),
+    (CssClass.PRIMARY, "namespace"),
+    (CssClass.SUCCESS, "group"),
+    (CssClass.PRIMARY, "class"),
+    (CssClass.PRIMARY, "struct"),
+    (CssClass.PRIMARY, "union"),
+    (CssClass.PRIMARY, "typedef"),
+    (CssClass.WARNING, "dir"),
+    (CssClass.WARNING, "file"),
+    (CssClass.INFO, "func"),
+    (CssClass.INFO, "define"),
+    (CssClass.PRIMARY, "enum"),
+    (CssClass.DEFAULT, "enum val"),
+    (CssClass.DEFAULT, "var")
+]
 
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+|@)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
@@ -2354,7 +2374,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
     # order by default
     trie.sort(map)
 
-    return serialize_search_data(trie, map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
+    return serialize_search_data(trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
 def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas

@@ -25,10 +25,11 @@
 "use strict"; /* it summons the Cthulhu in a proper way, they say */
 
 var Search = {
-    formatVersion: 0, /* the data filename contains this number too */
+    formatVersion: 1, /* the data filename contains this number too */
 
     trie: null,
     map: null,
+    typeMap: null,
     dataSize: 0,
     symbolCount: 0,
     maxResults: 0,
@@ -54,8 +55,9 @@ var Search = {
     init: function(buffer, maxResults) {
         let view = new DataView(buffer);
 
-        /* The file is too short to contain at least the headers */
-        if(view.byteLength < 20) {
+        /* The file is too short to contain at least the headers and empty
+           sections */
+        if(view.byteLength < 26) {
             console.error("Search data too short");
             return false;
         }
@@ -74,8 +76,10 @@ var Search = {
 
         /* Separate the data into the trie and the result map */
         let mapOffset = view.getUint32(6, true);
-        this.trie = new DataView(buffer, 10, mapOffset - 10);
-        this.map = new DataView(buffer, mapOffset);
+        let typeMapOffset = view.getUint32(10, true);
+        this.trie = new DataView(buffer, 14, mapOffset - 14);
+        this.map = new DataView(buffer, mapOffset, typeMapOffset - mapOffset);
+        this.typeMap = new DataView(buffer, typeMapOffset);
 
         /* Set initial properties */
         this.dataSize = buffer.byteLength;
@@ -396,6 +400,8 @@ var Search = {
                     alias: alias.name,
                     url: alias.url,
                     flags: alias.flags,
+                    cssClass: alias.cssClass,
+                    typeName: alias.typeName,
                     suffixLength: suffixLength + resultSuffixLength};
         }
 
@@ -405,10 +411,40 @@ var Search = {
             url += String.fromCharCode(this.map.getUint8(j));
         }
 
-        /* Keeping in UTF-8, as we need that for proper slicing (and concatenating) */
+        /* This is an alias, return what we have, without parsed CSS class and
+           type name as those are retrieved from the final target type */
+        if(!(flags >> 4))
+            return {name: name,
+                    url: url,
+                    flags: flags & 0x0f,
+                    suffixLength: suffixLength + resultSuffixLength};
+
+        /* Otherwise, get CSS class and type name for the result label */
+        let typeMapIndex = (flags >> 4) - 1;
+        let cssClass = [
+            /* Keep in sync with _search.py */
+            'm-default',
+            'm-primary',
+            'm-success',
+            'm-warning',
+            'm-danger',
+            'm-info',
+            'm-dim'
+        ][this.typeMap.getUint8(typeMapIndex*2)];
+        let typeNameOffset = this.typeMap.getUint8(typeMapIndex*2 + 1);
+        let nextTypeNameOffset = this.typeMap.getUint8((typeMapIndex + 1)*2 + 1);
+        let typeName = '';
+        for(let j = typeNameOffset; j != nextTypeNameOffset; ++j)
+            typeName += String.fromCharCode(this.typeMap.getUint8(j));
+
+        /* Keeping in UTF-8, as we need that for proper slicing (and
+           concatenating). Strip the type from the flags, as it's now expressed
+           directly. */
         return {name: name,
                 url: url,
-                flags: flags,
+                flags: flags & 0x0f,
+                cssClass: cssClass,
+                typeName: typeName,
                 suffixLength: suffixLength + resultSuffixLength};
     },
 
@@ -451,70 +487,8 @@ var Search = {
 
             let list = '';
             for(let i = 0; i != results.length; ++i) {
-                let type = '';
-                let color = '';
-                switch(results[i].flags >> 4) {
-                    /* Keep in sync with doxygen.py */
-                    case 1:
-                        type = 'page';
-                        color = 'm-success';
-                        break;
-                    case 2:
-                        type = 'namespace';
-                        color = 'm-primary';
-                        break;
-                    case 3:
-                        type = 'group';
-                        color = 'm-success';
-                        break;
-                    case 4:
-                        type = 'class';
-                        color = 'm-primary';
-                        break;
-                    case 5:
-                        type = 'struct';
-                        color = 'm-primary';
-                        break;
-                    case 6:
-                        type = 'union';
-                        color = 'm-primary';
-                        break;
-                    case 7:
-                        type = 'typedef';
-                        color = 'm-primary';
-                        break;
-                    case 8:
-                        type = 'dir';
-                        color = 'm-warning';
-                        break;
-                    case 9:
-                        type = 'file';
-                        color = 'm-warning';
-                        break;
-                    case 10:
-                        type = 'func';
-                        color = 'm-info';
-                        break;
-                    case 11:
-                        type = 'define';
-                        color = 'm-info';
-                        break;
-                    case 12:
-                        type = 'enum';
-                        color = 'm-primary';
-                        break;
-                    case 13:
-                        type = 'enum val';
-                        color = 'm-default';
-                        break;
-                    case 14:
-                        type = 'var';
-                        color = 'm-default';
-                        break;
-                }
-
                 /* Labels + */
-                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + color + '">' + type + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
+                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + results[i].cssClass + '">' + results[i].typeName + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
 
                 /* Render the alias (cut off from the right) */
                 if(results[i].alias) {

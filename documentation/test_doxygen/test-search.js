@@ -79,7 +79,7 @@ const { StringDecoder } = require('string_decoder');
 /* Verify that base85-decoded file is equivalent to the binary */
 {
     let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.equal(binary.byteLength, 638);
+    assert.equal(binary.byteLength, 745);
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
@@ -114,7 +114,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 638);
+    assert.equal(Search.dataSize, 745);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
 
@@ -122,19 +122,27 @@ const { StringDecoder } = require('string_decoder');
     let resultsForM = [[
         { name: 'Math',
           url: 'namespaceMath.html',
-          flags: 32,
+          flags: 0,
+          cssClass: 'm-primary',
+          typeName: 'namespace',
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 10 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 173,
+          flags: 13, /* has prefix + suffix, deleted */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 10 }], ''];
     assert.deepEqual(Search.search('m'), resultsForM);
 
@@ -142,15 +150,21 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('min'), [[
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 10 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 173,
+          flags: 13, /* has prefix + suffix, deleted */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 8 }], '()']);
 
     /* Go back, get the same thing */
@@ -160,7 +174,9 @@ const { StringDecoder } = require('string_decoder');
     let resultsForVec = [[
         { name: 'Math::Vector',
           url: 'classMath_1_1Vector.html',
-          flags: 72|2, /* Deprecated */
+          flags: 10, /* has prefix + deprecated */
+          cssClass: 'm-primary',
+          typeName: 'class',
           suffixLength: 3 }], 'tor'];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 
@@ -174,7 +190,9 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('su'), [[
         { name: Search.toUtf8('Page » Subpage'),
           url: 'subpage.html',
-          flags: 16,
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
           suffixLength: 5 }], 'bpage']);
 
     /* Alias */
@@ -182,16 +200,22 @@ const { StringDecoder } = require('string_decoder');
         { name: 'Rectangle::Rect()',
           alias: 'Math::Range',
           url: 'classMath_1_1Range.html',
-          flags: 72,
+          flags: 8, /* has prefix */
+          cssClass: 'm-primary',
+          typeName: 'class',
           suffixLength: 5 },
         { name: 'Math::Range',
           url: 'classMath_1_1Range.html',
-          flags: 72,
+          flags: 8, /* has prefix */
+          cssClass: 'm-primary',
+          typeName: 'class',
           suffixLength: 4 },
         { name: 'Rectangle',
           alias: 'Math::Range',
           url: 'classMath_1_1Range.html',
-          flags: 72,
+          flags: 8, /* has prefix */
+          cssClass: 'm-primary',
+          typeName: 'class',
           suffixLength: 8 }], '']);
 }
 
@@ -199,21 +223,27 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 638);
+    assert.equal(Search.dataSize, 745);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [[
         { name: 'Math',
           url: 'namespaceMath.html',
-          flags: 32,
+          flags: 0,
+          cssClass: 'm-primary',
+          typeName: 'namespace',
           suffixLength: 3 },
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 12 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 10 }], '']);
 }
 
@@ -221,21 +251,27 @@ const { StringDecoder } = require('string_decoder');
 {
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.dataSize, 640); /* some padding on the end, that's okay */
+    assert.equal(Search.dataSize, 748); /* some padding on the end, that's okay */
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [[
         { name: 'Math::min(int, int)',
           url: 'namespaceMath.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 10 },
         { name: 'Math::Vector::min() const',
           url: 'classMath_1_1Vector.html#min',
-          flags: 169,
+          flags: 9, /* has prefix + suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 8 },
         { name: 'Math::Range::min() const',
           url: 'classMath_1_1Range.html#min',
-          flags: 173,
+          flags: 13, /* has prefix + suffix, deleted */
+          cssClass: 'm-info',
+          typeName: 'func',
           suffixLength: 8 }], '()']);
 }
 
@@ -243,29 +279,37 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 124);
+    assert.equal(Search.dataSize, 231);
     assert.equal(Search.symbolCount, 2);
     /* Both "Hýždě" and "Hárá" have common autocompletion to "h\xA1", which is
        not valid UTF-8, so it has to get truncated */
     assert.deepEqual(Search.search('h'), [[
         { name: Search.toUtf8('Hárá'),
           url: '#b',
-          flags: 16,
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
           suffixLength: 5 },
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
-          flags: 16,
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
           suffixLength: 7 }], '']);
     /* These autocompletions are valid UTF-8, so nothing gets truncated */
     assert.deepEqual(Search.search('hý'), [[
         { name: Search.toUtf8('Hýždě'),
           url: '#a',
-          flags: 16,
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
           suffixLength: 5 }], 'ždě']);
     assert.deepEqual(Search.search('há'), [[
         { name: Search.toUtf8('Hárá'),
           url: '#b',
-          flags: 16,
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
           suffixLength: 3 }], 'rá']);
 }
 
@@ -273,18 +317,22 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/nested.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 295);
+    assert.equal(Search.dataSize, 402);
     assert.equal(Search.symbolCount, 4);
     assert.deepEqual(Search.search('geo'), [[
         { name: 'Magnum::Math::Geometry',
           url: 'namespaceMagnum_1_1Math_1_1Geometry.html',
-          flags: 40,
+          flags: 8, /* has prefix */
+          cssClass: 'm-primary',
+          typeName: 'namespace',
           suffixLength: 5 }], 'metry']);
 
     assert.deepEqual(Search.search('ra'), [[
         { name: 'Magnum::Math::Range',
           url: 'classMagnum_1_1Math_1_1Range.html',
-          flags: 72,
+          flags: 8, /* has prefix */
+          cssClass: 'm-primary',
+          typeName: 'class',
           suffixLength: 3 }], 'nge']);
 }
 

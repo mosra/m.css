@@ -30,7 +30,7 @@ import sys
 import unittest
 from types import SimpleNamespace as Empty
 
-from doxygen import EntryType
+from doxygen import EntryType, search_type_map
 from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print, searchdata_filename
 
 from test_doxygen import IntegrationTestCase
@@ -222,7 +222,7 @@ class Serialization(unittest.TestCase):
         trie.insert("math::range", index)
         trie.insert("range", index)
 
-        serialized = serialize_search_data(trie, map, 3)
+        serialized = serialize_search_data(trie, map, search_type_map, 3)
         self.compare(serialized, """
 3 symbols
 math [0]
@@ -233,8 +233,22 @@ range [2]
 0: Math [type=NAMESPACE] -> namespaceMath.html
 1: ::Vector [prefix=0[:0], type=CLASS] -> classMath_1_1Vector.html
 2: ::Range [prefix=0[:0], type=CLASS] -> classMath_1_1Range.html
+(EntryType.PAGE, CssClass.SUCCESS, 'page'),
+(EntryType.NAMESPACE, CssClass.PRIMARY, 'namespace'),
+(EntryType.GROUP, CssClass.SUCCESS, 'group'),
+(EntryType.CLASS, CssClass.PRIMARY, 'class'),
+(EntryType.STRUCT, CssClass.PRIMARY, 'struct'),
+(EntryType.UNION, CssClass.PRIMARY, 'union'),
+(EntryType.TYPEDEF, CssClass.PRIMARY, 'typedef'),
+(EntryType.DIR, CssClass.WARNING, 'dir'),
+(EntryType.FILE, CssClass.WARNING, 'file'),
+(EntryType.FUNC, CssClass.INFO, 'func'),
+(EntryType.DEFINE, CssClass.INFO, 'define'),
+(EntryType.ENUM, CssClass.PRIMARY, 'enum'),
+(EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
+(EntryType.VAR, CssClass.DEFAULT, 'var')
 """)
-        self.assertEqual(len(serialized), 241)
+        self.assertEqual(len(serialized), 348)
 
 class Search(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -247,7 +261,7 @@ class Search(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 4695)
+        self.assertEqual(len(serialized), 4802)
         self.assertEqual(search_data_pretty, """
 53 symbols
 deprecated_macro [0]
@@ -411,6 +425,20 @@ union [59]
 58: ::DeprecatedUnion [prefix=39[:0], deprecated, type=UNION] -> unionDeprecatedNamespace_1_1DeprecatedUnion.html
 59: ::Union [prefix=50[:0], type=UNION] -> unionNamespace_1_1Union.html
 60: glUnion() [alias=59] ->
+(EntryType.PAGE, CssClass.SUCCESS, 'page'),
+(EntryType.NAMESPACE, CssClass.PRIMARY, 'namespace'),
+(EntryType.GROUP, CssClass.SUCCESS, 'group'),
+(EntryType.CLASS, CssClass.PRIMARY, 'class'),
+(EntryType.STRUCT, CssClass.PRIMARY, 'struct'),
+(EntryType.UNION, CssClass.PRIMARY, 'union'),
+(EntryType.TYPEDEF, CssClass.PRIMARY, 'typedef'),
+(EntryType.DIR, CssClass.WARNING, 'dir'),
+(EntryType.FILE, CssClass.WARNING, 'file'),
+(EntryType.FUNC, CssClass.INFO, 'func'),
+(EntryType.DEFINE, CssClass.INFO, 'define'),
+(EntryType.ENUM, CssClass.PRIMARY, 'enum'),
+(EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
+(EntryType.VAR, CssClass.DEFAULT, 'var')
 """.strip())
 
 class SearchLongSuffixLength(IntegrationTestCase):
@@ -424,7 +452,7 @@ class SearchLongSuffixLength(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 382)
+        self.assertEqual(len(serialized), 489)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 2 symbols
@@ -439,6 +467,20 @@ averylongfunctionname [0]
 0: ::aVeryLongFunctionName(const std::reference_wrapper<const std::vector<std::string>>&, c…) [prefix=2[:12], suffix_length=69, type=FUNC] -> #a1e9a11887275938ef5541070955c9d9c
 1:  [prefix=0[:46], suffix_length=67, type=FUNC] ->
 2: File.h [type=FILE] -> File_8h.html
+(EntryType.PAGE, CssClass.SUCCESS, 'page'),
+(EntryType.NAMESPACE, CssClass.PRIMARY, 'namespace'),
+(EntryType.GROUP, CssClass.SUCCESS, 'group'),
+(EntryType.CLASS, CssClass.PRIMARY, 'class'),
+(EntryType.STRUCT, CssClass.PRIMARY, 'struct'),
+(EntryType.UNION, CssClass.PRIMARY, 'union'),
+(EntryType.TYPEDEF, CssClass.PRIMARY, 'typedef'),
+(EntryType.DIR, CssClass.WARNING, 'dir'),
+(EntryType.FILE, CssClass.WARNING, 'file'),
+(EntryType.FUNC, CssClass.INFO, 'func'),
+(EntryType.DEFINE, CssClass.INFO, 'define'),
+(EntryType.ENUM, CssClass.PRIMARY, 'enum'),
+(EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
+(EntryType.VAR, CssClass.DEFAULT, 'var')
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover
