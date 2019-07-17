@@ -390,8 +390,6 @@ var Search = {
            that's just wrong, fix! */
         if(aliasedIndex != null && maxUrlPrefix == 0xffffff) {
             let alias = this.gatherResult(aliasedIndex, 0 /* ignored */, 0xffffff); /* should be enough haha */
-            url = alias.url;
-            flags = alias.flags;
 
             /* Keeping in UTF-8, as we need that for proper slicing (and concatenating) */
             return {name: name,
