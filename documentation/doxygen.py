@@ -3429,7 +3429,7 @@ default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/doxygen/')
 
-def run(doxyfile, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
+def run(doxyfile, *, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
     state = State()
     state.basedir = os.path.dirname(doxyfile)
 
@@ -3628,4 +3628,4 @@ if __name__ == '__main__': # pragma: no cover
         logging.debug("running Doxygen on {}".format(args.doxyfile))
         subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile))
 
-    run(doxyfile, os.path.abspath(args.templates), args.wildcard, args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
+    run(doxyfile, templates=os.path.abspath(args.templates), wildcard=args.wildcard, index_pages=args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
