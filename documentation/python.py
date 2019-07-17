@@ -501,25 +501,10 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
 
     return submodules_to_crawl
 
-def make_name_link(state: State, referrer_path: List[str], type) -> str:
-    if type is None: return None
-    assert isinstance(type, str)
+def make_relative_name(state: State, referrer_path: List[str], name):
+    if name not in state.name_map: return name
 
-    # Not found, return as-is. However, if the prefix is one of the
-    # INPUT_MODULES, emit a warning to notify the user of a potentially missing
-    # stuff from the docs.
-    if not type in state.name_map:
-        for module in state.config['INPUT_MODULES']:
-            if isinstance(module, str):
-                module_name = module
-            else:
-                module_name = module.__name__
-            if type.startswith(module_name + '.'):
-                logging.warning("could not resolve a link to %s which is among INPUT_MODULES (referred from %s), possibly hidden/undocumented?", type, '.'.join(referrer_path))
-                break
-        return type
-
-    entry = state.name_map[type]
+    entry = state.name_map[name]
 
     # Strip common prefix from both paths. We always want to keep at least one
     # element from the entry path, so strip the last element off.
@@ -553,7 +538,31 @@ def make_name_link(state: State, referrer_path: List[str], type) -> str:
         common_prefix_length -= 1
         shortened_path = entry.path[common_prefix_length:]
 
+    return '.'.join(shortened_path)
+
+def make_name_link(state: State, referrer_path: List[str], type) -> str:
+    if type is None: return None
+    assert isinstance(type, str)
+
+    # Not found, return as-is. However, if the prefix is one of the
+    # INPUT_MODULES, emit a warning to notify the user of a potentially missing
+    # stuff from the docs.
+    if not type in state.name_map:
+        for module in state.config['INPUT_MODULES']:
+            if isinstance(module, str):
+                module_name = module
+            else:
+                module_name = module.__name__
+            if type.startswith(module_name + '.'):
+                logging.warning("could not resolve a link to %s which is among INPUT_MODULES (referred from %s), possibly hidden/undocumented?", type, '.'.join(referrer_path))
+                break
+        return type
+
+    # Make a shorter name that's relative to the referrer but still unambiguous
+    relative_name = make_relative_name(state, referrer_path, type)
+
     # Format the URL
+    entry = state.name_map[type]
     if entry.type == EntryType.CLASS:
         url = entry.url
     else:
@@ -565,7 +574,7 @@ def make_name_link(state: State, referrer_path: List[str], type) -> str:
         parent_url = state.name_map['.'.join(entry.path[:parent_index])].url
         url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](entry.type, entry.path[parent_index:]))
 
-    return '<a href="{}" class="m-doc">{}</a>'.format(url, '.'.join(shortened_path))
+    return '<a href="{}" class="m-doc">{}</a>'.format(url, relative_name)
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
