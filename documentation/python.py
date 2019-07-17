@@ -1688,7 +1688,7 @@ def run(basedir, config, templates):
         index_entry = Empty()
         index_entry.kind = 'page'
         index_entry.name = entry.name
-        index_entry.url = state.config['URL_FORMATTER'](entry.type, entry.path)[1]
+        index_entry.url = config['URL_FORMATTER'](entry.type, entry.path)[1]
         index_entry.summary = entry.summary
         index_entry.has_nestable_children = False
         index_entry.children = []
@@ -1700,7 +1700,7 @@ def run(basedir, config, templates):
     index.pages = page_index
     for file in special_pages[1:]: # exclude index
         template = env.get_template(file + '.html')
-        filename, url = state.config['URL_FORMATTER'](EntryType.SPECIAL, [file])
+        filename, url = config['URL_FORMATTER'](EntryType.SPECIAL, [file])
         rendered = template.render(index=index, URL=url, **config)
         with open(os.path.join(config['OUTPUT'], filename), 'wb') as f:
             f.write(rendered.encode('utf-8'))
@@ -1714,7 +1714,7 @@ def run(basedir, config, templates):
     if 'index.rst' not in [os.path.basename(i) for i in config['INPUT_PAGES']]:
         logging.debug("writing index.html for an empty main page")
 
-        filename, url = state.config['URL_FORMATTER'](EntryType.SPECIAL, ['index'])
+        filename, url = config['URL_FORMATTER'](EntryType.SPECIAL, ['index'])
 
         page = Empty()
         page.filename = filename
