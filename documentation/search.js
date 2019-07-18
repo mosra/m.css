@@ -555,7 +555,7 @@ var Search = {
         this.renderResults(value, results);
         if(value.trim().length) {
             document.getElementById('search-symbolcount').innerHTML =
-                results[0].length + (results.length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
+                results[0].length + (results[0].length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
         } else
             document.getElementById('search-symbolcount').innerHTML = this.symbolCount;
     },
