@@ -27,11 +27,11 @@
 var Search = {
     formatVersion: 1, /* the data filename contains this number too */
 
+    dataSize: 0, /* used mainly by tests, not here */
+    symbolCount: '&hellip;',
     trie: null,
     map: null,
     typeMap: null,
-    dataSize: 0,
-    symbolCount: 0,
     maxResults: 0,
 
     /* Always contains at least the root node offset and then one node offset
@@ -83,15 +83,14 @@ var Search = {
 
         /* Set initial properties */
         this.dataSize = buffer.byteLength;
-        this.symbolCount = view.getUint16(4, true);
+        this.symbolCount = view.getUint16(4, true) + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
         this.maxResults = maxResults ? maxResults : 100;
         this.searchString = '';
         this.searchStack = [this.trie.getUint32(0, true)];
 
         /* istanbul ignore if */
         if(typeof document !== 'undefined') {
-            document.getElementById('search-symbolcount').innerHTML =
-                this.symbolCount + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
+            document.getElementById('search-symbolcount').innerHTML = this.symbolCount;
             document.getElementById('search-input').disabled = false;
             document.getElementById('search-input').placeholder = "Type something here …";
             document.getElementById('search-input').focus();
@@ -558,8 +557,7 @@ var Search = {
             document.getElementById('search-symbolcount').innerHTML =
                 results[0].length + (results.length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
         } else
-            document.getElementById('search-symbolcount').innerHTML =
-                this.symbolCount + " symbols (" + Math.round(this.dataSize/102.4)/10 + " kB)";
+            document.getElementById('search-symbolcount').innerHTML = this.symbolCount;
     },
 };
 
@@ -595,6 +593,7 @@ function showSearch() {
     Search.canGoBackToHideSearch = true;
 
     updateForSearchVisible();
+    document.getElementById('search-symbolcount').innerHTML = Search.symbolCount;
     return false;
 }
 

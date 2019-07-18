@@ -106,7 +106,8 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/empty.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.symbolCount, 0);
+    assert.equal(Search.dataSize, 26);
+    assert.equal(Search.symbolCount, "0 symbols (0 kB)");
     assert.deepEqual(Search.search(''), [[], '']);
 }
 
@@ -115,7 +116,7 @@ const { StringDecoder } = require('string_decoder');
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
     assert.equal(Search.dataSize, 674);
-    assert.equal(Search.symbolCount, 7);
+    assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 100);
 
     /* Blow up */
@@ -224,7 +225,7 @@ const { StringDecoder } = require('string_decoder');
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
     assert.equal(Search.dataSize, 674);
-    assert.equal(Search.symbolCount, 7);
+    assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [[
         { name: 'Math',
@@ -252,7 +253,7 @@ const { StringDecoder } = require('string_decoder');
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
     assert.equal(Search.dataSize, 676); /* some padding on the end, that's okay */
-    assert.equal(Search.symbolCount, 7);
+    assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [[
         { name: 'Math::min(int, int)',
@@ -280,7 +281,7 @@ const { StringDecoder } = require('string_decoder');
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
     assert.equal(Search.dataSize, 160);
-    assert.equal(Search.symbolCount, 2);
+    assert.equal(Search.symbolCount, "2 symbols (0.2 kB)");
     /* Both "Hýždě" and "Hárá" have common autocompletion to "h\xA1", which is
        not valid UTF-8, so it has to get truncated */
     assert.deepEqual(Search.search('h'), [[
@@ -318,7 +319,7 @@ const { StringDecoder } = require('string_decoder');
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/nested.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
     assert.equal(Search.dataSize, 331);
-    assert.equal(Search.symbolCount, 4);
+    assert.equal(Search.symbolCount, "4 symbols (0.3 kB)");
     assert.deepEqual(Search.search('geo'), [[
         { name: 'Magnum::Math::Geometry',
           url: 'namespaceMagnum_1_1Math_1_1Geometry.html',
@@ -341,7 +342,7 @@ const { StringDecoder } = require('string_decoder');
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/manyresults.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 10000));
     assert.equal(Search.dataSize, 6415);
-    assert.equal(Search.symbolCount, 128 + 3);
+    assert.equal(Search.symbolCount, "131 symbols (6.3 kB)");
     assert.equal(Search.maxResults, 10000);
     assert.deepEqual(Search.search('__init__')[0].length, 128 + 3);
     assert.deepEqual(Search.search('__init__')[1], '');
