@@ -2317,15 +2317,15 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
                 # the suffix_length to exceed 256, which won't fit into the
                 # serialized search data. However that *also* won't fit in the
                 # search result list so there's no point in storing so much.
-                # Truncate it to 65 chars which could fit at least a part of
-                # the function name in the list in most cases, yet be still
-                # long enough to be able to distinguish particular overloads.
+                # Truncate it to 48 chars which should fit the full function
+                # name in the list in most cases, yet be still long enough to
+                # be able to distinguish particular overloads.
                 # TODO: the suffix_length has to be calculated on UTF-8 and I
                 # am (un)escaping a lot back and forth here -- needs to be
                 # cleaned up
                 params = html.unescape(strip_tags(', '.join(result.params)))
-                if len(params) > 65:
-                    params = params[:64] + '…'
+                if len(params) > 49:
+                    params = params[:48] + '…'
                 name_with_args += '(' + html.escape(params) + ')'
                 suffix_length += len(params.encode('utf-8')) + 2
             if hasattr(result, 'suffix') and result.suffix:

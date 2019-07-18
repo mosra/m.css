@@ -235,7 +235,7 @@ class SearchLongSuffixLength(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 489)
+        self.assertEqual(len(serialized), 473)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 2 symbols
@@ -247,8 +247,8 @@ file.h [2]
 averylongfunctionname [0]
 |                    ($
 |                     ) [1]
-0: ::aVeryLongFunctionName(const std::reference_wrapper<const std::vector<std::string>>&, c…) [prefix=2[:12], suffix_length=69, type=FUNC] -> #a1e9a11887275938ef5541070955c9d9c
-1:  [prefix=0[:46], suffix_length=67, type=FUNC] ->
+0: ::aVeryLongFunctionName(const std::reference_wrapper<const std::vector<s…) [prefix=2[:12], suffix_length=53, type=FUNC] -> #a1e9a11887275938ef5541070955c9d9c
+1:  [prefix=0[:46], suffix_length=51, type=FUNC] ->
 2: File.h [type=FILE] -> File_8h.html
 (EntryType.PAGE, CssClass.SUCCESS, 'page'),
 (EntryType.NAMESPACE, CssClass.PRIMARY, 'namespace'),
