@@ -931,13 +931,6 @@ properties:
 ======================================= =======================================
 Property                                Description
 ======================================= =======================================
-:py:`page.prefix_wbr`                   Fully-qualified symbol prefix for given
-                                        compound with trailing ``.`` with
-                                        :html:`<wbr/>` tag after every ``.``.
-:py:`page.classes`                      List of classes. See
-                                        `Class properties`_ for details.
-:py:`page.enums`                        List of enums. See
-                                        `Enum properties`_ for details.
 :py:`page.classmethods`                 List of class methods (annotated with
                                         :py:`@classmethod`). See
                                         `Function properties`_ for details.
@@ -951,10 +944,6 @@ Property                                Description
                                         `Function properties`_ for details.
 :py:`page.properties`                   List of properties. See
                                         `Property properties`_ for details.
-:py:`page.data`                         List of data. See `Data properties`_
-                                        for details.
-:py:`page.has_enum_details`             If there is at least one enum with full
-                                        description block [2]_
 ======================================= =======================================
 
 Explicit documentation pages rendered with ``class.html`` have additional
@@ -1106,7 +1095,7 @@ Property                            Description
 :py:`data.name`                     Data name
 :py:`data.id`                       Data ID [4]_
 :py:`data.type`                     Data type
-:py:`data.summary`                  Doc summary. Currently always empty.
+:py:`data.summary`                  Doc summary
 :py:`data.value`                    Data value representation
 :py:`data.has_details`              If there is enough content for the full
                                     description block. Currently always set to
