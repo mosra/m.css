@@ -194,7 +194,7 @@ var Search = {
     toUtf8: function(string) { return unescape(encodeURIComponent(string)); },
     fromUtf8: function(string) { return decodeURIComponent(escape(string)); },
 
-    autocompletedCharsToString: function(chars) {
+    autocompletedCharsToUtf8: function(chars) {
         /* Strip incomplete UTF-8 chars from the autocompletion end */
         for(let i = chars.length - 1; i >= 0; --i) {
             let c = chars[i];
@@ -226,7 +226,7 @@ var Search = {
         let suggestedTabAutocompletionString = '';
         for(let i = 0; i != chars.length; ++i)
             suggestedTabAutocompletionString += String.fromCharCode(chars[i]);
-        return this.fromUtf8(suggestedTabAutocompletionString);
+        return suggestedTabAutocompletionString;
     },
 
     /* Returns the values in UTF-8, but input is in whatever shitty 16bit
@@ -323,7 +323,7 @@ var Search = {
 
                 /* 'nuff said. */
                 if(results.length >= this.maxResults)
-                    return [results, this.autocompletedCharsToString(suggestedTabAutocompletionChars)];
+                    return [results, this.autocompletedCharsToUtf8(suggestedTabAutocompletionChars)];
             }
 
             /* Dig deeper */
@@ -352,7 +352,7 @@ var Search = {
             }
         }
 
-        return [results, this.autocompletedCharsToString(suggestedTabAutocompletionChars)];
+        return [results, this.autocompletedCharsToUtf8(suggestedTabAutocompletionChars)];
     },
 
     gatherResult: function(index, suffixLength, maxUrlPrefix) {

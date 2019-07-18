@@ -304,14 +304,14 @@ const { StringDecoder } = require('string_decoder');
           flags: 0,
           cssClass: 'm-success',
           typeName: 'page',
-          suffixLength: 5 }], 'ždě']);
+          suffixLength: 5 }], Search.toUtf8('ždě')]);
     assert.deepEqual(Search.search('há'), [[
         { name: Search.toUtf8('Hárá'),
           url: '#b',
           flags: 0,
           cssClass: 'm-success',
           typeName: 'page',
-          suffixLength: 3 }], 'rá']);
+          suffixLength: 3 }], Search.toUtf8('rá')]);
 }
 
 /* Properly combine heavily nested URLs */
