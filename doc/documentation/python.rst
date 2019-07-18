@@ -790,9 +790,9 @@ enum class itself, not the values.
 
 .. note-info::
 
-    pybind 2.3 (not released yet) is scheduled to support docstrings for enum
-    values (see :gh:`pybind/pybind11#1160`). Support for this feature is not
-    done on the script side yet.
+    pybind 2.3 supports docstrings for enum values (see
+    :gh:`pybind/pybind11#1160`). Support for this feature is not done on the
+    script side yet.
 
 `Command-line options`_
 =======================

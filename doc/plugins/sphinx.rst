@@ -48,14 +48,19 @@ using external files in a way similar to `Sphinx <https://www.sphinx-doc.org/>`_
 `How to use`_
 =============
 
-`Pelican`_
-----------
+`Python doc theme`_
+-------------------
 
 List the plugin in your :py:`PLUGINS`.
 
 .. code:: py
 
     PLUGINS += ['m.sphinx']
+
+.. note-info::
+
+    This plugin is available only for the `Python doc theme <{filename}/documentation/python.rst>`_,
+    not usable for Pelican or Doxygen themes.
 
 `Module, class, enum, function, property and data docs`_
 ========================================================
@@ -94,7 +99,7 @@ formatting simpler (for display inside IDEs or via the builtin :py:`help()`),
 while supplying an alternative and more complex-formatted summary for the
 actual rendered docs.
 
-.. note-info::
+.. note-warning::
 
     Modules, classes and data described using these directives have to actually
     exist (i.e., accessible via inspection) in given module. If given name
