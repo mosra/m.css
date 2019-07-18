@@ -29,7 +29,7 @@
               <tbody>
                 {% for value in enum.values %}
                 <tr>
-                  <td><a href="#{{ value.id }}" class="m-doc-self" name="{{ value.id }}">{{ value.name }}</a></td>
+                  <td><a href="#{{ value.id }}" class="m-doc-self" id="{{ value.id }}">{{ value.name }}</a></td>
                   <td>
                   {% if value.brief %}{# brief is not required for values #}
                   <p>{{ value.brief }}</p>
