@@ -479,12 +479,8 @@ var Search = {
         return this.escape(name).replace(/[:=]/g, '&lrm;$&').replace(/(\)|&gt;|&amp;|\/)/g, '&lrm;$&&lrm;');
     },
 
-    renderResults: /* istanbul ignore next */ function(value, resultsSuggestedTabAutocompletion) {
-        /* Normalize the value and encode as UTF-8 so the slicing works
-           properly */
-        value = this.toUtf8(value.trim());
-
-        if(!value.length) {
+    renderResults: /* istanbul ignore next */ function(resultsSuggestedTabAutocompletion) {
+        if(!this.searchString.length) {
             document.getElementById('search-help').style.display = 'block';
             document.getElementById('search-results').style.display = 'none';
             document.getElementById('search-notfound').style.display = 'none';
@@ -503,16 +499,16 @@ var Search = {
             let list = '';
             for(let i = 0; i != results.length; ++i) {
                 /* Labels + */
-                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + results[i].cssClass + '">' + results[i].typeName + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
+                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - this.searchString.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + results[i].cssClass + '">' + results[i].typeName + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
 
                 /* Render the alias (cut off from the right) */
                 if(results[i].alias) {
-                    list += '<div class="m-doc-search-alias"><span class="m-text m-dim">' + this.escape(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-doc-search-typed">' + this.escape(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '<span class="m-text m-dim">: ' + this.escape(results[i].alias) + '</span>';
+                    list += '<div class="m-doc-search-alias"><span class="m-text m-dim">' + this.escape(results[i].name.substr(0, results[i].name.length - this.searchString.length - results[i].suffixLength)) + '</span><span class="m-doc-search-typed">' + this.escape(results[i].name.substr(results[i].name.length - this.searchString.length - results[i].suffixLength, this.searchString.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength)) + '<span class="m-text m-dim">: ' + this.escape(results[i].alias) + '</span>';
 
                 /* Render the normal thing (cut off from the left, have to
                    escape for RTL) */
                 } else {
-                    list += '<div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - value.length - results[i].suffixLength)) + '</span><span class="m-doc-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - value.length - results[i].suffixLength, value.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength));
+                    list += '<div><span class="m-text m-dim">' + this.escapeForRtl(results[i].name.substr(0, results[i].name.length - this.searchString.length - results[i].suffixLength)) + '</span><span class="m-doc-search-typed">' + this.escapeForRtl(results[i].name.substr(results[i].name.length - this.searchString.length - results[i].suffixLength, this.searchString.length)) + '</span>' + this.escapeForRtl(results[i].name.substr(results[i].name.length - results[i].suffixLength));
                 }
 
                 /* The closing */
@@ -552,8 +548,8 @@ var Search = {
         let prev = performance.now();
         let results = this.search(value);
         let after = performance.now();
-        this.renderResults(value, results);
-        if(value.trim().length) {
+        this.renderResults(results);
+        if(this.searchString.length) {
             document.getElementById('search-symbolcount').innerHTML =
                 results[0].length + (results[0].length >= this.maxResults ? '+' : '') + " results (" + Math.round((after - prev)*10)/10 + " ms)";
         } else
