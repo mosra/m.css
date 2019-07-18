@@ -63,10 +63,7 @@ One of the design goals is providing a similar user experience to the
 
     This functionality is *heavily* experimental at the moment. It's being used
     for the upcoming `Magnum Engine <https://magnum.graphics>`_ Python bindings
-    and evolves solely based on that project needs. Note that not everything
-    listed below is fully implemented yet --- in particular, the search
-    functionality and :abbr:`reST <reStructuredText>` input processing is
-    currently not yet implemented.
+    and evolves solely based on that project needs.
 
 .. contents::
     :class: m-block m-default
@@ -355,8 +352,8 @@ don't need Chrome support), enable the :py:`SEARCH_DOWNLOAD_BINARY` option.
 The site can provide search engine metadata using the `OpenSearch <http://www.opensearch.org/>`_
 specification. On supported browsers this means you can add the search field to
 search engines and search directly from the address bar. To enable search
-engine metadata, point :py:`M_SEARCH_BASE_URL` to base URL of your
-documentation, for example:
+engine metadata, point :py:`SEARCH_BASE_URL` to base URL of your documentation,
+for example:
 
 .. code:: py
 
