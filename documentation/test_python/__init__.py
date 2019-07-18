@@ -76,8 +76,8 @@ class BaseTestCase(unittest.TestCase):
             'FINE_PRINT': None,
             'THEME_COLOR': None,
             'FAVICON': None,
-            'LINKS_NAVBAR1': None,
-            'LINKS_NAVBAR2': None,
+            'LINKS_NAVBAR1': [],
+            'LINKS_NAVBAR2': [],
             'SEARCH_DISABLED': True,
             'OUTPUT': os.path.join(self.path, 'output')
         })
