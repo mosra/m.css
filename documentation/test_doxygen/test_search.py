@@ -44,7 +44,7 @@ class Search(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 4802)
+        self.assertEqual(len(serialized), 4836)
         self.assertEqual(search_data_pretty, """
 53 symbols
 deprecated_macro [0]
@@ -135,6 +135,10 @@ class [20]
 |          ) [12, 15, 19, 17]
 a group [29, 28]
 | page [52]
+| |    $
+| |    0xc2
+| |     0xbb
+| |       subpage [57]
 value [41, 31]
 | riable [48]
 enum [44, 34]

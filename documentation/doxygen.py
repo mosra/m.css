@@ -2288,78 +2288,67 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
         # because we need to add the function macros twice -- but they have no
         # prefix, so it's okay.
         if EntryType(result.flags.type) in [EntryType.NAMESPACE, EntryType.CLASS, EntryType.STRUCT, EntryType.UNION, EntryType.TYPEDEF, EntryType.FUNC, EntryType.VAR, EntryType.ENUM, EntryType.ENUM_VALUE, EntryType.DEFINE]:
-            joiner = result_joiner = '::'
+            joiner = '::'
         elif EntryType(result.flags.type) in [EntryType.DIR, EntryType.FILE]:
-            joiner = result_joiner = '/'
+            joiner = '/'
         elif EntryType(result.flags.type) in [EntryType.PAGE, EntryType.GROUP]:
-            joiner = ''
-            result_joiner = ' » '
+            joiner = ' » '
         else:
             assert False # pragma: no cover
 
-        # If just a leaf name, add it once
-        if not joiner:
-            assert result_joiner
-            result_name = result_joiner.join(result.prefix + [result.name])
-
+        # Handle function arguments
+        name_with_args = result.name
+        name = result.name
+        suffix_length = 0
+        if hasattr(result, 'params') and result.params is not None:
+            # Some very heavily templated function parameters might cause the
+            # suffix_length to exceed 256, which won't fit into the serialized
+            # search data. However that *also* won't fit in the search result
+            # list so there's no point in storing so much. Truncate it to 48
+            # chars which should fit the full function name in the list in most
+            # cases, yet be still long enough to be able to distinguish
+            # particular overloads.
+            # TODO: the suffix_length has to be calculated on UTF-8 and I
+            # am (un)escaping a lot back and forth here -- needs to be
+            # cleaned up
+            params = html.unescape(strip_tags(', '.join(result.params)))
+            if len(params) > 49:
+                params = params[:48] + '…'
+            name_with_args += '(' + html.escape(params) + ')'
+            suffix_length += len(params.encode('utf-8')) + 2
+        if hasattr(result, 'suffix') and result.suffix:
+            name_with_args += result.suffix
             # TODO: escape elsewhere so i don't have to unescape here
-            index = map.add(html.unescape(result_name), result.url, flags=result.flags)
-            trie.insert(html.unescape(result.name).lower(), index)
+            suffix_length += len(html.unescape(result.suffix))
 
-        # Otherwise add it multiple times with all possible prefixes
-        else:
-            # Handle function arguments
-            name_with_args = result.name
-            name = result.name
-            suffix_length = 0
+        # TODO: escape elsewhere so i don't have to unescape here
+        index = map.add(html.unescape(joiner.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length, flags=result.flags)
+
+        # Add functions and function macros the second time with () appended,
+        # everything is the same except for suffix length which is 2 chars
+        # shorter
+        if hasattr(result, 'params') and result.params is not None:
+            index_args = map.add(html.unescape(joiner.join(result.prefix + [name_with_args])), result.url,
+                suffix_length=suffix_length - 2, flags=result.flags)
+
+        # Add the result multiple times with all possible prefixes
+        prefixed_name = result.prefix + [name]
+        for i in range(len(prefixed_name)):
+            lookahead_barriers = []
+            name = ''
+            for j in prefixed_name[i:]:
+                if name:
+                    lookahead_barriers += [len(name)]
+                    name += joiner
+                name += html.unescape(j)
+            trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
+
+            # Add functions and function macros the second time with ()
+            # appended, referencing the other result that expects () appended.
+            # The lookahead barrier is at the ( character to avoid the result
+            # being shown twice.
             if hasattr(result, 'params') and result.params is not None:
-                # Some very heavily templated function parameters might cause
-                # the suffix_length to exceed 256, which won't fit into the
-                # serialized search data. However that *also* won't fit in the
-                # search result list so there's no point in storing so much.
-                # Truncate it to 48 chars which should fit the full function
-                # name in the list in most cases, yet be still long enough to
-                # be able to distinguish particular overloads.
-                # TODO: the suffix_length has to be calculated on UTF-8 and I
-                # am (un)escaping a lot back and forth here -- needs to be
-                # cleaned up
-                params = html.unescape(strip_tags(', '.join(result.params)))
-                if len(params) > 49:
-                    params = params[:48] + '…'
-                name_with_args += '(' + html.escape(params) + ')'
-                suffix_length += len(params.encode('utf-8')) + 2
-            if hasattr(result, 'suffix') and result.suffix:
-                name_with_args += result.suffix
-                # TODO: escape elsewhere so i don't have to unescape here
-                suffix_length += len(html.unescape(result.suffix))
-
-            # TODO: escape elsewhere so i don't have to unescape here
-            index = map.add(html.unescape(joiner.join(result.prefix + [name_with_args])), result.url, suffix_length=suffix_length, flags=result.flags)
-
-            # Add functions and function macros the second time with () appended,
-            # everything is the same except for suffix length which is 2 chars
-            # shorter
-            if hasattr(result, 'params') and result.params is not None:
-                index_args = map.add(html.unescape(joiner.join(result.prefix + [name_with_args])), result.url,
-                    suffix_length=suffix_length - 2, flags=result.flags)
-
-            prefixed_name = result.prefix + [name]
-            for i in range(len(prefixed_name)):
-                lookahead_barriers = []
-                name = ''
-                for j in prefixed_name[i:]:
-                    if name:
-                        lookahead_barriers += [len(name)]
-                        name += joiner
-                    name += html.unescape(j)
-                trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
-
-                # Add functions and function macros the second time with ()
-                # appended, referencing the other result that expects () appended.
-                # The lookahead barrier is at the ( character to avoid the result
-                # being shown twice.
-                if hasattr(result, 'params') and result.params is not None:
-                    trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
+                trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
 
         # Add keyword aliases for this symbol
         for search, title, suffix_length in result.keywords:
