@@ -27,9 +27,9 @@ project(McssDocumentationPybindTests)
 
 find_package(pybind11 CONFIG REQUIRED)
 
-foreach(target signatures enums submodules type_links)
-    pybind11_add_module(pybind_${target} pybind_${target}/pybind_${target}.cpp)
-    set_target_properties(pybind_${target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_${target})
+foreach(target pybind_signatures pybind_enums pybind_submodules pybind_type_links search_long_suffix_length)
+    pybind11_add_module(${target} ${target}/${target}.cpp)
+    set_target_properties(${target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${target})
 endforeach()
 
 # Need a special location for this one
@@ -37,6 +37,12 @@ pybind11_add_module(pybind_link_formatting link_formatting/link_formatting/pybin
 set_target_properties(pybind_link_formatting PROPERTIES
     OUTPUT_NAME pybind
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/link_formatting/link_formatting)
+
+# Need a special location for this one
+pybind11_add_module(pybind_search search/search/pybind.cpp)
+set_target_properties(pybind_search PROPERTIES
+    OUTPUT_NAME pybind
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/search/search)
 
 # Need a special name for this one
 pybind11_add_module(pybind_name_mapping pybind_name_mapping/sub.cpp)

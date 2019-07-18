@@ -24,6 +24,7 @@
 
 import os
 
+from _search import searchdata_filename, searchdata_filename_b85
 from . import BaseTestCase
 
 class Layout(BaseTestCase):
@@ -58,4 +59,26 @@ class Layout(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/m-dark+documentation.compiled.css')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/favicon-light.png')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/search.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename_b85)))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/sitemap.xml')))
+
+class SearchBinary(BaseTestCase):
+    def test(self):
+        self.run_python({
+            'SEARCH_DISABLED': False,
+            'SEARCH_DOWNLOAD_BINARY': True
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename)))
+
+class SearchOpenSearch(BaseTestCase):
+    def test(self):
+        self.run_python({
+            'FAVICON': 'favicon-dark.png',
+            'SEARCH_DISABLED': False,
+            'SEARCH_BASE_URL': 'http://localhost:8000',
+            'SEARCH_HELP': "Right-click to add a search engine."
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('opensearch.xml'))

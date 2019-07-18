@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>My Python Project</ShortName>
+  <Description>Search My Python Project documentation</Description>
+  <Image type="image/png">http://localhost:8000/favicon-dark.png</Image>
+  <Url type="text/html" template="http://localhost:8000?q={searchTerms}#search"/>
+</OpenSearchDescription>

@@ -1,0 +1,1 @@
+DATA_IN_A_SUBMODULE = "hello"

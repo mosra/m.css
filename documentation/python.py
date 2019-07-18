@@ -51,7 +51,7 @@ from docutils.transforms import Transform
 
 import jinja2
 
-from _search import searchdata_format_version
+from _search import CssClass, ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_format_version, searchdata_filename, searchdata_filename_b85
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../plugins'))
 import m.htmlsanity
@@ -61,19 +61,38 @@ default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 't
 special_pages = ['index', 'modules', 'classes', 'pages']
 
 class EntryType(Enum):
-    SPECIAL = 0 # one of files from special_pages
+    # Order must match the search_type_map below; first value is reserved for
+    # ResultFlag.ALIAS
     PAGE = 1
     MODULE = 2
     CLASS = 3
-    ENUM = 4
-    ENUM_VALUE = 5
-    FUNCTION = 6
+    FUNCTION = 4
+    PROPERTY = 5
+    ENUM = 6
+    ENUM_VALUE = 7
+    DATA = 8
+
+    # Types not exposed to search are below
+
+    # One of files from special_pages. Doesn't make sense to include in the
+    # search.
+    SPECIAL = 9
     # Denotes a potentially overloaded pybind11 function. Has to be here to
     # be able to distinguish between zero-argument normal and pybind11
-    # functions.
-    OVERLOADED_FUNCTION = 7
-    PROPERTY = 8
-    DATA = 9
+    # functions. To search it's exposed as FUNCTION.
+    OVERLOADED_FUNCTION = 10
+
+# Order must match the EntryType above
+search_type_map = [
+    (CssClass.SUCCESS, "page"),
+    (CssClass.PRIMARY, "module"),
+    (CssClass.PRIMARY, "class"),
+    (CssClass.INFO, "func"),
+    (CssClass.WARNING, "property"),
+    (CssClass.PRIMARY, "enum"),
+    (CssClass.DEFAULT, "enum val"),
+    (CssClass.DEFAULT, "data")
+]
 
 def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
     # TODO: what about nested pages, how to format?
@@ -163,6 +182,7 @@ class State:
         self.hooks_post_run: List = []
 
         self.name_map: Dict[str, Empty] = {}
+        self.search: List[Any] = []
 
         self.crawled: Set[object] = set()
 
@@ -925,10 +945,32 @@ def extract_enum_doc(state: State, entry: Empty):
             value.summary = ''
             out.values += [value]
 
+    if not state.config['SEARCH_DISABLED']:
+        page_url = state.name_map['.'.join(entry.path[:-1])].url
+
+        result = Empty()
+        result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.ENUM)
+        result.url = '{}#{}'.format(page_url, out.id)
+        result.prefix = entry.path[:-1]
+        result.name = entry.path[-1]
+        state.search += [result]
+
+        for value in out.values:
+            result = Empty()
+            result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.ENUM_VALUE)
+            result.url = '{}#{}'.format(page_url, value.id)
+            result.prefix = entry.path
+            result.name = value.name
+            state.search += [result]
+
     return out
 
 def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     assert inspect.isfunction(entry.object) or inspect.ismethod(entry.object) or inspect.isroutine(entry.object)
+
+    # Enclosing page URL for search
+    if not state.config['SEARCH_DISABLED']:
+        page_url = state.name_map['.'.join(entry.path[:-1])].url
 
     # Extract the signature from the docstring for pybind11, since it can't
     # expose it to the metadata: https://github.com/pybind/pybind11/issues/990
@@ -1034,6 +1076,18 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             # thus name alone is not enough.
             out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + arg_types)
 
+            if not state.config['SEARCH_DISABLED']:
+                result = Empty()
+                result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNCTION)
+                result.url = '{}#{}'.format(page_url, out.id)
+                result.prefix = entry.path[:-1]
+                result.name = entry.path[-1]
+                result.params = []
+                for i in range(len(out.params)):
+                    param = out.params[i]
+                    result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, arg_types[i])) if arg_types[i] else param.name]
+                state.search += [result]
+
             overloads += [out]
 
         return overloads
@@ -1093,6 +1147,15 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             param.name_type = param.name
             out.params = [param]
             out.type = None
+
+        if not state.config['SEARCH_DISABLED']:
+            result = Empty()
+            result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNCTION)
+            result.url = '{}#{}'.format(page_url, out.id)
+            result.prefix = entry.path[:-1]
+            result.name = entry.path[-1]
+            result.params = []
+            state.search += [result]
 
         return [out]
 
@@ -1210,6 +1273,14 @@ def extract_property_doc(state: State, parent, entry: Empty):
         else:
             out.type = None
 
+    if not state.config['SEARCH_DISABLED']:
+        result = Empty()
+        result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.PROPERTY)
+        result.url = '{}#{}'.format(state.name_map['.'.join(entry.path[:-1])].url, out.id)
+        result.prefix = entry.path[:-1]
+        result.name = entry.path[-1]
+        state.search += [result]
+
     return out
 
 def extract_data_doc(state: State, parent, entry: Empty):
@@ -1242,6 +1313,14 @@ def extract_data_doc(state: State, parent, entry: Empty):
         # TODO: use also the contents
         out.summary = render_inline_rst(state, state.data_docs[path_str]['summary'])
         del state.data_docs[path_str]
+
+    if not state.config['SEARCH_DISABLED']:
+        result = Empty()
+        result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.DATA)
+        result.url = '{}#{}'.format(state.name_map['.'.join(entry.path[:-1])].url, out.id)
+        result.prefix = entry.path[:-1]
+        result.name = entry.path[-1]
+        state.search += [result]
 
     return out
 
@@ -1320,6 +1399,14 @@ def render_module(state: State, path, module, env):
         else: # pragma: no cover
             assert False
 
+    if not state.config['SEARCH_DISABLED']:
+        result = Empty()
+        result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.MODULE)
+        result.url = page.url
+        result.prefix = path[:-1]
+        result.name = path[-1]
+        state.search += [result]
+
     render(state.config, 'module.html', page, env)
 
 def render_class(state: State, path, class_, env):
@@ -1397,6 +1484,14 @@ def render_class(state: State, path, class_, env):
             page.data += [extract_data_doc(state, class_, member_entry)]
         else: # pragma: no cover
             assert False
+
+    if not state.config['SEARCH_DISABLED']:
+        result = Empty()
+        result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)
+        result.url = page.url
+        result.prefix = path[:-1]
+        result.name = path[-1]
+        state.search += [result]
 
     render(state.config, 'class.html', page, env)
 
@@ -1527,10 +1622,93 @@ def render_page(state: State, path, input_filename, env):
     module_entry.summary = page.summary
     module_entry.name = breadcrumb[-1][0]
 
-    # Render the output file
+    if not state.config['SEARCH_DISABLED']:
+        result = Empty()
+        result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)
+        result.url = page.url
+        result.prefix = path[:-1]
+        result.name = path[-1]
+        state.search += [result]
+
     render(state.config, 'page.html', page, env)
 
-def run(basedir, config, templates):
+def is_html_safe(string):
+    return '<' not in string and '>' not in string and '&' not in string and '"' not in string and '\'' not in string
+
+def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
+    trie = Trie()
+    map = ResultMap()
+
+    symbol_count = 0
+    for result in state.search:
+        # Decide on prefix joiner
+        if EntryType(result.flags.type) in [EntryType.MODULE, EntryType.CLASS, EntryType.FUNCTION, EntryType.PROPERTY, EntryType.ENUM, EntryType.ENUM_VALUE, EntryType.DATA]:
+            joiner = '.'
+        elif EntryType(result.flags.type) == EntryType.PAGE:
+            joiner = ' » '
+        else:
+            assert False # pragma: no cover
+
+        # Handle function arguments
+        name_with_args = result.name
+        name = result.name
+        suffix_length = 0
+        if hasattr(result, 'params') and result.params is not None:
+            # Some very heavily annotated function parameters might cause the
+            # suffix_length to exceed 256, which won't fit into the serialized
+            # search data. However that *also* won't fit in the search result
+            # list so there's no point in storing so much. Truncate it to 48
+            # chars which should fit the full function name in the list in most
+            # cases, yet be still long enough to be able to distinguish
+            # particular overloads.
+            # TODO: the suffix_length has to be calculated on UTF-8 and I
+            # am (un)escaping a lot back and forth here -- needs to be
+            # cleaned up
+            params = ', '.join(result.params)
+            if len(params) > 49:
+                params = params[:48] + '…'
+            name_with_args += '(' + params + ')'
+            suffix_length += len(params.encode('utf-8')) + 2
+
+        complete_name = joiner.join(result.prefix + [name_with_args])
+        assert is_html_safe(complete_name) # this is not C++, so no <>&
+        index = map.add(complete_name, result.url, suffix_length=suffix_length, flags=result.flags)
+
+        # Add functions the second time with () appended, everything is the
+        # same except for suffix length which is 2 chars shorter
+        if hasattr(result, 'params') and result.params is not None:
+            index_args = map.add(complete_name, result.url,
+                suffix_length=suffix_length - 2, flags=result.flags)
+
+        # Add the result multiple times with all possible prefixes
+        prefixed_name = result.prefix + [name]
+        for i in range(len(prefixed_name)):
+            lookahead_barriers = []
+            name = ''
+            for j in prefixed_name[i:]:
+                if name:
+                    lookahead_barriers += [len(name)]
+                    name += joiner
+                name += html.unescape(j)
+            trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
+
+            # Add functions the second time with () appended, referencing
+            # the other result that expects () appended. The lookahead
+            # barrier is at the ( character to avoid the result being shown
+            # twice.
+            if hasattr(result, 'params') and result.params is not None:
+                trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
+
+        # Add this symbol to total symbol count
+        symbol_count += 1
+
+    # For each node in the trie sort the results so the found items have sane
+    # order by default
+    trie.sort(map)
+
+    return serialize_search_data(trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
+
+def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
     # Populate the INPUT, if not specified, make it absolute
     if config['INPUT'] is None: config['INPUT'] = basedir
     else: config['INPUT'] = os.path.join(basedir, config['INPUT'])
@@ -1731,6 +1909,33 @@ def run(basedir, config, templates):
         page.breadcrumb = [(config['PROJECT_TITLE'], url)]
         render(config, 'page.html', page, env)
 
+    if not state.config['SEARCH_DISABLED']:
+        logging.debug("building search data for {} symbols".format(len(state.search)))
+
+        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
+
+        if state.config['SEARCH_DOWNLOAD_BINARY']:
+            with open(os.path.join(config['OUTPUT'], searchdata_filename), 'wb') as f:
+                f.write(data)
+        else:
+            with open(os.path.join(config['OUTPUT'], searchdata_filename_b85), 'wb') as f:
+                f.write(base85encode_search_data(data))
+
+        # OpenSearch metadata, in case we have the base URL
+        if state.config['SEARCH_BASE_URL']:
+            logging.debug("writing OpenSearch metadata file")
+
+            template = env.get_template('opensearch.xml')
+            rendered = template.render(**state.config)
+            output = os.path.join(config['OUTPUT'], 'opensearch.xml')
+            with open(output, 'wb') as f:
+                f.write(rendered.encode('utf-8'))
+                # Add back a trailing newline so we don't need to bother with
+                # patching test files to include a trailing newline to make Git
+                # happy. Can't use keep_trailing_newline because that'd add it
+                # also for nested templates :(
+                f.write(b'\n')
+
     # Copy referenced files
     for i in config['STYLESHEETS'] + config['EXTRA_FILES'] + ([config['FAVICON'][0]] if config['FAVICON'] else []) + list(state.external_data) + ([] if config['SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
@@ -1769,4 +1974,4 @@ if __name__ == '__main__': # pragma: no cover
     else:
         logging.basicConfig(level=logging.INFO)
 
-    run(os.path.dirname(os.path.abspath(args.conf)), config, os.path.abspath(args.templates))
+    run(os.path.dirname(os.path.abspath(args.conf)), config, templates=os.path.abspath(args.templates))
