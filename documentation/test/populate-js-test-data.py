@@ -103,3 +103,19 @@ trie.insert("range", map.add("Magnum::Math::Range", "classMagnum_1_1Math_1_1Rang
 
 with open(basedir/'nested.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map, search_type_map, 4))
+
+# Extreme amount of search results (Python's __init__, usually)
+
+trie = Trie()
+map = ResultMap()
+
+for i in range(128):
+    trie.insert("__init__", map.add(f"Foo{i}.__init__(self)", f"Foo{i}.html#__init__", suffix_length=6, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC)))
+
+# It's __init_subclass__, but here I want to trigger the case of both a high
+# amount of results and some children as well.
+for i in [3, 15, 67]:
+    trie.insert("__init__subclass__", map.add(f"Foo{i}.__init__subclass__(self)", f"Foo{i}.html#__init__subclass__", suffix_length=6, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC)))
+
+with open(basedir/'manyresults.bin', 'wb') as f:
+    f.write(serialize_search_data(trie, map, search_type_map, 128 + 3))

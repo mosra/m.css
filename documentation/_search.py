@@ -271,9 +271,16 @@ class ResultMap:
         return output
 
 class Trie:
-    #  root  |     |     header         | results | child 1 | child 1 | child 1 |
-    # offset | ... | result # | value # |   ...   |  char   | barrier | offset  | ...
-    #  32b   |     |    8b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
+    #  root  |     |       header         | results | child 1 | child 1 | child 1 |
+    # offset | ... | | result # | child # |   ...   |  char   | barrier | offset  | ...
+    #  32b   |     |0|    7b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
+    #
+    # if result count > 127, it's instead:
+    #
+    #  root  |     |      header          | results | child 1 | child 1 | child 1 |
+    # offset | ... | | result # | child # |   ...   |  char   | barrier | offset  | ...
+    #  32b   |     |1|   11b    |   4b    |  n*16b  |   8b    |    1b   |   23b   |
+
     root_offset_struct = struct.Struct('<I')
     header_struct = struct.Struct('<BB')
     result_struct = struct.Struct('<H')
@@ -337,9 +344,21 @@ class Trie:
             offset = child[1]._serialize(hashtable, output, merge_subtrees=merge_subtrees)
             child_offsets += [(char, child[0], offset)]
 
-        # Serialize this node
+        # Serialize this node. Sometimes we'd have an insane amount of results
+        # (such as Python's __init__), but very little children to go with
+        # that. Then we can make the result count storage larger (11 bits,
+        # 2048 results) and the child count storage smaller (4 bits, 16
+        # children). Hopefully that's enough. The remaining leftmost bit is
+        # used as an indicator of this shifted state.
         serialized = bytearray()
-        serialized += self.header_struct.pack(len(self.results), len(self.children))
+        if len(self.results) > 127:
+            assert len(self.children) < 16 and len(self.results) < 2048
+            result_count = (len(self.results) & 0x7f) | 0x80
+            children_count = ((len(self.results) & 0xf80) >> 3) | len(self.children)
+        else:
+            result_count = len(self.results)
+            children_count = len(self.children)
+        serialized += self.header_struct.pack(result_count, children_count)
         for v in self.results:
             serialized += self.result_struct.pack(v)
 

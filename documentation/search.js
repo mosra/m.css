@@ -256,7 +256,15 @@ var Search = {
             /* Calculate offset and count of children */
             let offset = this.searchStack[this.searchStack.length - 1];
             let relChildOffset = 2 + this.trie.getUint8(offset)*2;
+
+            /* Calculate child count. If there's a lot of results, the count
+               "leaks over" to the child count storage. */
+            let resultCount = this.trie.getUint8(offset);
             let childCount = this.trie.getUint8(offset + 1);
+            if(resultCount & 0x80) {
+                resultCount = (resultCount & 0x7f) | ((childCount & 0xf0) << 3);
+                childCount = childCount & 0x0f;
+            }
 
             /* Go through all children and find the next offset */
             let childOffset = offset + relChildOffset;
@@ -299,8 +307,17 @@ var Search = {
             let offset = current[0];
             let suffixLength = current[1];
 
-            /* Populate the results with all values associated with this node */
+            /* Calculate child count. If there's a lot of results, the count
+               "leaks over" to the child count storage. */
+            /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
             let resultCount = this.trie.getUint8(offset);
+            let childCount = this.trie.getUint8(offset + 1);
+            if(resultCount & 0x80) {
+                resultCount = (resultCount & 0x7f) | ((childCount & 0xf0) << 3);
+                childCount = childCount & 0x0f;
+            }
+
+            /* Populate the results with all values associated with this node */
             for(let i = 0; i != resultCount; ++i) {
                 let index = this.trie.getUint16(offset + (i + 1)*2, true);
                 results.push(this.gatherResult(index, suffixLength, 0xffffff)); /* should be enough haha */
@@ -313,7 +330,6 @@ var Search = {
             /* Dig deeper */
             /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
             let relChildOffset = 2 + this.trie.getUint8(offset)*2;
-            let childCount = this.trie.getUint8(offset + 1);
             let childOffset = offset + relChildOffset;
             for(let j = 0; j != childCount; ++j) {
                 let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);

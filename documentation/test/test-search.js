@@ -336,4 +336,66 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 }], 'nge']);
 }
 
+/* Extreme amount of search results */
+{
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/manyresults.bin"));
+    assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 10000));
+    assert.equal(Search.dataSize, 6415);
+    assert.equal(Search.symbolCount, 128 + 3);
+    assert.equal(Search.maxResults, 10000);
+    assert.deepEqual(Search.search('__init__')[0].length, 128 + 3);
+    assert.deepEqual(Search.search('__init__')[1], '');
+    assert.deepEqual(Search.search('__init__')[0][0],
+        { name: 'Foo0.__init__(self)',
+          url: 'Foo0.html#__init__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 6 });
+    /* The 127 other results in between are similar. It should also print
+       results from the children: */
+    assert.deepEqual(Search.search('__init__')[0][128],
+        { name: 'Foo3.__init__subclass__(self)',
+          url: 'Foo3.html#__init__subclass__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 16 });
+    assert.deepEqual(Search.search('__init__')[0][129],
+        { name: 'Foo15.__init__subclass__(self)',
+          url: 'Foo15.html#__init__subclass__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 16 });
+    assert.deepEqual(Search.search('__init__')[0][130],
+        { name: 'Foo67.__init__subclass__(self)',
+          url: 'Foo67.html#__init__subclass__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 16 });
+
+    /* Searching for nested results should work as well */
+    assert.deepEqual(Search.search('__init__s'), [[
+        { name: 'Foo3.__init__subclass__(self)',
+          url: 'Foo3.html#__init__subclass__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 15 },
+        { name: 'Foo15.__init__subclass__(self)',
+          url: 'Foo15.html#__init__subclass__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 15 },
+        { name: 'Foo67.__init__subclass__(self)',
+          url: 'Foo67.html#__init__subclass__',
+          flags: 1, /* has suffix */
+          cssClass: 'm-info',
+          typeName: 'func',
+          suffixLength: 15 }], 'ubclass__']);
+}
+
 /* Not testing Search.download() because the xmlhttprequest npm package is *crap* */
