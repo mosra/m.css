@@ -1290,7 +1290,7 @@ def extract_data_doc(state: State, parent, entry: Empty):
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.DATA, entry.path[-1:])
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
-    out.summary = ''
+    out.summary = extract_summary(state, state.data_docs, entry.path, '')
     out.has_details = False
 
     # First try to get fully dereferenced type hints (with strings converted to
@@ -1306,13 +1306,6 @@ def extract_data_doc(state: State, parent, entry: Empty):
         out.type = None
 
     out.value = format_value(state, entry.path, entry.object)
-
-    # External data summary, if provided
-    path_str = '.'.join(entry.path)
-    if path_str in state.data_docs:
-        # TODO: use also the contents
-        out.summary = render_inline_rst(state, state.data_docs[path_str]['summary'])
-        del state.data_docs[path_str]
 
     if not state.config['SEARCH_DISABLED']:
         result = Empty()
