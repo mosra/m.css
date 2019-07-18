@@ -70,7 +70,10 @@ index = map.add("Math::Range::min() const", "classMath_1_1Range.html#min", suffi
 trie.insert("math::range::min()", index, lookahead_barriers=[4, 11])
 trie.insert("range::min()", index, lookahead_barriers=[5])
 trie.insert("min()", index)
-trie.insert("subpage", map.add("Page » Subpage", "subpage.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)))
+trie.insert("page", map.add("Page", "page.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)))
+index = map.add("Page » Subpage", "subpage.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE))
+trie.insert("page » subpage", index, lookahead_barriers=[4])
+trie.insert("subpage", index)
 
 trie.insert("rectangle", map.add("Rectangle", "", alias=range_index))
 trie.insert("rect", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))

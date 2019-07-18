@@ -79,7 +79,7 @@ const { StringDecoder } = require('string_decoder');
 /* Verify that base85-decoded file is equivalent to the binary */
 {
     let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.equal(binary.byteLength, 674);
+    assert.equal(binary.byteLength, 745);
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
@@ -115,7 +115,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 674);
+    assert.equal(Search.dataSize, 745);
     assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 100);
 
@@ -181,9 +181,6 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 }], 'tor'];
     assert.deepEqual(Search.search('vec'), resultsForVec);
 
-    /* Uppercase things and spaces */
-    assert.deepEqual(Search.search(' Vec  '), resultsForVec);
-
     /* Not found */
     assert.deepEqual(Search.search('pizza'), [[], '']);
 
@@ -191,7 +188,7 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Search.search('su'), [[
         { name: Search.toUtf8('Page » Subpage'),
           url: 'subpage.html',
-          flags: 0,
+          flags: 8, /* has prefix */
           cssClass: 'm-success',
           typeName: 'page',
           suffixLength: 5 }], 'bpage']);
@@ -220,11 +217,63 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 8 }], '']);
 }
 
+/* Search with spaces */
+{
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
+    assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
+    assert.equal(Search.dataSize, 745);
+    assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
+    assert.equal(Search.maxResults, 100);
+
+    /* No spaces */
+    assert.deepEqual(Search.search('pa'), [[
+        { name: Search.toUtf8('Page'),
+          url: 'page.html',
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
+          suffixLength: 2 }], 'ge']);
+
+    /* Spaces from the left are always trimmed */
+    assert.deepEqual(Search.search('  \t pa'), [[
+        { name: Search.toUtf8('Page'),
+          url: 'page.html',
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
+          suffixLength: 2 }], 'ge']);
+
+    /* Spaces from the right are trimmed if nothing is found */
+    assert.deepEqual(Search.search('pa \n '), [[
+        { name: Search.toUtf8('Page'),
+          url: 'page.html',
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
+          suffixLength: 2 }], 'ge']);
+
+    /* But not if they have results */
+    assert.deepEqual(Search.search('page'), [[
+        { name: Search.toUtf8('Page'),
+          url: 'page.html',
+          flags: 0,
+          cssClass: 'm-success',
+          typeName: 'page',
+          suffixLength: 0 }], '']);
+    assert.deepEqual(Search.search('page '), [[
+        { name: Search.toUtf8('Page » Subpage'),
+          url: 'subpage.html',
+          flags: 8, /* has prefix */
+          cssClass: 'm-success',
+          typeName: 'page',
+          suffixLength: 10 }], Search.toUtf8('» subpage')]);
+}
+
 /* Search, limiting the results to 3 */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 674);
+    assert.equal(Search.dataSize, 745);
     assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [[
@@ -252,7 +301,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.dataSize, 676); /* some padding on the end, that's okay */
+    assert.equal(Search.dataSize, 748); /* some padding on the end, that's okay */
     assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [[

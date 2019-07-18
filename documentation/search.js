@@ -232,8 +232,10 @@ var Search = {
     /* Returns the values in UTF-8, but input is in whatever shitty 16bit
        encoding JS has */
     search: function(searchString) {
-        /* Normalize the search string first, convert to UTF-8 */
-        searchString = this.toUtf8(searchString.toLowerCase().trim());
+        /* Normalize the search string first, convert to UTF-8 and trim spaces
+           from the left. From the right they're trimmed only if nothing is
+           found, see below. */
+        searchString = this.toUtf8(searchString.toLowerCase().replace(/^\s+/,''));
 
         /* TODO: maybe i could make use of InputEvent.data and others here */
 
@@ -277,8 +279,18 @@ var Search = {
                 break;
             }
 
-            /* Character not found, exit */
-            if(!found) break;
+            /* Character not found */
+            if(!found) {
+                /* If we found everything except spaces at the end, pretend the
+                   spaces aren't there. On the other hand, we *do* want to
+                   try searching with the spaces first -- it can narrow down
+                   the result list for page names or show subpages (which are
+                   after a lookahead barrier that's a space). */
+                if(!searchString.substr(foundPrefix).trim().length)
+                    searchString = searchString.substr(0, foundPrefix);
+
+                break;
+            }
         }
 
         /* Save the whole found prefix for next time */
