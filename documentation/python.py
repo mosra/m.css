@@ -949,10 +949,12 @@ def extract_enum_doc(state: State, entry: Empty):
 
             # Value doc gets by default inherited from the enum, that's useless
             if i.__doc__ == entry.object.__doc__:
-                value.summary = ''
+                docstring = ''
             else:
-                # TODO: external summary for enum values
-                value.summary = extract_summary(state, {}, [], i.__doc__)
+                docstring = i.__doc__
+
+            # TODO: external summary for enum values
+            value.summary = extract_summary(state, {}, [], docstring)
 
             if value.summary:
                 out.has_details = True
@@ -975,6 +977,7 @@ def extract_enum_doc(state: State, entry: Empty):
             # TODO: once https://github.com/pybind/pybind11/pull/1160 is
             #       released, extract from class docs (until then the class
             #       docstring is duplicated here, which is useless)
+            # TODO: external summary for enum values
             value.summary = ''
             out.values += [value]
 
