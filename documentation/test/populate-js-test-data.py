@@ -36,6 +36,8 @@ from _search import Trie, ResultMap, ResultFlag, serialize_search_data
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'
 
+# Basic error handling
+
 with open(basedir/'short.bin', 'wb') as f:
     f.write(b'')
 with open(basedir/'wrong-magic.bin', 'wb') as f:
@@ -44,6 +46,8 @@ with open(basedir/'wrong-version.bin', 'wb') as f:
     f.write(b'MCS\0                      ')
 with open(basedir/'empty.bin', 'wb') as f:
     f.write(serialize_search_data(Trie(), ResultMap(), [], 0))
+
+# General test
 
 trie = Trie()
 map = ResultMap()
@@ -76,6 +80,8 @@ with open(basedir/'searchdata.bin', 'wb') as f:
 with open(basedir/'searchdata.b85', 'wb') as f:
     f.write(base64.b85encode(serialize_search_data(trie, map, search_type_map, 7), True))
 
+# UTF-8 names
+
 trie = Trie()
 map = ResultMap()
 
@@ -85,8 +91,11 @@ trie.insert("hárá", map.add("Hárá", "#b", flags=ResultFlag.from_type(ResultF
 with open(basedir/'unicode.bin', 'wb') as f:
     f.write(serialize_search_data(trie, map, search_type_map, 2))
 
+# Heavy prefix nesting
+
 trie = Trie()
 map = ResultMap()
+
 trie.insert("magnum", map.add("Magnum", "namespaceMagnum.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)))
 trie.insert("math", map.add("Magnum::Math", "namespaceMagnum_1_1Math.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)))
 trie.insert("geometry", map.add("Magnum::Math::Geometry", "namespaceMagnum_1_1Math_1_1Geometry.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)))
