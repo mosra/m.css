@@ -29,7 +29,10 @@
             <li>
               Reference
               <ul>
+                <li><a href="#packages">Modules</a></li>
                 <li><a href="#classes">Classes</a></li>
+                <li><a href="#enums">Enums</a></li>
+                <li><a href="#functions">Functions</a></li>
                 <li><a href="#data">Data</a></li>
               </ul>
             </li>
@@ -37,13 +40,59 @@
         </div>
 <p>This is detailed module docs. I kinda <em>hate</em> how it needs to be indented,
 tho.</p>
+        <section id="namespaces">
+          <h2><a href="#namespaces">Modules</a></h2>
+          <dl class="m-doc">
+            <dt>module <a href="content.docstring_summary.html" class="m-doc">docstring_summary</a></dt>
+            <dd>This module retains summary from the docstring</dd>
+          </dl>
+        </section>
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>
           <dl class="m-doc">
-            <dt>class <a href="content.AnotherClass.html" class="m-doc">AnotherClass</a></dt>
-            <dd>This class has summary from the docstring</dd>
             <dt>class <a href="content.Class.html" class="m-doc">Class</a></dt>
             <dd>This overwrites the docstring for <code>content.Class</code>.</dd>
+            <dt>class <a href="content.ClassWithSummary.html" class="m-doc">ClassWithSummary</a></dt>
+            <dd>This class has summary from the docstring</dd>
+          </dl>
+        </section>
+        <section id="enums">
+          <h2><a href="#enums">Enums</a></h2>
+          <dl class="m-doc">
+            <dt id="Enum">
+              <span class="m-doc-wrap-bumper">class <a href="#Enum" class="m-doc-self">Enum</a>(enum.Enum): </span><span class="m-doc-wrap"></span>
+            </dt>
+            <dd>This overwrites the docstring for <code>content.Enum</code>, but
+doesn't add any detailed block.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">class <a href="#EnumWithSummary" class="m-doc">EnumWithSummary</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#EnumWithSummary-VALUE" class="m-doc">VALUE</a> = 0
+              <a href="#EnumWithSummary-ANOTHER" class="m-doc">ANOTHER</a> = 1</span>
+            </dt>
+            <dd>This summary is preserved</dd>
+          </dl>
+        </section>
+        <section id="functions">
+          <h2><a href="#functions">Functions</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#annotations" class="m-doc">annotations</a>(</span><span class="m-doc-wrap">a: int,
+              b,
+              c: float) -&gt; str</span>
+            </dt>
+            <dd>No annotations shown for this</dd>
+            <dt id="foo">
+              <span class="m-doc-wrap-bumper">def <a href="#foo" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">a, b)</span>
+            </dt>
+            <dd>This overwrites the docstring for <code>content.foo</code>, but
+doesn't add any detailed block.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#foo_with_details" class="m-doc">foo_with_details</a>(</span><span class="m-doc-wrap">a, b)</span>
+            </dt>
+            <dd>This overwrites the docstring for <code>content.foo_with_details()</code>.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#function_with_summary" class="m-doc">function_with_summary</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>This function has summary from the docstring</dd>
           </dl>
         </section>
         <section id="data">
@@ -53,7 +102,83 @@ tho.</p>
               <a href="#CONSTANT" class="m-doc-self">CONSTANT</a>: float = 3.14
             </dt>
             <dd>This is finally a docstring for <code>content.CONSTANT</code></dd>
+            <dt>
+              <a href="#DATA_WITH_DETAILS" class="m-doc">DATA_WITH_DETAILS</a>: str = &#x27;heyoo&#x27;
+            </dt>
+            <dd>This is finally a docstring for <code>content.CONSTANT</code></dd>
+            <dt>
+              <a href="#DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE" class="m-doc">DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE</a> = None
+            </dt>
+            <dd></dd>
           </dl>
+        </section>
+        <section>
+          <h2>Enum documentation</h2>
+          <section class="m-doc-details" id="EnumWithSummary"><div>
+            <h3>
+              class content.<wbr /><a href="#EnumWithSummary" class="m-doc-self">EnumWithSummary</a>(enum.Enum)
+            </h3>
+            <p>This summary is preserved</p>
+            <table class="m-table m-fullwidth m-flat m-doc">
+              <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><a href="#EnumWithSummary-VALUE" id="EnumWithSummary-VALUE" class="m-doc-self">VALUE</a></td>
+                  <td>
+                  <p>A value</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#EnumWithSummary-ANOTHER" id="EnumWithSummary-ANOTHER" class="m-doc-self">ANOTHER</a></td>
+                  <td>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
+        </section>
+        <section>
+          <h2>Function documentation</h2>
+          <section class="m-doc-details" id="annotations"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#annotations" class="m-doc-self">annotations</a>(</span><span class="m-doc-wrap">a: int,
+              b,
+              c: float) -&gt; str</span></span>
+            </h3>
+            <p>No annotations shown for this</p>
+<p>Type annotations in detailed docs.</p>
+          </div></section>
+          <section class="m-doc-details" id="foo_with_details"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#foo_with_details" class="m-doc-self">foo_with_details</a>(</span><span class="m-doc-wrap">a, b)</span></span>
+            </h3>
+            <p>This overwrites the docstring for <code>content.foo_with_details()</code>.</p>
+<div class="m-note m-info">
+Detailed docs for this function</div>
+          </div></section>
+          <section class="m-doc-details" id="function_with_summary"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#function_with_summary" class="m-doc-self">function_with_summary</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>This function has summary from the docstring</p>
+<p>This function has external details but summary from the docstring.</p>
+          </div></section>
+        </section>
+        <section>
+          <h2>Data documentation</h2>
+          <section class="m-doc-details" id="DATA_WITH_DETAILS"><div>
+            <h3>
+              content.<wbr /><a href="#DATA_WITH_DETAILS" class="m-doc-self">DATA_WITH_DETAILS</a>: str
+            </h3>
+            <p>This is finally a docstring for <code>content.CONSTANT</code></p>
+<p>Detailed docs for the data. <strong>YAY.</strong></p>
+          </div></section>
+          <section class="m-doc-details" id="DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE"><div>
+            <h3>
+              content.<wbr /><a href="#DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE" class="m-doc-self">DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE</a>
+            </h3>
+<p>Why it has to be yelling?!</p>
+          </div></section>
         </section>
       </div>
     </div>

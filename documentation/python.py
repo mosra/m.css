@@ -175,6 +175,9 @@ class State:
         self.module_mapping: Dict[str, str] = {}
         self.module_docs: Dict[str, Dict[str, str]] = {}
         self.class_docs: Dict[str, Dict[str, str]] = {}
+        self.enum_docs: Dict[str, Dict[str, str]] = {}
+        self.function_docs: Dict[str, Dict[str, str]] = {}
+        self.property_docs: Dict[str, Dict[str, str]] = {}
         self.data_docs: Dict[str, Dict[str, str]] = {}
         self.external_data: Set[str] = set()
 
@@ -706,13 +709,13 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-            summary = extract_summary(state, {}, [], original_signature[end + 1:])
+            summary = take_first_paragraph(inspect.cleandoc(original_signature[end + 1:]))
         else:
             summary = ''
         return (name, summary, [('…', None, None, None)], None)
 
     if len(signature) > 1 and signature[1] == '\n':
-        summary = extract_summary(state, {}, [], signature[2:])
+        summary = take_first_paragraph(inspect.cleandoc(signature[2:]))
     else:
         summary = ''
 
@@ -763,6 +766,10 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     else:
         return None
 
+def take_first_paragraph(doc: str) -> str:
+    end = doc.find('\n\n')
+    return doc if end == -1 else doc [:end]
+
 def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
     # Prefer external docs, if available
     path_str = '.'.join(path)
@@ -770,9 +777,35 @@ def extract_summary(state: State, external_docs, path: List[str], doc: str) -> s
         return render_inline_rst(state, external_docs[path_str]['summary'])
 
     if not doc: return '' # some modules (xml.etree) have that :(
-    doc = inspect.cleandoc(doc)
-    end = doc.find('\n\n')
-    return html.escape(doc if end == -1 else doc[:end])
+    # TODO: render as rst (config option for that)
+    return html.escape(take_first_paragraph(inspect.cleandoc(doc)))
+
+def extract_docs(state: State, external_docs, path: List[str], doc: str) -> Tuple[str, str]:
+    path_str = '.'.join(path)
+    if path_str in external_docs:
+        external_doc_entry = external_docs[path_str]
+    else:
+        external_doc_entry = None
+
+    # Summary. Prefer external docs, if available
+    if external_doc_entry and external_doc_entry['summary']:
+        summary = render_inline_rst(state, external_doc_entry['summary'])
+    else:
+        # some modules (xml.etree) have None as a docstring :(
+        # TODO: render as rst (config option for that)
+        summary = html.escape(take_first_paragraph(inspect.cleandoc(doc or '')))
+
+    # Content
+    if external_doc_entry and external_doc_entry['content']:
+        content = render_rst(state, external_doc_entry['content'])
+    else:
+        # TODO: extract more than just a summary from the docstring
+        content = None
+
+    # Mark the docs as used (so it can warn about unused docs at the end)
+    if external_doc_entry: external_doc_entry['used'] = True
+
+    return summary, content
 
 def extract_type(type) -> str:
     # For types we concatenate the type name with its module unless it's
@@ -893,17 +926,17 @@ def extract_enum_doc(state: State, entry: Empty):
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.ENUM, entry.path[-1:])
     out.values = []
-    out.has_details = False
     out.has_value_details = False
 
     # The happy case
     if issubclass(entry.object, enum.Enum):
         # Enum doc is by default set to a generic value. That's useless as well.
         if entry.object.__doc__ == 'An enumeration.':
-            out.summary = ''
+            docstring = ''
         else:
-            # TODO: external summary for enums
-            out.summary = extract_summary(state, {}, [], entry.object.__doc__)
+            docstring = entry.object.__doc__
+        out.summary, out.content = extract_docs(state, state.enum_docs, entry.path, docstring)
+        out.has_details = bool(out.content)
 
         out.base = extract_type(entry.object.__base__)
         if out.base: out.base = make_name_link(state, entry.path, out.base)
@@ -930,8 +963,8 @@ def extract_enum_doc(state: State, entry: Empty):
     elif state.config['PYBIND11_COMPATIBILITY']:
         assert hasattr(entry.object, '__members__')
 
-        # TODO: external summary for enums
-        out.summary = extract_summary(state, {}, [], entry.object.__doc__)
+        out.summary, out.content = extract_docs(state, state.enum_docs, entry.path, entry.object.__doc__)
+        out.has_details = bool(out.content)
         out.base = None
 
         for name, v in entry.object.__members__.items():
@@ -988,9 +1021,8 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             out.name = entry.path[-1]
             out.params = []
             out.has_complex_params = False
-            out.has_details = False
-            # TODO: external summary for functions
-            out.summary = summary
+            out.summary, out.content = extract_docs(state, state.function_docs, entry.path, summary)
+            out.has_details = bool(out.content)
 
             # Don't show None return type for functions w/o a return
             out.type = None if type == 'None' else type
@@ -1099,9 +1131,8 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
         out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, entry.path[-1:])
         out.params = []
         out.has_complex_params = False
-        out.has_details = False
-        # TODO: external summary for functions
-        out.summary = extract_summary(state, {}, [], entry.object.__doc__)
+        out.summary, out.content = extract_docs(state, state.function_docs, entry.path, entry.object.__doc__)
+        out.has_details = bool(out.content)
 
         # Decide if classmethod or staticmethod in case this is a method
         if inspect.isclass(parent):
@@ -1170,16 +1201,15 @@ def extract_property_doc(state: State, parent, entry: Empty):
     # gettable and settable (couldn't find any way to make them *inspectably*
     # readonly, all solutions involved throwing from __setattr__()) and
     # deletable as well (calling del on it seems to simply remove any
-    # previously set value). Unfortunately we can't get any docstring for these
-    # either.
+    # previously set value).
     # TODO: any better way to detect that those are slots?
     if entry.object.__class__.__name__ == 'member_descriptor' and entry.object.__class__.__module__ == 'builtins':
         out.is_gettable = True
         out.is_settable = True
         out.is_deletable = True
-        # TODO: external summary for properties
-        out.summary = ''
-        out.has_details = False
+        # Unfortunately we can't get any docstring for these
+        out.summary, out.content = extract_docs(state, state.property_docs, entry.path, '')
+        out.has_details = bool(out.content)
 
         # First try to get fully dereferenced type hints (with strings
         # converted to actual annotations). If that fails (e.g. because a type
@@ -1205,21 +1235,22 @@ def extract_property_doc(state: State, parent, entry: Empty):
         out.is_gettable = True
         out.is_settable = False
         out.is_deletable = False
-        out.summary = ''
-        out.has_details = False
+        # Unfortunately we can't get any docstring for these
+        out.summary, out.content = extract_docs(state, state.property_docs, entry.path, '')
+        out.has_details = bool(out.content)
         out.type = None
         return out
 
-    # TODO: external summary for properties
     out.is_gettable = entry.object.fget is not None
     if entry.object.fget or (entry.object.fset and entry.object.__doc__):
-        out.summary = extract_summary(state, {}, [], entry.object.__doc__)
+        docstring = entry.object.__doc__
     else:
         assert entry.object.fset
-        out.summary = extract_summary(state, {}, [], entry.object.fset.__doc__)
+        docstring = entry.object.fset.__doc__
+    out.summary, out.content = extract_docs(state, state.property_docs, entry.path, docstring)
     out.is_settable = entry.object.fset is not None
     out.is_deletable = entry.object.fdel is not None
-    out.has_details = False
+    out.has_details = bool(out.content)
 
     # For the type, if the property is gettable, get it from getters's return
     # type. For write-only properties get it from setter's second argument
@@ -1290,8 +1321,8 @@ def extract_data_doc(state: State, parent, entry: Empty):
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.DATA, entry.path[-1:])
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
-    out.summary = extract_summary(state, state.data_docs, entry.path, '')
-    out.has_details = False
+    out.summary, out.content = extract_docs(state, state.data_docs, entry.path, '')
+    out.has_details = bool(out.content)
 
     # First try to get fully dereferenced type hints (with strings converted to
     # actual annotations). If that fails (e.g. because a type doesn't exist),
@@ -1346,7 +1377,7 @@ def render_module(state: State, path, module, env):
     for hook in state.hooks_pre_page: hook()
 
     page = Empty()
-    page.summary = extract_summary(state, state.module_docs, path, module.__doc__)
+    page.summary, page.content = extract_docs(state, state.module_docs, path, module.__doc__)
     page.filename = filename
     page.url = url
     page.breadcrumb = breadcrumb
@@ -1357,15 +1388,11 @@ def render_module(state: State, path, module, env):
     page.functions = []
     page.data = []
     page.has_enum_details = False
-
-    # External page content, if provided
-    path_str = '.'.join(path)
-    if path_str in state.module_docs:
-        page.content = render_rst(state, state.module_docs[path_str]['content'])
-        state.module_docs[path_str]['used'] = True
+    page.has_function_details = False
+    page.has_data_details = False
 
     # Find itself in the global map, save the summary back there for index
-    module_entry = state.name_map[path_str]
+    module_entry = state.name_map['.'.join(path)]
     module_entry.summary = page.summary
 
     # Extract docs for all members
@@ -1386,9 +1413,14 @@ def render_module(state: State, path, module, env):
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
         elif member_entry.type == EntryType.FUNCTION:
-            page.functions += extract_function_doc(state, module, member_entry)
+            functions = extract_function_doc(state, module, member_entry)
+            page.functions += functions
+            for function in functions:
+                if function.has_details: page.has_function_details = True
         elif member_entry.type == EntryType.DATA:
-            page.data += [extract_data_doc(state, module, member_entry)]
+            data = extract_data_doc(state, module, member_entry)
+            page.data += [data]
+            if data.has_details: page.has_data_details = True
         else: # pragma: no cover
             assert False
 
@@ -1420,7 +1452,7 @@ def render_class(state: State, path, class_, env):
     for hook in state.hooks_pre_page: hook()
 
     page = Empty()
-    page.summary = extract_summary(state, state.class_docs, path, class_.__doc__)
+    page.summary, page.content = extract_docs(state, state.class_docs, path, class_.__doc__)
     page.filename = filename
     page.url = url
     page.breadcrumb = breadcrumb
@@ -1434,15 +1466,12 @@ def render_class(state: State, path, class_, env):
     page.properties = []
     page.data = []
     page.has_enum_details = False
-
-    # External page content, if provided
-    path_str = '.'.join(path)
-    if path_str in state.class_docs:
-        page.content = render_rst(state, state.class_docs[path_str]['content'])
-        state.class_docs[path_str]['used'] = True
+    page.has_function_details = False
+    page.has_property_details = False
+    page.has_data_details = False
 
     # Find itself in the global map, save the summary back there for index
-    module_entry = state.name_map[path_str]
+    module_entry = state.name_map['.'.join(path)]
     module_entry.summary = page.summary
 
     # Extract docs for all members
@@ -1471,10 +1500,15 @@ def render_class(state: State, path, class_, env):
                     page.staticmethods += [function]
                 else:
                     page.methods += [function]
+                if function.has_details: page.has_function_details = True
         elif member_entry.type == EntryType.PROPERTY:
-            page.properties += [extract_property_doc(state, class_, member_entry)]
+            property = extract_property_doc(state, class_, member_entry)
+            page.properties += [property]
+            if property.has_details: page.has_property_details = True
         elif member_entry.type == EntryType.DATA:
-            page.data += [extract_data_doc(state, class_, member_entry)]
+            data = extract_data_doc(state, class_, member_entry)
+            page.data += [data]
+            if data.has_details: page.has_data_details = True
         else: # pragma: no cover
             assert False
 
@@ -1754,6 +1788,9 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             jinja_environment=env,
             module_doc_contents=state.module_docs,
             class_doc_contents=state.class_docs,
+            enum_doc_contents=state.enum_docs,
+            function_doc_contents=state.function_docs,
+            property_doc_contents=state.property_docs,
             data_doc_contents=state.data_docs,
             hooks_pre_page=state.hooks_pre_page,
             hooks_post_run=state.hooks_post_run)
@@ -1821,15 +1858,10 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             render_page(state, entry.path, entry.filename, env)
 
     # Warn if there are any unused contents left after processing everything
-    unused_module_docs = [key for key, value in state.module_docs.items() if not 'used' in value]
-    unused_class_docs = [key for key, value in state.class_docs.items() if not 'used' in value]
-    unused_data_docs = [key for key, value in state.data_docs.items() if not 'used' in value]
-    if unused_module_docs:
-        logging.warning("The following module doc contents were unused: %s", unused_module_docs)
-    if unused_class_docs:
-        logging.warning("The following class doc contents were unused: %s", unused_class_docs)
-    if unused_data_docs:
-        logging.warning("The following data doc contents were unused: %s", unused_data_docs)
+    for docs in ['module', 'class', 'enum', 'function', 'property', 'data']:
+        unused_docs = [key for key, value in getattr(state, f'{docs}_docs').items() if not 'used' in value]
+        if unused_docs:
+            logging.warning("The following %s doc contents were unused: %s", docs, unused_docs)
 
     # Create module and class index from the toplevel name list. Recursively go
     # from the top-level index list and gather all class/module children.

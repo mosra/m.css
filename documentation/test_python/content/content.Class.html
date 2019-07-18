@@ -23,8 +23,148 @@
           <span class="m-breadcrumb"><a href="content.html">content</a>.<wbr/></span>Class <span class="m-thin">class</span>
         </h1>
         <p>This overwrites the docstring for <code>content.Class</code>.</p>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#classmethods">Class methods</a></li>
+                <li><a href="#staticmethods">Static methods</a></li>
+                <li><a href="#methods">Methods</a></li>
+                <li><a href="#dunder-methods">Special methods</a></li>
+                <li><a href="#properties">Properties</a></li>
+                <li><a href="#data">Data</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
 <p>This is detailed class docs. Here I <em>also</em> hate how it needs to be
 indented.</p>
+        <section id="classmethods">
+          <h2><a href="#classmethods">Class methods</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#class_method" class="m-doc">class_method</a>(</span><span class="m-doc-wrap">b)</span>
+            </dt>
+            <dd>This function is a class method</dd>
+          </dl>
+        </section>
+        <section id="staticmethods">
+          <h2><a href="#staticmethods">Static methods</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#static_method" class="m-doc">static_method</a>(</span><span class="m-doc-wrap">cls, a)</span>
+            </dt>
+            <dd>This function is a static method</dd>
+          </dl>
+        </section>
+        <section id="methods">
+          <h2><a href="#methods">Methods</a></h2>
+          <dl class="m-doc">
+            <dt id="method">
+              <span class="m-doc-wrap-bumper">def <a href="#method" class="m-doc-self">method</a>(</span><span class="m-doc-wrap">self)</span>
+            </dt>
+            <dd>This overwrites the docstring for <code>content.Class.method</code>, but
+doesn't add any detailed block.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#method_with_details" class="m-doc">method_with_details</a>(</span><span class="m-doc-wrap">self)</span>
+            </dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section id="dunder-methods">
+          <h2><a href="#dunder-methods">Special methods</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#__init__" class="m-doc">__init__</a>(</span><span class="m-doc-wrap">self)</span>
+            </dt>
+            <dd>A dunder method</dd>
+          </dl>
+        </section>
+        <section id="properties">
+          <h2><a href="#properties">Properties</a></h2>
+          <dl class="m-doc">
+            <dt id="a_property">
+              <a href="#a_property" class="m-doc-self">a_property</a> <span class="m-label m-flat m-warning">get</span>
+            </dt>
+            <dd>This overwrites the docstring for <code>content.Class.a_property</code>,
+but doesn't add any detailed block.</dd>
+            <dt>
+              <a href="#a_property_with_details" class="m-doc">a_property_with_details</a> <span class="m-label m-flat m-warning">get</span>
+            </dt>
+            <dd>This overwrites the docstring for <code>content.Class.a_property_with_details</code>.</dd>
+            <dt>
+              <a href="#annotated_property" class="m-doc">annotated_property</a>: float <span class="m-label m-flat m-warning">get</span>
+            </dt>
+            <dd>This is an annotated property</dd>
+          </dl>
+        </section>
+        <section id="data">
+          <h2><a href="#data">Data</a></h2>
+          <dl class="m-doc">
+            <dt>
+              <a href="#DATA_WITH_DETAILS" class="m-doc">DATA_WITH_DETAILS</a>: str = &#x27;this blows&#x27;
+            </dt>
+            <dd></dd>
+          </dl>
+        </section>
+        <section>
+          <h2>Method documentation</h2>
+          <section class="m-doc-details" id="class_method"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#class_method" class="m-doc-self">class_method</a>(</span><span class="m-doc-wrap">b) <span class="m-label m-success">classmethod</span></span></span>
+            </h3>
+            <p>This function is a class method</p>
+<p>The <span class="m-label m-success">classmethod</span> should be shown here.</p>
+          </div></section>
+          <section class="m-doc-details" id="static_method"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#static_method" class="m-doc-self">static_method</a>(</span><span class="m-doc-wrap">cls, a) <span class="m-label m-info">staticmethod</span></span></span>
+            </h3>
+            <p>This function is a static method</p>
+<p>The <span class="m-label m-info">staticmethod</span> should be shown here.</p>
+          </div></section>
+          <section class="m-doc-details" id="method_with_details"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#method_with_details" class="m-doc-self">method_with_details</a>(</span><span class="m-doc-wrap">self)</span></span>
+            </h3>
+<p>This one has a detailed block without any summary.</p>
+          </div></section>
+          <section class="m-doc-details" id="__init__"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#__init__" class="m-doc-self">__init__</a>(</span><span class="m-doc-wrap">self)</span></span>
+            </h3>
+            <p>A dunder method</p>
+<p>A dunder method shown in the detailed view.</p>
+          </div></section>
+        </section>
+        <section>
+          <h2>Property documentation</h2>
+          <section class="m-doc-details" id="a_property_with_details"><div>
+            <h3>
+              content.<wbr />Class.<wbr /><a href="#a_property_with_details" class="m-doc-self">a_property_with_details</a> <span class="m-label m-flat m-warning">get</span>
+            </h3>
+            <p>This overwrites the docstring for <code>content.Class.a_property_with_details</code>.</p>
+<p>Detailed property docs.</p>
+          </div></section>
+          <section class="m-doc-details" id="annotated_property"><div>
+            <h3>
+              content.<wbr />Class.<wbr /><a href="#annotated_property" class="m-doc-self">annotated_property</a>: float <span class="m-label m-flat m-warning">get</span>
+            </h3>
+            <p>This is an annotated property</p>
+<p>Annotated property, using summary from the docstring.</p>
+          </div></section>
+        </section>
+        <section>
+          <h2>Data documentation</h2>
+          <section class="m-doc-details" id="DATA_WITH_DETAILS"><div>
+            <h3>
+              content.<wbr />Class.<wbr /><a href="#DATA_WITH_DETAILS" class="m-doc-self">DATA_WITH_DETAILS</a>: str
+            </h3>
+<p>Detailed docs for <code>data</code> in a class to check rendering.</p>
+          </div></section>
+        </section>
       </div>
     </div>
   </div>

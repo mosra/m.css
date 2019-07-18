@@ -57,15 +57,17 @@ List the plugin in your :py:`PLUGINS`.
 
     PLUGINS += ['m.sphinx']
 
-`Module, class and data docs`_
-==============================
+`Module, class, enum, function, property and data docs`_
+========================================================
 
-The :rst:`.. py:module::`, :rst:`.. py:class::` and :rst:`.. py:data::`
-directives provide a way to supply module, class and data documentation
-content. Directive option is the name to document, directive contents are
-the actual contents; in addition the :py:`:summary:` option can override the
-docstring extracted using inspection. No restrictions are made on the contents,
-it's possible to make use of any additional plugins in the markup. Example:
+The :rst:`.. py:module::`, :rst:`.. py:class::`, :rst:`.. py:enum::`,
+:rst:`.. py:function::`, :rst:`.. py:property::` and :rst:`.. py:data::`
+directives provide a way to supply module, class, enum, function / method,
+property and data documentation content. Directive option is the name to
+document, directive contents are the actual contents; in addition the
+:py:`:summary:` option can override the docstring extracted using inspection.
+No restrictions are made on the contents, it's possible to make use of any
+additional plugins in the markup. Example:
 
 .. code:: rst
 

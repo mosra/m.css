@@ -663,12 +663,16 @@ Keyword argument            Content
                             etc.
 :py:`module_doc_contents`   Module documentation contents
 :py:`class_doc_contents`    Class documentation contents
+:py:`enum_doc_contents`     Enum documentation contents
+:py:`function_doc_contents` Function documentation contents
+:py:`property_doc_contents` Property documentation contents
 :py:`data_doc_contents`     Data documentation contents
 :py:`hooks_pre_page`        Hooks to call before each page gets rendered
 :py:`hooks_post_run`        Hooks to call at the very end of the script run
 =========================== ===================================================
 
-The :py:`module_doc_contents`, :py:`class_doc_contents` and
+The :py:`module_doc_contents`, :py:`class_doc_contents`,
+:py:`function_doc_contents`, :py:`property_doc_contents` and
 :py:`data_doc_contents` variables are :py:`Dict[str, Dict[str, str]]`, where
 the first level is a name and second level are key/value pairs of the actual
 HTML documentation content. Plugins that parse extra documentation inputs (such
@@ -921,6 +925,11 @@ Property                                Description
                                         `Data properties`_ for details.
 :py:`page.has_enum_details`             If there is at least one enum with full
                                         description block [2]_
+:py:`page.has_function_details`         If there is at least one function (or
+                                        method, in case of classes) with full
+                                        description block [2]_
+:py:`page.has_data_details`             If there is at least one data with full
+                                        description block [2]_
 ======================================= =======================================
 
 Each class page, rendered with ``class.html``, has the following additional
@@ -944,6 +953,8 @@ Property                                Description
                                         `Function properties`_ for details.
 :py:`page.properties`                   List of properties. See
                                         `Property properties`_ for details.
+:py:`page.has_property_details`         If there is at least one property with
+                                        full description block [2]_
 ======================================= =======================================
 
 Explicit documentation pages rendered with ``class.html`` have additional
@@ -988,6 +999,7 @@ Property                                Description
 :py:`enum.name`                         Enum name
 :py:`enum.id`                           Enum ID [4]_
 :py:`enum.summary`                      Doc summary
+:py:`enum.content`                      Detailed documentation, if any
 :py:`enum.base`                         Base class from which the enum is
                                         derived. Set to :py:`None` if no base
                                         class information is available.
@@ -1023,6 +1035,7 @@ Property                            Description
 :py:`function.name`                 Function name
 :py:`function.id`                   Function ID [4]_
 :py:`function.summary`              Doc summary
+:py:`function.content`              Detailed documentation, if any
 :py:`function.type`                 Function return type annotation [1]_
 :py:`function.params`               List of function parameters. See below for
                                     details.
@@ -1034,8 +1047,7 @@ Property                            Description
                                     wrapping on multiple lines would only
                                     occupy too much vertical space.
 :py:`function.has_details`          If there is enough content for the full
-                                    description block. Currently always set to
-                                    :py:`False`. [2]_
+                                    description block [2]_
 :py:`function.is_classmethod`       Set to :py:`True` if the function is
                                     annotated with :py:`@classmethod`,
                                     :py:`False` otherwise.
@@ -1076,12 +1088,12 @@ Property                            Description
 :py:`property.id`                   Property ID [4]_
 :py:`property.type`                 Property getter return type annotation [1]_
 :py:`property.summary`              Doc summary
+:py:`property.content`              Detailed documentation, if any
 :py:`property.is_gettable`          If the property is gettable
 :py:`property.is_settable`          If the property is settable
 :py:`property.is_deletable`         If the property is deletable with :py:`del`
 :py:`property.has_details`          If there is enough content for the full
-                                    description block. Currently always set to
-                                    :py:`False`. [2]_
+                                    description block [2]_
 =================================== ===========================================
 
 `Data properties`_
@@ -1096,10 +1108,10 @@ Property                            Description
 :py:`data.id`                       Data ID [4]_
 :py:`data.type`                     Data type
 :py:`data.summary`                  Doc summary
+:py:`data.content`                  Detailed documentation, if any
 :py:`data.value`                    Data value representation
 :py:`data.has_details`              If there is enough content for the full
-                                    description block. Currently always set to
-                                    :py:`False`. [2]_
+                                    description block [2]_
 =================================== ===========================================
 
 `Index page templates`_

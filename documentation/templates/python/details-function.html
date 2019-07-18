@@ -1,0 +1,37 @@
+          <section class="m-doc-details" id="{{ function.id }}"><div>
+            <h3>
+              {% set j = joiner('\n              ' if function.has_complex_params else ' ') %}
+              <span class="m-doc-wrap-bumper">def {{ prefix }}</span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#{{ function.id }}" class="m-doc-self">{{ function.name }}</a>(</span><span class="m-doc-wrap">{% for param in function.params %}{% if loop.index0 %}{% if function.params[loop.index0 - 1].kind == 'POSITIONAL_OR_KEYWORD' and param.kind == 'KEYWORD_ONLY' %},<span class="m-text m-dim"> *,</span>{% else %},{% endif %}{% endif %}{{ j() }}{% if param.kind == 'VAR_POSITIONAL' %}*{% elif param.kind == 'VAR_KEYWORD' %}**{% endif %}{{ param.name }}{% if param.type %}: {{ param.type }}{% endif %}{% if param.default %} = {{ param.default }}{% endif %}{% if param.kind == 'POSITIONAL_ONLY' and (loop.last or function.params[loop.index0 + 1].kind != 'POSITIONAL_ONLY') %}<span class="m-text m-dim">, /</span>{% endif %}{% endfor %}){% if function.type %} -&gt; {{ function.type }}{% endif %}{% if function.is_classmethod %} <span class="m-label m-success">classmethod</span>{% elif function.is_staticmethod %} <span class="m-label m-info">staticmethod</span>{% endif %}</span></span>
+            </h3>
+            {% if function.summary %}
+            <p>{{ function.summary }}</p>
+            {% endif %}
+            {% if function.has_param_details or function.return_value %}
+            <table class="m-table m-fullwidth m-flat">
+              {% if function.has_param_details %}
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                {% for param in function.params %}
+                <tr>
+                  <td{% if loop.index == 1 %} style="width: 1%"{% endif %}>{{ param.name }}</td>
+                  <td>{{ param.description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
+              {% if function.return_value %}
+              <tfoot>
+                <tr>
+                  <th{% if not function.has_param_details %} style="width: 1%"{% endif %}>Returns</th>
+                  <td>{{ function.return_value }}</td>
+                </tr>
+              </tfoot>
+              {% endif %}
+            </table>
+            {% endif %}
+            {% if function.content %}
+{{ function.content }}
+            {% endif %}
+          </div></section>

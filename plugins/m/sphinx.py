@@ -27,6 +27,9 @@ from docutils.parsers.rst import directives
 
 module_doc_output = None
 class_doc_output = None
+enum_doc_output = None
+function_doc_output = None
+property_doc_output = None
 data_doc_output = None
 
 class PyModule(rst.Directive):
@@ -55,6 +58,45 @@ class PyClass(rst.Directive):
         }
         return []
 
+class PyEnum(rst.Directive):
+    final_argument_whitespace = True
+    has_content = True
+    required_arguments = 1
+    option_spec = {'summary': directives.unchanged}
+
+    def run(self):
+        enum_doc_output[self.arguments[0]] = {
+            'summary': self.options.get('summary', ''),
+            'content': '\n'.join(self.content)
+        }
+        return []
+
+class PyFunction(rst.Directive):
+    final_argument_whitespace = True
+    has_content = True
+    required_arguments = 1
+    option_spec = {'summary': directives.unchanged}
+
+    def run(self):
+        function_doc_output[self.arguments[0]] = {
+            'summary': self.options.get('summary', ''),
+            'content': '\n'.join(self.content)
+        }
+        return []
+
+class PyProperty(rst.Directive):
+    final_argument_whitespace = True
+    has_content = True
+    required_arguments = 1
+    option_spec = {'summary': directives.unchanged}
+
+    def run(self):
+        property_doc_output[self.arguments[0]] = {
+            'summary': self.options.get('summary', ''),
+            'content': '\n'.join(self.content)
+        }
+        return []
+
 class PyData(rst.Directive):
     final_argument_whitespace = True
     has_content = True
@@ -68,14 +110,20 @@ class PyData(rst.Directive):
         }
         return []
 
-def register_mcss(module_doc_contents, class_doc_contents, data_doc_contents, **kwargs):
-    global module_doc_output, class_doc_output, data_doc_output
+def register_mcss(module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, **kwargs):
+    global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
+    enum_doc_output = enum_doc_contents
+    function_doc_output = function_doc_contents
+    property_doc_output = property_doc_contents
     data_doc_output = data_doc_contents
 
     rst.directives.register_directive('py:module', PyModule)
     rst.directives.register_directive('py:class', PyClass)
+    rst.directives.register_directive('py:enum', PyEnum)
+    rst.directives.register_directive('py:function', PyFunction)
+    rst.directives.register_directive('py:property', PyProperty)
     rst.directives.register_directive('py:data', PyData)
 
 def register(): # for Pelican
