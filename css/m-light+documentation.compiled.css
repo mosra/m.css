@@ -2545,6 +2545,18 @@ span.m-doc-wrap {
 dl.m-doc dd {
   margin-bottom: 0.5rem;
 }
+dl.m-doc dd {
+  margin-left: 0;
+  padding-left: 2.5rem;
+}
+dl.m-doc dt:target, dl.m-doc dt:target + dd {
+  margin-left: -1.0rem;
+  border-left-style: solid;
+  border-left-width: 0.25rem;
+  border-color: #cb4b16;
+}
+dl.m-doc dt:target { padding-left: 0.75rem; }
+dl.m-doc dt:target + dd { padding-left: 3.25rem; }
 ul.m-doc {
   list-style: none;
   margin-left:  1.0375rem;
