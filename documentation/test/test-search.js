@@ -79,7 +79,7 @@ const { StringDecoder } = require('string_decoder');
 /* Verify that base85-decoded file is equivalent to the binary */
 {
     let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.equal(binary.byteLength, 745);
+    assert.equal(binary.byteLength, 674);
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
@@ -114,7 +114,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 745);
+    assert.equal(Search.dataSize, 674);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
 
@@ -223,7 +223,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 745);
+    assert.equal(Search.dataSize, 674);
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [[
@@ -251,7 +251,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.dataSize, 748); /* some padding on the end, that's okay */
+    assert.equal(Search.dataSize, 676); /* some padding on the end, that's okay */
     assert.equal(Search.symbolCount, 7);
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [[
@@ -279,7 +279,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 231);
+    assert.equal(Search.dataSize, 160);
     assert.equal(Search.symbolCount, 2);
     /* Both "Hýždě" and "Hárá" have common autocompletion to "h\xA1", which is
        not valid UTF-8, so it has to get truncated */
@@ -317,7 +317,7 @@ const { StringDecoder } = require('string_decoder');
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/nested.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 402);
+    assert.equal(Search.dataSize, 331);
     assert.equal(Search.symbolCount, 4);
     assert.deepEqual(Search.search('geo'), [[
         { name: 'Magnum::Math::Geometry',

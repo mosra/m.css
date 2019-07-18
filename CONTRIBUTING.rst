@@ -109,7 +109,7 @@ There is no possibility of getting code coverage for Jinja2 templates, though.
     # open htmlcov/index.html in your browser
 
     cd documentation
-    node ./node_modules/istanbul/lib/cli.js cover test_doxygen/test-search.js
+    node ./node_modules/istanbul/lib/cli.js cover test/test-search.js
     # open coverage/lcov-report/index.html in your browser
 
     cd plugins

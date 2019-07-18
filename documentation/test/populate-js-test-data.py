@@ -28,9 +28,10 @@ import base64
 import os
 import sys
 import pathlib
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from doxygen import EntryType, search_type_map
+from _search_test_metadata import EntryType, search_type_map
 from _search import Trie, ResultMap, ResultFlag, serialize_search_data
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'

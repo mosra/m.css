@@ -79,7 +79,7 @@ script:
   - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && coverage run -m unittest && cp .coverage ../.coverage.doxygen; fi
 
   # Test client doxygen JS
-  - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && node ../node_modules/istanbul/lib/cli.js cover test_doxygen/test-search.js; fi
+  - if [ "$WITH_NODE" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation && node ../node_modules/istanbul/lib/cli.js cover test/test-search.js; fi
 
   # Test that compiled CSS is up-to-date. First display the diff, then check
   # with diff-index which should print what's wrong and return with non-zero
@@ -90,8 +90,8 @@ script:
   # Test that JS search test data are up-to-date as well. Would be best to do
   # it on the Node.js job but that one has just Python 3.5 which doesn't know
   # enum.Flag.
-  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_doxygen && ./populate-js-test-data.py && git diff --color=always . | cat; fi
-  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test_doxygen/js-test-data && git diff-index --exit-code HEAD -- .; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test&& ./populate-js-test-data.py && git diff --color=always . | cat; fi
+  - if [ "$WITH_DOCUMENTATION" == "ON" ]; then cd $TRAVIS_BUILD_DIR/documentation/test/js-test-data && git diff-index --exit-code HEAD -- .; fi
 
 # Cache the downloaded doxygen and pybind11
 cache:
