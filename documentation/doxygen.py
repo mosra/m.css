@@ -244,7 +244,7 @@ def extract_id_hash(state: State, element: ET.Element) -> str:
     # comes from parse_id()[0]. See the
     # contents_anchor_in_both_group_and_namespace test for a verification.
     id = element.attrib['id']
-    assert id.startswith(state.current_definition_url_base)
+    assert id.startswith(state.current_definition_url_base), "ID `%s` does not start with `%s`" % (id, state.current_definition_url_base)
     return id[len(state.current_definition_url_base)+2:]
 
 and_re_src = re.compile(r'([^\s])&amp;&amp;([^\s])')
