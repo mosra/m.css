@@ -104,9 +104,8 @@ def new_page(*args):
     latex2svgextra.counter = 0
 
 def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
-    # Otherwise the backslashes do quite a mess there
-    i = rawtext.find('`')
-    text = rawtext.split('`')[1]
+    # In order to properly preserve backslashes (well, and backticks)
+    text = rawtext[rawtext.find('`') + 1:rawtext.rfind('`')]
 
     # Fallback rendering as code requested
     if settings['M_MATH_RENDER_AS_CODE']:

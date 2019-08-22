@@ -5,6 +5,8 @@ m.code
     :language: c++
 .. role:: tex(code)
     :language: tex
+.. role:: rst(code)
+    :language: rst
 
 .. code:: c++
 
@@ -35,7 +37,8 @@ Console colors:
 
     // this language is not highlighted
 
-Properly preserve backslashes: :tex:`\frac{a}{b}`
+Properly preserve backslashes: :tex:`\frac{a}{b}` ... and backticks:
+:rst:`:ref:`a function <os.path.join()>``
 
 Don't trim leading spaces in blocks:
 

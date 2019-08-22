@@ -178,9 +178,8 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         return codeblock.run()
 
 def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
-    # In order to properly preserve backslashes
-    i = rawtext.find('`')
-    text = rawtext.split('`')[1]
+    # In order to properly preserve backslashes (well, and backticks)
+    text = rawtext[rawtext.find('`') + 1:rawtext.rfind('`')]
 
     set_classes(options)
     classes = []
