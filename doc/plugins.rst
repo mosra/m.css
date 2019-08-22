@@ -64,7 +64,6 @@ below or :gh:`grab the whole Git repository <mosra/m.css>`:
 -   :gh:`m.metadata <mosra/m.css$master/plugins/m/metadata.py>`
     :label-flat-primary:`pelican only`
 -   :gh:`m.sphinx <mosra/m.css$master/plugins/m/metadata.py>`
-    :label-flat-warning:`python doc only`
 
 For the `Python doc theme <{filename}/documentation/python.rst>`_ it's enough
 to simply list them in :py:`PLUGINS`. For the `Doxygen theme <{filename}/documentation/doxygen.rst>`_,

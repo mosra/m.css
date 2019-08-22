@@ -22,4 +22,19 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-# This module gets tested inside documentation/test_python/.
+# The directives are only for the Python theme and get tested inside it
+
+from . import PelicanPluginTestCase
+
+class Sphinx(PelicanPluginTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, '', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'PLUGINS': ['m.htmlsanity', 'm.sphinx'],
+            'M_SPHINX_INVENTORIES': [
+                ('../doc/documentation/python.inv', 'https://docs.python.org/3/', ['xml.', 'xml.etree.'], ['m-flat'])]
+        })
+
+        self.assertEqual(*self.actual_expected_contents('page.html'))

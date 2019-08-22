@@ -158,6 +158,7 @@ PLUGINS = ['m.abbr',
            'm.math',
            'm.metadata',
            'm.plots',
+           'm.sphinx',
            'm.qr',
            'm.vk']
 
@@ -179,6 +180,8 @@ M_HTMLSANITY_SMART_QUOTES = True
 M_HTMLSANITY_HYPHENATION = True
 M_DOX_TAGFILES = [
     ('../doc/documentation/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'])]
+M_SPHINX_INVENTORIES = [
+    ('../doc/documentation/python.inv', 'https://docs.python.org/3/', ['xml.'])]
 
 if not shutil.which('latex'):
     logging.warning("LaTeX not found, fallback to rendering math as code")

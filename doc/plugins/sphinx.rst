@@ -48,27 +48,111 @@ using external files in a way similar to `Sphinx <https://www.sphinx-doc.org/>`_
 `How to use`_
 =============
 
+`Pelican`_
+----------
+
+Download the `m/sphinx.py <{filename}/plugins.rst>`_ file, put it including the
+``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.sphinx``
+package to your :py:`PLUGINS` in ``pelicanconf.py``. The plugin uses Sphinx
+inventory files to get a list of linkable symbols and you need to provide
+list of tuples containing tag file path, URL prefix, an optional list of
+implicitly prepended paths and an optional list of CSS classes for each link in
+:py:`M_SPHINX_INVENTORIES`. Every Sphinx-generated documentation contains an
+``objects.inv`` file in its root directory (and the root directory is the URL
+prefix as well), for example for Python 3 it's located at
+https://docs.python.org/3/objects.inv. Download the files and specify path to
+them and the URL they were downloaded from, for example:
+
+.. code:: python
+
+    PLUGINS += ['m.sphinx']
+    M_SPHINX_INVENTORIES = [
+        ('sphinx/python.inv', 'https://docs.python.org/3/', ['xml.']),
+        ('sphinx/numpy.inv', 'https://docs.scipy.org/doc/numpy/', [], ['m-flat'])]
+
 `Python doc theme`_
 -------------------
 
-List the plugin in your :py:`PLUGINS`.
+List the plugin in your :py:`PLUGINS`. The :py:`M_SPHINX_INVENTORIES`
+configuration option is interpreted the same way as in case of the `Pelican`_
+plugin.
 
 .. code:: py
 
     PLUGINS += ['m.sphinx']
+    M_SPHINX_INVENTORIES = [...]
 
-.. note-info::
+`Links to external Sphinx documentation`_
+=========================================
 
-    This plugin is available only for the `Python doc theme <{filename}/documentation/python.rst>`_,
-    not usable for Pelican or Doxygen themes.
+Use the :rst:`:ref:` interpreted text role for linking to symbols defined in
+:py:`M_SPHINX_INVENTORIES`. In order to save you some typing, the leading
+name(s) mentioned there can be omitted when linking to given symbol.
+
+Link text is equal to link target unless the target provides its own title
+(such as documentation pages), function links have ``()`` appended to make it
+clear it's a function. It's possible to specify custom link title using the
+:rst:`:ref:`link title <link-target>``` syntax. If a symbol can't be found, a
+warning is printed to output and link target is rendered in a monospace font
+(or, if custom link title is specified, just the title is rendered, as normal
+text). You can append ``#anchor`` to ``link-target`` to link to anchors that
+are not present in the inventory file, the same works for query parameters
+starting with ``?``. Adding custom CSS classes can be done by deriving the role
+and adding the :rst:`:class:` option.
+
+Since there's many possible targets and there can be conflicting names,
+sometimes it's desirable to disambiguate. If you suffix the link target with
+``()``, the plugin will restrict the name search to just functions. You can
+also restrict the search to a particular type by prefixing the target with a
+concrete target name and a colon --- for example,
+:rst:`:ref:`std:doc:using/cmdline`` will link to the ``using/cmdline`` page of
+standard documentation.
+
+The :rst:`:ref:` a good candidate for a `default role <http://docutils.sourceforge.net/docs/ref/rst/directives.html#default-role>`_
+--- setting it using :rst:`.. default-role::` will then make it accessible
+using plain backticks:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. default-role:: ref
+
+        .. role:: ref-flat(ref)
+            :class: m-flat
+
+        -   Function link: :ref:`open()`
+        -   Class link (with the ``xml.`` prefix omitted): :ref:`etree.ElementTree`
+        -   Page link: :ref:`std:doc:using/cmdline`
+        -   :ref:`Custom link title <PyErr_SetString>`
+        -   Flat link: :ref-flat:`os.path.join()`
+        -   Link using a default role: `str.partition()`
+
+    .. default-role:: ref
+
+    .. role:: ref-flat(ref)
+        :class: m-flat
+
+    -   Function link: :ref:`open()`
+    -   Class link (with the ``xml.`` prefix omitted): :ref:`etree.ElementTree`
+    -   Page link: :ref:`std:doc:using/cmdline`
+    -   :ref:`Custom link title <PyErr_SetString>`
+    -   Flat link: :ref-flat:`os.path.join()`
+    -   Link using a default role: `str.partition()`
+
+.. note-success::
+
+    For linking to Doxygen documentation, a similar functionality is provided
+    by the `m.dox <{filename}/plugins/links.rst#doxygen-documentation>`_
+    plugin.
 
 `Module, class, enum, function, property and data docs`_
 ========================================================
 
-The :rst:`.. py:module::`, :rst:`.. py:class::`, :rst:`.. py:enum::`,
-:rst:`.. py:function::`, :rst:`.. py:property::` and :rst:`.. py:data::`
-directives provide a way to supply module, class, enum, function / method,
-property and data documentation content.
+In the Python doc theme, the :rst:`.. py:module::`, :rst:`.. py:class::`,
+:rst:`.. py:enum::`, :rst:`.. py:function::`, :rst:`.. py:property::` and
+:rst:`.. py:data::` directives provide a way to supply module, class, enum,
+function / method, property and data documentation content.
 
 Directive option is the name to document, directive contents are the actual
 contents; in addition all the directives have the :py:`:summary:` option that
