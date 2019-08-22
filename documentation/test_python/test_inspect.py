@@ -157,7 +157,15 @@ class Recursive(BaseInspectTestCase):
 
 class TypeLinks(BaseInspectTestCase):
     def test(self):
-        self.run_python()
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_PAGES': ['index.rst'],
+            'M_SPHINX_INVENTORIES': [
+                ('../../../doc/documentation/python.inv', 'https://docs.python.org/3/', [], ['m-doc-external'])]
+        })
+
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.Foo.Foo.html'))

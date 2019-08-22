@@ -275,6 +275,7 @@ def crawl_enum(state: State, path: List[str], enum_, parent_url):
     enum_entry.object = enum_
     enum_entry.path = path
     enum_entry.url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](EntryType.ENUM, path[-1:]))
+    enum_entry.css_classes = ['m-doc']
     enum_entry.values = []
 
     if issubclass(enum_, enum.Enum):
@@ -284,6 +285,7 @@ def crawl_enum(state: State, path: List[str], enum_, parent_url):
             entry.type = EntryType.ENUM_VALUE
             entry.path = subpath
             entry.url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, subpath[-2:]))
+            entry.css_classes = ['m-doc']
             state.name_map['.'.join(subpath)] = entry
 
     elif state.config['PYBIND11_COMPATIBILITY']:
@@ -295,6 +297,7 @@ def crawl_enum(state: State, path: List[str], enum_, parent_url):
             entry.type = EntryType.ENUM_VALUE
             entry.path = subpath
             entry.url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, subpath[-2:]))
+            entry.css_classes = ['m-doc']
             state.name_map['.'.join(subpath)] = entry
 
     # Add itself to the name map
@@ -313,6 +316,7 @@ def crawl_class(state: State, path: List[str], class_):
     class_entry.type = EntryType.CLASS
     class_entry.object = class_
     class_entry.path = path
+    class_entry.css_classes = ['m-doc']
     class_entry.url = state.config['URL_FORMATTER'](EntryType.CLASS, path)[1]
     class_entry.members = []
 
@@ -356,6 +360,7 @@ def crawl_class(state: State, path: List[str], class_):
             entry.object = object
             entry.path = subpath
             entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+            entry.css_classes = ['m-doc']
             state.name_map['.'.join(subpath)] = entry
 
         class_entry.members += [name]
@@ -380,6 +385,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
     module_entry.type = EntryType.MODULE
     module_entry.object = module
     module_entry.path = path
+    module_entry.css_classes = ['m-doc']
     module_entry.url = state.config['URL_FORMATTER'](EntryType.MODULE, path)[1]
     module_entry.members = []
 
@@ -451,6 +457,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 entry.object = object
                 entry.path = subpath
                 entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+                entry.css_classes = ['m-doc']
                 state.name_map['.'.join(subpath)] = entry
 
             module_entry.members += [name]
@@ -523,6 +530,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 entry.object = object
                 entry.path = subpath
                 entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+                entry.css_classes = ['m-doc']
                 state.name_map['.'.join(subpath)] = entry
 
             module_entry.members += [name]
@@ -593,7 +601,7 @@ def make_name_link(state: State, referrer_path: List[str], name) -> str:
     relative_name = make_relative_name(state, referrer_path, name)
 
     entry = state.name_map[name]
-    return '<a href="{}" class="m-doc">{}</a>'.format(entry.url, relative_name)
+    return '<a href="{}" class="{}">{}</a>'.format(entry.url, ' '.join(entry.css_classes), relative_name)
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
@@ -1951,6 +1959,11 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # side effect of the render is entry.summary (and entry.name for pages)
     # being filled.
     for entry in state.name_map.values():
+        # If there is no object, the entry is an external reference. Skip
+        # those. Can't do `not entry.object` because that gives ValueError
+        # for numpy ("use a.any() or a.all()")
+        if hasattr(entry, 'object') and entry.object is None: continue
+
         if entry.type == EntryType.MODULE:
             render_module(state, entry.path, entry.object, env)
         elif entry.type == EntryType.CLASS:

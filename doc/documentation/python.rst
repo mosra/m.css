@@ -725,6 +725,10 @@ Keyword argument    Content
                     :py:`path`          Path. Equivalent to :py:`key.split('.')`.
                     :py:`url`           URL to the entry documentation,
                                         formatted with `custom URL formatters`_.
+                    :py:`css_classes`   List of CSS classes to add to the
+                                        :html:`<a>` tag. Internal entries
+                                        usually have :py:`['m-doc']` while
+                                        exteral have :py:`['m-doc-external']`.
                     =================== =======================================
 =================== ===========================================================
 

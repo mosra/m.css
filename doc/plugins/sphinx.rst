@@ -140,6 +140,10 @@ using plain backticks:
     -   Flat link: :ref-flat:`os.path.join()`
     -   Link using a default role: `str.partition()`
 
+When used with the Python doc theme, the :rst:`:ref` can be used also for
+linking to internal types, while external types, classes and enums are also
+linked to from all signatures.
+
 .. note-success::
 
     For linking to Doxygen documentation, a similar functionality is provided

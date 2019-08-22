@@ -25,6 +25,7 @@
 import logging
 import os
 import re
+from types import SimpleNamespace as Empty
 from typing import Dict
 from urllib.parse import urljoin
 import zlib
@@ -251,7 +252,12 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         # and unknown domains such as c++ for now as I'm unsure about potential
         # name clashes.
         if not found:
-            for type in ['py:exception', 'py:attribute', 'py:method', 'py:data', 'py:module', 'py:function', 'py:class', 'py:classmethod', 'py:staticmethod', 'c:var', 'c:type', 'c:function', 'c:member', 'c:macro']:
+            for type in [
+                'py:exception', 'py:attribute', 'py:method', 'py:data', 'py:module', 'py:function', 'py:class', 'py:classmethod', 'py:staticmethod',
+                'c:var', 'c:type', 'c:function', 'c:member', 'c:macro',
+                # TODO: those apparently don't exist:
+                'py:enum', 'py:enumvalue'
+            ]:
                 if type in intersphinx_inventory and prefixed in intersphinx_inventory[type]:
                     found = type, intersphinx_inventory[type][prefixed]
 
@@ -279,7 +285,75 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
 
-def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, **kwargs):
+def merge_inventories(name_map, **kwargs):
+    global intersphinx_inventory
+
+    # Create inventory entries from the name_map
+    internal_inventory = {}
+    for path_str, entry in name_map.items():
+        EntryType = type(entry.type) # so we don't need to import the enum
+        if entry.type == EntryType.MODULE:
+            type_string = 'py:module'
+        elif entry.type == EntryType.CLASS:
+            type_string = 'py:class'
+        elif entry.type == EntryType.FUNCTION:
+            # TODO: properly distinguish between 'py:function',
+            # 'py:classmethod', 'py:staticmethod', 'py:method'
+            type_string = 'py:function'
+        elif entry.type == EntryType.OVERLOADED_FUNCTION:
+            # TODO: what about the other overloads?
+            type_string = 'py:function'
+        elif entry.type == EntryType.PROPERTY:
+            # datetime.date.year is decorated with @property and listed as a
+            # py:attribute, so that's probably it
+            type_string = 'py:attribute'
+        elif entry.type == EntryType.ENUM:
+            type_string = 'py:enum' # this desn't exist in Sphinx
+        elif entry.type == EntryType.ENUM_VALUE:
+            type_string = 'py:enumvalue' # these don't exist in Sphinx
+        elif entry.type == EntryType.DATA:
+            type_string = 'py:data'
+        elif entry.type == EntryType.PAGE:
+            type_string = 'std:doc'
+        else:
+            # TODO: what to do with these? allow linking to them? disambiguate
+            # or prefix the names somehow?
+            assert entry.type == EntryType.SPECIAL, entry.type
+            continue
+
+        # Mark those with m-doc (as internal)
+        internal_inventory.setdefault(type_string, {})[path_str] = (entry.url, '-', ['m-doc'])
+
+    # Add class / enum / enum value inventory entries to the name map for type
+    # cross-linking
+    for type_, type_string in [
+        # TODO: this will blow up if the above loop is never entered (which is
+        # unlikely) as EntryType is defined there
+        (EntryType.CLASS, 'py:class'),
+        (EntryType.DATA, 'py:data'), # typing.Tuple or typing.Any is data
+        # Those are custom to m.css, not in Sphinx
+        (EntryType.ENUM, 'py:enum'),
+        (EntryType.ENUM_VALUE, 'py:enumvalue'),
+    ]:
+        if type_string in intersphinx_inventory:
+            for path, value in intersphinx_inventory[type_string].items():
+                url, _, css_classes = value
+                entry = Empty()
+                entry.type = type_
+                entry.object = None
+                entry.path = path.split('.')
+                entry.css_classes = css_classes
+                entry.url = url
+                name_map[path] = entry
+
+    # Add stuff from the name map to our inventory
+    for type_, data_internal in internal_inventory.items():
+        data = intersphinx_inventory.setdefault(type_, {})
+        for path, value in data_internal.items():
+            assert path not in data
+            data[path] = value
+
+def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, **kwargs):
     global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
@@ -299,6 +373,8 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
     rst.directives.register_directive('py:data', PyData)
 
     rst.roles.register_local_role('ref', ref)
+
+    hooks_post_crawl += [merge_inventories]
 
 def _pelican_configure(pelicanobj):
     # For backwards compatibility, the input directory is pelican's CWD
