@@ -182,6 +182,7 @@ class State:
         self.data_docs: Dict[str, Dict[str, str]] = {}
         self.external_data: Set[str] = set()
 
+        self.hooks_post_crawl: List = []
         self.hooks_pre_page: List = []
         self.hooks_post_run: List = []
 
@@ -1886,6 +1887,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             function_doc_contents=state.function_docs,
             property_doc_contents=state.property_docs,
             data_doc_contents=state.data_docs,
+            hooks_post_crawl=state.hooks_post_crawl,
             hooks_pre_page=state.hooks_pre_page,
             hooks_post_run=state.hooks_post_run)
 
@@ -1934,6 +1936,10 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
 
         # The index page doesn't go to the index
         if page_name != 'index': page_index += [page_name]
+
+    # Call all registered post-crawl hooks
+    for hook in state.hooks_post_crawl:
+        hook(name_map=state.name_map)
 
     # Then process the doc input files so we have all data for rendering
     # module pages. This needs to be done *after* the initial crawl so

@@ -88,5 +88,6 @@ class Plugins(BaseTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
 
         import fancyline
+        self.assertEqual(fancyline.post_crawl_call_count, 1)
         self.assertEqual(fancyline.pre_page_call_count, 4)
         self.assertEqual(fancyline.post_run_call_count, 1)

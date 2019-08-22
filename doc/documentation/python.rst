@@ -667,6 +667,7 @@ Keyword argument            Content
 :py:`function_doc_contents` Function documentation contents
 :py:`property_doc_contents` Property documentation contents
 :py:`data_doc_contents`     Data documentation contents
+:py:`hooks_post_crawl`      Hooks to call after the initial name crawl
 :py:`hooks_pre_page`        Hooks to call before each page gets rendered
 :py:`hooks_post_run`        Hooks to call at the very end of the script run
 =========================== ===================================================
@@ -687,11 +688,55 @@ source shown in the `External documentation content`_ section below.
         'details': "This class is *pretty*."
     }
 
-The :py:`hooks_pre_page` and :py:`hooks_post_run` variables are lists of
-parameter-less functions. Plugins that need to do something before each page
+The :py:`hooks_post_crawl`, :py:`hooks_pre_page` and :py:`hooks_post_run`
+variables are lists of functions. Plugins that need to do something at specific
+points of the execution are supposed to add functions to the list.
+
+The :py:`hooks_post_crawl` is called once gathering of all names is done. It
+gets passed the following arguments:
+
+.. class:: m-table
+
+=================== ===========================================================
+Keyword argument    Content
+=================== ===========================================================
+:py:`name_map`      Map with all gathered module, class, enum, function,
+                    property, data and page metadata. Plugins are allowed to
+                    read from it (for example to serialize them to a file for
+                    searching or linking from other projects) as well as write
+                    to it (for example to allow linking to names from external
+                    projects). Key is a name, value has at the following
+                    properties:
+
+                    .. class:: m-table
+
+                    =================== =======================================
+                    Property            Description
+                    =================== =======================================
+                    :py:`type`          Entry type. Same as the enum passed to
+                                        `custom URL formatters`_.
+                    :py:`object`        Object which the entry documents. This
+                                        property being :py:`None` means this
+                                        entry is external [1]_; if not present
+                                        at all there's :py:`filename` instead.
+                    :py:`filename`      File this entry documents. Present only
+                                        for :py:`EntryType.PAGE` or
+                                        :py:`EntryType.SPECIAL`.
+                    :py:`path`          Path. Equivalent to :py:`key.split('.')`.
+                    :py:`url`           URL to the entry documentation,
+                                        formatted with `custom URL formatters`_.
+                    =================== =======================================
+=================== ===========================================================
+
+.. [1] As this distinguishes between internal and external entries, new entries
+    added by the plugin *need* to have :py:`object` set to :py:`None` so the
+    script as well as other plugins can correctly distinguish them.
+
+The :py:`hooks_pre_page` and :py:`hooks_post_run` are called before each page
 of output gets rendered (for example, resetting an some internal counter for
-page-wide unique element IDs) or after the whole run is done (for example to
-serialize cached internal state) are supposed to add functions to the list.
+page-wide unique element IDs) and after the whole run is done (for example to
+serialize cached internal state). Currently, those functions get no arguments
+passed.
 
 Registration function for a plugin that needs to query the :py:`OUTPUT` setting
 might look like this --- the remaining keyword arguments will collapse into
@@ -895,8 +940,8 @@ HTML markup without any additional escaping.
 Property                                Description
 ======================================= =======================================
 :py:`page.summary`                      Doc summary
-:py:`page.filename`                     File name [3]_
-:py:`page.url`                          File URL [3]_
+:py:`page.filename`                     File name [4]_
+:py:`page.url`                          File URL [4]_
 :py:`page.breadcrumb`                   List of :py:`(title, URL)` tuples for
                                         breadcrumb navigation.
 :py:`page.content`                      Detailed documentation, if any
@@ -924,12 +969,12 @@ Property                                Description
 :py:`page.data`                         List of module-level data. See
                                         `Data properties`_ for details.
 :py:`page.has_enum_details`             If there is at least one enum with full
-                                        description block [2]_
+                                        description block [3]_
 :py:`page.has_function_details`         If there is at least one function (or
                                         method, in case of classes) with full
-                                        description block [2]_
+                                        description block [3]_
 :py:`page.has_data_details`             If there is at least one data with full
-                                        description block [2]_
+                                        description block [3]_
 ======================================= =======================================
 
 Each class page, rendered with ``class.html``, has the following additional
@@ -954,7 +999,7 @@ Property                                Description
 :py:`page.properties`                   List of properties. See
                                         `Property properties`_ for details.
 :py:`page.has_property_details`         If there is at least one property with
-                                        full description block [2]_
+                                        full description block [3]_
 ======================================= =======================================
 
 Explicit documentation pages rendered with ``class.html`` have additional
@@ -997,7 +1042,7 @@ Property                                Description
 Property                                Description
 ======================================= =======================================
 :py:`enum.name`                         Enum name
-:py:`enum.id`                           Enum ID [4]_
+:py:`enum.id`                           Enum ID [5]_
 :py:`enum.summary`                      Doc summary
 :py:`enum.content`                      Detailed documentation, if any
 :py:`enum.base`                         Base class from which the enum is
@@ -1005,7 +1050,7 @@ Property                                Description
                                         class information is available.
 :py:`enum.values`                       List of enum values
 :py:`enum.has_details`                  If there is enough content for the full
-                                        description block. [2]_
+                                        description block. [3]_
 :py:`enum.has_value_details`            If the enum values have description.
                                         Impies :py:`enum.has_details`.
 ======================================= =======================================
@@ -1018,7 +1063,7 @@ Every item of :py:`enum.values` has the following properties:
 Property                    Description
 =========================== ===================================================
 :py:`value.name`            Value name
-:py:`value.id`              Value ID [4]_
+:py:`value.id`              Value ID [5]_
 :py:`value.value`           Value value. Set to :py:`None` if no value is
                             available.
 :py:`value.summary`         Value doc summary
@@ -1033,10 +1078,10 @@ Property                    Description
 Property                            Description
 =================================== ===========================================
 :py:`function.name`                 Function name
-:py:`function.id`                   Function ID [4]_
+:py:`function.id`                   Function ID [5]_
 :py:`function.summary`              Doc summary
 :py:`function.content`              Detailed documentation, if any
-:py:`function.type`                 Function return type annotation [1]_
+:py:`function.type`                 Function return type annotation [2]_
 :py:`function.params`               List of function parameters. See below for
                                     details.
 :py:`function.has_complex_params`   Set to :py:`True` if the parameter list
@@ -1049,7 +1094,7 @@ Property                            Description
 :py:`function.has_param_details`    If the function parameters are documented
 :py:`function.return_value`         Return value documentation. Can be empty.
 :py:`function.has_details`          If there is enough content for the full
-                                    description block [2]_
+                                    description block [3]_
 :py:`function.is_classmethod`       Set to :py:`True` if the function is
                                     annotated with :py:`@classmethod`,
                                     :py:`False` otherwise.
@@ -1067,7 +1112,7 @@ Each item has the following properties:
 Property                    Description
 =========================== ===================================================
 :py:`param.name`            Parameter name
-:py:`param.type`            Parameter type annotation [1]_
+:py:`param.type`            Parameter type annotation [2]_
 :py:`param.default`         Default parameter value, if any
 :py:`param.kind`            Parameter kind, a string equivalent to one of the
                             `inspect.Parameter.kind <https://docs.python.org/3/library/inspect.html#inspect.Parameter.kind>`_
@@ -1088,15 +1133,15 @@ set to :py:`"..."` and the rest being empty.
 Property                            Description
 =================================== ===========================================
 :py:`property.name`                 Property name
-:py:`property.id`                   Property ID [4]_
-:py:`property.type`                 Property getter return type annotation [1]_
+:py:`property.id`                   Property ID [5]_
+:py:`property.type`                 Property getter return type annotation [2]_
 :py:`property.summary`              Doc summary
 :py:`property.content`              Detailed documentation, if any
 :py:`property.is_gettable`          If the property is gettable
 :py:`property.is_settable`          If the property is settable
 :py:`property.is_deletable`         If the property is deletable with :py:`del`
 :py:`property.has_details`          If there is enough content for the full
-                                    description block [2]_
+                                    description block [3]_
 =================================== ===========================================
 
 `Data properties`_
@@ -1108,13 +1153,13 @@ Property                            Description
 Property                            Description
 =================================== ===========================================
 :py:`data.name`                     Data name
-:py:`data.id`                       Data ID [4]_
+:py:`data.id`                       Data ID [5]_
 :py:`data.type`                     Data type
 :py:`data.summary`                  Doc summary
 :py:`data.content`                  Detailed documentation, if any
 :py:`data.value`                    Data value representation
 :py:`data.has_details`              If there is enough content for the full
-                                    description block [2]_
+                                    description block [3]_
 =================================== ===========================================
 
 `Index page templates`_
@@ -1167,14 +1212,14 @@ Module/class list is ordered in a way that all modules are before all classes.
 
 -------------------------------
 
-.. [1] :py:`i.type` is extracted out of function annotation. If the types
+.. [2] :py:`i.type` is extracted out of function annotation. If the types
     aren't annotated, the annotation is empty.
-.. [2] :py:`page.has_*_details` and :py:`i.has_details` are :py:`True` if
+.. [3] :py:`page.has_*_details` and :py:`i.has_details` are :py:`True` if
     there is detailed description, function parameter documentation or
     *documented* enum value listing that makes it worth to render the full
     description block. If :py:`False`, the member should be included only in
     the summary listing on top of the page to avoid unnecessary repetition.
-.. [3] :py:`page.filename` and :py:`page.url` is generated by an URL formatter,
+.. [4] :py:`page.filename` and :py:`page.url` is generated by an URL formatter,
     see `Custom URL formatters`_ for more information
-.. [4] :py:`i.id` is an ID used for linking to given entry on a page. Generated
+.. [5] :py:`i.id` is an ID used for linking to given entry on a page. Generated
     by an anchor formatter, see `Custom URL formatters`_ for more information.
