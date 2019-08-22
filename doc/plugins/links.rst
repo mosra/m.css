@@ -251,9 +251,9 @@ For Pelican, download the `m/dox.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 :py:`m.dox` package to your plugins in ``pelicanconf.py``. The plugin uses
 Doxygen tag files to get a list of linkable symbols and you need to provide
-list of tuples containing tag file path, URL prefix and an optional list of
-implicitly prepended namespaces in :py:`M_DOX_TAGFILES` configuration to make
-the plugin work. Example configuration:
+list of tuples containing tag file path, URL prefix, an optional list of
+implicitly prepended namespaces and an optional list of CSS classes for each
+link in a :py:`M_DOX_TAGFILES` configuration value. Example:
 
 .. code:: python
 
@@ -261,7 +261,7 @@ the plugin work. Example configuration:
     M_DOX_TAGFILES = [
         ('doxygen/stl.tag', 'https://en.cppreference.com/w/'),
         ('doxygen/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::']),
-        ('doxygen/magnum.tag', 'https://doc.magnum.graphics/magnum/', ['Magnum::'])]
+        ('doxygen/magnum.tag', 'https://doc.magnum.graphics/magnum/', ['Magnum::'], ['m-text', 'm-flat'])]
 
 For the Python doc theme, the configuration is the same. Tag file paths are
 relative to the configuration file location or to :py:`PATH`, if specified.
@@ -278,7 +278,7 @@ Link text is equal to link target in all cases except for pages and sections,
 where page/section title is extracted from the tagfile. It's possible to
 specify custom link title using the :rst:`:dox:`link title <link-target>``
 syntax. If a symbol can't be found, a warning is printed to output and link
-target is rendered in monospace font (or, if custom link title is specified,
+target is rendered in a monospace font (or, if custom link title is specified,
 just the title is rendered, as normal text). You can append ``#anchor`` to
 ``link-target`` to link to anchors that are not present in the tag file (such
 as ``#details`` for the detailed docs or ``#pub-methods`` for jumping straight
@@ -328,7 +328,9 @@ external not), you could do this:
 
 .. note-success::
 
-    If you haven't noticed yet, m.css also provides a
+    For linking to Sphinx documentation, a similar functionality is provided
+    by the `m.sphinx <{filename}/plugins/sphinx.rst>`_ plugin. And if you
+    haven't noticed yet, m.css also provides a
     `full-featured Doxygen theme <{filename}/documentation/doxygen.rst>`_ with
     first-class search functionality. Check it out!
 
