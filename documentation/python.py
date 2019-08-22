@@ -2076,7 +2076,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         logging.debug("copying %s to output", i)
         shutil.copy(i, os.path.join(config['OUTPUT'], os.path.basename(i)))
 
-    # Call all registered finalization hooks for the first time
+    # Call all registered finalization hooks
     for hook in state.hooks_post_run: hook()
 
 if __name__ == '__main__': # pragma: no cover
