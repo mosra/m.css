@@ -564,29 +564,29 @@ def make_relative_name(state: State, referrer_path: List[str], name):
 
     return '.'.join(shortened_path)
 
-def make_name_link(state: State, referrer_path: List[str], type) -> str:
-    if type is None: return None
-    assert isinstance(type, str)
+def make_name_link(state: State, referrer_path: List[str], name) -> str:
+    if name is None: return None
+    assert isinstance(name, str)
 
     # Not found, return as-is. However, if the prefix is one of the
     # INPUT_MODULES, emit a warning to notify the user of a potentially missing
     # stuff from the docs.
-    if not type in state.name_map:
+    if not name in state.name_map:
         for module in state.config['INPUT_MODULES']:
             if isinstance(module, str):
                 module_name = module
             else:
                 module_name = module.__name__
-            if type.startswith(module_name + '.'):
-                logging.warning("could not resolve a link to %s which is among INPUT_MODULES (referred from %s), possibly hidden/undocumented?", type, '.'.join(referrer_path))
+            if name.startswith(module_name + '.'):
+                logging.warning("could not resolve a link to %s which is among INPUT_MODULES (referred from %s), possibly hidden/undocumented?", name, '.'.join(referrer_path))
                 break
-        return type
+        return name
 
     # Make a shorter name that's relative to the referrer but still unambiguous
-    relative_name = make_relative_name(state, referrer_path, type)
+    relative_name = make_relative_name(state, referrer_path, name)
 
     # Format the URL
-    entry = state.name_map[type]
+    entry = state.name_map[name]
     if entry.type == EntryType.CLASS:
         url = entry.url
     else:
