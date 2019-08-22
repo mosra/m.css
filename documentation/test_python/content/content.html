@@ -74,12 +74,6 @@ doesn't add any detailed block.</dd>
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
           <dl class="m-doc">
-            <dt>
-              <span class="m-doc-wrap-bumper">def <a href="#annotations" class="m-doc">annotations</a>(</span><span class="m-doc-wrap">a: int,
-              b,
-              c: float) -&gt; str</span>
-            </dt>
-            <dd>No annotations shown for this</dd>
             <dt id="foo">
               <span class="m-doc-wrap-bumper">def <a href="#foo" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">a, b)</span>
             </dt>
@@ -93,6 +87,16 @@ doesn't add any detailed block.</dd>
               <span class="m-doc-wrap-bumper">def <a href="#function_with_summary" class="m-doc">function_with_summary</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>This function has summary from the docstring</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#param_docs" class="m-doc">param_docs</a>(</span><span class="m-doc-wrap">a: int,
+              b,
+              c: float) -&gt; str</span>
+            </dt>
+            <dd>Detailed param docs and annotations</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#param_docs_wrong" class="m-doc">param_docs_wrong</a>(</span><span class="m-doc-wrap">a, b)</span>
+            </dt>
+            <dd>Should give warnings</dd>
           </dl>
         </section>
         <section id="data">
@@ -139,15 +143,6 @@ doesn't add any detailed block.</dd>
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="annotations"><div>
-            <h3>
-              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#annotations" class="m-doc-self">annotations</a>(</span><span class="m-doc-wrap">a: int,
-              b,
-              c: float) -&gt; str</span></span>
-            </h3>
-            <p>No annotations shown for this</p>
-<p>Type annotations in detailed docs.</p>
-          </div></section>
           <section class="m-doc-details" id="foo_with_details"><div>
             <h3>
               <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#foo_with_details" class="m-doc-self">foo_with_details</a>(</span><span class="m-doc-wrap">a, b)</span></span>
@@ -162,6 +157,62 @@ Detailed docs for this function</div>
             </h3>
             <p>This function has summary from the docstring</p>
 <p>This function has external details but summary from the docstring.</p>
+          </div></section>
+          <section class="m-doc-details" id="param_docs"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#param_docs" class="m-doc-self">param_docs</a>(</span><span class="m-doc-wrap">a: int,
+              b,
+              c: float) -&gt; str</span></span>
+            </h3>
+            <p>Detailed param docs and annotations</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">a</td>
+                  <td>First parameter</td>
+                </tr>
+                <tr>
+                  <td>b</td>
+                  <td>The second one</td>
+                </tr>
+                <tr>
+                  <td>c</td>
+                  <td>And a <code>float</code></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>String, of course, it's all <em>stringly</em> typed</td>
+                </tr>
+              </tfoot>
+            </table>
+<p>Type annotations and param list in detailed docs.</p>
+          </div></section>
+          <section class="m-doc-details" id="param_docs_wrong"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#param_docs_wrong" class="m-doc-self">param_docs_wrong</a>(</span><span class="m-doc-wrap">a, b)</span></span>
+            </h3>
+            <p>Should give warnings</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">a</td>
+                  <td>First</td>
+                </tr>
+                <tr>
+                  <td>b</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+<p>The <code>b</code> is not documented, while <code>c</code> isn't in the signature.</p>
           </div></section>
         </section>
         <section>

@@ -14,10 +14,12 @@
               </thead>
               <tbody>
                 {% for param in function.params %}
+                {% if loop.index != 1 or param.name != 'self' or param.content %}
                 <tr>
                   <td{% if loop.index == 1 %} style="width: 1%"{% endif %}>{{ param.name }}</td>
-                  <td>{{ param.description }}</td>
+                  <td>{{ param.content }}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
               </tbody>
               {% endif %}

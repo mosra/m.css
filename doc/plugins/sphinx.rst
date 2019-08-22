@@ -68,11 +68,13 @@ List the plugin in your :py:`PLUGINS`.
 The :rst:`.. py:module::`, :rst:`.. py:class::`, :rst:`.. py:enum::`,
 :rst:`.. py:function::`, :rst:`.. py:property::` and :rst:`.. py:data::`
 directives provide a way to supply module, class, enum, function / method,
-property and data documentation content. Directive option is the name to
-document, directive contents are the actual contents; in addition the
-:py:`:summary:` option can override the docstring extracted using inspection.
-No restrictions are made on the contents, it's possible to make use of any
-additional plugins in the markup. Example:
+property and data documentation content.
+
+Directive option is the name to document, directive contents are the actual
+contents; in addition all the directives have the :py:`:summary:` option that
+can override the docstring extracted using inspection. No restrictions are made
+on the contents, it's also possible to make use of any additional plugins in
+the markup. Example:
 
 .. code:: rst
 
@@ -105,3 +107,23 @@ actual rendered docs.
     exist (i.e., accessible via inspection) in given module. If given name
     doesn't exist, a warning will be printed during processing and the
     documentation ignored.
+
+The :rst:`.. py:function::` directive supports additional options ---
+:py:`:param <name>:` for documenting parameters and :py:`:return:` for
+documenting the return value. It's allowed to have either none or all
+parameters documented (the ``self`` parameter can be omitted), having them
+documented only partially or documenting parameters that are not present in the
+function signature will cause a warning. Example:
+
+.. code:: rst
+
+    .. py:function:: mymodule.MyContainer.add
+        :param key:                 Key to add
+        :param value:               Corresponding value
+        :param overwrite_existing:  Overwrite existing value if already present
+            in the container
+        :return:                    The inserted tuple or the existing
+            key/value pair in case ``overwrite_existing`` is not set
+
+        Add a key/value pair to the container, optionally overwriting the
+        previous value.

@@ -1046,6 +1046,8 @@ Property                            Description
                                     arguments). Set to :py:`False` when
                                     wrapping on multiple lines would only
                                     occupy too much vertical space.
+:py:`function.has_param_details`    If the function parameters are documented
+:py:`function.return_value`         Return value documentation. Can be empty.
 :py:`function.has_details`          If there is enough content for the full
                                     description block [2]_
 :py:`function.is_classmethod`       Set to :py:`True` if the function is
@@ -1070,6 +1072,7 @@ Property                    Description
 :py:`param.kind`            Parameter kind, a string equivalent to one of the
                             `inspect.Parameter.kind <https://docs.python.org/3/library/inspect.html#inspect.Parameter.kind>`_
                             values
+:py:`param.content`         Detailed documentation, if any
 =========================== ===================================================
 
 In some cases (for example in case of native APIs), the parameters can't be

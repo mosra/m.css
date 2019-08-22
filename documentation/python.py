@@ -27,6 +27,7 @@
 import argparse
 import copy
 import docutils
+import docutils.utils
 import enum
 import urllib.parse
 import hashlib
@@ -1125,6 +1126,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
 
             overloads += [out]
 
+        # TODO: assign docs and particular param docs to overloads
         return overloads
 
     # Sane introspection path for non-pybind11 code
@@ -1171,6 +1173,33 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     out.has_complex_params = True
                 param.kind = str(i.kind)
                 out.params += [param]
+
+            # Get docs for each param and for the return value
+            path_str = '.'.join(entry.path)
+            if path_str in state.function_docs:
+                # Having no parameters documented is okay, having self
+                # undocumented as well. But having the rest documented only
+                # partially isn't okay.
+                if state.function_docs[path_str]['params']:
+                    param_docs = state.function_docs[path_str]['params']
+                    used_params = set()
+                    for param in out.params:
+                        if param.name not in param_docs:
+                            if param.name != 'self':
+                                logging.warning("%s() parameter %s is not documented", path_str, param.name)
+                            continue
+                        param.content = render_inline_rst(state, param_docs[param.name])
+                        used_params.add(param.name)
+                        out.has_param_details = True
+                        out.has_details = True
+                    # Having unused param docs isn't okay either
+                    for name, _ in param_docs.items():
+                        if name not in used_params:
+                            logging.warning("%s() documents parameter %s, which isn't in the signature", path_str, name)
+
+                if state.function_docs[path_str]['return']:
+                    out.return_value = render_inline_rst(state, state.function_docs[path_str]['return'])
+                    out.has_details = True
 
         # In CPython, some builtin functions (such as math.log) do not provide
         # metadata about their arguments. Source:
@@ -1589,6 +1618,62 @@ class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
 def render_inline_rst(state: State, source):
     return publish_rst(state, source, translator_class=_SaneInlineHtmlTranslator).writer.parts.get('body').rstrip()
 
+# Copy of docutils.utils.extract_options which doesn't throw BadOptionError on
+# multi-word field names but instead turns the body into a tuple containing the
+# extra arguments as a prefix and the original data as a suffix. The original
+# restriction goes back to a nondescript "updated" commit from 2002, with no
+# change of this behavior since:
+# https://github.com/docutils-mirror/docutils/commit/508483835d95632efb5dd6b69c444a956d0fb7df
+def _docutils_extract_options(field_list):
+    option_list = []
+    for field in field_list:
+        field_name_parts = field[0].astext().split()
+        name = str(field_name_parts[0].lower())
+        body = field[1]
+        if len(body) == 0:
+            data = None
+        elif len(body) > 1 or not isinstance(body[0], docutils.nodes.paragraph) \
+              or len(body[0]) != 1 or not isinstance(body[0][0], docutils.nodes.Text):
+            raise docutils.utils.BadOptionDataError(
+                  'extension option field body may contain\n'
+                  'a single paragraph only (option "%s")' % name)
+        else:
+            data = body[0][0].astext()
+        if len(field_name_parts) > 1:
+            # Supporting just one argument, don't need more right now (and
+            # allowing any number would make checks on the directive side too
+            # complicated)
+            if len(field_name_parts) != 2: raise docutils.utils.BadOptionError(
+                'extension option field name may contain either one or two words')
+            data = tuple(field_name_parts[1:] + [data])
+        option_list.append((name, data))
+    return option_list
+
+# ... and allowing duplicate options as well. This restriction goes back to the
+# initial commit in 2002. Here for duplicate options we expect the converter to
+# give us a list and we merge those lists; if not, we throw
+# DuplicateOptionError as in the original code.
+def _docutils_assemble_option_dict(option_list, options_spec):
+    options = {}
+    for name, value in option_list:
+        convertor = options_spec[name]  # raises KeyError if unknown
+        if convertor is None:
+            raise KeyError(name)        # or if explicitly disabled
+        try:
+            converted = convertor(value)
+        except (ValueError, TypeError) as detail:
+            raise detail.__class__('(option: "%s"; value: %r)\n%s'
+                                   % (name, value, ' '.join(detail.args)))
+        if name in options:
+            if isinstance(converted, list):
+                assert isinstance(options[name], list) and not isinstance(options[name], tuple)
+                options[name] += converted
+            else:
+                raise docutils.utils.DuplicateOptionError('duplicate non-list option "%s"' % name)
+        else:
+            options[name] = converted
+    return options
+
 def render_doc(state: State, filename):
     logging.debug("parsing docs from %s", filename)
 
@@ -1596,8 +1681,19 @@ def render_doc(state: State, filename):
     # these functions are not generating any pages
 
     # Render the file. The directives should take care of everything, so just
-    # discard the output afterwards.
-    with open(filename, 'r') as f: publish_rst(state, f.read())
+    # discard the output afterwards. Some directives (such as py:function) have
+    # multi-word field names and can be duplicated, so we have to patch the
+    # option extractor to allow that. See _docutils_extract_options and
+    # _docutils_assemble_option_dict above for details.
+    with open(filename, 'r') as f:
+        prev_extract_options = docutils.utils.extract_options
+        prev_assemble_option_dict = docutils.utils.assemble_option_dict
+        docutils.utils.extract_options = _docutils_extract_options
+        docutils.utils.assemble_option_dict = _docutils_assemble_option_dict
+
+        publish_rst(state, f.read())
+        docutils.utils.extract_options = prev_extract_options
+        docutils.utils.assemble_option_dict = prev_assemble_option_dict
 
 def render_page(state: State, path, input_filename, env):
     filename, url = state.config['URL_FORMATTER'](EntryType.PAGE, path)

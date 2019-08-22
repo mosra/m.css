@@ -68,6 +68,10 @@ indented.</p>
             <dd>This overwrites the docstring for <code>content.Class.method</code>, but
 doesn't add any detailed block.</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#method_param_docs" class="m-doc">method_param_docs</a>(</span><span class="m-doc-wrap">self, a, b)</span>
+            </dt>
+            <dd>This method gets its params except self documented</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">def <a href="#method_with_details" class="m-doc">method_with_details</a>(</span><span class="m-doc-wrap">self)</span>
             </dt>
             <dd></dd>
@@ -124,6 +128,28 @@ but doesn't add any detailed block.</dd>
             </h3>
             <p>This function is a static method</p>
 <p>The <span class="m-label m-info">staticmethod</span> should be shown here.</p>
+          </div></section>
+          <section class="m-doc-details" id="method_param_docs"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#method_param_docs" class="m-doc-self">method_param_docs</a>(</span><span class="m-doc-wrap">self, a, b)</span></span>
+            </h3>
+            <p>This method gets its params except self documented</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>a</td>
+                  <td>The first parameter</td>
+                </tr>
+                <tr>
+                  <td>b</td>
+                  <td>The second parameter</td>
+                </tr>
+              </tbody>
+            </table>
+<p>The <code>self</code> isn't documented and thus also not included in the list.</p>
           </div></section>
           <section class="m-doc-details" id="method_with_details"><div>
             <h3>

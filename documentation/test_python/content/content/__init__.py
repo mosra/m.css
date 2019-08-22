@@ -23,6 +23,9 @@ class Class:
     def method_with_details(self):
         pass
 
+    def method_param_docs(self, a, b):
+        """This method gets its params except self documented"""
+
     @property
     def a_property(self):
         """This summary is not shown either"""
@@ -60,8 +63,11 @@ def foo_with_details(a, b):
 def function_with_summary():
     """This function has summary from the docstring"""
 
-def annotations(a: int, b, c: float) -> str:
-    """No annotations shown for this"""
+def param_docs(a: int, b, c: float) -> str:
+    """Detailed param docs and annotations"""
+
+def param_docs_wrong(a, b):
+    """Should give warnings"""
 
 CONSTANT: float = 3.14
 

@@ -71,15 +71,31 @@ class PyEnum(rst.Directive):
         }
         return []
 
+# List option (allowing multiple arguments). See _docutils_assemble_option_dict
+# in python.py for details.
+def directives_unchanged_list(argument):
+    return [directives.unchanged(argument)]
+
 class PyFunction(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     required_arguments = 1
-    option_spec = {'summary': directives.unchanged}
+    option_spec = {'summary': directives.unchanged,
+                   'param': directives_unchanged_list,
+                   'return': directives.unchanged}
 
     def run(self):
+        # Check that params are parsed properly, turn them into a dict. This
+        # will blow up if the param name is not specified.
+        params = {}
+        for name, content in self.options.get('param', []):
+            if name in params: raise KeyError(f"duplicate param {name}")
+            params[name] = content
+
         function_doc_output[self.arguments[0]] = {
             'summary': self.options.get('summary', ''),
+            'params': params,
+            'return': self.options.get('return'),
             'content': '\n'.join(self.content)
         }
         return []

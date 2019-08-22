@@ -39,6 +39,12 @@
 
     This one has a detailed block without any summary.
 
+.. py:function:: content.Class.method_param_docs
+    :param a: The first parameter
+    :param b: The second parameter
+
+    The ``self`` isn't documented and thus also not included in the list.
+
 .. py:property:: content.Class.a_property
     :summary: This overwrites the docstring for ``content.Class.a_property``,
         but doesn't add any detailed block.
@@ -83,9 +89,19 @@
 
     This function has external details but summary from the docstring.
 
-.. py:function:: content.annotations
+.. py:function:: content.param_docs
+    :param a: First parameter
+    :param b: The second one
+    :param c: And a ``float``
+    :return: String, of course, it's all *stringly* typed
 
-    Type annotations in detailed docs.
+    Type annotations and param list in detailed docs.
+
+.. py:function:: content.param_docs_wrong
+    :param a: First
+    :param c: Third
+
+    The ``b`` is not documented, while ``c`` isn't in the signature.
 
 .. py:data:: content.CONSTANT
     :summary: This is finally a docstring for ``content.CONSTANT``
