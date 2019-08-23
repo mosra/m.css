@@ -268,11 +268,12 @@ _filtered_builtin_properties = set([
     ('__weakref__', "list of weak references to the object (if defined)")
 ])
 
-def crawl_enum(state: State, path: List[str], enum_):
+def crawl_enum(state: State, path: List[str], enum_, parent_url):
     enum_entry = Empty()
     enum_entry.type = EntryType.ENUM
     enum_entry.object = enum_
     enum_entry.path = path
+    enum_entry.url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](EntryType.ENUM, path[-1:]))
     enum_entry.values = []
 
     if issubclass(enum_, enum.Enum):
@@ -281,6 +282,7 @@ def crawl_enum(state: State, path: List[str], enum_):
             entry = Empty()
             entry.type = EntryType.ENUM_VALUE
             entry.path = subpath
+            entry.url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, subpath[-2:]))
             state.name_map['.'.join(subpath)] = entry
 
     elif state.config['PYBIND11_COMPATIBILITY']:
@@ -291,6 +293,7 @@ def crawl_enum(state: State, path: List[str], enum_):
             entry = Empty()
             entry.type = EntryType.ENUM_VALUE
             entry.path = subpath
+            entry.url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, subpath[-2:]))
             state.name_map['.'.join(subpath)] = entry
 
     # Add itself to the name map
@@ -328,7 +331,7 @@ def crawl_class(state: State, path: List[str], class_):
         elif type == EntryType.ENUM:
             if name.startswith('_'): continue
 
-            crawl_enum(state, subpath, object)
+            crawl_enum(state, subpath, object, class_entry.url)
 
         # Add other members directly
         else:
@@ -351,6 +354,7 @@ def crawl_class(state: State, path: List[str], class_):
             entry.type = type
             entry.object = object
             entry.path = subpath
+            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
             state.name_map['.'.join(subpath)] = entry
 
         class_entry.members += [name]
@@ -438,13 +442,14 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             elif type == EntryType.CLASS:
                 crawl_class(state, subpath, object)
             elif type == EntryType.ENUM:
-                crawl_enum(state, subpath, object)
+                crawl_enum(state, subpath, object, module_entry.url)
             else:
                 assert type in [EntryType.FUNCTION, EntryType.DATA]
                 entry = Empty()
                 entry.type = type
                 entry.object = object
                 entry.path = subpath
+                entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
                 state.name_map['.'.join(subpath)] = entry
 
             module_entry.members += [name]
@@ -509,13 +514,14 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             elif type == EntryType.CLASS:
                 crawl_class(state, subpath, object)
             elif type == EntryType.ENUM:
-                crawl_enum(state, subpath, object)
+                crawl_enum(state, subpath, object, module_entry.url)
             else:
                 assert type in [EntryType.FUNCTION, EntryType.DATA]
                 entry = Empty()
                 entry.type = type
                 entry.object = object
                 entry.path = subpath
+                entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
                 state.name_map['.'.join(subpath)] = entry
 
             module_entry.members += [name]
@@ -585,20 +591,8 @@ def make_name_link(state: State, referrer_path: List[str], name) -> str:
     # Make a shorter name that's relative to the referrer but still unambiguous
     relative_name = make_relative_name(state, referrer_path, name)
 
-    # Format the URL
     entry = state.name_map[name]
-    if entry.type == EntryType.CLASS:
-        url = entry.url
-    else:
-        if entry.type == EntryType.ENUM:
-            parent_index = -1
-        else:
-            assert entry.type == EntryType.ENUM_VALUE
-            parent_index = -2
-        parent_url = state.name_map['.'.join(entry.path[:parent_index])].url
-        url = '{}#{}'.format(parent_url, state.config['ID_FORMATTER'](entry.type, entry.path[parent_index:]))
-
-    return '<a href="{}" class="m-doc">{}</a>'.format(url, relative_name)
+    return '<a href="{}" class="m-doc">{}</a>'.format(entry.url, relative_name)
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
@@ -1870,9 +1864,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             if urllib.parse.urlparse(path).netloc or '/' in path: return path
             path = [path]
         entry = state.name_map['.'.join(path)]
-        # TODO: this will blow up if linking to something that's not a module,
-        # class or a page
-        return state.config['URL_FORMATTER'](entry.type, entry.path)[1]
+        return entry.url
 
     env.filters['basename_or_url'] = basename_or_url
     env.filters['path_to_url'] = path_to_url
@@ -1924,6 +1916,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         entry = Empty()
         entry.type = EntryType.SPECIAL
         entry.path = [page]
+        entry.url = config['URL_FORMATTER'](EntryType.SPECIAL, entry.path)[1]
         state.name_map[page] = entry
 
     # Do the same for pages
@@ -1935,7 +1928,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         entry = Empty()
         entry.type = EntryType.PAGE
         entry.path = [page_name]
-        entry.url = config['URL_FORMATTER'](EntryType.PAGE, [page_name])[1]
+        entry.url = config['URL_FORMATTER'](EntryType.PAGE, entry.path)[1]
         entry.filename = os.path.join(config['INPUT'], page)
         state.name_map[page_name] = entry
 
