@@ -86,8 +86,10 @@ class Annotations(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
 
-    @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7'),
-        "signature with / for pow() is not present in 3.6")
+    # https://github.com/python/cpython/pull/13394
+    @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7.4'),
+        "signature with / for pow() is not present in 3.6, "
+        "3.7.3 and below has a different docstring")
     def test_math(self):
         # From math export only pow() so we have the verification easier, and
         # in addition log() because it doesn't provide any signature metadata
@@ -102,6 +104,25 @@ class Annotations(BaseInspectTestCase):
         assert not hasattr(math, '__all__')
 
         self.assertEqual(*self.actual_expected_contents('math.html'))
+
+    # https://github.com/python/cpython/pull/13394
+    @unittest.skipUnless(LooseVersion(sys.version) < LooseVersion('3.7.4') and LooseVersion(sys.version) >= LooseVersion('3.7'),
+        "signature with / for pow() is not present in 3.6, "
+        "3.7.3 and below has a different docstring")
+    def test_math373(self):
+        # From math export only pow() so we have the verification easier, and
+        # in addition log() because it doesn't provide any signature metadata
+        assert not hasattr(math, '__all__')
+        math.__all__ = ['pow', 'log']
+
+        self.run_python({
+            'INPUT_MODULES': [math]
+        })
+
+        del math.__all__
+        assert not hasattr(math, '__all__')
+
+        self.assertEqual(*self.actual_expected_contents('math.html', 'math373.html'))
 
     @unittest.skipUnless(LooseVersion(sys.version) < LooseVersion('3.7'),
         "docstring for log() is different in 3.7")
