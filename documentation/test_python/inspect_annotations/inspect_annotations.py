@@ -83,6 +83,14 @@ def annotated_positional_keyword(bar = False, *, foo: str, **kwargs):
     """Function with explicitly delimited keyword args and type annotations"""
     pass
 
+def returns_none(a: Callable[[], None]) -> None:
+    """In order to disambiguate between a missing return annotation and an
+    annotated none, the None return annotation is kept, converted from NoneType
+    to None"""
+
+def returns_none_type(a: Callable[[], type(None)]) -> type(None):
+    """And it should behave the same when using None or type(None)"""
+
 UNANNOTATED_VAR = 3.45
 
 ANNOTATED_VAR: Tuple[bool, str] = (False, 'No.')

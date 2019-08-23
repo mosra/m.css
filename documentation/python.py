@@ -832,7 +832,7 @@ def get_type_hints_or_nothing(state: State, path: List[str], object) -> Dict:
         return {}
 
 def extract_annotation(state: State, referrer_path: List[str], annotation) -> str:
-    # TODO: why this is not None directly?
+    # Empty annotation, as opposed to a None annotation, handled below
     if annotation is inspect.Signature.empty: return None
 
     # If dereferencing with typing.get_type_hints() failed, we might end up
@@ -900,6 +900,12 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
     elif not isinstance(annotation, type):
         logging.warning("invalid annotation %s in %s, ignoring", annotation, '.'.join(referrer_path))
         return None
+
+    # According to https://www.python.org/dev/peps/pep-0484/#using-none,
+    # None and type(None) are equivalent. Calling extract_type() on None would
+    # give us NoneType, which is unnecessarily long.
+    elif annotation is type(None):
+        return 'None'
 
     # Otherwise it's a plain type. Turn it into a link.
     return make_name_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
@@ -1027,10 +1033,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             out.has_complex_params = False
             out.summary, out.content = extract_docs(state, state.function_docs, entry.path, summary)
             out.has_details = bool(out.content)
-
-            # Don't show None return type for functions w/o a return
-            out.type = None if type == 'None' else type
-            if out.type: out.type = make_name_link(state, entry.path, out.type)
+            out.type = type
 
             # There's no other way to check staticmethods than to check for
             # self being the name of first parameter :( No support for

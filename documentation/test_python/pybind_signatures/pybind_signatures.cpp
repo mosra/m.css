@@ -24,6 +24,7 @@ bool overloaded(float) { return {}; }
 
 // Doesn't work with just a plain function pointer, MEH
 void takesAFunction(std::function<int(float, std::vector<float>&)>) {}
+void takesAFunctionReturningVoid(std::function<void()>) {}
 
 struct MyClass {
     static MyClass staticFunction(int, float) { return {}; }
@@ -61,6 +62,7 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats")
         .def("duck", &duck, "A function taking args/kwargs directly")
         .def("takes_a_function", &takesAFunction, "A function taking a Callable")
+        .def("takes_a_function_returning_none", &takesAFunctionReturningVoid, "A function taking a Callable that returns None")
 
         .def("tenOverloads", &tenOverloads<float, float>, "Ten overloads of a function")
         .def("tenOverloads", &tenOverloads<int, float>, "Ten overloads of a function")

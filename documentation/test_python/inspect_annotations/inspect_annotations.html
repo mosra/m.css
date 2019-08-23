@@ -121,6 +121,16 @@
               <span class="m-doc-wrap-bumper">def <a href="#positional_keyword" class="m-doc-self">positional_keyword</a>(</span><span class="m-doc-wrap">positional_kw,<span class="m-text m-dim"> *,</span> kw_only)</span>
             </dt>
             <dd>Function with explicitly delimited keyword args</dd>
+            <dt id="returns_none">
+              <span class="m-doc-wrap-bumper">def <a href="#returns_none" class="m-doc-self">returns_none</a>(</span><span class="m-doc-wrap">a: typing.Callable[[], None]) -&gt; None</span>
+            </dt>
+            <dd>In order to disambiguate between a missing return annotation and an
+annotated none, the None return annotation is kept, converted from NoneType
+to None</dd>
+            <dt id="returns_none_type">
+              <span class="m-doc-wrap-bumper">def <a href="#returns_none_type" class="m-doc-self">returns_none_type</a>(</span><span class="m-doc-wrap">a: typing.Callable[[], None]) -&gt; None</span>
+            </dt>
+            <dd>And it should behave the same when using None or type(None)</dd>
           </dl>
         </section>
         <section id="data">

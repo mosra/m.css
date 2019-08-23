@@ -71,12 +71,27 @@ class Signature(unittest.TestCase):
                 ('self', 'module.Thing', 'module.Thing', None),
             ], None))
 
+    def test_none_return(self):
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            '__init__(self: module.Thing) -> None'),
+            ('__init__', '', [
+                ('self', 'module.Thing', 'module.Thing', None),
+            ], 'None'))
+
     def test_no_arg_types(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'thingy(self, the_other_thing)'),
             ('thingy', '', [
                 ('self', None, None, None),
                 ('the_other_thing', None, None, None),
+            ], None))
+
+    def test_none_arg_types(self):
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'thingy(self, the_other_thing: Callable[[], None])'),
+            ('thingy', '', [
+                ('self', None, None, None),
+                ('the_other_thing', 'Callable[[], None]', 'Callable[[], None]', None),
             ], None))
 
     def test_square_brackets(self):
