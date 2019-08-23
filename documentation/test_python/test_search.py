@@ -198,7 +198,7 @@ search_long_suffix_length [2]
 many_parameters [0]
 |              ($
 |               ) [1]
-0: .many_parameters(arg0: Tuple[int, float, str, List[Tuple[int, int…) [prefix=2[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-5ce5b
+0: .many_parameters(arg0: typing.Tuple[int, float, str, typing.List[…) [prefix=2[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-31300
 1:  [prefix=0[:52], suffix_length=51, type=FUNCTION] ->
 2: search_long_suffix_length [type=MODULE] -> search_long_suffix_length.html
 (EntryType.PAGE, CssClass.SUCCESS, 'page'),

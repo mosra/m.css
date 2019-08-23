@@ -91,30 +91,30 @@ class Signature(unittest.TestCase):
             'thingy(self, the_other_thing: Callable[[], None])'),
             ('thingy', '', [
                 ('self', None, None, None),
-                ('the_other_thing', 'Callable[[], None]', 'Callable[[], None]', None),
+                ('the_other_thing', 'typing.Callable[[], None]', 'typing.Callable[[], None]', None),
             ], None))
 
     def test_square_brackets(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: Tuple[int, str], no_really: str) -> List[str]'),
             ('foo', '', [
-                ('a', 'Tuple[int, str]', 'Tuple[int, str]', None),
+                ('a', 'typing.Tuple[int, str]', 'typing.Tuple[int, str]', None),
                 ('no_really', 'str', 'str', None),
-            ], 'List[str]'))
+            ], 'typing.List[str]'))
 
     def test_nested_square_brackets(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: Tuple[int, List[Tuple[int, int]]], another: float) -> Union[str, Any]'),
+            'foo(a: Tuple[int, List[Tuple[int, int]]], another: float) -> Union[str, None]'),
             ('foo', '', [
-                ('a', 'Tuple[int, List[Tuple[int, int]]]', 'Tuple[int, List[Tuple[int, int]]]', None),
+                ('a', 'typing.Tuple[int, typing.List[typing.Tuple[int, int]]]', 'typing.Tuple[int, typing.List[typing.Tuple[int, int]]]', None),
                 ('another', 'float', 'float', None),
-            ], 'Union[str, Any]'))
+            ], 'typing.Union[str, None]'))
 
     def test_callable(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: Callable[[int, Tuple[int, int]], float], another: float)'),
             ('foo', '', [
-                ('a', 'Callable[[int, Tuple[int, int]], float]', 'Callable[[int, Tuple[int, int]], float]', None),
+                ('a', 'typing.Callable[[int, typing.Tuple[int, int]], float]', 'typing.Callable[[int, typing.Tuple[int, int]], float]', None),
                 ('another', 'float', 'float', None),
             ], None))
 
@@ -184,9 +184,9 @@ class Signature(unittest.TestCase):
         state.module_mapping['module._module'] = 'module'
 
         self.assertEqual(parse_pybind_signature(state, [],
-            'foo(a: module._module.Foo, b: Tuple[int, module._module.Bar]) -> module._module.Baz'),
+            'foo(a: module._module.Foo, b: typing.Tuple[int, module._module.Bar]) -> module._module.Baz'),
             ('foo', '', [('a', 'module.Foo', 'module.Foo', None),
-                         ('b', 'Tuple[int, module.Bar]', 'Tuple[int, module.Bar]', None)], 'module.Baz'))
+                         ('b', 'typing.Tuple[int, module.Bar]', 'typing.Tuple[int, module.Bar]', None)], 'module.Baz'))
 
 class Signatures(BaseInspectTestCase):
     def test_positional_args(self):

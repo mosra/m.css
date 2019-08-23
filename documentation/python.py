@@ -614,8 +614,13 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str) ->
     if match:
         input_type = match.group(0)
         signature = signature[len(input_type):]
-        type = map_name_prefix(state, input_type)
-        type_link = make_name_link(state, referrer_path, type)
+        # Prefix types with the typing module to be consistent with pure
+        # Python annotations
+        if input_type in ['Callable', 'Dict', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
+            type = type_link = 'typing.' + input_type
+        else:
+            type = map_name_prefix(state, input_type)
+            type_link = make_name_link(state, referrer_path, type)
     else:
         assert signature[0] == '['
         type = ''
