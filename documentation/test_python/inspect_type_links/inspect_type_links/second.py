@@ -1,6 +1,6 @@
 """Second module"""
 
-from typing import Tuple, List, Any
+from typing import Tuple, List, Any, Callable
 
 import enum
 
@@ -94,6 +94,14 @@ def type_cant_link(a: _Hidden):
 
 def type_default_values(a: Enum = Enum.SECOND, b: Tuple[Foo] = (Foo, ), c: Foo = Foo()):
     """A function with default values, one enum, one tuple and the third nonrepresentable (yes, the tuple looks ugly)"""
+
+def returns_none(a: Callable[[], None]) -> None:
+    """In order to disambiguate between a missing return annotation and an
+    annotated none, the None return annotation is kept, converted from NoneType
+    to None"""
+
+def returns_none_type(a: Callable[[], type(None)]) -> type(None):
+    """And it should behave the same when using None or type(None)"""
 
 TYPE_DATA: Foo = Foo()
 

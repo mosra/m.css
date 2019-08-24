@@ -61,13 +61,23 @@
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
           <dl class="m-doc">
+            <dt id="returns_none">
+              <span class="m-doc-wrap-bumper">def <a href="#returns_none" class="m-doc-self">returns_none</a>(</span><span class="m-doc-wrap">a: <a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="m-doc-external">typing.Callable</a>[[], <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a>]) -&gt; <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a></span>
+            </dt>
+            <dd>In order to disambiguate between a missing return annotation and an
+annotated none, the None return annotation is kept, converted from NoneType
+to None</dd>
+            <dt id="returns_none_type">
+              <span class="m-doc-wrap-bumper">def <a href="#returns_none_type" class="m-doc-self">returns_none_type</a>(</span><span class="m-doc-wrap">a: <a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="m-doc-external">typing.Callable</a>[[], <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a>]) -&gt; <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a></span>
+            </dt>
+            <dd>And it should behave the same when using None or type(None)</dd>
             <dt id="type_cant_link">
               <span class="m-doc-wrap-bumper">def <a href="#type_cant_link" class="m-doc-self">type_cant_link</a>(</span><span class="m-doc-wrap">a: inspect_type_links.second._Hidden)</span>
             </dt>
             <dd>Annotation linking to a type that&#x27;s a part of INPUT_MODULES but not known</dd>
             <dt id="type_default_values">
               <span class="m-doc-wrap-bumper">def <a href="#type_default_values" class="m-doc-self">type_default_values</a>(</span><span class="m-doc-wrap">a: <a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a> = <a href="inspect_type_links.second.html#Enum-SECOND" class="m-doc">Enum.SECOND</a>,
-              b: typing.Tuple[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>] = (&lt;class &#x27;inspect_type_links.second.Foo&#x27;&gt;,),
+              b: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>] = (&lt;class &#x27;inspect_type_links.second.Foo&#x27;&gt;,),
               c: <a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a> = …)</span>
             </dt>
             <dd>A function with default values, one enum, one tuple and the third nonrepresentable (yes, the tuple looks ugly)</dd>
@@ -76,15 +86,15 @@
             </dt>
             <dd>Function referencing an enum</dd>
             <dt id="type_nested">
-              <span class="m-doc-wrap-bumper">def <a href="#type_nested" class="m-doc-self">type_nested</a>(</span><span class="m-doc-wrap">a: typing.Tuple[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, typing.List[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], typing.Any])</span>
+              <span class="m-doc-wrap-bumper">def <a href="#type_nested" class="m-doc-self">type_nested</a>(</span><span class="m-doc-wrap">a: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, <a href="https://docs.python.org/3/library/typing.html#typing.List" class="m-doc-external">typing.List</a>[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], <a href="https://docs.python.org/3/library/typing.html#typing.Any" class="m-doc-external">typing.Any</a>])</span>
             </dt>
             <dd>A function with nested type annotation</dd>
             <dt id="type_nested_string">
-              <span class="m-doc-wrap-bumper">def <a href="#type_nested_string" class="m-doc-self">type_nested_string</a>(</span><span class="m-doc-wrap">a: typing.Tuple[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, typing.List[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], typing.Any])</span>
+              <span class="m-doc-wrap-bumper">def <a href="#type_nested_string" class="m-doc-self">type_nested_string</a>(</span><span class="m-doc-wrap">a: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, <a href="https://docs.python.org/3/library/typing.html#typing.List" class="m-doc-external">typing.List</a>[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], <a href="https://docs.python.org/3/library/typing.html#typing.Any" class="m-doc-external">typing.Any</a>])</span>
             </dt>
             <dd>A function with nested string type annotation</dd>
             <dt id="type_nested_string_invalid">
-              <span class="m-doc-wrap-bumper">def <a href="#type_nested_string_invalid" class="m-doc-self">type_nested_string_invalid</a>(</span><span class="m-doc-wrap">a: typing.Tuple[FooBar, List[Enum], Any])</span>
+              <span class="m-doc-wrap-bumper">def <a href="#type_nested_string_invalid" class="m-doc-self">type_nested_string_invalid</a>(</span><span class="m-doc-wrap">a: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[FooBar, List[Enum], Any])</span>
             </dt>
             <dd>A function with invalid nested string type annotation</dd>
             <dt id="type_return">
@@ -96,7 +106,7 @@
             </dt>
             <dd>A function with invalid return string type annotation</dd>
             <dt id="type_return_string_nested">
-              <span class="m-doc-wrap-bumper">def <a href="#type_return_string_nested" class="m-doc-self">type_return_string_nested</a>(</span><span class="m-doc-wrap">) -&gt; typing.Tuple[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, typing.List[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], typing.Any]</span>
+              <span class="m-doc-wrap-bumper">def <a href="#type_return_string_nested" class="m-doc-self">type_return_string_nested</a>(</span><span class="m-doc-wrap">) -&gt; <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, <a href="https://docs.python.org/3/library/typing.html#typing.List" class="m-doc-external">typing.List</a>[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], <a href="https://docs.python.org/3/library/typing.html#typing.Any" class="m-doc-external">typing.Any</a>]</span>
             </dt>
             <dd>A function with a string nested return type</dd>
             <dt id="type_string">
@@ -108,7 +118,7 @@
             </dt>
             <dd>A function with invalid string type annotation</dd>
             <dt id="type_string_nested">
-              <span class="m-doc-wrap-bumper">def <a href="#type_string_nested" class="m-doc-self">type_string_nested</a>(</span><span class="m-doc-wrap">a: typing.Tuple[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, typing.List[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], typing.Any])</span>
+              <span class="m-doc-wrap-bumper">def <a href="#type_string_nested" class="m-doc-self">type_string_nested</a>(</span><span class="m-doc-wrap">a: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, <a href="https://docs.python.org/3/library/typing.html#typing.List" class="m-doc-external">typing.List</a>[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], <a href="https://docs.python.org/3/library/typing.html#typing.Any" class="m-doc-external">typing.Any</a>])</span>
             </dt>
             <dd>A function with string nested type annotation</dd>
           </dl>
@@ -125,7 +135,7 @@
             </dt>
             <dd></dd>
             <dt id="TYPE_DATA_STRING_NESTED">
-              <a href="#TYPE_DATA_STRING_NESTED" class="m-doc-self">TYPE_DATA_STRING_NESTED</a>: typing.Tuple[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, typing.List[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], typing.Any] = {}
+              <a href="#TYPE_DATA_STRING_NESTED" class="m-doc-self">TYPE_DATA_STRING_NESTED</a>: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.second.Foo.html" class="m-doc">Foo</a>, <a href="https://docs.python.org/3/library/typing.html#typing.List" class="m-doc-external">typing.List</a>[<a href="inspect_type_links.second.html#Enum" class="m-doc">Enum</a>], <a href="https://docs.python.org/3/library/typing.html#typing.Any" class="m-doc-external">typing.Any</a>] = {}
             </dt>
             <dd></dd>
           </dl>

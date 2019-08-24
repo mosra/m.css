@@ -268,8 +268,11 @@ class TypeLinks(BaseInspectTestCase):
         pybind_type_links.Foo.__annotations__ = {}
         pybind_type_links.Foo.__annotations__['TYPE_DATA'] = pybind_type_links.Enum
         self.run_python({
+            'PLUGINS': ['m.sphinx'],
             'INPUT_MODULES': [pybind_type_links],
-            'PYBIND11_COMPATIBILITY': True
+            'PYBIND11_COMPATIBILITY': True,
+            'M_SPHINX_INVENTORIES': [
+                ('../../../doc/documentation/python.inv', 'https://docs.python.org/3/', [], ['m-doc-external'])]
         })
         self.assertEqual(*self.actual_expected_contents('pybind_type_links.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_type_links.Foo.html'))

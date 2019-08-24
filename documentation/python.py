@@ -615,9 +615,10 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str) ->
         input_type = match.group(0)
         signature = signature[len(input_type):]
         # Prefix types with the typing module to be consistent with pure
-        # Python annotations
+        # Python annotations and allow them to be linked to
         if input_type in ['Callable', 'Dict', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
-            type = type_link = 'typing.' + input_type
+            type = 'typing.' + input_type
+            type_link = make_name_link(state, referrer_path, type)
         else:
             type = map_name_prefix(state, input_type)
             type_link = make_name_link(state, referrer_path, type)
@@ -889,19 +890,22 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
             logging.warning("can't inspect annotation %s for %s, falling back to a string representation", annotation, '.'.join(referrer_path))
             return str(annotation)
 
+        # Add type links to name
+        name_link = make_name_link(state, referrer_path, name)
+
         # Arguments of generic types, recurse inside
         if args:
             # For Callable, put the arguments into a nested list to separate
             # them from the return type
             if name == 'typing.Callable':
                 assert len(args) >= 1
-                return '{}[[{}], {}]'.format(name,
+                return '{}[[{}], {}]'.format(name_link,
                     ', '.join([extract_annotation(state, referrer_path, i) for i in args[:-1]]),
                     extract_annotation(state, referrer_path, args[-1]))
             else:
-                return '{}[{}]'.format(name, ', '.join([extract_annotation(state, referrer_path, i) for i in args]))
+                return '{}[{}]'.format(name_link, ', '.join([extract_annotation(state, referrer_path, i) for i in args]))
         else:
-            return name
+            return name_link
 
     # Things like (float, int) instead of Tuple[float, int] or using np.array
     # instead of np.ndarray. Ignore with a warning.
@@ -913,7 +917,7 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
     # None and type(None) are equivalent. Calling extract_type() on None would
     # give us NoneType, which is unnecessarily long.
     elif annotation is type(None):
-        return 'None'
+        return make_name_link(state, referrer_path, 'None')
 
     # Otherwise it's a plain type. Turn it into a link.
     return make_name_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
