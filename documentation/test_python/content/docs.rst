@@ -115,10 +115,6 @@
 
     Why it has to be yelling?!
 
-.. py:function: content.foo
-
-    Details for this function
-
 .. py:module:: thismoduledoesnotexist
     :summary: This docs get unused and produce a warning
 
