@@ -260,7 +260,7 @@ class Plot(rst.Directive):
         container.append(node)
         return [container]
 
-def new_page(*args):
+def new_page(*args, **kwargs):
     mpl.rcParams['svg.hashsalt'] = 0
 
 def register_mcss(mcss_settings, hooks_pre_page, **kwargs):

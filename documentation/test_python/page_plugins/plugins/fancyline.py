@@ -47,11 +47,11 @@ def _post_crawl(**kwargs):
     global post_crawl_call_count
     post_crawl_call_count = post_crawl_call_count + 1
 
-def _pre_page():
+def _pre_page(**kwargs):
     global pre_page_call_count
     pre_page_call_count = pre_page_call_count + 1
 
-def _post_run():
+def _post_run(**kwargs):
     global post_run_call_count
     post_run_call_count = post_run_call_count + 1
 

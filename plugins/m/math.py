@@ -100,7 +100,7 @@ class Math(rst.Directive):
         container.append(node)
         return [container]
 
-def new_page(*args):
+def new_page(*args, **kwargs):
     latex2svgextra.counter = 0
 
 def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -133,7 +133,7 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.raw(rawtext, latex2svgextra.patch(text, svg, depth, attribs), format='html', **options)
     return [node], []
 
-def save_cache(*args):
+def save_cache(*args, **kwargs):
     if settings['M_MATH_CACHE_FILE']:
         latex2svgextra.pickle_cache(settings['M_MATH_CACHE_FILE'])
 
