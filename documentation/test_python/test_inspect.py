@@ -159,6 +159,7 @@ class TypeLinks(BaseInspectTestCase):
     def test(self):
         self.run_python({
             'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
             'INPUT_PAGES': ['index.rst'],
             'M_SPHINX_INVENTORIES': [
                 ('../../../doc/documentation/python.inv', 'https://docs.python.org/3/', [], ['m-doc-external'])]

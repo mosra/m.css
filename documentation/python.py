@@ -552,8 +552,12 @@ def make_relative_name(state: State, referrer_path: List[str], name):
     # Check for ambiguity of the shortened path -- for example, with referrer
     # being `module.sub.Foo`, target `module.Foo`, the path will get shortened
     # to `Foo`, making it seem like the target is `module.sub.Foo` instead of
-    # `module.Foo`. To fix that, the shortened path needs to be `sub.Foo`
+    # `module.Foo`. To fix that, the shortened path needs to be `module.Foo`
     # instead of `Foo`.
+    #
+    # There's many corner cases, see test_inspect.InspectTypeLinks for the full
+    # description, tests and verification against python's internal name
+    # resolution rules.
     def is_ambiguous(shortened_path):
         # Concatenate the shortened path with a prefix of the referrer path,
         # going from longest to shortest, until we find a name that exists. If
@@ -561,10 +565,6 @@ def make_relative_name(state: State, referrer_path: List[str], name):
         # for example, linking from `module.sub` to `module.sub.Foo` can be
         # done just with `Foo` even though `module.Foo` exists as well, as it's
         # "closer" to the referrer.
-        # TODO: See test cases in `inspect_type_links.first.Foo` for very
-        #  *very* pathological cases where we're referencing `Foo` from
-        # `module.Foo` and there's also `module.Foo.Foo`. Not sure which way is
-        # better.
         for i in reversed(range(len(referrer_path))):
             potentially_ambiguous = referrer_path[:i] + shortened_path
             if '.'.join(potentially_ambiguous) in state.name_map:
@@ -1421,7 +1421,8 @@ def render_module(state: State, path, module, env):
     logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
-    for hook in state.hooks_pre_page: hook()
+    for hook in state.hooks_pre_page:
+        hook(path=path)
 
     page = Empty()
     page.summary, page.content = extract_docs(state, state.module_docs, path, module.__doc__)
@@ -1496,7 +1497,8 @@ def render_class(state: State, path, class_, env):
     logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
-    for hook in state.hooks_pre_page: hook()
+    for hook in state.hooks_pre_page:
+        hook(path=path)
 
     page = Empty()
     page.summary, page.content = extract_docs(state, state.class_docs, path, class_.__doc__)
@@ -1716,7 +1718,8 @@ def render_page(state: State, path, input_filename, env):
     logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
-    for hook in state.hooks_pre_page: hook()
+    for hook in state.hooks_pre_page:
+        hook(path=path)
 
     # Render the file
     with open(input_filename, 'r') as f: pub = publish_rst(state, f.read(), source_path=input_filename)
@@ -1908,9 +1911,6 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             hooks_pre_page=state.hooks_pre_page,
             hooks_post_run=state.hooks_post_run)
 
-    # Call all registered page begin hooks for the first time
-    for hook in state.hooks_pre_page: hook()
-
     # Crawl all input modules to gather the name tree, put their names into a
     # list for the index. The crawl is done breadth-first, so the function
     # returns a list of submodules to be crawled next.
@@ -1957,6 +1957,10 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # Call all registered post-crawl hooks
     for hook in state.hooks_post_crawl:
         hook(name_map=state.name_map)
+
+    # Call all registered page begin hooks for the doc rendering
+    for hook in state.hooks_pre_page:
+        hook(path=[])
 
     # Then process the doc input files so we have all data for rendering
     # module pages. This needs to be done *after* the initial crawl so

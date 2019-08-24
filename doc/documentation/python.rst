@@ -736,11 +736,24 @@ Keyword argument    Content
     added by the plugin *need* to have :py:`object` set to :py:`None` so the
     script as well as other plugins can correctly distinguish them.
 
-The :py:`hooks_pre_page` and :py:`hooks_post_run` are called before each page
-of output gets rendered (for example, resetting an some internal counter for
-page-wide unique element IDs) and after the whole run is done (for example to
-serialize cached internal state). Currently, those functions get no arguments
-passed.
+The :py:`hooks_pre_page` is called before each page of output gets rendered.
+Can be used for example for resetting some internal counter for page-wide
+unique element IDs. It gets passed the following arguments:
+
+.. class:: m-table
+
+=================== ===========================================================
+Keyword argument    Content
+=================== ===========================================================
+:py:`path`          Path of the module/class/page to render. A list of names,
+                    for modules and classes :py:`'.'.join(path)` is equivalent
+                    to the fully qualified name. Useful to provide
+                    context-sensitive linking capabilities.
+=================== ===========================================================
+
+The :py:`hooks_post_run` is called after the whole run is done, useful for
+example to serialize cached internal state. Currently, this function get no
+arguments passed.
 
 Registration function for a plugin that needs to query the :py:`OUTPUT` setting
 might look like this --- the remaining keyword arguments will collapse into

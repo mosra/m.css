@@ -38,6 +38,7 @@ from docutils.parsers.rst.states import Inliner
 
 from pelican import signals
 
+referer_path = []
 module_doc_output = None
 class_doc_output = None
 enum_doc_output = None
@@ -217,9 +218,12 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     # Avoid assert on adding to undefined member later
     if 'classes' not in _options: _options['classes'] = []
 
-    # Iterate through all prefixes, try to find the name
+    # Add prefixes of the referer path to the global prefix list, iterate
+    # through all of them, with names "closest" to the referer having a
+    # priority and try to find the name
     global intersphinx_inventory, intersphinx_name_prefixes
-    for prefix in intersphinx_name_prefixes:
+    prefixes = ['.'.join(referer_path[:len(referer_path) - i]) + '.' for i, _ in enumerate(referer_path)] + intersphinx_name_prefixes
+    for prefix in prefixes:
         found = None
 
         # If the target is prefixed with a type, try looking up that type
@@ -284,6 +288,10 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         logging.warning("Sphinx symbol `{}` not found, rendering as monospace".format(target))
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
+
+def remember_referer_path(path):
+    global referer_path
+    referer_path = path
 
 def merge_inventories(name_map, **kwargs):
     global intersphinx_inventory
@@ -353,7 +361,7 @@ def merge_inventories(name_map, **kwargs):
             assert path not in data
             data[path] = value
 
-def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, **kwargs):
+def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_page, **kwargs):
     global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
@@ -374,6 +382,7 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
 
     rst.roles.register_local_role('ref', ref)
 
+    hooks_pre_page += [remember_referer_path]
     hooks_post_crawl += [merge_inventories]
 
 def _pelican_configure(pelicanobj):

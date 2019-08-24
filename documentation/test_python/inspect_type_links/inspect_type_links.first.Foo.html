@@ -31,13 +31,31 @@
               <ul>
                 <li><a href="#classes">Classes</a></li>
                 <li><a href="#methods">Methods</a></li>
+                <li><a href="#data">Data</a></li>
               </ul>
             </li>
           </ul>
         </div>
+<p><a class="m-doc" href="inspect_type_links.first.Foo.html">first.Foo</a> and <a class="m-doc" href="inspect_type_links.first.Foo.html">inspect_type_links.first.Foo</a> should
+lead to self; referencing the subclass via <a class="m-doc" href="inspect_type_links.first.Foo.Foo.html">Foo</a>, <a class="m-doc" href="inspect_type_links.first.Foo.Foo.html">Foo.Foo</a>,
+<a class="m-doc" href="inspect_type_links.first.Foo.Foo.html">first.Foo.Foo</a> or <a class="m-doc" href="inspect_type_links.first.Foo.Bar.html">Bar</a>. <a class="m-doc" href="inspect_type_links.second.Foo.html">second.Foo</a> and
+<a class="m-doc" href="inspect_type_links.Bar.html">inspect_type_links.Bar</a> lead to other classes.</p>
+<p>This is consistent with how Python type annotations inside <em>a class</em> are
+interpreted -- see <a class="m-doc" href="inspect_type_links.first.Foo.html#reference_self_data">reference_self_data</a>, <a class="m-doc" href="inspect_type_links.first.Foo.html#reference_inner_data">reference_inner_data</a>
+and <a class="m-doc" href="inspect_type_links.first.Foo.html#reference_inner_other_data">reference_inner_other_data</a>. Inside <em>function definitions</em> the
+rules are different as per <a href="https://docs.python.org/3/reference/executionmodel.html#resolution-of-names">https://docs.python.org/3/reference/executionmodel.html#resolution-of-names</a>:</p>
+<blockquote>
+The scope of names defined in a class block is limited to the class
+block; it does not extend to the code blocks of methods</blockquote>
+<p>This means relative annotations in <a class="m-doc" href="inspect_type_links.first.Foo.html#reference_self">reference_self()</a>,
+<a class="m-doc" href="inspect_type_links.first.Foo.html#reference_inner">reference_inner()</a> and <a class="m-doc" href="inspect_type_links.first.Foo.html#reference_inner_other">reference_inner_other()</a> are parsed
+differently -- but in the documentation, these are shown with the same
+rules as for data themselves.</p>
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>
           <dl class="m-doc">
+            <dt>class <a href="inspect_type_links.first.Foo.Bar.html" class="m-doc">Bar</a></dt>
+            <dd>Another inner class.</dd>
             <dt>class <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a></dt>
             <dd>An inner class in the first module</dd>
           </dl>
@@ -47,25 +65,55 @@
           <dl class="m-doc">
             <dt id="reference_inner">
               <span class="m-doc-wrap-bumper">def <a href="#reference_inner" class="m-doc-self">reference_inner</a>(</span><span class="m-doc-wrap">self,
-              a: <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>)</span>
+              a: <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>,
+              b: <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>)</span>
             </dt>
-            <dd>A method referencing an inner class. This is quite a pathological case and I&#x27;m not sure if Foo or Foo.Foo is better.</dd>
+            <dd>Referencing an inner class using Foo.Foo and first.Foo.Foo. Outside of a function it would be enough to reference via Foo, thus docs display just Foo.</dd>
+            <dt id="reference_inner_other">
+              <span class="m-doc-wrap-bumper">def <a href="#reference_inner_other" class="m-doc-self">reference_inner_other</a>(</span><span class="m-doc-wrap">self,
+              a: <a href="inspect_type_links.first.Foo.Bar.html" class="m-doc">Bar</a>)</span>
+            </dt>
+            <dd>Referencing another inner class using Foo.Bar. Bar alone doesn&#x27;t work, outside of a function it would, thus docs display just Bar.</dd>
             <dt id="reference_other">
               <span class="m-doc-wrap-bumper">def <a href="#reference_other" class="m-doc-self">reference_other</a>(</span><span class="m-doc-wrap">self,
-              a: <a href="inspect_type_links.second.Foo.html" class="m-doc">second.Foo</a>)</span>
+              a: <a href="inspect_type_links.second.Foo.html" class="m-doc">second.Foo</a>,
+              b: <a href="inspect_type_links.Bar.html" class="m-doc">inspect_type_links.Bar</a>)</span>
             </dt>
-            <dd>A method referencing a type in another module</dd>
+            <dd>Referencing a type in another module using second.Foo or inspect_type_links.Bar.</dd>
+            <dt id="reference_parent">
+              <span class="m-doc-wrap-bumper">def <a href="#reference_parent" class="m-doc-self">reference_parent</a>(</span><span class="m-doc-wrap">self,
+              a: <a href="inspect_type_links.Foo.html" class="m-doc">inspect_type_links.Foo</a>)</span>
+            </dt>
+            <dd>Referencing a class in a parent module using inspect_type_links.Foo.</dd>
             <dt id="reference_self">
               <span class="m-doc-wrap-bumper">def <a href="#reference_self" class="m-doc-self">reference_self</a>(</span><span class="m-doc-wrap">self,
-              a: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>)</span>
+              a: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>,
+              b: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>)</span>
             </dt>
-            <dd>A method referencing its wrapper class. Due to the inner Foo this is quite a pathological case and I&#x27;m not sure if first.Foo or Foo is better.</dd>
-            <dt id="reference_sub">
-              <span class="m-doc-wrap-bumper">def <a href="#reference_sub" class="m-doc-self">reference_sub</a>(</span><span class="m-doc-wrap">self,
-              a: <a href="inspect_type_links.first.sub.Foo.html" class="m-doc">sub.Foo</a>,
-              b: <a href="inspect_type_links.first.sub.Foo.html" class="m-doc">sub.Foo</a>)</span>
+            <dd>Referencing its wrapper class using Foo and first.Foo. Outside of a function Foo would reference the inner, thus docs display first.Foo to disambiguate.</dd>
+          </dl>
+        </section>
+        <section id="data">
+          <h2><a href="#data">Data</a></h2>
+          <dl class="m-doc">
+            <dt id="reference_inner_data">
+              <a href="#reference_inner_data" class="m-doc-self">reference_inner_data</a>: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>, <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>, <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>] = {}
             </dt>
-            <dd>A method referencing a type in a submodule</dd>
+            <dd>Referencing the inner class using <code>Foo</code>, <code>Foo.Foo</code> or
+<code>first.Foo.Foo</code>, displayed as just <code>Foo</code>. This is different from
+<a class="m-doc" href="inspect_type_links.first.Foo.html#reference_inner">reference_inner()</a>.</dd>
+            <dt id="reference_inner_other_data">
+              <a href="#reference_inner_other_data" class="m-doc-self">reference_inner_other_data</a>: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.first.Foo.Bar.html" class="m-doc">Bar</a>, <a href="inspect_type_links.first.Foo.Bar.html" class="m-doc">Bar</a>, <a href="inspect_type_links.first.Foo.Bar.html" class="m-doc">Bar</a>] = {}
+            </dt>
+            <dd>Referencing another inner class using <code>Bar</code>, <code>Foo.Bar</code> or
+<code>first.Foo.Bar</code>, displayed as just <code>Bar</code>. This is different from
+<a class="m-doc" href="inspect_type_links.first.Foo.html#reference_inner_other">reference_inner_other()</a>.</dd>
+            <dt id="reference_self_data">
+              <a href="#reference_self_data" class="m-doc-self">reference_self_data</a>: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>] = {}
+            </dt>
+            <dd>Referencing its wrapper class using <code>first.Foo</code>, displayed
+as <code>first.Foo</code> as well. <code>Foo</code> alone would reference the inner. This
+is different from <a class="m-doc" href="inspect_type_links.first.Foo.html#reference_self">reference_self()</a>.</dd>
           </dl>
         </section>
       </div>

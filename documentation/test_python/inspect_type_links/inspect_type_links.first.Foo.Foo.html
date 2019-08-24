@@ -30,23 +30,43 @@
               Reference
               <ul>
                 <li><a href="#methods">Methods</a></li>
+                <li><a href="#data">Data</a></li>
               </ul>
             </li>
           </ul>
         </div>
+<p>Referencing self as <a class="m-doc" href="inspect_type_links.first.Foo.Foo.html">Foo</a> or <a class="m-doc" href="inspect_type_links.first.Foo.Foo.html">Foo.Foo</a>, parent as
+<a class="m-doc" href="inspect_type_links.first.Foo.html">first.Foo</a>, other as <a class="m-doc" href="inspect_type_links.second.Foo.html">second.Foo</a>. However inside annotations
+<code>Foo</code> references the parent, consistently in a function and in data?
+Am I doing something wrong?</p>
         <section id="methods">
           <h2><a href="#methods">Methods</a></h2>
           <dl class="m-doc">
             <dt id="reference_parent">
               <span class="m-doc-wrap-bumper">def <a href="#reference_parent" class="m-doc-self">reference_parent</a>(</span><span class="m-doc-wrap">self,
-              a: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>)</span>
+              a: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>,
+              b: <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>)</span>
             </dt>
-            <dd>A method referencing its parent wrapper class</dd>
+            <dd>A method referencing its parent wrapper class using first.Foo. Foo works too, though. Weird. Displayed as first.Foo.</dd>
             <dt id="reference_self">
               <span class="m-doc-wrap-bumper">def <a href="#reference_self" class="m-doc-self">reference_self</a>(</span><span class="m-doc-wrap">self,
-              a: <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>)</span>
+              a: <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>,
+              b: <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>)</span>
             </dt>
-            <dd>A method referencing its wrapper class</dd>
+            <dd>A method referencing its wrapper class using Foo.Foo or first.Foo.Foo, displayed as Foo in both cases; however using just Foo in the annotation references the parent?!</dd>
+          </dl>
+        </section>
+        <section id="data">
+          <h2><a href="#data">Data</a></h2>
+          <dl class="m-doc">
+            <dt id="reference_parent_data">
+              <a href="#reference_parent_data" class="m-doc-self">reference_parent_data</a>: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>, <a href="inspect_type_links.first.Foo.html" class="m-doc">first.Foo</a>] = {}
+            </dt>
+            <dd></dd>
+            <dt id="reference_self_data">
+              <a href="#reference_self_data" class="m-doc-self">reference_self_data</a>: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>, <a href="inspect_type_links.first.Foo.Foo.html" class="m-doc">Foo</a>] = {}
+            </dt>
+            <dd></dd>
           </dl>
         </section>
       </div>
