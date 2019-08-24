@@ -234,7 +234,7 @@ per value like shown above.
 `Graphs`_
 =========
 
-For Pelican, ownload the `m/dot.py <{filename}/plugins.rst>`_ file, put it
+For Pelican, download the `m/dot.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
 ``m.dot`` package to your :py:`PLUGINS` in ``pelicanconf.py``. For the
 Python doc theme, it's enough to just list it in :py:`PLUGINS`.
