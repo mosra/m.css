@@ -1971,6 +1971,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # Go through all crawled names and render modules, classes and pages. A
     # side effect of the render is entry.summary (and entry.name for pages)
     # being filled.
+    # TODO: page name need to be added earlier for intersphinx!
     for entry in state.name_map.values():
         # If there is no object, the entry is an external reference. Skip
         # those. Can't do `not entry.object` because that gives ValueError

@@ -53,52 +53,62 @@ using external files in a way similar to `Sphinx <https://www.sphinx-doc.org/>`_
 
 Download the `m/sphinx.py <{filename}/plugins.rst>`_ file, put it including the
 ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.sphinx``
-package to your :py:`PLUGINS` in ``pelicanconf.py``. The plugin uses Sphinx
-inventory files to get a list of linkable symbols and you need to provide
-list of tuples containing tag file path, URL prefix, an optional list of
-implicitly prepended paths and an optional list of CSS classes for each link in
-:py:`M_SPHINX_INVENTORIES`. Every Sphinx-generated documentation contains an
-``objects.inv`` file in its root directory (and the root directory is the URL
-prefix as well), for example for Python 3 it's located at
-https://docs.python.org/3/objects.inv. Download the files and specify path to
-them and the URL they were downloaded from, for example:
+package to your :py:`PLUGINS` in ``pelicanconf.py``. The
+:py:`M_SPHINX_INVENTORIES` option is described in the
+`Links to external Sphinx documentation`_ section below.
 
 .. code:: python
 
     PLUGINS += ['m.sphinx']
-    M_SPHINX_INVENTORIES = [
-        ('sphinx/python.inv', 'https://docs.python.org/3/', ['xml.']),
-        ('sphinx/numpy.inv', 'https://docs.scipy.org/doc/numpy/', [], ['m-flat'])]
+    M_SPHINX_INVENTORIES = [...]
 
 `Python doc theme`_
 -------------------
 
 List the plugin in your :py:`PLUGINS`. The :py:`M_SPHINX_INVENTORIES`
-configuration option is interpreted the same way as in case of the `Pelican`_
-plugin.
+configuration option is described in the `Links to external Sphinx documentation`_
+section below, additionally it supports also the inverse --- saving internal
+symbols to a file to be linked from elsewhere, see
+`Creating an Intersphinx inventory file`_ for a description of the
+:py:`M_SPHINX_INVENTORY_OUTPUT` option.
 
 .. code:: py
 
     PLUGINS += ['m.sphinx']
     M_SPHINX_INVENTORIES = [...]
+    M_SPHINX_INVENTORY_OUTPUT = 'objects.inv'
 
 `Links to external Sphinx documentation`_
 =========================================
 
-Use the :rst:`:ref:` interpreted text role for linking to symbols defined in
-:py:`M_SPHINX_INVENTORIES`. In order to save you some typing, the leading
-name(s) mentioned there can be omitted when linking to given symbol.
+Sphinx provides a so-called Intersphinx files to make names from one
+documentation available for linking from elsewhere. The plugin supports the
+(current) version 2 of those inventory files, version 1 is not supported. You
+need to provide a list of tuples containing tag file path, URL prefix, an
+optional list of implicitly prepended paths and an optional list of CSS classes
+for each link in :py:`M_SPHINX_INVENTORIES`. Every Sphinx-generated
+documentation contains an ``objects.inv`` file in its root directory (and the
+root directory is the URL prefix as well), for example for Python 3 it's
+located at https://docs.python.org/3/objects.inv. Download the files and
+specify path to them and the URL they were downloaded from, for example:
 
-Link text is equal to link target unless the target provides its own title
-(such as documentation pages), function links have ``()`` appended to make it
-clear it's a function. It's possible to specify custom link title using the
-:rst:`:ref:`link title <link-target>``` syntax. If a symbol can't be found, a
-warning is printed to output and link target is rendered in a monospace font
-(or, if custom link title is specified, just the title is rendered, as normal
-text). You can append ``#anchor`` to ``link-target`` to link to anchors that
-are not present in the inventory file, the same works for query parameters
-starting with ``?``. Adding custom CSS classes can be done by deriving the role
-and adding the :rst:`:class:` option.
+.. code:: py
+
+    M_SPHINX_INVENTORIES = [
+        ('sphinx/python.inv', 'https://docs.python.org/3/', ['xml.']),
+        ('sphinx/numpy.inv', 'https://docs.scipy.org/doc/numpy/', [], ['m-flat'])]
+
+Use the :rst:`:ref:` interpreted text role for linking to those symbols. Link
+text is equal to link target unless the target provides its own title (such as
+documentation pages), function links have ``()`` appended to make it clear it's
+a function. It's possible to specify custom link title using the :rst:`:ref:`
+link title <link-target>``` syntax. If a symbol can't be found, a warning is
+printed to output and link target is rendered in a monospace font (or, if
+custom link title is specified, just the title is rendered, as normal text).
+You can append ``#anchor`` to ``link-target`` to link to anchors that are not
+present in the inventory file, the same works for query parameters starting
+with ``?``. Adding custom CSS classes can be done by deriving the role and
+adding the :rst:`:class:` option.
 
 Since there's many possible targets and there can be conflicting names,
 sometimes it's desirable to disambiguate. If you suffix the link target with
@@ -149,6 +159,95 @@ linked to from all signatures.
     For linking to Doxygen documentation, a similar functionality is provided
     by the `m.dox <{filename}/plugins/links.rst#doxygen-documentation>`_
     plugin.
+
+`Creating an Intersphinx inventory file`_
+=========================================
+
+In the Python doc theme, the :py:`M_SPHINX_INVENTORY_OUTPUT` option can be used
+to produce an Intersphinx inventory file --- basically an inverse of
+:py:`M_SPHINX_INVENTORIES`. Set it to a filename and the plugin will fill it
+with all names present in the documentation. Commonly, Sphinx projects expect
+this file to be named ``objects.inv`` and located in the documentation root, so
+doing the following will ensure it can be easily used:
+
+.. code:: py
+
+    M_SPHINX_INVENTORY_OUTPUT = 'objects.inv'
+
+.. block-info:: Inventory file format
+
+    The format is unfortunately not well-documented in Sphinx itself and this
+    plugin additionally makes some extensions to it, so the following is a
+    description of the file structure as used by m.css. File header is a few
+    textual lines as shown below, while everything after is zlib-compressed.
+    The plugin creates the inventory file in the (current) version 2 and at the
+    moment hardcodes project name to ``X`` and version to ``0``::
+
+        # Sphinx inventory version 2
+        # Project: X
+        # Version: 0
+        # The remainder of this file is compressed using zlib.
+
+    When decompressing the rest, the contents are again textual, each line
+    being one entry::
+
+        mymodule.MyClass py:class 2 mymodule.MyClass.html -
+        mymodule.foo py:function 2 mymodule.html#foo -
+        my-page std:doc 2 my-page.html A documentation page
+
+    .. class:: m-table
+
+    =========== ===============================================================
+    Field       Description
+    =========== ===============================================================
+    name        Name of the module, class, function, page... Basically the link
+                target used by :rst:`:ref:`.
+    type        Type. Files created by the ``m.sphinx`` plugins always use only
+                the following types; Sphinx-created files may have arbitrary
+                other types such as ``c:function``. This type is what can be
+                used in :rst:`:ref:` to further disambiguate the target.
+
+                -   ``py:module`` for modules
+                -   ``py:class`` for classes
+                -   ``py:function`` :label-warning:`m.css-specific` for
+                    functions, but currently also methods, class methods and
+                    static methods. Sphinx uses ``py:classmethod``,
+                    ``py:staticmethod`` and ``py:method`` instead.
+                -   ``py:attribute`` for properties
+                -   ``py:enum`` :label-warning:`m.css-specific` for enums.
+                    Sphinx treats those the same as ``py:class``.
+                -   ``py:enumvalue`` :label-warning:`m.css-specific` for enum
+                    values. Sphinx treats those the same as ``py:data``.
+                -   ``py:data`` for data
+                -   ``std:doc`` for pages
+    ``2``       A `mysterious number <https://github.com/dahlia/sphinx-fakeinv/blob/02589f374471fa47073ab6cbac38258c3060a988/sphinx_fakeinv.py#L92-L93>`_.
+                `Sphinx implementation <https://github.com/sphinx-doc/sphinx/blob/a498960de9039b0d0c8d24f75f32fa4acd5b75e1/sphinx/util/inventory.py#L129>`_
+                denotes this as ``prio`` but doesn't use it in any way.
+    url         Full url of the page. There's a minor space-saving
+                optimization --- if the URL ends with ``$``, it should be
+                composed as :py:`location = location[:-1] + name`. The plugin
+                can recognize this feature but doesn't make use of it when
+                writing the file.
+    title       Link title. If set to ``-``, :py:`name` should be used as a
+                link title instead.
+    =========== ===============================================================
+
+    For debugging purposes, the ``sphinx.py`` plugin script can decode and
+    print inventory files passed to it on the command line. See ``--help`` for
+    more options.
+
+    .. code:: shell-session
+
+        $ ./m/sphinx.py python.inv
+        # Sphinx inventory version 2
+        # Project: Python
+        # Version: 3.7
+        # The remainder of this file is compressed using zlib.
+        CO_FUTURE_DIVISION c:var 1 c-api/veryhigh.html#c.$ -
+        PYMEM_DOMAIN_MEM c:var 1 c-api/memory.html#c.$ -
+        PYMEM_DOMAIN_OBJ c:var 1 c-api/memory.html#c.$ -
+        ...
+
 
 `Module, class, enum, function, property and data docs`_
 ========================================================

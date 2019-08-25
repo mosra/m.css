@@ -33,6 +33,12 @@ foreach(target pybind_signatures pybind_enums pybind_submodules pybind_type_link
 endforeach()
 
 # Need a special location for this one
+pybind11_add_module(pybind_inspect_create_intersphinx inspect_create_intersphinx/inspect_create_intersphinx/pybind.cpp)
+set_target_properties(pybind_inspect_create_intersphinx PROPERTIES
+    OUTPUT_NAME pybind
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/inspect_create_intersphinx/inspect_create_intersphinx)
+
+# Need a special location for this one
 pybind11_add_module(pybind_link_formatting link_formatting/link_formatting/pybind.cpp)
 set_target_properties(pybind_link_formatting PROPERTIES
     OUTPUT_NAME pybind

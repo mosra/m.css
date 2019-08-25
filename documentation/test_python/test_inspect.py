@@ -33,6 +33,9 @@ from distutils.version import LooseVersion
 from python import default_templates
 from . import BaseInspectTestCase
 
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../plugins'))
+import m.sphinx
+
 class String(BaseInspectTestCase):
     def test(self):
         self.run_python({
@@ -177,3 +180,38 @@ class TypeLinks(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.FooSlots.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.second.FooSlotsInvalid.html'))
+
+class CreateIntersphinx(BaseInspectTestCase):
+    def test(self):
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_PAGES': ['page.rst'],
+            'M_SPHINX_INVENTORIES': [
+                # Nothing from here should be added to the output
+                ('../../../doc/documentation/python.inv', 'https://docs.python.org/3/', [], ['m-doc-external'])],
+            'M_SPHINX_INVENTORY_OUTPUT': 'things.inv',
+            'PYBIND11_COMPATIBILITY': True
+        })
+
+        with open(os.path.join(self.path, 'output/things.inv'), 'rb') as f:
+            self.assertEqual(m.sphinx.pretty_print_intersphinx_inventory(f), """
+# Sphinx inventory version 2
+# Project: X
+# Version: 0
+# The remainder of this file is compressed using zlib.
+inspect_create_intersphinx.Class.a_property py:attribute 2 inspect_create_intersphinx.Class.html#a_property -
+inspect_create_intersphinx.Class py:class 2 inspect_create_intersphinx.Class.html -
+inspect_create_intersphinx.Class.CLASS_DATA py:data 2 inspect_create_intersphinx.Class.html#CLASS_DATA -
+inspect_create_intersphinx.MODULE_DATA py:data 2 inspect_create_intersphinx.html#MODULE_DATA -
+inspect_create_intersphinx.Enum py:enum 2 inspect_create_intersphinx.html#Enum -
+inspect_create_intersphinx.Enum.ENUM_VALUE py:enumvalue 2 inspect_create_intersphinx.html#Enum-ENUM_VALUE -
+inspect_create_intersphinx.Class.class_method py:function 2 inspect_create_intersphinx.Class.html#class_method -
+inspect_create_intersphinx.Class.method py:function 2 inspect_create_intersphinx.Class.html#method -
+inspect_create_intersphinx.Class.static_method py:function 2 inspect_create_intersphinx.Class.html#static_method -
+inspect_create_intersphinx.function py:function 2 inspect_create_intersphinx.html#function -
+inspect_create_intersphinx.pybind.overloaded_function py:function 2 inspect_create_intersphinx.pybind.html#overloaded_function -
+inspect_create_intersphinx py:module 2 inspect_create_intersphinx.html -
+inspect_create_intersphinx.pybind py:module 2 inspect_create_intersphinx.pybind.html -
+page std:doc 2 page.html -
+""".lstrip())
+        # Yes, above it should say A documentation page, but it doesn't

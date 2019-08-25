@@ -46,6 +46,7 @@ enum_doc_output = None
 function_doc_output = None
 property_doc_output = None
 data_doc_output = None
+inventory_filename = None
 
 class PyModule(rst.Directive):
     final_argument_whitespace = True
@@ -324,7 +325,7 @@ def merge_inventories(name_map, **kwargs):
             type_string = 'py:data'
         elif entry.type == EntryType.PAGE:
             type_string = 'std:doc'
-        else:
+        else: # pragma: no cover
             # TODO: what to do with these? allow linking to them? disambiguate
             # or prefix the names somehow?
             assert entry.type == EntryType.SPECIAL, entry.type
@@ -362,14 +363,36 @@ def merge_inventories(name_map, **kwargs):
             assert path not in data
             data[path] = value
 
+    # Save the internal inventory, if requested. Again basically a copy of
+    # sphinx.util.inventory.InventoryFile.dump().
+    if inventory_filename:
+        with open(os.path.join(inventory_filename), 'wb') as f:
+            # Header
+            # TODO: user-defined project/version
+            f.write(b'# Sphinx inventory version 2\n'
+                    b'# Project: X\n'
+                    b'# Version: 0\n'
+                    b'# The remainder of this file is compressed using zlib.\n')
+
+            # Body. Sorting so it's in a reproducible order for testing.
+            compressor = zlib.compressobj(9)
+            for type_, data in sorted(internal_inventory.items()):
+                for path, value in data.items():
+                    url, title, css_classes = value
+                    # The type has to contain a colon. Wtf is the 2?
+                    assert ':' in type_
+                    f.write(compressor.compress(f'{path} {type_} 2 {url} {title}\n'.encode('utf-8')))
+            f.write(compressor.flush())
+
 def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_page, **kwargs):
-    global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output
+    global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output, inventory_filename
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
     enum_doc_output = enum_doc_contents
     function_doc_output = function_doc_contents
     property_doc_output = property_doc_contents
     data_doc_output = data_doc_contents
+    inventory_filename = os.path.join(mcss_settings['OUTPUT'], mcss_settings['M_SPHINX_INVENTORY_OUTPUT']) if 'M_SPHINX_INVENTORY_OUTPUT' in mcss_settings else None
 
     parse_intersphinx_inventories(input=mcss_settings['INPUT'],
          inventories=mcss_settings.get('M_SPHINX_INVENTORIES', []))
