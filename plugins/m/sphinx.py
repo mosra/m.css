@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #
 #   This file is part of m.css.
 #
@@ -22,6 +24,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import argparse
 import logging
 import os
 import re
@@ -35,8 +38,6 @@ from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 from docutils.parsers.rst.states import Inliner
-
-from pelican import signals
 
 referer_path = []
 module_doc_output = None
@@ -391,6 +392,38 @@ def _pelican_configure(pelicanobj):
          inventories=pelicanobj.settings.get('M_SPHINX_INVENTORIES', []))
 
 def register(): # for Pelican
+    from pelican import signals
+
     rst.roles.register_local_role('ref', ref)
 
     signals.initialized.connect(_pelican_configure)
+
+def pretty_print_intersphinx_inventory(file):
+    return ''.join([
+        # Sphinx inventory version 2
+        file.readline().decode('utf-8'),
+        # Project and version
+        file.readline().decode('utf-8'),
+        file.readline().decode('utf-8'),
+        # Zlib compression line
+        file.readline().decode('utf-8'),
+        # The rest, zlib-compressed
+        zlib.decompress(file.read()).decode('utf-8')
+    ])
+
+if __name__ == '__main__': # pragma: no cover
+    parser = argparse.ArgumentParser()
+    parser.add_argument('file', help="inventory file to print")
+    parser.add_argument('--raw', help="show raw content", action='store_true')
+    parser.add_argument('--types', help="list all type keys", action='store_true')
+    args = parser.parse_args()
+
+    if args.raw or not args.types:
+        with open(args.file, 'rb') as f:
+            print(pretty_print_intersphinx_inventory(f))
+
+    if args.types:
+        with open(args.file, 'rb') as f:
+            inventory = {}
+            parse_intersphinx_inventory(f, '', inventory, [])
+            print(inventory.keys())
