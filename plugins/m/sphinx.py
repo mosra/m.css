@@ -105,7 +105,7 @@ class PyFunction(rst.Directive):
         # will blow up if the param name is not specified.
         params = {}
         for name, content in self.options.get('param', []):
-            if name in params: raise KeyError(f"duplicate param {name}")
+            if name in params: raise KeyError("duplicate param {}".format(name))
             params[name] = content
 
         function_doc_output[self.arguments[0]] = {
@@ -165,20 +165,20 @@ def parse_intersphinx_inventory(file, base_url, inventory, css_classes):
     # Parse the header, uncompressed
     inventory_version = file.readline().rstrip()
     if inventory_version != b'# Sphinx inventory version 2':
-        raise ValueError(f"Unsupported inventory version header: {inventory_version}") # pragma: no cover
+        raise ValueError("Unsupported inventory version header: {}".format(inventory_version)) # pragma: no cover
     # those two are not used at the moment, just for completeness
     project = file.readline().rstrip()[11:]
     version = file.readline().rstrip()[11:]
     line = file.readline()
     if b'zlib' not in line:
-        raise ValueError(f"invalid inventory header (not compressed): {line}") # pragma: no cover
+        raise ValueError("invalid inventory header (not compressed): {}".format(line)) # pragma: no cover
 
     # Decompress the rest. Again mostly a copy of the sphinx code.
     for line in zlib.decompress(file.read()).decode('utf-8').splitlines():
         m = re.match(r'(?x)(.+?)\s+(\S*:\S*)\s+(-?\d+)\s+(\S+)\s+(.*)',
                          line.rstrip())
         if not m: # pragma: no cover
-            print(f"wait what is this line?! {line}")
+            print("wait what is this line?! {}".format(line))
             continue
         # What the F is prio for
         name, type, prio, location, title = m.groups()
@@ -381,7 +381,7 @@ def merge_inventories(name_map, **kwargs):
                     url, title, css_classes = value
                     # The type has to contain a colon. Wtf is the 2?
                     assert ':' in type_
-                    f.write(compressor.compress(f'{path} {type_} 2 {url} {title}\n'.encode('utf-8')))
+                    f.write(compressor.compress('{} {} 2 {} {}\n'.format(path, type_, url, title).encode('utf-8')))
             f.write(compressor.flush())
 
 def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_page, **kwargs):
