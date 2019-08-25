@@ -159,7 +159,7 @@ class HtmlEscape(PageTestCase):
         self.assertEqual(*self.actual_expected_contents('landing.html'))
         self.assertEqual(*self.actual_expected_contents('breadcrumb.html'))
 
-    @unittest.skipUnless(LooseVersion(pelican.__version__) > LooseVersion("4.1.0"),
+    @unittest.skipUnless(LooseVersion(pelican.__version__) > LooseVersion("4.2.0"),
                          "https://github.com/getpelican/pelican/pull/2260")
     def test_content(self):
         self.run_pelican({
