@@ -1052,10 +1052,13 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             # self being the name of first parameter :( No support for
             # classmethods, as C++11 doesn't have that
             out.is_classmethod = False
-            if inspect.isclass(parent) and args and args[0][0] == 'self':
-                out.is_staticmethod = False
+            if inspect.isclass(parent):
+                if args and args[0][0] == 'self':
+                    out.is_staticmethod = False
+                else:
+                    out.is_staticmethod = True
             else:
-                out.is_staticmethod = True
+                out.is_staticmethod = False
 
             # Guesstimate whether the arguments are positional-only or
             # position-or-keyword. It's either all or none. This is a brown
