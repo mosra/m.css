@@ -200,14 +200,17 @@ def map_name_prefix(state: State, type: str) -> str:
     # No mapping found, return the type as-is
     return type
 
-def object_type(state: State, object) -> EntryType:
+def object_type(state: State, object, name) -> EntryType:
     if inspect.ismodule(object): return EntryType.MODULE
     if inspect.isclass(object):
         if (inspect.isclass(object) and issubclass(object, enum.Enum)) or (state.config['PYBIND11_COMPATIBILITY'] and hasattr(object, '__members__')):
             return EntryType.ENUM
         else: return EntryType.CLASS
     if inspect.isfunction(object) or inspect.isbuiltin(object) or inspect.isroutine(object):
-        return EntryType.FUNCTION
+        if state.config['PYBIND11_COMPATIBILITY'] and object.__doc__ and object.__doc__.startswith("{}(*args, **kwargs)\nOverloaded function.\n\n".format(name)):
+            return EntryType.OVERLOADED_FUNCTION
+        else:
+            return EntryType.FUNCTION
     if inspect.isdatadescriptor(object):
         return EntryType.PROPERTY
     # Assume everything else is data. The builtin help help() (from pydoc) does
@@ -322,7 +325,7 @@ def crawl_class(state: State, path: List[str], class_):
     class_entry.members = []
 
     for name, object in inspect.getmembers(class_):
-        type = object_type(state, object)
+        type = object_type(state, object, name)
         subpath = path + [name]
 
         # Crawl the subclasses recursively (they also add itself to the
@@ -342,7 +345,7 @@ def crawl_class(state: State, path: List[str], class_):
         # Add other members directly
         else:
             # Filter out private / unwanted members
-            if type == EntryType.FUNCTION:
+            if type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
                 # Filter out underscored methods (but not dunder methods such
                 # as __init__)
                 if name.startswith('_') and not (name.startswith('__') and name.endswith('__')): continue
@@ -431,7 +434,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
         for name in module.__all__:
             object = getattr(module, name)
             subpath = path + [name]
-            type = object_type(state, object)
+            type = object_type(state, object, name)
 
             # Crawl the submodules and subclasses recursively (they also add
             # itself to the name_map), add other members directly.
@@ -452,12 +455,17 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             elif type == EntryType.ENUM:
                 crawl_enum(state, subpath, object, module_entry.url)
             else:
-                assert type in [EntryType.FUNCTION, EntryType.DATA]
+                assert type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION, EntryType.DATA]
                 entry = Empty()
                 entry.type = type
                 entry.object = object
                 entry.path = subpath
-                entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+                entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](
+                    # We have just one entry for all functions (and we don't
+                    # know the parameters yet) so the link should lead to the
+                    # generic name, not a particular overload
+                    type if type != EntryType.OVERLOADED_FUNCTION else EntryType.FUNCTION,
+                    subpath[-1:]))
                 entry.css_classes = ['m-doc']
                 state.name_map['.'.join(subpath)] = entry
 
@@ -506,7 +514,7 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 # either the same or it's parent + child name
                 elif object.__package__ not in [module.__package__, module.__package__ + '.' + name]: continue
 
-            type = object_type(state, object)
+            type = object_type(state, object, name)
             subpath = path + [name]
 
             # Crawl the submodules and subclasses recursively (they also add
@@ -525,12 +533,17 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             elif type == EntryType.ENUM:
                 crawl_enum(state, subpath, object, module_entry.url)
             else:
-                assert type in [EntryType.FUNCTION, EntryType.DATA]
+                assert type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION, EntryType.DATA]
                 entry = Empty()
                 entry.type = type
                 entry.object = object
                 entry.path = subpath
-                entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+                entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](
+                    # We have just one entry for all functions (and we don't
+                    # know the parameters yet) so the link should lead to the
+                    # generic name, not a particular overload
+                    type if type != EntryType.OVERLOADED_FUNCTION else EntryType.FUNCTION,
+                    subpath[-1:]))
                 entry.css_classes = ['m-doc']
                 state.name_map['.'.join(subpath)] = entry
 
@@ -1062,6 +1075,9 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     # them), explicitly check for that first.
     if state.config['PYBIND11_COMPATIBILITY'] and entry.object.__doc__ and entry.object.__doc__.startswith(entry.path[-1]):
         funcs = parse_pybind_docstring(state, entry.path, entry.object.__doc__)
+        # The crawl (and object_type()) should have detected the overloadedness
+        # already, so check that we have that consistent
+        assert (len(funcs) > 1) == (entry.type == EntryType.OVERLOADED_FUNCTION)
         overloads = []
         for name, summary, args, type, type_link in funcs:
             out = Empty()
@@ -1488,7 +1504,7 @@ def render_module(state: State, path, module, env):
             enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
-        elif member_entry.type == EntryType.FUNCTION:
+        elif member_entry.type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
             functions = extract_function_doc(state, module, member_entry)
             page.functions += functions
             for function in functions:
@@ -1567,7 +1583,7 @@ def render_class(state: State, path, class_, env):
             enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
             if enum_.has_details: page.has_enum_details = True
-        elif member_entry.type == EntryType.FUNCTION:
+        elif member_entry.type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
             for function in extract_function_doc(state, class_, member_entry):
                 if name.startswith('__'):
                     page.dunder_methods += [function]
