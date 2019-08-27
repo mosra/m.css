@@ -56,7 +56,7 @@ class PyModule(rst.Directive):
 
     def run(self):
         module_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary', ''),
+            'summary': self.options.get('summary'),
             'content': '\n'.join(self.content)
         }
         return []
@@ -69,8 +69,8 @@ class PyClass(rst.Directive):
 
     def run(self):
         class_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary', ''),
-            'content': '\n'.join(self.content)
+            'summary': self.options.get('summary'),
+            'content': '\n'.join(self.content) if self.content else None
         }
         return []
 
@@ -82,8 +82,8 @@ class PyEnum(rst.Directive):
 
     def run(self):
         enum_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary', ''),
-            'content': '\n'.join(self.content)
+            'summary': self.options.get('summary'),
+            'content': '\n'.join(self.content) if self.content else None
         }
         return []
 
@@ -109,10 +109,10 @@ class PyFunction(rst.Directive):
             params[name] = content
 
         function_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary', ''),
+            'summary': self.options.get('summary'),
             'params': params,
             'return': self.options.get('return'),
-            'content': '\n'.join(self.content)
+            'content': '\n'.join(self.content) if self.content else None
         }
         return []
 
@@ -124,8 +124,8 @@ class PyProperty(rst.Directive):
 
     def run(self):
         property_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary', ''),
-            'content': '\n'.join(self.content)
+            'summary': self.options.get('summary'),
+            'content': '\n'.join(self.content) if self.content else None
         }
         return []
 
@@ -137,8 +137,8 @@ class PyData(rst.Directive):
 
     def run(self):
         data_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary', ''),
-            'content': '\n'.join(self.content)
+            'summary': self.options.get('summary'),
+            'content': '\n'.join(self.content) if self.content else None
         }
         return []
 

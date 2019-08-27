@@ -72,9 +72,10 @@ def param_docs_wrong(a, b):
 def full_docstring(a, b) -> str:
     """This function has a full docstring.
 
-    It takes one parameter and also another. The details are in two paragraphs,
-    each wrapped in its own `<p>`, but not additionally formatted or parsed in any
-    way.
+    It takes one parameter and also another, which are documented externally,
+    but not overwriting the in-source docstring. The details are in two
+    paragraphs, each wrapped in its own `<p>`, but not additionally formatted
+    or parsed in any way.
 
     Like this.
     """

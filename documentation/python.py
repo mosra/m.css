@@ -790,54 +790,55 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     else:
         return None
 
-# Assumes the content is a bunch of raw paragraphs, wrapping them in <p> one
-# by one
-def split_summary_content(doc: str) -> str:
-    summary, _, content = doc.partition('\n\n')
-    content = content.strip()
-    return summary, ('\n'.join(['<p>{}</p>'.format(p) for p in content.split('\n\n')]) if content else None)
-
-def extract_summary(state: State, external_docs, path: List[str], doc: str, *, signature=None) -> str:
-    # Prefer external docs, if available
-    path_str = '.'.join(path)
-    if signature and path_str + signature in external_docs:
-        external_doc_entry = external_docs[path_str + signature]
-    elif path_str in external_docs:
-        external_doc_entry = external_docs[path_str]
-    else:
-        external_doc_entry = None
-    if external_doc_entry and external_doc_entry['summary']:
-        return render_inline_rst(state, external_doc_entry['summary'])
-
-    # some modules (xml.etree) have None as a docstring :(
-    # TODO: render as rst (config option for that)
-    return html.escape(inspect.cleandoc(doc or '').partition('\n\n')[0])
-
-def extract_docs(state: State, external_docs, path: List[str], doc: str, *, signature=None) -> Tuple[str, str]:
+def extract_docs(state: State, external_docs, path: List[str], doc: str, *, signature=None, summary_only=False) -> Tuple[str, str]:
     path_str = '.'.join(path)
     # If function signature is supplied, try that first
     if signature and path_str + signature in external_docs:
-        external_doc_entry = external_docs[path_str + signature]
+        path_signature_str = path_str + signature
+    # If there's already info for all overloads together (or this is not a
+    # function), use that
     elif path_str in external_docs:
-        external_doc_entry = external_docs[path_str]
+        path_signature_str = path_str
+    # Otherwise, create a new entry for the most specific key possible. That
+    # way we can add a different docstring for each overload without them
+    # clashing together.
     else:
-        external_doc_entry = None
+        path_signature_str = path_str + signature if signature else path_str
+        external_docs[path_signature_str] = {}
 
-    # some modules (xml.etree) have None as a docstring :(
-    # TODO: render as rst (config option for that)
-    summary, content = split_summary_content(html.escape(inspect.cleandoc(doc or '')))
+    external_doc_entry = external_docs[path_signature_str]
 
-    # Summary. Prefer external docs, if available
-    if external_doc_entry and external_doc_entry['summary']:
-        summary = render_inline_rst(state, external_doc_entry['summary'])
+    # If we have parsed summary and content already, don't bother with the
+    # docstring. Otherwise hammer the docs out of it and save those for
+    # later.
+    if external_doc_entry.get('summary') is None or external_doc_entry.get('content') is None:
+        # some modules (xml.etree) have None as a docstring :(
+        summary, _, content = inspect.cleandoc(doc or '').partition('\n\n')
 
-    # Content
-    if external_doc_entry and external_doc_entry['content']:
-        content = render_rst(state, external_doc_entry['content'])
+        # Turn both into a raw HTML block so it doesn't get further processed
+        # by reST. For the content, wrap each paragraph in <p> so it looks
+        # acceptable in the output.
+        if summary:
+            summary = html.escape(summary)
+            summary = ".. raw:: html\n\n    " + summary.replace('\n', '\n    ')
+        if content:
+            content = '\n'.join(['<p>{}</p>'.format(p) for p in html.escape(content).split('\n\n')])
+            content = ".. raw:: html\n\n    " + content.replace('\n', '\n    ')
+
+        if external_doc_entry.get('summary') is None:
+            external_doc_entry['summary'] = summary
+        if external_doc_entry.get('content') is None:
+            external_doc_entry['content'] = content
+
+    # Render. This can't be done just once and then cached because e.g. math
+    # rendering needs to ensure each SVG formula has unique IDs on each page.
+    summary = render_inline_rst(state, external_doc_entry['summary'])
+    if summary_only: return summary
+
+    content = render_rst(state, external_doc_entry['content'])
 
     # Mark the docs as used (so it can warn about unused docs at the end)
-    if external_doc_entry: external_doc_entry['used'] = True
-
+    external_doc_entry['used'] = True
     return summary, content
 
 def extract_type(type) -> str:
@@ -973,7 +974,7 @@ def extract_module_doc(state: State, entry: Empty):
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
-    out.summary = extract_summary(state, state.class_docs, entry.path, entry.object.__doc__)
+    out.summary = extract_docs(state, state.class_docs, entry.path, entry.object.__doc__, summary_only=True)
     return out
 
 def extract_class_doc(state: State, entry: Empty):
@@ -982,7 +983,7 @@ def extract_class_doc(state: State, entry: Empty):
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
-    out.summary = extract_summary(state, state.class_docs, entry.path, entry.object.__doc__)
+    out.summary = extract_docs(state, state.class_docs, entry.path, entry.object.__doc__, summary_only=True)
     return out
 
 def extract_enum_doc(state: State, entry: Empty):
@@ -1019,7 +1020,7 @@ def extract_enum_doc(state: State, entry: Empty):
                 docstring = i.__doc__
 
             # TODO: external summary for enum values
-            value.summary = extract_summary(state, {}, [], docstring)
+            value.summary = extract_docs(state, {}, [], docstring, summary_only=True)
 
             if value.summary:
                 out.has_details = True
@@ -1266,7 +1267,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             # Having no parameters documented is okay, having self
             # undocumented as well. But having the rest documented only
             # partially isn't okay.
-            if function_docs['params']:
+            if function_docs.get('params'):
                 param_docs = function_docs['params']
                 used_params = set()
                 for param in out.params:
@@ -1283,7 +1284,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     if name not in used_params:
                         logging.warning("%s%s documents parameter %s, which isn't in the signature", path_str, signature, name)
 
-            if function_docs['return']:
+            if function_docs.get('return'):
                 out.return_value = render_inline_rst(state, function_docs['return'])
                 out.has_details = True
 

@@ -103,6 +103,10 @@
 
     The ``b`` is not documented, while ``c`` isn't in the signature.
 
+.. py:function:: content.full_docstring
+    :param a: First parameter
+    :param b: Second
+
 .. py:data:: content.CONSTANT
     :summary: This is finally a docstring for ``content.CONSTANT``
 
