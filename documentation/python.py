@@ -719,13 +719,13 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-            summary = take_first_paragraph(inspect.cleandoc(original_signature[end + 1:]))
+            summary = inspect.cleandoc(original_signature[end + 1:]).partition('\n\n')[0]
         else:
             summary = ''
         return (name, summary, [('…', None, None, None)], None)
 
     if len(signature) > 1 and signature[1] == '\n':
-        summary = take_first_paragraph(inspect.cleandoc(signature[2:]))
+        summary = inspect.cleandoc(signature[2:]).partition('\n\n')[0]
     else:
         summary = ''
 
@@ -776,19 +776,15 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     else:
         return None
 
-def take_first_paragraph(doc: str) -> str:
-    end = doc.find('\n\n')
-    return doc if end == -1 else doc [:end]
-
 def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
     # Prefer external docs, if available
     path_str = '.'.join(path)
     if path_str in external_docs and external_docs[path_str]['summary']:
         return render_inline_rst(state, external_docs[path_str]['summary'])
 
-    if not doc: return '' # some modules (xml.etree) have that :(
+    # some modules (xml.etree) have None as a docstring :(
     # TODO: render as rst (config option for that)
-    return html.escape(take_first_paragraph(inspect.cleandoc(doc)))
+    return html.escape(inspect.cleandoc(doc or '').partition('\n\n')[0])
 
 def extract_docs(state: State, external_docs, path: List[str], doc: str) -> Tuple[str, str]:
     path_str = '.'.join(path)
@@ -803,7 +799,7 @@ def extract_docs(state: State, external_docs, path: List[str], doc: str) -> Tupl
     else:
         # some modules (xml.etree) have None as a docstring :(
         # TODO: render as rst (config option for that)
-        summary = html.escape(take_first_paragraph(inspect.cleandoc(doc or '')))
+        summary = html.escape(inspect.cleandoc(doc or '').partition('\n\n')[0])
 
     # Content
     if external_doc_entry and external_doc_entry['content']:
