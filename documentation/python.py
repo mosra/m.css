@@ -776,6 +776,13 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     else:
         return None
 
+# Assumes the content is a bunch of raw paragraphs, wrapping them in <p> one
+# by one
+def split_summary_content(doc: str) -> str:
+    summary, _, content = doc.partition('\n\n')
+    content = content.strip()
+    return summary, ('\n'.join(['<p>{}</p>'.format(p) for p in content.split('\n\n')]) if content else None)
+
 def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
     # Prefer external docs, if available
     path_str = '.'.join(path)
@@ -793,20 +800,17 @@ def extract_docs(state: State, external_docs, path: List[str], doc: str) -> Tupl
     else:
         external_doc_entry = None
 
+    # some modules (xml.etree) have None as a docstring :(
+    # TODO: render as rst (config option for that)
+    summary, content = split_summary_content(html.escape(inspect.cleandoc(doc or '')))
+
     # Summary. Prefer external docs, if available
     if external_doc_entry and external_doc_entry['summary']:
         summary = render_inline_rst(state, external_doc_entry['summary'])
-    else:
-        # some modules (xml.etree) have None as a docstring :(
-        # TODO: render as rst (config option for that)
-        summary = html.escape(inspect.cleandoc(doc or '').partition('\n\n')[0])
 
     # Content
     if external_doc_entry and external_doc_entry['content']:
         content = render_rst(state, external_doc_entry['content'])
-    else:
-        # TODO: extract more than just a summary from the docstring
-        content = None
 
     # Mark the docs as used (so it can warn about unused docs at the end)
     if external_doc_entry: external_doc_entry['used'] = True
@@ -980,7 +984,11 @@ def extract_enum_doc(state: State, entry: Empty):
     elif state.config['PYBIND11_COMPATIBILITY']:
         assert hasattr(entry.object, '__members__')
 
-        out.summary, out.content = extract_docs(state, state.enum_docs, entry.path, entry.object.__doc__)
+        # Pybind 2.4 puts enum value docs inside the docstring. We don't parse
+        # that yet and it adds clutter to the output (especially if the values
+        # aren't documented), so cut that away
+        # TODO: implement this
+        out.summary, out.content = extract_docs(state, state.enum_docs, entry.path, entry.object.__doc__.partition('\n\n')[0])
         out.has_details = bool(out.content)
         out.base = None
 
@@ -989,9 +997,6 @@ def extract_enum_doc(state: State, entry: Empty):
             value. name = name
             value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, entry.path[-1:] + [name])
             value.value = int(v)
-            # TODO: once https://github.com/pybind/pybind11/pull/1160 is
-            #       released, extract from class docs (until then the class
-            #       docstring is duplicated here, which is useless)
             # TODO: external summary for enum values
             value.summary = ''
             out.values += [value]

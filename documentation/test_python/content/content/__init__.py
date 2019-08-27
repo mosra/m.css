@@ -69,6 +69,16 @@ def param_docs(a: int, b, c: float) -> str:
 def param_docs_wrong(a, b):
     """Should give warnings"""
 
+def full_docstring(a, b) -> str:
+    """This function has a full docstring.
+
+    It takes one parameter and also another. The details are in two paragraphs,
+    each wrapped in its own `<p>`, but not additionally formatted or parsed in any
+    way.
+
+    Like this.
+    """
+
 CONSTANT: float = 3.14
 
 DATA_WITH_DETAILS: str = 'heyoo'

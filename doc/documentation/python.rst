@@ -455,11 +455,14 @@ all found submodules in it are ignored.
 
 The first paragraph of a module-level, class-level and function-level docstring
 is used as a doc summary, copied as-is to the output without formatting it in
-any way.
+any way. What follows is put (again without formatting) paragraph-by-paragraph
+into detailed docs.
 
 .. code:: py
 
-    """Module summary"""
+    """Module summary
+
+    First paragraph of module detailed docs."""
 
     class Foo:
         """Class summary"""
@@ -471,8 +474,6 @@ any way.
 
     With the current approach, there are a few limitations:
 
-    -   Everything after the first paragraph is ignored (there's no way to have
-        detailed documentation yet)
     -   Class and module-level variables can't have a docstring attached due to
         how Python works
     -   Because not every Python API can be documented using docstrings, the
