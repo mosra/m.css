@@ -41,7 +41,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'int', 'int', None),
                 ('a2', 'module.Thing', 'module.Thing', None),
-            ], 'module.Thing3'))
+            ], 'module.Thing3', 'module.Thing3'))
 
     def test_newline(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -49,7 +49,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'int', 'int', None),
                 ('a2', 'module.Thing', 'module.Thing', None),
-            ], 'module.Thing3'))
+            ], 'module.Thing3', 'module.Thing3'))
 
     def test_docs(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -57,26 +57,26 @@ class Signature(unittest.TestCase):
             ('foo', 'Docs here!!', [
                 ('a', 'int', 'int', None),
                 ('a2', 'module.Thing', 'module.Thing', None),
-            ], 'module.Thing3'))
+            ], 'module.Thing3', 'module.Thing3'))
 
     def test_no_args(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'thingy() -> str'),
-            ('thingy', '', [], 'str'))
+            ('thingy', '', [], 'str', 'str'))
 
     def test_no_return(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             '__init__(self: module.Thing)'),
             ('__init__', '', [
                 ('self', 'module.Thing', 'module.Thing', None),
-            ], None))
+            ], None, None))
 
     def test_none_return(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             '__init__(self: module.Thing) -> None'),
             ('__init__', '', [
                 ('self', 'module.Thing', 'module.Thing', None),
-            ], 'None'))
+            ], 'None', 'None'))
 
     def test_no_arg_types(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -84,7 +84,7 @@ class Signature(unittest.TestCase):
             ('thingy', '', [
                 ('self', None, None, None),
                 ('the_other_thing', None, None, None),
-            ], None))
+            ], None, None))
 
     def test_none_arg_types(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -92,7 +92,7 @@ class Signature(unittest.TestCase):
             ('thingy', '', [
                 ('self', None, None, None),
                 ('the_other_thing', 'typing.Callable[[], None]', 'typing.Callable[[], None]', None),
-            ], None))
+            ], None, None))
 
     def test_square_brackets(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -100,7 +100,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'typing.Tuple[int, str]', 'typing.Tuple[int, str]', None),
                 ('no_really', 'str', 'str', None),
-            ], 'typing.List[str]'))
+            ], 'typing.List[str]', 'typing.List[str]'))
 
     def test_nested_square_brackets(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -108,7 +108,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'typing.Tuple[int, typing.List[typing.Tuple[int, int]]]', 'typing.Tuple[int, typing.List[typing.Tuple[int, int]]]', None),
                 ('another', 'float', 'float', None),
-            ], 'typing.Union[str, None]'))
+            ], 'typing.Union[str, None]', 'typing.Union[str, None]'))
 
     def test_callable(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -116,7 +116,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'typing.Callable[[int, typing.Tuple[int, int]], float]', 'typing.Callable[[int, typing.Tuple[int, int]], float]', None),
                 ('another', 'float', 'float', None),
-            ], None))
+            ], None, None))
 
     def test_kwargs(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -124,7 +124,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('*args', None, None, None),
                 ('**kwargs', None, None, None),
-            ], None))
+            ], None, None))
 
     # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8,
     # released in 2.3.0. We want to support both, so test both.
@@ -134,7 +134,7 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'float', 'float', '1.0'),
                 ('b', 'str', 'str', '\'hello\''),
-            ], None))
+            ], None, None))
 
     def test_default_values_pybind23(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -142,42 +142,42 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('a', 'float', 'float', '1.0'),
                 ('b', 'str', 'str', '\'hello\''),
-            ], None))
+            ], None, None))
 
     def test_crazy_stuff(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)'),
-            ('foo', '', [('…', None, None, None)], None))
+            ('foo', '', [('…', None, None, None)], None, None))
 
     def test_crazy_stuff_nested(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int, b: List[Math::Vector<4, UnsignedInt>])'),
-            ('foo', '', [('…', None, None, None)], None))
+            ('foo', '', [('…', None, None, None)], None, None))
 
     def test_crazy_stuff_docs(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)\n\nThis is text!!'),
-            ('foo', 'This is text!!', [('…', None, None, None)], None))
+            ('foo', 'This is text!!', [('…', None, None, None)], None, None))
 
     def test_crazy_return(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int) -> Math::Vector<4, UnsignedInt>'),
-            ('foo', '', [('…', None, None, None)], None))
+            ('foo', '', [('…', None, None, None)], None, None))
 
     def test_crazy_return_nested(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int) -> List[Math::Vector<4, UnsignedInt>]'),
-            ('foo', '', [('…', None, None, None)], None))
+            ('foo', '', [('…', None, None, None)], None, None))
 
     def test_crazy_return_docs(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int) -> Math::Vector<4, UnsignedInt>\n\nThis returns!'),
-            ('foo', 'This returns!', [('…', None, None, None)], None))
+            ('foo', 'This returns!', [('…', None, None, None)], None, None))
 
     def test_no_name(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             '(arg0: MyClass) -> float'),
-            ('', '', [('arg0', 'MyClass', 'MyClass', None)], 'float'))
+            ('', '', [('arg0', 'MyClass', 'MyClass', None)], 'float', 'float'))
 
     def test_module_mapping(self):
         state = self.state
@@ -186,7 +186,7 @@ class Signature(unittest.TestCase):
         self.assertEqual(parse_pybind_signature(state, [],
             'foo(a: module._module.Foo, b: typing.Tuple[int, module._module.Bar]) -> module._module.Baz'),
             ('foo', '', [('a', 'module.Foo', 'module.Foo', None),
-                         ('b', 'typing.Tuple[int, module.Bar]', 'typing.Tuple[int, module.Bar]', None)], 'module.Baz'))
+                         ('b', 'typing.Tuple[int, module.Bar]', 'typing.Tuple[int, module.Bar]', None)], 'module.Baz', 'module.Baz'))
 
 class Signatures(BaseInspectTestCase):
     def test_positional_args(self):

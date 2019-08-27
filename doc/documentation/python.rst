@@ -1068,6 +1068,8 @@ Property                                Description
 :py:`enum.base`                         Base class from which the enum is
                                         derived. Set to :py:`None` if no base
                                         class information is available.
+:py:`enum.base_link`                    Like :py:`enum.base`, but with
+                                        cross-linked types
 :py:`enum.values`                       List of enum values
 :py:`enum.has_details`                  If there is enough content for the full
                                         description block. [3]_
@@ -1102,6 +1104,8 @@ Property                            Description
 :py:`function.summary`              Doc summary
 :py:`function.content`              Detailed documentation, if any
 :py:`function.type`                 Function return type annotation [2]_
+:py:`function.type_link`            Like :py:`function.type`, but with
+                                    cross-linked types
 :py:`function.params`               List of function parameters. See below for
                                     details.
 :py:`function.has_complex_params`   Set to :py:`True` if the parameter list
@@ -1133,6 +1137,7 @@ Property                    Description
 =========================== ===================================================
 :py:`param.name`            Parameter name
 :py:`param.type`            Parameter type annotation [2]_
+:py:`param.type_link`       Like :py:`param.type`, but with cross-linked types
 :py:`param.default`         Default parameter value, if any
 :py:`param.kind`            Parameter kind, a string equivalent to one of the
                             `inspect.Parameter.kind <https://docs.python.org/3/library/inspect.html#inspect.Parameter.kind>`_
@@ -1155,6 +1160,8 @@ Property                            Description
 :py:`property.name`                 Property name
 :py:`property.id`                   Property ID [5]_
 :py:`property.type`                 Property getter return type annotation [2]_
+:py:`property.type_link`            Like :py:`property.type`, but with
+                                    cross-linked types
 :py:`property.summary`              Doc summary
 :py:`property.content`              Detailed documentation, if any
 :py:`property.is_gettable`          If the property is gettable
@@ -1175,6 +1182,8 @@ Property                            Description
 :py:`data.name`                     Data name
 :py:`data.id`                       Data ID [5]_
 :py:`data.type`                     Data type
+:py:`data.type_link`                Like :py:`data.type_link`, but with
+                                    cross-linked types
 :py:`data.summary`                  Doc summary
 :py:`data.content`                  Detailed documentation, if any
 :py:`data.value`                    Data value representation

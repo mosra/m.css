@@ -707,9 +707,9 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
         # Return type (optional)
         if signature.startswith(' -> '):
             signature = signature[4:]
-            signature, _, return_type_link = parse_pybind_type(state, referrer_path, signature)
+            signature, return_type, return_type_link = parse_pybind_type(state, referrer_path, signature)
         else:
-            return_type_link = None
+            return_type, return_type_link = None, None
 
         # Expecting end of the signature line now, if not there, we failed
         if signature and signature[0] != '\n': raise SyntaxError()
@@ -722,14 +722,14 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
             summary = inspect.cleandoc(original_signature[end + 1:]).partition('\n\n')[0]
         else:
             summary = ''
-        return (name, summary, [('…', None, None, None)], None)
+        return (name, summary, [('…', None, None, None)], None, None)
 
     if len(signature) > 1 and signature[1] == '\n':
         summary = inspect.cleandoc(signature[2:]).partition('\n\n')[0]
     else:
         summary = ''
 
-    return (name, summary, args, return_type_link)
+    return (name, summary, args, return_type, return_type_link)
 
 def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
     name = referrer_path[-1]
@@ -840,24 +840,24 @@ def get_type_hints_or_nothing(state: State, path: List[str], object) -> Dict:
         logging.warning("failed to dereference type hints for %s (%s), falling back to non-dereferenced", '.'.join(path), e.__class__.__name__)
         return {}
 
-def extract_annotation(state: State, referrer_path: List[str], annotation) -> str:
+def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tuple[str, str]:
     # Empty annotation, as opposed to a None annotation, handled below
-    if annotation is inspect.Signature.empty: return None
+    if annotation is inspect.Signature.empty: return None, None
 
     # If dereferencing with typing.get_type_hints() failed, we might end up
     # with forward-referenced types being plain strings. Keep them as is, since
     # those are most probably an error.
-    if type(annotation) == str: return annotation
+    if type(annotation) == str: return annotation, annotation
 
     # Or the plain strings might be inside (e.g. List['Foo']), which gets
     # converted by Python to ForwardRef. Hammer out the actual string and again
     # leave it as-is, since it's most probably an error.
     elif isinstance(annotation, typing.ForwardRef if sys.version_info >= (3, 7) else typing._ForwardRef):
-        return annotation.__forward_arg__
+        return annotation.__forward_arg__, annotation.__forward_arg__
 
     # Generic type names -- use their name directly
     elif isinstance(annotation, typing.TypeVar):
-        return annotation.__name__
+        return annotation.__name__, annotation.__name__
 
     # If the annotation is from the typing module, it ... gets complicated. It
     # could be a "bracketed" type, in which case we want to recurse to its
@@ -888,7 +888,7 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
         # representation at least.
         else: # pragma: no cover
             logging.warning("can't inspect annotation %s for %s, falling back to a string representation", annotation, '.'.join(referrer_path))
-            return str(annotation)
+            return str(annotation), str(annotation)
 
         # Add type links to name
         name_link = make_name_link(state, referrer_path, name)
@@ -899,28 +899,50 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> st
             # them from the return type
             if name == 'typing.Callable':
                 assert len(args) >= 1
-                return '{}[[{}], {}]'.format(name_link,
-                    ', '.join([extract_annotation(state, referrer_path, i) for i in args[:-1]]),
-                    extract_annotation(state, referrer_path, args[-1]))
+
+                nested_types = []
+                nested_type_links = []
+                for i in args[:-1]:
+                    nested_type, nested_type_link = extract_annotation(state, referrer_path, i)
+                    nested_types += [nested_type]
+                    nested_type_links += [nested_type_link]
+                nested_return_type, nested_return_type_link = extract_annotation(state, referrer_path, args[-1])
+
+                return (
+                    '{}[[{}], {}]'.format(name, ', '.join(nested_types), nested_return_type),
+                    '{}[[{}], {}]'.format(name_link, ', '.join(nested_type_links), nested_return_type_link)
+                )
+
             else:
-                return '{}[{}]'.format(name_link, ', '.join([extract_annotation(state, referrer_path, i) for i in args]))
-        else:
-            return name_link
+                nested_types = []
+                nested_type_links = []
+                for i in args:
+                    nested_type, nested_type_link = extract_annotation(state, referrer_path, i)
+                    nested_types += [nested_type]
+                    nested_type_links += [nested_type_link]
+
+                return (
+                    '{}[{}]'.format(name, ', '.join(nested_types)),
+                    '{}[{}]'.format(name_link, ', '.join(nested_type_links)),
+                )
+
+        else: return name, name_link
 
     # Things like (float, int) instead of Tuple[float, int] or using np.array
     # instead of np.ndarray. Ignore with a warning.
     elif not isinstance(annotation, type):
         logging.warning("invalid annotation %s in %s, ignoring", annotation, '.'.join(referrer_path))
-        return None
+        return None, None
 
     # According to https://www.python.org/dev/peps/pep-0484/#using-none,
     # None and type(None) are equivalent. Calling extract_type() on None would
     # give us NoneType, which is unnecessarily long.
     elif annotation is type(None):
-        return make_name_link(state, referrer_path, 'None')
+        return 'None', make_name_link(state, referrer_path, 'None')
 
     # Otherwise it's a plain type. Turn it into a link.
-    return make_name_link(state, referrer_path, map_name_prefix(state, extract_type(annotation)))
+    name = extract_type(annotation)
+    return name, make_name_link(state, referrer_path, map_name_prefix(state, name))
 
 def extract_module_doc(state: State, entry: Empty):
     assert inspect.ismodule(entry.object)
@@ -958,7 +980,8 @@ def extract_enum_doc(state: State, entry: Empty):
         out.has_details = bool(out.content)
 
         out.base = extract_type(entry.object.__base__)
-        if out.base: out.base = make_name_link(state, entry.path, out.base)
+        if out.base: out.base_link = make_name_link(state, entry.path, out.base)
+        else: out.base, out.base_link = None, None
 
         for i in entry.object:
             value = Empty()
@@ -1039,14 +1062,14 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     if state.config['PYBIND11_COMPATIBILITY'] and entry.object.__doc__ and entry.object.__doc__.startswith(entry.path[-1]):
         funcs = parse_pybind_docstring(state, entry.path, entry.object.__doc__)
         overloads = []
-        for name, summary, args, type in funcs:
+        for name, summary, args, type, type_link in funcs:
             out = Empty()
             out.name = entry.path[-1]
             out.params = []
             out.has_complex_params = False
             out.summary, out.content = extract_docs(state, state.function_docs, entry.path, summary)
             out.has_details = bool(out.content)
-            out.type = type
+            out.type, out.type_link = type, type_link
 
             # There's no other way to check staticmethods than to check for
             # self being the name of first parameter :( No support for
@@ -1096,10 +1119,10 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 param.name = name
                 # Don't include redundant type for the self argument
                 if i == 0 and name == 'self':
-                    param.type = None
+                    param.type, param.type_link = None, None
                     arg_types += [None]
                 else:
-                    param.type = type_link
+                    param.type, param.type_link = type, type_link
                     arg_types += [type]
                 if default:
                     # If the type is a registered enum, try to make a link to
@@ -1173,16 +1196,16 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             signature = inspect.signature(entry.object)
 
             if 'return' in type_hints:
-                out.type = extract_annotation(state, entry.path, type_hints['return'])
+                out.type, out.type_link = extract_annotation(state, entry.path, type_hints['return'])
             else:
-                out.type = extract_annotation(state, entry.path, signature.return_annotation)
+                out.type, out.type_link = extract_annotation(state, entry.path, signature.return_annotation)
             for i in signature.parameters.values():
                 param = Empty()
                 param.name = i.name
                 if i.name in type_hints:
-                    param.type = extract_annotation(state, entry.path, type_hints[i.name])
+                    param.type, param.type_link = extract_annotation(state, entry.path, type_hints[i.name])
                 else:
-                    param.type = extract_annotation(state, entry.path, i.annotation)
+                    param.type, param.type_link = extract_annotation(state, entry.path, i.annotation)
                 if param.type:
                     out.has_complex_params = True
                 if i.default is inspect.Signature.empty:
@@ -1228,7 +1251,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             param.name = '...'
             param.name_type = param.name
             out.params = [param]
-            out.type = None
+            out.type, out.type_link = None, None
 
         if not state.config['SEARCH_DISABLED']:
             result = Empty()
@@ -1268,11 +1291,11 @@ def extract_property_doc(state: State, parent, entry: Empty):
         type_hints = get_type_hints_or_nothing(state, entry.path, parent)
 
         if out.name in type_hints:
-            out.type = extract_annotation(state, entry.path, type_hints[out.name])
+            out.type, out.type_link = extract_annotation(state, entry.path, type_hints[out.name])
         elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
-            out.type = extract_annotation(state, entry.path, parent.__annotations__[out.name])
+            out.type, out.type_link = extract_annotation(state, entry.path, parent.__annotations__[out.name])
         else:
-            out.type = None
+            out.type, out.type_link = None, None
 
         return out
 
@@ -1322,9 +1345,9 @@ def extract_property_doc(state: State, parent, entry: Empty):
             type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fget)
 
             if 'return' in type_hints:
-                out.type = extract_annotation(state, entry.path, type_hints['return'])
+                out.type, out.type_link = extract_annotation(state, entry.path, type_hints['return'])
             else:
-                out.type = extract_annotation(state, entry.path, signature.return_annotation)
+                out.type, out.type_link = extract_annotation(state, entry.path, signature.return_annotation)
         else:
             assert entry.object.fset
             signature = inspect.signature(entry.object.fset)
@@ -1337,23 +1360,23 @@ def extract_property_doc(state: State, parent, entry: Empty):
             # version
             value_parameter = list(signature.parameters.values())[1]
             if value_parameter.name in type_hints:
-                out.type = extract_annotation(state, entry.path, type_hints[value_parameter.name])
+                out.type, out.type_link = extract_annotation(state, entry.path, type_hints[value_parameter.name])
             else:
-                out.type = extract_annotation(state, entry.path, value_parameter.annotation)
+                out.type, out.type_link = extract_annotation(state, entry.path, value_parameter.annotation)
 
     except ValueError:
         # pybind11 properties have the type in the docstring
         if state.config['PYBIND11_COMPATIBILITY']:
             if entry.object.fget:
-                out.type = parse_pybind_signature(state, entry.path, entry.object.fget.__doc__)[3]
+                out.type, out.type_link = parse_pybind_signature(state, entry.path, entry.object.fget.__doc__)[3:]
             else:
                 assert entry.object.fset
                 parsed_args = parse_pybind_signature(state, entry.path, entry.object.fset.__doc__)[2]
                 # If argument parsing failed, we're screwed
-                if len(parsed_args) == 1: out.type = None
-                else: out.type = parsed_args[1][2]
+                if len(parsed_args) == 1: out.type, out.type_link = None, None
+                else: out.type, out.type_link = parsed_args[1][1:3]
         else:
-            out.type = None
+            out.type, out.type_link = None, None
 
     if not state.config['SEARCH_DISABLED']:
         result = Empty()
@@ -1381,11 +1404,11 @@ def extract_data_doc(state: State, parent, entry: Empty):
     type_hints = get_type_hints_or_nothing(state, entry.path, parent)
 
     if out.name in type_hints:
-        out.type = extract_annotation(state, entry.path, type_hints[out.name])
+        out.type, out.type_link = extract_annotation(state, entry.path, type_hints[out.name])
     elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
-        out.type = extract_annotation(state, entry.path, parent.__annotations__[out.name])
+        out.type, out.type_link = extract_annotation(state, entry.path, parent.__annotations__[out.name])
     else:
-        out.type = None
+        out.type, out.type_link = None, None
 
     out.value = format_value(state, entry.path, entry.object)
 
