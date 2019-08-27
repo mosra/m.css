@@ -73,15 +73,16 @@ class EntryType(Enum):
     ENUM_VALUE = 7
     DATA = 8
 
-    # Types not exposed to search are below
+    # Types not exposed to search are below. Deliberately set to large values
+    # so their accidental use triggers assertions when building search data.
 
     # One of files from special_pages. Doesn't make sense to include in the
     # search.
-    SPECIAL = 9
+    SPECIAL = 99
     # Denotes a potentially overloaded pybind11 function. Has to be here to
     # be able to distinguish between zero-argument normal and pybind11
     # functions. To search it's exposed as FUNCTION.
-    OVERLOADED_FUNCTION = 10
+    OVERLOADED_FUNCTION = 100
 
 # Order must match the EntryType above
 search_type_map = [
