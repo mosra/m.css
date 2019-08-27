@@ -63,6 +63,8 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("duck", &duck, "A function taking args/kwargs directly")
         .def("takes_a_function", &takesAFunction, "A function taking a Callable")
         .def("takes_a_function_returning_none", &takesAFunctionReturningVoid, "A function taking a Callable that returns None")
+        .def("escape_docstring", &voidFunction, "A docstring that <em>should</em> be escaped")
+        .def("failed_parse_docstring", &crazySignature, "A failed parse should <strong>also</strong> escape the docstring")
 
         .def("tenOverloads", &tenOverloads<float, float>, "Ten overloads of a function")
         .def("tenOverloads", &tenOverloads<int, float>, "Ten overloads of a function")
