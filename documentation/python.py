@@ -1095,7 +1095,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 param = Empty()
                 param.name = name
                 # Don't include redundant type for the self argument
-                if name == 'self':
+                if i == 0 and name == 'self':
                     param.type = None
                     arg_types += [None]
                 else:
