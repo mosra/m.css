@@ -797,19 +797,28 @@ def split_summary_content(doc: str) -> str:
     content = content.strip()
     return summary, ('\n'.join(['<p>{}</p>'.format(p) for p in content.split('\n\n')]) if content else None)
 
-def extract_summary(state: State, external_docs, path: List[str], doc: str) -> str:
+def extract_summary(state: State, external_docs, path: List[str], doc: str, *, signature=None) -> str:
     # Prefer external docs, if available
     path_str = '.'.join(path)
-    if path_str in external_docs and external_docs[path_str]['summary']:
-        return render_inline_rst(state, external_docs[path_str]['summary'])
+    if signature and path_str + signature in external_docs:
+        external_doc_entry = external_docs[path_str + signature]
+    elif path_str in external_docs:
+        external_doc_entry = external_docs[path_str]
+    else:
+        external_doc_entry = None
+    if external_doc_entry and external_doc_entry['summary']:
+        return render_inline_rst(state, external_doc_entry['summary'])
 
     # some modules (xml.etree) have None as a docstring :(
     # TODO: render as rst (config option for that)
     return html.escape(inspect.cleandoc(doc or '').partition('\n\n')[0])
 
-def extract_docs(state: State, external_docs, path: List[str], doc: str) -> Tuple[str, str]:
+def extract_docs(state: State, external_docs, path: List[str], doc: str, *, signature=None) -> Tuple[str, str]:
     path_str = '.'.join(path)
-    if path_str in external_docs:
+    # If function signature is supplied, try that first
+    if signature and path_str + signature in external_docs:
+        external_doc_entry = external_docs[path_str + signature]
+    elif path_str in external_docs:
         external_doc_entry = external_docs[path_str]
     else:
         external_doc_entry = None
@@ -1065,6 +1074,8 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     if not state.config['SEARCH_DISABLED']:
         page_url = state.name_map['.'.join(entry.path[:-1])].url
 
+    overloads = []
+
     # Extract the signature from the docstring for pybind11, since it can't
     # expose it to the metadata: https://github.com/pybind/pybind11/issues/990
     # What's not solvable with metadata, however, are function overloads ---
@@ -1084,8 +1095,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             out.name = entry.path[-1]
             out.params = []
             out.has_complex_params = False
-            out.summary, out.content = extract_docs(state, state.function_docs, entry.path, summary)
-            out.has_details = bool(out.content)
+            out.has_details = False
             out.type, out.type_link = type, type_link
 
             # There's no other way to check staticmethods than to check for
@@ -1130,6 +1140,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                         break
 
             arg_types = []
+            signature = []
             for i, arg in enumerate(args):
                 name, type, type_link, default = arg
                 param = Empty()
@@ -1138,9 +1149,11 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 if i == 0 and name == 'self':
                     param.type, param.type_link = None, None
                     arg_types += [None]
+                    signature += ['self']
                 else:
                     param.type, param.type_link = type, type_link
                     arg_types += [type]
+                    signature += ['{}: {}'.format(name, type)]
                 if default:
                     # If the type is a registered enum, try to make a link to
                     # the value -- for an enum of type `module.EnumType`,
@@ -1171,25 +1184,12 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             # thus name alone is not enough.
             out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + arg_types)
 
-            if not state.config['SEARCH_DISABLED']:
-                result = Empty()
-                result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNCTION)
-                result.url = '{}#{}'.format(page_url, out.id)
-                result.prefix = entry.path[:-1]
-                result.name = entry.path[-1]
-                result.params = []
-                # If there's more than one overload, add the params as well to
-                # disambiguate
-                if len(funcs) != 1:
-                    for i in range(len(out.params)):
-                        param = out.params[i]
-                        result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, arg_types[i])) if arg_types[i] else param.name]
-                state.search += [result]
+            # Get summary and details. Passing the signature as well, so
+            # different overloads can (but don't need to) have different docs.
+            out.summary, out.content = extract_docs(state, state.function_docs, entry.path, summary, signature='({})'.format(', '.join(signature)))
+            if out.content: out.has_details = True
 
             overloads += [out]
-
-        # TODO: assign docs and particular param docs to overloads
-        return overloads
 
     # Sane introspection path for non-pybind11 code
     else:
@@ -1236,42 +1236,56 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 param.kind = str(i.kind)
                 out.params += [param]
 
-            # Get docs for each param and for the return value
-            path_str = '.'.join(entry.path)
-            if path_str in state.function_docs:
-                # Having no parameters documented is okay, having self
-                # undocumented as well. But having the rest documented only
-                # partially isn't okay.
-                if state.function_docs[path_str]['params']:
-                    param_docs = state.function_docs[path_str]['params']
-                    used_params = set()
-                    for param in out.params:
-                        if param.name not in param_docs:
-                            if param.name != 'self':
-                                logging.warning("%s() parameter %s is not documented", path_str, param.name)
-                            continue
-                        param.content = render_inline_rst(state, param_docs[param.name])
-                        used_params.add(param.name)
-                        out.has_param_details = True
-                        out.has_details = True
-                    # Having unused param docs isn't okay either
-                    for name, _ in param_docs.items():
-                        if name not in used_params:
-                            logging.warning("%s() documents parameter %s, which isn't in the signature", path_str, name)
-
-                if state.function_docs[path_str]['return']:
-                    out.return_value = render_inline_rst(state, state.function_docs[path_str]['return'])
-                    out.has_details = True
-
         # In CPython, some builtin functions (such as math.log) do not provide
         # metadata about their arguments. Source:
         # https://docs.python.org/3/library/inspect.html#inspect.signature
         except ValueError:
             param = Empty()
             param.name = '...'
-            param.name_type = param.name
+            param.type, param.type_link = None, None
             out.params = [param]
             out.type, out.type_link = None, None
+
+        overloads = [out]
+
+    # Common path for parameter / return value docs and search
+    path_str = '.'.join(entry.path)
+    for out in overloads:
+        signature = '({})'.format(', '.join(['{}: {}'.format(param.name, param.type) if param.type else param.name for param in out.params]))
+
+        # Get docs for each param and for the return value. Try this
+        # particular overload first, if not found then fall back to generic
+        # docs for all overloads.
+        if path_str + signature in state.function_docs:
+            function_docs = state.function_docs[path_str + signature]
+        elif path_str in state.function_docs:
+            function_docs = state.function_docs[path_str]
+        else:
+            function_docs = None
+        if function_docs:
+            # Having no parameters documented is okay, having self
+            # undocumented as well. But having the rest documented only
+            # partially isn't okay.
+            if function_docs['params']:
+                param_docs = function_docs['params']
+                used_params = set()
+                for param in out.params:
+                    if param.name not in param_docs:
+                        if param.name != 'self':
+                            logging.warning("%s%s parameter %s is not documented", path_str, signature, param.name)
+                        continue
+                    param.content = render_inline_rst(state, param_docs[param.name])
+                    used_params.add(param.name)
+                    out.has_param_details = True
+                    out.has_details = True
+                # Having unused param docs isn't okay either
+                for name, _ in param_docs.items():
+                    if name not in used_params:
+                        logging.warning("%s%s documents parameter %s, which isn't in the signature", path_str, signature, name)
+
+            if function_docs['return']:
+                out.return_value = render_inline_rst(state, function_docs['return'])
+                out.has_details = True
 
         if not state.config['SEARCH_DISABLED']:
             result = Empty()
@@ -1280,9 +1294,15 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             result.prefix = entry.path[:-1]
             result.name = entry.path[-1]
             result.params = []
+            # If the function has multiple overloads (e.g. pybind functions),
+            # add arguments to each to distinguish between them
+            if len(overloads) != 1:
+                for i in range(len(out.params)):
+                    param = out.params[i]
+                    result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, param.type)) if param.type else param.name]
             state.search += [result]
 
-        return [out]
+    return overloads
 
 def extract_property_doc(state: State, parent, entry: Empty):
     assert inspect.isdatadescriptor(entry.object)

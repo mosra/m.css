@@ -276,3 +276,13 @@ class TypeLinks(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_type_links.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_type_links.Foo.html'))
+
+class ExternalOverloadDocs(BaseInspectTestCase):
+    def test(self):
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
+            'PYBIND11_COMPATIBILITY': True
+        })
+        self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.html'))
+        self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.Class.html'))

@@ -248,7 +248,6 @@ doing the following will ensure it can be easily used:
         PYMEM_DOMAIN_OBJ c:var 1 c-api/memory.html#c.$ -
         ...
 
-
 `Module, class, enum, function, property and data docs`_
 ========================================================
 
@@ -305,6 +304,7 @@ function signature will cause a warning. Example:
 .. code:: rst
 
     .. py:function:: mymodule.MyContainer.add
+        :summary: Add a key/value pair to the container
         :param key:                 Key to add
         :param value:               Corresponding value
         :param overwrite_existing:  Overwrite existing value if already present
@@ -312,5 +312,23 @@ function signature will cause a warning. Example:
         :return:                    The inserted tuple or the existing
             key/value pair in case ``overwrite_existing`` is not set
 
-        Add a key/value pair to the container, optionally overwriting the
-        previous value.
+        The operation has a :math:`\mathcal{O}(\log{}n)` complexity.
+
+For overloaded functions (such as those coming from pybind11), it's possible to
+specify the full signature to distinguish between particular overloads.
+Directives with the full signature have a priority, if no signature matches
+given function, a signature-less directive is searched for as a fallback.
+Example:
+
+.. code:: rst
+
+    .. py:function:: magnum.math.dot(a: magnum.Complex, b: magnum.Complex)
+        :summary: Dot product of two complex numbers
+
+    .. py:function:: magnum.math.dot(a: magnum.Quaternion, b: magnum.Quaternion)
+        :summary: Dot product of two quaternions
+
+    .. py:function:: magnum.math.dot
+        :summary: Dot product
+
+        .. this documentation will be used for all other overloads
