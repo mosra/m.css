@@ -43,7 +43,7 @@ class Search(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 1918)
+        self.assertEqual(len(serialized), 1910)
         self.assertEqual(search_data_pretty, """
 18 symbols
 search [11]
@@ -66,24 +66,24 @@ search [11]
 ||     |          ) [8]
 ||     pybind [23]
 ||     |     .$
-||     |      foo [16]
-||     |      |  .$
-||     |      |   method [12]
-||     |      |         ($
-||     |      |          ) [13]
-||     |      |         _with_params [14]
-||     |      |         |           ($
-||     |      |         |            ) [15]
-||     |      overloaded_function [19, 21, 17]
-||     |      |                  ($
-||     |      |                   ) [20, 22, 18]
+||     |      foo [18]
+||     |       | .$
+||     |       |  overloaded_method [14, 16, 12]
+||     |       |                   ($
+||     |       |                    ) [15, 17, 13]
+||     |       unction [19]
+||     |       |      ($
+||     |       |       ) [20]
+||     |       |      _with_params [21]
+||     |       |      |           ($
+||     |       |      |            ) [22]
 ||     sub [25]
 ||     |  .$
 ||     |   data_in_a_submodule [24]
 |ub [25]
 || .$
 ||  data_in_a_submodule [24]
-foo [6, 16]
+foo [6, 18]
 || .$
 ||  enum [0]
 ||  |   .$
@@ -93,15 +93,18 @@ foo [6, 16]
 ||  | |     ($
 ||  | |      ) [4]
 ||  | property [5]
-||  method [12]
-||  |     ($
-||  |      ) [13]
-||  |     _with_params [14]
-||  |     |           ($
-||  |     |            ) [15]
+||  overloaded_method [14, 16, 12]
+||  |                ($
+||  |                 ) [15, 17, 13]
 |unc_with_params [9]
-||              ($
-||               ) [10]
+||  |           ($
+||  |            ) [10]
+||  tion [19]
+||  |   ($
+||  |    ) [20]
+||  |   _with_params [21]
+||  |   |           ($
+||  |   |            ) [22]
 enum [0]
 |   .$
 |    a_value [1]
@@ -117,26 +120,20 @@ a_value [1]
 |nother [2]
 pybind [23]
 |     .$
-|      foo [16]
-|      |  .$
-|      |   method [12]
-|      |         ($
-|      |          ) [13]
-|      |         _with_params [14]
-|      |         |           ($
-|      |         |            ) [15]
-|      overloaded_function [19, 21, 17]
-|      |                  ($
-|      |                   ) [20, 22, 18]
-method [12]
-|     ($
-|      ) [13]
-|     _with_params [14]
-|     |           ($
-|     |            ) [15]
-overloaded_function [19, 21, 17]
-|                  ($
-|                   ) [20, 22, 18]
+|      foo [18]
+|       | .$
+|       |  overloaded_method [14, 16, 12]
+|       |                   ($
+|       |                    ) [15, 17, 13]
+|       unction [19]
+|       |      ($
+|       |       ) [20]
+|       |      _with_params [21]
+|       |      |           ($
+|       |      |            ) [22]
+overloaded_method [14, 16, 12]
+|                ($
+|                 ) [15, 17, 13]
 data_in_a_submodule [24]
 0: .Enum [prefix=6[:15], type=ENUM] -> #Enum
 1: .A_VALUE [prefix=0[:20], type=ENUM_VALUE] -> -A_VALUE
@@ -150,17 +147,17 @@ data_in_a_submodule [24]
 9: .func_with_params() [prefix=11[:11], suffix_length=2, type=FUNCTION] -> #func_with_params
 10:  [prefix=9[:28], type=FUNCTION] ->
 11: search [type=MODULE] -> search.html
-12: .method(self) [prefix=16[:22], suffix_length=6, type=FUNCTION] -> #method-6eef6
-13:  [prefix=12[:35], suffix_length=4, type=FUNCTION] ->
-14: .method_with_params(self, first: int, second: float) [prefix=16[:22], suffix_length=33, type=FUNCTION] -> #method_with_params-27269
-15:  [prefix=14[:47], suffix_length=31, type=FUNCTION] ->
-16: .Foo [prefix=23[:14], type=CLASS] -> Foo.html
-17: .overloaded_function(arg0: int, arg1: float) [prefix=23[:18], suffix_length=24, type=FUNCTION] -> #overloaded_function-8f19c
-18:  [prefix=17[:44], suffix_length=22, type=FUNCTION] ->
-19: .overloaded_function(arg0: int) [prefix=23[:18], suffix_length=11, type=FUNCTION] -> #overloaded_function-46f8a
-20:  [prefix=19[:44], suffix_length=9, type=FUNCTION] ->
-21: .overloaded_function(arg0: int, arg1: Foo) [prefix=23[:18], suffix_length=22, type=FUNCTION] -> #overloaded_function-0cacd
-22:  [prefix=21[:44], suffix_length=20, type=FUNCTION] ->
+12: .overloaded_method(self, first: int, second: float) [prefix=18[:22], suffix_length=33, type=FUNCTION] -> #overloaded_method-27269
+13:  [prefix=12[:46], suffix_length=31, type=FUNCTION] ->
+14: .overloaded_method(self, arg0: int) [prefix=18[:22], suffix_length=17, type=FUNCTION] -> #overloaded_method-745a3
+15:  [prefix=14[:46], suffix_length=15, type=FUNCTION] ->
+16: .overloaded_method(self, arg0: int, arg1: Foo) [prefix=18[:22], suffix_length=28, type=FUNCTION] -> #overloaded_method-41cfb
+17:  [prefix=16[:46], suffix_length=26, type=FUNCTION] ->
+18: .Foo [prefix=23[:14], type=CLASS] -> Foo.html
+19: .function() [prefix=23[:18], suffix_length=2, type=FUNCTION] -> #function-da39a
+20:  [prefix=19[:33], type=FUNCTION] ->
+21: .function_with_params() [prefix=23[:18], suffix_length=2, type=FUNCTION] -> #function_with_params-8f19c
+22:  [prefix=21[:45], type=FUNCTION] ->
 23: .pybind [prefix=11[:7], type=MODULE] -> pybind.html
 24: .DATA_IN_A_SUBMODULE [prefix=25[:15], type=DATA] -> #DATA_IN_A_SUBMODULE
 25: .sub [prefix=11[:7], type=MODULE] -> sub.html
@@ -186,21 +183,23 @@ class LongSuffixLength(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 521)
+        self.assertEqual(len(serialized), 633)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
-2 symbols
-search_long_suffix_length [2]
+3 symbols
+search_long_suffix_length [4]
 |                        .$
-|                         many_parameters [0]
+|                         many_parameters [0, 2]
 |                                        ($
-|                                         ) [1]
-many_parameters [0]
+|                                         ) [1, 3]
+many_parameters [0, 2]
 |              ($
-|               ) [1]
-0: .many_parameters(arg0: typing.Tuple[int, float, str, typing.List[…) [prefix=2[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-31300
+|               ) [1, 3]
+0: .many_parameters(arg0: typing.Tuple[float, int, str, typing.List[…) [prefix=4[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-06151
 1:  [prefix=0[:52], suffix_length=51, type=FUNCTION] ->
-2: search_long_suffix_length [type=MODULE] -> search_long_suffix_length.html
+2: .many_parameters(arg0: typing.Tuple[int, float, str, typing.List[…) [prefix=4[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-31300
+3:  [prefix=2[:52], suffix_length=51, type=FUNCTION] ->
+4: search_long_suffix_length [type=MODULE] -> search_long_suffix_length.html
 (EntryType.PAGE, CssClass.SUCCESS, 'page'),
 (EntryType.MODULE, CssClass.PRIMARY, 'module'),
 (EntryType.CLASS, CssClass.PRIMARY, 'class'),

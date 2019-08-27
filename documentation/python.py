@@ -1178,9 +1178,12 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 result.prefix = entry.path[:-1]
                 result.name = entry.path[-1]
                 result.params = []
-                for i in range(len(out.params)):
-                    param = out.params[i]
-                    result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, arg_types[i])) if arg_types[i] else param.name]
+                # If there's more than one overload, add the params as well to
+                # disambiguate
+                if len(funcs) != 1:
+                    for i in range(len(out.params)):
+                        param = out.params[i]
+                        result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, arg_types[i])) if arg_types[i] else param.name]
                 state.search += [result]
 
             overloads += [out]
