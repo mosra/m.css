@@ -1208,7 +1208,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                         positional_only = False
                         break
 
-            arg_types = []
+            param_types = []
             signature = []
             for i, arg in enumerate(args):
                 name, type, type_link, default = arg
@@ -1217,11 +1217,11 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 # Don't include redundant type for the self argument
                 if i == 0 and name == 'self':
                     param.type, param.type_link = None, None
-                    arg_types += [None]
+                    param_types += [None]
                     signature += ['self']
                 else:
                     param.type, param.type_link = type, type_link
-                    arg_types += [type]
+                    param_types += [type]
                     signature += ['{}: {}'.format(name, type)]
                 if default:
                     # If the type is a registered enum, try to make a link to
@@ -1251,7 +1251,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
 
             # Format the anchor. Pybind11 functions are sometimes overloaded,
             # thus name alone is not enough.
-            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + arg_types)
+            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + param_types)
 
             # Get summary and details. Passing the signature as well, so
             # different overloads can (but don't need to) have different docs.
@@ -1853,6 +1853,7 @@ def render_doc(state: State, filename):
         docutils.utils.assemble_option_dict = _docutils_assemble_option_dict
 
         publish_rst(state, f.read())
+
         docutils.utils.extract_options = prev_extract_options
         docutils.utils.assemble_option_dict = prev_assemble_option_dict
 
