@@ -44,7 +44,8 @@ from docutils.parsers.rst.states import Inliner
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 import m.htmlsanity
 
-referer_path = []
+# All those initialized in register() or register_mcss()
+current_referer_path = None
 module_doc_output = None
 class_doc_output = None
 enum_doc_output = None
@@ -236,7 +237,8 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     # Add prefixes of the referer path to the global prefix list, iterate
     # through all of them, with names "closest" to the referer having a
     # priority and try to find the name
-    global intersphinx_inventory, intersphinx_name_prefixes
+    global current_referer_path, intersphinx_inventory, intersphinx_name_prefixes
+    referer_path = current_referer_path[-1] if current_referer_path else []
     prefixes = ['.'.join(referer_path[:len(referer_path) - i]) + '.' for i, _ in enumerate(referer_path)] + intersphinx_name_prefixes
     for prefix in prefixes:
         found = None
@@ -304,6 +306,19 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
 
+def scope_enter(path, **kwargs):
+    global current_referer_path
+    current_referer_path += [path]
+
+def scope_exit(path, **kwargs):
+    global current_referer_path
+    assert current_referer_path[-1] == path, "%s %s" % (current_referer_path, path)
+    current_referer_path = current_referer_path[:-1]
+
+def check_scope_stack_empty(**kwargs):
+    global current_referer_path
+    assert not current_referer_path
+
 def consume_docstring(type, path: List[str], signature: Optional[str], doc: str) -> str:
     # Create the directive header based on type
     if type.name == 'MODULE':
@@ -368,10 +383,6 @@ def consume_docstring(type, path: List[str], signature: Optional[str], doc: str)
     doc_output = doc_output[path_signature_str]
     if doc_output.get('summary') is None: doc_output['summary'] = ''
     if doc_output.get('content') is None: doc_output['content'] = ''
-
-def remember_referer_path(path):
-    global referer_path
-    referer_path = path
 
 def merge_inventories(name_map, **kwargs):
     global intersphinx_inventory
@@ -462,8 +473,9 @@ def merge_inventories(name_map, **kwargs):
                     f.write(compressor.compress('{} {} 2 {} {}\n'.format(path, type_, url, title).encode('utf-8')))
             f.write(compressor.flush())
 
-def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_docstring, hooks_pre_page, **kwargs):
-    global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output, inventory_filename
+def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_scope, hooks_post_scope, hooks_docstring, hooks_post_run, **kwargs):
+    global current_referer_path, module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output, inventory_filename
+    current_referer_path = []
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
     enum_doc_output = enum_doc_contents
@@ -484,10 +496,13 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
 
     rst.roles.register_local_role('ref', ref)
 
+    hooks_pre_scope += [scope_enter]
+    hooks_post_scope += [scope_exit]
     if mcss_settings.get('M_SPHINX_PARSE_DOCSTRINGS', False):
         hooks_docstring += [consume_docstring]
-    hooks_pre_page += [remember_referer_path]
     hooks_post_crawl += [merge_inventories]
+    # Just a sanity check
+    hooks_post_run += [check_scope_stack_empty]
 
 def _pelican_configure(pelicanobj):
     # For backwards compatibility, the input directory is pelican's CWD

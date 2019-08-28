@@ -3,8 +3,13 @@
 .. role:: label-info
     :class: m-label m-info
 
+.. The actual correctness of relative references is tested in
+    inspect_type_links in order to test both absolute -> relative and
+    relative -> absolute direction at the same place. Here it's just verifying
+    that scopes are correctly propagated to all places where it matters.
+
 .. py:module:: content
-    :summary: This overwrites the docstring for ``content``.
+    :summary: This overwrites the docstring for :ref:`content`.
 
     This is detailed module docs. I kinda *hate* how it needs to be indented,
     tho.
@@ -17,7 +22,7 @@
     :summary: This submodule has an external summary.
 
 .. py:class:: content.Class
-    :summary: This overwrites the docstring for ``content.Class``.
+    :summary: This overwrites the docstring for :ref:`Class`.
 
     This is detailed class docs. Here I *also* hate how it needs to be
     indented.
@@ -35,8 +40,8 @@
     A dunder method shown in the detailed view.
 
 .. py:function:: content.Class.method
-    :summary: This overwrites the docstring for ``content.Class.method``, but
-        doesn't add any detailed block.
+    :summary: This overwrites the docstring for :ref:`method()`, but doesn't
+        add any detailed block.
 
 .. py:function:: content.Class.method_with_details
 
@@ -49,11 +54,11 @@
     The ``self`` isn't documented and thus also not included in the list.
 
 .. py:property:: content.Class.a_property
-    :summary: This overwrites the docstring for ``content.Class.a_property``,
-        but doesn't add any detailed block.
+    :summary: This overwrites the docstring for :ref:`a_property`, but doesn't
+        add any detailed block.
 
 .. py:property:: content.Class.a_property_with_details
-    :summary: This overwrites the docstring for ``content.Class.a_property_with_details``.
+    :summary: This overwrites the docstring for :ref:`a_property_with_details`.
 
     Detailed property docs.
 
@@ -63,26 +68,27 @@
 
 .. py:data:: content.Class.DATA_WITH_DETAILS
 
-    Detailed docs for ``data`` in a class to check rendering.
+    Detailed docs for :ref:`DATA_WITH_DETAILS` in a class to check
+    rendering.
 
 .. py:class:: content.ClassWithSummary
 
     This class has external details but summary from the docstring.
 
 .. py:enum:: content.Enum
-    :summary: This overwrites the docstring for ``content.Enum``, but
-        doesn't add any detailed block.
+    :summary: This overwrites the docstring for :ref:`Enum`, but doesn't
+        add any detailed block.
 
 .. py:enum:: content.EnumWithSummary
 
-    And this is detailed docs added to the docstring summary.
+    And this is detailed docs added to the docstring summary. :ref:`VALUE`!!
 
 .. py:function:: content.foo
-    :summary: This overwrites the docstring for ``content.foo``, but
-        doesn't add any detailed block.
+    :summary: This overwrites the docstring for :ref:`foo()`, but doesn't
+        add any detailed block.
 
 .. py:function:: content.foo_with_details
-    :summary: This overwrites the docstring for ``content.foo_with_details()``.
+    :summary: This overwrites the docstring for :ref:`foo_with_details()`.
 
     .. container:: m-note m-info
 
@@ -111,10 +117,10 @@
     :param b: Second
 
 .. py:data:: content.CONSTANT
-    :summary: This is finally a docstring for ``content.CONSTANT``
+    :summary: This is finally a docstring for :ref:`CONSTANT`
 
 .. py:data:: content.DATA_WITH_DETAILS
-    :summary: This is finally a docstring for ``content.DATA_WITH_DETAILS``
+    :summary: This is finally a docstring for :ref:`DATA_WITH_DETAILS`
 
     Detailed docs for the data. **YAY.**
 

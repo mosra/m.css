@@ -185,6 +185,8 @@ class State:
 
         self.hooks_post_crawl: List = []
         self.hooks_docstring: List = []
+        self.hooks_pre_scope: List = []
+        self.hooks_post_scope: List = []
         self.hooks_pre_page: List = []
         self.hooks_post_run: List = []
 
@@ -1039,22 +1041,44 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
 def extract_module_doc(state: State, entry: Empty):
     assert inspect.ismodule(entry.object)
 
+    # Call all scope enter hooks first
+    for hook in state.hooks_pre_scope:
+        hook(type=entry.type, path=entry.path)
+
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
     out.summary = extract_docs(state, state.module_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
+
+    # Call all scope exit hooks last
+    for hook in state.hooks_post_scope:
+        hook(type=entry.type, path=entry.path)
+
     return out
 
 def extract_class_doc(state: State, entry: Empty):
     assert inspect.isclass(entry.object)
 
+    # Call all scope enter hooks first
+    for hook in state.hooks_pre_scope:
+        hook(type=entry.type, path=entry.path)
+
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
     out.summary = extract_docs(state, state.class_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
+
+    # Call all scope exit hooks last
+    for hook in state.hooks_post_scope:
+        hook(type=entry.type, path=entry.path)
+
     return out
 
 def extract_enum_doc(state: State, entry: Empty):
+    # Call all scope enter hooks first
+    for hook in state.hooks_pre_scope:
+        hook(type=entry.type, path=entry.path)
+
     out = Empty()
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.ENUM, entry.path[-1:])
@@ -1134,6 +1158,10 @@ def extract_enum_doc(state: State, entry: Empty):
             result.name = value.name
             state.search += [result]
 
+    # Call all scope exit hooks last
+    for hook in state.hooks_post_scope:
+        hook(type=entry.type, path=entry.path)
+
     return out
 
 def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
@@ -1208,12 +1236,14 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                         positional_only = False
                         break
 
+            param_names = []
             param_types = []
             signature = []
             for i, arg in enumerate(args):
                 name, type, type_link, default = arg
                 param = Empty()
                 param.name = name
+                param_names += [name]
                 # Don't include redundant type for the self argument
                 if i == 0 and name == 'self':
                     param.type, param.type_link = None, None
@@ -1253,10 +1283,18 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             # thus name alone is not enough.
             out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + param_types)
 
+            # Call all scope enter hooks for this particular overload
+            for hook in state.hooks_pre_scope:
+                hook(type=entry.type, path=entry.path, param_names=param_names)
+
             # Get summary and details. Passing the signature as well, so
             # different overloads can (but don't need to) have different docs.
             out.summary, out.content = extract_docs(state, state.function_docs, entry.type, entry.path, summary, signature='({})'.format(', '.join(signature)))
             if out.content: out.has_details = True
+
+            # Call all scope exit hooks for this particular overload
+            for hook in state.hooks_post_scope:
+                hook(type=entry.type, path=entry.path, param_names=param_names)
 
             overloads += [out]
 
@@ -1267,8 +1305,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
         out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, entry.path[-1:])
         out.params = []
         out.has_complex_params = False
-        out.summary, out.content = extract_docs(state, state.function_docs, entry.type, entry.path, entry.object.__doc__)
-        out.has_details = bool(out.content)
+        out.has_details = False
 
         # Decide if classmethod or staticmethod in case this is a method
         if inspect.isclass(parent):
@@ -1288,9 +1325,11 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 out.type, out.type_link = extract_annotation(state, entry.path, type_hints['return'])
             else:
                 out.type, out.type_link = extract_annotation(state, entry.path, signature.return_annotation)
+            param_names = []
             for i in signature.parameters.values():
                 param = Empty()
                 param.name = i.name
+                param_names += [i.name]
                 if i.name in type_hints:
                     param.type, param.type_link = extract_annotation(state, entry.path, type_hints[i.name])
                 else:
@@ -1314,6 +1353,20 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             param.type, param.type_link = None, None
             out.params = [param]
             out.type, out.type_link = None, None
+            param_names = []
+
+        # Call all scope enter hooks
+        for hook in state.hooks_pre_scope:
+            hook(type=entry.type, path=entry.path, param_names=param_names)
+
+        # Get summary and details
+        # TODO: pass signature as well once @overload becomes a thing
+        out.summary, out.content = extract_docs(state, state.function_docs, entry.type, entry.path, entry.object.__doc__)
+        if out.content: out.has_details = True
+
+        # Call all scope exit hooks
+        for hook in state.hooks_post_scope:
+            hook(type=entry.type, path=entry.path, param_names=param_names)
 
         overloads = [out]
 
@@ -1321,6 +1374,11 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     path_str = '.'.join(entry.path)
     for out in overloads:
         signature = '({})'.format(', '.join(['{}: {}'.format(param.name, param.type) if param.type else param.name for param in out.params]))
+        param_names = [param.name for param in out.params]
+
+        # Call all scope enter hooks for this particular overload
+        for hook in state.hooks_pre_scope:
+            hook(type=entry.type, path=entry.path, param_names=param_names)
 
         # Get docs for each param and for the return value. Try this
         # particular overload first, if not found then fall back to generic
@@ -1363,6 +1421,10 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     logging.error("Failed to process return doc for %s, ignoring:\n%s", path_str, prettify_multiline_error(function_docs['return']))
                     out.return_value = ''
                 out.has_details = True
+
+        # Call all scope exit hooks for this particular overload
+        for hook in state.hooks_post_scope:
+            hook(type=entry.type, path=entry.path, param_names=param_names)
 
         if not state.config['SEARCH_DISABLED']:
             result = Empty()
@@ -1432,6 +1494,10 @@ def extract_property_doc(state: State, parent, entry: Empty):
         out.type = None
         return out
 
+    # Call all scope enter hooks before rendering the docs
+    for hook in state.hooks_pre_scope:
+        hook(type=entry.type, path=entry.path)
+
     out.is_gettable = entry.object.fget is not None
     if entry.object.fget or (entry.object.fset and entry.object.__doc__):
         docstring = entry.object.__doc__
@@ -1442,6 +1508,10 @@ def extract_property_doc(state: State, parent, entry: Empty):
     out.is_settable = entry.object.fset is not None
     out.is_deletable = entry.object.fdel is not None
     out.has_details = bool(out.content)
+
+    # Call all scope exit hooks after rendering the docs
+    for hook in state.hooks_post_scope:
+        hook(type=entry.type, path=entry.path)
 
     # For the type, if the property is gettable, get it from getters's return
     # type. For write-only properties get it from setter's second argument
@@ -1508,12 +1578,20 @@ def extract_property_doc(state: State, parent, entry: Empty):
 def extract_data_doc(state: State, parent, entry: Empty):
     assert not inspect.ismodule(entry.object) and not inspect.isclass(entry.object) and not inspect.isroutine(entry.object) and not inspect.isframe(entry.object) and not inspect.istraceback(entry.object) and not inspect.iscode(entry.object)
 
+    # Call all scope enter hooks before rendering the docs
+    for hook in state.hooks_pre_scope:
+        hook(type=entry.type, path=entry.path)
+
     out = Empty()
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.DATA, entry.path[-1:])
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
     out.summary, out.content = extract_docs(state, state.data_docs, entry.type, entry.path, '')
     out.has_details = bool(out.content)
+
+    # Call all scope exit hooks after rendering the docs
+    for hook in state.hooks_post_scope:
+        hook(type=entry.type, path=entry.path)
 
     # First try to get fully dereferenced type hints (with strings converted to
     # actual annotations). If that fails (e.g. because a type doesn't exist),
@@ -1553,6 +1631,10 @@ def render(config, template: str, page, env: jinja2.Environment):
         f.write(b'\n')
 
 def render_module(state: State, path, module, env):
+    # Call all scope enter hooks first
+    for hook in state.hooks_pre_scope:
+        hook(type=EntryType.MODULE, path=path)
+
     # Generate breadcrumb as the first thing as it generates the output
     # filename as a side effect
     breadcrumb = []
@@ -1565,8 +1647,7 @@ def render_module(state: State, path, module, env):
     logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
-    for hook in state.hooks_pre_page:
-        hook(path=path)
+    for hook in state.hooks_pre_page: hook()
 
     page = Empty()
     page.summary, page.content = extract_docs(state, state.module_docs, EntryType.MODULE, path, module.__doc__)
@@ -1626,7 +1707,15 @@ def render_module(state: State, path, module, env):
 
     render(state.config, 'module.html', page, env)
 
+    # Call all scope exit hooks last
+    for hook in state.hooks_post_scope:
+        hook(type=EntryType.MODULE, path=path)
+
 def render_class(state: State, path, class_, env):
+    # Call all scope enter hooks first
+    for hook in state.hooks_pre_scope:
+        hook(type=EntryType.CLASS, path=path)
+
     # Generate breadcrumb as the first thing as it generates the output
     # filename as a side effect. It's a bit hairy because we need to figure out
     # proper entry type for the URL formatter for each part of the breadcrumb.
@@ -1641,8 +1730,7 @@ def render_class(state: State, path, class_, env):
     logging.debug("generating %s", filename)
 
     # Call all registered page begin hooks
-    for hook in state.hooks_pre_page:
-        hook(path=path)
+    for hook in state.hooks_pre_page: hook()
 
     page = Empty()
     page.summary, page.content = extract_docs(state, state.class_docs, EntryType.CLASS, path, class_.__doc__)
@@ -1714,6 +1802,10 @@ def render_class(state: State, path, class_, env):
         state.search += [result]
 
     render(state.config, 'class.html', page, env)
+
+    # Call all scope exit hooks last
+    for hook in state.hooks_post_scope:
+        hook(type=EntryType.CLASS, path=path)
 
 # Extracts image paths and transforms them to just the filenames
 class ExtractImages(Transform):
@@ -2053,6 +2145,8 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             property_doc_contents=state.property_docs,
             data_doc_contents=state.data_docs,
             hooks_post_crawl=state.hooks_post_crawl,
+            hooks_pre_scope=state.hooks_pre_scope,
+            hooks_post_scope=state.hooks_post_scope,
             hooks_docstring=state.hooks_docstring,
             hooks_pre_page=state.hooks_pre_page,
             hooks_post_run=state.hooks_post_run)

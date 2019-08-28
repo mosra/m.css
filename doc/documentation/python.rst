@@ -769,6 +769,8 @@ Keyword argument            Content
 :py:`property_doc_contents` Property documentation contents
 :py:`data_doc_contents`     Data documentation contents
 :py:`hooks_post_crawl`      Hooks to call after the initial name crawl
+:py:`hooks_scope_enter`     Hooks to call on scope enter
+:py:`hooks_scope_exit`      Hooks to call on scope exit
 :py:`hooks_docstring`       Hooks to call when parsing a docstring
 :py:`hooks_pre_page`        Hooks to call before each page gets rendered
 :py:`hooks_post_run`        Hooks to call at the very end of the script run
@@ -840,16 +842,43 @@ Keyword argument    Content
     added by the plugin *need* to have :py:`object` set to :py:`None` so the
     script as well as other plugins can correctly distinguish them.
 
-Hooks listed in :py:`hooks_docstring` are called when docstrings are parsed.
-The first gets the raw docstring only processed by :py:`inspect.cleandoc()` and
-each following gets the output of the previous. When a hook returns an empty
-string, hooks later in the list are not called. String returned by the last
-hook is processed, if any, the same way as if no hooks would be present --- it
-gets partitioned into summary and content and those put to the output as-is,
-each paragraph wrapped in :html:`<p>` tags. The hooks are free to do anything
-with the docstring --- extracting metadata from it and returning it as-is,
-transpiling it from one markup language to another, or fully consuming it,
-populating the ``*_doc_contents`` variables mentioned above and returning
+The :py:`hooks_pre_scope` and :py:`hooks_post_scope` get called before entering
+and after leaving a name scope, and are meant mainly to aid with
+context-sensitive linking. Those scopes can be nested and can be called
+successively for the same scope --- for example, when rendering module docs,
+:py:`hooks_pre_scope` gets called first for the module scope, but then another
+:py:`hooks_pre_scope` gets called when rendering a summary for reference to an
+inner class. Then, :py:`hooks_post_scope` gets called in reverse order. The
+plugins are expected to implement a stack-like data structure for maintaining
+information about current scope. Both of those functions get passed the
+following arguments:
+
+.. class:: m-table
+
+=================== ===========================================================
+Keyword argument    Content
+=================== ===========================================================
+:py:`type`          Type of the scope that's being entered or exited. Same as
+                    the enum passed to `custom URL formatters`_.
+:py:`path`          Path of the module / class / function / enum / enum value /
+                    data scope that's being entered or exited. A list of names,
+                    :py:`'.'.join(path)` is equivalent to the fully qualified
+                    name.
+:py:`param_names`   In case of functions, list of parameter names. This
+                    argument is not present otherwise.
+=================== ===========================================================
+
+Hooks listed in :py:`hooks_docstring` are called when docstrings are parsed,
+and always preceded by a corresponding :py:`hooks_pre_scope` call. The first
+listed hook gets the raw docstring only processed by :py:`inspect.cleandoc()`
+and each following gets the output of the previous. When a hook returns an
+empty string, hooks later in the list are not called. String returned by the
+last hook is processed, if any, the same way as if no hooks would be present
+--- it gets partitioned into summary and content and those put to the output
+as-is, each paragraph wrapped in :html:`<p>` tags. The hooks are free to do
+anything with the docstring --- extracting metadata from it and returning it
+as-is, transpiling it from one markup language to another, or fully consuming
+it, populating the ``*_doc_contents`` variables mentioned above and returning
 nothing back. Each hook gets passed the following arguments:
 
 .. class:: m-table
@@ -872,22 +901,8 @@ Keyword argument    Content
 
 The :py:`hooks_pre_page` is called before each page of output gets rendered.
 Can be used for example for resetting some internal counter for page-wide
-unique element IDs. It gets passed the following arguments:
-
-.. class:: m-table
-
-=================== ===========================================================
-Keyword argument    Content
-=================== ===========================================================
-:py:`path`          Path of the module/class/page to render. A list of names,
-                    for modules and classes :py:`'.'.join(path)` is equivalent
-                    to the fully qualified name. Useful to provide
-                    context-sensitive linking capabilities.
-=================== ===========================================================
-
-The :py:`hooks_post_run` is called after the whole run is done, useful for
-example to serialize cached internal state. Currently, this function get no
-arguments passed.
+unique element IDs. The :py:`hooks_post_run` is called after the whole run is
+done, useful for example to serialize cached internal state. Currently, those two functions get no arguments passed.
 
 Registration function for a plugin that needs to query the :py:`OUTPUT` setting
 might look like this --- the remaining keyword arguments will collapse into

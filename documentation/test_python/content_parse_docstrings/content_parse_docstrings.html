@@ -22,7 +22,7 @@
         <h1>
           content_parse_docstrings <span class="m-thin">module</span>
         </h1>
-        <p>This module has a <em>serious</em> docstring.</p>
+        <p>This module has a <em>serious</em> docstring. And a <a class="m-doc" href="content_parse_docstrings.Class.html">Class</a>.</p>
         <div class="m-block m-default">
           <h3>Contents</h3>
           <ul>
@@ -42,7 +42,8 @@
           <dl class="m-doc">
             <dt>class <a href="content_parse_docstrings.Class.html" class="m-doc">Class</a></dt>
             <dd>This class has a <em>serious</em> docstring.
-With a multi-line summary.</dd>
+With a multi-line summary. Relative reference to <a class="m-doc" href="content_parse_docstrings.Class.html#a_property">a_property</a> works
+even from a summary.</dd>
           </dl>
         </section>
         <section id="enums">
@@ -51,7 +52,7 @@ With a multi-line summary.</dd>
             <dt>
               <span class="m-doc-wrap-bumper">class <a href="#Enum" class="m-doc">Enum</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#Enum-VALUE" class="m-doc">VALUE</a> = 3</span>
             </dt>
-            <dd>This enum has a <em>serious</em> docstring.</dd>
+            <dd>This enum has a <em>serious</em> docstring. <a class="m-doc" href="content_parse_docstrings.html#Enum-VALUE">VALUE</a> works from a summary.</dd>
           </dl>
         </section>
         <section id="functions">
@@ -65,7 +66,7 @@ With a multi-line summary.</dd>
               <span class="m-doc-wrap-bumper">def <a href="#function" class="m-doc">function</a>(</span><span class="m-doc-wrap">a: str,
               b: int) -&gt; float</span>
             </dt>
-            <dd>This function has a <em>serious</em> docstring.</dd>
+            <dd>This <a class="m-doc" href="content_parse_docstrings.html#function">function()</a> has a <em>serious</em> docstring.</dd>
             <dt id="summary_only">
               <span class="m-doc-wrap-bumper">def <a href="#summary_only" class="m-doc-self">summary_only</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
@@ -82,7 +83,7 @@ With a multi-line summary.</dd>
             <h3>
               class content_parse_docstrings.<wbr /><a href="#Enum" class="m-doc-self">Enum</a>(enum.Enum)
             </h3>
-            <p>This enum has a <em>serious</em> docstring.</p>
+            <p>This enum has a <em>serious</em> docstring. <a class="m-doc" href="content_parse_docstrings.html#Enum-VALUE">VALUE</a> works from a summary.</p>
             <table class="m-table m-fullwidth m-flat m-doc">
               <thead><tr><th style="width: 1%">Enumerators</th><th></th></tr></thead>
               <tbody>
@@ -104,7 +105,7 @@ With a multi-line summary.</dd>
               <span class="m-doc-wrap-bumper">def content_parse_docstrings.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#function" class="m-doc-self">function</a>(</span><span class="m-doc-wrap">a: str,
               b: int) -&gt; float</span></span>
             </h3>
-            <p>This function has a <em>serious</em> docstring.</p>
+            <p>This <a class="m-doc" href="content_parse_docstrings.html#function">function()</a> has a <em>serious</em> docstring.</p>
             <table class="m-table m-fullwidth m-flat">
               <thead>
                 <tr><th colspan="2">Parameters</th></tr>
@@ -112,7 +113,7 @@ With a multi-line summary.</dd>
               <tbody>
                 <tr>
                   <td style="width: 1%">a</td>
-                  <td>And parameter docs.
+                  <td>And parameter docs, referring to <a class="m-doc" href="content_parse_docstrings.html#function">function()</a> as well.
 On multiple lines.</td>
                 </tr>
                 <tr>
@@ -123,7 +124,7 @@ On multiple lines.</td>
               <tfoot>
                 <tr>
                   <th>Returns</th>
-                  <td>This too.</td>
+                  <td>This too. In the <a class="m-doc" href="content_parse_docstrings.html#function">function()</a>.</td>
                 </tr>
               </tfoot>
             </table>
