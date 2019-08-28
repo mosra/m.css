@@ -13,6 +13,9 @@
 
     And adds detailed docs.
 
+.. py:module:: content.submodule
+    :summary: This submodule has an external summary.
+
 .. py:class:: content.Class
     :summary: This overwrites the docstring for ``content.Class``.
 

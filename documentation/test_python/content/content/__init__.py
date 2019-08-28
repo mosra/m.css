@@ -1,7 +1,7 @@
 """Yes so this is module summary, not shown in the output"""
 
 import enum
-from . import docstring_summary
+from . import docstring_summary, submodule
 
 class Class:
     """And this class summary, not shown either"""
