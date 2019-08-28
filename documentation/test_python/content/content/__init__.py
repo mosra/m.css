@@ -43,6 +43,11 @@ class Class:
 class ClassWithSummary:
     """This class has summary from the docstring"""
 
+class ClassWithSlots:
+    """This class has slots and those have to be documented externally"""
+
+    __slots__ = ['hello', 'this_is_a_slot']
+
 class Enum(enum.Enum):
     """This summary gets ignored"""
 

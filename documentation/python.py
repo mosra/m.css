@@ -1460,8 +1460,18 @@ def extract_property_doc(state: State, parent, entry: Empty):
         out.is_gettable = True
         out.is_settable = True
         out.is_deletable = True
+
+        # Call all scope enter hooks before rendering the docs
+        for hook in state.hooks_pre_scope:
+            hook(type=entry.type, path=entry.path)
+
         # Unfortunately we can't get any docstring for these
         out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, '')
+
+        # Call all scope exit hooks after rendering the docs
+        for hook in state.hooks_post_scope:
+            hook(type=entry.type, path=entry.path)
+
         out.has_details = bool(out.content)
 
         # First try to get fully dereferenced type hints (with strings

@@ -75,6 +75,12 @@
 
     This class has external details but summary from the docstring.
 
+.. py:property:: content.ClassWithSlots.hello
+    :summary: This is a slot, another is :ref:`this_is_a_slot`
+
+.. py:property:: content.ClassWithSlots.this_is_a_slot
+    :summary: This the **other one**.
+
 .. py:enum:: content.Enum
     :summary: This overwrites the docstring for :ref:`Enum`, but doesn't
         add any detailed block.
