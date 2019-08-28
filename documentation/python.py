@@ -1025,7 +1025,7 @@ def extract_module_doc(state: State, entry: Empty):
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
-    out.summary = extract_docs(state, state.class_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
+    out.summary = extract_docs(state, state.module_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
     return out
 
 def extract_class_doc(state: State, entry: Empty):
