@@ -28,16 +28,21 @@ import argparse
 import logging
 import os
 import re
+import sys
 from types import SimpleNamespace as Empty
-from typing import Dict
+from typing import Dict, List, Optional
 from urllib.parse import urljoin
 import zlib
 
+import docutils
 from docutils import nodes, utils
 from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 from docutils.parsers.rst.states import Inliner
+
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+import m.htmlsanity
 
 referer_path = []
 module_doc_output = None
@@ -299,6 +304,71 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
 
+def consume_docstring(type, path: List[str], signature: Optional[str], doc: str) -> str:
+    # Create the directive header based on type
+    if type.name == 'MODULE':
+        source = '.. py:module:: '
+        doc_output = module_doc_output
+    elif type.name == 'CLASS':
+        source = '.. py:class:: '
+        doc_output = class_doc_output
+    elif type.name == 'ENUM': # TODO: enum values?
+        source = '.. py:enum:: '
+        doc_output = enum_doc_output
+    elif type.name in ['FUNCTION', 'OVERLOADED_FUNCTION']:
+        source = '.. py:function:: '
+        doc_output = function_doc_output
+    elif type.name == 'PROPERTY':
+        source = '.. py:property:: '
+        doc_output = property_doc_output
+    else:
+        # Data don't have docstrings, you silly
+        assert type.name != 'DATA'
+        # Ignore unknown types, pass the docs through
+        return doc
+
+    # Add path and signature to the header
+    path_signature_str = '.'.join(path) + (signature if signature else '')
+    source += path_signature_str + '\n'
+
+    # Assuming first paragraph is summary, turn it into a :summary: directive
+    # option with successive lines indented
+    summary, _, doc = doc.partition('\n\n')
+    source += '    :summary: {}\n'.format(summary.replace('\n', '\n        '))
+
+    # The next paragraph could be option list. If that's so, indent those as
+    # well, append
+    if doc.startswith(':'):
+        options, _, doc = doc.partition('\n\n')
+        source += '    {}\n\n'.format(options.replace('\n', '\n    '))
+    else:
+        source += '\n'
+
+    # The rest (if any) is content. Indent as well.
+    source += '    {}\n'.format(doc.replace('\n', '\n    '))
+
+    # Unleash docutils on this piece. It will call into the proper directive
+    # and do the thing. Ignore the output as there shouldn't be anything left.
+    pub = docutils.core.Publisher(
+        writer=m.htmlsanity.SaneHtmlWriter(),
+        source_class=docutils.io.StringInput,
+        destination_class=docutils.io.StringOutput)
+    pub.set_components('standalone', 'restructuredtext', 'html')
+    pub.writer.translator_class = m.htmlsanity.SaneHtmlTranslator
+    pub.process_programmatic_settings(None, m.htmlsanity.docutils_settings, None)
+    # Docutils uses a deprecated U mode for opening files, so instead of
+    # monkey-patching docutils.io.FileInput to not do that (like Pelican does),
+    # I just read the thing myself.
+    # TODO it *somehow* needs to supply the original docstring filename and
+    # line range to it for better error reporting, this is too awful
+    pub.set_source(source=source)
+    pub.publish()
+
+    # Because there's no fallback to a docstring, mark everything as non-None
+    doc_output = doc_output[path_signature_str]
+    if doc_output.get('summary') is None: doc_output['summary'] = ''
+    if doc_output.get('content') is None: doc_output['content'] = ''
+
 def remember_referer_path(path):
     global referer_path
     referer_path = path
@@ -392,7 +462,7 @@ def merge_inventories(name_map, **kwargs):
                     f.write(compressor.compress('{} {} 2 {} {}\n'.format(path, type_, url, title).encode('utf-8')))
             f.write(compressor.flush())
 
-def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_page, **kwargs):
+def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_docstring, hooks_pre_page, **kwargs):
     global module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output, inventory_filename
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
@@ -414,6 +484,8 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
 
     rst.roles.register_local_role('ref', ref)
 
+    if mcss_settings.get('M_SPHINX_PARSE_DOCSTRINGS', False):
+        hooks_docstring += [consume_docstring]
     hooks_pre_page += [remember_referer_path]
     hooks_post_crawl += [merge_inventories]
 

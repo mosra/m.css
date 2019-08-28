@@ -40,12 +40,16 @@ class FancyLine(rst.Directive):
         return [node]
 
 post_crawl_call_count = 0
+docstring_call_count = 0
 pre_page_call_count = 0
 post_run_call_count = 0
 
 def _post_crawl(**kwargs):
     global post_crawl_call_count
     post_crawl_call_count = post_crawl_call_count + 1
+
+def _docstring(**kwargs):
+    docstring_call_count += 1
 
 def _pre_page(**kwargs):
     global pre_page_call_count
@@ -55,8 +59,9 @@ def _post_run(**kwargs):
     global post_run_call_count
     post_run_call_count = post_run_call_count + 1
 
-def register_mcss(hooks_post_crawl, hooks_pre_page, hooks_post_run, **kwargs):
+def register_mcss(hooks_post_crawl, hooks_docstring, hooks_pre_page, hooks_post_run, **kwargs):
     hooks_post_crawl += [_post_crawl]
+    hooks_docstring += [_docstring]
     hooks_pre_page += [_pre_page]
     hooks_post_run += [_post_run]
 

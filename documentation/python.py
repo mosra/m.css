@@ -184,6 +184,7 @@ class State:
         self.external_data: Set[str] = set()
 
         self.hooks_post_crawl: List = []
+        self.hooks_docstring: List = []
         self.hooks_pre_page: List = []
         self.hooks_post_run: List = []
 
@@ -790,7 +791,7 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     else:
         return None
 
-def extract_docs(state: State, external_docs, path: List[str], doc: str, *, signature=None, summary_only=False) -> Tuple[str, str]:
+def extract_docs(state: State, external_docs, type: EntryType, path: List[str], doc: str, *, signature=None, summary_only=False) -> Tuple[str, str]:
     path_str = '.'.join(path)
     # If function signature is supplied, try that first
     if signature and path_str + signature in external_docs:
@@ -813,22 +814,72 @@ def extract_docs(state: State, external_docs, path: List[str], doc: str, *, sign
     # later.
     if external_doc_entry.get('summary') is None or external_doc_entry.get('content') is None:
         # some modules (xml.etree) have None as a docstring :(
-        summary, _, content = inspect.cleandoc(doc or '').partition('\n\n')
+        doc = inspect.cleandoc(doc or '').strip()
 
-        # Turn both into a raw HTML block so it doesn't get further processed
-        # by reST. For the content, wrap each paragraph in <p> so it looks
-        # acceptable in the output.
-        if summary:
-            summary = html.escape(summary)
-            summary = ".. raw:: html\n\n    " + summary.replace('\n', '\n    ')
-        if content:
-            content = '\n'.join(['<p>{}</p>'.format(p) for p in html.escape(content).split('\n\n')])
-            content = ".. raw:: html\n\n    " + content.replace('\n', '\n    ')
+        if doc:
+            # Do the same as in render_doc() to support directives with
+            # multi-word field names and duplicate fields, restore the original
+            # implementations again after.
+            prev_extract_options = docutils.utils.extract_options
+            prev_assemble_option_dict = docutils.utils.assemble_option_dict
+            docutils.utils.extract_options = _docutils_extract_options
+            docutils.utils.assemble_option_dict = _docutils_assemble_option_dict
 
-        if external_doc_entry.get('summary') is None:
-            external_doc_entry['summary'] = summary
-        if external_doc_entry.get('content') is None:
-            external_doc_entry['content'] = content
+            # Go through all registered docstring hooks and let them process
+            # this one after another; stopping once there's nothing left. If
+            # nothing left, the populated entries should be non-None.
+            for hook in state.hooks_docstring:
+                doc = hook(
+                    type=type,
+                    path=path,
+                    signature=signature,
+                    doc=doc)
+
+                # The hook could have replaced the entry with a new dict
+                # instance, fetch it again to avoid looking at stale data below
+                external_doc_entry = external_docs[path_signature_str]
+
+                if not doc:
+                    # Assuming the doc were non-empty on input, if those are
+                    # empty on output, the hook should be filling both summary
+                    # and content to non-None values (so, in the worst case,
+                    # an empty string)
+                    assert external_doc_entry['summary'] is not None
+                    assert external_doc_entry['content'] is not None
+                    break
+
+            # If there's still something left after the hooks (or there are no
+            # hooks), process it as a plain unformatted text.
+            else:
+                summary, _, content = doc.partition('\n\n')
+
+                # Turn both into a raw HTML block so it doesn't get further
+                # processed by reST. For the content, wrap each paragraph in
+                # <p> so it looks acceptable in the output.
+                if summary:
+                    summary = html.escape(summary)
+                    summary = ".. raw:: html\n\n    " + summary.replace('\n', '\n    ')
+                if content:
+                    content = '\n'.join(['<p>{}</p>'.format(p) for p in html.escape(content).split('\n\n')])
+                    content = ".. raw:: html\n\n    " + content.replace('\n', '\n    ')
+
+                if external_doc_entry.get('summary') is None:
+                    external_doc_entry['summary'] = summary
+                if external_doc_entry.get('content') is None:
+                    external_doc_entry['content'] = content
+
+            # Restore original implementations again
+            docutils.utils.extract_options = prev_extract_options
+            docutils.utils.assemble_option_dict = prev_assemble_option_dict
+
+        # We ain't got nothing. If there isn't anything supplied externally,
+        # set summary / content to an empty string so this branch isn't entered
+        # again.
+        else:
+            if external_doc_entry.get('summary') is None:
+                external_doc_entry['summary'] = ''
+            if external_doc_entry.get('content') is None:
+                external_doc_entry['content'] = ''
 
     # Render. This can't be done just once and then cached because e.g. math
     # rendering needs to ensure each SVG formula has unique IDs on each page.
@@ -974,7 +1025,7 @@ def extract_module_doc(state: State, entry: Empty):
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
-    out.summary = extract_docs(state, state.class_docs, entry.path, entry.object.__doc__, summary_only=True)
+    out.summary = extract_docs(state, state.class_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
     return out
 
 def extract_class_doc(state: State, entry: Empty):
@@ -983,7 +1034,7 @@ def extract_class_doc(state: State, entry: Empty):
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
-    out.summary = extract_docs(state, state.class_docs, entry.path, entry.object.__doc__, summary_only=True)
+    out.summary = extract_docs(state, state.class_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
     return out
 
 def extract_enum_doc(state: State, entry: Empty):
@@ -1000,7 +1051,7 @@ def extract_enum_doc(state: State, entry: Empty):
             docstring = ''
         else:
             docstring = entry.object.__doc__
-        out.summary, out.content = extract_docs(state, state.enum_docs, entry.path, docstring)
+        out.summary, out.content = extract_docs(state, state.enum_docs, entry.type, entry.path, docstring)
         out.has_details = bool(out.content)
 
         out.base = extract_type(entry.object.__base__)
@@ -1020,7 +1071,7 @@ def extract_enum_doc(state: State, entry: Empty):
                 docstring = i.__doc__
 
             # TODO: external summary for enum values
-            value.summary = extract_docs(state, {}, [], docstring, summary_only=True)
+            value.summary = extract_docs(state, {}, EntryType.ENUM_VALUE, [], docstring, summary_only=True)
 
             if value.summary:
                 out.has_details = True
@@ -1035,7 +1086,7 @@ def extract_enum_doc(state: State, entry: Empty):
         # that yet and it adds clutter to the output (especially if the values
         # aren't documented), so cut that away
         # TODO: implement this
-        out.summary, out.content = extract_docs(state, state.enum_docs, entry.path, entry.object.__doc__.partition('\n\n')[0])
+        out.summary, out.content = extract_docs(state, state.enum_docs, entry.type, entry.path, entry.object.__doc__.partition('\n\n')[0])
         out.has_details = bool(out.content)
         out.base = None
 
@@ -1187,7 +1238,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
 
             # Get summary and details. Passing the signature as well, so
             # different overloads can (but don't need to) have different docs.
-            out.summary, out.content = extract_docs(state, state.function_docs, entry.path, summary, signature='({})'.format(', '.join(signature)))
+            out.summary, out.content = extract_docs(state, state.function_docs, entry.type, entry.path, summary, signature='({})'.format(', '.join(signature)))
             if out.content: out.has_details = True
 
             overloads += [out]
@@ -1199,7 +1250,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
         out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, entry.path[-1:])
         out.params = []
         out.has_complex_params = False
-        out.summary, out.content = extract_docs(state, state.function_docs, entry.path, entry.object.__doc__)
+        out.summary, out.content = extract_docs(state, state.function_docs, entry.type, entry.path, entry.object.__doc__)
         out.has_details = bool(out.content)
 
         # Decide if classmethod or staticmethod in case this is a method
@@ -1323,7 +1374,7 @@ def extract_property_doc(state: State, parent, entry: Empty):
         out.is_settable = True
         out.is_deletable = True
         # Unfortunately we can't get any docstring for these
-        out.summary, out.content = extract_docs(state, state.property_docs, entry.path, '')
+        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, '')
         out.has_details = bool(out.content)
 
         # First try to get fully dereferenced type hints (with strings
@@ -1351,7 +1402,7 @@ def extract_property_doc(state: State, parent, entry: Empty):
         out.is_settable = False
         out.is_deletable = False
         # Unfortunately we can't get any docstring for these
-        out.summary, out.content = extract_docs(state, state.property_docs, entry.path, '')
+        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, '')
         out.has_details = bool(out.content)
         out.type = None
         return out
@@ -1362,7 +1413,7 @@ def extract_property_doc(state: State, parent, entry: Empty):
     else:
         assert entry.object.fset
         docstring = entry.object.fset.__doc__
-    out.summary, out.content = extract_docs(state, state.property_docs, entry.path, docstring)
+    out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, docstring)
     out.is_settable = entry.object.fset is not None
     out.is_deletable = entry.object.fdel is not None
     out.has_details = bool(out.content)
@@ -1436,7 +1487,7 @@ def extract_data_doc(state: State, parent, entry: Empty):
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.DATA, entry.path[-1:])
     # Welp. https://stackoverflow.com/questions/8820276/docstring-for-variable
-    out.summary, out.content = extract_docs(state, state.data_docs, entry.path, '')
+    out.summary, out.content = extract_docs(state, state.data_docs, entry.type, entry.path, '')
     out.has_details = bool(out.content)
 
     # First try to get fully dereferenced type hints (with strings converted to
@@ -1493,7 +1544,7 @@ def render_module(state: State, path, module, env):
         hook(path=path)
 
     page = Empty()
-    page.summary, page.content = extract_docs(state, state.module_docs, path, module.__doc__)
+    page.summary, page.content = extract_docs(state, state.module_docs, EntryType.MODULE, path, module.__doc__)
     page.filename = filename
     page.url = url
     page.breadcrumb = breadcrumb
@@ -1569,7 +1620,7 @@ def render_class(state: State, path, class_, env):
         hook(path=path)
 
     page = Empty()
-    page.summary, page.content = extract_docs(state, state.class_docs, path, class_.__doc__)
+    page.summary, page.content = extract_docs(state, state.class_docs, EntryType.CLASS, path, class_.__doc__)
     page.filename = filename
     page.url = url
     page.breadcrumb = breadcrumb
@@ -1976,6 +2027,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             property_doc_contents=state.property_docs,
             data_doc_contents=state.data_docs,
             hooks_post_crawl=state.hooks_post_crawl,
+            hooks_docstring=state.hooks_docstring,
             hooks_pre_page=state.hooks_pre_page,
             hooks_post_run=state.hooks_post_run)
 

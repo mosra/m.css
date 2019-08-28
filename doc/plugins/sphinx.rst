@@ -77,6 +77,7 @@ symbols to a file to be linked from elsewhere, see
     PLUGINS += ['m.sphinx']
     M_SPHINX_INVENTORIES = [...]
     M_SPHINX_INVENTORY_OUTPUT = 'objects.inv'
+    M_SPHIMX_PARSE_DOCSTRINGS = False
 
 `Links to external Sphinx documentation`_
 =========================================
@@ -281,11 +282,13 @@ the markup. Example:
     .. py:data:: mymodule.ALMOST_PI
         :summary: :math:`\pi`, but *less precise*.
 
-Compared to docstrings, the :py:`:summary:` is interpreted as
+By default, unlike docstrings, the :py:`:summary:` is interpreted as
 :abbr:`reST <reStructuredText>`, which means you can keep the docstring
 formatting simpler (for display inside IDEs or via the builtin :py:`help()`),
 while supplying an alternative and more complex-formatted summary for the
-actual rendered docs.
+actual rendered docs. It's however possible to enable
+:abbr:`reST <reStructuredText>` parsing for docstrings as well --- see
+`Using parsed docstrings`_ below.
 
 .. note-warning::
 
@@ -332,3 +335,32 @@ Example:
         :summary: Dot product
 
         .. this documentation will be used for all other overloads
+
+`Using parsed docstrings`_
+--------------------------
+
+By default, docstrings are `treated by the Python doc generator as plain text <{filename}/documentation/python.rst#docstrings>`_
+and only externally-supplied docs are parsed. This is done because, for example
+in Python standard library, embedded docstrings are often very terse without
+any markup and full docs are external. If you want the docstrings to be parsed,
+enable the :py:`M_SPHIMX_PARSE_DOCSTRINGS` option. Compared to the directives
+above, there's only one difference --- instead of a :rst:`:summary:` option,
+the first paragraph is taken as a summary, the second paragraph as the option
+list (if it contains option fields) and the rest as documentation content.
+Continuing with the :rst:`.. py:function::` example above, embedded in a
+docstring it would look like this instead:
+
+.. code:: py
+
+    def add(self, key, value, *, overwrite_existing=False):
+        """Add a key/value pair to the container
+
+        :param key:                 Key to add
+        :param value:               Corresponding value
+        :param overwrite_existing:  Overwrite existing value if already present
+            in the container
+        :return:                    The inserted tuple or the existing
+            key/value pair in case ``overwrite_existing`` is not set
+
+        The operation has a :math:`\mathcal{O}(\log{}n)` complexity.
+        """

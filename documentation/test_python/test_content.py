@@ -37,3 +37,12 @@ class Content(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('content.docstring_summary.html'))
         self.assertEqual(*self.actual_expected_contents('content.Class.html'))
         self.assertEqual(*self.actual_expected_contents('content.ClassWithSummary.html'))
+
+class ParseDocstrings(BaseInspectTestCase):
+    def test(self):
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'M_SPHINX_PARSE_DOCSTRINGS': True
+        })
+        self.assertEqual(*self.actual_expected_contents('content_parse_docstrings.html'))
+        self.assertEqual(*self.actual_expected_contents('content_parse_docstrings.Class.html'))

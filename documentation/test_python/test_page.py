@@ -89,5 +89,9 @@ class Plugins(BaseTestCase):
 
         import fancyline
         self.assertEqual(fancyline.post_crawl_call_count, 1)
+
+        # No code, thus no docstrings processed
+        self.assertEqual(fancyline.docstring_call_count, 0)
+
         self.assertEqual(fancyline.pre_page_call_count, 4)
         self.assertEqual(fancyline.post_run_call_count, 1)

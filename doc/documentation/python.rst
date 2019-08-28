@@ -769,6 +769,7 @@ Keyword argument            Content
 :py:`property_doc_contents` Property documentation contents
 :py:`data_doc_contents`     Data documentation contents
 :py:`hooks_post_crawl`      Hooks to call after the initial name crawl
+:py:`hooks_docstring`       Hooks to call when parsing a docstring
 :py:`hooks_pre_page`        Hooks to call before each page gets rendered
 :py:`hooks_post_run`        Hooks to call at the very end of the script run
 =========================== ===================================================
@@ -790,9 +791,10 @@ important to avoid fully overwriting it:
     docs['summary'] = "A pretty class"
     docs['details'] = "This class is *pretty*."
 
-The :py:`hooks_post_crawl`, :py:`hooks_pre_page` and :py:`hooks_post_run`
-variables are lists of functions. Plugins that need to do something at specific
-points of the execution are supposed to add functions to the list.
+The :py:`hooks_post_crawl`, :py:`hooks_docstring`, :py:`hooks_pre_page` and
+:py:`hooks_post_run` variables are lists of functions. Plugins that need to do
+something at specific points of the execution are supposed to add functions to
+the list.
 
 The :py:`hooks_post_crawl` is called once gathering of all names is done. It
 gets passed the following arguments:
@@ -837,6 +839,36 @@ Keyword argument    Content
 .. [1] As this distinguishes between internal and external entries, new entries
     added by the plugin *need* to have :py:`object` set to :py:`None` so the
     script as well as other plugins can correctly distinguish them.
+
+Hooks listed in :py:`hooks_docstring` are called when docstrings are parsed.
+The first gets the raw docstring only processed by :py:`inspect.cleandoc()` and
+each following gets the output of the previous. When a hook returns an empty
+string, hooks later in the list are not called. String returned by the last
+hook is processed, if any, the same way as if no hooks would be present --- it
+gets partitioned into summary and content and those put to the output as-is,
+each paragraph wrapped in :html:`<p>` tags. The hooks are free to do anything
+with the docstring --- extracting metadata from it and returning it as-is,
+transpiling it from one markup language to another, or fully consuming it,
+populating the ``*_doc_contents`` variables mentioned above and returning
+nothing back. Each hook gets passed the following arguments:
+
+.. class:: m-table
+
+=================== ===========================================================
+Keyword argument    Content
+=================== ===========================================================
+:py:`type`          Name type. Same as the enum passed to
+                    `custom URL formatters`_.
+:py:`path`          Path of the module / class / function / enum / enum value /
+                    data containing the docstring. A list of names,
+                    :py:`'.'.join(path)` is equivalent to the fully qualified
+                    name.
+:py:`signature`     Signature of a function, for distinguishing between
+                    particular overloads. In a form of
+                    ``(param1: type1, param2: type2)``.
+:py:`doc`           Docstring content. Always non-empty --- once a hook returns
+                    nothing back, no further hooks are called.
+=================== ===========================================================
 
 The :py:`hooks_pre_page` is called before each page of output gets rendered.
 Can be used for example for resetting some internal counter for page-wide
