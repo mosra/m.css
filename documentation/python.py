@@ -791,6 +791,9 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     else:
         return None
 
+def prettify_multiline_error(error: str) -> str:
+    return ' | {}\n'.format(error.replace('\n', '\n | '))
+
 def extract_docs(state: State, external_docs, type: EntryType, path: List[str], doc: str, *, signature=None, summary_only=False) -> Tuple[str, str]:
     path_str = '.'.join(path)
     # If function signature is supplied, try that first
@@ -829,24 +832,29 @@ def extract_docs(state: State, external_docs, type: EntryType, path: List[str], 
             # this one after another; stopping once there's nothing left. If
             # nothing left, the populated entries should be non-None.
             for hook in state.hooks_docstring:
-                doc = hook(
-                    type=type,
-                    path=path,
-                    signature=signature,
-                    doc=doc)
+                try:
+                    doc = hook(
+                        type=type,
+                        path=path,
+                        signature=signature,
+                        doc=doc)
 
-                # The hook could have replaced the entry with a new dict
-                # instance, fetch it again to avoid looking at stale data below
-                external_doc_entry = external_docs[path_signature_str]
+                    # The hook could have replaced the entry with a new dict
+                    # instance, fetch it again to avoid looking at stale data below
+                    external_doc_entry = external_docs[path_signature_str]
 
-                if not doc:
-                    # Assuming the doc were non-empty on input, if those are
-                    # empty on output, the hook should be filling both summary
-                    # and content to non-None values (so, in the worst case,
-                    # an empty string)
-                    assert external_doc_entry['summary'] is not None
-                    assert external_doc_entry['content'] is not None
-                    break
+                    if not doc:
+                        # Assuming the doc were non-empty on input, if those are
+                        # empty on output, the hook should be filling both summary
+                        # and content to non-None values (so, in the worst case,
+                        # an empty string)
+                        assert external_doc_entry['summary'] is not None
+                        assert external_doc_entry['content'] is not None
+                        break
+
+                except docutils.utils.SystemMessage:
+                    logging.error("Failed to process a docstring for %s, ignoring:\n%s", path_signature_str, prettify_multiline_error(doc))
+                    doc = ''
 
             # If there's still something left after the hooks (or there are no
             # hooks), process it as a plain unformatted text.
@@ -872,10 +880,10 @@ def extract_docs(state: State, external_docs, type: EntryType, path: List[str], 
             docutils.utils.extract_options = prev_extract_options
             docutils.utils.assemble_option_dict = prev_assemble_option_dict
 
-        # We ain't got nothing. If there isn't anything supplied externally,
-        # set summary / content to an empty string so this branch isn't entered
-        # again.
-        else:
+        # We ain't got nothing (or the above parse failed). If there isn't
+        # anything supplied externally, set summary / content to an empty
+        # string so this branch isn't entered again.
+        if not doc:
             if external_doc_entry.get('summary') is None:
                 external_doc_entry['summary'] = ''
             if external_doc_entry.get('content') is None:
@@ -883,10 +891,19 @@ def extract_docs(state: State, external_docs, type: EntryType, path: List[str], 
 
     # Render. This can't be done just once and then cached because e.g. math
     # rendering needs to ensure each SVG formula has unique IDs on each page.
-    summary = render_inline_rst(state, external_doc_entry['summary'])
+    try:
+        summary = render_inline_rst(state, external_doc_entry['summary'])
+    except docutils.utils.SystemMessage:
+        logging.error("Failed to process summary for %s, ignoring:\n%s", path_signature_str, prettify_multiline_error(external_doc_entry['summary']))
+        summary = ''
+
     if summary_only: return summary
 
-    content = render_rst(state, external_doc_entry['content'])
+    try:
+        content = render_rst(state, external_doc_entry['content'])
+    except docutils.utils.SystemMessage:
+        logging.error("Failed to process content for %s, ignoring:\n%s", path_signature_str, prettify_multiline_error(external_doc_entry['content']))
+        content = ''
 
     # Mark the docs as used (so it can warn about unused docs at the end)
     external_doc_entry['used'] = True
@@ -1326,7 +1343,11 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                         if param.name != 'self':
                             logging.warning("%s%s parameter %s is not documented", path_str, signature, param.name)
                         continue
-                    param.content = render_inline_rst(state, param_docs[param.name])
+                    try:
+                        param.content = render_inline_rst(state, param_docs[param.name])
+                    except docutils.utils.SystemMessage:
+                        logging.error("Failed to process doc for %s param %s, ignoring:\n%s", path_str, param.name,  prettify_multiline_error(param_docs[param.name]))
+                        param.content = ''
                     used_params.add(param.name)
                     out.has_param_details = True
                     out.has_details = True
@@ -1336,7 +1357,11 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                         logging.warning("%s%s documents parameter %s, which isn't in the signature", path_str, signature, name)
 
             if function_docs.get('return'):
-                out.return_value = render_inline_rst(state, function_docs['return'])
+                try:
+                    out.return_value = render_inline_rst(state, function_docs['return'])
+                except docutils.utils.SystemMessage:
+                    logging.error("Failed to process return doc for %s, ignoring:\n%s", path_str, prettify_multiline_error(function_docs['return']))
+                    out.return_value = ''
                 out.has_details = True
 
         if not state.config['SEARCH_DISABLED']:

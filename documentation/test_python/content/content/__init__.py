@@ -80,6 +80,11 @@ def full_docstring(a, b) -> str:
     Like this.
     """
 
+# This should check we handle reST parsing errors in external docs gracefully.
+# Will probably look extra weird in the output tho, but that's okay -- it's an
+# error after all.
+def this_function_has_bad_docs(a, b): pass
+
 CONSTANT: float = 3.14
 
 DATA_WITH_DETAILS: str = 'heyoo'

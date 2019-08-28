@@ -122,6 +122,14 @@
 
     Why it has to be yelling?!
 
+.. This should check we handle reST parsing errors gracefully.
+.. py:function:: content.this_function_has_bad_docs
+    :summary: :nonexistentrole:`summary is all bad`
+    :param a: :nonexistentrole:`param docs also blow`
+    :return: :nonexistentrole:`return is terrible`
+
+    :nonexistentrole:`this too`
+
 .. py:module:: thismoduledoesnotexist
     :summary: This docs get unused and produce a warning
 

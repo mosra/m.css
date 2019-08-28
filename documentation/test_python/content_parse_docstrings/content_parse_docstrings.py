@@ -40,3 +40,14 @@ def empty_docstring(): pass
 
 def summary_only():
     """This is just a summary."""
+
+# This should check we handle reST parsing errors gracefully. Will probably
+# look extra weird in the output tho, but that's okay -- it's an error after
+# all.
+def this_function_has_bad_docs(a, b) -> str:
+    """This function has bad docs. It's freaking terrible.
+        Yes.
+            Really.
+
+    :broken: yes
+    """
