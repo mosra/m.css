@@ -16,7 +16,7 @@
                 {% for param in function.params %}
                 {% if loop.index != 1 or param.name != 'self' or param.content %}
                 <tr>
-                  <td{% if loop.index == 1 %} style="width: 1%"{% endif %}>{{ param.name }}</td>
+                  <td{% if loop.index == 1 or loop.index == 2 and function.params[loop.index0 - 1].name == 'self' %} style="width: 1%"{% endif %}>{{ param.name }}</td>
                   <td>{{ param.content }}</td>
                 </tr>
                 {% endif %}
