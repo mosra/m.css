@@ -780,14 +780,15 @@ the first level is a name and second level are key/value pairs of the actual
 HTML documentation content. Plugins that parse extra documentation inputs (such
 as `m.sphinx`_) are supposed to add to the dict, which is then used to fill the
 actual documentation contents. The following corresponds to the documentation
-source shown in the `External documentation content`_ section below.
+source shown in the `External documentation content`_ section below. Note that
+the dict can already have existing entries added from elsewhere, so it's
+important to avoid fully overwriting it:
 
 .. code:: py
 
-    class_doc_contents['mymodule.sub.Class'] = {
-        'summary': "A pretty class",
-        'details': "This class is *pretty*."
-    }
+    docs = class_doc_contents.setdefault('mymodule.sub.Class', {})
+    docs['summary'] = "A pretty class"
+    docs['details'] = "This class is *pretty*."
 
 The :py:`hooks_post_crawl`, :py:`hooks_pre_page` and :py:`hooks_post_run`
 variables are lists of functions. Plugins that need to do something at specific

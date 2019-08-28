@@ -55,10 +55,11 @@ class PyModule(rst.Directive):
     option_spec = {'summary': directives.unchanged}
 
     def run(self):
-        module_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary'),
-            'content': '\n'.join(self.content)
-        }
+        output = module_doc_output.setdefault(self.arguments[0], {})
+        if self.options.get('summary'):
+            output['summary'] = self.options['summary']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
         return []
 
 class PyClass(rst.Directive):
@@ -68,10 +69,11 @@ class PyClass(rst.Directive):
     option_spec = {'summary': directives.unchanged}
 
     def run(self):
-        class_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary'),
-            'content': '\n'.join(self.content) if self.content else None
-        }
+        output = class_doc_output.setdefault(self.arguments[0], {})
+        if self.options.get('summary'):
+            output['summary'] = self.options['summary']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
         return []
 
 class PyEnum(rst.Directive):
@@ -81,10 +83,11 @@ class PyEnum(rst.Directive):
     option_spec = {'summary': directives.unchanged}
 
     def run(self):
-        enum_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary'),
-            'content': '\n'.join(self.content) if self.content else None
-        }
+        output = enum_doc_output.setdefault(self.arguments[0], {})
+        if self.options.get('summary'):
+            output['summary'] = self.options['summary']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
         return []
 
 # List option (allowing multiple arguments). See _docutils_assemble_option_dict
@@ -108,12 +111,15 @@ class PyFunction(rst.Directive):
             if name in params: raise KeyError("duplicate param {}".format(name))
             params[name] = content
 
-        function_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary'),
-            'params': params,
-            'return': self.options.get('return'),
-            'content': '\n'.join(self.content) if self.content else None
-        }
+        output = function_doc_output.setdefault(self.arguments[0], {})
+        if self.options.get('summary'):
+            output['summary'] = self.options['summary']
+        if params:
+            output['params'] = params
+        if self.options.get('return'):
+            output['return'] = self.options['return']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
         return []
 
 class PyProperty(rst.Directive):
@@ -123,10 +129,11 @@ class PyProperty(rst.Directive):
     option_spec = {'summary': directives.unchanged}
 
     def run(self):
-        property_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary'),
-            'content': '\n'.join(self.content) if self.content else None
-        }
+        output = property_doc_output.setdefault(self.arguments[0], {})
+        if self.options.get('summary'):
+            output['summary'] = self.options['summary']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
         return []
 
 class PyData(rst.Directive):
@@ -136,10 +143,11 @@ class PyData(rst.Directive):
     option_spec = {'summary': directives.unchanged}
 
     def run(self):
-        data_doc_output[self.arguments[0]] = {
-            'summary': self.options.get('summary'),
-            'content': '\n'.join(self.content) if self.content else None
-        }
+        output = data_doc_output.setdefault(self.arguments[0], {})
+        if self.options.get('summary'):
+            output['summary'] = self.options['summary']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
         return []
 
 # Modified from abbr / gh / gl / ... to add support for queries and hashes
