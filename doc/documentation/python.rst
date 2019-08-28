@@ -217,10 +217,15 @@ Variable                            Description
 :py:`CLASS_INDEX_EXPAND_INNER`      Whether to expand inner classes in the
                                     class index. If not set, :py:`False` is
                                     used.
-:py:`PYBIND11_COMPATIBILITY`        Enable some additional tricks for better
+:py:`PYBIND11_COMPATIBILITY: bool`  Enable some additional tricks for better
                                     compatibility with pybind11. If not set,
                                     :py:`False` is used. See
                                     `pybind11 compatibility`_ for more
+                                    information.
+:py:`ATTRS_COMPATIBILITY: bool`     Enable some additional tricks for better
+                                    compatibility with attrs. If not set,
+                                    :py:`False` is used. See
+                                    `attrs compatibility`_ for more
                                     information.
 :py:`SEARCH_DISABLED: bool`         Disable search functionality. If this
                                     option is set, no search data is compiled
@@ -727,6 +732,25 @@ enum class itself, not the values.
     pybind 2.3 supports docstrings for enum values (see
     :gh:`pybind/pybind11#1160`). Support for this feature is not done on the
     script side yet.
+
+`attrs compatibility`_
+======================
+
+If a codebase is using the `attrs <https://www.attrs.org/>`_ package and the
+:py:`ATTRS_COMPATIBILITY` option is enabled, the script is able to extract the
+(otherwise inaccessible by normal means) information about attributes defined
+using :py:`attr.ib()` or via the :py:`@attr.s(auto_attribs=True)` decorator.
+Note that attributes of classes using :py:`@attr.s(slots=True)` are visible
+even without the compatibility enabled.
+
+In all cases, there's no possibility of adding in-source docstrings for any of
+these and you need to supply the documentation with the :rst:`.. py:property::`
+directive as described in `External documentation content`_.
+
+Additionally, various dunder methods that say just "*Automatically created by
+attrs.*" in their docstring are implicitly hidden from the output if this
+option is enabled. In order to show them again, override the docstring to
+something meaningful.
 
 `Command-line options`_
 =======================

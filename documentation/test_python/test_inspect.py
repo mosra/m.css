@@ -215,3 +215,19 @@ inspect_create_intersphinx.pybind py:module 2 inspect_create_intersphinx.pybind.
 page std:doc 2 page.html -
 """.lstrip())
         # Yes, above it should say A documentation page, but it doesn't
+
+try:
+    import attr
+except ImportError:
+    attr = None
+class Attrs(BaseInspectTestCase):
+    @unittest.skipUnless(attr, "the attr package was not found")
+    def test(self):
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
+            'ATTRS_COMPATIBILITY': True
+        })
+        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClass.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html'))

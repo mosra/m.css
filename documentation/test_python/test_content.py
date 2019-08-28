@@ -37,6 +37,7 @@ class Content(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('content.docstring_summary.html'))
         self.assertEqual(*self.actual_expected_contents('content.Class.html'))
         self.assertEqual(*self.actual_expected_contents('content.ClassWithSummary.html'))
+        self.assertEqual(*self.actual_expected_contents('content.ClassWithSlots.html'))
 
 class ParseDocstrings(BaseInspectTestCase):
     def test(self):
