@@ -1508,11 +1508,11 @@ def render_module(state: State, path, module, env):
     page.has_data_details = False
 
     # Find itself in the global map, save the summary back there for index
-    module_entry = state.name_map['.'.join(path)]
-    module_entry.summary = page.summary
+    entry = state.name_map['.'.join(path)]
+    entry.summary = page.summary
 
     # Extract docs for all members
-    for name in module_entry.members:
+    for name in entry.members:
         subpath = path + [name]
         subpath_str = '.'.join(subpath)
         member_entry = state.name_map[subpath_str]
@@ -1588,11 +1588,11 @@ def render_class(state: State, path, class_, env):
     page.has_data_details = False
 
     # Find itself in the global map, save the summary back there for index
-    module_entry = state.name_map['.'.join(path)]
-    module_entry.summary = page.summary
+    entry = state.name_map['.'.join(path)]
+    entry.summary = page.summary
 
     # Extract docs for all members
-    for name in module_entry.members:
+    for name in entry.members:
         subpath = path + [name]
         subpath_str = '.'.join(subpath)
         member_entry = state.name_map[subpath_str]
