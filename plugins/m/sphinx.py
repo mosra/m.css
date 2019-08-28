@@ -46,6 +46,7 @@ import m.htmlsanity
 
 # All those initialized in register() or register_mcss()
 current_referer_path = None
+current_param_names = None
 module_doc_output = None
 class_doc_output = None
 enum_doc_output = None
@@ -306,18 +307,30 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
 
-def scope_enter(path, **kwargs):
-    global current_referer_path
+def scope_enter(path, param_names=None, **kwargs):
+    global current_referer_path, current_param_names
     current_referer_path += [path]
+    current_param_names = param_names
 
 def scope_exit(path, **kwargs):
-    global current_referer_path
+    global current_referer_path, current_param_names
     assert current_referer_path[-1] == path, "%s %s" % (current_referer_path, path)
     current_referer_path = current_referer_path[:-1]
+    current_param_names = None
 
 def check_scope_stack_empty(**kwargs):
     global current_referer_path
     assert not current_referer_path
+
+def p(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
+    global current_referer_path, current_param_names
+    if not current_param_names:
+        logging.warning("can't reference parameter %s outside of a function scope", text)
+    elif text not in current_param_names:
+        logging.warning("parameter %s not found in %s(%s) function signature", text, '.'.join(current_referer_path[-1]), ', '.join(current_param_names))
+
+    node = nodes.literal(rawtext, text, **options)
+    return [node], []
 
 def consume_docstring(type, path: List[str], signature: Optional[str], doc: str) -> str:
     # Create the directive header based on type
@@ -495,6 +508,7 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
     rst.directives.register_directive('py:data', PyData)
 
     rst.roles.register_local_role('ref', ref)
+    rst.roles.register_local_role('p', p)
 
     hooks_pre_scope += [scope_enter]
     hooks_post_scope += [scope_exit]

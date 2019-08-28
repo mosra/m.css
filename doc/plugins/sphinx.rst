@@ -313,9 +313,16 @@ function signature will cause a warning. Example:
         :param overwrite_existing:  Overwrite existing value if already present
             in the container
         :return:                    The inserted tuple or the existing
-            key/value pair in case ``overwrite_existing`` is not set
+            key/value pair in case :p:`overwrite_existing` is not set
 
         The operation has a :math:`\mathcal{O}(\log{}n)` complexity.
+
+.. block-success::  Referencing function parameters
+
+    What's also shown in the above snippet is the :rst:`:p:` directive. It
+    looks the same as if you would write just :rst:```overwrite_existing```,
+    but in addition it checks the parameter name against current function signature, emitting a warning in case of a mismatch. This is useful to
+    ensure the documentation doesn't get out of sync with the actual signature.
 
 For overloaded functions (such as those coming from pybind11), it's possible to
 specify the full signature to distinguish between particular overloads.

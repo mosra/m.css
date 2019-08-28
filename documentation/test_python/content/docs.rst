@@ -100,7 +100,7 @@
 
 .. py:function:: content.param_docs
     :param a: First parameter
-    :param b: The second one
+    :param b: The second one is different from :p:`a`
     :param c: And a ``float``
     :return: String, of course, it's all *stringly* typed
 
@@ -110,7 +110,7 @@
     :param a: First
     :param c: Third
 
-    The ``b`` is not documented, while ``c`` isn't in the signature.
+    The :p:`b` is not documented, while :p:`c` isn't in the signature.
 
 .. py:function:: content.full_docstring
     :param a: First parameter
