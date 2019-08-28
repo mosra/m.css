@@ -111,7 +111,7 @@
     :summary: This is finally a docstring for ``content.CONSTANT``
 
 .. py:data:: content.DATA_WITH_DETAILS
-    :summary: This is finally a docstring for ``content.CONSTANT``
+    :summary: This is finally a docstring for ``content.DATA_WITH_DETAILS``
 
     Detailed docs for the data. **YAY.**
 
