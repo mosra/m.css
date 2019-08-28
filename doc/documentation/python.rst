@@ -648,13 +648,111 @@ m.css plugins might look like this:
 
     PLUGINS = ['m.code', 'm.components', 'm.dox']
 
-`Implementing custom plugins`_
-------------------------------
+`External documentation content`_
+=================================
 
-Other plugins can be loaded from paths specified in :py:`PLUGIN_PATHS`. Custom
-plugins need to implement a registration function named :py:`register_mcss()`.
-It gets passed the following named arguments and the plugin might or might not
-use them.
+Because it's often not feasible to have the whole documentation stored in
+Python docstrings, the generator allows you to supply documentation from
+external files. Similarly to `pages`_, the :py:`INPUT_DOCS` setting is a list
+of :abbr:`reST <reStructuredText>` files that contain documentation for
+particular names using custom directives. This is handled by the bundled
+`m.sphinx <{filename}/plugins/sphinx.rst>`_ plugin. See its documentation for
+detailed description of all features, below is a simple example of using it to
+document a class:
+
+.. code:: py
+
+    PLUGINS = ['m.sphinx']
+
+.. code:: rst
+
+    .. py:class:: mymodule.sub.Class
+        :summary: A pretty class
+
+        This class is *pretty*.
+
+`pybind11 compatibility`_
+=========================
+
+C++ bindings generated using `pybind11 <https://pybind11.readthedocs.io/>`_ do
+not have all information accessible through introspection and thus the script
+has to do a few pybind11-specific workarounds to generate expected output. This
+behavior is not enabled by default as it *might* have unwanted consequences in
+pure Python code, enable it using the :py:`PYBIND11_COMPATIBILITY` option.
+
+`Function signatures, property annotations`_
+--------------------------------------------
+
+For reasons explained in :gh:`pybind/pybind11#990`, pybind11 is not able to
+provide function signatures through introspection and thus the script falls
+back to parsing argument names, type annotations and default values from the
+docstring instead. By default, unless :cpp:`py::arg()` is used, function
+arguments are positional-only (shown as :py:`arg0`, :py:`arg1`, ...) and marked
+as such in the output.
+
+Similarly, property types are extracted from getter docstrings.
+
+Unlike Python, pybind11 has a builtin support for overloaded functions ---
+depending on types passed to a function, it dispatches to a particular C++
+overload. The overloads are expanded in the output as well, meaning you can see
+one function mentioned more than once with different signatures.
+
+Because static methods in pybind11 are not decorated with :py:`@staticmethod`,
+they are detected based on presence of ``self`` as the first parameter --- if
+it's there, it's an instance method, otherwise it's a static method.
+
+.. block-warning:: Limitations
+
+    The static / instance method autodetection may fail when you name the first
+    argument of a static method as :cpp:`py::arg("self")`. Don't do that |wink|
+
+    The signature parsing can't handle all cases and, especially when templated
+    C++ type names leak through, it may fail to extract the argument names. If
+    that happens, the function signature shows just an ellipsis (``…``). On the
+    other hand, encountering a pure C++ type in a Python function signature
+    most probably points to a problem with the bindings as the type can't be
+    expressed with Python code.
+
+`Enums`_
+--------
+
+Enums in pybind11 are not derived from :py:`enum.Enum`, but rather are plain
+classes. The only reliable way to detect a pybind11 enum is by looking for a
+``__members__`` member, which is a dict providing string names and their
+corresponding values. With pybind 2.2, it's only possible to document the
+enum class itself, not the values.
+
+.. note-info::
+
+    pybind 2.3 supports docstrings for enum values (see
+    :gh:`pybind/pybind11#1160`). Support for this feature is not done on the
+    script side yet.
+
+`Command-line options`_
+=======================
+
+.. code:: sh
+
+    ./python.py [-h] [--templates TEMPLATES] [--debug] conf
+
+Arguments:
+
+-   ``conf`` --- configuration file
+
+Options:
+
+-   ``-h``, ``--help`` --- show this help message and exit
+-   ``--templates TEMPLATES`` --- template directory. Defaults to the
+    ``templates/python/`` subdirectory if not set.
+-   ``--debug`` --- verbose logging output. Useful for debugging.
+
+`Implementing custom plugins`_
+==============================
+
+Third-party plugins can be loaded from paths specified in :py:`PLUGIN_PATHS`.
+Custom plugins need to implement a registration function named
+:py:`register_mcss()`. It gets passed the following named arguments and the
+plugin might or might not use them.
 
 .. class:: m-table
 
@@ -778,104 +876,6 @@ that validates everything in given output directory.
         global output_dir
         output_dir = mcss_settings['OUTPUT']
         hooks_post_run += [_validate_output]
-
-`External documentation content`_
-=================================
-
-Because it's often not feasible to have the whole documentation stored in
-Python docstrings, the generator allows you to supply documentation from
-external files. Similarly to `pages`_, the :py:`INPUT_DOCS` setting is a list
-of :abbr:`reST <reStructuredText>` files that contain documentation for
-particular names using custom directives. This is handled by the bundled
-`m.sphinx <{filename}/plugins/sphinx.rst>`_ plugin. See its documentation for
-detailed description of all features, below is a simple example of using it to
-document a class:
-
-.. code:: py
-
-    PLUGINS = ['m.sphinx']
-
-.. code:: rst
-
-    .. py:class:: mymodule.sub.Class
-        :summary: A pretty class
-
-        This class is *pretty*.
-
-`pybind11 compatibility`_
-=========================
-
-C++ bindings generated using `pybind11 <https://pybind11.readthedocs.io/>`_ do
-not have all information accessible through introspection and thus the script
-has to do a few pybind11-specific workarounds to generate expected output. This
-behavior is not enabled by default as it *might* have unwanted consequences in
-pure Python code, enable it using the :py:`PYBIND11_COMPATIBILITY` option.
-
-`Function signatures, property annotations`_
---------------------------------------------
-
-For reasons explained in :gh:`pybind/pybind11#990`, pybind11 is not able to
-provide function signatures through introspection and thus the script falls
-back to parsing argument names, type annotations and default values from the
-docstring instead. By default, unless :cpp:`py::arg()` is used, function
-arguments are positional-only (shown as :py:`arg0`, :py:`arg1`, ...) and marked
-as such in the output.
-
-Similarly, property types are extracted from getter docstrings.
-
-Unlike Python, pybind11 has a builtin support for overloaded functions ---
-depending on types passed to a function, it dispatches to a particular C++
-overload. The overloads are expanded in the output as well, meaning you can see
-one function mentioned more than once with different signatures.
-
-Because static methods in pybind11 are not decorated with :py:`@staticmethod`,
-they are detected based on presence of ``self`` as the first parameter --- if
-it's there, it's an instance method, otherwise it's a static method.
-
-.. block-warning:: Limitations
-
-    The static / instance method autodetection may fail when you name the first
-    argument of a static method as :cpp:`py::arg("self")`. Don't do that |wink|
-
-    The signature parsing can't handle all cases and, especially when templated
-    C++ type names leak through, it may fail to extract the argument names. If
-    that happens, the function signature shows just an ellipsis (``…``). On the
-    other hand, encountering a pure C++ type in a Python function signature
-    most probably points to a problem with the bindings as the type can't be
-    expressed with Python code.
-
-`Enums`_
---------
-
-Enums in pybind11 are not derived from :py:`enum.Enum`, but rather are plain
-classes. The only reliable way to detect a pybind11 enum is by looking for a
-``__members__`` member, which is a dict providing string names and their
-corresponding values. With pybind 2.2, it's only possible to document the
-enum class itself, not the values.
-
-.. note-info::
-
-    pybind 2.3 supports docstrings for enum values (see
-    :gh:`pybind/pybind11#1160`). Support for this feature is not done on the
-    script side yet.
-
-`Command-line options`_
-=======================
-
-.. code:: sh
-
-    ./python.py [-h] [--templates TEMPLATES] [--debug] conf
-
-Arguments:
-
--   ``conf`` --- configuration file
-
-Options:
-
--   ``-h``, ``--help`` --- show this help message and exit
--   ``--templates TEMPLATES`` --- template directory. Defaults to the
-    ``templates/python/`` subdirectory if not set.
--   ``--debug`` --- verbose logging output. Useful for debugging.
 
 `Customizing the template`_
 ===========================
