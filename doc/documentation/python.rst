@@ -453,10 +453,10 @@ all found submodules in it are ignored.
 `Docstrings`_
 -------------
 
-The first paragraph of a module-level, class-level and function-level docstring
-is used as a doc summary, copied as-is to the output without formatting it in
-any way. What follows is put (again without formatting) paragraph-by-paragraph
-into detailed docs.
+By default, the first paragraph of a module-level, class-level and
+function-level docstring is used as a doc summary, copied as-is to the output
+without formatting it in any way. What follows is put (again without
+formatting) paragraph-by-paragraph into detailed docs.
 
 .. code:: py
 
@@ -470,14 +470,20 @@ into detailed docs.
         def bar(self):
             """Function summary"""
 
-.. block-warning:: Limitations
+Using just docstrings, however, comes with a few limitations:
 
-    With the current approach, there are a few limitations:
+-   Class and module-level variables can't have a docstring attached due to how
+    Python works
+-   Because not every Python API can be documented using docstrings, the
+    output contains everything, including undocumented names
+-   Instance variables added inside :py:`__init__()` are not extracted, as this
+    would require parsing Python code directly (which is what Sphinx has to do
+    to support these).
 
-    -   Class and module-level variables can't have a docstring attached due to
-        how Python works
-    -   Because not every Python API can be documented using docstrings, the
-        output contains everything, including undocumented names
+To overcome the limitations, `externally-supplied documentation <#external-documentation-content>`_
+provides means to document names that can't have a docstring attached, and
+together with the `m.sphinx`_ plugin expanding formatting capabilities beyond
+plain text.
 
 `Function and variable annotations`_
 ------------------------------------
@@ -559,12 +565,6 @@ extracted from the property getter.
             # Docstring and type annotation taken from the getter, no need to
             # have it repeated here too
             pass
-
-.. block-warning:: Limitations
-
-    Instance variables added inside :py:`__init__()` are not extracted, as this
-    would require parsing Python code directly (which is what Sphinx has to do
-    to support these).
 
 `Documenting enum values`_
 --------------------------
@@ -655,14 +655,14 @@ Because it's often not feasible to have the whole documentation stored in
 Python docstrings, the generator allows you to supply documentation from
 external files. Similarly to `pages`_, the :py:`INPUT_DOCS` setting is a list
 of :abbr:`reST <reStructuredText>` files that contain documentation for
-particular names using custom directives. This is handled by the bundled
-`m.sphinx <{filename}/plugins/sphinx.rst>`_ plugin. See its documentation for
-detailed description of all features, below is a simple example of using it to
-document a class:
+particular names using custom directives. A set of custom directives is
+provided by the `m.sphinx <{filename}/plugins/sphinx.rst>`_ plugin --- see its documentation for detailed description of all features. Below is a simple
+example of using it to document a class:
 
 .. code:: py
 
     PLUGINS = ['m.sphinx']
+    INPUT_DOCS = ['docs.rst']
 
 .. code:: rst
 
