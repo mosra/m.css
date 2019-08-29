@@ -157,4 +157,4 @@
 </html>
 {#- sanity checks for variables that should be always defined -#}
 {% if URL is not defined %}{{ URL.is_not_defined_the_script_is_broken }}{% endif %}
-{% if SEARCHDATA_FORMAT_VERSION is defined %}{{ SEARCHDATA_FORMAT_VERSION.is_not_defined_the_script_is_broken }}{% endif %}
+{% if SEARCHDATA_FORMAT_VERSION is not defined %}{{ SEARCHDATA_FORMAT_VERSION.is_not_defined_the_script_is_broken }}{% endif %}
