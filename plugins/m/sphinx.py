@@ -392,11 +392,6 @@ def consume_docstring(type, path: List[str], signature: Optional[str], doc: str)
     pub.set_source(source=source)
     pub.publish()
 
-    # Because there's no fallback to a docstring, mark everything as non-None
-    doc_output = doc_output[path_signature_str]
-    if doc_output.get('summary') is None: doc_output['summary'] = ''
-    if doc_output.get('content') is None: doc_output['content'] = ''
-
 def merge_inventories(name_map, **kwargs):
     global intersphinx_inventory
 

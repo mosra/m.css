@@ -899,21 +899,17 @@ def extract_docs(state: State, external_docs, type: EntryType, path: List[str], 
                         doc=doc)
 
                     # The hook could have replaced the entry with a new dict
-                    # instance, fetch it again to avoid looking at stale data below
+                    # instance, fetch it again to avoid looking at stale data
+                    # below
                     external_doc_entry = external_docs[path_signature_str]
 
-                    if not doc:
-                        # Assuming the doc were non-empty on input, if those are
-                        # empty on output, the hook should be filling both summary
-                        # and content to non-None values (so, in the worst case,
-                        # an empty string)
-                        assert external_doc_entry['summary'] is not None
-                        assert external_doc_entry['content'] is not None
-                        break
+                    # Once there's nothing left to parse, stop executing the
+                    # hooks.
+                    if not doc: break
 
                 except docutils.utils.SystemMessage:
                     logging.error("Failed to process a docstring for %s, ignoring:\n%s", path_signature_str, prettify_multiline_error(doc))
-                    doc = ''
+                    break
 
             # If there's still something left after the hooks (or there are no
             # hooks), process it as a plain unformatted text.
@@ -939,14 +935,13 @@ def extract_docs(state: State, external_docs, type: EntryType, path: List[str], 
             docutils.utils.extract_options = prev_extract_options
             docutils.utils.assemble_option_dict = prev_assemble_option_dict
 
-        # We ain't got nothing (or the above parse failed). If there isn't
-        # anything supplied externally, set summary / content to an empty
-        # string so this branch isn't entered again.
-        if not doc:
-            if external_doc_entry.get('summary') is None:
-                external_doc_entry['summary'] = ''
-            if external_doc_entry.get('content') is None:
-                external_doc_entry['content'] = ''
+        # If there isn't anything supplied for summary / content even after all
+        # the processing above, set it to an empty string so this branch isn't
+        # entered again next time.
+        if external_doc_entry.get('summary') is None:
+            external_doc_entry['summary'] = ''
+        if external_doc_entry.get('content') is None:
+            external_doc_entry['content'] = ''
 
     # Render. This can't be done just once and then cached because e.g. math
     # rendering needs to ensure each SVG formula has unique IDs on each page.
