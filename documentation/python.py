@@ -1956,8 +1956,11 @@ def publish_rst(state: State, source, *, source_path=None, translator_class=m.ht
     # Docutils uses a deprecated U mode for opening files, so instead of
     # monkey-patching docutils.io.FileInput to not do that (like Pelican does),
     # I just read the thing myself.
-    # TODO for external docs it *somehow* needs to supply the filename and line
-    # range to it for better error reporting, this is too awful
+    # TODO for external docs it *somehow* needs to supply the *proper* filename
+    #   and line range to it for better error reporting and relative includes,
+    #   this is too awful
+    if not source_path:
+        source_path=os.path.join(state.config['INPUT'], "file.rst")
     pub.set_source(source=source, source_path=source_path)
     pub.publish()
 
@@ -1967,7 +1970,7 @@ def publish_rst(state: State, source, *, source_path=None, translator_class=m.ht
     return pub
 
 def render_rst(state: State, source):
-    return publish_rst(state, source, source_path=None).writer.parts.get('body').rstrip()
+    return publish_rst(state, source).writer.parts.get('body').rstrip()
 
 class _SaneInlineHtmlTranslator(m.htmlsanity.SaneHtmlTranslator):
     # Unconditionally force compact paragraphs. This means the inline HTML
@@ -2051,7 +2054,7 @@ def render_doc(state: State, filename):
         docutils.utils.extract_options = _docutils_extract_options
         docutils.utils.assemble_option_dict = _docutils_assemble_option_dict
 
-        publish_rst(state, f.read())
+        publish_rst(state, f.read(), source_path=filename)
 
         docutils.utils.extract_options = prev_extract_options
         docutils.utils.assemble_option_dict = prev_assemble_option_dict

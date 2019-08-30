@@ -14,7 +14,11 @@
     :data ANOTHER_DOCUMENTED_INSIDE_MODULE: In-module summary for another data
 
     This is detailed module docs. I kinda *hate* how it needs to be indented,
-    tho.
+    tho. Below is an included file to test file path is supplied somewhat
+    correctly (relative to the input dir):
+
+    .. include:: content/submodule.py
+        :literal:
 
 .. py:module:: content.docstring_summary
 
