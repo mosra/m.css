@@ -2,6 +2,9 @@
 
 from . import Foo
 
-def foo(a: Foo, b: int) -> int:
+class _NameThatGetsOverridenExternally:
+    pass
+
+def foo(a: Foo, b: int) -> _NameThatGetsOverridenExternally:
     """A function"""
     return b*2

@@ -147,6 +147,7 @@ default_config = {
     'CLASS_INDEX_EXPAND_LEVELS': 1,
     'CLASS_INDEX_EXPAND_INNER': False,
 
+    'NAME_MAPPING': {},
     'PYBIND11_COMPATIBILITY': False,
     'ATTRS_COMPATIBILITY': False,
 
@@ -175,7 +176,7 @@ default_config = {
 class State:
     def __init__(self, config):
         self.config = config
-        self.name_mapping: Dict[str, str] = {}
+        self.name_mapping: Dict[str, str] = copy.deepcopy(config['NAME_MAPPING'])
         self.module_docs: Dict[str, Dict[str, str]] = {}
         self.class_docs: Dict[str, Dict[str, str]] = {}
         self.enum_docs: Dict[str, Dict[str, str]] = {}

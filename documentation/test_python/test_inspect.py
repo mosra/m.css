@@ -146,7 +146,11 @@ class Annotations(BaseInspectTestCase):
 
 class NameMapping(BaseInspectTestCase):
     def test(self):
-        self.run_python()
+        self.run_python({
+            'NAME_MAPPING': {
+                'inspect_name_mapping._sub.bar._NameThatGetsOverridenExternally': 'yay.ThisGotOverridenExternally'
+            }
+        })
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.Class.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_name_mapping.submodule.html'))
