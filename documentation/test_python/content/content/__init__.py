@@ -48,6 +48,18 @@ class ClassWithSlots:
 
     __slots__ = ['hello', 'this_is_a_slot']
 
+class ClassDocumentingItsMembers:
+    """This class documents its members directly in its own directive"""
+
+    DATA_DOCUMENTED_IN_CLASS: int = 3
+    ANOTHER = 1
+
+    @property
+    def property_documented_in_class(self) -> float: pass
+
+    @property
+    def another(self): pass
+
 class Enum(enum.Enum):
     """This summary gets ignored"""
 
@@ -95,3 +107,6 @@ CONSTANT: float = 3.14
 DATA_WITH_DETAILS: str = 'heyoo'
 
 DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE = None
+
+DATA_DOCUMENTED_INSIDE_MODULE: float = 6.28
+ANOTHER_DOCUMENTED_INSIDE_MODULE = 3

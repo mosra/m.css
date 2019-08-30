@@ -10,6 +10,8 @@
 
 .. py:module:: content
     :summary: This overwrites the docstring for :ref:`content`.
+    :data DATA_DOCUMENTED_INSIDE_MODULE: In-module summary for the data member
+    :data ANOTHER_DOCUMENTED_INSIDE_MODULE: In-module summary for another data
 
     This is detailed module docs. I kinda *hate* how it needs to be indented,
     tho.
@@ -133,6 +135,13 @@
 .. py:data:: content.DATA_WITH_DETAILS_BUT_NO_SUMMARY_NEITHER_TYPE
 
     Why it has to be yelling?!
+
+.. py:class:: content.ClassDocumentingItsMembers
+    :property property_documented_in_class: A property
+    :property another: And the other property, documented inside
+        :ref:`ClassDocumentingItsMembers`!
+    :data DATA_DOCUMENTED_IN_CLASS: Documentation for the in-class data
+    :data ANOTHER: And the other, :ref:`ANOTHER`!
 
 .. This should check we handle reST parsing errors gracefully.
 .. py:function:: content.this_function_has_bad_docs

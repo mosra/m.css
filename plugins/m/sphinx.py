@@ -55,32 +55,69 @@ property_doc_output = None
 data_doc_output = None
 inventory_filename = None
 
+# List option (allowing multiple arguments). See _docutils_assemble_option_dict
+# in python.py for details.
+def directives_unchanged_list(argument):
+    return [directives.unchanged(argument)]
+
 class PyModule(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     required_arguments = 1
-    option_spec = {'summary': directives.unchanged}
+    option_spec = {'summary': directives.unchanged,
+                   'data': directives_unchanged_list}
 
     def run(self):
+        # Check that data are parsed properly, turn them into a dict. This will
+        # blow up if the data name is not specified.
+        properties = {}
+        data = {}
+        for name, summary in self.options.get('data', []):
+            if name in data: raise KeyError("duplicate data {}".format(name))
+            data[name] = summary
+
         output = module_doc_output.setdefault(self.arguments[0], {})
         if self.options.get('summary'):
             output['summary'] = self.options['summary']
         if self.content:
             output['content'] = '\n'.join(self.content)
+
+        for name, summary in data.items():
+            data_doc_output.setdefault('{}.{}'.format(self.arguments[0], name), {})['summary'] = summary
+
         return []
 
 class PyClass(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     required_arguments = 1
-    option_spec = {'summary': directives.unchanged}
+    option_spec = {'summary': directives.unchanged,
+                   'property': directives_unchanged_list,
+                   'data': directives_unchanged_list}
 
     def run(self):
+        # Check that properties and data are parsed properly, turn them into
+        # dicts. This will blow up if the property / data name is not specified.
+        properties = {}
+        for name, summary in self.options.get('property', []):
+            if name in properties: raise KeyError("duplicate property {}".format(name))
+            properties[name] = summary
+        data = {}
+        for name, summary in self.options.get('data', []):
+            if name in data: raise KeyError("duplicate data {}".format(name))
+            data[name] = summary
+
         output = class_doc_output.setdefault(self.arguments[0], {})
         if self.options.get('summary'):
             output['summary'] = self.options['summary']
         if self.content:
             output['content'] = '\n'.join(self.content)
+
+        for name, summary in properties.items():
+            property_doc_output.setdefault('{}.{}'.format(self.arguments[0], name), {})['summary'] = summary
+        for name, summary in data.items():
+            data_doc_output.setdefault('{}.{}'.format(self.arguments[0], name), {})['summary'] = summary
+
         return []
 
 class PyEnum(rst.Directive):
@@ -96,11 +133,6 @@ class PyEnum(rst.Directive):
         if self.content:
             output['content'] = '\n'.join(self.content)
         return []
-
-# List option (allowing multiple arguments). See _docutils_assemble_option_dict
-# in python.py for details.
-def directives_unchanged_list(argument):
-    return [directives.unchanged(argument)]
 
 class PyFunction(rst.Directive):
     final_argument_whitespace = True

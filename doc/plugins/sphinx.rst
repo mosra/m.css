@@ -317,6 +317,52 @@ actual rendered docs. It's however possible to enable
 
         INPUT_MODULES = [mymodule]
 
+`Modules`_
+----------
+
+The :rst:`.. py:module::` directive documents a Python module. In addition, the
+directive supports a :rst:`:data <name>:` option for convenient documenting of
+module-level data. The option is equivalent to filling out just a
+:rst:`:summary:` of the :rst:`.. py:data::` directive `described below <#data>`_.
+
+.. code:: rst
+
+    .. py:module:: math
+        :summary: Common mathematical functions
+        :data pi:   The value of :math:`\pi`
+        :data tau:  The value of :math:`\tau`. Or :math:`2 \pi`.
+
+        This module defines common mathematical functions and constants as
+        defined by the C standard.
+
+`Classes`_
+----------
+
+Use :rst:`.. py:class::` for documenting classes. Similarly to module docs,
+this directive supports an additional :rst:`:data <name>:` option for
+documenting class-level data as well as :rst:`:property <name>:` for
+properties. Both of those are equivalent to filling out a :rst:`:summary:` of
+the :rst:`.. py:data::` / :rst:`.. py:property::` directives `described <#data>`_
+`below <#properties>`_.
+
+.. code:: rst
+
+    .. py:class:: mymodule.MyContainer
+        :summary: A container of key/value pairs
+        :property size: Number of entries in the container
+
+        Provides a key/value storage with :math:`\mathcal{O}(\log{}n)`-complexity
+        access.
+
+`Enums`_
+--------
+
+Use :rst:`.. py:enum::` for documenting enums. This directive doesn't support
+any additional options besides :rst:`:summary:`.
+
+`Functions`_
+------------
+
 The :rst:`.. py:function::` directive supports additional options ---
 :py:`:param <name>:` for documenting parameters and :py:`:return:` for
 documenting the return value. It's allowed to have either none or all
@@ -364,8 +410,40 @@ Example:
 
         .. this documentation will be used for all other overloads
 
+`Properties`_
+-------------
+
+Use :rst:`.. py:property::` for documenting properties. This directive doesn't
+support any additional options besides :rst:`:summary:`. For convenience,
+properties that have just a summary can be also documented directly in the
+enclosing :rst:`.. py:class::` directive `as shown above <#classes>`__.
+
+.. code:: rst
+
+    .. py:property:: mymodule.MyContainer.size
+        :summary: Number of entries in the container
+
+        You can also use ``if not container`` for checking if the container is
+        empty.
+
+`Data`_
+-------
+
+Use :rst:`.. py:data::` for documenting module-level and class-level data. This
+directive doesn't support any additional options besides :rst:`:summary:`. For
+convenience, data that have just a summary can be also documented directly in
+the enclosing :rst:`.. py:module::` / :rst:`.. py:class::` directive
+`as shown above <#module>`__.
+
+.. code:: rst
+
+    .. py:data:: math.pi
+        :summary: The value of :math:`\tau`. Or :math:`2 \pi`.
+
+        They say `pi is wrong <https://tauday.com/>`_.
+
 `Using parsed docstrings`_
---------------------------
+==========================
 
 By default, docstrings are `treated by the Python doc generator as plain text <{filename}/documentation/python.rst#docstrings>`_
 and only externally-supplied docs are parsed. This is done because, for example

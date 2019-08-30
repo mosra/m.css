@@ -54,6 +54,8 @@ tho.</p>
           <dl class="m-doc">
             <dt>class <a href="content.Class.html" class="m-doc">Class</a></dt>
             <dd>This overwrites the docstring for <a class="m-doc" href="content.Class.html">Class</a>.</dd>
+            <dt>class <a href="content.ClassDocumentingItsMembers.html" class="m-doc">ClassDocumentingItsMembers</a></dt>
+            <dd>This class documents its members directly in its own directive</dd>
             <dt>class <a href="content.ClassWithSlots.html" class="m-doc">ClassWithSlots</a></dt>
             <dd>This class has slots and those have to be documented externally</dd>
             <dt>class <a href="content.ClassWithSummary.html" class="m-doc">ClassWithSummary</a></dt>
@@ -114,10 +116,18 @@ add any detailed block.</dd>
         <section id="data">
           <h2><a href="#data">Data</a></h2>
           <dl class="m-doc">
+            <dt id="ANOTHER_DOCUMENTED_INSIDE_MODULE">
+              <a href="#ANOTHER_DOCUMENTED_INSIDE_MODULE" class="m-doc-self">ANOTHER_DOCUMENTED_INSIDE_MODULE</a> = 3
+            </dt>
+            <dd>In-module summary for another data</dd>
             <dt id="CONSTANT">
               <a href="#CONSTANT" class="m-doc-self">CONSTANT</a>: float = 3.14
             </dt>
             <dd>This is finally a docstring for <a class="m-doc" href="content.html#CONSTANT">CONSTANT</a></dd>
+            <dt id="DATA_DOCUMENTED_INSIDE_MODULE">
+              <a href="#DATA_DOCUMENTED_INSIDE_MODULE" class="m-doc-self">DATA_DOCUMENTED_INSIDE_MODULE</a>: float = 6.28
+            </dt>
+            <dd>In-module summary for the data member</dd>
             <dt>
               <a href="#DATA_WITH_DETAILS" class="m-doc">DATA_WITH_DETAILS</a>: str = &#x27;heyoo&#x27;
             </dt>
