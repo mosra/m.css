@@ -175,7 +175,7 @@ default_config = {
 class State:
     def __init__(self, config):
         self.config = config
-        self.module_mapping: Dict[str, str] = {}
+        self.name_mapping: Dict[str, str] = {}
         self.module_docs: Dict[str, Dict[str, str]] = {}
         self.class_docs: Dict[str, Dict[str, str]] = {}
         self.enum_docs: Dict[str, Dict[str, str]] = {}
@@ -198,7 +198,7 @@ class State:
         self.crawled: Set[object] = set()
 
 def map_name_prefix(state: State, type: str) -> str:
-    for prefix, replace in state.module_mapping.items():
+    for prefix, replace in state.name_mapping.items():
         if type == prefix or type.startswith(prefix + '.'):
             return replace + type[len(prefix):]
 
@@ -483,13 +483,13 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             # Modules have __name__ while other objects have __module__, need
             # to check both.
             if inspect.ismodule(object) and object.__name__ != '.'.join(subpath):
-                assert object.__name__ not in state.module_mapping
-                state.module_mapping[object.__name__] = '.'.join(subpath)
+                assert object.__name__ not in state.name_mapping
+                state.name_mapping[object.__name__] = '.'.join(subpath)
             elif hasattr(object, '__module__'):
                 subname = object.__module__ + '.' + object.__name__
                 if subname != '.'.join(subpath):
-                    assert subname not in state.module_mapping
-                    state.module_mapping[subname] = '.'.join(subpath)
+                    assert subname not in state.name_mapping
+                    state.name_mapping[subname] = '.'.join(subpath)
 
         # Now extract the actual docs
         for name in module.__all__:

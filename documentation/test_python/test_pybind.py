@@ -179,9 +179,9 @@ class Signature(unittest.TestCase):
             '(arg0: MyClass) -> float'),
             ('', '', [('arg0', 'MyClass', 'MyClass', None)], 'float', 'float'))
 
-    def test_module_mapping(self):
-        state = self.state
-        state.module_mapping['module._module'] = 'module'
+    def test_name_mapping(self):
+        state = copy.deepcopy(self.state)
+        state.name_mapping['module._module'] = 'module'
 
         self.assertEqual(parse_pybind_signature(state, [],
             'foo(a: module._module.Foo, b: typing.Tuple[int, module._module.Bar]) -> module._module.Baz'),
