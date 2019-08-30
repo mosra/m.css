@@ -1708,12 +1708,12 @@ def extract_data_doc(state: State, parent, entry: Empty):
 
     return out
 
-def render(config, template: str, page, env: jinja2.Environment):
+def render(*, config, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
     template = env.get_template(template)
-    rendered = template.render(page=page,
-        URL=page.url,
-        SEARCHDATA_FORMAT_VERSION=searchdata_format_version, **config)
-    with open(os.path.join(config['OUTPUT'], page.filename), 'wb') as f:
+    rendered = template.render(URL=url,
+        SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
+        **config, **kwargs)
+    with open(os.path.join(config['OUTPUT'], filename), 'wb') as f:
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with
         # patching test files to include a trailing newline to make Git
@@ -1796,7 +1796,12 @@ def render_module(state: State, path, module, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(state.config, 'module.html', page, env)
+    render(config=state.config,
+        template='module.html',
+        filename=page.filename,
+        url=page.url,
+        env=env,
+        page=page)
 
     # Call all scope exit hooks last
     for hook in state.hooks_post_scope:
@@ -1892,7 +1897,12 @@ def render_class(state: State, path, class_, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(state.config, 'class.html', page, env)
+    render(config=state.config,
+        template='class.html',
+        filename=page.filename,
+        url=page.url,
+        env=env,
+        page=page)
 
     # Call all scope exit hooks last
     for hook in state.hooks_post_scope:
@@ -2102,7 +2112,12 @@ def render_page(state: State, path, input_filename, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(state.config, 'page.html', page, env)
+    render(config=state.config,
+        template='page.html',
+        filename=page.filename,
+        url=page.url,
+        env=env,
+        page=page)
 
 def is_html_safe(string):
     return '<' not in string and '>' not in string and '&' not in string and '"' not in string and '\'' not in string
@@ -2370,16 +2385,13 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     index.classes = class_index
     index.pages = page_index
     for file in special_pages[1:]: # exclude index
-        template = env.get_template(file + '.html')
         filename, url = config['URL_FORMATTER'](EntryType.SPECIAL, [file])
-        rendered = template.render(index=index, URL=url, **config)
-        with open(os.path.join(config['OUTPUT'], filename), 'wb') as f:
-            f.write(rendered.encode('utf-8'))
-            # Add back a trailing newline so we don't need to bother with
-            # patching test files to include a trailing newline to make Git
-            # happy. Can't use keep_trailing_newline because that'd add it
-            # also for nested templates :(
-            f.write(b'\n')
+        render(config=config,
+            template=file + '.html',
+            filename=filename,
+            url=url,
+            env=env,
+            index=index)
 
     # Create index.html if it was not provided by the user
     if 'index.rst' not in [os.path.basename(i) for i in config['INPUT_PAGES']]:
@@ -2391,7 +2403,12 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         page.filename = filename
         page.url = url
         page.breadcrumb = [(config['PROJECT_TITLE'], url)]
-        render(config, 'page.html', page, env)
+        render(config=config,
+            template='page.html',
+            filename=page.filename,
+            url=page.url,
+            env=env,
+            page=page)
 
     if not state.config['SEARCH_DISABLED']:
         logging.debug("building search data for {} symbols".format(len(state.search)))
