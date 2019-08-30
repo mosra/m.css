@@ -282,7 +282,7 @@ the markup. Example:
     .. py:data:: mymodule.ALMOST_PI
         :summary: :math:`\pi`, but *less precise*.
 
-By default, unlike docstrings, the :py:`:summary:` is interpreted as
+By default, unlike docstrings, the :rst:`:summary:` is interpreted as
 :abbr:`reST <reStructuredText>`, which means you can keep the docstring
 formatting simpler (for display inside IDEs or via the builtin :py:`help()`),
 while supplying an alternative and more complex-formatted summary for the
@@ -290,12 +290,32 @@ actual rendered docs. It's however possible to enable
 :abbr:`reST <reStructuredText>` parsing for docstrings as well --- see
 `Using parsed docstrings`_ below.
 
-.. note-warning::
+.. block-warning:: Restrictions
 
-    Modules, classes and data described using these directives have to actually
-    exist (i.e., accessible via inspection) in given module. If given name
-    doesn't exist, a warning will be printed during processing and the
-    documentation ignored.
+    Names described using these directives have to actually exist (i.e., be
+    accessible via inspection) in given module. If a referenced name doesn't
+    exist, a warning will be printed during processing and its documentation
+    ignored.
+
+    Similarly, documentation supplied using these directives *cannot* override
+    any inspected properties of the names it documents --- the type info,
+    function signatures, property mutability or default values can only be
+    specified through code itself. This is a design decision done in order to
+    ensure code and documentation stay in sync as much as possible. If you
+    *really* need to modify these for documentation purposes, you can do it
+    during the module import in the
+    `main configuration file <{filename}/documentation/python.rst#basic-usage>`_.
+    For example:
+
+    .. code:: py
+
+        import mymodule
+
+        # Due to various reasons, foo()'s annotated return type is `object`.
+        # Change it to `str` for the documentation.
+        mymodule.foo.__annotations__['return'] = str
+
+        INPUT_MODULES = [mymodule]
 
 The :rst:`.. py:function::` directive supports additional options ---
 :py:`:param <name>:` for documenting parameters and :py:`:return:` for
@@ -319,9 +339,10 @@ function signature will cause a warning. Example:
 
 .. block-success::  Referencing function parameters
 
-    What's also shown in the above snippet is the :rst:`:p:` directive. It
-    looks the same as if you would write just :rst:```overwrite_existing```,
-    but in addition it checks the parameter name against current function signature, emitting a warning in case of a mismatch. This is useful to
+    What's also shown in the above snippet is the :rst:`:p:` text role. It
+    looks the same as if you would write just ````overwrite_existing````,
+    but in addition it checks the parameter name against current function
+    signature, emitting a warning in case of a mismatch. This is useful to
     ensure the documentation doesn't get out of sync with the actual signature.
 
 For overloaded functions (such as those coming from pybind11), it's possible to
