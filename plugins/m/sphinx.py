@@ -518,7 +518,9 @@ def merge_inventories(name_map, **kwargs):
     for type_, data_internal in internal_inventory.items():
         data = intersphinx_inventory.setdefault(type_, {})
         for path, value in data_internal.items():
-            assert path not in data
+            # Ignore duplicate things (such as `index` etc.)
+            # TODO: solve better
+            if path in data: continue
             data[path] = value
 
     # Save the internal inventory, if requested. Again basically a copy of
