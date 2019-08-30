@@ -50,7 +50,8 @@ even from a summary.</dd>
           <h2><a href="#enums">Enums</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">class <a href="#Enum" class="m-doc">Enum</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#Enum-VALUE" class="m-doc">VALUE</a> = 3</span>
+              <span class="m-doc-wrap-bumper">class <a href="#Enum" class="m-doc">Enum</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#Enum-VALUE" class="m-doc">VALUE</a> = 3
+              <a href="#Enum-ANOTHER" class="m-doc">ANOTHER</a> = 4</span>
             </dt>
             <dd>This enum has a <em>serious</em> docstring. <a class="m-doc" href="content_parse_docstrings.html#Enum-VALUE">VALUE</a> works from a summary.</dd>
           </dl>
@@ -90,12 +91,19 @@ even from a summary.</dd>
                 <tr>
                   <td><a href="#Enum-VALUE" id="Enum-VALUE" class="m-doc-self">VALUE</a></td>
                   <td>
-                  <p>Tho enum value docs are unfortunately *not* processed.</p>
+<p>Enum value docstrings are <em>processed</em> as well.</p>
+<p>The <a class="m-doc" href="content_parse_docstrings.html#Enum-ANOTHER">ANOTHER</a> value is documented from within the <a class="m-doc" href="content_parse_docstrings.html#Enum">Enum</a> itself.</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#Enum-ANOTHER" id="Enum-ANOTHER" class="m-doc-self">ANOTHER</a></td>
+                  <td>
+<p>Values can be documented from a docstring, too.</p>
                   </td>
                 </tr>
               </tbody>
             </table>
-<p>And property <strong>details</strong> as well.</p>
+<p>And enum <strong>details</strong> as well.</p>
           </div></section>
         </section>
         <section>

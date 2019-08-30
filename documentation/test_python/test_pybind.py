@@ -231,7 +231,9 @@ class Signatures(BaseInspectTestCase):
 class Enums(BaseInspectTestCase):
     def test(self):
         self.run_python({
-            'PYBIND11_COMPATIBILITY': True
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
+            'PYBIND11_COMPATIBILITY': True,
         })
         self.assertEqual(*self.actual_expected_contents('pybind_enums.html'))
 

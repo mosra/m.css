@@ -88,8 +88,14 @@
         add any detailed block.
 
 .. py:enum:: content.EnumWithSummary
+    :value ANOTHER: This value is documented from within the ``enum``
+        directive...
 
     And this is detailed docs added to the docstring summary. :ref:`VALUE`!!
+
+.. py:enumvalue:: content.EnumWithSummary.THIRD
+
+    ... while this comes from the ``enumvalue`` directive.
 
 .. py:function:: content.foo
     :summary: This overwrites the docstring for :ref:`foo()`, but doesn't

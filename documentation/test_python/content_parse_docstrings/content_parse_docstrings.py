@@ -20,11 +20,17 @@ class Class:
 class Enum(enum.Enum):
     """This enum has a *serious* docstring. :ref:`VALUE` works from a summary.
 
-    And property **details** as well."""
+    :value ANOTHER: Values can be documented from a docstring, too.
+
+    And enum **details** as well."""
 
     VALUE = 3
+    ANOTHER = 4
 
-Enum.VALUE.__doc__ = "Tho enum value docs are unfortunately *not* processed."
+Enum.VALUE.__doc__ = """Enum value docstrings are *processed* as well.
+
+The :ref:`ANOTHER` value is documented from within the :ref:`Enum` itself.
+"""
 
 def function(a: str, b: int) -> float:
     """This :ref:`function()` has a *serious* docstring.

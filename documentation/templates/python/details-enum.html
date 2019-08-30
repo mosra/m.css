@@ -13,8 +13,8 @@
                 <tr>
                   <td><a href="#{{ value.id }}" id="{{ value.id }}" class="m-doc-self">{{ value.name }}</a></td>
                   <td>
-                  {% if value.summary %}
-                  <p>{{ value.summary }}</p>
+                  {% if value.content %}
+{{ value.content }}
                   {% endif %}
                   </td>
                 </tr>

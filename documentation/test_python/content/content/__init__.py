@@ -68,8 +68,13 @@ class EnumWithSummary(enum.Enum):
 
     VALUE = 0
     ANOTHER = 1
+    THIRD = 3
 
-EnumWithSummary.VALUE.__doc__ = "A value"
+EnumWithSummary.VALUE.__doc__ = """Value docs where this is treated as summary.
+
+And this as detailed docs by the raw docstring parser, but the theme doesn't
+distinguish between them so they get merged together.
+"""
 
 def foo(a, b):
     """This summary is not shown either"""

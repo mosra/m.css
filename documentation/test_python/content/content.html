@@ -72,7 +72,8 @@ tho.</p>
 add any detailed block.</dd>
             <dt>
               <span class="m-doc-wrap-bumper">class <a href="#EnumWithSummary" class="m-doc">EnumWithSummary</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#EnumWithSummary-VALUE" class="m-doc">VALUE</a> = 0
-              <a href="#EnumWithSummary-ANOTHER" class="m-doc">ANOTHER</a> = 1</span>
+              <a href="#EnumWithSummary-ANOTHER" class="m-doc">ANOTHER</a> = 1
+              <a href="#EnumWithSummary-THIRD" class="m-doc">THIRD</a> = 3</span>
             </dt>
             <dd>This summary is preserved</dd>
           </dl>
@@ -151,12 +152,22 @@ add any detailed block.</dd>
                 <tr>
                   <td><a href="#EnumWithSummary-VALUE" id="EnumWithSummary-VALUE" class="m-doc-self">VALUE</a></td>
                   <td>
-                  <p>A value</p>
+<p>Value docs where this is treated as summary.</p>
+<p>And this as detailed docs by the raw docstring parser, but the theme doesn&#x27;t
+distinguish between them so they get merged together.</p>
                   </td>
                 </tr>
                 <tr>
                   <td><a href="#EnumWithSummary-ANOTHER" id="EnumWithSummary-ANOTHER" class="m-doc-self">ANOTHER</a></td>
                   <td>
+<p>This value is documented from within the <code>enum</code>
+directive...</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="#EnumWithSummary-THIRD" id="EnumWithSummary-THIRD" class="m-doc-self">THIRD</a></td>
+                  <td>
+<p>... while this comes from the <code>enumvalue</code> directive.</p>
                   </td>
                 </tr>
               </tbody>

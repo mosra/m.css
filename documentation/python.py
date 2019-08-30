@@ -179,6 +179,7 @@ class State:
         self.module_docs: Dict[str, Dict[str, str]] = {}
         self.class_docs: Dict[str, Dict[str, str]] = {}
         self.enum_docs: Dict[str, Dict[str, str]] = {}
+        self.enum_value_docs: Dict[str, Dict[str, str]] = {}
         self.function_docs: Dict[str, Dict[str, str]] = {}
         self.property_docs: Dict[str, Dict[str, str]] = {}
         self.data_docs: Dict[str, Dict[str, str]] = {}
@@ -1127,15 +1128,12 @@ def extract_class_doc(state: State, entry: Empty):
     return out
 
 def extract_enum_doc(state: State, entry: Empty):
-    # Call all scope enter hooks first
-    for hook in state.hooks_pre_scope:
-        hook(type=entry.type, path=entry.path)
-
     out = Empty()
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.ENUM, entry.path[-1:])
     out.values = []
     out.has_value_details = False
+    out.has_details = False
 
     # The happy case
     if issubclass(entry.object, enum.Enum):
@@ -1144,8 +1142,6 @@ def extract_enum_doc(state: State, entry: Empty):
             docstring = ''
         else:
             docstring = entry.object.__doc__
-        out.summary, out.content = extract_docs(state, state.enum_docs, entry.type, entry.path, docstring)
-        out.has_details = bool(out.content)
 
         out.base = extract_type(entry.object.__base__)
         if out.base: out.base_link = make_name_link(state, entry.path, out.base)
@@ -1158,17 +1154,12 @@ def extract_enum_doc(state: State, entry: Empty):
             value.value = html.escape(repr(i.value))
 
             # Value doc gets by default inherited from the enum, that's useless
+            # This gets further processed below.
             if i.__doc__ == entry.object.__doc__:
-                docstring = ''
+                value.content = ''
             else:
-                docstring = i.__doc__
+                value.content = i.__doc__
 
-            # TODO: external summary for enum values
-            value.summary = extract_docs(state, {}, EntryType.ENUM_VALUE, [], docstring, summary_only=True)
-
-            if value.summary:
-                out.has_details = True
-                out.has_value_details = True
             out.values += [value]
 
     # Pybind11 enums are ... different
@@ -1178,9 +1169,9 @@ def extract_enum_doc(state: State, entry: Empty):
         # Pybind 2.4 puts enum value docs inside the docstring. We don't parse
         # that yet and it adds clutter to the output (especially if the values
         # aren't documented), so cut that away
-        # TODO: implement this
-        out.summary, out.content = extract_docs(state, state.enum_docs, entry.type, entry.path, entry.object.__doc__.partition('\n\n')[0])
-        out.has_details = bool(out.content)
+        # TODO: implement this and populate each value.content
+        docstring = entry.object.__doc__.partition('\n\n')[0]
+
         out.base = None
 
         for name, v in entry.object.__members__.items():
@@ -1188,9 +1179,32 @@ def extract_enum_doc(state: State, entry: Empty):
             value. name = name
             value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, entry.path[-1:] + [name])
             value.value = int(v)
-            # TODO: external summary for enum values
-            value.summary = ''
+            value.content = ''
             out.values += [value]
+
+    # Call all scope enter before rendering the docs
+    for hook in state.hooks_pre_scope:
+        hook(type=entry.type, path=entry.path)
+
+    out.summary, out.content = extract_docs(state, state.enum_docs, entry.type, entry.path, docstring)
+    if out.content: out.has_details = True
+
+    for value in out.values:
+        # Keeping the same scope for the value docs as for the outer scope.
+        # There's no distinction between summary and content for enum
+        # values so put that together in one. The summary is only produced by
+        # the raw docstring parser, the m.sphinx directives always produce only
+        # the content.
+        summary, value.content = extract_docs(state, state.enum_value_docs, EntryType.ENUM_VALUE, entry.path + [value.name], value.content)
+        if summary:
+            value.content = '<p>{}</p>\n{}'.format(summary, value.content).rstrip()
+        if value.content:
+            out.has_details = True
+            out.has_value_details = True
+
+    # Call all scope exit hooks after
+    for hook in state.hooks_post_scope:
+        hook(type=entry.type, path=entry.path)
 
     if not state.config['SEARCH_DISABLED']:
         page_url = state.name_map['.'.join(entry.path[:-1])].url
@@ -1209,10 +1223,6 @@ def extract_enum_doc(state: State, entry: Empty):
             result.prefix = entry.path
             result.name = value.name
             state.search += [result]
-
-    # Call all scope exit hooks last
-    for hook in state.hooks_post_scope:
-        hook(type=entry.type, path=entry.path)
 
     return out
 
@@ -2242,6 +2252,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             module_doc_contents=state.module_docs,
             class_doc_contents=state.class_docs,
             enum_doc_contents=state.enum_docs,
+            enum_value_doc_contents=state.enum_value_docs,
             function_doc_contents=state.function_docs,
             property_doc_contents=state.property_docs,
             data_doc_contents=state.data_docs,

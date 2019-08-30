@@ -17,7 +17,7 @@ enum SixtyfourBitFlag: std::uint64_t {
 PYBIND11_MODULE(pybind_enums, m) {
     m.doc() = "pybind11 enum parsing";
 
-    py::enum_<MyEnum>(m, "MyEnum", "An enum without value docs :(")
+    py::enum_<MyEnum>(m, "MyEnum", "An enum with external value docs, at least")
         .value("First", MyEnum::First)
         .value("Second", MyEnum::Second)
         .value("Third", MyEnum::Third)

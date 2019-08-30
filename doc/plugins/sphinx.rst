@@ -253,15 +253,16 @@ doing the following will ensure it can be easily used:
 ========================================================
 
 In the Python doc theme, the :rst:`.. py:module::`, :rst:`.. py:class::`,
-:rst:`.. py:enum::`, :rst:`.. py:function::`, :rst:`.. py:property::` and
-:rst:`.. py:data::` directives provide a way to supply module, class, enum,
-function / method, property and data documentation content.
+:rst:`.. py:enum::`, :rst:`.. py:enumvalue::`, :rst:`.. py:function::`,
+:rst:`.. py:property::` and :rst:`.. py:data::` directives provide a way to
+supply module, class, enum, function / method, property and data documentation
+content.
 
 Directive option is the name to document, directive contents are the actual
-contents; in addition all the directives have the :py:`:summary:` option that
-can override the docstring extracted using inspection. No restrictions are made
-on the contents, it's also possible to make use of any additional plugins in
-the markup. Example:
+contents; in addition all directives except :rst:`.. py:enumvalue::` have an
+:py:`:summary:` option that can override the docstring extracted using
+inspection. No restrictions are made on the contents, it's also possible to
+make use of any additional plugins in the markup. Example:
 
 .. code:: rst
 
@@ -354,11 +355,30 @@ the :rst:`.. py:data::` / :rst:`.. py:property::` directives `described <#data>`
         Provides a key/value storage with :math:`\mathcal{O}(\log{}n)`-complexity
         access.
 
-`Enums`_
---------
+`Enums and enum values`_
+------------------------
 
-Use :rst:`.. py:enum::` for documenting enums. This directive doesn't support
-any additional options besides :rst:`:summary:`.
+Use :rst:`.. py:enum::` for documenting enums. Values can be documented either
+using the :rst:`.. py:enumvalue::` directive, or in case of short descriptions,
+conveniently directly in the :rst:`.. py:enum::` directive via
+:py:`:value <name>:` options. Example:
+
+.. code:: rst
+
+    .. py:enum:: mymodule.MemoryUsage
+        :summary: Specifies memory usage configuration
+        :value LOW: Optimized for low-memory big-storage devices, such as
+            refrigerators.
+        :value HIGH: The memory usage will make you angry.
+
+    .. py:enumvalue:: mymodule.MemoryUsage.DEFAULT
+
+        Default memory usage. Behavior depends on platform:
+
+        -   On low-memory devices such as refrigerators equivalent to :ref:`LOW`.
+        -   On high-end desktop PCs, this is equivalent to :ref:`HIGH`.
+        -   On laptops, this randomly chooses between the two values based
+            Murphy's law. Enjoy the battery life when you need it the least.
 
 `Functions`_
 ------------

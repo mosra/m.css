@@ -49,6 +49,7 @@ current_referer_path = None
 current_param_names = None
 module_doc_output = None
 class_doc_output = None
+enum_value_doc_output = None
 enum_doc_output = None
 function_doc_output = None
 property_doc_output = None
@@ -124,12 +125,35 @@ class PyEnum(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     required_arguments = 1
-    option_spec = {'summary': directives.unchanged}
+    option_spec = {'summary': directives.unchanged,
+                   'value': directives_unchanged_list}
 
     def run(self):
+        # Check that values are parsed properly, turn them into a dict. This
+        # will blow up if the param name is not specified.
+        values = {}
+        for name, summary in self.options.get('value', []):
+            if name in values: raise KeyError("duplicate param {}".format(name))
+            values[name] = summary
+
         output = enum_doc_output.setdefault(self.arguments[0], {})
         if self.options.get('summary'):
             output['summary'] = self.options['summary']
+        if self.content:
+            output['content'] = '\n'.join(self.content)
+
+        for name, content in values.items():
+            enum_value_doc_output.setdefault('{}.{}'.format(self.arguments[0], name), {})['content'] = content
+
+        return []
+
+class PyEnumValue(rst.Directive):
+    final_argument_whitespace = True
+    has_content = True
+    required_arguments = 1
+
+    def run(self):
+        output = enum_value_doc_output.setdefault(self.arguments[0], {})
         if self.content:
             output['content'] = '\n'.join(self.content)
         return []
@@ -372,9 +396,12 @@ def consume_docstring(type, path: List[str], signature: Optional[str], doc: str)
     elif type.name == 'CLASS':
         source = '.. py:class:: '
         doc_output = class_doc_output
-    elif type.name == 'ENUM': # TODO: enum values?
+    elif type.name == 'ENUM':
         source = '.. py:enum:: '
         doc_output = enum_doc_output
+    elif type.name == 'ENUM_VALUE':
+        source = '.. py:enumvalue:: '
+        doc_output = enum_value_doc_output
     elif type.name in ['FUNCTION', 'OVERLOADED_FUNCTION']:
         source = '.. py:function:: '
         doc_output = function_doc_output
@@ -391,10 +418,12 @@ def consume_docstring(type, path: List[str], signature: Optional[str], doc: str)
     path_signature_str = '.'.join(path) + (signature if signature else '')
     source += path_signature_str + '\n'
 
-    # Assuming first paragraph is summary, turn it into a :summary: directive
-    # option with successive lines indented
-    summary, _, doc = doc.partition('\n\n')
-    source += '    :summary: {}\n'.format(summary.replace('\n', '\n        '))
+    # Everything except enum values has a separate summary. Assuming first
+    # paragraph is a summary, turn it into a :summary: directive option with
+    # successive lines indented.
+    if type.name != 'ENUM_VALUE':
+        summary, _, doc = doc.partition('\n\n')
+        source += '    :summary: {}\n'.format(summary.replace('\n', '\n        '))
 
     # The next paragraph could be option list. If that's so, indent those as
     # well, append
@@ -513,12 +542,13 @@ def merge_inventories(name_map, **kwargs):
                     f.write(compressor.compress('{} {} 2 {} {}\n'.format(path, type_, url, title).encode('utf-8')))
             f.write(compressor.flush())
 
-def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_scope, hooks_post_scope, hooks_docstring, hooks_post_run, **kwargs):
-    global current_referer_path, module_doc_output, class_doc_output, enum_doc_output, function_doc_output, property_doc_output, data_doc_output, inventory_filename
+def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_doc_contents, enum_value_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents, hooks_post_crawl, hooks_pre_scope, hooks_post_scope, hooks_docstring, hooks_post_run, **kwargs):
+    global current_referer_path, module_doc_output, class_doc_output, enum_doc_output, enum_value_doc_output, function_doc_output, property_doc_output, data_doc_output, inventory_filename
     current_referer_path = []
     module_doc_output = module_doc_contents
     class_doc_output = class_doc_contents
     enum_doc_output = enum_doc_contents
+    enum_value_doc_output = enum_value_doc_contents
     function_doc_output = function_doc_contents
     property_doc_output = property_doc_contents
     data_doc_output = data_doc_contents
@@ -530,6 +560,7 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
     rst.directives.register_directive('py:module', PyModule)
     rst.directives.register_directive('py:class', PyClass)
     rst.directives.register_directive('py:enum', PyEnum)
+    rst.directives.register_directive('py:enumvalue', PyEnumValue)
     rst.directives.register_directive('py:function', PyFunction)
     rst.directives.register_directive('py:property', PyProperty)
     rst.directives.register_directive('py:data', PyData)

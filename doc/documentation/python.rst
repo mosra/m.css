@@ -780,36 +780,38 @@ plugin might or might not use them.
 
 .. class:: m-table
 
-=========================== ===================================================
-Keyword argument            Content
-=========================== ===================================================
-:py:`mcss_settings`         Dict containing all m.css settings
-:py:`jinja_environment`     Jinja2 environment. Useful for adding new filters
-                            etc.
-:py:`module_doc_contents`   Module documentation contents
-:py:`class_doc_contents`    Class documentation contents
-:py:`enum_doc_contents`     Enum documentation contents
-:py:`function_doc_contents` Function documentation contents
-:py:`property_doc_contents` Property documentation contents
-:py:`data_doc_contents`     Data documentation contents
-:py:`hooks_post_crawl`      Hooks to call after the initial name crawl
-:py:`hooks_scope_enter`     Hooks to call on scope enter
-:py:`hooks_scope_exit`      Hooks to call on scope exit
-:py:`hooks_docstring`       Hooks to call when parsing a docstring
-:py:`hooks_pre_page`        Hooks to call before each page gets rendered
-:py:`hooks_post_run`        Hooks to call at the very end of the script run
-=========================== ===================================================
+=============================== ===============================================
+Keyword argument                Content
+=============================== ===============================================
+:py:`mcss_settings`             Dict containing all m.css settings
+:py:`jinja_environment`         Jinja2 environment. Useful for adding new
+                                filters etc.
+:py:`module_doc_contents`       Module documentation contents
+:py:`class_doc_contents`        Class documentation contents
+:py:`enum_doc_contents`         Enum documentation contents
+:py:`enum_value_doc_contents`   Enum documentation contents
+:py:`function_doc_contents`     Function documentation contents
+:py:`property_doc_contents`     Property documentation contents
+:py:`data_doc_contents`         Data documentation contents
+:py:`hooks_post_crawl`          Hooks to call after the initial name crawl
+:py:`hooks_scope_enter`         Hooks to call on scope enter
+:py:`hooks_scope_exit`          Hooks to call on scope exit
+:py:`hooks_docstring`           Hooks to call when parsing a docstring
+:py:`hooks_pre_page`            Hooks to call before each page gets rendered
+:py:`hooks_post_run`            Hooks to call at the very end of the script run
+=============================== ===============================================
 
-The :py:`module_doc_contents`, :py:`class_doc_contents`,
-:py:`function_doc_contents`, :py:`property_doc_contents` and
-:py:`data_doc_contents` variables are :py:`Dict[str, Dict[str, str]]`, where
-the first level is a name and second level are key/value pairs of the actual
-HTML documentation content. Plugins that parse extra documentation inputs (such
-as `m.sphinx`_) are supposed to add to the dict, which is then used to fill the
-actual documentation contents. The following corresponds to the documentation
-source shown in the `External documentation content`_ section below. Note that
-the dict can already have existing entries added from elsewhere, so it's
-important to avoid fully overwriting it:
+The :py:`module_doc_contents`, :py:`class_doc_contents`, :py:`enum_doc_contents`,
+:py:`enum_value_doc_contents`, :py:`function_doc_contents`,
+:py:`property_doc_contents` and :py:`data_doc_contents` variables are
+:py:`Dict[str, Dict[str, str]]`, where the first level is a name and second
+level are key/value pairs of the actual HTML documentation content. Plugins
+that parse extra documentation inputs (such as `m.sphinx`_) are supposed to add
+to the dict, which is then used to fill the actual documentation contents. The
+following corresponds to the documentation source shown in the
+`External documentation content`_ section below. Note that the dict can already
+have existing entries added from elsewhere, so it's important to avoid fully
+overwriting it:
 
 .. code:: py
 
@@ -1160,7 +1162,7 @@ Property                    Description
 :py:`value.id`              Value ID [5]_
 :py:`value.value`           Value value. Set to :py:`None` if no value is
                             available.
-:py:`value.summary`         Value doc summary
+:py:`value.content`         Value documentation, if any
 =========================== ===================================================
 
 `Function properties`_
