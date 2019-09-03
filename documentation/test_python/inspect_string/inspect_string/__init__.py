@@ -169,6 +169,11 @@ A_ZERO_VALUE = 0
 A_FALSE_VALUE = False
 A_NONE_VALUE = None
 
+# This value is too long and should be completely omitted
+LARGE_VALUE_WILL_BE_AN_ELLIPSIS = """Lorem ipsum dolor sit amet, consectetur
+    adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+    magna aliqua."""
+
 _PRIVATE_CONSTANT = -3
 
 foo = Foo()

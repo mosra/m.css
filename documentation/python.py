@@ -847,8 +847,10 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     elif state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__'):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, str(value).partition('.')[2]))
     elif '__repr__' in type(value).__dict__:
+        rendered = repr(value)
         # TODO: tuples of non-representable values will still be ugly
-        return html.escape(repr(value))
+        # If the value is too large, return just an ellipsis
+        return html.escape(rendered) if len(rendered) < 128 else '…'
     else:
         return None
 
