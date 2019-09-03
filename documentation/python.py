@@ -27,6 +27,7 @@
 import argparse
 import copy
 import docutils
+import docutils.core
 import docutils.utils
 import enum
 import urllib.parse

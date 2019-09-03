@@ -27,7 +27,6 @@ import gzip
 from docutils import nodes
 from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
-from pelican import signals
 
 settings = {}
 
@@ -66,6 +65,9 @@ def register_mcss(mcss_settings, **kwargs):
     rst.roles.register_local_role('filesize', filesize)
     rst.roles.register_local_role('filesize-gz', filesize_gz)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _pelican_configure(pelicanobj):
     settings = {
         'INPUT': os.path.join(os.getcwd(), pelicanobj.settings['PATH'])
@@ -73,4 +75,6 @@ def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=settings)
 
 def register(): # for Pelican
-    signals.initialized.connect(_pelican_configure)
+    import pelican.signals
+
+    pelican.signals.initialized.connect(_pelican_configure)

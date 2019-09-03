@@ -35,8 +35,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 
-import pelican.signals
-
 mpl.rcParams['font.size'] = '11'
 mpl.rcParams['axes.titlesize'] = '13'
 
@@ -274,9 +272,14 @@ def register_mcss(mcss_settings, hooks_pre_page, **kwargs):
 
     rst.directives.register_directive('plot', Plot)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=pelicanobj.settings, hooks_pre_page=[])
 
 def register(): # for Pelican
+    import pelican.signals
+
     pelican.signals.initialized.connect(_pelican_configure)
     pelican.signals.content_object_init.connect(new_page)

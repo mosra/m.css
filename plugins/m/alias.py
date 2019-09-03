@@ -27,7 +27,6 @@
 
 import os
 import logging
-from pelican import signals
 from urllib.parse import urljoin
 
 logger = logging.getLogger(__name__)
@@ -69,7 +68,12 @@ class AliasGenerator:
 def register_mcss(**kwargs):
     assert not "This plugin is Pelican-only" # pragma: no cover
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _pelican_get_generators(generators): return AliasGenerator
 
 def register(): # for Pelican
-    signals.get_generators.connect(_pelican_get_generators)
+    import pelican.signals
+
+    pelican.signals.get_generators.connect(_pelican_get_generators)

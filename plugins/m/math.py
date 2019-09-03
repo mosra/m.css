@@ -32,8 +32,6 @@ from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 
-import pelican.signals
-
 import latex2svg
 import latex2svgextra
 
@@ -159,10 +157,15 @@ def register_mcss(mcss_settings, hooks_pre_page, hooks_post_run, **kwargs):
     rst.directives.register_directive('math', Math)
     rst.roles.register_canonical_role('math', math)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _configure_pelican(pelicanobj):
     register_mcss(mcss_settings=pelicanobj.settings, hooks_pre_page=[], hooks_post_run=[])
 
 def register():
+    import pelican.signals
+
     pelican.signals.initialized.connect(_configure_pelican)
     pelican.signals.finalized.connect(save_cache)
     pelican.signals.content_object_init.connect(new_page)

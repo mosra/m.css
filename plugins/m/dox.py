@@ -27,7 +27,6 @@ from docutils import nodes, utils
 from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
 
-from pelican import signals
 import xml.etree.ElementTree as ET
 import os
 import re
@@ -174,6 +173,9 @@ def register_mcss(mcss_settings, **kwargs):
     init(input=mcss_settings['INPUT'],
          tagfiles=mcss_settings.get('M_DOX_TAGFILES', []))
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _pelican_configure(pelicanobj):
     settings = {
         # For backwards compatibility, the input directory is pelican's CWD
@@ -185,4 +187,6 @@ def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=settings)
 
 def register(): # for Pelican
-    signals.initialized.connect(_pelican_configure)
+    import pelican.signals
+
+    pelican.signals.initialized.connect(_pelican_configure)

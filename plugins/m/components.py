@@ -425,4 +425,7 @@ def register_mcss(**kwargs):
     rst.roles.register_canonical_role('label-flat-info', label_flat_info)
     rst.roles.register_canonical_role('label-flat-dim', label_flat_dim)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 register = register_mcss # for Pelican

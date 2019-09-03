@@ -49,4 +49,7 @@ def link(name, rawtext, text, lineno, inliner, options={}, content=[]):
 def register_mcss(**kwargs):
     rst.roles.register_local_role('link', link)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 register = register_mcss # for Pelican

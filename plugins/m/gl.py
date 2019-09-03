@@ -77,4 +77,7 @@ def register_mcss(**kwargs):
     rst.roles.register_local_role('glfn', glfn)
     rst.roles.register_local_role('glfnext', glfnext)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 register = register_mcss # for Pelican

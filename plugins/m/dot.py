@@ -22,7 +22,6 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-import pelican
 import re
 import subprocess
 
@@ -111,8 +110,13 @@ def register_mcss(mcss_settings, **kwargs):
     rst.directives.register_directive('graph', Graph)
     rst.directives.register_directive('strict-graph', StrictGraph)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=pelicanobj.settings)
 
 def register(): # for Pelican
+    import pelican.signals
+
     pelican.signals.initialized.connect(_pelican_configure)

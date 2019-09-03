@@ -215,4 +215,7 @@ def register_mcss(**kwargs):
     rst.directives.register_directive('include', Include)
     rst.roles.register_canonical_role('code', code)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 register = register_mcss # for Pelican

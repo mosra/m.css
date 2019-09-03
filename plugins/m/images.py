@@ -30,8 +30,6 @@ from docutils.parsers.rst import directives, states
 from docutils.nodes import fully_normalize_name, whitespace_normalize_name
 from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
-from pelican import signals
-from pelican import StaticGenerator
 
 # If Pillow is not available, it's not an error unless one uses the image grid
 # functionality (or :scale: option for Image)
@@ -289,6 +287,9 @@ def register_mcss(mcss_settings, **kwargs):
     rst.directives.register_directive('figure', Figure)
     rst.directives.register_directive('image-grid', ImageGrid)
 
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
+
 def _pelican_configure(pelicanobj):
     settings = {
         'INPUT': pelicanobj.settings['PATH'],
@@ -299,4 +300,6 @@ def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=settings)
 
 def register(): # for Pelican
-    signals.initialized.connect(_pelican_configure)
+    import pelican.signals
+
+    pelican.signals.initialized.connect(_pelican_configure)

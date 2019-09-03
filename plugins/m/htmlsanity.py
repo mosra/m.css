@@ -718,16 +718,18 @@ def register_mcss(mcss_settings, jinja_environment, **kwargs):
     jinja_environment.filters['hyphenate'] = hyphenate
     jinja_environment.filters['dehyphenate'] = dehyphenate
 
-# Below is only Pelican-specific functionality and plugin registration
+# Below is only Pelican-specific functionality. If Pelican is not found, these
+# do nothing.
 try:
     import pelican.signals
     from pelican.readers import RstReader
+
+    class PelicanSaneRstReader(RstReader):
+        writer_class = SaneHtmlWriter
+        field_body_translator_class = _SaneFieldBodyTranslator
+
 except ImportError:
     pass
-
-class PelicanSaneRstReader(RstReader):
-    writer_class = SaneHtmlWriter
-    field_body_translator_class = _SaneFieldBodyTranslator
 
 pelican_settings = {}
 
