@@ -291,6 +291,8 @@ plugin assumes presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
 .. code:: python
 
     PLUGINS += ['m-htmlsanity', 'm.code']
+    M_CODE_FILTERS_PRE = []
+    M_CODE_FILTERS_POST = []
 
 For the Python doc theme, it's enough to mention it in :py:`PLUGINS`. The
 `m.htmlsanity`_ plugin is available always, no need to mention it explicitly:
@@ -445,3 +447,81 @@ immediately followed by background color specification (the
 See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
 plugin for details about code figures using the :rst:`.. code-figure::`
 directive.
+
+`Filters`_
+----------
+
+It's possible to supply filters that get applied both before and after a
+code snippet is rendered using the :py:`M_CODE_FILTERS_PRE` and
+:py:`M_CODE_FILTERS_POST` options. It's a dict with keys being the lexer
+name [1]_ and values being filter functions. Each function that gets string as
+an input and is expected to return a modified string. In the following example,
+all CSS code snippets have the hexadecimal color literals annotated with a
+`color swatch <{filename}/css/components.rst#color-swatches-in-code-snippets>`_:
+
+.. code:: py
+    :class: m-console-wrap
+
+    import re
+
+    _css_colors_src = re.compile(r"""<span class="mh">#(?P<hex>[0-9a-f]{6})</span>""")
+    _css_colors_dst = r"""<span class="mh">#\g<hex><span class="m-code-color" style="background-color: #\g<hex>;"></span></span>"""
+
+    M_CODE_FILTERS_POST = {
+        'CSS': lambda code: _css_colors_src.sub(_css_colors_dst, code)
+    }
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. code:: css
+
+            p.green {
+              color: #3bd267;
+            }
+
+    .. code:: css
+
+        p.green {
+          color: #3bd267;
+        }
+
+In the above case, the filter gets applied globally to all code snippets of
+given language. Sometimes it might be desirable to apply a filter only to
+specific code snippet --- in that case, the dict key is a tuple of
+:py:`(lexer, filter)` where the second item is a filter name. This filter name
+is then referenced from the :rst:`:filters:` option of the :rst:`.. code::` and
+:rst:`.. include::` directives as well as the inline :rst:`:code:` text role.
+Multiple filters can be specified when separated by spaces.
+
+.. code:: py
+
+    M_CODE_FILTERS_PRE = {
+        ('C++', 'codename'): lambda code: code.replace('DirtyMess', 'P300'),
+        ('C++', 'fix_typography'): lambda code: code.replace(' :', ':'),
+    }
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. code:: cpp
+            :filters: codename fix_typography
+
+            for(auto& a : DirtyMess::managedEntities()) {
+                // ...
+            }
+
+    .. code:: cpp
+        :filters: codename fix_typography
+
+        for(auto& a : DirtyMess::managedEntities()) {
+            // ...
+        }
+
+.. [1] In order to have an unique mapping, the filters can't use the aliases
+    --- for example C++ code can be highlighted using either ``c++`` or ``cpp``
+    as a language name and the dict would need to have an entry for each. An unique lexer name is the :py:`name` field used in the particular lexer
+    source, you can also see the names in the language dropdown on the
+    `official website <http://pygments.org/demo/>`_.

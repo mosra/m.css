@@ -22,7 +22,15 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import re
+
 from . import PelicanPluginTestCase
+
+_css_colors_src = re.compile(r"""<span class="mh">#(?P<hex>[0-9a-f]{6})</span>""")
+_css_colors_dst = r"""<span class="mh">#\g<hex><span class="m-code-color" style="background-color: #\g<hex>;"></span></span>"""
+
+def _add_color_swatch(str):
+    return _css_colors_src.sub(_css_colors_dst, str)
 
 class Code(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
@@ -33,7 +41,16 @@ class Code(PelicanPluginTestCase):
             # Need Source Code Pro for code
             'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
                             'static/m-dark.css'],
-            'PLUGINS': ['m.htmlsanity', 'm.code']
+            'PLUGINS': ['m.htmlsanity', 'm.code'],
+            'M_CODE_FILTERS_PRE': {
+                'CSS': lambda str: str.replace(':', ': ').replace('{', ' {'),
+                ('CSS', 'lowercase'): lambda str: str.lower(),
+                ('CSS', 'uppercase'): lambda str: str.upper(), # not used
+            },
+            'M_CODE_FILTERS_POST': {
+                'CSS': _add_color_swatch,
+                ('CSS', 'replace_colors'): lambda str: str.replace('#c0ffee', '#3bd267')
+            },
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))

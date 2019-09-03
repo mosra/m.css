@@ -42,7 +42,10 @@ logger = logging.getLogger(__name__)
 
 import ansilexer
 
-def _highlight(code, language, options, is_block):
+filters_pre = None
+filters_post = None
+
+def _highlight(code, language, options, *, is_block, filters=[]):
     # Use our own lexer for ANSI
     if language == 'ansi':
         lexer = ansilexer.AnsiLexer()
@@ -63,8 +66,27 @@ def _highlight(code, language, options, is_block):
         formatter = ansilexer.HtmlAnsiFormatter(**options)
     else:
         formatter = HtmlFormatter(nowrap=True, **options)
+
+    global filters_pre
+    # First apply local pre filters, if any
+    for filter in filters:
+        f = filters_pre.get((lexer.name, filter))
+        if f: code = f(code)
+    # Then a global pre filter, if any
+    f = filters_pre.get(lexer.name)
+    if f: code = f(code)
+
     parsed = highlight(code, lexer, formatter).rstrip()
     if not is_block: parsed.lstrip()
+
+    global filters_post
+    # First apply local post filters, if any
+    for filter in filters:
+        f = filters_post.get((lexer.name, filter))
+        if f: parsed = f(parsed)
+    # Then a global post filter, if any
+    f = filters_post.get(lexer.name)
+    if f: parsed = f(parsed)
 
     return class_, parsed
 
@@ -74,7 +96,8 @@ class Code(Directive):
     final_argument_whitespace = True
     option_spec = {
         'hl_lines': directives.unchanged,
-        'class': directives.class_option
+        'class': directives.class_option,
+        'filters': directives.unchanged
     }
     has_content = True
 
@@ -87,7 +110,9 @@ class Code(Directive):
             classes += self.options['classes']
             del self.options['classes']
 
-        class_, highlighted = _highlight('\n'.join(self.content), self.arguments[0], self.options, is_block=True)
+        filters = self.options.pop('filters', '').split()
+
+        class_, highlighted = _highlight('\n'.join(self.content), self.arguments[0], self.options, is_block=True, filters=filters)
         classes += [class_]
 
         content = nodes.raw('', highlighted, format='html')
@@ -96,6 +121,11 @@ class Code(Directive):
         return [pre]
 
 class Include(docutils.parsers.rst.directives.misc.Include):
+    option_spec = {
+        **docutils.parsers.rst.directives.misc.Include.option_spec,
+        'filters': directives.unchanged
+    }
+
     def run(self):
         """
         Verbatim copy of docutils.parsers.rst.directives.misc.Include.run()
@@ -199,7 +229,9 @@ def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     # Not sure why language is duplicated in classes?
     if language in classes: classes.remove(language)
 
-    class_, highlighted = _highlight(utils.unescape(text), language, options, is_block=False)
+    filters = options.pop('filters', '').split()
+
+    class_, highlighted = _highlight(utils.unescape(text), language, options, is_block=False, filters=filters)
     classes += [class_]
 
     content = nodes.raw('', highlighted, format='html')
@@ -208,14 +240,29 @@ def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     return [node], []
 
 code.options = {'class': directives.class_option,
-                'language': directives.unchanged}
+                'language': directives.unchanged,
+                'filters': directives.unchanged}
 
-def register_mcss(**kwargs):
+def register_mcss(mcss_settings, **kwargs):
     rst.directives.register_directive('code', Code)
     rst.directives.register_directive('include', Include)
     rst.roles.register_canonical_role('code', code)
 
+    global filters_pre, filters_post
+    filters_pre = mcss_settings.get('M_CODE_FILTERS_PRE', {})
+    filters_post = mcss_settings.get('M_CODE_FILTERS_POST', {})
+
 # Below is only Pelican-specific functionality. If Pelican is not found, these
 # do nothing.
 
-register = register_mcss # for Pelican
+def _pelican_configure(pelicanobj):
+    settings = {}
+    for key in ['M_CODE_FILTERS_PRE', 'M_CODE_FILTERS_POST']:
+        if key in pelicanobj.settings: settings[key] = pelicanobj.settings[key]
+
+    register_mcss(mcss_settings=settings)
+
+def register(): # for Pelican
+    import pelican.signals
+
+    pelican.signals.initialized.connect(_pelican_configure)

@@ -22,6 +22,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import re
 import shutil
 import logging
 
@@ -186,6 +187,19 @@ M_SPHINX_INVENTORIES = [
 if not shutil.which('latex'):
     logging.warning("LaTeX not found, fallback to rendering math as code")
     M_MATH_RENDER_AS_CODE = True
+
+# Used by the m.code plugin docs
+
+_css_colors_src = re.compile(r"""<span class="mh">#(?P<hex>[0-9a-f]{6})</span>""")
+_css_colors_dst = r"""<span class="mh">#\g<hex><span class="m-code-color" style="background-color: #\g<hex>;"></span></span>"""
+
+M_CODE_FILTERS_PRE = {
+    ('C++', 'codename'): lambda code: code.replace('DirtyMess', 'P300::V1'),
+    ('C++', 'fix_typography'): lambda code: code.replace(' :', ':'),
+}
+M_CODE_FILTERS_POST = {
+    'CSS': lambda code: _css_colors_src.sub(_css_colors_dst, code)
+}
 
 DIRECT_TEMPLATES = ['archives']
 

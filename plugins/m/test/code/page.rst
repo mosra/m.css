@@ -47,3 +47,38 @@ Don't trim leading spaces in blocks:
             nope();
         return false;
     }
+
+`Filters`_
+==========
+
+.. role:: css(code)
+    :language: css
+
+Applied by default, adding typographically correct spaces before and a color
+swatch after --- and for inline as well: :css:`p{ color:#ff3366; }`
+
+.. code:: css
+
+    p{
+        color:#ff3366;
+    }
+
+.. role:: css-filtered(code)
+    :language: css
+    :filters: lowercase replace_colors
+
+Applied explicity and then by default --- and for inline as well:
+:css-filtered:`P{ COLOR:#C0FFEE; }`
+
+.. code:: css
+    :filters: lowercase replace_colors
+
+    P{
+        COLOR:#C0FFEE;
+    }
+
+Includes too:
+
+.. include:: style.css
+    :code: css
+    :filters: lowercase replace_colors
