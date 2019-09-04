@@ -1010,6 +1010,11 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
     elif isinstance(annotation, typing.TypeVar):
         return annotation.__name__, annotation.__name__
 
+    # Ellipsis -- print a literal `...`
+    # TODO: any chance to link this to python official docs?
+    elif annotation is ...:
+        return '...', '...'
+
     # If the annotation is from the typing module, it ... gets complicated. It
     # could be a "bracketed" type, in which case we want to recurse to its
     # types as well.

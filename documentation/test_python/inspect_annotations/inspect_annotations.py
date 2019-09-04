@@ -69,6 +69,9 @@ def annotation_callable(a: Callable[[float, int], str]):
 def annotation_callable_no_args(a: Callable[[], Dict[int, float]]):
     """Annotation with the Callable type w/o arguments"""
 
+def annotation_ellipsis(a: Callable[..., int], b: Tuple[str, ...]):
+    """Annotation with ellipsis"""
+
 # Only possible with native code now, https://www.python.org/dev/peps/pep-0570/
 #def positionals_only(positional_only, /, positional_kw):
     #"""Function with explicitly delimited positional args"""
