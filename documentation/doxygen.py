@@ -1492,9 +1492,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                        'tm': 'trade'}
             try:
                 entity = mapping[i.tag]
+                out.parsed += '&{};'.format(entity)
             except:
                 logging.warning("{}: ignoring <{}> in desc".format(state.current, i.tag))
-            out.parsed += '&{};'.format(entity)
 
         # Now we can reset previous_section to None, nobody needs it anymore.
         # Of course we're resetting it only in case nothing else (such as the
