@@ -217,11 +217,15 @@ class Signatures(BaseInspectTestCase):
             pybind_signatures.MyClass.another(self=a)
 
     def test(self):
+        sys.path.append(self.path)
+        import pybind_signatures
         self.run_python({
+            'INPUT_MODULES': [pybind_signatures, 'false_positives'],
             'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass.html'))
+        self.assertEqual(*self.actual_expected_contents('false_positives.html'))
 
         sys.path.append(self.path)
         import pybind_signatures
