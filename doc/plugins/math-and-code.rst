@@ -498,7 +498,7 @@ Multiple filters can be specified when separated by spaces.
 .. code:: py
 
     M_CODE_FILTERS_PRE = {
-        ('C++', 'codename'): lambda code: code.replace('DirtyMess', 'P300'),
+        ('C++', 'codename'): lambda code: code.replace('DirtyMess', 'P300::V1'),
         ('C++', 'fix_typography'): lambda code: code.replace(' :', ':'),
     }
 
