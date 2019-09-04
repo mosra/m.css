@@ -497,14 +497,14 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
         for name in module.__all__:
             object = getattr(module, name)
             subpath = path + [name]
-            type = object_type(state, object, name)
+            type_ = object_type(state, object, name)
 
             # Crawl the submodules and subclasses recursively (they also add
             # itself to the name_map), add other members directly.
-            if not type: # pragma: no cover
+            if not type_: # pragma: no cover
                 logging.warning("unknown symbol %s in %s", name, '.'.join(path))
                 continue
-            elif type == EntryType.MODULE:
+            elif type_ == EntryType.MODULE:
                 # TODO: this might fire if a module is in __all__ after it was
                 # picked up implicitly before -- how to handle gracefully?
                 assert id(object) not in state.crawled
@@ -513,21 +513,21 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 # crawl_module() itself if it is sure that it isn't a
                 # duplicated module
                 continue
-            elif type == EntryType.CLASS:
+            elif type_ == EntryType.CLASS:
                 crawl_class(state, subpath, object)
-            elif type == EntryType.ENUM:
+            elif type_ == EntryType.ENUM:
                 crawl_enum(state, subpath, object, module_entry.url)
             else:
-                assert type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION, EntryType.DATA]
+                assert type_ in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION, EntryType.DATA]
                 entry = Empty()
-                entry.type = type
+                entry.type = type_
                 entry.object = object
                 entry.path = subpath
                 entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](
                     # We have just one entry for all functions (and we don't
                     # know the parameters yet) so the link should lead to the
                     # generic name, not a particular overload
-                    type if type != EntryType.OVERLOADED_FUNCTION else EntryType.FUNCTION,
+                    type_ if type_ != EntryType.OVERLOADED_FUNCTION else EntryType.FUNCTION,
                     subpath[-1:]))
                 entry.css_classes = ['m-doc']
                 state.name_map['.'.join(subpath)] = entry
@@ -577,35 +577,35 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 # either the same or it's parent + child name
                 elif object.__package__ not in [module.__package__, module.__package__ + '.' + name]: continue
 
-            type = object_type(state, object, name)
+            type_ = object_type(state, object, name)
             subpath = path + [name]
 
             # Crawl the submodules and subclasses recursively (they also add
             # itself to the name_map), add other members directly.
-            if not type: # pragma: no cover
+            if not type_: # pragma: no cover
                 # Ignore unknown object types (with __all__ we warn instead)
                 continue
-            elif type == EntryType.MODULE:
+            elif type_ == EntryType.MODULE:
                 submodules_to_crawl += [(subpath, object)]
                 # Not adding to module_entry.members, done by the nested
                 # crawl_module() itself if it is sure that it isn't a
                 # duplicated module
                 continue
-            elif type == EntryType.CLASS:
+            elif type_ == EntryType.CLASS:
                 crawl_class(state, subpath, object)
-            elif type == EntryType.ENUM:
+            elif type_ == EntryType.ENUM:
                 crawl_enum(state, subpath, object, module_entry.url)
             else:
-                assert type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION, EntryType.DATA]
+                assert type_ in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION, EntryType.DATA]
                 entry = Empty()
-                entry.type = type
+                entry.type = type_
                 entry.object = object
                 entry.path = subpath
                 entry.url = '{}#{}'.format(module_entry.url, state.config['ID_FORMATTER'](
                     # We have just one entry for all functions (and we don't
                     # know the parameters yet) so the link should lead to the
                     # generic name, not a particular overload
-                    type if type != EntryType.OVERLOADED_FUNCTION else EntryType.FUNCTION,
+                    type_ if type_ != EntryType.OVERLOADED_FUNCTION else EntryType.FUNCTION,
                     subpath[-1:]))
                 entry.css_classes = ['m-doc']
                 state.name_map['.'.join(subpath)] = entry
