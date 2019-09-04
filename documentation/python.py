@@ -487,7 +487,9 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             if inspect.ismodule(object) and object.__name__ != '.'.join(subpath):
                 assert object.__name__ not in state.name_mapping
                 state.name_mapping[object.__name__] = '.'.join(subpath)
-            elif hasattr(object, '__module__'):
+            # logging.Logger objects have __module__ but don't have __name__,
+            # check both
+            elif hasattr(object, '__module__') and hasattr(object, '__name__'):
                 subname = object.__module__ + '.' + object.__name__
                 if subname != '.'.join(subpath):
                     assert subname not in state.name_mapping
