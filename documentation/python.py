@@ -1059,6 +1059,11 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
                     nested_type_links += [nested_type_link]
                 nested_return_type, nested_return_type_link = extract_annotation(state, referrer_path, args[-1])
 
+                # If nested parsing failed (the invalid annotation below),
+                # fail the whole thing
+                if None in nested_types or nested_return_type is None:
+                    return None, None
+
                 return (
                     '{}[[{}], {}]'.format(name, ', '.join(nested_types), nested_return_type),
                     '{}[[{}], {}]'.format(name_link, ', '.join(nested_type_links), nested_return_type_link)
@@ -1071,6 +1076,10 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
                     nested_type, nested_type_link = extract_annotation(state, referrer_path, i)
                     nested_types += [nested_type]
                     nested_type_links += [nested_type_link]
+
+                # If nested parsing failed (the invalid annotation below),
+                # fail the whole thing
+                if None in nested_types: return None, None
 
                 return (
                     '{}[{}]'.format(name, ', '.join(nested_types)),

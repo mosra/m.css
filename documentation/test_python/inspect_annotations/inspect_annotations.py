@@ -41,6 +41,9 @@ def annotation_tuple_instead_of_tuple(a: (float, int)):
 def annotation_func_instead_of_type(a: open):
     """Annotation with a function instead of a type, ignored"""
 
+def annotation_func_instead_of_type_nested(a: List[open], b: Callable[[open], str], c: Callable[[str], open]):
+    """Annotations with nested problems, ignoring the whole thing"""
+
 def annotation_any(a: Any):
     """Annotation with the Any type"""
 
