@@ -1247,7 +1247,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     #
     # Some shitty packages might be setting __doc__ to None (attrs is one of
     # them), explicitly check for that first.
-    if state.config['PYBIND11_COMPATIBILITY'] and entry.object.__doc__ and entry.object.__doc__.startswith(entry.path[-1]):
+    if state.config['PYBIND11_COMPATIBILITY'] and entry.object.__doc__ and entry.object.__doc__.startswith(entry.path[-1] + '('):
         funcs = parse_pybind_docstring(state, entry.path, entry.object.__doc__)
         # The crawl (and object_type()) should have detected the overloadedness
         # already, so check that we have that consistent
