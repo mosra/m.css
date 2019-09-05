@@ -2087,8 +2087,32 @@ def render_page(state: State, path, input_filename, env):
     for hook in state.hooks_pre_page:
         hook(path=path)
 
+    page = Empty()
+    page.filename = filename
+    page.url = url
+    page.prefix_wbr = path[0]
+
     # Render the file
-    with open(input_filename, 'r') as f: pub = publish_rst(state, f.read(), source_path=input_filename)
+    with open(input_filename, 'r') as f:
+        try:
+            pub = publish_rst(state, f.read(), source_path=input_filename)
+        except docutils.utils.SystemMessage:
+            logging.error("Failed to process %s, rendering an empty page", input_filename)
+
+            # Empty values for fields expected by other code
+            page.breadcrumb = [(os.path.basename(input_filename), url)]
+            page.summary = ''
+            page.content = ''
+            entry = state.name_map['.'.join(path)]
+            entry.summary = page.summary
+            entry.name = page.breadcrumb[-1][0]
+            render(config=state.config,
+                template='page.html',
+                filename=page.filename,
+                url=page.url,
+                env=env,
+                page=page)
+            return
 
     # Extract metadata from the page
     metadata = {}
@@ -2113,13 +2137,7 @@ def render_page(state: State, path, input_filename, env):
 
     # Breadcrumb, we don't do page hierarchy yet
     assert len(path) == 1
-    breadcrumb = [(pub.writer.parts.get('title'), url)]
-
-    page = Empty()
-    page.filename = filename
-    page.url = url
-    page.breadcrumb = breadcrumb
-    page.prefix_wbr = path[0]
+    page.breadcrumb = [(pub.writer.parts.get('title'), url)]
 
     # Set page content and add extra metadata from there
     page.content = pub.writer.parts.get('body').rstrip()
@@ -2130,7 +2148,7 @@ def render_page(state: State, path, input_filename, env):
     # for index
     entry = state.name_map['.'.join(path)]
     entry.summary = page.summary
-    entry.name = breadcrumb[-1][0]
+    entry.name = page.breadcrumb[-1][0]
 
     if not state.config['SEARCH_DISABLED']:
         result = Empty()

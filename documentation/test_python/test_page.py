@@ -37,10 +37,11 @@ def dot_version():
 class Page(BaseTestCase):
     def test(self):
         self.run_python({
-            'INPUT_PAGES': ['index.rst', 'another.rst']
+            'INPUT_PAGES': ['index.rst', 'another.rst', 'error.rst']
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertEqual(*self.actual_expected_contents('another.html'))
+        self.assertEqual(*self.actual_expected_contents('error.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
 class InputSubdir(BaseTestCase):
