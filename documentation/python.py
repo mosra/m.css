@@ -2128,9 +2128,9 @@ def render_page(state: State, path, input_filename, env):
 
     # Find itself in the global map, save the page title and summary back there
     # for index
-    module_entry = state.name_map['.'.join(path)]
-    module_entry.summary = page.summary
-    module_entry.name = breadcrumb[-1][0]
+    entry = state.name_map['.'.join(path)]
+    entry.summary = page.summary
+    entry.name = breadcrumb[-1][0]
 
     if not state.config['SEARCH_DISABLED']:
         result = Empty()
