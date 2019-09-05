@@ -228,6 +228,32 @@ def object_type(state: State, object, name) -> EntryType:
     # caller should print a warning in this case
     return None # pragma: no cover
 
+def is_docstring_useless(type: EntryType, docstring):
+    # Enum doc is by default set to a generic value. That's very useless.
+    if type == EntryType.ENUM and docstring == 'An enumeration.': return True
+    return not docstring or not docstring.strip()
+
+def is_underscored_and_undocumented(state: State, type, path, docstring):
+    if type == EntryType.MODULE:
+        external_docs = state.module_docs
+    elif type == EntryType.CLASS:
+        external_docs = state.class_docs
+    elif type == EntryType.ENUM:
+        external_docs = state.enum_docs
+    elif type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
+        external_docs = state.function_docs
+    elif type == EntryType.PROPERTY:
+        external_docs = state.property_docs
+    elif type == EntryType.DATA:
+        external_docs = state.data_docs
+        # Data don't have docstrings, those are from their type instead
+        docstring = None
+    else:
+        assert type is None, type
+        external_docs = {}
+
+    return path[-1].startswith('_') and '.'.join(path) not in external_docs and is_docstring_useless(type, docstring)
+
 # Builtin dunder functions have hardcoded docstrings. This is totally useless
 # to have in the docs, so filter them out. Uh... kinda ugly.
 _filtered_builtin_functions = set([
@@ -359,13 +385,13 @@ def crawl_class(state: State, path: List[str], class_):
         # name_map)
         if type == EntryType.CLASS:
             if name in ['__base__', '__class__']: continue # TODO
-            if name.startswith('_'): continue
+            if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
 
             crawl_class(state, subpath, object)
 
         # Crawl enum values (they also add itself ot the name_map)
         elif type == EntryType.ENUM:
-            if name.startswith('_'): continue
+            if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
 
             crawl_enum(state, subpath, object, class_entry.url)
 
@@ -373,9 +399,11 @@ def crawl_class(state: State, path: List[str], class_):
         else:
             # Filter out private / unwanted members
             if type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
-                # Filter out underscored methods (but not dunder methods such
-                # as __init__)
-                if name.startswith('_') and not (name.startswith('__') and name.endswith('__')): continue
+                # Filter out undocumented underscored methods (but not dunder
+                # methods such as __init__)
+                # TODO: this won't look into docs saved under a signature but
+                #   for that we'd need to parse the signature first, ugh
+                if not (name.startswith('__') and name.endswith('__')) and is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
                 # Filter out dunder methods that ...
                 if name.startswith('__'):
                     # ... don't have their own docs
@@ -394,9 +422,10 @@ def crawl_class(state: State, path: List[str], class_):
                                 pass
             elif type == EntryType.PROPERTY:
                 if (name, object.__doc__) in _filtered_builtin_properties: continue
-                if name.startswith('_'): continue # TODO: are there any dunder props?
+                # TODO: are there any interesting dunder props?
+                if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
             elif type == EntryType.DATA:
-                if name.startswith('_'): continue
+                if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
             else: # pragma: no cover
                 assert type is None; continue # ignore unknown object types
 
@@ -414,7 +443,11 @@ def crawl_class(state: State, path: List[str], class_):
     # places.
     if state.config['ATTRS_COMPATIBILITY'] and hasattr(class_, '__attrs_attrs__'):
         for attrib in class_.__attrs_attrs__:
-            if attrib.name.startswith('_'): continue
+            subpath = path + [attrib.name]
+
+            # No docstrings for attrs (the best we could get would be a
+            # docstring of the variable type, nope to that)
+            if is_underscored_and_undocumented(state, EntryType.PROPERTY, subpath, None): continue
 
             # In some cases, the attribute can be present also among class
             # data (for example when using slots). Prefer the info provided by
@@ -422,8 +455,6 @@ def crawl_class(state: State, path: List[str], class_):
             # also when the native annotation isn't used
             if attrib.name not in class_entry.members:
                 class_entry.members += [attrib.name]
-
-            subpath = path + [attrib.name]
 
             entry = Empty()
             entry.type = EntryType.PROPERTY
@@ -541,9 +572,6 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
     # have __module__ equivalent to `path`.
     else:
         for name, object in inspect.getmembers(module):
-            # Filter out underscored names
-            if name.startswith('_'): continue
-
             # If this is not a module, check if the enclosing module of the
             # object is what expected. If not, it's a class/function/...
             # imported from elsewhere and we don't want those.
@@ -582,9 +610,12 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
             type_ = object_type(state, object, name)
             subpath = path + [name]
 
+            # Filter out undocumented underscored names
+            if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
+
             # Crawl the submodules and subclasses recursively (they also add
             # itself to the name_map), add other members directly.
-            if not type_: # pragma: no cover
+            if type_ is None: # pragma: no cover
                 # Ignore unknown object types (with __all__ we warn instead)
                 continue
             elif type_ == EntryType.MODULE:
@@ -1158,7 +1189,7 @@ def extract_enum_doc(state: State, entry: Empty):
     # The happy case
     if issubclass(entry.object, enum.Enum):
         # Enum doc is by default set to a generic value. That's useless as well.
-        if entry.object.__doc__ == 'An enumeration.':
+        if is_docstring_useless(EntryType.ENUM, entry.object.__doc__):
             docstring = ''
         else:
             docstring = entry.object.__doc__
@@ -1599,13 +1630,13 @@ def extract_property_doc(state: State, parent, entry: Empty):
     # fget / fset / fdel, instead we need to look into __get__ / __set__ /
     # __delete__ directly. This is fairly rare (datetime.date is one and
     # BaseException.args is another I could find), so don't bother with it much
-    # --- assume readonly and no docstrings / annotations whatsoever.
+    # --- assume readonly. Some docstrings are there for properties; see the
+    # inspect_string.DerivedException test class for details.
     if entry.object.__class__.__name__ == 'getset_descriptor' and entry.object.__class__.__module__ == 'builtins':
         out.is_gettable = True
         out.is_settable = False
         out.is_deletable = False
-        # Unfortunately we can't get any docstring for these
-        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, '')
+        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, entry.object.__doc__)
         out.has_details = bool(out.content)
         out.type = None
         return out
@@ -2304,6 +2335,15 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             hooks_pre_page=state.hooks_pre_page,
             hooks_post_run=state.hooks_post_run)
 
+    # First process the doc input files so we have all data for rendering
+    # module/class pages. This needs to be done first so the crawl after can
+    # have a look at the external data and include documented underscored
+    # members as well. On the other hand, this means nothing in render_doc()
+    # has access to the module hierarchy -- all actual content rendering has to
+    # happen later.
+    for file in config['INPUT_DOCS']:
+        render_doc(state, os.path.join(basedir, file))
+
     # Crawl all input modules to gather the name tree, put their names into a
     # list for the index. The crawl is done breadth-first, so the function
     # returns a list of submodules to be crawled next.
@@ -2350,16 +2390,6 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # Call all registered post-crawl hooks
     for hook in state.hooks_post_crawl:
         hook(name_map=state.name_map)
-
-    # Call all registered page begin hooks for the doc rendering
-    for hook in state.hooks_pre_page:
-        hook(path=[])
-
-    # Then process the doc input files so we have all data for rendering
-    # module pages. This needs to be done *after* the initial crawl so
-    # cross-linking works as expected.
-    for file in config['INPUT_DOCS']:
-        render_doc(state, os.path.join(basedir, file))
 
     # Go through all crawled names and render modules, classes and pages. A
     # side effect of the render is entry.summary (and entry.name for pages)

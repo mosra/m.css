@@ -6,9 +6,8 @@ import enum
 # This one is a package that shouldn't be exposed
 import xml
 
-# These are descendant packages / modules that should be exposed if not
-# underscored
-from . import subpackage, another_module, _private_module
+# These are descendant packages / modules that should be exposed
+from . import subpackage, another_module
 
 # These are variables from an external modules, shouldn't be exposed either
 from re import I
@@ -41,16 +40,8 @@ class Foo:
         """A subclass of Foo"""
         pass
 
-    class _PrivateSubclass:
-        """A private subclass"""
-        pass
-
     def func(self, a, b):
         """A method"""
-        pass
-
-    def _private_func(self, a, b):
-        """A private function"""
         pass
 
     @classmethod
@@ -58,19 +49,9 @@ class Foo:
         """A class method"""
         pass
 
-    @classmethod
-    def _private_func_on_class(cls, a):
-        """A private class method"""
-        pass
-
     @staticmethod
     def static_func(a):
         """A static method"""
-        pass
-
-    @staticmethod
-    def _private_static_func(a):
-        """A private static method"""
         pass
 
     @property
@@ -101,11 +82,6 @@ class Foo:
         pass
 
     writeonly_property = property(None, writeonly_property)
-
-    @property
-    def _private_property(self):
-        """A private property"""
-        pass
 
 class FooSlots:
     """A class with slots. Can't have docstrings for these."""
@@ -147,16 +123,8 @@ class UndocumentedEnum(enum.IntFlag):
     FLAG_ONE = 1
     FLAG_SEVENTEEN = 17
 
-class _PrivateClass:
-    """Private class"""
-    pass
-
 def function():
     """A function"""
-    pass
-
-def _private_function():
-    """A private function"""
     pass
 
 A_CONSTANT = 3.24

@@ -235,3 +235,14 @@ class Attrs(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClass.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html'))
+
+class Underscored(BaseInspectTestCase):
+    def test(self):
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
+            'M_SPHINX_PARSE_DOCSTRINGS': True
+        })
+
+        self.assertEqual(*self.actual_expected_contents('inspect_underscored.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_underscored.Class.html'))

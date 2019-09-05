@@ -96,5 +96,7 @@ class Plugins(BaseTestCase):
         # No code, thus no docstrings processed
         self.assertEqual(fancyline.docstring_call_count, 0)
 
-        self.assertEqual(fancyline.pre_page_call_count, 4)
+        # Once for each page, but nonce for render_docs() as that shouldn't
+        # generate any output anyway
+        self.assertEqual(fancyline.pre_page_call_count, 3)
         self.assertEqual(fancyline.post_run_call_count, 1)

@@ -16,7 +16,7 @@ def hidden_func(a, b, c):
     pass
 
 def _private_but_exposed_func():
-    # A private thing but exposed in __all__
+    # A private undocumented thing but exposed in __all__
     pass
 
 hidden_data = 34

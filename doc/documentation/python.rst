@@ -425,17 +425,17 @@ dashes:
 `Module inspection`_
 ====================
 
-By default, if a module contains the :py:`__all__` attribute, all names listed
-there are exposed in the documentation. Otherwise, all module (and class)
-members are extracted using :py:`inspect.getmembers()`, skipping names
-:py:`import`\ ed from elsewhere and underscored names.
+By default, if a module contains the :py:`__all__` attribute, *all* names
+listed there are exposed in the documentation. Otherwise, all module (and
+class) members are extracted using :py:`inspect.getmembers()`, skipping names
+:py:`import`\ ed from elsewhere and undocumented underscored names.
 
 Detecting if a module is a submodule of the current package or if it's
 :py:`import`\ ed from elsewhere is tricky, the script thus includes only
-submodules that have their :py:`__package__` property the same or one level below
-the parent package. If a module's :py:`__package__` is empty, it's assumed to
-be a plain module (instead of a package) and since those can't have submodules,
-all found submodules in it are ignored.
+submodules that have their :py:`__package__` property the same or one level
+below the parent package. If a module's :py:`__package__` is empty, it's
+assumed to be a plain module (instead of a package) and since those can't have
+submodules, all found submodules in it are ignored.
 
 .. block-success:: Overriding the set of included names, module reorganization
 
@@ -622,6 +622,33 @@ non-obvious way to document enum values as well.
 
 The documentation output for enums includes enum value values and the class it
 was derived from, so it's possible to know whether it's an enum or a flag.
+
+`Including underscored names in the output`_
+--------------------------------------------
+
+By default, names starting with an underscore (except for :py:`__dunder__`
+methods) are treated as private and not listed in the output. One way to expose
+them is to list them in :py:`__all__`, however that works for module content
+only. For exposing general underscored names, you either need to provide a
+docstring or `external documentation content`_ (and in case of plain data,
+external documentation content is the only option).
+
+Note that at the point where modules and classes are crawled for members,
+docstrings are *not* parsed yet --- so e.g. a data documentation via a
+:rst:`:data:` option of the :rst:`.. py:class::` `m.sphinx`_ directive won't be
+visible to the initial crawl and thus the data will stay hidden.
+
+Sometimes, however, you'll want the inverse --- keeping an underscored name
+hidden, even though it has a docstring. Solution is to remove the docstring
+while generating the docs, directly in the ``conf.py`` file during module
+import:
+
+.. code:: py
+
+    import mymodule
+    mymodule._private_thing.__doc__ = None
+
+    INPUT_MODULES = [mymodule]
 
 `Pages`_
 ========
