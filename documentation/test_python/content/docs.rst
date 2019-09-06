@@ -130,6 +130,8 @@
 
     The :p:`b` is not documented, while :p:`c` isn't in the signature.
 
+Doing :p:`this` here is not good either.
+
 .. py:function:: content.full_docstring
     :param a: First parameter
     :param b: Second

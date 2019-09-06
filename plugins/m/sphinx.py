@@ -408,7 +408,7 @@ def consume_docstring(type, path: List[str], signature: Optional[str], doc: str)
     elif type.name == 'PROPERTY':
         source = '.. py:property:: '
         doc_output = property_doc_output
-    else:
+    else: # pragma: no cover
         # Data don't have docstrings, you silly
         assert type.name != 'DATA'
         # Ignore unknown types, pass the docs through
