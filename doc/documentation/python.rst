@@ -858,8 +858,8 @@ Keyword argument                Content
 :py:`property_doc_contents`     Property documentation contents
 :py:`data_doc_contents`         Data documentation contents
 :py:`hooks_post_crawl`          Hooks to call after the initial name crawl
-:py:`hooks_scope_enter`         Hooks to call on scope enter
-:py:`hooks_scope_exit`          Hooks to call on scope exit
+:py:`hooks_pre_scope`           Hooks to call on scope enter
+:py:`hooks_post_scope`          Hooks to call on scope exit
 :py:`hooks_docstring`           Hooks to call when parsing a docstring
 :py:`hooks_pre_page`            Hooks to call before each page gets rendered
 :py:`hooks_post_run`            Hooks to call at the very end of the script run
