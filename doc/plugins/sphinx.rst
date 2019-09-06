@@ -237,6 +237,8 @@ doing the following will ensure it can be easily used:
                     values. Sphinx treats those the same as ``py:data``.
                 -   ``py:data`` for data
                 -   ``std:doc`` for pages
+                -   ``std::special`` :label-warning:`m.css-specific` for
+                    special pages such as class / module / page listing
     ``2``       A `mysterious number <https://github.com/dahlia/sphinx-fakeinv/blob/02589f374471fa47073ab6cbac38258c3060a988/sphinx_fakeinv.py#L92-L93>`_.
                 `Sphinx implementation <https://github.com/sphinx-doc/sphinx/blob/a498960de9039b0d0c8d24f75f32fa4acd5b75e1/sphinx/util/inventory.py#L129>`_
                 denotes this as ``prio`` but doesn't use it in any way.

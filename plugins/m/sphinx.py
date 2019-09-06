@@ -512,11 +512,12 @@ def merge_inventories(name_map, **kwargs):
             type_string = 'py:data'
         elif entry.type == EntryType.PAGE:
             type_string = 'std:doc'
+        elif entry.type == EntryType.SPECIAL:
+            # TODO: this will cause duplicates when multiple m.css projects
+            #   gets together, solve better
+            type_string = 'std:special'
         else: # pragma: no cover
-            # TODO: what to do with these? allow linking to them? disambiguate
-            # or prefix the names somehow?
-            assert entry.type == EntryType.SPECIAL, entry.type
-            continue
+            assert False
 
         # Mark those with m-doc (as internal)
         internal_inventory.setdefault(type_string, {})[path_str] = (entry.url, '-', ['m-doc'])

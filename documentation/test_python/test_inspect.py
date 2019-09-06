@@ -217,6 +217,10 @@ inspect_create_intersphinx.pybind.overloaded_function py:function 2 inspect_crea
 inspect_create_intersphinx py:module 2 inspect_create_intersphinx.html -
 inspect_create_intersphinx.pybind py:module 2 inspect_create_intersphinx.pybind.html -
 page std:doc 2 page.html -
+index std:special 2 index.html -
+modules std:special 2 modules.html -
+classes std:special 2 classes.html -
+pages std:special 2 pages.html -
 """.lstrip())
         # Yes, above it should say A documentation page, but it doesn't
 
