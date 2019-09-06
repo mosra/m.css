@@ -429,6 +429,15 @@ By default, if a module contains the :py:`__all__` attribute, *all* names
 listed there are exposed in the documentation. Otherwise, all module (and
 class) members are extracted using :py:`inspect.getmembers()`, skipping names
 :py:`import`\ ed from elsewhere and undocumented underscored names.
+Additionally, class data members with type annotations (but with no values) are
+pulled out from :py:`__annotations__`, allowing you to expose (and document)
+also fields that might otherwise only be populated from :py:`__init__()`:
+
+.. code:: py
+
+    class MyClass:
+        a_float: float
+        string_value: str
 
 Detecting if a module is a submodule of the current package or if it's
 :py:`import`\ ed from elsewhere is tricky, the script thus includes only
@@ -509,7 +518,9 @@ Using just docstrings, however, comes with a few limitations:
     output contains everything, including undocumented names
 -   Instance variables added inside :py:`__init__()` are not extracted, as this
     would require parsing Python code directly (which is what Sphinx has to do
-    to support these).
+    to support these). You can work around this by adding annotated
+    "declarations" to the class as `shown above <#module-inspection>`_, however
+    no docstrings can be specified for those either.
 
 To overcome the limitations, `externally-supplied documentation <#external-documentation-content>`_
 provides means to document names that can't have a docstring attached, and

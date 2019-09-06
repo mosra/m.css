@@ -44,6 +44,9 @@ class Class:
     :data _DATA_IN_CLASS: In-class documented underscored data. This won't be
         picked up by the initial crawl, unfortunately, as the docstrings are
         processed much later.
+    :data _DATA_DECLARATION_IN_CLASS: In-class documented underscored data.
+        This won't be picked up by the initial crawl, unfortunately, as the
+        docstrings are processed much later.
     """
 
     def _function(self):
@@ -73,3 +76,8 @@ class Class:
     _DATA_EXTERNAL: int = 5
     _DATA_EXTERNAL_IN_CLASS: int = 6
     _DATA_UNDOCUMENTED: int = 7
+
+    _DATA_DECLARATION_IN_CLASS: float
+    _DATA_DECLARATION_EXTERNAL: float
+    _DATA_DECLARATION_EXTERNAL_IN_CLASS: float
+    _DATA_DECLARATION_UNDOCUMENTED: float

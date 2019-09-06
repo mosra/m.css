@@ -439,6 +439,30 @@ def crawl_class(state: State, path: List[str], class_):
 
         class_entry.members += [name]
 
+    # Data that don't have values but just type annotations are hidden here.
+    # inspect.getmembers() ignores those probably because trying to access any
+    # of them results in an AttributeError.
+    if hasattr(class_, '__annotations__'):
+        for name, type in class_.__annotations__.items():
+            subpath = path + [name]
+
+            # No docstrings (the best we could get would be a docstring of the
+            # variable type, nope to that)
+            if is_underscored_and_undocumented(state, EntryType.DATA, subpath, None): continue
+
+            # If this name is known already, skip it -- here we don't have
+            # anything except name and type, data inspected the classic way
+            # have at least an object to point to (and a value)
+            if name in class_entry.members: continue
+
+            entry = Empty()
+            entry.type = EntryType.DATA
+            entry.object = None # TODO will this break things?
+            entry.path = subpath
+            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](EntryType.DATA, subpath[-1:]))
+            state.name_map['.'.join(subpath)] = entry
+            class_entry.members += [name]
+
     # If attrs compatibility is enabled, look for more properties in hidden
     # places.
     if state.config['ATTRS_COMPATIBILITY'] and hasattr(class_, '__attrs_attrs__'):
@@ -644,6 +668,8 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
                 state.name_map['.'.join(subpath)] = entry
 
             module_entry.members += [name]
+
+    # TODO: expose what's in __attributes__ as well (interaction with __all__?)
 
     # Add itself to the name map
     state.name_map['.'.join(path)] = module_entry

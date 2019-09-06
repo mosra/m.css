@@ -22,6 +22,8 @@
         underscored property
     :data _DATA_EXTERNAL_IN_CLASS: Externally in-class documented underscored
         data
+    :data _DATA_DECLARATION_EXTERNAL_IN_CLASS: Externally in-class documented
+        underscored data declaration
 
 .. py:function:: inspect_underscored.Class._function_external
     :summary: Externally documented underscored function
@@ -31,3 +33,6 @@
 
 .. py:data:: inspect_underscored.Class._DATA_EXTERNAL
     :summary: Externally documented underscored data
+
+.. py:data:: inspect_underscored.Class._DATA_DECLARATION_EXTERNAL
+    :summary: Externally documented underscored data declaration

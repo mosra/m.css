@@ -14,6 +14,8 @@ class Foo:
         A_VALUE = 1
         ANOTHER = 2
 
+    DATA_DECLARATION: int
+
 def a_function():
     pass
 

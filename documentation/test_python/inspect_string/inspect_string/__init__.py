@@ -22,6 +22,8 @@ class Foo:
 
     A_DATA = 'BOO'
 
+    DATA_DECLARATION: int
+
     class InnerEnum(enum.Enum):
         """Inner enum"""
 
@@ -128,6 +130,9 @@ def function():
     pass
 
 A_CONSTANT = 3.24
+
+# TODO: not visible ATM, need to figure out interaction with __all__
+DATA_DECLARATION: int
 
 ENUM_THING = MyEnum.YAY
 
