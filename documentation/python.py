@@ -481,10 +481,10 @@ def crawl_class(state: State, path: List[str], class_):
                 class_entry.members += [attrib.name]
 
             entry = Empty()
-            entry.type = EntryType.PROPERTY
+            entry.type = EntryType.PROPERTY # TODO: or data?
             entry.object = attrib
             entry.path = subpath
-            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](EntryType.PROPERTY, subpath[-1:]))
+            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](EntryType.PROPERTY, subpath[-1:])) # TODO: or data?
             state.name_map['.'.join(subpath)] = entry
 
     # Add itself to the name map
