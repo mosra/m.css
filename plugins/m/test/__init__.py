@@ -42,6 +42,9 @@ class PelicanPluginTestCase(unittest.TestCase):
 
     def run_pelican(self, settings):
         implicit_settings = {
+            # Enable this to get proper backtraces
+            #'DEBUG': True,
+
             # Contains just stuff that isn't required by the m.css theme itself,
             # but is needed to have the test setup working correctly
             'RELATIVE_URLS': True,
