@@ -46,6 +46,7 @@ import m.htmlsanity
 
 # All those initialized in register() or register_mcss()
 current_referer_path = None
+page_ref_prefixes = None
 current_param_names = None
 module_doc_output = None
 class_doc_output = None
@@ -291,12 +292,35 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     # Avoid assert on adding to undefined member later
     if 'classes' not in _options: _options['classes'] = []
 
+    # If we're in a page and there's no page module scope yet, look if there
+    # are :py:module: page metadata we could use for a prefix
+    global current_referer_path, page_ref_prefixes
+    if current_referer_path[-1][0].name == 'PAGE' and page_ref_prefixes is None:
+        # Since we're in the middle of parse, the nodes.docinfo is not present
+        # yet (it's produced by the frontmatter.DocInfo transform that's run
+        # after the parsing ends), so we look in field lists instead.
+        # TODO: DocInfo picks only the first ever field list happening right
+        #   after a title and we should do the same to avoid picking up options
+        #   later in the page. There the transform depends on DocTitle being
+        #   ran already, so it would need to be more complex here. See
+        #   docutils.transforms.frontmatter.DocInfo.apply() for details.
+        for docinfo in inliner.document.traverse(docutils.nodes.field_list):
+            for element in docinfo.children:
+                if element.tagname != 'field': continue
+                name_elem, body_elem = element.children
+                if name_elem.astext() == 'ref-prefix':
+                    page_ref_prefixes = [line.strip() + '.' for line in body_elem.astext().splitlines() if line.strip()]
+
+        # If we didn't find any, set it to an empty list (not None), so this is
+        # not traversed again next time
+        if not page_ref_prefixes: page_ref_prefixes = []
+
     # Add prefixes of the referer path to the global prefix list, iterate
     # through all of them, with names "closest" to the referer having a
     # priority and try to find the name
-    global current_referer_path, intersphinx_inventory, intersphinx_name_prefixes
-    referer_path = current_referer_path[-1] if current_referer_path else []
-    prefixes = ['.'.join(referer_path[:len(referer_path) - i]) + '.' for i, _ in enumerate(referer_path)] + intersphinx_name_prefixes
+    global intersphinx_inventory, intersphinx_name_prefixes
+    referer_path = current_referer_path[-1][1] if current_referer_path else []
+    prefixes = ['.'.join(referer_path[:len(referer_path) - i]) + '.' for i, _ in enumerate(referer_path)] + (page_ref_prefixes if page_ref_prefixes else []) + intersphinx_name_prefixes
     for prefix in prefixes:
         found = None
 
@@ -363,14 +387,19 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         node = nodes.literal(rawtext, target, **_options)
     return [node], []
 
-def scope_enter(path, param_names=None, **kwargs):
+def scope_enter(type, path, param_names=None, **kwargs):
     global current_referer_path, current_param_names
-    current_referer_path += [path]
+    current_referer_path += [(type, path)]
     current_param_names = param_names
 
-def scope_exit(path, **kwargs):
+    # If we're in a page, reset page_ref_prefixes so next time :ref: needs it,
+    # it will look it up instead of using a stale version
+    global page_ref_prefixes
+    if type.name == 'PAGE': page_ref_prefixes = None
+
+def scope_exit(type, path, **kwargs):
     global current_referer_path, current_param_names
-    assert current_referer_path[-1] == path, "%s %s" % (current_referer_path, path)
+    assert current_referer_path[-1] == (type, path), "%s %s" % (current_referer_path, path)
     current_referer_path = current_referer_path[:-1]
     current_param_names = None
 
@@ -383,7 +412,7 @@ def p(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
     if not current_param_names:
         logging.warning("can't reference parameter %s outside of a function scope", text)
     elif text not in current_param_names:
-        logging.warning("parameter %s not found in %s(%s) function signature", text, '.'.join(current_referer_path[-1]), ', '.join(current_param_names))
+        logging.warning("parameter %s not found in %s(%s) function signature", text, '.'.join(current_referer_path[-1][1]), ', '.join(current_param_names))
 
     node = nodes.literal(rawtext, text, **options)
     return [node], []
@@ -578,7 +607,17 @@ def register_mcss(mcss_settings, module_doc_contents, class_doc_contents, enum_d
     # Just a sanity check
     hooks_post_run += [check_scope_stack_empty]
 
+def _pelican_new_page(generator):
+    # Set a dummy page referrer path so :ref-prefixes: works in Pelican as well
+    # TODO: any chance this could be made non-crappy?
+    global current_referer_path
+    assert not current_referer_path or len(current_referer_path) == 1 and current_referer_path[0][0].name == 'PAGE'
+    type = Empty() # We don't have the EntryType enum, so fake it
+    type.name = 'PAGE'
+    current_referer_path = [(type, '')]
+
 def _pelican_configure(pelicanobj):
+
     # For backwards compatibility, the input directory is pelican's CWD
     parse_intersphinx_inventories(input=os.getcwd(),
          inventories=pelicanobj.settings.get('M_SPHINX_INVENTORIES', []))
@@ -589,6 +628,8 @@ def register(): # for Pelican
     rst.roles.register_local_role('ref', ref)
 
     pelican.signals.initialized.connect(_pelican_configure)
+    pelican.signals.article_generator_preread.connect(_pelican_new_page)
+    pelican.signals.page_generator_preread.connect(_pelican_new_page)
 
 def pretty_print_intersphinx_inventory(file):
     return ''.join([

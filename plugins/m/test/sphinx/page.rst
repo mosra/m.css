@@ -1,6 +1,10 @@
 m.sphinx
 ########
 
+:ref-prefix:
+    typing
+    unittest.mock
+
 .. role:: ref-small(ref)
     :class: m-text m-small
 
@@ -57,6 +61,8 @@ m.sphinx
     :ref:`Function link with a custom title <os.path.join()>`
 -   Custom CSS class: :ref-small:`str.join()`
 -   Omitting a prefix: :ref:`etree.ElementTree`, :ref:`ElementTree`
+-   Omitting a page-specific prefix defined in ``:ref-prefix:``:
+    :ref:`Tuple`, :ref:`NonCallableMagicMock`
 -   Custom query string: :ref:`os.path <os.path?q=the meaning of life>`
 
 These should produce warnings:

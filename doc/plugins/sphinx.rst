@@ -26,6 +26,9 @@ Sphinx
 ######
 
 :breadcrumb: {filename}/plugins.rst Plugins
+:ref-prefix:
+    typing
+    unittest.mock
 :footer:
     .. note-dim::
         :class: m-text-center
@@ -86,8 +89,8 @@ Sphinx provides a so-called Intersphinx files to make names from one
 documentation available for linking from elsewhere. The plugin supports the
 (current) version 2 of those inventory files, version 1 is not supported. You
 need to provide a list of tuples containing tag file path, URL prefix, an
-optional list of implicitly prepended paths and an optional list of CSS classes
-for each link in :py:`M_SPHINX_INVENTORIES`. Every Sphinx-generated
+optional list of implicitly prepended name prefixes and an optional list of CSS
+classes for each link in :py:`M_SPHINX_INVENTORIES`. Every Sphinx-generated
 documentation contains an ``objects.inv`` file in its root directory (and the
 root directory is the URL prefix as well), for example for Python 3 it's
 located at https://docs.python.org/3/objects.inv. Download the files and
@@ -119,13 +122,24 @@ concrete target name and a colon --- for example,
 :rst:`:ref:`std:doc:using/cmdline`` will link to the ``using/cmdline`` page of
 standard documentation.
 
+Apart from global implicitly prepended prefixes defined in
+:rst:`M_SPHINX_INVENTORIES`, these can be set also on a per-page basis by
+listing them in :rst:`:ref-prefix:` in page metadata. This is useful especially
+when writing pages in the `Python doc theme`_ to avoid writing the fully
+qualified name every time you need to linking to some documented name.
+
 The :rst:`:ref:` a good candidate for a `default role <http://docutils.sourceforge.net/docs/ref/rst/directives.html#default-role>`_
 --- setting it using :rst:`.. default-role::` will then make it accessible
-using plain backticks:
+using plain backticks.
 
 .. code-figure::
 
     .. code:: rst
+
+        .. among page metadata
+        :ref-prefix:
+            typing
+            unittest.mock
 
         .. default-role:: ref
 
@@ -137,6 +151,7 @@ using plain backticks:
         -   Page link: :ref:`std:doc:using/cmdline`
         -   :ref:`Custom link title <PyErr_SetString>`
         -   Flat link: :ref-flat:`os.path.join()`
+        -   Omitting :rst:`:ref-prefix:`: :ref:`Tuple`, :ref:`NonCallableMagicMock`
         -   Link using a default role: `str.partition()`
 
     .. default-role:: ref
@@ -149,6 +164,7 @@ using plain backticks:
     -   Page link: :ref:`std:doc:using/cmdline`
     -   :ref:`Custom link title <PyErr_SetString>`
     -   Flat link: :ref-flat:`os.path.join()`
+    -   Omitting :rst:`:ref-prefix:`: :ref:`Tuple`, :ref:`NonCallableMagicMock`
     -   Link using a default role: `str.partition()`
 
 When used with the Python doc theme, the :rst:`:ref` can be used also for

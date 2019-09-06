@@ -30,7 +30,8 @@ class Content(BaseInspectTestCase):
     def test(self):
         self.run_python({
             'PLUGINS': ['m.sphinx'],
-            'INPUT_DOCS': ['docs.rst']
+            'INPUT_DOCS': ['docs.rst'],
+            'INPUT_PAGES': ['page.rst']
         })
         self.assertEqual(*self.actual_expected_contents('classes.html'))
         self.assertEqual(*self.actual_expected_contents('content.html'))
@@ -39,6 +40,8 @@ class Content(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('content.ClassDocumentingItsMembers.html'))
         self.assertEqual(*self.actual_expected_contents('content.ClassWithSlots.html'))
         self.assertEqual(*self.actual_expected_contents('content.ClassWithSummary.html'))
+
+        self.assertEqual(*self.actual_expected_contents('page.html'))
 
 class ParseDocstrings(BaseInspectTestCase):
     def test(self):
