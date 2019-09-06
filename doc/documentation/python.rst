@@ -933,15 +933,15 @@ Keyword argument    Content
     script as well as other plugins can correctly distinguish them.
 
 The :py:`hooks_pre_scope` and :py:`hooks_post_scope` get called before entering
-and after leaving a name scope, and are meant mainly to aid with
-context-sensitive linking. Those scopes can be nested and can be called
-successively for the same scope --- for example, when rendering module docs,
-:py:`hooks_pre_scope` gets called first for the module scope, but then another
-:py:`hooks_pre_scope` gets called when rendering a summary for reference to an
-inner class. Then, :py:`hooks_post_scope` gets called in reverse order. The
-plugins are expected to implement a stack-like data structure for maintaining
-information about current scope. Both of those functions get passed the
-following arguments:
+and after leaving a name scope (page, module, class, enum, enum value,
+function, property or data), and are meant mainly to aid with context-sensitive
+linking. Those scopes can be nested and can be called successively for the same
+scope --- for example, when rendering module docs, :py:`hooks_pre_scope` gets
+called first for the module scope, but then another :py:`hooks_pre_scope` gets
+called when rendering a summary for reference to an inner class. Then,
+:py:`hooks_post_scope` gets called in reverse order. The plugins are expected
+to implement a stack-like data structure for maintaining information about
+current scope. Both of those functions get passed the following arguments:
 
 .. class:: m-table
 

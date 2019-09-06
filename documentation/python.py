@@ -2149,6 +2149,10 @@ def render_page(state: State, path, input_filename, env):
     page.url = url
     page.prefix_wbr = path[0]
 
+    # Call all scope enter hooks before
+    for hook in state.hooks_pre_scope:
+        hook(type=EntryType.PAGE, path=path)
+
     # Render the file
     with open(input_filename, 'r') as f:
         try:
@@ -2170,6 +2174,10 @@ def render_page(state: State, path, input_filename, env):
                 env=env,
                 page=page)
             return
+
+    # Call all scope exit hooks last
+    for hook in state.hooks_post_scope:
+        hook(type=EntryType.PAGE, path=path)
 
     # Extract metadata from the page
     metadata = {}
