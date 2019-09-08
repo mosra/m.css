@@ -1360,8 +1360,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
 
                 positional_only = True
                 for i, arg in enumerate(args[1:]):
-                    name, type, type_link, default = arg
-                    if name != 'arg{}'.format(i):
+                    if arg[0] != 'arg{}'.format(i):
                         positional_only = False
                         break
 
@@ -1370,8 +1369,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             else:
                 positional_only = True
                 for i, arg in enumerate(args):
-                    name, type, type_link, default = arg
-                    if name != 'arg{}'.format(i):
+                    if arg[0] != 'arg{}'.format(i):
                         positional_only = False
                         break
 
@@ -1379,38 +1377,38 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             param_types = []
             signature = []
             for i, arg in enumerate(args):
-                name, type, type_link, default = arg
+                arg_name, arg_type, arg_type_link, arg_default = arg
                 param = Empty()
-                param.name = name
-                param_names += [name]
+                param.name = arg_name
+                param_names += [arg_name]
                 # Don't include redundant type for the self argument
-                if i == 0 and name == 'self':
+                if i == 0 and arg_name == 'self':
                     param.type, param.type_link = None, None
                     param_types += [None]
                     signature += ['self']
                 else:
-                    param.type, param.type_link = type, type_link
-                    param_types += [type]
-                    signature += ['{}: {}'.format(name, type)]
-                if default:
+                    param.type, param.type_link = arg_type, arg_type_link
+                    param_types += [arg_type]
+                    signature += ['{}: {}'.format(arg_name, arg_type)]
+                if arg_default:
                     # If the type is a registered enum, try to make a link to
                     # the value -- for an enum of type `module.EnumType`,
                     # assuming the default is rendered as `EnumType.VALUE` (not
                     # fully qualified), concatenate it together to have
                     # `module.EnumType.VALUE`
-                    if type in state.name_map and state.name_map[type].type == EntryType.ENUM:
-                        param.default = make_name_link(state, entry.path, '.'.join(state.name_map[type].path[:-1] + [default]))
-                    else: param.default = html.escape(default)
+                    if arg_type in state.name_map and state.name_map[arg_type].type == EntryType.ENUM:
+                        param.default = make_name_link(state, entry.path, '.'.join(state.name_map[arg_type].path[:-1] + [arg_default]))
+                    else: param.default = html.escape(arg_default)
                 else:
                     param.default = None
-                if type or default: out.has_complex_params = True
+                if arg_type or arg_default: out.has_complex_params = True
 
                 # *args / **kwargs can still appear in the parsed signatures if
                 # the function accepts py::args / py::kwargs directly
-                if name == '*args':
+                if arg_name == '*args':
                     param.name = 'args'
                     param.kind = 'VAR_POSITIONAL'
-                elif name == '**kwargs':
+                elif arg_name == '**kwargs':
                     param.name = 'kwargs'
                     param.kind = 'VAR_KEYWORD'
                 else:
