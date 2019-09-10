@@ -1809,7 +1809,10 @@ def render(*, config, template: str, url: str, filename: str, env: jinja2.Enviro
     rendered = template.render(URL=url,
         SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
         **config, **kwargs)
-    with open(os.path.join(config['OUTPUT'], filename), 'wb') as f:
+    output = os.path.join(config['OUTPUT'], filename)
+    output_dir = os.path.dirname(output)
+    if not os.path.exists(output_dir): os.makedirs(output_dir)
+    with open(output, 'wb') as f:
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with
         # patching test files to include a trailing newline to make Git
@@ -2595,8 +2598,11 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         else:
             i = os.path.join(os.path.dirname(os.path.realpath(__file__)), i)
 
+        output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
+        output_dir = os.path.dirname(output)
+        if not os.path.exists(output_dir): os.makedirs(output_dir)
         logging.debug("copying %s to output", i)
-        shutil.copy(i, os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0]))
+        shutil.copy(i, output)
 
     # Call all registered finalization hooks
     for hook in state.hooks_post_run: hook()
