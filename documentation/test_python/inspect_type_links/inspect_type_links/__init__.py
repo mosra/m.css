@@ -5,3 +5,6 @@ class Foo:
 
 class Bar:
     """Another class in the root module"""
+
+def open():
+    """A function that opens cans."""
