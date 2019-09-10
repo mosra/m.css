@@ -43,7 +43,7 @@ class Search(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 2088)
+        self.assertEqual(len(serialized), 2076)
         self.assertEqual(search_data_pretty, """
 19 symbols
 search [12]
@@ -158,10 +158,10 @@ overloaded_method [15, 17, 13]
 17: .overloaded_method(self, arg0: int, arg1: Foo) [prefix=19[:22], suffix_length=28, type=FUNCTION] -> #overloaded_method-41cfb
 18:  [prefix=17[:46], suffix_length=26, type=FUNCTION] ->
 19: .Foo [prefix=24[:14], type=CLASS] -> Foo.html
-20: .function() [prefix=24[:18], suffix_length=2, type=FUNCTION] -> #function-da39a
-21:  [prefix=20[:33], type=FUNCTION] ->
-22: .function_with_params() [prefix=24[:18], suffix_length=2, type=FUNCTION] -> #function_with_params-8f19c
-23:  [prefix=22[:45], type=FUNCTION] ->
+20: .function() [prefix=24[:18], suffix_length=2, type=FUNCTION] -> #function
+21:  [prefix=20[:27], type=FUNCTION] ->
+22: .function_with_params() [prefix=24[:18], suffix_length=2, type=FUNCTION] -> #function_with_params
+23:  [prefix=22[:39], type=FUNCTION] ->
 24: .pybind [prefix=12[:7], type=MODULE] -> pybind.html
 25: .DATA_IN_A_SUBMODULE [prefix=26[:15], type=DATA] -> #DATA_IN_A_SUBMODULE
 26: .sub [prefix=12[:7], type=MODULE] -> sub.html

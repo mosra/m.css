@@ -1416,9 +1416,12 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
 
                 out.params += [param]
 
-            # Format the anchor. Pybind11 functions are sometimes overloaded,
-            # thus name alone is not enough.
-            out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, entry.path[-1:] + param_types)
+            # Format the anchor, include types only if there's really more than
+            # one overload
+            if entry.type == EntryType.OVERLOADED_FUNCTION:
+                out.id = state.config['ID_FORMATTER'](EntryType.OVERLOADED_FUNCTION, [name] + param_types)
+            else:
+                out.id = state.config['ID_FORMATTER'](EntryType.FUNCTION, [name])
 
             # Call all scope enter hooks for this particular overload
             for hook in state.hooks_pre_scope:
