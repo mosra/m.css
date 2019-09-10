@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <title>{% block title %}{{ PROJECT_TITLE }}{% if PROJECT_SUBTITLE %} {{ PROJECT_SUBTITLE }}{% endif %}{% endblock %}</title>
   {% for css in STYLESHEETS %}
-  <link rel="stylesheet" href="{{ css|basename_or_url|e }}" />
+  <link rel="stylesheet" href="{{ css|format_url|e }}" />
   {% endfor %}
   {% if FAVICON %}
-  <link rel="icon" href="{{ FAVICON[0]|basename_or_url|e }}" type="{{ FAVICON[1] }}" />
+  <link rel="icon" href="{{ FAVICON[0]|format_url|e }}" type="{{ FAVICON[1] }}" />
   {% endif %}
   {% if not SEARCH_DISABLED and SEARCH_BASE_URL %}
   <link rel="search" type="application/opensearchdescription+xml" href="opensearch.xml" title="Search {{ PROJECT_TITLE }} documentation" />
@@ -129,13 +129,13 @@
     </div>
   </div>
 </div>
-<script src="search.js"></script>
+<script src="{{ 'search.js'|format_url|e }}"></script>
 {% if SEARCH_DOWNLOAD_BINARY %}
 <script>
-  Search.download(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1));
+  Search.download({% if SEARCH_DOWNLOAD_BINARY is string %}'{{ SEARCH_DOWNLOAD_BINARY.format(SEARCHDATA_FORMAT_VERSION)|format_url|e }}'{% else %}window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1) + 'searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.bin'{% endif %});
 </script>
 {% else %}
-<script src="searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.js" async="async"></script>
+<script src="{{ 'searchdata-v{}.js'.format(SEARCHDATA_FORMAT_VERSION)|format_url|e }}" async="async"></script>
 {% endif %}
 {% endif %}
 {% if FINE_PRINT %}

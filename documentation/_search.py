@@ -33,6 +33,7 @@ from typing import List, Tuple
 
 # Version 0 was without the type map
 searchdata_format_version = 1
+search_filename = f'search-v{searchdata_format_version}.js'
 searchdata_filename = f'searchdata-v{searchdata_format_version}.bin'
 searchdata_filename_b85 = f'searchdata-v{searchdata_format_version}.js'
 

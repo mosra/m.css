@@ -53,7 +53,7 @@ from docutils.transforms import Transform
 
 import jinja2
 
-from _search import CssClass, ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_format_version, searchdata_filename, searchdata_filename_b85
+from _search import CssClass, ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_format_version, search_filename, searchdata_filename, searchdata_filename_b85
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../plugins'))
 import m.htmlsanity
@@ -77,6 +77,8 @@ class EntryType(Enum):
     # Types not exposed to search are below. Deliberately set to large values
     # so their accidental use triggers assertions when building search data.
 
+    # Statically linked data, such as images. Passed only to the URL_FORMATTER.
+    STATIC = 98
     # One of files from special_pages. Doesn't make sense to include in the
     # search.
     SPECIAL = 99
@@ -97,11 +99,22 @@ search_type_map = [
     (CssClass.DEFAULT, "data")
 ]
 
+# TODO: what about nested pages, how to format?
+# [default-url-formatter]
 def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
-    # TODO: what about nested pages, how to format?
+    if type == EntryType.STATIC:
+        url = os.path.basename(path[0])
+
+        # Encode version information into the search driver
+        if url == 'search.js':
+            url = 'search-v{}.js'.format(searchdata_format_version)
+
+        return url, url
+
     url = '.'.join(path) + '.html'
-    assert '/' not in url # TODO
+    assert '/' not in url
     return url, url
+# [/default-url-formatter]
 
 def default_id_formatter(type: EntryType, path: List[str]) -> str:
     # Encode pybind11 function overloads into the anchor (hash them, like Rust
@@ -1998,9 +2011,11 @@ class ExtractImages(Transform):
     default_priority = 991
 
     # There is no simple way to have stateful transforms (the publisher always
-    # gets just the class, not the instance) so we have to use this
+    # gets just the class, not the instance) so we have to make all data
+    # awfully global. UGH.
     # TODO: maybe the pending nodes could solve this?
-    external_data = set()
+    _url_formatter = None
+    _external_data = set()
 
     def __init__(self, document, startnode):
         Transform.__init__(self, document, startnode=startnode)
@@ -2013,16 +2028,21 @@ class ExtractImages(Transform):
 
             # TODO: is there a non-private access to current document source
             # path?
-            ExtractImages._external_data.add(os.path.join(os.path.dirname(self.document.settings._source), image['uri']) if isinstance(self.document.settings._source, str) else image['uri'])
+            absolute_uri = os.path.join(os.path.dirname(self.document.settings._source), image['uri']) if isinstance(self.document.settings._source, str) else image['uri']
+            ExtractImages._external_data.add(absolute_uri)
 
-            # Patch the URL to be just the filename
-            image['uri'] = os.path.basename(image['uri'])
+            # Patch the URL according to the URL formatter
+            image['uri'] = ExtractImages._url_formatter(EntryType.STATIC, [absolute_uri])[1]
 
 class DocumentationWriter(m.htmlsanity.SaneHtmlWriter):
     def get_transforms(self):
         return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages]
 
 def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator):
+    # Make the URL formatter known to the image extractor so it can use it for
+    # patching the URLs
+    ExtractImages._url_formatter = state.config['URL_FORMATTER']
+
     pub = docutils.core.Publisher(
         writer=DocumentationWriter(),
         source_class=docutils.io.StringInput,
@@ -2326,10 +2346,18 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(templates), trim_blocks=True,
         lstrip_blocks=True, enable_async=True)
-    # Filter to return file basename or the full URL, if absolute
-    def basename_or_url(path):
+    # Filter to return formatted URL or the full URL, if already absolute
+    def format_url(path):
         if urllib.parse.urlparse(path).netloc: return path
-        return os.path.basename(path)
+
+        # If file is found relative to the conf file, use that
+        if os.path.exists(os.path.join(config['INPUT'], path)):
+            path = os.path.join(config['INPUT'], path)
+        # Otherwise use path relative to script directory
+        else:
+            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+
+        return config['URL_FORMATTER'](EntryType.STATIC, [path])[1]
     # Filter to return URL for given symbol. If the path is a string, first try
     # to treat it as an URL -- either it needs to have the scheme or at least
     # one slash for relative links (in contrast, Python names don't have
@@ -2342,7 +2370,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         entry = state.name_map['.'.join(path)]
         return entry.url
 
-    env.filters['basename_or_url'] = basename_or_url
+    env.filters['format_url'] = format_url
     env.filters['path_to_url'] = path_to_url
     env.filters['urljoin'] = urljoin
 
@@ -2527,11 +2555,16 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
 
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
+        # Joining twice, first before passing those to the URL formatter and
+        # second after. If SEARCH_DOWNLOAD_BINARY is a string, use that as a
+        # filename.
+        # TODO: any chance we could write the file *before* it gets ever passed
+        # to URL formatters so we can add cache buster hashes to its URL?
         if state.config['SEARCH_DOWNLOAD_BINARY']:
-            with open(os.path.join(config['OUTPUT'], searchdata_filename), 'wb') as f:
+            with open(os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [os.path.join(config['OUTPUT'], state.config['SEARCH_DOWNLOAD_BINARY'] if isinstance(state.config['SEARCH_DOWNLOAD_BINARY'], str) else searchdata_filename)])[0]), 'wb') as f:
                 f.write(data)
         else:
-            with open(os.path.join(config['OUTPUT'], searchdata_filename_b85), 'wb') as f:
+            with open(os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [os.path.join(config['OUTPUT'], searchdata_filename_b85)])[0]), 'wb') as f:
                 f.write(base85encode_search_data(data))
 
         # OpenSearch metadata, in case we have the base URL
@@ -2563,7 +2596,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             i = os.path.join(os.path.dirname(os.path.realpath(__file__)), i)
 
         logging.debug("copying %s to output", i)
-        shutil.copy(i, os.path.join(config['OUTPUT'], os.path.basename(i)))
+        shutil.copy(i, os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0]))
 
     # Call all registered finalization hooks
     for hook in state.hooks_post_run: hook()

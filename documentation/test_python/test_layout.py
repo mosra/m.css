@@ -59,7 +59,7 @@ class Layout(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/m-dark+documentation.compiled.css')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/favicon-light.png')))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/search.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/search-v1.js')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename_b85)))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/sitemap.xml')))
 
@@ -70,6 +70,7 @@ class SearchBinary(BaseTestCase):
             'SEARCH_DOWNLOAD_BINARY': True
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', 'search-v1.js')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename)))
 
 class SearchOpenSearch(BaseTestCase):
@@ -81,4 +82,5 @@ class SearchOpenSearch(BaseTestCase):
             'SEARCH_HELP': "Right-click to add a search engine."
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', 'search-v1.js')))
         self.assertEqual(*self.actual_expected_contents('opensearch.xml'))

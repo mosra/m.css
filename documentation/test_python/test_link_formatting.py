@@ -29,6 +29,7 @@ from typing import List
 
 from . import BaseInspectTestCase
 from python import EntryType, default_id_formatter
+from _search import searchdata_format_version
 
 def custom_url_formatter(type: EntryType, path: List[str]) -> str:
     if type == EntryType.CLASS:
@@ -39,6 +40,17 @@ def custom_url_formatter(type: EntryType, path: List[str]) -> str:
         filename = 'p.' + '.'.join(path) + '.html'
     elif type == EntryType.SPECIAL:
         filename = 's.' + '.'.join(path) + '.html'
+    elif type == EntryType.STATIC:
+        assert len(path) == 1
+        url = os.path.basename(path[0])
+        # Encode version information into the search driver
+        if url == 'search.js':
+            url = 'search-v{}.js'.format(searchdata_format_version)
+        # Everything except the search data (which don't exist yet) should be
+        # absolute
+        if url != 'absolutesearchdata-v1.bin':
+            assert os.path.isabs(path[0]) and os.path.exists(path[0]), path[0]
+        filename = 't.' + url
     else: assert False
 
     return filename, filename + "#this-is-an-url"
@@ -66,6 +78,7 @@ class LinkFormatting(BaseInspectTestCase):
             'INPUT_PAGES': ['page.rst'],
             'URL_FORMATTER': custom_url_formatter,
             'ID_FORMATTER': custom_id_formatter,
+            'PLUGINS': ['m.images'],
             'LINKS_NAVBAR1': [
                 ('Pages', 'pages', []),
                 ('Modules', 'modules', []),
@@ -73,6 +86,10 @@ class LinkFormatting(BaseInspectTestCase):
             'LINKS_NAVBAR2': [('A page', 'page', []),
                               ('A module', 'link_formatting', []),
                               ('The class', ['link_formatting', 'Class'], [])],
+            'FAVICON': 'favicon-light.png',
+            'SEARCH_DISABLED': False, # to test search link formatting, too
+            'SEARCH_HELP': 'blub?',
+            'SEARCH_DOWNLOAD_BINARY': 'absolutesearchdata-v{}.bin'.format(searchdata_format_version),
             'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('m.link_formatting.html'))
@@ -80,9 +97,7 @@ class LinkFormatting(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('c.link_formatting.Class.html'))
         self.assertEqual(*self.actual_expected_contents('c.link_formatting.Class.Sub.html'))
 
-        # There's nothing inside p.page.html that wouldn't be already covered
-        # by others
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/p.page.html')))
+        self.assertEqual(*self.actual_expected_contents('p.page.html'))
 
         self.assertEqual(*self.actual_expected_contents('s.classes.html'))
         self.assertEqual(*self.actual_expected_contents('s.modules.html'))
@@ -95,3 +110,10 @@ class LinkFormatting(BaseInspectTestCase):
         # Verify pybind11 overloaded function hashing as well
         self.assertEqual(*self.actual_expected_contents('m.link_formatting.pybind.html'))
         self.assertEqual(*self.actual_expected_contents('c.link_formatting.pybind.Foo.html'))
+
+        # Static data
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.favicon-light.png')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.m-dark+documentation.compiled.css')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.search-v1.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.absolutesearchdata-v1.bin')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.tiny.png')))

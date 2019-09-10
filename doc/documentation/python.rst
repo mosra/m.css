@@ -229,7 +229,7 @@ Variable                            Description
                                     and the rendered HTML does not contain
                                     search-related UI or support. If not set,
                                     :py:`False` is used.
-:py:`SEARCH_DOWNLOAD_BINARY: bool`  Download search data as a binary to save
+:py:`SEARCH_DOWNLOAD_BINARY`        Download search data as a binary to save
                                     bandwidth and initial processing time. If
                                     not set, :py:`False` is used. See `Search options`_
                                     for more information.
@@ -351,7 +351,10 @@ Base85-encoded representation of the search binary and loading that
 asynchronously as a plain JavaScript file. This results in the search data
 being 25% larger, but since this is for serving from a local filesystem, it's
 not considered a problem. If your docs are accessed through a server (or you
-don't need Chrome support), enable the :py:`SEARCH_DOWNLOAD_BINARY` option.
+don't need Chrome support), set the :py:`SEARCH_DOWNLOAD_BINARY` option to
+:py:`True`. The search data are by default fetched from the current directory
+on the webserver, if you want to supply a different location, set it to a
+string and provide a `custom URL formatter <#custom-url-formatters>`_.
 
 The site can provide search engine metadata using the `OpenSearch <http://www.opensearch.org/>`_
 specification. On supported browsers this means you can add the search field to
@@ -389,23 +392,26 @@ search to a subdomain:
 The :py:`URL_FORMATTER` option allows you to control how *all* filenames and
 generated URLs look like. It takes an entry type and a "path" as a list of
 strings (so for example :py:`my.module.Class` is represented as
-:py:`['my', 'module', 'Class']`), returning a tuple a filename and an URL.
+:py:`['my', 'module', 'Class']`), returning a tuple of a filename and an URL.
 Those can be the same, but also different (for example a file getting saved
 into ``my/module/Class/index.html`` but the actual URL being
 ``https://docs.my.module/Class/``). The default implementation looks like this,
 producing both filenames and URLs in the form of ``my.module.Class.html``:
 
-.. code:: py
-
-    def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
-        url = '.'.join(path) + '.html'
-        return url, url
+.. include:: ../../../documentation/python.py
+    :code: py
+    :start-after: # [default-url-formatter]
+    :end-before: # [/default-url-formatter]
 
 The ``type`` is an enum, if you don't want to fiddle with imports, compare
-:py:`str(type)` against a string, which is one of :py:`'PAGE'`, :py:`'MODULE'`,
-:py:`'CLASS'` or :py:`'SPECIAL'`. The :py:`'SPECIAL'` is for index pages and in
-that case the ``path`` has always just one item, one of :py:`'pages'`,
-:py:`'modules'` or :py:`'classes'`.
+:py:`type.name` against a string, which is one of :py:`'PAGE'`, :py:`'MODULE'`,
+:py:`'CLASS'`, :py:`'SPECIAL'` or :py:`'STATIC'`. The :py:`'SPECIAL'` is for
+index pages and in that case the ``path`` has always just one item, one of
+:py:`'pages'`, :py:`'modules'` or :py:`'classes'`. The :py:`'STATIC'` is for
+static data such as images or CSS files and the ``path`` is absolute input
+filename including the extension and except for search data (which are
+generated on-the-fly) it always exists. If the static path is an URL, the URL
+formatter is not called.
 
 The :py:`ID_FORMATTER` handles formatting of anchors on a page. Again it takes
 an entry type (which in this case is always one of :py:`'ENUM'`,
@@ -1078,14 +1084,15 @@ Filename                Use
 
 Each template gets passed all configuration values from the `Configuration`_
 table as-is, together with a :py:`URL` variable with URL of given output file.
-In addition to builtin Jinja2 filters, the ``basename_or_url`` filter returns
-either a basename of file path, if the path is relative; or a full URL, if the
-argument is an absolute URL. It's useful in cases like this:
+In addition to builtin Jinja2 filters, the ``format_url`` filter returns either
+a path formatted according to `custom URL formatters`_, if the path is relative;
+or a full URL, if the argument is an absolute URL. It's useful in cases like
+this:
 
 .. code:: html+jinja
 
   {% for css in HTML_EXTRA_STYLESHEET %}
-  <link rel="stylesheet" href="{{ css|basename_or_url }}" />
+  <link rel="stylesheet" href="{{ css|format_url|e }}" />
   {% endfor %}
 
 The actual page contents are provided in a :py:`page` object, which has the

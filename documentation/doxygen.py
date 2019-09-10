@@ -47,7 +47,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
 
-from _search import CssClass, ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, searchdata_filename, searchdata_filename_b85, searchdata_format_version
+from _search import CssClass, ResultFlag, ResultMap, Trie, serialize_search_data, base85encode_search_data, search_filename, searchdata_filename, searchdata_filename_b85, searchdata_format_version
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../plugins'))
 import dot2svg
@@ -3596,6 +3596,10 @@ def run(doxyfile, *, templates=default_templates, wildcard=default_wildcard, ind
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 
+        # The search.js is special, we encode the version information into its
+        # filename
+        file_out = search_filename if i == 'search.js' else i
+
         # If file is found relative to the Doxyfile, use that
         if os.path.exists(os.path.join(state.basedir, i)):
             i = os.path.join(state.basedir, i)
@@ -3605,7 +3609,7 @@ def run(doxyfile, *, templates=default_templates, wildcard=default_wildcard, ind
             i = os.path.join(os.path.dirname(os.path.realpath(__file__)), i)
 
         logging.debug("copying {} to output".format(i))
-        shutil.copy(i, os.path.join(html_output, os.path.basename(i)))
+        shutil.copy(i, os.path.join(html_output, os.path.basename(file_out)))
 
     # Save updated math cache file
     if state.doxyfile['M_MATH_CACHE_FILE']:

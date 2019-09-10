@@ -25,7 +25,7 @@
 import os
 import subprocess
 
-from _search import searchdata_filename, searchdata_filename_b85
+from _search import search_filename, searchdata_filename, searchdata_filename_b85
 from . import BaseTestCase
 
 class Layout(BaseTestCase):
@@ -36,7 +36,7 @@ class Layout(BaseTestCase):
         self.run_doxygen(wildcard='index.xml')
         self.assertEqual(*self.actual_expected_contents('pages.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'm-dark+documentation.compiled.css')))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'search.js')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', search_filename)))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename_b85)))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'favicon-light.png')))
 

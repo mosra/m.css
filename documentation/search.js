@@ -117,11 +117,11 @@ var Search = {
         return true;
     },
 
-    download: /* istanbul ignore next */ function(urlBase) {
+    download: /* istanbul ignore next */ function(url) {
         var req = window.XDomainRequest ? new XDomainRequest() : new XMLHttpRequest();
         if(!req) return;
 
-        req.open("GET", urlBase + "searchdata-v" + this.formatVersion + ".bin", true);
+        req.open("GET", url, true);
         req.responseType = 'arraybuffer';
         req.onreadystatechange = function() {
             if(req.readyState != 4) return;
