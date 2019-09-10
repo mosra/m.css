@@ -315,12 +315,15 @@ def ref(name, rawtext, text, lineno, inliner: Inliner, options={}, content=[]):
         # not traversed again next time
         if not page_ref_prefixes: page_ref_prefixes = []
 
-    # Add prefixes of the referer path to the global prefix list, iterate
-    # through all of them, with names "closest" to the referer having a
-    # priority and try to find the name
+    # Add prefixes of the referer path to the global prefix list. Make an empty
+    # prefix first so :ref:`open()` always reliably links to the builtin
+    # instead whatever `foo.bar.open()` that's currently in scope. After that
+    # the names "closest" to the referer have the biggest priority with shorter
+    # referer_path prefixes after, and name prefixes from M_SPHINX_INVENTORIES
+    # last.
     global intersphinx_inventory, intersphinx_name_prefixes
     referer_path = current_referer_path[-1][1] if current_referer_path else []
-    prefixes = ['.'.join(referer_path[:len(referer_path) - i]) + '.' for i, _ in enumerate(referer_path)] + (page_ref_prefixes if page_ref_prefixes else []) + intersphinx_name_prefixes
+    prefixes = [''] + ['.'.join(referer_path[:len(referer_path) - i]) + '.' for i, _ in enumerate(referer_path)] + (page_ref_prefixes if page_ref_prefixes else []) + intersphinx_name_prefixes
     for prefix in prefixes:
         found = None
 
