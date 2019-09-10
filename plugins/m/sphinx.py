@@ -661,14 +661,25 @@ if __name__ == '__main__': # pragma: no cover
     parser.add_argument('file', help="inventory file to print")
     parser.add_argument('--raw', help="show raw content", action='store_true')
     parser.add_argument('--types', help="list all type keys", action='store_true')
+    parser.add_argument('--repack', help="repack raw content back into a compressed file", action='store_true')
     args = parser.parse_args()
-
-    if args.raw or not args.types:
-        with open(args.file, 'rb') as f:
-            print(pretty_print_intersphinx_inventory(f))
 
     if args.types:
         with open(args.file, 'rb') as f:
             inventory = {}
             parse_intersphinx_inventory(f, '', inventory, [])
             print(inventory.keys())
+    elif args.repack:
+        with open(args.file, 'rb') as f:
+            # Sphinx inventory version 2
+            sys.stdout.buffer.write(f.readline())
+            # Project and version
+            sys.stdout.buffer.write(f.readline())
+            sys.stdout.buffer.write(f.readline())
+            # Zlib compression line
+            sys.stdout.buffer.write(f.readline())
+            # The rest, zlib-compressed
+            sys.stdout.buffer.write(zlib.compress(f.read()))
+    else:
+        with open(args.file, 'rb') as f:
+            print(pretty_print_intersphinx_inventory(f))
