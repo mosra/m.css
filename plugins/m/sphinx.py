@@ -24,11 +24,19 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import os
+import sys
+
+# So it's possible to do `./plugins/m/sphinx.py somefile.inv` without it all
+# blowing up on the earliest `import math` as there's a math.py file in this
+# directory. Alternatively, doing `python -m m.sphinx` would work too, but who
+# would remember to do that.
+if __name__ == '__main__': # pragma: no cover
+    sys.path.remove(os.path.realpath(os.path.dirname(__file__)))
+
 import argparse
 import logging
-import os
 import re
-import sys
 from types import SimpleNamespace as Empty
 from typing import Dict, List, Optional
 from urllib.parse import urljoin
