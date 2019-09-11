@@ -86,7 +86,7 @@ body > header > nav #m-navbar-brand .m-thin {
   font-weight: normal;
 }
 body > header > nav #m-navbar-brand .m-breadcrumb {
-  color: var(--dim-color);
+  color: var(--header-breadcrumb-color);
 }
 body > header > nav a#m-navbar-show:before, body > header > nav a#m-navbar-hide:before {
   content:'\2630';

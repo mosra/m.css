@@ -64,6 +64,7 @@
   /* Header */
   --header-border-width: 0 0 0.25rem 0;
   --header-color: #ffffff;
+  --header-breadcrumb-color: #747474; /* same as --dim-color */
   --header-background-color: #22272e;
   --header-background-color-landing: rgba(34, 39, 46, 0.75);
   --header-background-color-jumbo: rgba(34, 39, 46, 0.25);
