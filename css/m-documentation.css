@@ -234,7 +234,7 @@ a.m-doc-search-icon:focus svg, a.m-doc-search-icon:hover svg, a.m-doc-search-ico
   right: 0;
   top: 0;
   bottom: 0;
-  background-color: var(--header-background-color-landing);
+  background-color: var(--search-overlay-color);
 }
 .m-doc-search:target {
   display: block;
@@ -256,7 +256,7 @@ a.m-doc-search-icon:focus svg, a.m-doc-search-icon:hover svg, a.m-doc-search-ico
   float: right;
 }
 .m-doc-search-content {
-  background-color: var(--header-background-color);
+  background-color: var(--search-background-color);
   border-radius: var(--border-radius);
   padding: 1rem;
 }
