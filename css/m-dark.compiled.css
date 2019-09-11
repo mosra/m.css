@@ -406,6 +406,7 @@ pre.m-console-wrap {
   word-break: break-all;
 }
 pre.m-console {
+  color: #e6e6e6;
   background-color: #161616;
 }
 strong, .m-text.m-strong { font-weight: bold; }
@@ -447,6 +448,7 @@ code {
   background-color: #282e36;
 }
 code.m-console {
+  color: #e6e6e6;
   background-color: #161616;
 }
 *:focus { outline-color: #5b9dd9; }
@@ -1139,18 +1141,18 @@ pre.m-code span.hll {
   margin-right: -1.0rem;
   padding-left: 1.0rem;
 }
-.m-code.m-inverted {
-  color: rgba(230, 230, 230, 0.33);
-}
-.m-code.m-inverted > span {
+.m-code.m-inverted > span, .m-console.m-inverted > span {
   opacity: 0.3333;
 }
-.m-code.m-inverted > span.hll {
-  color: #dcdcdc;
+.m-code.m-inverted > span.hll, .m-console.m-inverted > span.hll {
   opacity: 1;
   background-color: transparent;
   border-color: transparent;
 }
+.m-code.m-inverted { color: rgba(230, 230, 230, 0.33); }
+.m-console.m-inverted { color: rgba(230, 230, 230, 0.33); }
+.m-code.m-inverted > span.hll { color: #e6e6e6; }
+.m-cosole.m-inverted > span.hll { color: #e6e6e6; }
 .m-code-color {
   display: inline-block;
   width: 0.75rem;

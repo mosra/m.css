@@ -94,6 +94,7 @@ pre.m-console-wrap {
   word-break: break-all;
 }
 pre.m-console {
+  color: var(--console-color);
   background-color: var(--console-background-color);
 }
 
@@ -138,6 +139,7 @@ code {
   background-color: var(--code-background-color);
 }
 code.m-console {
+  color: var(--console-color);
   background-color: var(--console-background-color);
 }
 
@@ -891,18 +893,18 @@ pre.m-code span.hll {
 }
 
 /* Inverted code block / inline code */
-.m-code.m-inverted {
-  color: var(--code-inverted-color);
-}
-.m-code.m-inverted > span {
+.m-code.m-inverted > span, .m-console.m-inverted > span {
   opacity: 0.3333;
 }
-.m-code.m-inverted > span.hll {
-  color: var(--color);
+.m-code.m-inverted > span.hll, .m-console.m-inverted > span.hll {
   opacity: 1;
-  background-color: transparent;
+  background-color: transparent; /* TODO: handle this in pygments directly */
   border-color: transparent;
 }
+.m-code.m-inverted { color: var(--code-inverted-color); }
+.m-console.m-inverted { color: var(--console-inverted-color); }
+.m-code.m-inverted > span.hll { color: var(--code-color); }
+.m-cosole.m-inverted > span.hll { color: var(--console-color); }
 
 /* Code color swatch */
 .m-code-color {
