@@ -1832,6 +1832,12 @@ body > header > nav #m-navbar-brand, body > header > nav a#m-navbar-show, body >
 body > header > nav a#m-navbar-brand, body > header > nav #m-navbar-brand a {
   text-transform: lowercase;
 }
+body > header > nav a#m-navbar-brand img, body > header > nav #m-navbar-brand a img {
+  width: 1.75rem;
+  height: 1.75rem;
+  vertical-align: -22.5%;
+  margin-right: 0.5rem;
+}
 body > header > nav #m-navbar-brand a {
   padding-left: 0;
   padding-right: 0;

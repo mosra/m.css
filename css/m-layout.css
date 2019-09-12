@@ -78,6 +78,14 @@ body > header > nav #m-navbar-brand, body > header > nav a#m-navbar-show, body >
 body > header > nav a#m-navbar-brand, body > header > nav #m-navbar-brand a {
   text-transform: var(--nav-brand-case);
 }
+body > header > nav a#m-navbar-brand img, body > header > nav #m-navbar-brand a img {
+  /* unfortuately, with SVGs, unless the size is hardcoded like this, it will
+     cause ugly jumps during loading :( */
+  width: 1.75rem;
+  height: 1.75rem;
+  vertical-align: -22.5%;
+  margin-right: 0.5rem;
+}
 body > header > nav #m-navbar-brand a {
   padding-left: 0;
   padding-right: 0;
