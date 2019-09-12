@@ -79,24 +79,6 @@ hr {
 blockquote, hr {
   border-color: var(--line-color);
 }
-pre {
-  font-family: var(--code-font), monospace, monospace; /* https://en.wikipedia.org/wiki/User:Davidgothberg/Test59 */
-  font-size: var(--code-font-size);
-  padding: 0.5rem 1rem;
-  color: var(--code-color);
-  background-color: var(--code-background-color);
-  border-radius: var(--border-radius);
-  overflow-x: auto;
-  margin-top: 0; /* stupid defaults */
-}
-pre.m-console-wrap {
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-pre.m-console {
-  color: var(--console-color);
-  background-color: var(--console-background-color);
-}
 
 /* Inline elements */
 strong, .m-text.m-strong { font-weight: bold; }
@@ -131,16 +113,30 @@ mark {
   background-color: var(--mark-background-color);
   color: var(--mark-color);
 }
-code {
-  font-family: var(--code-font), monospace, monospace;
+
+/* Block/inline code */
+pre, code {
+  font-family: var(--code-font), monospace, monospace; /* https://en.wikipedia.org/wiki/User:Davidgothberg/Test59 */
   font-size: var(--code-font-size);
-  padding: 0.125rem;
   color: var(--code-color);
   background-color: var(--code-background-color);
 }
-code.m-console {
+pre.m-console, code.m-console {
   color: var(--console-color);
   background-color: var(--console-background-color);
+}
+pre {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+  margin-top: 0; /* stupid defaults */
+}
+pre.m-console-wrap {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+code {
+  padding: 0.125rem;
 }
 
 /* Focus outline on link, canvas and input: match the focused header item. */

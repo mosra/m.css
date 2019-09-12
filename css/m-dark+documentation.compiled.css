@@ -391,24 +391,6 @@ hr {
 blockquote, hr {
   border-color: #405363;
 }
-pre {
-  font-family: 'Source Code Pro', monospace, monospace, monospace;
-  font-size: 0.9em;
-  padding: 0.5rem 1rem;
-  color: #e6e6e6;
-  background-color: #282e36;
-  border-radius: 0.2rem;
-  overflow-x: auto;
-  margin-top: 0;
-}
-pre.m-console-wrap {
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-pre.m-console {
-  color: #e6e6e6;
-  background-color: #161616;
-}
 strong, .m-text.m-strong { font-weight: bold; }
 em, .m-text.m-em { font-style: italic; }
 s, .m-text.m-s { text-decoration: line-through; }
@@ -440,16 +422,28 @@ mark {
   background-color: #c7cf2f;
   color: #2f83cc;
 }
-code {
+pre, code {
   font-family: 'Source Code Pro', monospace, monospace, monospace;
   font-size: 0.9em;
-  padding: 0.125rem;
   color: #e6e6e6;
   background-color: #282e36;
 }
-code.m-console {
+pre.m-console, code.m-console {
   color: #e6e6e6;
   background-color: #161616;
+}
+pre {
+  padding: 0.5rem 1rem;
+  border-radius: 0.2rem;
+  overflow-x: auto;
+  margin-top: 0;
+}
+pre.m-console-wrap {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+code {
+  padding: 0.125rem;
 }
 *:focus { outline-color: #5b9dd9; }
 div.m-scroll {
