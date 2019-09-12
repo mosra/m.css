@@ -44,6 +44,8 @@ Python docs
     :language: js
 .. role:: py(code)
     :language: py
+.. role:: rst(code)
+    :language: rst
 
 .. |wink| replace:: 😉
 

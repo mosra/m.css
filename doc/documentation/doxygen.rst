@@ -417,6 +417,7 @@ with documentation-theme-specific additions is used, which corresponds to the
 following configuration:
 
 .. code:: ini
+    :class: m-console-wrap
 
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600 \
@@ -430,6 +431,7 @@ the documentation-theme-specific additions so you can reuse the already cached
 ``m-dark.compiled.css`` file from your main site:
 
 .. code:: ini
+    :class: m-console-wrap
 
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600 \
@@ -443,6 +445,7 @@ instead, use the following configuration (and, similarly, you can use
 in place of ``m-light+documentation.compiled.css``:
 
 .. code:: ini
+    :class: m-console-wrap
 
     HTML_EXTRA_STYLESHEET = \
         https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700,700i%7CSource+Code+Pro:400,400i,600 \
