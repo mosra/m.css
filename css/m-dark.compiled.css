@@ -777,6 +777,9 @@ img.m-image, svg.m-image, div.m-image img, div.m-image svg {
 div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
   width: 100%;
 }
+img.m-image.m-badge, div.m-image.m-badge img {
+  border-radius: 50%;
+}
 figure.m-figure {
   max-width: 100%;
   margin-top: 0;

@@ -988,6 +988,20 @@ SVG image, fullwidth, with link outside:
       </a>
     </div>
 
+Badge:
+
+.. raw:: html
+
+    <img src="{static}/static/mosra.jpg" class="m-image m-badge">
+
+Badge, with a link:
+
+.. raw:: html
+
+    <div class="m-image m-badge">
+      <a href="http://blog.mosra.cz/"><img src="{static}/static/mosra.jpg" /></a>
+    </div>
+
 Figures
 =======
 

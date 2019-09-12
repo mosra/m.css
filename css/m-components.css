@@ -501,6 +501,11 @@ img.m-image, svg.m-image, div.m-image img, div.m-image svg {
 div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
   width: 100%;
 }
+/* Image badge. Deliberately omitting <svg> since I don't see any use for those
+   as avatars yet. */
+img.m-image.m-badge, div.m-image.m-badge img {
+  border-radius: 50%;
+}
 
 /* Figure. Ensure everything is done for both <img> and <svg>. */
 figure.m-figure {
