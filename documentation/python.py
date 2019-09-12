@@ -132,6 +132,7 @@ def default_id_formatter(type: EntryType, path: List[str]) -> str:
 default_config = {
     'PROJECT_TITLE': 'My Python Project',
     'PROJECT_SUBTITLE': None,
+    'PROJECT_LOGO': None,
     'MAIN_PROJECT_URL': None,
     'INPUT': None,
     'OUTPUT': 'output',
@@ -2586,7 +2587,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
                 f.write(b'\n')
 
     # Copy referenced files
-    for i in config['STYLESHEETS'] + config['EXTRA_FILES'] + ([config['FAVICON'][0]] if config['FAVICON'] else []) + list(state.external_data) + ([] if config['SEARCH_DISABLED'] else ['search.js']):
+    for i in config['STYLESHEETS'] + config['EXTRA_FILES'] + ([config['PROJECT_LOGO']] if config['PROJECT_LOGO'] else []) + ([config['FAVICON'][0]] if config['FAVICON'] else []) + list(state.external_data) + ([] if config['SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 

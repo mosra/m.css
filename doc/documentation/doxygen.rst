@@ -264,6 +264,8 @@ Variable                        Description
                                 page title
 :ini:`PROJECT_BRIEF`            If set, appended in a thinner font to
                                 :ini:`PROJECT_NAME`
+:ini:`PROJECT_LOGO`             URL of an image file to use as a log in the top
+                                navbar. Default is none.
 :ini:`OUTPUT_DIRECTORY`         Used to discover where Doxygen generates the
                                 files
 :ini:`XML_OUTPUT`               Used to discover where Doxygen puts the

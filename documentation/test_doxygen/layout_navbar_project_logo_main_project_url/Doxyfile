@@ -1,0 +1,12 @@
+XML_OUTPUT              =
+PROJECT_NAME            = "Your Brand"
+PROJECT_LOGO            = mosra.jpg
+PROJECT_BRIEF           = docs
+
+##! M_PAGE_FINE_PRINT   =
+##! M_THEME_COLOR       =
+##! M_FAVICON           =
+##! M_LINKS_NAVBAR1     =
+##! M_LINKS_NAVBAR2     =
+##! M_SEARCH_DISABLED   = YES
+##! M_MAIN_PROJECT_URL  = http://your.brand

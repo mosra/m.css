@@ -77,6 +77,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
             'M_THEME_COLOR': '#22272e',
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
+            'PROJECT_LOGO': '',
             'PROJECT_NAME': 'My Pet Project',
             'SHOW_INCLUDE_FILES': True,
             'XML_OUTPUT': 'xml'

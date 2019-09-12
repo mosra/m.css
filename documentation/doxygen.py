@@ -3262,6 +3262,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
 
     default_config = {
         'PROJECT_NAME': ['My Project'],
+        'PROJECT_LOGO': [''],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
         'HTML_OUTPUT': ['html'],
@@ -3387,6 +3388,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
     # String values that we want
     for i in ['PROJECT_NAME',
               'PROJECT_BRIEF',
+              'PROJECT_LOGO',
               'OUTPUT_DIRECTORY',
               'HTML_OUTPUT',
               'XML_OUTPUT',
@@ -3592,7 +3594,7 @@ def run(doxyfile, *, templates=default_templates, wildcard=default_wildcard, ind
                 f.write(b'\n')
 
     # Copy all referenced files
-    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([state.doxyfile['M_FAVICON'][0]] if state.doxyfile['M_FAVICON'] else []) + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):
+    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([state.doxyfile['PROJECT_LOGO']] if state.doxyfile['PROJECT_LOGO'] else []) + ([state.doxyfile['M_FAVICON'][0]] if state.doxyfile['M_FAVICON'] else []) + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 

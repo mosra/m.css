@@ -138,6 +138,8 @@ Variable                            Description
                                     :py:`"My Python Project"` is used.
 :py:`PROJECT_SUBTITLE: str`         Project subtitle. If set, appended in a
                                     thinner font to :py:`PROJECT_TITLE`.
+:py:`PROJECT_LOGO: str`             URL of an image to use as a log in the top
+                                    navbar. Default is none.
 :py:`MAIN_PROJECT_URL: str`         If set and :py:`PROJECT_SUBTITLE` is also
                                     set, then :py:`PROJECT_TITLE` in the top
                                     navbar will link to this URL and

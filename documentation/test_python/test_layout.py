@@ -84,3 +84,19 @@ class SearchOpenSearch(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output', 'search-v1.js')))
         self.assertEqual(*self.actual_expected_contents('opensearch.xml'))
+
+class ProjectLogo(BaseTestCase):
+    def test(self):
+        self.run_python({
+            'PROJECT_LOGO': 'mosra.jpg',
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class ProjectLogoMainProjectUrl(BaseTestCase):
+    def test(self):
+        self.run_python({
+            'PROJECT_LOGO': 'mosra.jpg',
+            'PROJECT_SUBTITLE': 'docs',
+            'MAIN_PROJECT_URL': 'http://your.brand'
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))

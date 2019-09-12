@@ -241,3 +241,28 @@ class GlobalSocialMeta(BaseTestCase):
         # different og:url but nothing else.
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertEqual(*self.actual_expected_contents('archives.html'))
+
+class BrandLogo(MinimalTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'brand_logo', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            # This is the minimal that's required. Not even the M_THEME_COLOR
+            # is required.
+            'THEME': '.',
+            'PLUGIN_PATHS': ['../plugins'],
+            'PLUGINS': ['m.htmlsanity'],
+            'THEME_STATIC_DIR': 'static',
+            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i',
+               'static/m-dark.css'],
+            'M_SITE_LOGO': 'mosra.jpg',
+            'STATIC_PATHS': ['mosra.jpg'],
+            'ARTICLE_PATHS': ['articles'], # doesn't exist
+            # Supplying empty index.html to avoid excessive hello world markup
+            # we don't need
+            'PAGE_PATHS': ['.'],
+            'M_FINE_PRINT': ''})
+
+        # The archives and index page should be exactly the same
+        self.assertEqual(*self.actual_expected_contents('index.html'))

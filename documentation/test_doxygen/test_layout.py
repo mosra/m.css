@@ -92,6 +92,22 @@ class NavbarMainProjectUrl(BaseTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
+class NavbarProjectLogo(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'navbar_project_logo', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class NavbarProjectLogoMainProjectUrl(BaseTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'navbar_project_logo_main_project_url', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
 class SearchBinary(BaseTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'search_binary', *args, **kwargs)
