@@ -144,9 +144,10 @@ then generate a CSS file out of it:
 
 Alternatively, you can use any of the builtin styles --- pick the one you like
 at http://pygments.org/demo/ and then tell ``pygmentize`` to generate a CSS for
-it. For example, for the ``pastie`` style. Note that you might want to remove
-the first two lines of the resulting CSS (setting :css:`background-color`) as
-those would in most cases conflict with the style in m.css.
+it. For example, the below command is for the ``pastie`` style. Note that you
+might want to remove the first two lines of the resulting CSS (setting
+:css:`background-color`) as those would in most cases conflict with the style
+in m.css.
 
 .. code:: sh
 
