@@ -1601,32 +1601,21 @@ def extract_property_doc(state: State, parent, entry: Empty):
     out = Empty()
     out.name = entry.path[-1]
     out.id = state.config['ID_FORMATTER'](EntryType.PROPERTY, entry.path[-1:])
+    out.has_details = False
 
-    # If this is a property hammered out of attrs, we parse it differently
+    # If this is a property hammered out of attrs, we parse it differently.
+    # These *might* satisfy inspect.isdatadescriptor if these alias real
+    # properties found by other means, but that's not always the case, so no
+    # asserting for that.
     if state.config['ATTRS_COMPATIBILITY'] and type(entry.object).__name__ == 'Attribute' and type(entry.object).__module__ == 'attr._make':
+        # Unfortunately we can't get any docstring for these
+        docstring = ''
+
         # TODO: are there readonly attrs?
         out.is_gettable = True
         out.is_settable = True
         out.is_deletable = True
         out.type, out.type_link = extract_annotation(state, entry.path, entry.object.type)
-
-        # Call all scope enter hooks before rendering the docs
-        for hook in state.hooks_pre_scope:
-            hook(type=entry.type, path=entry.path)
-
-        # Unfortunately we can't get any docstring for these
-        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, '')
-
-        # Call all scope exit hooks after rendering the docs
-        for hook in state.hooks_post_scope:
-            hook(type=entry.type, path=entry.path)
-
-        out.has_details = bool(out.content)
-
-        return out
-
-    # Otherwise we expect a sane thing
-    assert inspect.isdatadescriptor(entry.object)
 
     # If this is a slot, there won't be any fget / fset / fdel. Assume they're
     # gettable and settable (couldn't find any way to make them *inspectably*
@@ -1634,23 +1623,14 @@ def extract_property_doc(state: State, parent, entry: Empty):
     # deletable as well (calling del on it seems to simply remove any
     # previously set value).
     # TODO: any better way to detect that those are slots?
-    if entry.object.__class__.__name__ == 'member_descriptor' and entry.object.__class__.__module__ == 'builtins':
+    elif entry.object.__class__.__name__ == 'member_descriptor' and entry.object.__class__.__module__ == 'builtins':
+        assert inspect.isdatadescriptor(entry.object)
+        # Unfortunately we can't get any docstring for these
+        docstring = ''
+
         out.is_gettable = True
         out.is_settable = True
         out.is_deletable = True
-
-        # Call all scope enter hooks before rendering the docs
-        for hook in state.hooks_pre_scope:
-            hook(type=entry.type, path=entry.path)
-
-        # Unfortunately we can't get any docstring for these
-        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, '')
-
-        # Call all scope exit hooks after rendering the docs
-        for hook in state.hooks_post_scope:
-            hook(type=entry.type, path=entry.path)
-
-        out.has_details = bool(out.content)
 
         # First try to get fully dereferenced type hints (with strings
         # converted to actual annotations). If that fails (e.g. because a type
@@ -1664,8 +1644,6 @@ def extract_property_doc(state: State, parent, entry: Empty):
         else:
             out.type, out.type_link = None, None
 
-        return out
-
     # The properties can be defined using the low-level descriptor protocol
     # instead of the higher-level property() decorator. That means there's no
     # fget / fset / fdel, instead we need to look into __get__ / __set__ /
@@ -1673,85 +1651,93 @@ def extract_property_doc(state: State, parent, entry: Empty):
     # BaseException.args is another I could find), so don't bother with it much
     # --- assume readonly. Some docstrings are there for properties; see the
     # inspect_string.DerivedException test class for details.
-    if entry.object.__class__.__name__ == 'getset_descriptor' and entry.object.__class__.__module__ == 'builtins':
+    elif entry.object.__class__.__name__ == 'getset_descriptor' and entry.object.__class__.__module__ == 'builtins':
+        assert inspect.isdatadescriptor(entry.object)
+        docstring = entry.object.__doc__
+
         out.is_gettable = True
         out.is_settable = False
         out.is_deletable = False
-        out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, entry.object.__doc__)
-        out.has_details = bool(out.content)
         out.type = None
-        return out
+        #return out
+
+    # Otherwise it's a classic property
+    else:
+        assert inspect.isdatadescriptor(entry.object)
+        is_classic_property = True
+
+        out.is_gettable = entry.object.fget is not None
+        out.is_settable = entry.object.fset is not None
+        out.is_deletable = entry.object.fdel is not None
+
+        if entry.object.fget or (entry.object.fset and entry.object.__doc__):
+            docstring = entry.object.__doc__
+        else:
+            assert entry.object.fset
+            docstring = entry.object.fset.__doc__
+
+        # For the type, if the property is gettable, get it from getters's
+        # return type. For write-only properties get it from setter's second
+        # argument annotation.
+        try:
+            if entry.object.fget:
+                signature = inspect.signature(entry.object.fget)
+
+                # First try to get fully dereferenced type hints (with strings
+                # converted to actual annotations). If that fails (e.g. because
+                # a type doesn't exist), we'll take the non-dereferenced
+                # annotations from inspect instead. This is deliberately done
+                # *after* inspecting the signature because pybind11 properties
+                # would throw TypeError from typing.get_type_hints(). This way
+                # they throw ValueError from inspect and we don't need to
+                # handle TypeError in get_type_hints_or_nothing().
+                type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fget)
+
+                if 'return' in type_hints:
+                    out.type, out.type_link = extract_annotation(state, entry.path, type_hints['return'])
+                else:
+                    out.type, out.type_link = extract_annotation(state, entry.path, signature.return_annotation)
+            else:
+                assert entry.object.fset
+                signature = inspect.signature(entry.object.fset)
+
+                # Same as the lengthy comment above
+                type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fset)
+
+                # Get second parameter name, then try to fetch it from
+                # type_hints and if that fails get its annotation from the
+                # non-dereferenced version
+                value_parameter = list(signature.parameters.values())[1]
+                if value_parameter.name in type_hints:
+                    out.type, out.type_link = extract_annotation(state, entry.path, type_hints[value_parameter.name])
+                else:
+                    out.type, out.type_link = extract_annotation(state, entry.path, value_parameter.annotation)
+
+        except ValueError:
+            # pybind11 properties have the type in the docstring
+            if state.config['PYBIND11_COMPATIBILITY']:
+                if entry.object.fget:
+                    out.type, out.type_link = parse_pybind_signature(state, entry.path, entry.object.fget.__doc__)[3:]
+                else:
+                    assert entry.object.fset
+                    parsed_args = parse_pybind_signature(state, entry.path, entry.object.fset.__doc__)[2]
+                    # If argument parsing failed, we're screwed
+                    if len(parsed_args) == 1: out.type, out.type_link = None, None
+                    else: out.type, out.type_link = parsed_args[1][1:3]
+            else:
+                out.type, out.type_link = None, None
 
     # Call all scope enter hooks before rendering the docs
     for hook in state.hooks_pre_scope:
         hook(type=entry.type, path=entry.path)
 
-    out.is_gettable = entry.object.fget is not None
-    if entry.object.fget or (entry.object.fset and entry.object.__doc__):
-        docstring = entry.object.__doc__
-    else:
-        assert entry.object.fset
-        docstring = entry.object.fset.__doc__
+    # Render the docs
     out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, docstring)
-    out.is_settable = entry.object.fset is not None
-    out.is_deletable = entry.object.fdel is not None
-    out.has_details = bool(out.content)
+    if out.content: out.has_details = True
 
     # Call all scope exit hooks after rendering the docs
     for hook in state.hooks_post_scope:
         hook(type=entry.type, path=entry.path)
-
-    # For the type, if the property is gettable, get it from getters's return
-    # type. For write-only properties get it from setter's second argument
-    # annotation.
-
-    try:
-        if entry.object.fget:
-            signature = inspect.signature(entry.object.fget)
-
-            # First try to get fully dereferenced type hints (with strings
-            # converted to actual annotations). If that fails (e.g. because a
-            # type doesn't exist), we'll take the non-dereferenced annotations
-            # from inspect instead. This is deliberately done *after*
-            # inspecting the signature because pybind11 properties would throw
-            # TypeError from typing.get_type_hints(). This way they throw
-            # ValueError from inspect and we don't need to handle TypeError in
-            # get_type_hints_or_nothing().
-            type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fget)
-
-            if 'return' in type_hints:
-                out.type, out.type_link = extract_annotation(state, entry.path, type_hints['return'])
-            else:
-                out.type, out.type_link = extract_annotation(state, entry.path, signature.return_annotation)
-        else:
-            assert entry.object.fset
-            signature = inspect.signature(entry.object.fset)
-
-            # Same as the lengthy comment above
-            type_hints = get_type_hints_or_nothing(state, entry.path, entry.object.fset)
-
-            # Get second parameter name, then try to fetch it from type_hints
-            # and if that fails get its annotation from the non-dereferenced
-            # version
-            value_parameter = list(signature.parameters.values())[1]
-            if value_parameter.name in type_hints:
-                out.type, out.type_link = extract_annotation(state, entry.path, type_hints[value_parameter.name])
-            else:
-                out.type, out.type_link = extract_annotation(state, entry.path, value_parameter.annotation)
-
-    except ValueError:
-        # pybind11 properties have the type in the docstring
-        if state.config['PYBIND11_COMPATIBILITY']:
-            if entry.object.fget:
-                out.type, out.type_link = parse_pybind_signature(state, entry.path, entry.object.fget.__doc__)[3:]
-            else:
-                assert entry.object.fset
-                parsed_args = parse_pybind_signature(state, entry.path, entry.object.fset.__doc__)[2]
-                # If argument parsing failed, we're screwed
-                if len(parsed_args) == 1: out.type, out.type_link = None, None
-                else: out.type, out.type_link = parsed_args[1][1:3]
-        else:
-            out.type, out.type_link = None, None
 
     if not state.config['SEARCH_DISABLED']:
         result = Empty()

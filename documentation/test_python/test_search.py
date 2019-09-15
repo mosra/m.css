@@ -42,7 +42,7 @@ class Search(BaseInspectTestCase):
         with open(os.path.join(self.path, 'output', searchdata_filename), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
-        print(search_data_pretty)
+        #print(search_data_pretty)
         self.assertEqual(len(serialized), 2269)
         self.assertEqual(search_data_pretty, """
 21 symbols
