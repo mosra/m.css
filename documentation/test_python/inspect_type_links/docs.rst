@@ -7,6 +7,14 @@
     function we need to say :ref:`inspect_type_links.open()`. If it would be
     the other way around, there would be no simple way to link to builtins.
 
+.. py:function:: inspect_type_links.open
+    :raise ValueError: If this is not a can, crosslinking to :ref:`ValueError`
+        of course.
+
+.. py:property:: inspect_type_links.Foo.prop
+    :raise SystemError: If you look at it wrong, crosslinking to
+        :ref:`SystemError` of course.
+
 .. py:module:: inspect_type_links.first
 
     :ref:`Foo`, :ref:`first.Foo` and :ref:`inspect_type_links.first.Foo` should

@@ -173,6 +173,7 @@ class PyFunction(rst.Directive):
     required_arguments = 1
     option_spec = {'summary': directives.unchanged,
                    'param': directives_unchanged_list,
+                   'raise': directives_unchanged_list,
                    'return': directives.unchanged}
 
     def run(self):
@@ -182,12 +183,21 @@ class PyFunction(rst.Directive):
         for name, content in self.options.get('param', []):
             if name in params: raise KeyError("duplicate param {}".format(name))
             params[name] = content
+        # Check that exceptions are parsed properly. This will blow up if the
+        # exception name is not specified. Unlike function params not turning
+        # these into a dict since a single type can be raised for multiple
+        # reasons.
+        raises = []
+        for name, content in self.options.get('raise', []):
+            raises += [(name, content)]
 
         output = function_doc_output.setdefault(self.arguments[0], {})
         if self.options.get('summary'):
             output['summary'] = self.options['summary']
         if params:
             output['params'] = params
+        if raises:
+            output['raise'] = raises
         if self.options.get('return'):
             output['return'] = self.options['return']
         if self.content:
@@ -198,10 +208,21 @@ class PyProperty(rst.Directive):
     final_argument_whitespace = True
     has_content = True
     required_arguments = 1
-    option_spec = {'summary': directives.unchanged}
+    option_spec = {'summary': directives.unchanged,
+                   'raise': directives_unchanged_list}
 
     def run(self):
+        # Check that exceptions are parsed properly. This will blow up if the
+        # exception name is not specified. Unlike function params not turning
+        # these into a dict since a single type can be raised for multiple
+        # reasons.
+        raises = []
+        for name, content in self.options.get('raise', []):
+            raises += [(name, content)]
+
         output = property_doc_output.setdefault(self.arguments[0], {})
+        if raises:
+            output['raise'] = raises
         if self.options.get('summary'):
             output['summary'] = self.options['summary']
         if self.content:
@@ -539,6 +560,8 @@ def merge_inventories(name_map, **kwargs):
         # TODO: this will blow up if the above loop is never entered (which is
         # unlikely) as EntryType is defined there
         (EntryType.CLASS, 'py:class'),
+        # Otherwise we can't link to standard exceptions from :raise:
+        (EntryType.CLASS, 'py:exception'), # TODO: special type for these?
         (EntryType.DATA, 'py:data'), # typing.Tuple or typing.Any is data
         # Those are custom to m.css, not in Sphinx
         (EntryType.ENUM, 'py:enum'),

@@ -84,6 +84,11 @@ add any detailed block.</dd>
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
           <dl class="m-doc">
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#exception_docs" class="m-doc">exception_docs</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>This one documents raised exceptions in an (otherwise unneeded) detail
+view</dd>
             <dt id="foo">
               <span class="m-doc-wrap-bumper">def <a href="#foo" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">a, b)</span>
             </dt>
@@ -180,6 +185,32 @@ directive...</p>
         </section>
         <section>
           <h2>Function documentation</h2>
+          <section class="m-doc-details" id="exception_docs"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#exception_docs" class="m-doc-self">exception_docs</a>(</span><span class="m-doc-wrap">)</span></span>
+            </h3>
+            <p>This one documents raised exceptions in an (otherwise unneeded) detail
+view</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">ValueError</td>
+                  <td>This thing fires</td>
+                </tr>
+                <tr>
+                  <td>ValueError</td>
+                  <td>This <em>same</em> thing fires <em>also</em> for this reason</td>
+                </tr>
+                <tr>
+                  <td>RuntimeError</td>
+                  <td>This another thing fires too</td>
+                </tr>
+              </tbody>
+            </table>
+          </div></section>
           <section class="m-doc-details" id="foo_with_details"><div>
             <h3>
               <span class="m-doc-wrap-bumper">def content.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#foo_with_details" class="m-doc-self">foo_with_details</a>(</span><span class="m-doc-wrap">a, b)</span></span>

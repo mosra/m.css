@@ -1257,6 +1257,8 @@ Property                            Description
                                     cross-linked types
 :py:`function.params`               List of function parameters. See below for
                                     details.
+:py:`function.exceptions`           List of exceptions raised by this function.
+                                    See below for details.
 :py:`function.has_complex_params`   Set to :py:`True` if the parameter list
                                     should be wrapped on several lines for
                                     better readability (for example when it
@@ -1276,8 +1278,8 @@ Property                            Description
                                     :py:`False` otherwise.
 =================================== ===========================================
 
-The :py:`func.params` is a list of function parameters and their description.
-Each item has the following properties:
+The :py:`function.params` is a list of function parameters and their
+description. Each item has the following properties:
 
 .. class:: m-table m-fullwidth
 
@@ -1298,6 +1300,19 @@ In some cases (for example in case of native APIs), the parameters can't be
 introspected. In that case, the parameter list is a single entry with ``name``
 set to :py:`"..."` and the rest being empty.
 
+The :py:`function.exceptions` is a list of exceptions types and descriptions.
+Each item has the following properties:
+
+.. class:: m-table m-fullwidth
+
+=========================== ===================================================
+Property                    Description
+=========================== ===================================================
+:py:`exception.type`        Exception type
+:py:`exception.type_link`   Like :py:`exception`, but with a cross-linked type
+:py:`exception.content`     Detailed documentation
+=========================== ===================================================
+
 `Property properties`_
 ``````````````````````
 
@@ -1313,6 +1328,10 @@ Property                            Description
                                     cross-linked types
 :py:`property.summary`              Doc summary
 :py:`property.content`              Detailed documentation, if any
+:py:`property.exceptions`           List of exceptions raised when accessing
+                                    this property. Same as
+                                    :py:`function.exceptions` described in
+                                    `function properties`_.
 :py:`property.is_gettable`          If the property is gettable
 :py:`property.is_settable`          If the property is settable
 :py:`property.is_deletable`         If the property is deletable with :py:`del`

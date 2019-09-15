@@ -5,6 +5,21 @@
             {% if property.summary %}
             <p>{{ property.summary }}</p>
             {% endif %}
+            {% if property.exceptions %}
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                {% for exception in property.exceptions %}
+                <tr>
+                  <td{% if loop.index == 1 %} style="width: 1%"{% endif %}>{{ exception.type_link }}</td>
+                  <td>{{ exception.content }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
             {% if property.content %}
 {{ property.content }}
             {% endif %}

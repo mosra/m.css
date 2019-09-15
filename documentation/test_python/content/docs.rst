@@ -59,6 +59,12 @@
 
     The ``self`` isn't documented and thus also not included in the list.
 
+.. py:function:: content.Class.method_param_exception_return_docs
+    :param a: The first parameter
+    :param b: The second parameter
+    :raise AttributeError: If you do bad things to it
+    :return: If you don't do bad things to it
+
 .. py:property:: content.Class.a_property
     :summary: This overwrites the docstring for :ref:`a_property`, but doesn't
         add any detailed block.
@@ -71,6 +77,9 @@
 .. py:property:: content.Class.annotated_property
 
     Annotated property, using summary from the docstring.
+
+.. py:property:: content.Class.property_exception_docs
+    :raise AttributeError: If you do bad things to it
 
 .. py:data:: content.Class.DATA_WITH_DETAILS
 
@@ -135,6 +144,11 @@ Doing :p:`this` here is not good either.
 .. py:function:: content.full_docstring
     :param a: First parameter
     :param b: Second
+
+.. py:function:: content.exception_docs
+    :raise ValueError: This thing fires
+    :raise ValueError: This *same* thing fires *also* for this reason
+    :raise RuntimeError: This another thing fires too
 
 .. py:data:: content.CONSTANT
     :summary: This is finally a docstring for :ref:`CONSTANT`

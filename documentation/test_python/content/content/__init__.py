@@ -26,6 +26,9 @@ class Class:
     def method_param_docs(self, a, b):
         """This method gets its params except self documented"""
 
+    def method_param_exception_return_docs(self, a, b):
+        """This one documents params and raised exceptions"""
+
     @property
     def a_property(self):
         """This summary is not shown either"""
@@ -37,6 +40,11 @@ class Class:
     @property
     def annotated_property(self) -> float:
         """This is an annotated property"""
+
+    @property
+    def property_exception_docs(self):
+        """This one documents raised exceptions in an (otherwise unneeded)
+        detail view"""
 
     DATA_WITH_DETAILS: str = 'this blows'
 
@@ -100,6 +108,11 @@ def full_docstring(a, b) -> str:
     or parsed in any way.
 
     Like this.
+    """
+
+def exception_docs():
+    """This one documents raised exceptions in an (otherwise unneeded) detail
+    view
     """
 
 # This should check we handle reST parsing errors in external docs gracefully.

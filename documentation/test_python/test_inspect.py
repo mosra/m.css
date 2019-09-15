@@ -175,6 +175,7 @@ class TypeLinks(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_type_links.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_type_links.first.Foo.Foo.html'))

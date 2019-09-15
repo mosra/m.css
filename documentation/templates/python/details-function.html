@@ -6,7 +6,7 @@
             {% if function.summary %}
             <p>{{ function.summary }}</p>
             {% endif %}
-            {% if function.has_param_details or function.return_value %}
+            {% if function.has_param_details or function.exceptions or function.return_value %}
             <table class="m-table m-fullwidth m-flat">
               {% if function.has_param_details %}
               <thead>
@@ -23,10 +23,23 @@
                 {% endfor %}
               </tbody>
               {% endif %}
+              {% if function.exceptions %}
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                {% for exception in function.exceptions %}
+                <tr>
+                  <td{% if loop.index == 1 and not function.has_param_details %} style="width: 1%"{% endif %}>{{ exception.type_link }}</td>
+                  <td>{{ exception.content }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endif %}
               {% if function.return_value %}
               <tfoot>
                 <tr>
-                  <th{% if not function.has_param_details %} style="width: 1%"{% endif %}>Returns</th>
+                  <th{% if not function.has_param_details and not function.exceptions %} style="width: 1%"{% endif %}>Returns</th>
                   <td>{{ function.return_value }}</td>
                 </tr>
               </tfoot>

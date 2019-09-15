@@ -72,6 +72,10 @@ add any detailed block.</dd>
             </dt>
             <dd>This method gets its params except self documented</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#method_param_exception_return_docs" class="m-doc">method_param_exception_return_docs</a>(</span><span class="m-doc-wrap">self, a, b)</span>
+            </dt>
+            <dd>This one documents params and raised exceptions</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">def <a href="#method_with_details" class="m-doc">method_with_details</a>(</span><span class="m-doc-wrap">self)</span>
             </dt>
             <dd></dd>
@@ -102,6 +106,11 @@ add any detailed block.</dd>
               <a href="#annotated_property" class="m-doc">annotated_property</a>: float <span class="m-label m-flat m-warning">get</span>
             </dt>
             <dd>This is an annotated property</dd>
+            <dt>
+              <a href="#property_exception_docs" class="m-doc">property_exception_docs</a> <span class="m-label m-flat m-warning">get</span>
+            </dt>
+            <dd>This one documents raised exceptions in an (otherwise unneeded)
+detail view</dd>
           </dl>
         </section>
         <section id="data">
@@ -151,6 +160,42 @@ add any detailed block.</dd>
             </table>
 <p>The <code>self</code> isn't documented and thus also not included in the list.</p>
           </div></section>
+          <section class="m-doc-details" id="method_param_exception_return_docs"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#method_param_exception_return_docs" class="m-doc-self">method_param_exception_return_docs</a>(</span><span class="m-doc-wrap">self, a, b)</span></span>
+            </h3>
+            <p>This one documents params and raised exceptions</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Parameters</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">a</td>
+                  <td>The first parameter</td>
+                </tr>
+                <tr>
+                  <td>b</td>
+                  <td>The second parameter</td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>AttributeError</td>
+                  <td>If you do bad things to it</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>Returns</th>
+                  <td>If you don't do bad things to it</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div></section>
           <section class="m-doc-details" id="method_with_details"><div>
             <h3>
               <span class="m-doc-wrap-bumper">def content.<wbr />Class.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#method_with_details" class="m-doc-self">method_with_details</a>(</span><span class="m-doc-wrap">self)</span></span>
@@ -180,6 +225,24 @@ add any detailed block.</dd>
             </h3>
             <p>This is an annotated property</p>
 <p>Annotated property, using summary from the docstring.</p>
+          </div></section>
+          <section class="m-doc-details" id="property_exception_docs"><div>
+            <h3>
+              content.<wbr />Class.<wbr /><a href="#property_exception_docs" class="m-doc-self">property_exception_docs</a> <span class="m-label m-flat m-warning">get</span>
+            </h3>
+            <p>This one documents raised exceptions in an (otherwise unneeded)
+detail view</p>
+            <table class="m-table m-fullwidth m-flat">
+              <thead>
+                <tr><th colspan="2">Exceptions</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 1%">AttributeError</td>
+                  <td>If you do bad things to it</td>
+                </tr>
+              </tbody>
+            </table>
           </div></section>
         </section>
         <section>

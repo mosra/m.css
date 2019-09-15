@@ -1524,7 +1524,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
 
         overloads = [out]
 
-    # Common path for parameter / return value docs and search
+    # Common path for parameter / exception / return value docs and search
     path_str = '.'.join(entry.path)
     for out in overloads:
         signature = '({})'.format(', '.join(['{}: {}'.format(param.name, param.type) if param.type else param.name for param in out.params]))
@@ -1567,6 +1567,16 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 for name, _ in param_docs.items():
                     if name not in used_params:
                         logging.warning("%s%s documents parameter %s, which isn't in the signature", path_str, signature, name)
+
+            if function_docs.get('raise'):
+                out.exceptions = []
+                for type_, content in function_docs['raise']:
+                    exception = Empty()
+                    exception.type = type_
+                    exception.type_link = make_name_link(state, entry.path, type_)
+                    exception.content = render_inline_rst(state, content)
+                    out.exceptions += [exception]
+                out.has_details = True
 
             if function_docs.get('return'):
                 try:
@@ -1738,6 +1748,18 @@ def extract_property_doc(state: State, parent, entry: Empty):
     # Call all scope exit hooks after rendering the docs
     for hook in state.hooks_post_scope:
         hook(type=entry.type, path=entry.path)
+
+    # Exception docs, if any
+    exception_docs = state.property_docs.get('.'.join(entry.path), {}).get('raise')
+    if exception_docs:
+        out.exceptions = []
+        for type_, content in exception_docs:
+            exception = Empty()
+            exception.type = type_
+            exception.type_link = make_name_link(state, entry.path, type_)
+            exception.content = render_inline_rst(state, content)
+            out.exceptions += [exception]
+        out.has_details = True
 
     if not state.config['SEARCH_DISABLED']:
         result = Empty()

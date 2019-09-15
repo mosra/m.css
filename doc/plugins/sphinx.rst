@@ -421,11 +421,14 @@ conveniently directly in the :rst:`.. py:enum::` directive via
 ------------
 
 The :rst:`.. py:function::` directive supports additional options ---
-:py:`:param <name>:` for documenting parameters and :py:`:return:` for
-documenting the return value. It's allowed to have either none or all
-parameters documented (the ``self`` parameter can be omitted), having them
-documented only partially or documenting parameters that are not present in the
-function signature will cause a warning. Example:
+:rst:`:param name:` for documenting parameters, :rst:`:raise name:` for
+documenting raised exceptions and :rst:`:return:` for documenting the return
+value. It's allowed to have either none or all parameters documented (the
+``self`` parameter can be omitted), having them documented only partially or
+documenting parameters that are not present in the function signature will
+cause a warning. Documenting one parameter multiple times causes a warning, on
+the other hand listing one exception multiple times is a valid use case.
+Example:
 
 .. code:: rst
 
@@ -435,6 +438,7 @@ function signature will cause a warning. Example:
         :param value:               Corresponding value
         :param overwrite_existing:  Overwrite existing value if already present
             in the container
+        :raise ValueError:  If the key type is not hashable
         :return:                    The inserted tuple or the existing
             key/value pair in case :p:`overwrite_existing` is not set
 
@@ -470,10 +474,11 @@ Example:
 `Properties`_
 -------------
 
-Use :rst:`.. py:property::` for documenting properties. This directive doesn't
-support any additional options besides :rst:`:summary:`. For convenience,
-properties that have just a summary can be also documented directly in the
-enclosing :rst:`.. py:class::` directive `as shown above <#classes>`__.
+Use :rst:`.. py:property::` for documenting properties. This directive supports
+the :rst:`:raise name:` option similarly as for `functions`_, plus the usual
+:rst:`:summary:`. For convenience, properties that have just a summary can be
+also documented directly in the enclosing :rst:`.. py:class::` directive
+`as shown above <#classes>`__.
 
 .. code:: rst
 
