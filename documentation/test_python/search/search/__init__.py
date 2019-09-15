@@ -21,3 +21,8 @@ def a_function():
 
 def func_with_params(a, b):
     pass
+
+class FooWithSlots:
+    __slots__ = ('im_a_sloth',)
+
+    im_a_sloth: bool
