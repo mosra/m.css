@@ -114,19 +114,38 @@ present in the inventory file, the same works for query parameters starting
 with ``?``. Adding custom CSS classes can be done by deriving the role and
 adding the :rst:`:class:` option.
 
-Since there's many possible targets and there can be conflicting names,
-sometimes it's desirable to disambiguate. If you suffix the link target with
-``()``, the plugin will restrict the name search to just functions. You can
-also restrict the search to a particular type by prefixing the target with a
-concrete target name and a colon --- for example,
-:rst:`:ref:`std:doc:using/cmdline`` will link to the ``using/cmdline`` page of
-standard documentation.
+.. block-success:: Shorthand linking and disambiguation
 
-Apart from global implicitly prepended prefixes defined in
-:rst:`M_SPHINX_INVENTORIES`, these can be set also on a per-page basis by
-listing them in :rst:`:ref-prefix:` in page metadata. This is useful especially
-when writing pages in the `Python doc theme`_ to avoid writing the fully
-qualified name every time you need to linking to some documented name.
+    Specifying fully-qualified name for every link would get very boring very
+    fast, which is why the :py:`M_SPHINX_INVENTORIES` option allows you to
+    specify a list of global implicitly prepended prefixes. Apart from that,
+    the prefixes can be set also on a per-page basis by listing them in
+    :rst:`:ref-prefix:` in page metadata. This is useful especially when
+    writing pages in the `Python doc theme`_ to avoid writing the fully
+    qualified name every time you need to linking to some documented name.
+
+    Finally, when using the :rst:`:ref:` role in any of the directives
+    described in the `Module, class, enum, function, property and data docs`_
+    section below, path of the currently documented name is used as well. This
+    can save you from repeated typing when for example referencing members of a
+    currently documented class.
+
+    The name matching is always done in this order:
+
+    1.  as-is, with no prefix, so :rst:`:ref:`open()`` *always* matches the
+        builtin :ref:`open()` and not whatever else found in current scope
+    2.  in case of the documentation directives, with increasingly shortened
+        path of currently documented name prepended
+    3.  prefixes from :rst:`:ref-prefix:`
+    4.  prefixes from :py:`M_SPHINX_INVENTORIES`
+
+    In order to disambiguate, you have a few options. Specifying larger prefix
+    is usually enough; if you suffix the link target with ``()``, the plugin
+    will restrict the name search to just functions; and finally you can also
+    restrict the search to a particular type by prefixing the target with a
+    concrete target name and a colon --- for example,
+    :rst:`:ref:`std:doc:using/cmdline`` will link to the ``using/cmdline`` page
+    of standard documentation.
 
 The :rst:`:ref:` a good candidate for a `default role <http://docutils.sourceforge.net/docs/ref/rst/directives.html#default-role>`_
 --- setting it using :rst:`.. default-role::` will then make it accessible
@@ -340,7 +359,7 @@ actual rendered docs. It's however possible to enable
 ----------
 
 The :rst:`.. py:module::` directive documents a Python module. In addition, the
-directive supports a :rst:`:data <name>:` option for convenient documenting of
+directive supports a :rst:`:data name:` option for convenient documenting of
 module-level data. The option is equivalent to filling out just a
 :rst:`:summary:` of the :rst:`.. py:data::` directive `described below <#data>`_.
 
@@ -358,10 +377,10 @@ module-level data. The option is equivalent to filling out just a
 ----------
 
 Use :rst:`.. py:class::` for documenting classes. Similarly to module docs,
-this directive supports an additional :rst:`:data <name>:` option for
-documenting class-level data as well as :rst:`:property <name>:` for
-properties. Both of those are equivalent to filling out a :rst:`:summary:` of
-the :rst:`.. py:data::` / :rst:`.. py:property::` directives `described <#data>`_
+this directive supports an additional :rst:`:data name:` option for documenting
+class-level data as well as :rst:`:property name:` for properties. Both of
+those are equivalent to filling out a :rst:`:summary:` of the
+:rst:`.. py:data::` / :rst:`.. py:property::` directives `described <#data>`_
 `below <#properties>`_.
 
 .. code:: rst
@@ -379,7 +398,7 @@ the :rst:`.. py:data::` / :rst:`.. py:property::` directives `described <#data>`
 Use :rst:`.. py:enum::` for documenting enums. Values can be documented either
 using the :rst:`.. py:enumvalue::` directive, or in case of short descriptions,
 conveniently directly in the :rst:`.. py:enum::` directive via
-:py:`:value <name>:` options. Example:
+:rst:`:value name:` options. Example:
 
 .. code:: rst
 
