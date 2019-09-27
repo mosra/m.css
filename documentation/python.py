@@ -1094,8 +1094,11 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
     elif (hasattr(annotation, '__module__') and annotation.__module__ == 'typing'):
         # Optional or Union, handle those first
         if hasattr(annotation, '__origin__') and annotation.__origin__ is typing.Union:
-            # FOR SOME REASON `annotation.__args__[1] is None` is always False
-            if len(annotation.__args__) == 2 and isinstance(None, annotation.__args__[1]):
+            # FOR SOME REASON `annotation.__args__[1] is None` is always False,
+            # so we have to use isinstance(). HOWEVER, we *can't* use
+            # isinstance if it's a "bracketed" type -- it'll die. So check that
+            # first.
+            if len(annotation.__args__) == 2 and not hasattr(annotation.__args__[1], '__args__') and isinstance(None, annotation.__args__[1]):
                 name = 'typing.Optional'
                 args = annotation.__args__[:1]
             else:

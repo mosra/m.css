@@ -63,6 +63,9 @@ def annotation_generic(a: List[_T]) -> _T:
 def annotation_optional(a: Optional[float]):
     """Annotation with the Optional type"""
 
+def annotation_union_second_bracketed(a: Union[float, List[int]]):
+    """Annotation with the Union type and second type bracketed, where we can't use isinstance"""
+
 def annotation_callable(a: Callable[[float, int], str]):
     """Annotation with the Callable type"""
 
