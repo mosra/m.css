@@ -38,6 +38,9 @@
   {% endif %}
   {% block extra %}
   {% endblock extra %}
+  {% if M_HTML_HEADER %}
+  {{ M_HTML_HEADER|rtrim|indent(2) }}
+  {% endif %}
 </head>
 <body>
 <header><nav id="navigation"{% if page and page.landing and page.cover %} class="m-navbar-landing"{% elif (page and page.cover) or (article and article.cover) %} class="m-navbar-cover"{% endif %}>

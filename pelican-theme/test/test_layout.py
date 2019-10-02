@@ -65,6 +65,9 @@ class Layout(BaseTestCase):
                    ('', ''),
                    ('GitHub', 'https://github.com/your-brand')],
             # multiline to test indentation
+            'M_HTML_HEADER': """<!-- this is extra in the header -->
+  <!-- and more, indented -->
+<!-- yes. -->""",
             'M_FINE_PRINT': """
 Your Brand. Copyright © `You <mailto:you@your.brand>`_, 2017.
 All rights reserved.

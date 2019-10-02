@@ -220,6 +220,9 @@ neither is specified no :html:`<link>` tag is rendered. Example configuration:
     M_FAVICON = ('favicon.ico', 'image/x-ico')
     M_BLOG_FAVICON = ('favicon-blog.png', 'image/png')
 
+Arbitrary HTML content can be added at the end of the :html:`<head>` via the
+:py:`M_HTML_HEADER` option.
+
 `Top navbar`_
 -------------
 
