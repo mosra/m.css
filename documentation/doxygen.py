@@ -1206,12 +1206,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             content = parse_inline_desc(state, i).strip()
             if content: out.parsed += '<code>{}</code>'.format(content)
 
-        elif i.tag in ['emphasis', 'bold', 'small', 'superscript', 'subscript']:
+        elif i.tag in ['emphasis', 'bold', 'small', 'superscript', 'subscript', 'strike']:
             mapping = {'emphasis': 'em',
                        'bold': 'strong',
                        'small': 'small',
                        'superscript': 'sup',
-                       'subscript': 'sub'}
+                       'subscript': 'sub',
+                       'strike': 's'}
 
             content = parse_inline_desc(state, i).strip()
             if content: out.parsed += '<{0}{1}>{2}</{0}>'.format(
