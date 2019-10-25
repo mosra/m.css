@@ -40,7 +40,7 @@ applied to all elements by default.
 `Quick start`_
 ==============
 
-To make full advantage of m.css, you need the following files written in plain
+To take full advantage of m.css, you need the following files written in plain
 CSS. Download them below or :gh:`grab the whole Git repository <mosra/m.css>`:
 
 -   :gh:`m-grid.css <mosra/m.css$master/css/m-grid.css>` with optional
