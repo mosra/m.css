@@ -7,13 +7,13 @@
           {% for i in index.symbols recursive %}
           {% if i.children %}
           <li class="m-doc-collapsible{% if loop.depth > M_CLASS_TREE_EXPAND_LEVELS or (i.kind != 'namespace' and not M_EXPAND_INNER_TYPES) %} collapsed{% endif %}">
-            <a href="#" onclick="return toggle(this)">{{ i.kind }}</a> <a href="{{ i.url }}" class="m-doc">{{ i.name }}</a>{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %} <span class="m-doc">{{ i.brief }}</span>
+            <a href="#" onclick="return toggle(this)">{{ i.kind }}</a> <a href="{{ i.url }}" class="m-doc">{{ i.name }}</a>{% if i.deprecated %} <span class="m-label m-danger">{{ i.deprecated }}</span>{% endif %}{% if i.since %} {{ i.since }}{% endif %} <span class="m-doc">{{ i.brief }}</span>
             <ul class="m-doc">
 {{ loop(i.children)|rtrim|indent(4, true) }}
             </ul>
           </li>
           {% else %}
-          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-doc">{{ i.name }}</a>{% if i.is_final %} <span class="m-label m-flat m-warning">final</span>{% endif %}{% if i.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %} <span class="m-doc">{{ i.brief }}</span></li>
+          <li>{{ i.kind }} <a href="{{ i.url }}" class="m-doc">{{ i.name }}</a>{% if i.is_final %} <span class="m-label m-flat m-warning">final</span>{% endif %}{% if i.deprecated %} <span class="m-label m-danger">{{ i.deprecated }}</span>{% endif %}{% if i.since %} {{ i.since }}{% endif %} <span class="m-doc">{{ i.brief }}</span></li>
           {% endif %}
           {% endfor %}
         </ul>

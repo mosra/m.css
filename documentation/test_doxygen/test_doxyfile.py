@@ -75,6 +75,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 """,
             'M_SHOW_UNDOCUMENTED': False,
             'M_THEME_COLOR': '#22272e',
+            'M_VERSION_LABELS': False,
             'OUTPUT_DIRECTORY': '',
             'PROJECT_BRIEF': 'is cool',
             'PROJECT_LOGO': '',

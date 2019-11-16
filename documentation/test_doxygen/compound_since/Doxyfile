@@ -1,0 +1,19 @@
+INPUT                   = Directory/Class.h DeprecatedDirectory/DeprecatedClass.h pages.dox
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
+XML_PROGRAMLISTING      = NO
+CASE_SENSE_NAMES        = YES
+
+##! M_PAGE_FINE_PRINT   =
+##! M_THEME_COLOR       =
+##! M_FAVICON           =
+##! M_LINKS_NAVBAR1     = pages namespaces modules
+##! M_SEARCH_DISABLED   = YES
+##! M_VERSION_LABELS    = YES
+
+ALIASES = \
+    "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
+    "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since \1.\2\"" \
+    "m_deprecated_since{2}=@since deprecated since \1.\2 @deprecated"

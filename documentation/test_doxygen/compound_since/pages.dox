@@ -1,0 +1,54 @@
+/** @page a This is new.
+
+Yes.
+
+@m_since{2019,11}
+
+*/
+
+/** @page deprecated-a This is old.
+
+Yes.
+
+@m_deprecated_since{2010,02} Yes it is.
+
+*/
+
+/** @page changelog Changelog
+
+@section changelog-2019-11 Version 2019.11
+
+Stuff happened.
+
+@section changelog-2010-02 Version 2010.02
+
+Ages ago. Who knows.
+*/
+
+/** @defgroup group A group
+
+@m_since{2019,11}
+
+Detailed description.
+
+@defgroup subgroup A subgroup
+@ingroup group
+
+@m_since{2019,11}
+
+More.
+*/
+
+/** @defgroup deprecated-group A group
+
+@m_deprecated_since{2010,02} Yes it is.
+
+Detailed description.
+
+@defgroup deprecated-subgroup A subgroup
+@ingroup deprecated-group
+
+More.
+
+@m_deprecated_since{2019,11} Yep.
+*/

@@ -389,6 +389,10 @@ Variable                            Description
                                     search is offered. See `Search options`_
                                     for more information. Has effect only if
                                     :ini:`M_SEARCH_DISABLED` is not ``YES``.
+:ini:`M_VERSION_LABELS`             Show the ``@since`` annotation as labels
+                                    visible in entry listing and detailed docs.
+                                    Defaults to ``NO``, see `Version labels`_
+                                    for more information.
 :ini:`M_SHOW_UNDOCUMENTED`          Include undocumented symbols, files and
                                     directories in the output. If not set,
                                     ``NO`` is used. See `Showing undocumented symbols and files`_
@@ -1187,6 +1191,52 @@ suffix of the title.
      */
     template<class T> lerp(const T& x, const T& y, float a);
 
+`Version labels`_
+-----------------
+
+By default, to keep compatibility with existing content, the ``@since`` block
+is rendered as a note directly in the text flow. If you enable the
+:ini:`M_SINCE_BADGES` option, content of the ``@since`` block is expected to be
+a single label that can optionally link to a changelog entry. The label is then
+placed visibly next to given entry and detailed description as well as all
+listings. Additionally, if ``@since`` is followed by ``@deprecated``, it adds
+version info to the deprecation notice (instead of denoting when given feature
+was added) --- in this case it expects just a textual info, without any label
+styling. Recommended use is in combination with an alias that takes care of the
+label rendering and  For example (the ``@m_class`` is the same as described in
+`Theme-specific commands`_ above):
+
+.. code:: ini
+
+    M_VERSION_LABELS = YES
+    ALIASES = \
+        "m_class{1}=@xmlonly<mcss:class xmlns:mcss=\"http://mcss.mosra.cz/doxygen/\" mcss:class=\"\1\" />@endxmlonly" \
+        "m_since{2}=@since @m_class{m-label m-success m-flat} @ref changelog-\1-\2 \"since v\1.\2\"" \
+        "m_deprecated_since{2}=@since deprecated in v\1.\2 @deprecated"
+
+With the above configuration, the following markup will render a
+:label-flat-success:`since v1.3` label leading to a page named ``changelog-1-3``
+next to both function entry and detailed docs in the first case, and a
+:label-danger:`deprecated since v1.3` label in the second case:
+
+.. code:: c++
+
+    /**
+    @brief Fast inverse square root
+    @m_since{1,3}
+
+    Faster than `1.0f/sqrt(a)`.
+    */
+    float fastinvsqrt(float a);
+
+    /**
+    @brief Slow inverse square root
+
+    Attempts to figure out the value by a binary search.
+    @m_deprecated_since{1,3} Use @ref fastinvsqrt() instead.
+    */
+    float slowinvsqrt(float a);
+
 `Command-line options`_
 =======================
 
@@ -1471,7 +1521,9 @@ Property                                Description
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
 :py:`compound.is_final`                 Whether the class is :cpp:`final`. Set
                                         only for classes.
-:py:`compound.is_deprecated`            Whether the compound is deprecated. [7]_
+:py:`compound.deprecated`               Deprecation status [7]_
+:py:`compound.since`                    Since which version the compound is
+                                        available [8]_
 :py:`compound.description`              Detailed description. Can be empty. [2]_
 :py:`compound.modules`                  List of submodules in this compound.
                                         Set only for modules. See
@@ -1632,7 +1684,8 @@ Property                    Description
 :py:`module.url`            URL of the file containing detailed module docs
 :py:`module.name`           Module name (just the leaf)
 :py:`module.brief`          Brief description. Can be empty. [1]_
-:py:`module.is_deprecated`  Whether the module is deprecated. [7]_
+:py:`module.deprecated`     Deprecation status [7]_
+:py:`module.since`          Since which version the module is available [8]_
 =========================== ===================================================
 
 `Directory properties`_
@@ -1649,7 +1702,8 @@ Property                    Description
 :py:`dir.url`               URL of the file containing detailed directory docs
 :py:`dir.name`              Directory name (just the leaf)
 :py:`dir.brief`             Brief description. Can be empty. [1]_
-:py:`dir.is_deprecated`     Whether the directory is deprecated. [7]_
+:py:`dir.deprecated`        Deprecation status [7]_
+:py:`dir.since`             Since which version the directory is available [8]_
 =========================== ===================================================
 
 `File properties`_
@@ -1666,7 +1720,8 @@ Property                    Description
 :py:`file.url`              URL of the file containing detailed file docs
 :py:`file.name`             File name (just the leaf)
 :py:`file.brief`            Brief description. Can be empty. [1]_
-:py:`file.is_deprecated`    Whether the file is deprecated. [7]_
+:py:`file.deprecated`       Deprecation status [7]_
+:py:`file.since`            Since which version the file is available [8]_
 =========================== ===================================================
 
 `Namespace properties`_
@@ -1686,7 +1741,9 @@ Property                        Description
                                 a file documentation, just the leaf name if in
                                 a namespace documentation.
 :py:`namespace.brief`           Brief description. Can be empty. [1]_
-:py:`namespace.is_deprecated`   Whether the namespace is deprecated. [7]_
+:py:`namespace.deprecated`      Deprecation status [7]_
+:py:`namespace.since`           Since which version the namespace is available
+                                [8]_
 =============================== ===============================================
 
 `Class properties`_
@@ -1708,7 +1765,8 @@ Property                    Description
 :py:`class.templates`       Template specification. See `Template properties`_
                             for details.
 :py:`class.brief`           Brief description. Can be empty. [1]_
-:py:`class.is_deprecated`   Whether the class is deprecated. [7]_
+:py:`class.deprecated`      Deprecation status [7]_
+:py:`class.since`           Since which version the class is available [8]_
 :py:`class.is_protected`    Whether this is a protected base class. Set only
                             for base classes.
 :py:`class.is_virtual`      Whether this is a virtual base class or a
@@ -1744,7 +1802,8 @@ Property                        Description
 :py:`enum.description`          Detailed description. Can be empty. [2]_
 :py:`enum.has_details`          If there is enough content for the full
                                 description block [5]_
-:py:`enum.is_deprecated`        Whether the enum is deprecated. [7]_
+:py:`enum.deprecated`           Deprecation status [7]_
+:py:`enum.since`                Since which version the enum is available [8]_
 :py:`enum.is_protected`         If the enum is :cpp:`protected`. Set only for
                                 member types.
 :py:`enum.values`               List of enum values
@@ -1763,7 +1822,8 @@ Property                    Description
 :py:`value.id`              Identifier hash [3]_
 :py:`value.name`            Value name [4]_
 :py:`value.initializer`     Value initializer. Can be empty. [1]_
-:py:`value.is_deprecated`   Whether the value is deprecated. [7]_
+:py:`value.deprecated`      Deprecation status [7]_
+:py:`value.since`           Since which version the value is available [8]_
 :py:`value.brief`           Brief description. Can be empty. [1]_
 :py:`value.description`     Detailed description. Can be empty. [2]_
 =========================== ===================================================
@@ -1800,7 +1860,9 @@ Property                            Description
                                     for details.
 :py:`typedef.has_template_details`  If template parameters have description
 :py:`typedef.brief`                 Brief description. Can be empty. [1]_
-:py:`typedef.is_deprecated`         Whether the typedef is deprecated. [7]_
+:py:`typedef.deprecated`            Deprecation status [7]_
+:py:`typedef.since`                 Since which version the typedef is
+                                    available [8]_
 :py:`typedef.description`           Detailed description. Can be empty. [2]_
 :py:`typedef.has_details`           If there is enough content for the full
                                     description block [4]_
@@ -1863,7 +1925,9 @@ Property                            Description
                                     and :cpp:`delete`\ d / :cpp:`default`\ ed
                                     functions is removed from the suffix and
                                     available via other properties.
-:py:`func.is_deprecated`            Whether the function is deprecated. [7]_
+:py:`func.deprecated`               Deprecation status [7]_
+:py:`func.since`                    Since which version the function is
+                                    available [8]_
 :py:`func.is_protected`             If the function is :cpp:`protected`. Set
                                     only for member functions.
 :py:`func.is_private`               If the function is :cpp:`private`. Set only
@@ -1948,7 +2012,9 @@ Property                        Description
 :py:`var.description`           Detailed description. Can be empty. [2]_
 :py:`var.has_details`           If there is enough content for the full
                                 description block [5]_
-:py:`var.is_deprecated`         Whether the variable is deprecated. [7]_
+:py:`var.deprecated`            Deprecation status [7]_
+:py:`var.since`                 Since which version the variable is available
+                                [8]_
 :py:`var.is_static`             If the variable is :cpp:`static`. Set only for
                                 member variables.
 :py:`var.is_protected`          If the variable is :cpp:`protected`. Set only
@@ -1981,7 +2047,9 @@ Property                        Description
 :py:`define.return_value`       Return value description. Can be empty.
 :py:`define.brief`              Brief description. Can be empty. [1]_
 :py:`define.description`        Detailed description. Can be empty. [2]_
-:py:`define.is_deprecated`      Whether the define is deprecated. [7]_
+:py:`define.deprecated`         Deprecation status [7]_
+:py:`define.since`              Since which version the define is available
+                                [8]_
 :py:`define.has_details`        If there is enough content for the full
                                 description block [5]_
 =============================== ===============================================
@@ -2107,7 +2175,8 @@ Property                        Description
 :py:`i.name`                    Name
 :py:`i.url`                     URL of the file with detailed documentation
 :py:`i.brief`                   Brief documentation
-:py:`i.is_deprecated`           Whether the entry is deprecated. [7]_
+:py:`i.deprecated`              Deprecation status [7]_
+:py:`i.since`                   Since which version the entry is available [8]_
 :py:`i.is_final`                Whether the class is :cpp:`final`. Set only for
                                 classes.
 :py:`i.has_nestable_children`   If the list has nestable children (i.e., dirs
@@ -2140,5 +2209,8 @@ all directories are before all files.
     :py:`compound.url`, its :py:`i.has_details` is always set to :py:`False`.
 .. [6] :py:`i.type` and :py:`param.default` is rendered as HTML and usually
     contains links to related documentation
-.. [7] :py:`i.is_deprecated` is set to :py:`True` if detailed docs of given
-    symbol contain the ``@deprecated`` command and to :py:`False` otherwise
+.. [7] :py:`i.deprecated` is set to a string containing the deprecation
+    status if detailed docs of given symbol contain the ``@deprecated`` command and to :py:`None` otherwise.  See also `Version labels`_ for more
+    information.
+.. [8] :py:`i.status` HTML code with a label or :py:`None`. See
+    `Version labels`_ for more information.

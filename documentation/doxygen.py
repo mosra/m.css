@@ -103,7 +103,7 @@ class StateCompound:
         self.url: str
         self.brief: str
         self.has_details: bool
-        self.is_deprecated: bool
+        self.deprecated: str
         self.is_final: bool = None
         self.children: List[str]
         self.parent: str = None
@@ -301,7 +301,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     out.example_navigation = None
     out.search_keywords = []
     out.search_enum_values_as_keywords = False
-    out.is_deprecated = False
+    out.deprecated = None
+    out.since = None
 
     # DOXYGEN <PARA> PATCHING 1/4
     #
@@ -356,6 +357,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.return_values += parsed.return_values
         if parsed.exceptions:
             out.exceptions += parsed.exceptions
+        if parsed.since:
+            out.since = parsed.since
+        if parsed.deprecated:
+            assert not out.since
+            out.deprecated = parsed.deprecated
 
     i: ET.Element
     for index, i in enumerate(element):
@@ -659,7 +665,6 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             if parsed.example_navigation: out.example_navigation = parsed.example_navigation
             out.search_keywords += parsed.search_keywords
             if parsed.search_enum_values_as_keywords: out.search_enum_values_as_keywords = True
-            if parsed.is_deprecated: out.is_deprecated = True
 
             # Assert we didn't miss anything important
             assert not parsed.section
@@ -742,6 +747,14 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     logging.warning("{}: superfluous @return section found, ignoring: {} ".format(state.current, ''.join(i.itertext())))
                 else:
                     out.return_value = parse_desc(state, i)
+
+            # Content of @since tags is put as-is into entry description /
+            # details, if enabled.
+            elif i.attrib['kind'] == 'since' and state.doxyfile['M_VERSION_LABELS']:
+                since = parse_inline_desc(state, i).strip()
+                assert since.startswith('<p>') and since.endswith('</p>')
+                out.since = since[3:-4]
+
             else:
                 has_block_elements = True
 
@@ -848,15 +861,24 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             id = i.attrib['id']
             match = xref_id_rx.match(id)
             file = match.group(1)
+            title = i.find('xreftitle').text
             if add_css_class:
                 css_class = add_css_class
                 heading = 'h3'
             else:
                 heading = 'h4'
                 css_class = 'm-note '
+                # If we have version info from a previous Since badge, use it
+                # instead of the title
                 if file.startswith('deprecated'):
                     css_class += 'm-danger'
-                    out.is_deprecated = True
+                    if out.since:
+                        out.deprecated = out.since
+                        title = out.since.capitalize()
+                        out.since = None
+                    else:
+                        out.deprecated = 'deprecated'
+                        title = 'Deprecated'
                 elif file.startswith('bug'):
                     css_class += 'm-danger'
                 elif file.startswith('todo'):
@@ -868,7 +890,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 heading=heading,
                 file=file,
                 anchor=match.group(2),
-                title=i.find('xreftitle').text,
+                title=title,
                 description=parse_desc(state, i.find('xrefdescription')))
 
         elif i.tag == 'parameterlist':
@@ -1624,14 +1646,14 @@ def parse_enum_desc(state: State, element: ET.Element) -> Tuple[str, List[Tuple[
     if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in enum description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.search_keywords, parsed.search_enum_values_as_keywords, parsed.deprecated, parsed.since
 
 def parse_enum_value_desc(state: State, element: ET.Element) -> Tuple[str, List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     if parsed.templates or parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @tparam / @param / @return / @retval / @exception found in enum value description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.search_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.search_keywords, parsed.deprecated, parsed.since
 
 def parse_var_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
@@ -1639,7 +1661,7 @@ def parse_var_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], L
     if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @param / @return / @retval / @exception found in variable description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.templates, parsed.search_keywords, parsed.deprecated, parsed.since
 
 def parse_toplevel_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], str, Any, Any, List[Tuple[str, str, int]], bool]:
     state.parsing_toplevel_desc = True
@@ -1647,7 +1669,7 @@ def parse_toplevel_desc(state: State, element: ET.Element) -> Tuple[str, List[An
     state.parsing_toplevel_desc = False
     if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @param / @return / @retval / @exception found in top-level description, ignoring".format(state.current))
-    return parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.templates, parsed.section[2] if parsed.section else '', parsed.footer_navigation, parsed.example_navigation, parsed.search_keywords, parsed.deprecated, parsed.since
 
 def parse_typedef_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
@@ -1655,13 +1677,13 @@ def parse_typedef_desc(state: State, element: ET.Element) -> Tuple[str, List[Any
     if parsed.params or parsed.return_value or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @param / @return / @retval / @exception found in typedef description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.templates, parsed.search_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.templates, parsed.search_keywords, parsed.deprecated, parsed.since
 
 def parse_func_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], List[Any], str, List[Any], List[Any], List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
     parsed.parsed += parse_desc(state, element.find('inbodydescription'))
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.exceptions, parsed.search_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.templates, parsed.params, parsed.return_value, parsed.return_values, parsed.exceptions, parsed.search_keywords, parsed.deprecated, parsed.since
 
 def parse_define_desc(state: State, element: ET.Element) -> Tuple[str, List[Any], str, List[Tuple[str, str, int]], bool]:
     parsed = parse_desc_internal(state, element.find('detaileddescription'))
@@ -1669,7 +1691,7 @@ def parse_define_desc(state: State, element: ET.Element) -> Tuple[str, List[Any]
     if parsed.templates or parsed.return_values or parsed.exceptions:
         logging.warning("{}: unexpected @tparam / @retval / @exception found in macro description, ignoring".format(state.current))
     assert not parsed.section # might be problematic
-    return parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.is_deprecated
+    return parsed.parsed, parsed.params, parsed.return_value, parsed.search_keywords, parsed.deprecated, parsed.since
 
 def parse_inline_desc(state: State, element: ET.Element) -> str:
     if element is None: return ''
@@ -1689,7 +1711,7 @@ def parse_enum(state: State, element: ET.Element):
     enum.name = element.find('name').text
     if enum.name.startswith('@'): enum.name = '(anonymous)'
     enum.brief = parse_desc(state, element.find('briefdescription'))
-    enum.description, search_keywords, search_enum_values_as_keywords, enum.is_deprecated = parse_enum_desc(state, element)
+    enum.description, search_keywords, search_enum_values_as_keywords, enum.deprecated, enum.since = parse_enum_desc(state, element)
     enum.is_protected = element.attrib['prot'] == 'protected'
     enum.is_strong = False
     if 'strong' in element.attrib:
@@ -1707,11 +1729,11 @@ def parse_enum(state: State, element: ET.Element):
         # There can be an implicit initializer for enum value
         value.initializer = html.escape(enumvalue.findtext('initializer', ''))
         value.brief = parse_desc(state, enumvalue.find('briefdescription'))
-        value.description, value_search_keywords, value.is_deprecated = parse_enum_value_desc(state, enumvalue)
+        value.description, value_search_keywords, value.deprecated, value.since = parse_enum_value_desc(state, enumvalue)
         if value.brief or value.description:
             if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
                 result = Empty()
-                result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if value.is_deprecated else ResultFlag(0), EntryType.ENUM_VALUE)
+                result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if value.deprecated else ResultFlag(0), EntryType.ENUM_VALUE)
                 result.url = enum.base_url + '#' + value.id
                 result.prefix = state.current_prefix + [enum.name]
                 result.name = value.name
@@ -1736,7 +1758,7 @@ def parse_enum(state: State, element: ET.Element):
     if enum.brief or enum.has_details or enum.has_value_details:
         if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if enum.is_deprecated else ResultFlag(0), EntryType.ENUM)
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if enum.deprecated else ResultFlag(0), EntryType.ENUM)
             result.url = enum.base_url + '#' + enum.id
             result.prefix = state.current_prefix
             result.name = enum.name
@@ -1802,7 +1824,7 @@ def parse_typedef(state: State, element: ET.Element):
     typedef.args = parse_type(state, element.find('argsstring'))
     typedef.name = element.find('name').text
     typedef.brief = parse_desc(state, element.find('briefdescription'))
-    typedef.description, templates, search_keywords, typedef.is_deprecated = parse_typedef_desc(state, element)
+    typedef.description, templates, search_keywords, typedef.deprecated, typedef.since = parse_typedef_desc(state, element)
     typedef.is_protected = element.attrib['prot'] == 'protected'
     typedef.has_template_details, typedef.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
@@ -1812,7 +1834,7 @@ def parse_typedef(state: State, element: ET.Element):
         # Avoid duplicates in search
         if typedef.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if typedef.is_deprecated else ResultFlag(0), EntryType.TYPEDEF)
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if typedef.deprecated else ResultFlag(0), EntryType.TYPEDEF)
             result.url = typedef.base_url + '#' + typedef.id
             result.prefix = state.current_prefix
             result.name = typedef.name
@@ -1829,7 +1851,7 @@ def parse_func(state: State, element: ET.Element):
     func.type = parse_type(state, element.find('type'))
     func.name = fix_type_spacing(html.escape(element.find('name').text))
     func.brief = parse_desc(state, element.find('briefdescription'))
-    func.description, templates, params, func.return_value, func.return_values, func.exceptions, search_keywords, func.is_deprecated = parse_func_desc(state, element)
+    func.description, templates, params, func.return_value, func.return_values, func.exceptions, search_keywords, func.deprecated, func.since = parse_func_desc(state, element)
 
     # Friend functions have friend as type. That's just awful. COME ON.
     if func.type.startswith('friend '):
@@ -1957,7 +1979,7 @@ def parse_func(state: State, element: ET.Element):
         # Avoid duplicates in search
         if func.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.from_type((ResultFlag.DEPRECATED if func.is_deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0)), EntryType.FUNC)
+            result.flags = ResultFlag.from_type((ResultFlag.DEPRECATED if func.deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0)), EntryType.FUNC)
             result.url = func.base_url + '#' + func.id
             result.prefix = state.current_prefix
             result.name = func.name
@@ -1984,7 +2006,7 @@ def parse_var(state: State, element: ET.Element):
     var.is_private = element.attrib['prot'] == 'private'
     var.name = element.find('name').text
     var.brief = parse_desc(state, element.find('briefdescription'))
-    var.description, templates, search_keywords, var.is_deprecated = parse_var_desc(state, element)
+    var.description, templates, search_keywords, var.deprecated, var.since = parse_var_desc(state, element)
     var.has_template_details, var.templates = parse_template_params(state, element.find('templateparamlist'), templates)
 
     if var.base_url == state.current_compound_url and (var.description or var.has_template_details):
@@ -1993,7 +2015,7 @@ def parse_var(state: State, element: ET.Element):
         # Avoid duplicates in search
         if var.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if var.is_deprecated else ResultFlag(0), EntryType.VAR)
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if var.deprecated else ResultFlag(0), EntryType.VAR)
             result.url = var.base_url + '#' + var.id
             result.prefix = state.current_prefix
             result.name = var.name
@@ -2009,7 +2031,7 @@ def parse_define(state: State, element: ET.Element):
     state.current_definition_url_base, define.base_url, define.id, define.include, define.has_details = parse_id_and_include(state, element)
     define.name = element.find('name').text
     define.brief = parse_desc(state, element.find('briefdescription'))
-    define.description, params, define.return_value, search_keywords, define.is_deprecated = parse_define_desc(state, element)
+    define.description, params, define.return_value, search_keywords, define.deprecated, define.since = parse_define_desc(state, element)
     define.has_param_details = False
     define.params = None
     for p in element.findall('param'):
@@ -2033,7 +2055,7 @@ def parse_define(state: State, element: ET.Element):
         # Avoid duplicates in search
         if define.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
             result = Empty()
-            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if define.is_deprecated else ResultFlag(0), EntryType.DEFINE)
+            result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if define.deprecated else ResultFlag(0), EntryType.DEFINE)
             result.url = define.base_url + '#' + define.id
             result.prefix = []
             result.name = define.name
@@ -2120,14 +2142,26 @@ def extract_metadata(state: State, xml):
     compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription') or (compound.kind == 'page' and not is_a_stupid_empty_markdown_page(compounddef))
     compound.children = []
 
-    # Deprecation status
-    compound.is_deprecated = False
+    # Version badges, deprecation status. If @since is followed by
+    # @deprecated, treat it as version in which given feature was deprecated
+    compound.deprecated = None
+    compound.since = None
+    if state.doxyfile['M_VERSION_LABELS']:
+        for i in compounddef.find('detaileddescription').findall('.//simplesect'):
+            if i.attrib['kind'] != 'since': continue
+            since = parse_inline_desc(state, i).strip()
+            assert since.startswith('<p>') and since.endswith('</p>')
+            compound.since = since[3:-4]
     for i in compounddef.find('detaileddescription').findall('.//xrefsect'):
         id = i.attrib['id']
         match = xref_id_rx.match(id)
         file = match.group(1)
         if file.startswith('deprecated'):
-            compound.is_deprecated = True
+            if compound.since:
+                compound.deprecated = compound.since
+                compound.since = None
+            else:
+                compound.deprecated = 'deprecated'
             break
 
     # Final classes
@@ -2429,7 +2463,7 @@ def parse_xml(state: State, xml: str):
     compound.has_template_details = False
     compound.templates = None
     compound.brief = parse_desc(state, compounddef.find('briefdescription'))
-    compound.description, templates, compound.sections, footer_navigation, example_navigation, search_keywords, compound.is_deprecated = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
+    compound.description, templates, compound.sections, footer_navigation, example_navigation, search_keywords, compound.deprecated, compound.since = parse_toplevel_desc(state, compounddef.find('detaileddescription'))
     compound.example_navigation = None
     compound.footer_navigation = None
     compound.modules = []
@@ -2583,7 +2617,8 @@ def parse_xml(state: State, xml: str):
                 f.url = file.url
                 f.name = file.leaf_name
                 f.brief = file.brief
-                f.is_deprecated = file.is_deprecated
+                f.deprecated = file.deprecated
+                f.since = file.since
 
                 if compounddef_child.tag == 'innerdir':
                     compound.dirs += [f]
@@ -2604,7 +2639,8 @@ def parse_xml(state: State, xml: str):
                     namespace.url = symbol.url
                     namespace.name = symbol.leaf_name if compound.kind == 'namespace' else symbol.name
                     namespace.brief = symbol.brief
-                    namespace.is_deprecated = symbol.is_deprecated
+                    namespace.deprecated = symbol.deprecated
+                    namespace.since = symbol.since
                     compound.namespaces += [namespace]
 
                 else:
@@ -2615,7 +2651,8 @@ def parse_xml(state: State, xml: str):
                     class_.url = symbol.url
                     class_.name = symbol.leaf_name if compound.kind in ['namespace', 'class', 'struct', 'union'] else symbol.name
                     class_.brief = symbol.brief
-                    class_.is_deprecated = symbol.is_deprecated
+                    class_.deprecated = symbol.deprecated
+                    class_.since = symbol.since
                     class_.templates = symbol.templates
 
                     # Put classes into the public/protected section for
@@ -2647,7 +2684,8 @@ def parse_xml(state: State, xml: str):
                     class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
-                    class_.is_deprecated = symbol.is_deprecated
+                    class_.deprecated = symbol.deprecated
+                    class_.since = symbol.since
                     class_.is_protected = compounddef_child.attrib['prot'] == 'protected'
                     class_.is_virtual = compounddef_child.attrib['virt'] == 'virtual'
 
@@ -2670,7 +2708,8 @@ def parse_xml(state: State, xml: str):
                     class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
-                    class_.is_deprecated = symbol.is_deprecated
+                    class_.deprecated = symbol.deprecated
+                    class_.since = symbol.since
                     class_.is_virtual = compounddef_child.attrib['virt'] == 'virtual'
                     class_.is_final = symbol.is_final
 
@@ -2685,7 +2724,8 @@ def parse_xml(state: State, xml: str):
             g.url = group.url
             g.name = group.leaf_name
             g.brief = group.brief
-            g.is_deprecated = group.is_deprecated
+            g.deprecated = group.deprecated
+            g.since = group.since
             compound.modules += [g]
 
         # Other, grouped in sections
@@ -3125,7 +3165,7 @@ def parse_xml(state: State, xml: str):
         else: assert False # pragma: no cover
 
         result = Empty()
-        result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if compound.is_deprecated else ResultFlag(0), kind)
+        result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if compound.deprecated else ResultFlag(0), kind)
         result.url = compound.url
         result.prefix = state.current_prefix[:-1]
         result.name = state.current_prefix[-1]
@@ -3178,7 +3218,8 @@ def parse_index_xml(state: State, xml):
         entry.url = compound.url
         entry.brief = compound.brief
         entry.children = []
-        entry.is_deprecated = compound.is_deprecated
+        entry.deprecated = compound.deprecated
+        entry.since = compound.since
         entry.has_nestable_children = False
         if compound.kind in ['class', 'struct', 'union']:
             entry.is_final = compound.is_final
@@ -3303,7 +3344,8 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 """],
         'M_SEARCH_BASE_URL': [''],
         'M_SEARCH_EXTERNAL_URL': [''],
-        'M_SHOW_UNDOCUMENTED': ['NO']
+        'M_SHOW_UNDOCUMENTED': ['NO'],
+        'M_VERSION_LABELS': ['NO']
     }
 
     # Defaults so we don't fail with minimal Doxyfiles and also that the
@@ -3423,7 +3465,8 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
               'M_SEARCH_DOWNLOAD_BINARY',
-              'M_SHOW_UNDOCUMENTED']:
+              'M_SHOW_UNDOCUMENTED',
+              'M_VERSION_LABELS']:
         if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
 
     # List values that we want. Drop empty lines.

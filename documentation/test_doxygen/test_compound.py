@@ -326,3 +326,37 @@ class BaseDerivedInRootNamespace(IntegrationTestCase):
 
         # Shouldn't crash or anything
         self.assertEqual(*self.actual_expected_contents('structNamespace_1_1BothBaseAndDerivedInRootNamespace.html'))
+
+class Since(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'since', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+
+        # Verify all entries and details get the Since badge with a link to
+        # changelog. Not class/namespace/file/dir entries yet because we don't
+        # propagate those right now.
+        self.assertEqual(*self.actual_expected_contents('dir_4b0d5f8864bf89936129251a2d32609b.html'))
+        self.assertEqual(*self.actual_expected_contents('Class_8h.html'))
+        self.assertEqual(*self.actual_expected_contents('group__group.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
+        self.assertEqual(*self.actual_expected_contents('classFoo_1_1Class.html'))
+        self.assertEqual(*self.actual_expected_contents('structFoo_1_1Subclass.html'))
+        self.assertEqual(*self.actual_expected_contents('a.html'))
+
+        # And these should have an extended deprecation badge
+        self.assertEqual(*self.actual_expected_contents('dir_73d1500434dee6f1c83b12ee799c54af.html'))
+        self.assertEqual(*self.actual_expected_contents('DeprecatedClass_8h.html'))
+        self.assertEqual(*self.actual_expected_contents('group__deprecated-group.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaceDeprecatedFoo.html'))
+        self.assertEqual(*self.actual_expected_contents('classDeprecatedFoo_1_1DeprecatedClass.html'))
+        self.assertEqual(*self.actual_expected_contents('structDeprecatedFoo_1_1DeprecatedSubclass.html'))
+        self.assertEqual(*self.actual_expected_contents('deprecated-a.html'))
+
+        # The listings should have both
+        self.assertEqual(*self.actual_expected_contents('annotated.html'))
+        self.assertEqual(*self.actual_expected_contents('files.html'))
+        self.assertEqual(*self.actual_expected_contents('modules.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaces.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
