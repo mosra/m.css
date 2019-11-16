@@ -152,7 +152,7 @@ def add_wbr(text: str) -> str:
     else:
         return text
 
-def parse_ref(state: State, element: ET.Element) -> str:
+def parse_ref(state: State, element: ET.Element, add_inline_css_class: str = None) -> str:
     id = element.attrib['refid']
 
     if element.attrib['kindref'] == 'compound':
@@ -176,6 +176,8 @@ def parse_ref(state: State, element: ET.Element) -> str:
         class_ = 'm-doc-external'
     else:
         class_ = 'm-doc'
+    if add_inline_css_class: # Overrides the default set above
+        class_ = add_inline_css_class
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
@@ -1221,7 +1223,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 content)
 
         elif i.tag == 'ref':
-            out.parsed += parse_ref(state, i)
+            out.parsed += parse_ref(state, i, add_inline_css_class)
 
         elif i.tag == 'ulink':
             out.parsed += '<a href="{}"{}>{}</a>'.format(

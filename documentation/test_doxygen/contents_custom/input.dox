@@ -6,7 +6,8 @@ centered. @m_enddiv
 This paragraph contains a @m_span{m-text m-danger} *red* text @m_endspan in
 a normal text flow and then @m_class{m-text m-em m-small} **small strong italics**,
 @m_class{m-text m-info} *blue italics* and @m_class{m-text m-big} https://mcss.mosra.cz
-(big-ass link).
+(big-ass link). A styled page ref:
+@m_class{m-label m-success} @ref math "The math page".
 
 @m_div{m-button m-primary} <a href="#">@m_div{m-big} A button @m_enddiv @m_div{m-small} @m_span{m-text m-em} with @m_endspan @m_class{m-text m-em} **subtitle** @m_enddiv </a> @m_enddiv
 
