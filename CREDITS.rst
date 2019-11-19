@@ -17,6 +17,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   Cris Luengo (`@crisluengo <https://github.com/crisluengo>`_) ---
     complete handling of Doxygen entities and super/subscript elements, fixes
     for external docs in Markdown files
+-   `@DarkContact <https://github.com/DarkContact>`_ --- Windows-related fixes
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
