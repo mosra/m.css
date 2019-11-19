@@ -134,7 +134,7 @@ def postprocess(files, process_imports, out_file):
             else:
                 out.write(line)
 
-    with open(out_file, mode='w') as out:
+    with open(out_file, mode='w', encoding='utf8') as out:
         # Put a helper comment and a license blob on top
         out.write("""/* Generated using `./postprocess.py {}`. Do not edit. */
 
