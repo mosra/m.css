@@ -64,7 +64,7 @@ terminal output) on your website, there's also a builtin style for
 -   :gh:`pygments-dark.css <mosra/m.css$master/css/pygments-dark.css>`,
     generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-dark.py>`
 -   :gh:`pygments-console.css <mosra/m.css$master/css/pygments-console.css>`,
-    generated from :gh:`pygments-dark.py <mosra/m.css$master/css/pygments-console.py>`
+    generated from :gh:`pygments-console.py <mosra/m.css$master/css/pygments-console.py>`
 
 Once you have the files, reference them from your HTML markup. The top-level
 ``m-dark.css`` / ``m-light.css`` file includes the others via a CSS
