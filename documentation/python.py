@@ -399,6 +399,10 @@ def crawl_class(state: State, path: List[str], class_):
         # name_map)
         if type == EntryType.CLASS:
             if name in ['__base__', '__class__']: continue # TODO
+            # Classes derived from typing.Generic in 3.6 have a _gorg property
+            # that causes a crawl cycle, firing an assert in crawl_class(). Not
+            # present from 3.7 onwards.
+            if sys.version_info < (3, 7) and class_.__base__ is typing.Generic and name == '_gorg': continue
             if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
 
             crawl_class(state, subpath, object)
