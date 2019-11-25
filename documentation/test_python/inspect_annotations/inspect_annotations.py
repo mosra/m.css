@@ -2,7 +2,7 @@
 
 import sys
 
-from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar
+from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar, Generic
 
 class Foo:
     """A class with properties"""
@@ -18,6 +18,12 @@ class FooSlots:
     __slots__ = ['unannotated', 'annotated']
 
     annotated: List[str]
+
+_T = TypeVar('Tp')
+
+# Triggers a corner case with _gorg on Py3.6
+class AContainer(Generic[_T]):
+    """A generic class. No parent class info extracted yet."""
 
 def annotation(param: List[int], another: bool, third: str = "hello") -> float:
     """An annotated function"""
@@ -54,8 +60,6 @@ def annotation_list_noparam(a: List):
     """Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions"""
 if sys.version_info < (3, 7):
     annotation_list_noparam.__annotations__['a'] = List[TypeVar('T')]
-
-_T = TypeVar('Tp')
 
 def annotation_generic(a: List[_T]) -> _T:
     """Annotation with a generic type"""
