@@ -44,23 +44,23 @@ class AnsiLexer(RegexLexer):
             yield (match.start(), Text, text)
             return
 
-        if color == ';30':
+        if color == '30':
             token += 'Black'
-        elif color == ';31':
+        elif color == '31':
             token += 'Red'
-        elif color == ';32':
+        elif color == '32':
             token += 'Green'
-        elif color == ';33':
+        elif color == '33':
             token += 'Yellow'
-        elif color == ';34':
+        elif color == '34':
             token += 'Blue'
-        elif color == ';35':
+        elif color == '35':
             token += 'Magenta'
-        elif color == ';36':
+        elif color == '36':
             token += 'Cyan'
-        elif color == ';37':
+        elif color == '37':
             token += 'White'
-        elif color == ';39':
+        elif color == '39':
             token += 'Default'
         else:
             yield (match.start(), Text, text)
@@ -83,7 +83,10 @@ class AnsiLexer(RegexLexer):
             ('[^\x1b]+', Text),
             ('\x1b\\[38;2;(\\d+);(\\d+);(\\d+)m\x1b\\[48;2;\\d+;\\d+;\\d+m([^\x1b]+)\x1b\\[0m', callback_fg_bg_color),
             ('\x1b\\[38;2;(\\d+);(\\d+);(\\d+)m([^\x1b]+)\x1b\\[0m', callback_fg_color),
-            ('\x1b\\[(\\d+)(;\\d+)?m([^\x1b]*)', callback)]
+            # Brightness and color separately (used by ASan reports)
+            ('\x1b\\[([01])m\x1b\\[(\\d+)m([^\x1b]*)', callback),
+            ('\x1b\\[(\\d+)(?:;(\\d+))?m([^\x1b]*)', callback)
+        ]
     }
 
 _ansi_fg_color_re = re.compile('class="g g-AnsiForegroundColor([0-9a-f]{6})">')
