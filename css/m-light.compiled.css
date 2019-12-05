@@ -1258,7 +1258,7 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
   color: #949494;
 }
 .m-block.m-flat { border-color: transparent; }
-.m-block.m-flat h3, .m-block.m-flat h4, .m-block.m-flat h5. .m-block.m-flat h6 {
+.m-block.m-flat h3, .m-block.m-flat h4, .m-block.m-flat h5, .m-block.m-flat h6 {
   color: #000000;
 }
 .m-block.m-default h3 a:hover, .m-block.m-default h3 a:focus, .m-block.m-default h3 a:active,
