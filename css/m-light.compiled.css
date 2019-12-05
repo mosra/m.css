@@ -2478,24 +2478,24 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 }
 
 .m-console .hll { background-color: #ffffcc }
-.m-console .g-AnsiBlack { color: #000000 }
-.m-console .g-AnsiBlue { color: #3f3fd1 }
-.m-console .g-AnsiBrightBlack { color: #686868; font-weight: bold }
-.m-console .g-AnsiBrightBlue { color: #5454ff; font-weight: bold }
-.m-console .g-AnsiBrightCyan { color: #54ffff; font-weight: bold }
+.m-console .g-AnsiBlack { color: #232627 }
+.m-console .g-AnsiBlue { color: #1d99f3 }
+.m-console .g-AnsiBrightBlack { color: #7f8c8d; font-weight: bold }
+.m-console .g-AnsiBrightBlue { color: #3daee9; font-weight: bold }
+.m-console .g-AnsiBrightCyan { color: #16a085; font-weight: bold }
 .m-console .g-AnsiBrightDefault { color: #ffffff; font-weight: bold }
-.m-console .g-AnsiBrightGreen { color: #54ff54; font-weight: bold }
-.m-console .g-AnsiBrightMagenta { color: #ff54ff; font-weight: bold }
-.m-console .g-AnsiBrightRed { color: #ff5454; font-weight: bold }
+.m-console .g-AnsiBrightGreen { color: #1cdc9a; font-weight: bold }
+.m-console .g-AnsiBrightMagenta { color: #8e44ad; font-weight: bold }
+.m-console .g-AnsiBrightRed { color: #c0392b; font-weight: bold }
 .m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold }
-.m-console .g-AnsiBrightYellow { color: #ffff54; font-weight: bold }
-.m-console .g-AnsiCyan { color: #18b2b2 }
-.m-console .g-AnsiDefault { color: #b2b2b2 }
-.m-console .g-AnsiGreen { color: #18b218 }
-.m-console .g-AnsiMagenta { color: #b218b2 }
-.m-console .g-AnsiRed { color: #b21818 }
-.m-console .g-AnsiWhite { color: #b2b2b2 }
-.m-console .g-AnsiYellow { color: #b26818 }
-.m-console .go { color: #b2b2b2 }
-.m-console .gp { color: #54ffff; font-weight: bold }
-.m-console .w { color: #b2b2b2 }
+.m-console .g-AnsiBrightYellow { color: #fdbc4b; font-weight: bold }
+.m-console .g-AnsiCyan { color: #1abc9c }
+.m-console .g-AnsiDefault { color: #fcfcfc }
+.m-console .g-AnsiGreen { color: #11d116 }
+.m-console .g-AnsiMagenta { color: #9b59b6 }
+.m-console .g-AnsiRed { color: #ed1515 }
+.m-console .g-AnsiWhite { color: #fcfcfc }
+.m-console .g-AnsiYellow { color: #f67400 }
+.m-console .go { color: #fcfcfc }
+.m-console .gp { color: #16a085; font-weight: bold }
+.m-console .w { color: #fcfcfc }
