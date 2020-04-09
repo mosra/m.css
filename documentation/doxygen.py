@@ -2500,6 +2500,7 @@ def parse_xml(state: State, xml: str):
     compound.protected_vars = []
     compound.private_funcs = []
     compound.private_slots = []
+    compound.private_vars = []
     compound.related = []
     compound.friend_funcs = []
     compound.groups = []
@@ -2882,7 +2883,7 @@ def parse_xml(state: State, xml: str):
                 # Gather only private functions that are virtual and
                 # documented
                 for memberdef in compounddef_child:
-                    if memberdef.attrib['virt'] == 'non-virtual' or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text):
+                    if (memberdef.attrib['virt'] == 'non-virtual' and state.doxyfile['EXTRACT_PRIVATE']) or (not memberdef.find('briefdescription').text and not memberdef.find('detaileddescription').text):
                         assert True # coverage.py can't handle continue
                         continue # pragma: no cover
 
@@ -2893,6 +2894,13 @@ def parse_xml(state: State, xml: str):
                         else:
                             compound.private_funcs += [func]
                         if func.has_details: compound.has_func_details = True
+
+            elif compounddef_child.attrib['kind'] == 'private-attrib' and state.doxyfile['EXTRACT_PRIVATE']:
+                for memberdef in compounddef_child:
+                    var = parse_var(state, memberdef)
+                    if var:
+                        compound.private_vars += [var]
+                        if var.has_details: compound.has_var_details = True
 
             elif compounddef_child.attrib['kind'] == 'related':
                 for memberdef in compounddef_child:
@@ -3316,6 +3324,7 @@ def parse_doxyfile(state: State, doxyfile, config = None):
         'PROJECT_NAME': ['My Project'],
         'PROJECT_LOGO': [''],
         'OUTPUT_DIRECTORY': [''],
+        'EXTRACT_PRIVATE': ['NO'],
         'XML_OUTPUT': ['xml'],
         'HTML_OUTPUT': ['html'],
         'HTML_EXTRA_STYLESHEET': [
@@ -3470,6 +3479,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
               'QT_AUTOBRIEF',
               'INTERNAL_DOCS',
               'SHOW_INCLUDE_FILES',
+              'EXTRACT_PRIVATE',
               'M_EXPAND_INNER_TYPES',
               'M_SEARCH_DISABLED',
               'M_SEARCH_DOWNLOAD_BINARY',
