@@ -3603,7 +3603,7 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
         compound.breadcrumb = [(state.doxyfile['PROJECT_NAME'], 'index.html')]
         template = env.get_template('page.html')
         rendered = template.render(compound=compound,
-            DOXYGEN_VERSION='0',
+            DOXYGEN_VERSION=None,
             FILENAME='index.html',
             SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
             **state.doxyfile)
