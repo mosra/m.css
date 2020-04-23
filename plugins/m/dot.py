@@ -117,6 +117,6 @@ def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=pelicanobj.settings)
 
 def register(): # for Pelican
-    import pelican.signals
+    from pelican import signals
 
-    pelican.signals.initialized.connect(_pelican_configure)
+    signals.initialized.connect(_pelican_configure)

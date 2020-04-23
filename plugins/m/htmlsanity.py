@@ -721,7 +721,7 @@ def register_mcss(mcss_settings, jinja_environment, **kwargs):
 # Below is only Pelican-specific functionality. If Pelican is not found, these
 # do nothing.
 try:
-    import pelican.signals
+    from pelican import signals
     from pelican.readers import RstReader
 
     class PelicanSaneRstReader(RstReader):
@@ -791,5 +791,5 @@ def _pelican_add_reader(readers):
     readers.reader_classes['rst'] = PelicanSaneRstReader
 
 def register(): # for Pelican
-    pelican.signals.initialized.connect(_pelican_configure)
-    pelican.signals.readers_init.connect(_pelican_add_reader)
+    signals.initialized.connect(_pelican_configure)
+    signals.readers_init.connect(_pelican_add_reader)
