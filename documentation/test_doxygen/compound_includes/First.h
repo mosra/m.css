@@ -41,7 +41,11 @@ void bar();
 /** @brief Variable in a group */
 constexpr void* variable = nullptr;
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 
@@ -74,7 +78,11 @@ void bar();
 /** @brief Variable in a group */
 constexpr void* variable = nullptr;
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 
@@ -110,7 +118,11 @@ void foo();
 /** @brief A define */
 #define A_DEFINE
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 /**
 @brief This namespace should not have a global include

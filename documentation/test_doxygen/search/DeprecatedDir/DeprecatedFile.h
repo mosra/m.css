@@ -58,6 +58,8 @@ enum class Enum {
 
 /** @defgroup deprecated-group A group
  * @deprecated This group is deprecated.
+ *
+ * @{
  */
 
 /**
@@ -72,7 +74,11 @@ union DeprecatedUnion {};
 */
 struct DeprecatedStruct {};
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 

@@ -16,7 +16,11 @@ void foo();
 /** @brief Flag in a group */
 enum Flag {};
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 /** @related Class
  * @brief A related enum in a different file
