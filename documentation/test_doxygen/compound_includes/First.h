@@ -99,6 +99,7 @@ class Class {
 };
 
 /** @defgroup group A group
+@brief Brief description. If this is not present, the detailed description gets interpreted as brief in 1.8.18. FFS.
 
 All entries inside should have include information. (Unless the includes are disabled globally or the file is not documented.)
 @{ */

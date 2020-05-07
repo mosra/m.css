@@ -1,4 +1,5 @@
 /** @defgroup group A group
+@brief Brief description. If this is not present, the detailed description gets interpreted as brief in 1.8.18. FFS.
 
 Detailed description.
 @{ */
