@@ -281,10 +281,6 @@ def parse_type(state: State, type: ET.Element) -> str:
 
         if i.tail: out += html.escape(i.tail)
 
-    # Warn if suspicious stuff is present
-    if '_EXPORT' in out or '_LOCAL' in out:
-        logging.warning("{}: type contains an export macro: {}".format(state.current, ''.join(type.itertext())))
-
     # Remove spacing inside <> and before & and *
     return fix_type_spacing(out)
 

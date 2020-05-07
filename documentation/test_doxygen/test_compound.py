@@ -133,15 +133,6 @@ class Ignored(IntegrationTestCase):
         self.run_doxygen(index_pages=[], wildcard='classBrief.xml')
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classBrief.html')))
 
-class Warnings(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'warnings', *args, **kwargs)
-
-    def test(self):
-        # Should warn that an export macro is present in the XML
-        self.run_doxygen(wildcard='namespaceMagnum.xml')
-        self.assertEqual(*self.actual_expected_contents('namespaceMagnum.html'))
-
 class Modules(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'modules', *args, **kwargs)
