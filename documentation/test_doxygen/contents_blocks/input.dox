@@ -135,3 +135,23 @@ This gets hidden because internal docs are not enabled by default.
 @todo Diffferent TODO
 
 */
+
+/** @page doxygen1818 Doxygen 1.8.18 features
+
+Tested separately because the CI has only 1.8.17 right now.
+
+<table>
+  <tr>
+    <td colspan="2">Table</th>
+    <td rowspan="3">with</th>
+  </tr>
+  <tr>
+    <td>colspan</td>
+    <td>and</td>
+  </tr>
+  <tr>
+    <td colspan="2">rowspan</td>
+  </tr>
+</table>
+
+*/

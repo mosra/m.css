@@ -56,6 +56,11 @@ class Blocks(IntegrationTestCase):
         # Multiple xrefitems should be merged into one
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.18"), "new features in 1.8.18")
+    def test_1818(self):
+        self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('doxygen1818.html'))
+
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
     def test_xrefitem1814(self):
