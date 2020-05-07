@@ -1,7 +1,22 @@
 #include <type_traits>
 
-/** @brief Pathological cases of noexcept */
+/** @brief Pathological cases of function attributes */
 struct Foo {
+    /**
+     * @brief Constexpr before static
+     *
+     * 1.8.18 puts both `constexpr` and `static` into the return type so I have
+     * to remove them. WHY! HOW IS THAT USEFUL IN ANY WAY?!
+     */
+    constexpr static int constexprStaticFunction();
+
+    /**
+     * @brief Constexpr after static
+     *
+     * In this case, `static` is not in the return type. FFS.
+     */
+    static constexpr int staticConstexprFunction();
+
     /**
      * @brief Combined default and noexcept
      *

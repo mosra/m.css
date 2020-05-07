@@ -1874,6 +1874,11 @@ def parse_func(state: State, element: ET.Element):
         func.is_constexpr = True
     else:
         func.is_constexpr = False
+    # When 1.8.18 encounters `constexpr static`, it keeps the static there. For
+    # `static constexpr` it doesn't. In both cases the static="yes" is put
+    # there correctly. WHY DOXYGEN, WHY?!
+    if func.type.startswith('static'):
+        func.type = func.type[7:]
     func.prefix = ''
     func.is_explicit = element.attrib['explicit'] == 'yes'
     func.is_virtual = element.attrib['virt'] != 'non-virtual'
