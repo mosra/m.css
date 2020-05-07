@@ -27,7 +27,7 @@ import shutil
 import subprocess
 import unittest
 
-from doxygen import run, default_templates, default_wildcard, default_index_pages
+from doxygen import State, parse_doxyfile, run, default_templates, default_wildcard, default_index_pages
 
 def doxygen_version():
     return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip()
@@ -45,7 +45,9 @@ class BaseTestCase(unittest.TestCase):
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
 
     def run_doxygen(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
-        run(os.path.join(self.path, 'Doxyfile'), templates=templates, wildcard=wildcard, index_pages=index_pages, sort_globbed_files=True)
+        state = State()
+        parse_doxyfile(state, os.path.join(self.path, 'Doxyfile'))
+        run(state, templates=templates, wildcard=wildcard, index_pages=index_pages, sort_globbed_files=True)
 
     def actual_expected_contents(self, actual, expected = None):
         if not expected: expected = actual

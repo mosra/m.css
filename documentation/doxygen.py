@@ -3303,6 +3303,8 @@ def parse_index_xml(state: State, xml):
     return parsed
 
 def parse_doxyfile(state: State, doxyfile, config = None):
+    state.basedir = os.path.dirname(doxyfile)
+
     logging.debug("Parsing configuration from {}".format(doxyfile))
 
     comment_re = re.compile(r"""^\s*(#.*)?$""")
@@ -3492,11 +3494,7 @@ default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/doxygen/')
 
-def run(doxyfile, *, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
-    state = State()
-    state.basedir = os.path.dirname(doxyfile)
-
-    parse_doxyfile(state, doxyfile)
+def run(state: State, *, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
     xml_input = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'])
     xml_files_metadata = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, "*.xml"))]
     xml_files = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, wildcard))]
@@ -3691,8 +3689,15 @@ if __name__ == '__main__': # pragma: no cover
     # Make the Doxyfile path absolute, otherwise everything gets messed up
     doxyfile = os.path.abspath(args.doxyfile)
 
+    state = State()
+    parse_doxyfile(state, doxyfile)
+
+    # Doxygen is stupid and can't create nested directories, create the input
+    # directory for it
+    os.makedirs(state.doxyfile['OUTPUT_DIRECTORY'], exist_ok=True)
+
     if not args.no_doxygen:
         logging.debug("running Doxygen on {}".format(args.doxyfile))
         subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile))
 
-    run(doxyfile, templates=os.path.abspath(args.templates), wildcard=args.wildcard, index_pages=args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
+    run(state, templates=os.path.abspath(args.templates), wildcard=args.wildcard, index_pages=args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
