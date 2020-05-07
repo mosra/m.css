@@ -252,3 +252,8 @@ class Underscored(BaseInspectTestCase):
 
         self.assertEqual(*self.actual_expected_contents('inspect_underscored.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_underscored.Class.html'))
+
+class ValueFormatting(BaseInspectTestCase):
+    def test(self):
+        self.run_python({})
+        self.assertEqual(*self.actual_expected_contents('inspect_value_formatting.html'))
