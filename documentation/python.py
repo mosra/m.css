@@ -377,10 +377,18 @@ def crawl_enum(state: State, path: List[str], enum_, parent_url):
 def crawl_class(state: State, path: List[str], class_):
     assert inspect.isclass(class_)
 
-    # TODO: if this fires, it means there's a class duplicated in more than one
-    # __all__ (or it gets picked up implicitly and then in __all__) -- how to
-    # handle gracefully?
-    assert id(class_) not in state.crawled
+    # If this fires, it means there's a class duplicated in more than one
+    # __all__ (or it gets picked up implicitly and then in __all__). It usually
+    # means there's a mess in imports, unfortunately this is more common than
+    # one would hope so we can't just assert.
+    if id(class_) in state.crawled:
+        for name, previous_entry in state.name_map.items():
+            if previous_entry.object == class_: break
+        else: assert False
+        logging.error("Class %s previously found in %s, only one occurence will be chosen. Ensure each class is exposed only in a single module for generating correct documentation.", '.'.join(path), '.'.join(previous_entry.path))
+        state.name_map['.'.join(path)] = previous_entry
+        return
+
     state.crawled.add(id(class_))
 
     class_entry = Empty()

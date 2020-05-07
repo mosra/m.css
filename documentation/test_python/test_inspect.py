@@ -257,3 +257,10 @@ class ValueFormatting(BaseInspectTestCase):
     def test(self):
         self.run_python({})
         self.assertEqual(*self.actual_expected_contents('inspect_value_formatting.html'))
+
+class DuplicateClass(BaseInspectTestCase):
+    def test(self):
+        self.run_python({})
+        self.assertEqual(*self.actual_expected_contents('inspect_duplicate_class.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_duplicate_class.sub.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_duplicate_class.Bar.html'))
