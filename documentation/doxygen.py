@@ -506,7 +506,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.write_paragraph_close_tag = True
 
         # Block elements
-        if i.tag in ['sect1', 'sect2', 'sect3']:
+        if i.tag in ['sect1', 'sect2', 'sect3', 'sect4']:
             assert element.tag != 'para' # should be top-level block element
             has_block_elements = True
 
@@ -543,6 +543,8 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     tag = 'h3'
                 elif element.tag == 'sect3':
                     tag = 'h4'
+                elif element.tag == 'sect4':
+                    tag = 'h5'
                 elif not element.tag == 'simplesect': # pragma: no cover
                     assert False
 
@@ -556,6 +558,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     tag = 'h5'
                 elif element.tag == 'sect3':
                     tag = 'h6'
+                elif element.tag == 'sect4':
+                    tag = 'h6'
+                    logging.warning("{}: more than three levels of sections in member descriptions are not supported, stopping at <h6>".format(state.current))
                 elif not element.tag == 'simplesect': # pragma: no cover
                     assert False
 
@@ -574,13 +579,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 else:
                     out.parsed += '<{0} id="{1}">{2}</{0}>'.format(tag, id, title)
 
+        # Apparently, in 1.8.18, <heading> is used for Markdown headers only if
+        # we run out of sect1-4 tags. Eh, what the hell.
         elif i.tag == 'heading':
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True
 
             # Do not print anything if there are no contents
             if not i.text:
-                logging.warning("{}: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead (or better, use @section for properly generated TOC)".format(state.current))
+                logging.warning("{}: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead".format(state.current))
 
             else:
                 h_tag_level = int(i.attrib['level'])
@@ -593,10 +600,6 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     if h_tag_level > 6:
                         h_tag_level = 6
                         logging.warning("{}: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>".format(state.current))
-
-                    # Emit this warning only in top-level desc, TOC is not
-                    # generated for function/enum/... descriptions
-                    logging.warning("{}: prefer @section over Markdown heading for properly generated TOC".format(state.current))
 
                 # Function/enum/... descriptions are inside <h3> for function
                 # header, which is inside <h2> for detailed definition section,
