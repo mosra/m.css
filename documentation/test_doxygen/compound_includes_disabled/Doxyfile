@@ -13,4 +13,5 @@ CASE_SENSE_NAMES        = YES
 ##! M_LINKS_NAVBAR2     =
 ##! M_SEARCH_DISABLED   = YES
 
+AUTOLINK_SUPPORT        = NO # otherwise it links to Second.h, DO NOT WANT
 SHOW_INCLUDE_FILES      = NO # explicitly disabled

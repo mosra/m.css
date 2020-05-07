@@ -155,3 +155,5 @@ namespace ContainsNamespace {
 Even though it has no members that could set the global include for it.
 */
 namespace Empty {}
+
+template <typename> struct SpreadClass;

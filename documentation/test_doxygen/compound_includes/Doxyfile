@@ -12,3 +12,6 @@ CASE_SENSE_NAMES        = YES
 ##! M_LINKS_NAVBAR1     =
 ##! M_LINKS_NAVBAR2     =
 ##! M_SEARCH_DISABLED   = YES
+
+# otherwise it links to Second.h and Union, DO NOT WANT
+AUTOLINK_SUPPORT        = NO

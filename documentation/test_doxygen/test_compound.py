@@ -257,11 +257,14 @@ class Includes(IntegrationTestCase):
 
         # The Contained namespace should have just the global include, the
         # Spread just the local includes, the class a global include and the
-        # group, even though in a single file, should have local includes
+        # group, even though in a single file, should have local includes; and
+        # the SpreadClass struct is forward-declared in another file, which
+        # triggers a silly Doxygen bug so it has per-member includes also
         self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
+        self.assertEqual(*self.actual_expected_contents('structSpreadClass.html'))
 
         # These two should all have local includes because otherwise it gets
         # misleading; the Empty namespace a global one
@@ -276,11 +279,13 @@ class IncludesDisabled(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
-        # No include information as SHOW_INCLUDE_FILES is disabled globally
+        # No include information as SHOW_INCLUDE_FILES is disabled globally,
+        # and no useless detailed sections either
         self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
+        self.assertEqual(*self.actual_expected_contents('structSpreadClass.html'))
 
 class IncludesUndocumentedFiles(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
@@ -290,12 +295,13 @@ class IncludesUndocumentedFiles(IntegrationTestCase):
         self.run_doxygen(wildcard='*.xml')
 
         # The files are not documented, so there should be no include
-        # information -- practically the same output as when SHOW_INCLUDE_FILES
-        # is disabled globally
+        # information and no useless detailed sections either -- practically
+        # the same output as when SHOW_INCLUDE_FILES is disabled globally
         self.assertEqual(*self.actual_expected_contents('namespaceContained.html', '../compound_includes_disabled/namespaceContained.html'))
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html', '../compound_includes_disabled/namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html', '../compound_includes_disabled/classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html', '../compound_includes_disabled/group__group.html'))
+        self.assertEqual(*self.actual_expected_contents('structSpreadClass.html', '../compound_includes_disabled/structSpreadClass.html'))
 
 class IncludesTemplated(IntegrationTestCase):
     def __init__(self, *args, **kwargs):

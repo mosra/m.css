@@ -222,13 +222,16 @@ def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, s
     # Extract corresponding include also for class/struct/union "relateds", if
     # it's different from what the class has. This also forcibly enables
     # has_details (unlike the case above, where has_details will be enabled
-    # only if all members don't have the same include)
+    # only if all members don't have the same include) -- however if
+    # SHOW_INCLUDE_FILES isn't enabled or the file is not documented, this
+    # would generate useless empty detailed sections so in that case it's not
+    # set.
     if state.current_kind in ['class', 'struct', 'union']:
         location_attribs = element.find('location').attrib
         file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
         if state.current_include != file:
             include = make_include(state, file)
-            has_details = True
+            has_details = include and state.doxyfile['SHOW_INCLUDE_FILES']
 
     return id[:i], id[:i] + '.html', id[i+2:], include, has_details
 
