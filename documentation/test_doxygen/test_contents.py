@@ -279,24 +279,19 @@ class Custom(IntegrationTestCase):
         self.run_doxygen(wildcard='math.xml')
         self.assertEqual(*self.actual_expected_contents('math.html'))
 
-    @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
-                         "Dot < 2.40.1 has a completely different output.")
     def test_dot(self):
         self.run_doxygen(wildcard='dot.xml')
-        self.assertEqual(*self.actual_expected_contents('dot.html'))
 
-    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1") and
-                         LooseVersion(dot_version()) >= LooseVersion("2.38.0"),
-                         "Dot < 2.38 and dot > 2.38 has a completely different output.")
-    def test_dot238(self):
-        self.run_doxygen(wildcard='dot.xml')
-        self.assertEqual(*self.actual_expected_contents('dot.html', 'dot-238.html'))
+        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+            file = 'dot.html'
+        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+            file = 'dot-240.html'
+        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
+            file = 'dot-238.html'
+        else:
+            file = 'dot-236.html'
 
-    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.38.0"),
-                         "Dot > 2.36 has a completely different output.")
-    def test_dot236(self):
-        self.run_doxygen(wildcard='dot.xml')
-        self.assertEqual(*self.actual_expected_contents('dot.html', 'dot-236.html'))
+        self.assertEqual(*self.actual_expected_contents('dot.html', file))
 
 class ParseError(BaseTestCase):
     def __init__(self, *args, **kwargs):
@@ -400,17 +395,17 @@ class Dot(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, 'dot', *args, **kwargs)
 
-    @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
-                         "Dot < 2.40.1 has a completely different output.")
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1"),
-                         "Dot < 2.40.1 has a completely different output.")
-    def test_238(self):
-        self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html', 'index-238.html'))
+        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+            file = 'index.html'
+        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+            file = 'index-240.html'
+        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
+            file = 'index-238.html'
+
+        self.assertEqual(*self.actual_expected_contents('index.html', file))
 
     def test_warnings(self):
         self.run_doxygen(wildcard='warnings.xml')

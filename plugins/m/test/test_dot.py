@@ -37,22 +37,17 @@ class Dot(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(__file__, '', *args, **kwargs)
 
-    @unittest.skipUnless(LooseVersion(dot_version()) >= LooseVersion("2.40.1"),
-                         "Dot < 2.40.1 has a completely different output.")
     def test(self):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
             'M_DOT_FONT': 'DejaVu Sans'
         })
 
-        self.assertEqual(*self.actual_expected_contents('page.html'))
+        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+            file = 'page.html'
+        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+            file = 'page-240.html'
+        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
+            file = 'page-238.html'
 
-    @unittest.skipUnless(LooseVersion(dot_version()) < LooseVersion("2.40.1"),
-                         "Dot < 2.40.1 has a completely different output.")
-    def test_238(self):
-        self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.dot'],
-            'M_DOT_FONT': 'DejaVu Sans'
-        })
-
-        self.assertEqual(*self.actual_expected_contents('page.html', 'page-238.html'))
+        self.assertEqual(*self.actual_expected_contents('page.html', file))
