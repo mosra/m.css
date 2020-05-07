@@ -915,7 +915,7 @@ def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> 
 
 # Used to format function default arguments and data values. *Not* pybind's
 # function default arguments, as those are parsed from a string representation.
-def format_value(state: State, referrer_path: List[str], value: str) -> Optional[str]:
+def format_value(state: State, referrer_path: List[str], value) -> Optional[str]:
     if value is None: return str(value)
     if isinstance(value, enum.Enum):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
@@ -924,6 +924,8 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     # out of a str() instead.
     elif state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__'):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, str(value).partition('.')[2]))
+    elif inspect.isfunction(value):
+        return html.escape('<function {}>'.format(value.__name__))
     elif '__repr__' in type(value).__dict__:
         rendered = repr(value)
         # TODO: tuples of non-representable values will still be ugly
