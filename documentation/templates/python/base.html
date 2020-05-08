@@ -28,10 +28,10 @@
     <div class="m-row">
       {% if MAIN_PROJECT_URL and PROJECT_SUBTITLE %}
       <span id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">
-        <a href="{{ MAIN_PROJECT_URL }}">{% if PROJECT_LOGO %}<img src="{{ PROJECT_LOGO|format_url|e }}" />{% endif %}{{ PROJECT_TITLE }}</a> <span class="m-breadcrumb">|</span> <a href="{{ 'index'|path_to_url }}" class="m-thin">{{ PROJECT_SUBTITLE }}</a>
+        <a href="{{ MAIN_PROJECT_URL }}">{% if PROJECT_LOGO %}<img src="{{ PROJECT_LOGO|format_url|e }}" alt="" />{% endif %}{{ PROJECT_TITLE }}</a> <span class="m-breadcrumb">|</span> <a href="{{ 'index'|path_to_url }}" class="m-thin">{{ PROJECT_SUBTITLE }}</a>
       </span>
       {% else %}
-      <a href="{{ 'index'|path_to_url }}" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">{% if PROJECT_LOGO %}<img src="{{ PROJECT_LOGO|format_url|e }}" />{% endif %}{{ PROJECT_TITLE }}{% if PROJECT_SUBTITLE %} <span class="m-thin">{{ PROJECT_SUBTITLE }}</span>{% endif %}</a>
+      <a href="{{ 'index'|path_to_url }}" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">{% if PROJECT_LOGO %}<img src="{{ PROJECT_LOGO|format_url|e }}" alt="" />{% endif %}{{ PROJECT_TITLE }}{% if PROJECT_SUBTITLE %} <span class="m-thin">{{ PROJECT_SUBTITLE }}</span>{% endif %}</a>
       {% endif %}
       {% if LINKS_NAVBAR1 or LINKS_NAVBAR2 or not SEARCH_DISABLED %}
       <div class="m-col-t-4 m-hide-m m-text-right m-nopadr">
