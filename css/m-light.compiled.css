@@ -422,6 +422,9 @@ mark {
   background-color: #e6e69c;
   color: #4c93d3;
 }
+.m-link-wrap {
+  word-break: break-all;
+}
 pre, code {
   font-family: 'Source Code Pro', monospace, monospace, monospace;
   font-size: 1em;

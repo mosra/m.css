@@ -113,6 +113,9 @@ mark {
   background-color: var(--mark-background-color);
   color: var(--mark-color);
 }
+.m-link-wrap {
+  word-break: break-all;
+}
 
 /* Block/inline code */
 pre, code {

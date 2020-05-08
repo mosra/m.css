@@ -432,14 +432,56 @@ inside the :html:`<dd>` to provide styled back-references to the original text.
           </dd>
         </dl>
 
-`Text alignment`_
-=================
+`Text alignment and wrapping`_
+==============================
 
 Use :css:`.m-text-left`, :css:`.m-text-right` or :css:`.m-text-center` to
 align text inside its parent element. Use :css:`.m-text-top`,
 :css:`.m-text-middle` and :css:`.m-text-bottom` to align text vertically for
 example in a table cell. See `Floating around <{filename}/css/grid.rst#floating-around>`_
 in the grid system for aligning and floating blocks in a similar way.
+
+By default, all text is wrapped according to default HTML rules. In order to
+look better on very narrow screens, it's possible to use :html:`&shy;` to
+hyphenate words --- either manually on a case-by-case basis, or using the
+`m.htmlsanity plugin <{filename}/plugins/htmlsanity.rst#hyphenation>`_. The
+:html:`<wbr/>` HTML tag does the same without rendering any hyphens, and
+finally there's a :css:`.m-link-wrap` you can apply to links with long URLs to
+break anywhere:
+
+.. code-figure::
+
+    .. code:: html
+
+        in&shy;com&shy;pre&shy;hen&shy;si&shy;bil&shy;i&shy;ties
+
+        in<wbr/>com<wbr/>pre<wbr/>hen<wbr/>si<wbr/>bil<wbr/>i<wbr/>ties
+
+        <a href="http://…" class="m-link-wrap">
+          llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk
+        </a>
+
+    .. container:: m-row
+
+        .. container:: m-col-m-2 m-push-m-2 m-col-t-3 m-nopady
+
+            .. raw:: html
+
+                in&shy;com&shy;pre&shy;hen&shy;si&shy;bil&shy;i&shy;ties
+
+        .. container:: m-col-m-2 m-push-m-2 m-col-t-3 m-nopady
+
+            .. raw:: html
+
+                in<wbr/>com<wbr/>pre<wbr/>hen<wbr/>si<wbr/>bil<wbr/>i<wbr/>ties
+
+        .. container:: m-col-m-4 m-push-m-2 m-col-t-6 m-nopady
+
+            .. raw:: html
+
+                <a href="http://llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk" class="m-link-wrap">
+                  llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk
+                </a>
 
 `Inline elements`_
 ==================
