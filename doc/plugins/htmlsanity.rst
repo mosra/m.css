@@ -117,6 +117,15 @@ horrible, right?) with a custom HTML5 writer derived from
 -   :abbr:`reST <reStructuredText>` comments are simply ignored, instead of
     being put into :html:`<!-- -->`
 
+Additionally, the following m.css-specific changes are done:
+
+-   Footnotes and footnote references have the :css:`.m-footnote`
+    `styling classes <{filename}/css/typography.rst#footnotes-and-footnote-references>`_
+    applied
+-   Links that are just URLs have :css:`.m-link-wrap` appied `to better wrap on narrow screens <{filename}/css/typography.rst#footnotes-and-footnote-references>`_.
+    Note that it's also possible to apply this and other CSS classes explicitly
+    with the `m.link <{filename}/plugins/links.rst#stylable-links>`_ plugin.
+
 `Typography`_
 =============
 

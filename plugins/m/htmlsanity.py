@@ -370,6 +370,15 @@ class SaneHtmlTranslator(HTMLTranslator):
         # why?!?!
         #if not isinstance(node.parent, nodes.TextElement):
             #assert len(node) == 1 and isinstance(node[0], nodes.image)
+
+        # If the link is a plain URL without explicitly specified title, apply
+        # m-link-wrap so it doesn't leak out of the view on narrow screens.
+        # This can be disabled by explicitly providing the URL also as a title
+        # --- then the node will have a name attribute and we'll skip in that
+        # case.
+        if len(node.children) == 1 and isinstance(node.children[0], nodes.Text) and 'name' not in node and 'refuri' in node and node.children[0] == node['refuri']:
+            node['classes'] += ['m-link-wrap']
+
         self.body.append(self.starttag(node, 'a', '', **atts))
 
     def depart_reference(self, node):

@@ -443,11 +443,12 @@ in the grid system for aligning and floating blocks in a similar way.
 
 By default, all text is wrapped according to default HTML rules. In order to
 look better on very narrow screens, it's possible to use :html:`&shy;` to
-hyphenate words --- either manually on a case-by-case basis, or using the
-`m.htmlsanity plugin <{filename}/plugins/htmlsanity.rst#hyphenation>`_. The
-:html:`<wbr/>` HTML tag does the same without rendering any hyphens, and
-finally there's a :css:`.m-link-wrap` you can apply to links with long URLs to
-break anywhere:
+hyphenate words. The :html:`<wbr/>` HTML tag does the same without rendering
+any hyphens, and finally there's a :css:`.m-link-wrap` you can apply to links
+with long URLs to break anywhere. Both hyphenation and link wrapping can be
+done either manually on a case-by-case basis, or using the
+`m.htmlsanity plugin <{filename}/plugins/htmlsanity.rst>`_, which can do both
+automatically.
 
 .. code-figure::
 
