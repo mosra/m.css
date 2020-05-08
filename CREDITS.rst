@@ -19,6 +19,8 @@ Listing only people with code contributions, because otherwise there's too many
     for external docs in Markdown files
 -   `@DarkContact <https://github.com/DarkContact>`_ --- Windows-related fixes
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
+-   `Rémi Marche <https://github.com/Marr11317>`_ --- Doxygen theme
+    improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
 -   Ryohei Machida (`@machida-mn <https://github.com/machida-mn>`_) ---
