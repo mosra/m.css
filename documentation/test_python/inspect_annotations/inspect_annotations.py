@@ -23,6 +23,8 @@ _T = TypeVar('Tp')
 
 # Triggers a corner case with _gorg on Py3.6 (the member has to be ignored).
 # AContainer2 is not derived directly from Generic but has _gorg also.
+# Additionally, on Py3.6 these classes will have a __next_in_mro__ member,
+# which should be ignored as well
 class AContainer(Generic[_T]):
     """A generic class. No parent class info extracted yet."""
 class AContainer2(Iterator):

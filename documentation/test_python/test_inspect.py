@@ -89,6 +89,9 @@ class Annotations(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
 
+        # This should not list any internal stuff from the typing module
+        self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
+
     # https://github.com/python/cpython/pull/13394
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7.4'),
         "signature with / for pow() is not present in 3.6, "
