@@ -400,36 +400,36 @@ def crawl_class(state: State, path: List[str], class_):
     class_entry.members = []
 
     for name, object in inspect.getmembers(class_):
-        type = object_type(state, object, name)
+        type_ = object_type(state, object, name)
         subpath = path + [name]
 
         # Crawl the subclasses recursively (they also add itself to the
         # name_map)
-        if type == EntryType.CLASS:
+        if type_ == EntryType.CLASS:
             if name in ['__base__', '__class__']: continue # TODO
             # Classes derived from typing.Generic in 3.6 have a _gorg property
             # that causes a crawl cycle, firing an assert in crawl_class(). Not
             # present from 3.7 onwards.
             if sys.version_info < (3, 7) and class_.__base__ is typing.Generic and name == '_gorg': continue
-            if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+            if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
 
             crawl_class(state, subpath, object)
 
         # Crawl enum values (they also add itself ot the name_map)
-        elif type == EntryType.ENUM:
-            if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+        elif type_ == EntryType.ENUM:
+            if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
 
             crawl_enum(state, subpath, object, class_entry.url)
 
         # Add other members directly
         else:
             # Filter out private / unwanted members
-            if type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
+            if type_ in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
                 # Filter out undocumented underscored methods (but not dunder
                 # methods such as __init__)
                 # TODO: this won't look into docs saved under a signature but
                 #   for that we'd need to parse the signature first, ugh
-                if not (name.startswith('__') and name.endswith('__')) and is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+                if not (name.startswith('__') and name.endswith('__')) and is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
                 # Filter out dunder methods that ...
                 if name.startswith('__'):
                     # ... don't have their own docs
@@ -446,20 +446,20 @@ def crawl_class(state: State, path: List[str], class_):
                                     continue
                             except ValueError: # pragma: no cover
                                 pass
-            elif type == EntryType.PROPERTY:
+            elif type_ == EntryType.PROPERTY:
                 if (name, object.__doc__) in _filtered_builtin_properties: continue
                 # TODO: are there any interesting dunder props?
-                if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
-            elif type == EntryType.DATA:
-                if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+                if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
+            elif type_ == EntryType.DATA:
+                if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
             else: # pragma: no cover
-                assert type is None; continue # ignore unknown object types
+                assert type_ is None; continue # ignore unknown object types
 
             entry = Empty()
-            entry.type = type
+            entry.type = type_
             entry.object = object
             entry.path = subpath
-            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](type_, subpath[-1:]))
             entry.css_classes = ['m-doc']
             state.name_map['.'.join(subpath)] = entry
 
@@ -469,7 +469,7 @@ def crawl_class(state: State, path: List[str], class_):
     # inspect.getmembers() ignores those probably because trying to access any
     # of them results in an AttributeError.
     if hasattr(class_, '__annotations__'):
-        for name, type in class_.__annotations__.items():
+        for name, type_ in class_.__annotations__.items():
             subpath = path + [name]
 
             # No docstrings (the best we could get would be a docstring of the
