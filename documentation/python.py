@@ -409,8 +409,11 @@ def crawl_class(state: State, path: List[str], class_):
             if name in ['__base__', '__class__']: continue # TODO
             # Classes derived from typing.Generic in 3.6 have a _gorg property
             # that causes a crawl cycle, firing an assert in crawl_class(). Not
-            # present from 3.7 onwards.
-            if sys.version_info < (3, 7) and class_.__base__ is typing.Generic and name == '_gorg': continue
+            # present from 3.7 onwards. Can't use isinstance(object, Generic)
+            # because "Class typing.Generic cannot be used with class or
+            # instance checks" (ugh), object.__base__ == Generic is also not
+            # enough because it fails for typing.Iterator.__base__.
+            if sys.version_info < (3, 7) and name == '_gorg' and type(object) == typing.GenericMeta: continue
             if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
 
             crawl_class(state, subpath, object)
