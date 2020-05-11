@@ -2,7 +2,7 @@
 
 import sys
 
-from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar, Generic
+from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar, Generic, Iterator
 
 class Foo:
     """A class with properties"""
@@ -21,9 +21,12 @@ class FooSlots:
 
 _T = TypeVar('Tp')
 
-# Triggers a corner case with _gorg on Py3.6
+# Triggers a corner case with _gorg on Py3.6 (the member has to be ignored).
+# AContainer2 is not derived directly from Generic but has _gorg also.
 class AContainer(Generic[_T]):
     """A generic class. No parent class info extracted yet."""
+class AContainer2(Iterator):
+    """Another class derived from a typing thing."""
 
 def annotation(param: List[int], another: bool, third: str = "hello") -> float:
     """An annotated function"""
