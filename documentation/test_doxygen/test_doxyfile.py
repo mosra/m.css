@@ -98,7 +98,7 @@ class Upgrade(BaseTestCase):
         shutil.copyfile(os.path.join(self.path, 'Doxyfile'),
                         os.path.join(self.path, 'Doxyfile-upgrade'))
 
-        subprocess.run(['doxygen', '-u', 'Doxyfile-upgrade'], cwd=self.path)
+        subprocess.run(['doxygen', '-u', 'Doxyfile-upgrade'], cwd=self.path, check=True)
         with open(os.path.join(self.path, 'Doxyfile-upgrade'), 'r') as f:
             contents = f.read()
 

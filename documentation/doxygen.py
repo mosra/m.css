@@ -3698,6 +3698,6 @@ if __name__ == '__main__': # pragma: no cover
 
     if not args.no_doxygen:
         logging.debug("running Doxygen on {}".format(args.doxyfile))
-        subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile))
+        subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile), check=True)
 
     run(state, templates=os.path.abspath(args.templates), wildcard=args.wildcard, index_pages=args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
