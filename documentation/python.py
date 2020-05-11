@@ -414,6 +414,9 @@ def crawl_class(state: State, path: List[str], class_):
             # instance checks" (ugh), object.__base__ == Generic is also not
             # enough because it fails for typing.Iterator.__base__.
             if sys.version_info < (3, 7) and name == '_gorg' and type(object) == typing.GenericMeta: continue
+            # __next_in_mro__ is an internal typing thing in 3.6, ignore as
+            # well
+            if sys.version_info < (3, 7) and name == '__next_in_mro__': continue
             if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
 
             crawl_class(state, subpath, object)
