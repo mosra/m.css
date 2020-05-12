@@ -146,11 +146,11 @@ Tested separately because the CI has only 1.8.17 right now.
     <td rowspan="3">with</th>
   </tr>
   <tr>
-    <td>colspan</td>
+    <td class="m-success">classes</td>
     <td>and</td>
   </tr>
   <tr>
-    <td colspan="2">rowspan</td>
+    <td colspan="2">col/rowspan</td>
   </tr>
 </table>
 

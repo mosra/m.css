@@ -720,10 +720,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                         is_header_row = is_header_row and is_header
                         rowspan = ' rowspan="{}"'.format(entry.attrib['rowspan']) if 'rowspan' in entry.attrib else ''
                         colspan = ' colspan="{}"'.format(entry.attrib['colspan']) if 'colspan' in entry.attrib else ''
-                        row_data += '<{0}{2}{3}>{1}</{0}>'.format(
+                        classes = ' class="{}"'.format(entry.attrib['class']) if 'class' in entry.attrib else ''
+                        row_data += '<{0}{2}{3}{4}>{1}</{0}>'.format(
                             'th' if is_header else 'td',
                             parse_desc(state, entry),
-                            rowspan, colspan)
+                            rowspan, colspan, classes)
 
                     # Table head is opened upon encountering first header row
                     # and closed upon encountering first body row (in case it was
