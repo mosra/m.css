@@ -977,7 +977,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     elif i.attrib['kind'] == 'retval':
                         out.return_values += [(name.text, description)]
                     elif i.attrib['kind'] == 'exception':
-                        out.exceptions += [(name.text, description)]
+                        ref = name.find('ref')
+                        if (ref != None):
+                            out.exceptions += [(parse_ref(state, ref), description)]
+                        else:
+                            out.exceptions += [(name.text, description)]
                     else:
                         assert i.attrib['kind'] == 'templateparam'
                         out.templates[name.text] = description

@@ -357,3 +357,11 @@ class Since(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('modules.html'))
         self.assertEqual(*self.actual_expected_contents('namespaces.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
+
+class ExceptionReference(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'exception_reference', *args, **kwargs)
+
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
