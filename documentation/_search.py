@@ -232,15 +232,15 @@ class ResultMap:
 
             # The entry is an alias, extra field for alias index
             if e.flags & ResultFlag._TYPE == ResultFlag.ALIAS:
-                offset += 2
+                offset += self.alias_struct.size
 
             # Extra field for prefix index and length
             if e.flags & ResultFlag.HAS_PREFIX:
-                offset += 3
+                offset += self.prefix_struct.size
 
             # Extra field for suffix length
             if e.flags & ResultFlag.HAS_SUFFIX:
-                offset += 1
+                offset += self.suffix_length_struct.size
 
             # Length of the name
             offset += len(e.name.encode('utf-8'))
