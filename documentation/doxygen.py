@@ -183,7 +183,12 @@ def parse_ref(state: State, element: ET.Element, add_inline_css_class: str = Non
 
 def make_include(state: State, file) -> Tuple[str, str]:
     if file in state.includes and state.compounds[state.includes[file]].has_details:
-        return (html.escape('<{}>'.format(file)), state.compounds[state.includes[file]].url)
+        displayName = file
+        if ("STRIP_FROM_INC_PATH" in state.doxyfile):
+            strips = state.doxyfile["STRIP_FROM_INC_PATH"]
+            for strip in strips:
+                displayName = displayName.replace(strip, "")
+        return (html.escape('<{}>'.format(displayName)), state.compounds[state.includes[file]].url)
     return None
 
 def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str], bool]:
@@ -3481,6 +3486,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
     for i in ['TAGFILES',
               'HTML_EXTRA_STYLESHEET',
               'HTML_EXTRA_FILES',
+              'STRIP_FROM_INC_PATH',
               'M_LINKS_NAVBAR1',
               'M_LINKS_NAVBAR2']:
         if i in config:
