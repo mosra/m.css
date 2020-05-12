@@ -88,7 +88,7 @@ There are no visual tests for the CSS style at the moment. Running the tests:
 
     cd documentation
     python -m unittest
-    node test_doxygen/test-search.js
+    node test/test-search.js
 
 Code coverage needs `coverage.py <https://coverage.readthedocs.io/>`_ for
 Python (use ``pip`` or your system package) and
