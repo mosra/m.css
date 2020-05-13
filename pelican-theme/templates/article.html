@@ -93,9 +93,7 @@
           {{ M_ARCHIVED_ARTICLE_BADGE|render_rst|replace('{year}', article.date.year)|indent(8) }}
           {% endif %}
 <!-- content -->
-{% block article_content %}
 {{ article.content|trim }}
-{% endblock %}
 <!-- /content -->
           {% if article.category.badge or (article.author and article.author.badge) %}
           {{ badges()|rtrim|indent(10) }}
@@ -123,9 +121,7 @@
       {% endif %}
       {% if article.content %}
 <!-- content -->
-{% block article_content %}
 {{ article.content|trim }}
-{% endblock %}
 <!-- /content -->
       {% endif %}
       {% if article.category.badge or (article.author and article.author.badge) %}
