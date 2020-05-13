@@ -21,6 +21,8 @@
   {% endif %}
 </head>
 <body>
-{{- page.content -}}
+{%- block page_content -%}
+  {{- page.content -}}
+{%- endblock -%}
 </body>
 </html>
