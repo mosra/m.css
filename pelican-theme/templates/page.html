@@ -117,7 +117,9 @@
         {% endif %}
         {% if page.content %}
 <!-- content -->
+{% block page_content %}
 {{ page.content|trim }}
+{% endblock %}
 <!-- /content -->
         {% endif %}
       </div>
