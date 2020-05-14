@@ -122,19 +122,22 @@ class Code(Directive):
 
 class Include(docutils.parsers.rst.directives.misc.Include):
     option_spec = {
-        **docutils.parsers.rst.directives.misc.Include.option_spec,
+        'code': directives.unchanged,
+        'tab-width': int,
+        'start-line': int,
+        'end-line': int,
+        'start-after': directives.unchanged_required,
+        'end-before': directives.unchanged_required,
+        'class': directives.class_option,
         'filters': directives.unchanged
     }
 
     def run(self):
         """
         Verbatim copy of docutils.parsers.rst.directives.misc.Include.run()
-        that just calls to our Code instead of builtin CodeBlock but otherwise
-        just passes it back to the parent implementation.
+        that just calls to our Code instead of builtin CodeBlock, and is
+        without the rarely useful :encoding:, :literal: and :name: options
         """
-        if not 'code' in self.options:
-            return docutils.parsers.rst.directives.misc.Include.run(self)
-
         source = self.state_machine.input_lines.source(
             self.lineno - self.state_machine.input_offset - 1)
         source_dir = os.path.dirname(os.path.abspath(source))
@@ -144,15 +147,12 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         path = os.path.normpath(os.path.join(source_dir, path))
         path = utils.relative_path(None, path)
         path = nodes.reprunicode(path)
-        encoding = self.options.get(
-            'encoding', self.state.document.settings.input_encoding)
         e_handler=self.state.document.settings.input_encoding_error_handler
         tab_width = self.options.get(
             'tab-width', self.state.document.settings.tab_width)
         try:
             self.state.document.settings.record_dependencies.add(path)
             include_file = io.FileInput(source_path=path,
-                                        encoding=encoding,
                                         error_handler=e_handler)
         except UnicodeEncodeError as error:
             raise self.severe('Problems with "%s" directive path:\n'
@@ -194,18 +194,23 @@ class Include(docutils.parsers.rst.directives.misc.Include):
 
         include_lines = statemachine.string2lines(rawtext, tab_width,
                                                   convert_whitespace=True)
-
-        self.options['source'] = path
-        codeblock = Code(self.name,
-                            [self.options.pop('code')], # arguments
-                            self.options,
-                            include_lines, # content
-                            self.lineno,
-                            self.content_offset,
-                            self.block_text,
-                            self.state,
-                            self.state_machine)
-        return codeblock.run()
+        if 'code' in self.options:
+            self.options['source'] = path
+            # Don't convert tabs to spaces, if `tab_width` is negative:
+            if tab_width < 0:
+                include_lines = rawtext.splitlines()
+            codeblock = Code(self.name,
+                                  [self.options.pop('code')], # arguments
+                                  self.options,
+                                  include_lines, # content
+                                  self.lineno,
+                                  self.content_offset,
+                                  self.block_text,
+                                  self.state,
+                                  self.state_machine)
+            return codeblock.run()
+        self.state_machine.insert_input(include_lines, path)
+        return []
 
 def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     # In order to properly preserve backslashes (well, and backticks)
