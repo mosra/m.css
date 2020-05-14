@@ -360,11 +360,13 @@ option to highlight lines; if you want to add additional CSS classes, use the
             return 0;
         }
 
-The builtin `include directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#include>`_
+The `builtin include directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#include>`_
 is also patched to use the improved code directive, and:
 
 -   Drops the rarely useful :rst:`:encoding:`, :rst:`:literal:` and
     :rst:`:name:` options
+-   Adds a :rst:`:start-on:` and :rst:`:strip-prefix:` options, and improves
+    :rst:`:end-before:`. See `Advanced file inclusion`_ below.
 
 Simply specify external code snippets filename and set the language using the
 :rst:`:code:` option. All options of the :rst:`.. code::` directive are
@@ -453,6 +455,95 @@ immediately followed by background color specification (the
 See the `m.components <{filename}/plugins/components.rst#code-math-and-graph-figure>`__
 plugin for details about code figures using the :rst:`.. code-figure::`
 directive.
+
+`Advanced file inclusion`_
+--------------------------
+
+Compared to the `builtin include directive`_, the m.css-patched variant
+additionally provides a :rst:`:strip-prefix:` option that strips a prefix from
+each included line. This can be used for example to remove excessive
+indentation from code blocks. To avoid trailing whitespace, you can wrap the
+value in quotes. Reusing the snippet from above, showing only the code inside
+:cpp:`main()`:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. include:: snippet.cpp
+            :code: c++
+            :start-line: 3
+            :end-line: 5
+            :strip-prefix: '    '
+
+    .. include:: math-and-code-snippet.cpp
+        :code: c++
+        :start-line: 3
+        :end-line: 5
+        :strip-prefix: '    '
+
+This isn't limited to just whitespace though --- since the :rst:`.. include::`
+directive works for including reStructuredText as well, it can be used to embed
+parts of self-contained python scripts on the page. Consider this file,
+``two-sins.py``:
+
+.. include:: math-and-code-selfcontained.py
+    :code: py
+
+Embedding it on a page, mixed together with other content (and unimportant
+parts omitted), can look like below. The :rst:`:start-on:` option can be used
+to pin to a particular line (instead of skipping it like :rst:`:start-after:`
+does) and an empty :rst:`:end-before:` will include everything until the next
+blank line. Finally, :rst:`:strip-prefix:` strips the leading :py:`#` from the
+comments embedded in Python code:
+
+.. code-figure::
+
+    .. code:: rst
+
+        .. include:: two-sins.py
+            :start-after: """
+            :end-before: """
+
+        .. code-figure::
+
+            .. include:: two-sins.py
+                :start-on: sin =
+                :end-before:
+                :code: py
+
+            0.13545234412104434
+
+        .. include:: two-sins.py
+            :start-on: # And a sum with itself
+            :strip-prefix: '# '
+            :end-before:
+
+        .. include:: two-sins.py
+            :start-on: two_sins
+            :code: py
+
+    .. include:: math-and-code-selfcontained.py
+        :start-after: """
+        :end-before: """
+
+    .. code-figure::
+
+        .. include:: math-and-code-selfcontained.py
+            :start-on: sin =
+            :end-before:
+            :code: py
+
+        0.13545234412104434
+
+    .. include:: math-and-code-selfcontained.py
+        :start-on: # And a sum with itself
+        :strip-prefix: '# '
+        :end-before:
+
+    .. include:: math-and-code-selfcontained.py
+        :start-on: two_sins
+        :code: py
 
 `Filters`_
 ----------

@@ -127,7 +127,9 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         'start-line': int,
         'end-line': int,
         'start-after': directives.unchanged_required,
-        'end-before': directives.unchanged_required,
+        'start-on': directives.unchanged_required,
+        'end-before': directives.unchanged,
+        'strip-prefix': directives.unchanged,
         'class': directives.class_option,
         'filters': directives.unchanged
     }
@@ -135,8 +137,9 @@ class Include(docutils.parsers.rst.directives.misc.Include):
     def run(self):
         """
         Verbatim copy of docutils.parsers.rst.directives.misc.Include.run()
-        that just calls to our Code instead of builtin CodeBlock, and is
-        without the rarely useful :encoding:, :literal: and :name: options
+        that just calls to our Code instead of builtin CodeBlock, is without
+        the rarely useful :encoding:, :literal: and :name: options and adds
+        support for :start-on:, empty :end-before: and :strip-prefix:.
         """
         source = self.state_machine.input_lines.source(
             self.lineno - self.state_machine.input_offset - 1)
@@ -183,10 +186,24 @@ class Include(docutils.parsers.rst.directives.misc.Include):
                 raise self.severe('Problem with "start-after" option of "%s" '
                                   'directive:\nText not found.' % self.name)
             rawtext = rawtext[after_index + len(after_text):]
+        # Compared to start-after, this includes the matched line
+        on_text = self.options.get('start-on', None)
+        if on_text:
+            on_index = rawtext.find('\n' + on_text)
+            if on_index < 0:
+                raise self.severe('Problem with "start-on" option of "%s" '
+                                  'directive:\nText not found.' % self.name)
+            rawtext = rawtext[on_index:]
+        # Compared to builtin include directive, the end-before can be empty,
+        # in which case it simply matches the first empty line (which is
+        # usually end of the code block)
         before_text = self.options.get('end-before', None)
-        if before_text:
+        if before_text is not None:
             # skip content in rawtext after *and incl.* a matching text
-            before_index = rawtext.find(before_text)
+            if before_text == '':
+                before_index = rawtext.find('\n\n')
+            else:
+                before_index = rawtext.find(before_text)
             if before_index < 0:
                 raise self.severe('Problem with "end-before" option of "%s" '
                                   'directive:\nText not found.' % self.name)
@@ -194,6 +211,21 @@ class Include(docutils.parsers.rst.directives.misc.Include):
 
         include_lines = statemachine.string2lines(rawtext, tab_width,
                                                   convert_whitespace=True)
+
+        # Strip a common prefix from all lines. Useful for example when
+        # including a reST snippet that's embedded in a comment, or cutting
+        # away excessive indentation. Can be wrapped in quotes in order to
+        # avoid trailing whitespace in reST markup.
+        if 'strip-prefix' in self.options and self.options['strip-prefix']:
+            prefix = self.options['strip-prefix']
+            if prefix[0] == prefix[-1] and prefix[0] in ['\'', '"']:
+                prefix = prefix[1:-1]
+            for i, line in enumerate(include_lines):
+                if line.startswith(prefix): include_lines[i] = line[len(prefix):]
+                # Strip the prefix also if the line is just the prefix alone,
+                # with trailing whitespace removed
+                elif line.rstrip() == prefix.rstrip(): include_lines[i] = ''
+
         if 'code' in self.options:
             self.options['source'] = path
             # Don't convert tabs to spaces, if `tab_width` is negative:
