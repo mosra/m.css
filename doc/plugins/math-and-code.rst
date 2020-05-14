@@ -327,6 +327,7 @@ replaces `Pelican code-block directive <https://docs.getpelican.com/en/stable/co
     :html:`<pre>` element for code blocks with :css:`.m-code` CSS class
     applied.
 -   Removes useless CSS classes from the output.
+-   Adds a :rst:`:filters:` option. See `Filters`_ below.
 
 Put `code blocks <{filename}/css/components.rst#code>`_ into the :rst:`.. code::`
 directive and specify the language via a parameter. Use :rst:`:hl_lines:`
