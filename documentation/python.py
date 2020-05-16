@@ -798,7 +798,7 @@ def _pybind11_default_argument_length(string):
     raise SyntaxError("Unexpected end of `{}`".format(string))
 
 def map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
-    if input_type in ['Callable', 'Dict', 'Iterator', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
+    if input_type in ['Callable', 'Dict', 'Iterator', 'Iterable', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
         return 'typing.' + input_type
     else:
         return map_name_prefix(state, input_type)
