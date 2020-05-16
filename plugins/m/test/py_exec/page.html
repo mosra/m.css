@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>m.py_exec | A Pelican Blog</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i" />
+  <link rel="stylesheet" href="static/m-dark.css" />
+  <link rel="canonical" href="page.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="./" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">A Pelican Blog</a>
+    </div>
+  </div>
+</nav></header>
+<main>
+<article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>m.py_exec</h1>
+<!-- content -->
+<p>First context, no output:</p>
+<pre class="m-code"><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">12</span></pre>
+<p>Second context, no output:</p>
+<pre class="m-code"><span class="n">List</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span></pre>
+<p>Anon context, expect top-level RuntimeError:</p>
+<pre class="m-code"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+<span class="n">f</span><span class="p">()</span></pre>
+<pre class="m-code m-console">Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 3, in &lt;module&gt;
+  File &quot;&lt;string&gt;&quot;, line 2, in f
+RuntimeError</pre>
+<p>First context, print to stdout:</p>
+<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span></pre>
+<pre class="m-code m-console">14</pre>
+<p>Second context:</p>
+<pre class="m-code"><span class="k">assert</span> <span class="n">List</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span></pre>
+<p>Anon context, suppressed output:</p>
+<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></pre>
+<p>Anon context, suppressed stderr:</p>
+<pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">print</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+<p>First context, print and destroy context:</p>
+<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
+<pre class="m-code m-console">typing.List</pre>
+<p>Second context, print and destroy context:</p>
+<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
+<pre class="m-code m-console">[1, 2, 3]</pre>
+<p>Both contexts are destroyed now, variable access results to expected NameError:</p>
+<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
+<pre class="m-code m-console">Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name &#39;List&#39; is not defined</pre>
+<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
+<pre class="m-code m-console">Traceback (most recent call last):
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name &#39;List&#39; is not defined</pre>
+<p>List comprehension:</p>
+<pre class="m-code"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="nb">print</span><span class="p">([</span> <span class="n">foo</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="p">])</span></pre>
+<pre class="m-code m-console">[4, 6]</pre>
+<!-- /content -->
+      </div>
+    </div>
+  </div>
+</article>
+</main>
+</body>
+</html>
