@@ -799,49 +799,54 @@ def _pybind11_default_argument_length(string):
     raise SyntaxError("Unexpected end of `{}`".format(string))
 
 
-def parse_pybind_type(state: State, referrer_path: List[str], signature: str) -> str:
-    # If this doesn't match, it's because we're in Callable[[arg, ...], retval]
+def map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
+    if input_type in ['Callable', 'Dict', 'Iterator', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
+        return 'typing.' + input_type
+    else:
+        return map_name_prefix(state, input_type)
+
+
+def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
     match = _pybind_type_rx.match(signature)
     if match:
         input_type = match.group(0)
         signature = signature[len(input_type):]
-        # Prefix types with the typing module to be consistent with pure
-        # Python annotations and allow them to be linked to
-        if input_type in ['Callable', 'Dict', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
-            type = 'typing.' + input_type
-            type_link = make_name_link(state, referrer_path, type)
-        else:
-            type = map_name_prefix(state, input_type)
-            type_link = make_name_link(state, referrer_path, type)
+        type = map_name_prefix_or_add_typing_suffix(state, input_type)
+        type_link = make_name_link(state, referrer_path, type)
     else:
-        assert signature[0] == '['
-        type = ''
-        type_link = ''
+        raise SyntaxError()
 
-    # This is a generic type (or the list in Callable)
-    if signature and signature[0] == '[':
-        type += '['
-        type_link += '['
-        signature = signature[1:]
-        while signature[0] != ']':
-            signature, inner_type, inner_type_link = parse_pybind_type(state, referrer_path, signature)
-            type += inner_type
-            type_link += inner_type_link
-
-            if signature[0] == ']': break
-
-            # Expecting the next item now, if not there, we failed
-            if not signature.startswith(', '): raise SyntaxError()
-            signature = signature[2:]
-
-            type += ', '
-            type_link += ', '
-
-        assert signature[0] == ']'
-        signature = signature[1:]
-        type += ']'
-        type_link += ']'
-
+    lvl = 0
+    i = 0
+    while i < len(signature):
+        c = signature[i]
+        if c == '[':
+            i += 1
+            lvl += 1
+            type += c
+            type_link += c
+            continue
+        if lvl == 0:
+            break
+        if c == ']':
+            i += 1
+            lvl -= 1
+            type += c
+            type_link += c
+            continue
+        if c in ', ':
+            i += 1
+            type += c
+            type_link += c
+            continue
+        match = _pybind_type_rx.match(signature[i:])
+        input_type = match.group(0)
+        i += len(input_type)
+        input_type = map_name_prefix_or_add_typing_suffix(state, input_type)
+        type += input_type
+        type_link += make_name_link(state, referrer_path, input_type)
+    assert lvl == 0
+    signature = signature[i:]
     return signature, type, type_link
 
 # Returns function name, summary, list of arguments (name, type, type with HTML
