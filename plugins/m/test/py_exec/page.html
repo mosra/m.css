@@ -28,17 +28,21 @@
 <span class="n">a</span> <span class="o">=</span> <span class="mi">12</span></pre>
 <p>Second context, no output:</p>
 <pre class="m-code"><span class="n">List</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span></pre>
-<p>Anon context, expect top-level RuntimeError:</p>
+<p>Anon context, expect top-level <code>RuntimeError</code>:</p>
+<div class="m-code-figure">
 <pre class="m-code"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
-<span class="n">f</span><span class="p">()</span></pre>
-<pre class="m-code m-console">Traceback (most recent call last):
+<span class="hll">    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
+</span><span class="n">f</span><span class="p">()</span></pre>
+<pre class="m-nopad m-console">Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 3, in &lt;module&gt;
   File &quot;&lt;string&gt;&quot;, line 2, in f
-RuntimeError</pre>
+RuntimeError<span class="m-label m-warning">stderr</span></pre>
+</div>
 <p>First context, print to stdout:</p>
+<div class="m-code-figure">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span></pre>
-<pre class="m-code m-console">14</pre>
+<pre class="m-nopad m-console">14<span class="m-label m-dim">stdout</span></pre>
+</div>
 <p>Second context:</p>
 <pre class="m-code"><span class="k">assert</span> <span class="n">List</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span></pre>
 <p>Anon context, suppressed output:</p>
@@ -47,25 +51,35 @@ RuntimeError</pre>
 <pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
 <span class="nb">print</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
 <p>First context, print and destroy context:</p>
+<div class="m-code-figure">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
-<pre class="m-code m-console">typing.List</pre>
+<pre class="m-nopad m-console">typing.List<span class="m-label m-dim">stdout</span></pre>
+</div>
 <p>Second context, print and destroy context:</p>
+<div class="m-code-figure">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
-<pre class="m-code m-console">[1, 2, 3]</pre>
-<p>Both contexts are destroyed now, variable access results to expected NameError:</p>
+<pre class="m-nopad m-console">[1, 2, 3]<span class="m-label m-dim">stdout</span></pre>
+</div>
+<p>Both contexts are destroyed now, variable access results to expected <code>NameError</code>:</p>
+<div class="m-code-figure">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
-<pre class="m-code m-console">Traceback (most recent call last):
+<pre class="m-nopad m-console">Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name &#39;List&#39; is not defined</pre>
+NameError: name &#39;List&#39; is not defined<span class="m-label m-warning">stderr</span></pre>
+</div>
+<div class="m-code-figure">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
-<pre class="m-code m-console">Traceback (most recent call last):
+<pre class="m-nopad m-console">Traceback (most recent call last):
   File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name &#39;List&#39; is not defined</pre>
+NameError: name &#39;List&#39; is not defined<span class="m-label m-warning">stderr</span></pre>
+</div>
 <p>List comprehension:</p>
+<div class="m-code-figure">
 <pre class="m-code"><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span>
 <span class="nb">print</span><span class="p">([</span> <span class="n">foo</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="p">])</span></pre>
-<pre class="m-code m-console">[4, 6]</pre>
+<pre class="m-nopad m-console">[4, 6]<span class="m-label m-dim">stdout</span></pre>
+</div>
 <!-- /content -->
       </div>
     </div>

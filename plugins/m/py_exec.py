@@ -31,6 +31,7 @@ from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
 from docutils.parsers.rst import Directive, directives
 from docutils import nodes
+from typing import List, Dict
 
 from m.code import _highlight
 
@@ -50,14 +51,14 @@ class PyCodeExec(Directive):
     optional_arguments = 0
     final_argument_whitespace = True
     option_spec = {
-        'hl_lines': directives.unchanged,    # same as in m.code.Code
-        'class': directives.class_option,    # same as in m.code.Code
-        'filters': directives.unchanged,     # same as in m.code.Code
+        'hl_lines': directives.unchanged,  # same as in m.code.Code
+        'class': directives.class_option,  # same as in m.code.Code
+        'filters': directives.unchanged,  # same as in m.code.Code
         'context-id': directives.unchanged,  # serves to share state between snippets
-        'raises': directives.unchanged,      # expected exception of the snippet (just class name)
-        'hide-code': directives.flag,        # suppress snippet code
-        'hide-stdout': directives.flag,      # suppress snippet stdout
-        'hide-stderr': directives.flag,      # suppress snippet stderr
+        'raises': directives.unchanged,  # expected exception of the snippet (just class name)
+        'hide-code': directives.flag,  # suppress snippet code
+        'hide-stdout': directives.flag,  # suppress snippet stdout
+        'hide-stderr': directives.flag,  # suppress snippet stderr
         'discard-context': directives.flag,  # don't forget to clean-up named contexts
     }
     has_content = True
@@ -113,29 +114,56 @@ class PyCodeExec(Directive):
 
         result = []
 
+        pipe_options = self.options.copy()
+        output_extra_classes = ['m-nopad']
+
+        if 'hl_lines' in pipe_options:
+            del pipe_options['hl_lines']
+
         if 'hide-code' not in self.options:
-            result += self._run("\n".join(self.content), 'py', filters, classes)
-        if 'hide-stdout' not in self.options and stdout:
-            result += self._run(stdout, 'ansi', filters, classes)
-        if 'hide-stderr' not in self.options and stderr:
-            result += self._run(stderr, 'ansi', filters, classes)
+            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes))
+        if 'hide-stdout' not in pipe_options and stdout:
+            result.append(self._run(stdout, 'ansi', pipe_options, [], [] + output_extra_classes,
+                                    label='stdout', label_classes=['m-dim']))
+        if 'hide-stderr' not in pipe_options and stderr:
+            result.append(self._run(stderr, 'ansi', pipe_options, [], [] + output_extra_classes,
+                                    label='stderr', label_classes=['m-warning']))
 
-        return result
+        if len(result) <= 1:
+            # don't create figure for single object
+            return result
+        else:
+            fig = nodes.container('', classes=['m-code-figure'])
+            for r in result:
+                fig.append(r)
+            return [fig]
 
-    def _run(self, content: object, lang: object, filters: object, classes: object) -> object:
+    @classmethod
+    def _run(cls,
+             content: str,
+             lang: str,
+             options: Dict,
+             filters: List[str],
+             classes: List[str],
+             label=None,
+             label_classes: List[str] = []):
 
-        class_, highlighted = _highlight(content, lang, self.options, is_block=True, filters=filters)
+        class_, highlighted = _highlight(content, lang, options, is_block=True, filters=filters)
         classes += [class_]
 
-        content = nodes.raw('', highlighted, format='html')
         pre = nodes.literal_block('', classes=classes)
-        pre.append(content)
 
-        return [pre]
+        content = nodes.raw('', highlighted, format='html')
+        pre.append(content)
+        if label:
+            pre.append(nodes.inline(label, label, classes=['m-label'] + label_classes))
+
+        return pre
 
 
 def register_mcss(**kwargs):
     rst.directives.register_directive('py-exec', PyCodeExec)
+
 
 # Below is only Pelican-specific functionality. If Pelican is not found, these
 # do nothing.

@@ -16,9 +16,10 @@ Second context, no output:
 
     List = [1,2,3]
 
-Anon context, expect top-level RuntimeError:
+Anon context, expect top-level ``RuntimeError``:
 
 .. py-exec::
+    :hl_lines: 2
     :raises: RuntimeError
 
     def f():
@@ -71,7 +72,7 @@ Second context, print and destroy context:
 
     print(List)
 
-Both contexts are destroyed now, variable access results to expected NameError:
+Both contexts are destroyed now, variable access results to expected ``NameError``:
 
 .. py-exec::
     :context-id: ctx1

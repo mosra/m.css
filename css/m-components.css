@@ -632,6 +632,18 @@ figure.m-figure.m-fullwidth:after {
   margin-top: -1rem;
   margin-bottom: -0.875rem;
   padding-left: 0.875rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  position:relative;
+}
+
+.m-code-figure > pre.m-nopad > .m-label, .m-console-figure > pre.m-nopad > .m-label{
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 /* Figure caption */
