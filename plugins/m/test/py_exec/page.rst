@@ -1,6 +1,12 @@
 m.py_exec
 #########
 
+.. py-exec::
+    :hide-code:
+    :hide-stdout:
+
+    print("You don't see it")
+
 First context, no output:
 
 .. py-exec::

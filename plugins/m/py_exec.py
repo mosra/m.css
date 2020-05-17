@@ -124,24 +124,29 @@ class PyCodeExec(Directive):
         pipe_options = self.options.copy()
         output_extra_classes = ['m-nopad']
 
-        fig = nodes.container('', classes=['m-code-figure'])
+        result = []
 
         if 'hl_lines' in pipe_options:
             del pipe_options['hl_lines']
 
         if 'hide-code' not in self.options:
-            fig.append(self._run("\n".join(self.content), 'py', self.options, filters, classes,
+            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes,
                                     label=code_label,
                                     label_classes=['m-danger']
                                     ))
         if 'hide-stdout' not in pipe_options and stdout:
-            fig.append(self._run(stdout, 'ansi', pipe_options, filters, classes + output_extra_classes,
+            result.append(self._run(stdout, 'ansi', pipe_options, filters, classes + output_extra_classes,
                                     label='stdout', label_classes=['m-dim']))
         if 'hide-stderr' not in pipe_options and stderr:
-            fig.append(self._run(stderr, 'ansi', pipe_options, filters, classes + output_extra_classes,
+            result.append(self._run(stderr, 'ansi', pipe_options, filters, classes + output_extra_classes,
                                     label='stderr', label_classes=['m-warning']))
-
-        return [fig]
+        if result:
+            fig = nodes.container('', classes=['m-code-figure'])
+            for el in result:
+                fig.append(el)
+            return [fig]
+        else:
+            return []
 
     @classmethod
     def _run(cls,
