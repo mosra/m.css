@@ -26,12 +26,15 @@ Anon context, expect top-level ``RuntimeError``:
         raise RuntimeError()
     f()
 
-First context, print to stdout:
+First context, print to stdout & stderr:
 
 .. py-exec::
     :context-id: ctx1
 
+    import sys
+
     print(a + 2)
+    print(a + 2, file=sys.stderr)
 
 Second context:
 
@@ -54,6 +57,24 @@ Anon context, suppressed stderr:
 
     import sys
     print(4 + 2 / 2, file=sys.stderr)
+
+
+Anon context, huge output, scroll:
+
+.. py-exec::
+    :hide-stderr:
+
+    for i in range(30):
+        print(" \_(^.^)_/ " * 80)
+
+Anon context, huge output:
+
+.. py-exec::
+    :hide-stderr:
+    :class: m-no-vscroll
+
+    for i in range(30):
+        print(" \_(^.^)_/ " * 80)
 
 
 First context, print and destroy context:

@@ -632,12 +632,42 @@ figure.m-figure.m-fullwidth:after {
   margin-top: -1rem;
   margin-bottom: -0.875rem;
   padding-left: 0.875rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  position:relative;
 }
 
-.m-code-figure > pre.m-nopad > .m-label, .m-console-figure > pre.m-nopad > .m-label{
+/* Next classes are for py-exec plugin */
+.m-code-figure > div.m-py-exec, .m-console-figure > div.m-py-exec {
+  position:relative;
+  margin-left: -0.875rem;
+  margin-right: -0.875rem;
+  margin-top: -1rem;
+  margin-bottom: -0.875rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.m-code-figure > div.m-py-exec > pre.m-nopad, .m-console-figure > div.m-py-exec > pre.m-nopad {
+  padding-left: 0.875rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: 1rem;
+  margin-bottom: 0;
+  max-height: 20rem;
+}
+
+.m-code-figure > div.m-py-exec > pre.m-nopad, .m-console-figure > div.m-py-exec > pre.m-nopad {
+  padding-left: 0.875rem;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-top: 1rem;
+  margin-bottom: 0;
+  max-height: 20rem;
+}
+
+.m-code-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll, .m-console-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll {
+  max-height: none;
+}
+
+.m-code-figure > div.m-py-exec > .m-label, .m-console-figure > div.m-py-exec > .m-label{
   position: absolute;
   right: 0;
   top: 0;

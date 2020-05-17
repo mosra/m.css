@@ -86,27 +86,34 @@ class PyCodeExec(Directive):
             if 'discard-context' in self.options:
                 del _exec_contexts[ctx_id]
 
+        code_label=None
+
         stdout = io.StringIO()
         stderr = io.StringIO()
+        expected_raise = self.options.get('raises', False)
+
+        if expected_raise:
+            code_label = 'raises ' + expected_raise
+
         try:
             with redirect_stdout(stdout):
                 with redirect_stderr(stderr):
                     exec("\n".join(self.content), gl)
         except Exception as exc:
             exc_class_name = exc.__class__.__name__
-            if 'raises' not in self.options:
+            if not expected_raise:
                 raise self.severe('Snippet raised exception\n'
                                   'Add `:raises: <exception-type>` to show exceptional snippet\n'.format(self.name) +
                                   strip_second_line(traceback.format_exc()))
-            if exc_class_name != self.options['raises']:
+            if exc_class_name != expected_raise:
                 raise self.severe('Snippet raised unexpected exception {}, \n'.format(exc_class_name) +
-                                  'Expected exception type: {}\n'.format(self.options['raises']) +
+                                  'Expected exception type: {}\n'.format(expected_raise) +
                                   strip_second_line(traceback.format_exc())
                                   )
             stderr.write(strip_second_line(traceback.format_exc()))
         else:
-            if 'raises' in self.options:
-                raise self.severe('Snippet was expected to raise {} exception '.format(self.options['raises']) +
+            if expected_raise:
+                raise self.severe('Snippet was expected to raise {} exception '.format(expected_raise) +
                                   'but it didn\'t')
         finally:
             stdout = stdout.getvalue()
@@ -121,12 +128,15 @@ class PyCodeExec(Directive):
             del pipe_options['hl_lines']
 
         if 'hide-code' not in self.options:
-            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes))
+            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes,
+                                    label=code_label,
+                                    label_classes=['m-danger']
+                                    ))
         if 'hide-stdout' not in pipe_options and stdout:
-            result.append(self._run(stdout, 'ansi', pipe_options, [], [] + output_extra_classes,
+            result.append(self._run(stdout, 'ansi', pipe_options, filters, classes + output_extra_classes,
                                     label='stdout', label_classes=['m-dim']))
         if 'hide-stderr' not in pipe_options and stderr:
-            result.append(self._run(stderr, 'ansi', pipe_options, [], [] + output_extra_classes,
+            result.append(self._run(stderr, 'ansi', pipe_options, filters, classes + output_extra_classes,
                                     label='stderr', label_classes=['m-warning']))
 
         if len(result) <= 1:
@@ -156,7 +166,10 @@ class PyCodeExec(Directive):
         content = nodes.raw('', highlighted, format='html')
         pre.append(content)
         if label:
-            pre.append(nodes.inline(label, label, classes=['m-label'] + label_classes))
+            div = nodes.container('', classes=['m-py-exec'])
+            div.append(pre)
+            div.append(nodes.inline(label, label, classes=['m-label'] + label_classes))
+            return div
 
         return pre
 
