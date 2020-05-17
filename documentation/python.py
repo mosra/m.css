@@ -1091,6 +1091,13 @@ def get_type_hints_or_nothing(state: State, path: List[str], object) -> Dict:
         logging.warning("failed to dereference type hints for %s (%s), falling back to non-dereferenced", '.'.join(path), e.__class__.__name__)
         return {}
 
+def get_fully_qualified_name(obj):
+    result = obj.__class__.__name__
+    module = obj.__class__.__module__
+    if module is not None and module != object.__class__.__module__:
+        result = module + "." + result
+    return result
+
 def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tuple[str, str]:
     # Empty annotation, as opposed to a None annotation, handled below
     if annotation is inspect.Signature.empty: return None, None
@@ -1829,7 +1836,8 @@ def extract_data_doc(state: State, parent, entry: Empty):
     elif hasattr(parent, '__annotations__') and out.name in parent.__annotations__:
         out.type, out.type_link = extract_annotation(state, entry.path, parent.__annotations__[out.name])
     else:
-        out.type, out.type_link = None, None
+        fully_qualified_name = get_fully_qualified_name(entry.object)
+        out.type, out.type_link = fully_qualified_name, make_name_link(state, entry.path, fully_qualified_name)
 
     out.value = format_value(state, entry.path, entry.object)
 
