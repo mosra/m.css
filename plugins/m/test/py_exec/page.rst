@@ -26,6 +26,18 @@ Anon context, expect top-level ``RuntimeError``:
         raise RuntimeError()
     f()
 
+Anon context, expect top-level ``RuntimeError``, hide stderr:
+
+.. py-exec::
+    :hl_lines: 2
+    :raises: RuntimeError
+    :hide-stderr:
+
+    def f():
+        raise RuntimeError()
+    f()
+
+
 First context, print to stdout & stderr:
 
 .. py-exec::

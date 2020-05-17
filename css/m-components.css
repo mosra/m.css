@@ -663,6 +663,10 @@ figure.m-figure.m-fullwidth:after {
   max-height: 20rem;
 }
 
+.m-code-figure > div.m-py-exec:last-child > pre, .m-console-figure > div.m-py-exec:last-child > pre {
+  margin-bottom: 0;
+}
+
 .m-code-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll, .m-console-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll {
   max-height: none;
 }

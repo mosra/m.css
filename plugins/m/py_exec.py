@@ -124,29 +124,24 @@ class PyCodeExec(Directive):
         pipe_options = self.options.copy()
         output_extra_classes = ['m-nopad']
 
+        fig = nodes.container('', classes=['m-code-figure'])
+
         if 'hl_lines' in pipe_options:
             del pipe_options['hl_lines']
 
         if 'hide-code' not in self.options:
-            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes,
+            fig.append(self._run("\n".join(self.content), 'py', self.options, filters, classes,
                                     label=code_label,
                                     label_classes=['m-danger']
                                     ))
         if 'hide-stdout' not in pipe_options and stdout:
-            result.append(self._run(stdout, 'ansi', pipe_options, filters, classes + output_extra_classes,
+            fig.append(self._run(stdout, 'ansi', pipe_options, filters, classes + output_extra_classes,
                                     label='stdout', label_classes=['m-dim']))
         if 'hide-stderr' not in pipe_options and stderr:
-            result.append(self._run(stderr, 'ansi', pipe_options, filters, classes + output_extra_classes,
+            fig.append(self._run(stderr, 'ansi', pipe_options, filters, classes + output_extra_classes,
                                     label='stderr', label_classes=['m-warning']))
 
-        if len(result) <= 1:
-            # don't create figure for single object
-            return result
-        else:
-            fig = nodes.container('', classes=['m-code-figure'])
-            for r in result:
-                fig.append(r)
-            return [fig]
+        return [fig]
 
     @classmethod
     def _run(cls,
@@ -165,13 +160,14 @@ class PyCodeExec(Directive):
 
         content = nodes.raw('', highlighted, format='html')
         pre.append(content)
+        div = nodes.container('', classes=['m-py-exec'])
+        div.append(pre)
+
         if label:
-            div = nodes.container('', classes=['m-py-exec'])
-            div.append(pre)
             div.append(nodes.inline(label, label, classes=['m-label'] + label_classes))
             return div
 
-        return pre
+        return div
 
 
 def register_mcss(**kwargs):
