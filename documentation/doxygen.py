@@ -38,6 +38,7 @@ import shutil
 import subprocess
 import urllib.parse
 import logging
+from distutils.version import LooseVersion
 from types import SimpleNamespace as Empty
 from typing import Tuple, Dict, Any, List
 
@@ -3668,6 +3669,15 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
     if state.doxyfile['M_MATH_CACHE_FILE']:
         latex2svgextra.pickle_cache(math_cache_file)
 
+def check_doxygen_version(doxygen_version:str=None):
+    if doxygen_version is None:
+        doxygen_version = subprocess.check_output(["doxygen", "--version"]).decode('utf-8').strip()
+    doxygen_version = LooseVersion(doxygen_version)
+    minimum_doxygen_version = LooseVersion('1.8.14')
+    assert doxygen_version >= minimum_doxygen_version, "Install Doxygen >={}, {} is too buggy".format(
+        minimum_doxygen_version, doxygen_version)
+
+
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()
     parser.add_argument('doxyfile', help="where the Doxyfile is")
@@ -3698,6 +3708,8 @@ if __name__ == '__main__': # pragma: no cover
     os.makedirs(state.doxyfile['OUTPUT_DIRECTORY'], exist_ok=True)
 
     if not args.no_doxygen:
+        logging.debug("checking Doxygen version")
+        check_doxygen_version()
         logging.debug("running Doxygen on {}".format(args.doxyfile))
         subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile), check=True)
 
