@@ -794,7 +794,7 @@ def _pybind11_default_argument_length(string):
         elif c == '[':
             stack.append(']')
         elif c == ')' or c == ']':
-            if c != stack.pop():
+            if len(stack) == 0 or c != stack.pop():
                 raise SyntaxError("Unmatched {} at pos {} in `{}`".format(c, i, string))
     raise SyntaxError("Unexpected end of `{}`".format(string))
 

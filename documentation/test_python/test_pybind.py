@@ -164,6 +164,13 @@ class Signature(unittest.TestCase):
                  ('a', 'str', 'str', '[dict(key="A", value=\'B\')["key"][0], None][0]')
              ], None, None))
 
+        bad_signature = ('foo', '', [('…', None, None, None)], None, None)
+
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=[0][)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=()'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=(()'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=))'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=])'), bad_signature)
 
     def test_default_values_pybind23(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
@@ -193,6 +200,14 @@ class Signature(unittest.TestCase):
              ('foo', '', [
                  ('a', 'str', 'str', '[dict(key="A", value=\'B\')["key"][0], None][0]')
              ], None, None))
+
+        bad_signature = ('foo', '', [('…', None, None, None)], None, None)
+        
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = [0][)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ()'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = (()'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ))'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ])'), bad_signature)
 
 
     def test_crazy_stuff(self):
