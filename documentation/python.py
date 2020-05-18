@@ -840,12 +840,15 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
             type_link += c
             continue
         match = _pybind_type_rx.match(signature[i:])
+        if match is None:
+            raise SyntaxError("Bad python type name: {} ".format(signature[i:]))
         input_type = match.group(0)
         i += len(input_type)
         input_type = map_name_prefix_or_add_typing_suffix(state, input_type)
         type += input_type
         type_link += make_name_link(state, referrer_path, input_type)
-    assert lvl == 0
+    if lvl != 0:
+        raise SyntaxError("Unbalanced [] in python type {}".format(signature))
     signature = signature[i:]
     return signature, type, type_link
 
