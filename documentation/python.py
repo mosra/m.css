@@ -1091,11 +1091,14 @@ def get_type_hints_or_nothing(state: State, path: List[str], object) -> Dict:
         logging.warning("failed to dereference type hints for %s (%s), falling back to non-dereferenced", '.'.join(path), e.__class__.__name__)
         return {}
 
-def get_fully_qualified_name(obj):
+def get_fully_qualified_name(obj, skip_builtins=True):
     result = obj.__class__.__name__
     module = obj.__class__.__module__
-    if module is not None and module != object.__class__.__module__:
-        result = module + "." + result
+    if module is not None:
+        if skip_builtins and module == object.__class__.__module__:
+            return None
+        else:
+            result = module + "." + result
     return result
 
 def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tuple[str, str]:
