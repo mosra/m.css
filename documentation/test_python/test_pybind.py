@@ -209,6 +209,12 @@ class Signature(unittest.TestCase):
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ))'), bad_signature)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ])'), bad_signature)
 
+    def test_pybind11_bad_return_type(self):
+        bad_signature = ('foo', '', [('…', None, None, None)], None, None)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo() -> List[[]'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo() -> List]'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo() -> ::std::vector<int>'), bad_signature)
+
 
     def test_crazy_stuff(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
