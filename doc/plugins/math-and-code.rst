@@ -440,11 +440,11 @@ terminal, it's best to have the listings in external files and use
         :code: ansi
         :class: m-nopad
 
-Apart from the basic color set there's also a very rudimentary support for
-24bit colors using the ``\033[{?};2;{r};{g};{b}m`` color sequence --- currently
-either just the foreground (the ``\033[38;2;`` prefix) or foreground
-immediately followed by background color specification (the
-``\033[48;2;`` prefix):
+There's support for the basic foreground and background color sets, 256 palette
+colors using the ``\033[38;5;{p}m`` or ``\033[48;5;{p}m`` color sequences,
+and 24bit colors using the ``\033[38;2;{r};{g};{b}m`` and
+``\033[48;2;{r};{g};{b}m`` color sequences. The non-bright basic foreground
+colors can be independently brightened using the ``\033[1m`` color sequence:
 
 .. include:: math-and-code-console-colors.ansi
     :code: ansi

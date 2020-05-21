@@ -1,4 +1,21 @@
 .m-console .hll { background-color: #ffffcc }
+.m-console .g-AnsiBackgroundBlack { background-color: #232627 } /* Generic.AnsiBackgroundBlack */
+.m-console .g-AnsiBackgroundBlue { background-color: #1d99f3 } /* Generic.AnsiBackgroundBlue */
+.m-console .g-AnsiBackgroundBrightBlack { background-color: #7f8c8d } /* Generic.AnsiBackgroundBrightBlack */
+.m-console .g-AnsiBackgroundBrightBlue { background-color: #3daee9 } /* Generic.AnsiBackgroundBrightBlue */
+.m-console .g-AnsiBackgroundBrightCyan { background-color: #16a085 } /* Generic.AnsiBackgroundBrightCyan */
+.m-console .g-AnsiBackgroundBrightGreen { background-color: #1cdc9a } /* Generic.AnsiBackgroundBrightGreen */
+.m-console .g-AnsiBackgroundBrightMagenta { background-color: #8e44ad } /* Generic.AnsiBackgroundBrightMagenta */
+.m-console .g-AnsiBackgroundBrightRed { background-color: #c0392b } /* Generic.AnsiBackgroundBrightRed */
+.m-console .g-AnsiBackgroundBrightWhite { background-color: #ffffff } /* Generic.AnsiBackgroundBrightWhite */
+.m-console .g-AnsiBackgroundBrightYellow { background-color: #fdbc4b } /* Generic.AnsiBackgroundBrightYellow */
+.m-console .g-AnsiBackgroundCyan { background-color: #1abc9c } /* Generic.AnsiBackgroundCyan */
+.m-console .g-AnsiBackgroundDefault { background-color: #fcfcfc } /* Generic.AnsiBackgroundDefault */
+.m-console .g-AnsiBackgroundGreen { background-color: #11d116 } /* Generic.AnsiBackgroundGreen */
+.m-console .g-AnsiBackgroundMagenta { background-color: #9b59b6 } /* Generic.AnsiBackgroundMagenta */
+.m-console .g-AnsiBackgroundRed { background-color: #ed1515 } /* Generic.AnsiBackgroundRed */
+.m-console .g-AnsiBackgroundWhite { background-color: #fcfcfc } /* Generic.AnsiBackgroundWhite */
+.m-console .g-AnsiBackgroundYellow { background-color: #f67400 } /* Generic.AnsiBackgroundYellow */
 .m-console .g-AnsiBlack { color: #232627 } /* Generic.AnsiBlack */
 .m-console .g-AnsiBlue { color: #1d99f3 } /* Generic.AnsiBlue */
 .m-console .g-AnsiBrightBlack { color: #7f8c8d; font-weight: bold } /* Generic.AnsiBrightBlack */

@@ -35,6 +35,9 @@ Console colors:
 .. include:: console-colors.ansi
     :code: ansi
 
+.. include:: console-colors-advanced.ansi
+    :code: ansi
+
 .. code:: whatthefuck
 
     // this language is not highlighted
