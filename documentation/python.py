@@ -2296,7 +2296,14 @@ def render_page(state: State, path, input_filename, env):
 def is_html_safe(string):
     return '<' not in string and '>' not in string and '&' not in string and '"' not in string and '\'' not in string
 
-def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
+_snake_case_point ='_[^_]'
+_snake_case_point_re = re.compile(_snake_case_point)
+_camel_case_point = '[^A-Z][A-Z].'
+_camel_case_point_re = re.compile(_camel_case_point)
+_camel_or_snake_case_point_re = re.compile('({})|({})'.format(_snake_case_point, _camel_case_point))
+
+def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True,
+                      add_snake_case_suffixes=True, add_camel_case_suffixes=True, merge_prefixes=True) -> bytearray:
     trie = Trie()
     map = ResultMap()
 
@@ -2359,6 +2366,22 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             # twice.
             if hasattr(result, 'params') and result.params is not None:
                 trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
+
+        if add_camel_case_suffixes and add_snake_case_suffixes:
+            prefix_end_re = _camel_or_snake_case_point_re
+        elif add_camel_case_suffixes:
+            prefix_end_re = _camel_case_point_re
+        elif add_snake_case_suffixes:
+            prefix_end_re = _snake_case_point_re
+        else:
+            prefix_end_re = None
+        if prefix_end_re:
+            for m in prefix_end_re.finditer(result.name.lstrip('__')):
+                name = result.name[m.start(0)+1:]
+                print(result.name, name)
+                trie.insert(name.lower(), index)
+                if hasattr(result, 'params') and result.params is not None:
+                    trie.insert(name.lower() + '()', index_args, lookahead_barriers=[len(name)])
 
         # Add this symbol to total symbol count
         symbol_count += 1
