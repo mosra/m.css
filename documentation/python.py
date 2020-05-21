@@ -2392,7 +2392,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
 
     return serialize_search_data(trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
-def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
+def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_add_snake_case_suffixes=True, search_add_camel_case_suffixes=True, search_merge_subtrees=True, search_merge_prefixes=True):
     # Populate the INPUT, if not specified, make it absolute
     if config['INPUT'] is None: config['INPUT'] = basedir
     else: config['INPUT'] = os.path.join(basedir, config['INPUT'])
@@ -2618,7 +2618,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     if not state.config['SEARCH_DISABLED']:
         logging.debug("building search data for {} symbols".format(len(state.search)))
 
-        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
+        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, add_snake_case_suffixes=search_add_snake_case_suffixes, add_camel_case_suffixes=search_add_camel_case_suffixes, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         # Joining twice, first before passing those to the URL formatter and
         # second after. If SEARCH_DOWNLOAD_BINARY is a string, use that as a
