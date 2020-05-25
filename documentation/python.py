@@ -2378,7 +2378,6 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
         if prefix_end_re:
             for m in prefix_end_re.finditer(result.name.lstrip('__')):
                 name = result.name[m.start(0)+1:]
-                print(result.name, name)
                 trie.insert(name.lower(), index)
                 if hasattr(result, 'params') and result.params is not None:
                     trie.insert(name.lower() + '()', index_args, lookahead_barriers=[len(name)])
