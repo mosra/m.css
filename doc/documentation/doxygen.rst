@@ -245,6 +245,10 @@ amount of generated content for no added value.
 -   Proper scoping for friend and related functions/classes/variables etc.
     Doxygen doesn't provide any namespace scoping for these and at the moment
     I have no way to deduct that information.
+-   APIs listed in file documentation pages lose all namespace information (and
+    when it appears in search, it's prefixed with the file name instead of the
+    namespace). This is due to several bugs on Doxygen side, which still need
+    to be patched (or worked around).
 
 `Configuration`_
 ================
@@ -591,6 +595,13 @@ potential "fix" to this is enabling the :ini:`EXTRACT_ALL` option, but that
 exposes all symbols, including private and file-local ones --- which, most
 probably, is *not* what you want.
 
+If you have namespaces not documented, Doxygen will by put function docs into
+file pages --- but it doesn't put them into the XML output, meaning all links
+to them will lead nowhere and the functions won't appear in search either.
+To fix this, enable the :ini:`XML_NS_MEMB_FILE_SCOPE` option as described in
+the `Namespace members in file scope`_ section below; if you document all
+namespaces this problem will go away as well.
+
 `Content`_
 ==========
 
@@ -704,6 +715,11 @@ its XML output. To match the behavior of stock HTML output, enable the
 
     In order to use the :ini:`XML_NS_MEMB_FILE_SCOPE` option, you need Doxygen
     1.8.15 (released December 2018).
+
+Please note that APIs listed in file documentation pages lose all namespace
+information (and when it appears in search, it's prefixed with the file name
+instead of the namespace). This is due to several bugs on Doxygen side, which
+still need to be patched (or worked around).
 
 `Private virtual functions`_
 ----------------------------
