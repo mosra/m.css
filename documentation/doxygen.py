@@ -31,6 +31,7 @@ import enum
 import sys
 import re
 import html
+import inspect
 import os
 import glob
 import mimetypes
@@ -41,8 +42,8 @@ import logging
 from types import SimpleNamespace as Empty
 from typing import Tuple, Dict, Any, List
 
+from importlib.machinery import SourceFileLoader
 from jinja2 import Environment, FileSystemLoader
-
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import TextLexer, BashSessionLexer, get_lexer_by_name, find_lexer_class_for_filename
@@ -91,6 +92,56 @@ search_type_map = [
     (CssClass.DEFAULT, "var")
 ]
 
+default_config = {
+    'DOXYFILE': 'Doxyfile',
+
+    'THEME_COLOR': '#22272e',
+    'FAVICON': 'favicon-dark.png',
+    'LINKS_NAVBAR1': [
+        ("Pages", 'pages', []),
+        ("Namespaces", 'namespaces', [])
+    ],
+    'LINKS_NAVBAR2': [
+        ("Classes", 'annotated', []),
+        ("Files", 'files', [])
+    ],
+
+    'STYLESHEETS': [
+        'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
+        '../css/m-dark+documentation.compiled.css'],
+    'HTML_HEADER': None,
+    'EXTRA_FILES': [],
+    'PAGE_HEADER': None,
+    'FINE_PRINT': '[default]',
+
+    'CLASS_INDEX_EXPAND_LEVELS': 1,
+    'FILE_INDEX_EXPAND_LEVELS': 1,
+    'CLASS_INDEX_EXPAND_INNER': False,
+
+    'M_MATH_CACHE_FILE': 'm.math.cache',
+
+    'SEARCH_DISABLED': False,
+    'SEARCH_DOWNLOAD_BINARY': False,
+    'SEARCH_HELP':
+"""<p class="m-noindent">Search for symbols, directories, files, pages or
+modules. You can omit any prefix from the symbol or file path; adding a
+<code>:</code> or <code>/</code> suffix lists all members of given symbol or
+directory.</p>
+<p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
+/ <span class="m-label m-dim">&uarr;</span> to navigate through the list,
+<span class="m-label m-dim">Enter</span> to go.
+<span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
+copy a link to the result using <span class="m-label m-dim">⌘</span>
+<span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
+<span class="m-label m-dim">M</span> produces a Markdown link.</p>
+""",
+    'SEARCH_BASE_URL': None,
+    'SEARCH_EXTERNAL_URL': None,
+
+    'SHOW_UNDOCUMENTED': False,
+    'VERSION_LABELS': False
+}
+
 xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+|@)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
 slugify_hyphens_rx = re.compile(r"""[-\s]+""")
@@ -109,13 +160,14 @@ class StateCompound:
         self.parent: str = None
 
 class State:
-    def __init__(self):
+    def __init__(self, config):
         self.basedir = ''
         self.compounds: Dict[str, StateCompound] = {}
         self.includes: Dict[str, str] = {}
         self.search: List[Any] = []
         self.examples: List[Any] = []
-        self.doxyfile: Dict[str, str] = {}
+        self.doxyfile: Dict[str, Any] = {}
+        self.config: Dict[str, Any] = config
         self.images: List[str] = []
         self.current = '' # current file being processed (for logging)
         # Current kind of compound being processed. Affects current_include
@@ -758,7 +810,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Content of @since tags is put as-is into entry description /
             # details, if enabled.
-            elif i.attrib['kind'] == 'since' and state.doxyfile['M_VERSION_LABELS']:
+            elif i.attrib['kind'] == 'since' and state.config['VERSION_LABELS']:
                 since = parse_inline_desc(state, i).strip()
                 assert since.startswith('<p>') and since.endswith('</p>')
                 out.since = since[3:-4]
@@ -1733,7 +1785,7 @@ def parse_enum(state: State, element: ET.Element):
         value.brief = parse_desc(state, enumvalue.find('briefdescription'))
         value.description, value_search_keywords, value.deprecated, value.since = parse_enum_value_desc(state, enumvalue)
         if value.brief or value.description:
-            if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
+            if enum.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
                 result = Empty()
                 result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if value.deprecated else ResultFlag(0), EntryType.ENUM_VALUE)
                 result.url = enum.base_url + '#' + value.id
@@ -1745,12 +1797,11 @@ def parse_enum(state: State, element: ET.Element):
                 state.search += [result]
 
             # If either brief or description for this value is present, we want
-            # to show the detailed enum docs. However, in
-            # case M_SHOW_UNDOCUMENTED is enabled, the values might have just
-            # a dummy <span></span> content in order to make them "appear
-            # documented". Then it doesn't make sense to repeat the same list
-            # twice.
-            if not state.doxyfile['M_SHOW_UNDOCUMENTED'] or value.brief != '<span></span>':
+            # to show the detailed enum docs. However, in case
+            # SHOW_UNDOCUMENTED is enabled, the values might have just a dummy
+            # <span></span> content in order to make them "appear documented".
+            # Then it doesn't make sense to repeat the same list twice.
+            if not state.config['SHOW_UNDOCUMENTED'] or value.brief != '<span></span>':
                 enum.has_value_details = True
 
         enum.values += [value]
@@ -1758,7 +1809,7 @@ def parse_enum(state: State, element: ET.Element):
     if enum.base_url == state.current_compound_url and (enum.description or enum.has_value_details):
         enum.has_details = True # has_details might already be True from above
     if enum.brief or enum.has_details or enum.has_value_details:
-        if enum.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if enum.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if enum.deprecated else ResultFlag(0), EntryType.ENUM)
             result.url = enum.base_url + '#' + enum.id
@@ -1834,7 +1885,7 @@ def parse_typedef(state: State, element: ET.Element):
         typedef.has_details = True # has_details might already be True from above
     if typedef.brief or typedef.has_details:
         # Avoid duplicates in search
-        if typedef.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if typedef.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if typedef.deprecated else ResultFlag(0), EntryType.TYPEDEF)
             result.url = typedef.base_url + '#' + typedef.id
@@ -1984,7 +2035,7 @@ def parse_func(state: State, element: ET.Element):
         func.has_details = True # has_details might already be True from above
     if func.brief or func.has_details:
         # Avoid duplicates in search
-        if func.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if func.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.from_type((ResultFlag.DEPRECATED if func.deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0)), EntryType.FUNC)
             result.url = func.base_url + '#' + func.id
@@ -2020,7 +2071,7 @@ def parse_var(state: State, element: ET.Element):
         var.has_details = True # has_details might already be True from above
     if var.brief or var.has_details:
         # Avoid duplicates in search
-        if var.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if var.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if var.deprecated else ResultFlag(0), EntryType.VAR)
             result.url = var.base_url + '#' + var.id
@@ -2060,7 +2111,7 @@ def parse_define(state: State, element: ET.Element):
         define.has_details = True # has_details might already be True from above
     if define.brief or define.has_details:
         # Avoid duplicates in search
-        if define.base_url == state.current_compound_url and not state.doxyfile['M_SEARCH_DISABLED']:
+        if define.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.from_type(ResultFlag.DEPRECATED if define.deprecated else ResultFlag(0), EntryType.DEFINE)
             result.url = define.base_url + '#' + define.id
@@ -2128,7 +2179,7 @@ def extract_metadata(state: State, xml):
 
     # In order to show also undocumented members, go through all empty
     # <briefdescription>s and fill them with a generic text.
-    if state.doxyfile['M_SHOW_UNDOCUMENTED']:
+    if state.config['SHOW_UNDOCUMENTED']:
         _document_all_stuff(compounddef)
 
     compound = StateCompound()
@@ -2153,7 +2204,7 @@ def extract_metadata(state: State, xml):
     # @deprecated, treat it as version in which given feature was deprecated
     compound.deprecated = None
     compound.since = None
-    if state.doxyfile['M_VERSION_LABELS']:
+    if state.config['VERSION_LABELS']:
         for i in compounddef.find('detaileddescription').findall('.//simplesect'):
             if i.attrib['kind'] != 'since': continue
             since = parse_inline_desc(state, i).strip()
@@ -2259,64 +2310,21 @@ def postprocess_state(state: State):
 
             state.includes['/'.join(include)] = compound.id
 
-    # Assign names and URLs to menu items. The link can be either a predefined
-    # keyword from the below list, a Doxygen symbol, or a HTML code. The
-    # template then gets a tuple of (HTML code, title, URL) and either puts
-    # in the HTML code verbatim (if it's not empty) or creates a link from the
-    # title and URL.
-    predefined = {
-        'pages': (None, "Pages", 'pages.html'),
-        'namespaces': (None, "Namespaces", 'namespaces.html'),
-        'modules': (None, "Modules", 'modules.html'),
-        'annotated': (None, "Classes", 'annotated.html'),
-        'files': (None, "Files", 'files.html')
-    }
-    def extract_link(link):
-        # If this is a HTML code, return it verbatim
-        if link.startswith('<a'):
-            return link, None, None
-
-        # If predefined, return those
-        if link in predefined:
-            return predefined[link]
-
-        # Otherwise search in symbols
-        found = state.compounds[link]
-        return None, found.name, found.url
-    i: str
-    for var in 'M_LINKS_NAVBAR1', 'M_LINKS_NAVBAR2':
-        navbar_links = []
-        for i in state.doxyfile[var]:
-            # Split the line into links. It's either single-word keywords or
-            # HTML <a> elements. If it looks like a HTML, take everything until
-            # the closing </a>, otherwise take everything until the next
-            # whitespace.
-            links = []
-            while i:
-                if i.startswith('<a'):
-                    end = i.index('</a>') + 4
-                    links += [i[0:end]]
-                    i = i[end:].lstrip()
-                else:
-                    firstAndRest = i.split(None, 1)
-                    if len(firstAndRest):
-                        links += [firstAndRest[0]]
-                        if len(firstAndRest) == 1:
-                            break;
-                    i = firstAndRest[1]
-
+    # Resolve navbar links that are just an ID
+    def resolve_link(html, title, url, id):
+        if not html and not title and not url:
+            found = state.compounds[id]
+            title, url = found.name, found.url
+        return html, title, url, id
+    for var in 'LINKS_NAVBAR1', 'LINKS_NAVBAR2':
+        links = []
+        for html, title, url, id, sub in state.config[var]:
+            html, title, url, id = resolve_link(html, title, url, id)
             sublinks = []
-            for sublink in links[1:]:
-                html, title, url = extract_link(sublink)
-                sublinks += [(html, title, url, sublink)]
-            html, title, url = extract_link(links[0])
-            navbar_links += [(html, title, url, links[0], sublinks)]
-
-        state.doxyfile[var] = navbar_links
-
-    # Guess MIME type of the favicon
-    if state.doxyfile['M_FAVICON']:
-        state.doxyfile['M_FAVICON'] = (state.doxyfile['M_FAVICON'], mimetypes.guess_type(state.doxyfile['M_FAVICON'])[0])
+            for i in sub:
+                sublinks += [resolve_link(*i)]
+            links += [(html, title, url, id, sublinks)]
+        state.config[var] = links
 
 def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
     trie = Trie()
@@ -2438,7 +2446,7 @@ def parse_xml(state: State, xml: str):
 
     # In order to show also undocumented members, go through all empty
     # <briefdescription>s and fill them with a generic text.
-    if state.doxyfile['M_SHOW_UNDOCUMENTED']:
+    if state.config['SHOW_UNDOCUMENTED']:
         _document_all_stuff(compounddef)
 
     # Ignoring compounds w/o any description, except for groups,
@@ -3152,7 +3160,7 @@ def parse_xml(state: State, xml: str):
 
     # Add the compound to search data, if it's documented
     # TODO: add example sources there? how?
-    if not state.doxyfile['M_SEARCH_DISABLED'] and not compound.kind == 'example' and (compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')):
+    if not state.config['SEARCH_DISABLED'] and not compound.kind == 'example' and (compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')):
         if compound.kind == 'namespace':
             kind = EntryType.NAMESPACE
         elif compound.kind == 'struct':
@@ -3303,7 +3311,7 @@ def parse_index_xml(state: State, xml):
 
     return parsed
 
-def parse_doxyfile(state: State, doxyfile, config = None):
+def parse_doxyfile(state: State, doxyfile, values = None):
     state.basedir = os.path.dirname(doxyfile)
 
     logging.debug("Parsing configuration from {}".format(doxyfile))
@@ -3313,55 +3321,30 @@ def parse_doxyfile(state: State, doxyfile, config = None):
     variable_continuation_re = re.compile(r"""^\s*(##!\s*)?(?P<key>[A-Z_]+)\s*\+=\s*(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
     continuation_re = re.compile(r"""^\s*(##!\s*)?(?P<quote>['"]?)(?P<value>.*)(?P=quote)\s*(?P<backslash>\\?)$""")
 
-    default_config = {
+    default_values = {
         'PROJECT_NAME': ['My Project'],
         'PROJECT_LOGO': [''],
         'OUTPUT_DIRECTORY': [''],
         'XML_OUTPUT': ['xml'],
         'HTML_OUTPUT': ['html'],
-        'HTML_EXTRA_STYLESHEET': [
-            'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600',
-            '../css/m-dark+documentation.compiled.css'],
-        'HTML_EXTRA_FILES': [],
         'DOT_FONTNAME': ['Helvetica'],
         'DOT_FONTSIZE': ['10'],
-        'SHOW_INCLUDE_FILES': ['YES'],
-
-        'M_CLASS_TREE_EXPAND_LEVELS': ['1'],
-        'M_FILE_TREE_EXPAND_LEVELS': ['1'],
-        'M_EXPAND_INNER_TYPES': ['NO'],
-        'M_THEME_COLOR': ['#22272e'],
-        'M_FAVICON': ['favicon-dark.png'],
-        'M_LINKS_NAVBAR1': ['pages', 'namespaces'],
-        'M_LINKS_NAVBAR2': ['annotated', 'files'],
-        'M_MATH_CACHE_FILE': ['m.math.cache'],
-        'M_PAGE_FINE_PRINT': ['[default]'],
-        'M_SEARCH_DISABLED': ['NO'],
-        'M_SEARCH_DOWNLOAD_BINARY': ['NO'],
-        'M_SEARCH_HELP': [
-"""<p class="m-noindent">Search for symbols, directories, files, pages or
-modules. You can omit any prefix from the symbol or file path; adding a
-<code>:</code> or <code>/</code> suffix lists all members of given symbol or
-directory.</p>
-<p class="m-noindent">Use <span class="m-label m-dim">&darr;</span>
-/ <span class="m-label m-dim">&uarr;</span> to navigate through the list,
-<span class="m-label m-dim">Enter</span> to go.
-<span class="m-label m-dim">Tab</span> autocompletes common prefix, you can
-copy a link to the result using <span class="m-label m-dim">⌘</span>
-<span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
-<span class="m-label m-dim">M</span> produces a Markdown link.</p>
-"""],
-        'M_SEARCH_BASE_URL': [''],
-        'M_SEARCH_EXTERNAL_URL': [''],
-        'M_SHOW_UNDOCUMENTED': ['NO'],
-        'M_VERSION_LABELS': ['NO']
+        'SHOW_INCLUDE_FILES': ['YES']
     }
 
     # Defaults so we don't fail with minimal Doxyfiles and also that the
     # user-provided Doxygen can append to them. They are later converted to
     # string or kept as a list based on type, so all have to be a list of
     # strings now.
-    if not config: config = copy.deepcopy(default_config)
+    #
+    # If there are no `values`, it means this is a top-level call (not recursed
+    # from Doxyfile @INCLUDEs). In that case (and only in that case) we
+    # finalize the config values (such as expanding FAVICON or LINKS_NAVBAR).
+    if not values:
+        finalize = True
+        values = copy.deepcopy(default_values)
+    else:
+        finalize = False
 
     def parse_value(var):
         if var.group('quote') in ['"', '\'']:
@@ -3390,7 +3373,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
             if continued_line:
                 var = continuation_re.match(line)
                 value, backslash = parse_value(var)
-                config[continued_line] += value
+                values[continued_line] += value
                 if not backslash: continued_line = None
                 continue
 
@@ -3402,10 +3385,10 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 
                 # Another file included, parse it
                 if key == '@INCLUDE':
-                    parse_doxyfile(state, os.path.join(os.path.dirname(doxyfile), ' '.join(value)), config)
+                    parse_doxyfile(state, os.path.join(os.path.dirname(doxyfile), ' '.join(value)), values)
                     assert not backslash
                 else:
-                    config[key] = value
+                    values[key] = value
 
                 if backslash: continued_line = key
                 continue
@@ -3414,9 +3397,9 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
             var = variable_continuation_re.match(line)
             if var:
                 key = var.group('key')
-                if not key in config: config[key] = []
+                if not key in values: values[key] = []
                 value, backslash = parse_value(var)
-                config[key] += value
+                values[key] += value
                 if backslash: continued_line = key
 
                 # only because coverage.py can't handle continue
@@ -3432,61 +3415,172 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
             logging.warning("{}: unmatchable line {}".format(doxyfile, line)) # pragma: no cover
 
     # Some values are set to empty in the default-generated Doxyfile but they
-    # shouldn't be empty. Revert them to our defaults.
-    # TODO: this may behave strange in corner cases where multiple @INCLUDEd
-    # files set or append to the same thing
+    # shouldn't be empty. Delete the variable ín that case so it doesn't
+    # override our defaults.
     for i in ['HTML_EXTRA_STYLESHEET']:
-        if i in config and not config[i]:
-            config[i] = default_config[i]
+        if i in values and not values[i]: del values[i]
 
-    # String values that we want
-    for i in ['PROJECT_NAME',
-              'PROJECT_BRIEF',
-              'PROJECT_LOGO',
-              'OUTPUT_DIRECTORY',
-              'HTML_OUTPUT',
-              'XML_OUTPUT',
-              'DOT_FONTNAME',
-              'M_MAIN_PROJECT_URL',
-              'M_HTML_HEADER',
-              'M_PAGE_HEADER',
-              'M_PAGE_FINE_PRINT',
-              'M_THEME_COLOR',
-              'M_FAVICON',
-              'M_MATH_CACHE_FILE',
-              'M_SEARCH_HELP',
-              'M_SEARCH_EXTERNAL_URL',
-              'M_SEARCH_BASE_URL']:
-        if i in config: state.doxyfile[i] = '\n'.join(config[i])
+    # Parse recognized Doxyfile values with desired type. The second tuple
+    # value denotes that the Doxyfile value is an alias to a value in conf.py,
+    # in which case we'll save it there instead.
+    for key, alias, type_ in [
+        # Order roughly the same as in python.py default_config to keep those
+        # two consistent
+        ('PROJECT_NAME', None, str),
+        ('PROJECT_BRIEF', None, str),
+        ('PROJECT_LOGO', None, str),
+        ('M_MAIN_PROJECT_URL', 'MAIN_PROJECT_URL', str),
 
-    # Int values that we want
-    for i in ['DOT_FONTSIZE',
-              'M_CLASS_TREE_EXPAND_LEVELS',
-              'M_FILE_TREE_EXPAND_LEVELS']:
-        if i in config: state.doxyfile[i] = int(' '.join(config[i]))
+        ('OUTPUT_DIRECTORY', None, str),
+        ('HTML_OUTPUT', None, str),
+        ('XML_OUTPUT', None, str),
 
-    # Boolean values that we want
-    for i in ['CREATE_SUBDIRS',
-              'JAVADOC_AUTOBRIEF',
-              'QT_AUTOBRIEF',
-              'INTERNAL_DOCS',
-              'SHOW_INCLUDE_FILES',
-              'M_EXPAND_INNER_TYPES',
-              'M_SEARCH_DISABLED',
-              'M_SEARCH_DOWNLOAD_BINARY',
-              'M_SHOW_UNDOCUMENTED',
-              'M_VERSION_LABELS']:
-        if i in config: state.doxyfile[i] = ' '.join(config[i]) == 'YES'
+        ('DOT_FONTNAME', None, str),
+        ('DOT_FONTSIZE', None, int),
+        ('CREATE_SUBDIRS', None, bool), # processing fails below if this is set
+        ('JAVADOC_AUTOBRIEF', None, bool),
+        ('QT_AUTOBRIEF', None, bool),
+        ('INTERNAL_DOCS', None, bool),
+        ('SHOW_INCLUDE_FILES', None, bool),
+        ('TAGFILES', None, list),
 
-    # List values that we want. Drop empty lines.
-    for i in ['TAGFILES',
-              'HTML_EXTRA_STYLESHEET',
-              'HTML_EXTRA_FILES',
-              'M_LINKS_NAVBAR1',
-              'M_LINKS_NAVBAR2']:
-        if i in config:
-            state.doxyfile[i] = [line for line in config[i] if line]
+        ('M_THEME_COLOR', 'THEME_COLOR', str),
+        ('M_FAVICON', 'FAVICON', str), # plus special handling below
+        ('HTML_EXTRA_STYLESHEET', 'STYLESHEETS', list),
+        ('HTML_EXTRA_FILES', 'EXTRA_FILES', list),
+        # M_LINKS_NAVBAR1 and M_LINKS_NAVBAR2 have special handling below
 
+        ('M_HTML_HEADER', 'HTML_HEADER', str),
+        ('M_PAGE_HEADER', 'PAGE_HEADER', str),
+        ('M_PAGE_FINE_PRINT', 'FINE_PRINT', str),
+
+        ('M_CLASS_TREE_EXPAND_LEVELS', 'CLASS_INDEX_EXPAND_LEVELS', int),
+        ('M_EXPAND_INNER_TYPES', 'CLASS_INDEX_EXPAND_INNER', bool),
+        ('M_FILE_TREE_EXPAND_LEVELS', 'FILE_INDEX_EXPAND_LEVELS', int),
+
+        ('M_SEARCH_DISABLED', 'SEARCH_DISABLED', bool),
+        ('M_SEARCH_DOWNLOAD_BINARY', 'SEARCH_DOWNLOAD_BINARY', bool),
+        ('M_SEARCH_HELP', 'SEARCH_HELP', str),
+        ('M_SEARCH_BASE_URL', 'SEARCH_BASE_URL', str),
+        ('M_SEARCH_EXTERNAL_URL', 'SEARCH_EXTERNAL_URL', str),
+
+        ('M_SHOW_UNDOCUMENTED', 'SHOW_UNDOCUMENTED', bool),
+        ('M_VERSION_LABELS', 'VERSION_LABELS', bool),
+
+        ('M_MATH_CACHE_FILE', 'M_MATH_CACHE_FILE', str),
+    ]:
+        if key not in values: continue
+
+        if type_ is str:
+            value = '\n'.join(values[key])
+        elif type_ is int:
+            value = int(' '.join(values[key]))
+        elif type_ is bool:
+            value = ' '.join(values[key]) == 'YES'
+        elif type_ is list:
+            value = [line for line in values[key] if line] # Drop empty lines
+        else: # pragma: no cover
+            assert False
+
+        if alias:
+            state.config[alias] = value
+        else:
+            state.doxyfile[key] = value
+
+    # Process M_LINKS_NAVBAR[12] into either (HTML, sublinks) or
+    # (title, URL, ID, sublinks), with sublinks being either
+    # (HTML) or (title, URL, ID). Those are then saved into LINKS_NAVBAR[12]
+    # and processed further.
+    predefined = {
+        'pages': ("Pages", 'pages.html'),
+        'namespaces': ("Namespaces", 'namespaces.html'),
+        'modules': ("Modules", 'modules.html'),
+        'annotated': ("Classes", 'annotated.html'),
+        'files': ("Files", 'files.html')
+    }
+    def extract_link(link):
+        # If this is a HTML code, return it as a one-item tuple
+        if link.startswith('<a'):
+            return (link, )
+
+        # If predefined, return those
+        if link in predefined:
+            return (predefined[link][0], link)
+
+        # Otherwise keep the ID, which will be resolved later
+        return None, link
+    for key, alias in [
+        ('M_LINKS_NAVBAR1', 'LINKS_NAVBAR1'),
+        ('M_LINKS_NAVBAR2', 'LINKS_NAVBAR2')
+    ]:
+        if key not in values: continue
+
+        navbar_links = []
+        # Drop empty lines
+        for i in [line for line in values[key] if line]:
+            # Split the line into links. It's either single-word keywords or
+            # HTML <a> elements. If it looks like a HTML, take everything until
+            # the closing </a>, otherwise take everything until the next
+            # whitespace.
+            links = []
+            while i:
+                if i.startswith('<a'):
+                    end = i.index('</a>') + 4
+                    links += [i[0:end]]
+                    i = i[end:].lstrip()
+                else:
+                    firstAndRest = i.split(None, 1)
+                    if len(firstAndRest):
+                        links += [firstAndRest[0]]
+                        if len(firstAndRest) == 1:
+                            break;
+                    i = firstAndRest[1]
+
+            sublinks = []
+            for sublink in links[1:]:
+                sublinks += [extract_link(sublink)]
+            navbar_links += [extract_link(links[0]) + (sublinks, )]
+
+        state.config[alias] = navbar_links
+
+    # Below we finalize the config values, converting them to formats that are
+    # easy to understand by the code / templates (but not easy to write from
+    # the user PoV). If this is not a top-level call (but a recursed one from
+    # @INCLUDE), we exit, to avoid finalizing everything multiple times.
+    if not finalize: return
+
+    # Convert the links from either (html, ) or (title, id) to a
+    # (html, title, url, id) tuple so it's easier to process by the template.
+    # The url is not known at this point and will be filled later in
+    # postprocess_state().
+    def expand_link(link):
+        if len(link) == 1:
+            return (link[0], None, None, None)
+        else:
+            assert len(link) == 2
+            if link[1] in predefined:
+                url = predefined[link[1]][1]
+                if not link[0]: title = predefined[link[1]][0]
+                else: title = link[0]
+            else:
+                title = None
+                url = None
+            return (None, title, url, link[1])
+    for key in ('LINKS_NAVBAR1', 'LINKS_NAVBAR2'):
+        links = []
+        for i in state.config[key]:
+            sublinks = []
+            for subi in i[-1]:
+                sublinks += [expand_link(subi)]
+            links += [expand_link(i[:-1]) + (sublinks, )]
+        state.config[key] = links
+
+    # Guess MIME type of the favicon. It's supplied explicitly when coming from
+    # a conf.py
+    if 'FAVICON' in state.config and state.config['FAVICON']:
+        state.config['FAVICON'] = (state.config['FAVICON'], mimetypes.guess_type(state.config['FAVICON'])[0])
+
+    # Fail if this option is set
     if state.doxyfile.get('CREATE_SUBDIRS', False):
         logging.fatal("{}: CREATE_SUBDIRS is not supported, sorry. Disable it and try again.".format(doxyfile))
         raise NotImplementedError
@@ -3504,8 +3598,8 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
     # If math rendering cache is not disabled, load the previous version. If
     # there is no cache, reset the cache to an empty state to avoid
     # order-dependent issues when testing
-    math_cache_file = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['M_MATH_CACHE_FILE'])
-    if state.doxyfile['M_MATH_CACHE_FILE'] and os.path.exists(math_cache_file):
+    math_cache_file = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.config['M_MATH_CACHE_FILE'])
+    if state.config['M_MATH_CACHE_FILE'] and os.path.exists(math_cache_file):
         latex2svgextra.unpickle_cache(math_cache_file)
     else:
         latex2svgextra.unpickle_cache(None)
@@ -3561,7 +3655,8 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                     DOXYGEN_VERSION=parsed.version,
                     FILENAME=file,
                     SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
-                    **state.doxyfile)
+                    # TODO: whitelist only what matters from doxyfile
+                    **state.doxyfile, **state.config)
 
                 output = os.path.join(html_output, file)
                 with open(output, 'wb') as f:
@@ -3580,7 +3675,8 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                 DOXYGEN_VERSION=parsed.version,
                 FILENAME=parsed.compound.url,
                 SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
-                **state.doxyfile)
+                # TODO: whitelist only what matters from doxyfile
+                **state.doxyfile, **state.config)
 
             output = os.path.join(html_output, parsed.compound.url)
             with open(output, 'wb') as f:
@@ -3607,7 +3703,8 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
             DOXYGEN_VERSION=None,
             FILENAME='index.html',
             SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
-            **state.doxyfile)
+            # TODO: whitelist only what matters from doxyfile
+            **state.doxyfile, **state.config)
         output = os.path.join(html_output, 'index.html')
         with open(output, 'wb') as f:
             f.write(rendered.encode('utf-8'))
@@ -3617,12 +3714,12 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
             # also for nested templates :(
             f.write(b'\n')
 
-    if not state.doxyfile['M_SEARCH_DISABLED']:
+    if not state.config['SEARCH_DISABLED']:
         logging.debug("building search data for {} symbols".format(len(state.search)))
 
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
-        if state.doxyfile['M_SEARCH_DOWNLOAD_BINARY']:
+        if state.config['SEARCH_DOWNLOAD_BINARY']:
             with open(os.path.join(html_output, searchdata_filename), 'wb') as f:
                 f.write(data)
         else:
@@ -3630,11 +3727,12 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                 f.write(base85encode_search_data(data))
 
         # OpenSearch metadata, in case we have the base URL
-        if state.doxyfile['M_SEARCH_BASE_URL']:
+        if state.config['SEARCH_BASE_URL']:
             logging.debug("writing OpenSearch metadata file")
 
             template = env.get_template('opensearch.xml')
-            rendered = template.render(**state.doxyfile)
+            # TODO: whitelist only what matters from doxyfile
+            rendered = template.render(**state.doxyfile, **state.config)
             output = os.path.join(html_output, 'opensearch.xml')
             with open(output, 'wb') as f:
                 f.write(rendered.encode('utf-8'))
@@ -3645,7 +3743,7 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                 f.write(b'\n')
 
     # Copy all referenced files
-    for i in state.images + state.doxyfile['HTML_EXTRA_STYLESHEET'] + state.doxyfile['HTML_EXTRA_FILES'] + ([state.doxyfile['PROJECT_LOGO']] if state.doxyfile['PROJECT_LOGO'] else []) + ([state.doxyfile['M_FAVICON'][0]] if state.doxyfile['M_FAVICON'] else []) + ([] if state.doxyfile['M_SEARCH_DISABLED'] else ['search.js']):
+    for i in state.images + state.config['STYLESHEETS'] + state.config['EXTRA_FILES'] + ([state.doxyfile['PROJECT_LOGO']] if state.doxyfile['PROJECT_LOGO'] else []) + ([state.config['FAVICON'][0]] if state.config['FAVICON'] else []) + ([] if state.config['SEARCH_DISABLED'] else ['search.js']):
         # Skip absolute URLs
         if urllib.parse.urlparse(i).netloc: continue
 
@@ -3665,12 +3763,12 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
         shutil.copy(i, os.path.join(html_output, os.path.basename(file_out)))
 
     # Save updated math cache file
-    if state.doxyfile['M_MATH_CACHE_FILE']:
+    if state.config['M_MATH_CACHE_FILE']:
         latex2svgextra.pickle_cache(math_cache_file)
 
 if __name__ == '__main__': # pragma: no cover
     parser = argparse.ArgumentParser()
-    parser.add_argument('doxyfile', help="where the Doxyfile is")
+    parser.add_argument('config', help="where the Doxyfile or conf.py is")
     parser.add_argument('--templates', help="template directory", default=default_templates)
     parser.add_argument('--wildcard', help="only process files matching the wildcard", default=default_wildcard)
     parser.add_argument('--index-pages', nargs='+', help="index page templates", default=default_index_pages)
@@ -3687,10 +3785,19 @@ if __name__ == '__main__': # pragma: no cover
     else:
         logging.basicConfig(level=logging.INFO)
 
-    # Make the Doxyfile path absolute, otherwise everything gets messed up
-    doxyfile = os.path.abspath(args.doxyfile)
+    config = copy.deepcopy(default_config)
 
-    state = State()
+    if args.config.endswith('.py'):
+        name, _ = os.path.splitext(os.path.basename(args.config))
+        module = SourceFileLoader(name, args.config).load_module()
+        if module is not None:
+            config.update((k, v) for k, v in inspect.getmembers(module) if k.isupper())
+        doxyfile = os.path.join(os.path.dirname(os.path.abspath(args.config)), config['DOXYFILE'])
+    else:
+        # Make the Doxyfile path absolute, otherwise everything gets messed up
+        doxyfile = os.path.abspath(args.doxyfile)
+
+    state = State(config)
     parse_doxyfile(state, doxyfile)
 
     # Doxygen is stupid and can't create nested directories, create the input
@@ -3698,7 +3805,7 @@ if __name__ == '__main__': # pragma: no cover
     os.makedirs(state.doxyfile['OUTPUT_DIRECTORY'], exist_ok=True)
 
     if not args.no_doxygen:
-        logging.debug("running Doxygen on {}".format(args.doxyfile))
+        logging.debug("running Doxygen on {}".format(doxyfile))
         subprocess.run(["doxygen", doxyfile], cwd=os.path.dirname(doxyfile), check=True)
 
     run(state, templates=os.path.abspath(args.templates), wildcard=args.wildcard, index_pages=args.index_pages, search_merge_subtrees=not args.search_no_subtree_merging, search_add_lookahead_barriers=not args.search_no_lookahead_barriers, search_merge_prefixes=not args.search_no_prefix_merging)
