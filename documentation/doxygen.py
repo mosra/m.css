@@ -2228,10 +2228,8 @@ def extract_metadata(state: State, xml):
             break
 
     # Final classes
-    if compound.kind in ['struct', 'class', 'union'] and compounddef.attrib.get('final') == 'yes':
-        compound.is_final = True
-    else:
-        compound.is_final = False
+    if compound.kind in ['struct', 'class', 'union']:
+        compound.is_final = compounddef.attrib.get('final') == 'yes'
 
     if compound.kind in ['class', 'struct', 'union']:
         # Fix type spacing
@@ -2542,10 +2540,8 @@ def parse_xml(state: State, xml: str):
         state.current_prefix = []
 
     # Final classes
-    if compound.kind in ['struct', 'class', 'union'] and compounddef.attrib.get('final') == 'yes':
-        compound.is_final = True
-    else:
-        compound.is_final = False
+    if compound.kind in ['struct', 'class', 'union']:
+        compound.is_final = compounddef.attrib.get('final') == 'yes'
 
     # Decide about the include file for this compound. Classes get it always,
     # namespaces without any members too.
