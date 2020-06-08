@@ -2657,6 +2657,8 @@ def parse_xml(state: State, xml: str):
                 if compounddef_child.tag == 'innernamespace':
                     namespace = Empty()
                     namespace.url = symbol.url
+                    # Use the full name if this is a file or group (where the
+                    # hierarchy isn't implicit like with namespace or class)
                     namespace.name = symbol.leaf_name if compound.kind == 'namespace' else symbol.name
                     namespace.brief = symbol.brief
                     namespace.deprecated = symbol.deprecated
@@ -2669,6 +2671,8 @@ def parse_xml(state: State, xml: str):
                     class_ = Empty()
                     class_.kind = symbol.kind
                     class_.url = symbol.url
+                    # Use the full name if this is a file or group (where the
+                    # hierarchy isn't implicit like with namespace or class)
                     class_.name = symbol.leaf_name if compound.kind in ['namespace', 'class', 'struct', 'union'] else symbol.name
                     class_.brief = symbol.brief
                     class_.deprecated = symbol.deprecated
@@ -2701,6 +2705,8 @@ def parse_xml(state: State, xml: str):
                     class_ = Empty()
                     class_.kind = symbol.kind
                     class_.url = symbol.url
+                    # Use only the leaf name if the base class has the same
+                    # parent as this class
                     class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
@@ -2725,6 +2731,8 @@ def parse_xml(state: State, xml: str):
                     class_ = Empty()
                     class_.kind = symbol.kind
                     class_.url = symbol.url
+                    # Use only the leaf name if the derived class has the same
+                    # parent as this class
                     class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
