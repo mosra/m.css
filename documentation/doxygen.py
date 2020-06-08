@@ -2702,12 +2702,20 @@ def parse_xml(state: State, xml: str):
                 if not compounddef_child.attrib['prot'] == 'private' and id in state.compounds and state.compounds[id].has_details:
                     symbol = state.compounds[id]
 
+                    # Strip parent if the base class has the same parent as
+                    # this class. Can't just use symbol.leaf_name vs
+                    # symbol.name because the <basecompoundref> can contain
+                    # template information.
+                    symbol_name = fix_type_spacing(html.escape(compounddef_child.text))
+                    if state.compounds[compound.id].parent and symbol.parent and symbol.parent.startswith(state.compounds[compound.id].parent):
+                        parent_name = state.compounds[symbol.parent].name + '::'
+                        if symbol_name.startswith(parent_name):
+                            symbol_name = symbol_name[len(parent_name):]
+
                     class_ = Empty()
                     class_.kind = symbol.kind
                     class_.url = symbol.url
-                    # Use only the leaf name if the base class has the same
-                    # parent as this class
-                    class_.name = symbol.leaf_name if state.compounds[compound.id].parent and symbol.parent and symbol.parent.startswith(state.compounds[compound.id].parent) else symbol.name
+                    class_.name = symbol_name
                     class_.brief = symbol.brief
                     class_.templates = symbol.templates
                     class_.deprecated = symbol.deprecated

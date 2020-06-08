@@ -314,3 +314,8 @@ class ExceptionReference(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+class BaseTemplateClasses(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('structNamespace_1_1MyClass.html'))
