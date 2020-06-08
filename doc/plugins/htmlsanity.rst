@@ -32,6 +32,8 @@ HTML sanity
 
         `Plugins <{filename}/plugins.rst>`_ | `Components » <{filename}/plugins/components.rst>`_
 
+.. role:: css(code)
+    :language: css
 .. role:: html(code)
     :language: html
 .. role:: jinja(code)
