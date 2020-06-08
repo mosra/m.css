@@ -285,6 +285,14 @@ def register_mcss(mcss_settings, **kwargs):
     rst.directives.register_directive('include', Include)
     rst.roles.register_canonical_role('code', code)
 
+    # These two are builtin aliases to .. code:: in docutils:
+    # https://github.com/docutils-mirror/docutils/blob/e88c5fb08d5cdfa8b4ac1020dd6f7177778d5990/docutils/parsers/rst/languages/en.py#L22-L24
+    # Since a lot of existing markup (especially coming from Sphinx) uses
+    # .. code-block:: and since there's no reason for .. code-block:: /
+    # .. sourcecode:: to behave like unpatched docutils, let's add those too:
+    rst.directives.register_directive('code-block', Code)
+    rst.directives.register_directive('sourcecode', Code)
+
     global filters_pre, filters_post
     filters_pre = mcss_settings.get('M_CODE_FILTERS_PRE', {})
     filters_post = mcss_settings.get('M_CODE_FILTERS_POST', {})

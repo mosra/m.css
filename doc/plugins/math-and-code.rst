@@ -334,6 +334,12 @@ directive and specify the language via a parameter. Use :rst:`:hl_lines:`
 option to highlight lines; if you want to add additional CSS classes, use the
 :rst:`:class:` option.
 
+.. note-dim::
+
+    Docutils (and Sphinx) have also :rst:`.. code-block::` and
+    :rst:`.. sourcecode::` aliases for the same thing. Those are included for
+    compatibility purposes and behave the same way as :rst:`.. code::`.
+
 .. code-figure::
 
     .. code:: rst
