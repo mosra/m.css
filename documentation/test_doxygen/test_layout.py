@@ -29,9 +29,6 @@ from _search import search_filename, searchdata_filename, searchdata_filename_b8
 from . import BaseTestCase
 
 class Layout(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='index.xml')
         self.assertEqual(*self.actual_expected_contents('pages.html'))
@@ -41,9 +38,6 @@ class Layout(BaseTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'favicon-light.png')))
 
 class GeneratedDoxyfile(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'generated_doxyfile', *args, **kwargs)
-
     def test(self):
         if os.path.exists(os.path.join(self.path, 'Doxyfile')):
             os.remove(os.path.join(self.path, 'Doxyfile'))
@@ -53,74 +47,47 @@ class GeneratedDoxyfile(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class Minimal(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'minimal', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class TemplateFallback(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'template_fallback', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(templates=self.path, wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class NavbarSingleColumn(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'navbar_single_column', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class NavbarHtml(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'navbar_html', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class NavbarMainProjectUrl(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'navbar_main_project_url', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class NavbarProjectLogo(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'navbar_project_logo', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class NavbarProjectLogoMainProjectUrl(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'navbar_project_logo_main_project_url', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
 class SearchBinary(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'search_binary', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename)))
 
-class SearchOpenSearch(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'search_opensearch', *args, **kwargs)
-
+class SearchOpensearch(BaseTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))

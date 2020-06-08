@@ -128,10 +128,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
         with self.assertRaises(NotImplementedError):
             parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
 
-class Upgrade(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'upgrade_custom_variables', *args, **kwargs)
-
+class UpgradeCustomVariables(BaseTestCase):
     def test(self):
         # Copy the Doxyfile to a new location because it gets overwritten
         shutil.copyfile(os.path.join(self.path, 'Doxyfile'),

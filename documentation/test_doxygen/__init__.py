@@ -24,20 +24,41 @@
 
 import copy
 import os
+import re
 import shutil
 import subprocess
+import sys
 import unittest
 
 from doxygen import State, parse_doxyfile, run, default_templates, default_wildcard, default_index_pages, default_config
+
+# https://stackoverflow.com/a/12867228
+_camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
 
 def doxygen_version():
     return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip()
 
 class BaseTestCase(unittest.TestCase):
-    def __init__(self, path, dir, *args, **kwargs):
+    def __init__(self, *args, dir=None, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
-        # Source files for test_something.py are in something_{dir}/ subdirectory
-        self.path = os.path.join(os.path.dirname(os.path.realpath(path)), os.path.splitext(os.path.basename(path))[0][5:] + ('_' + dir if dir else ''))
+
+        # Get the test filename from the derived class module file. If path is
+        # not supplied, get it from derived class name converted to snake_case
+        path = sys.modules[self.__class__.__module__].__file__
+        if not dir: dir = _camelcase_to_snakecase.sub('_\\1', self.__class__.__name__).lower()
+
+        # Full directory name (for test_something.py the directory is
+        # something_{dir}
+        dir_prefix = os.path.splitext(os.path.basename(path))[0][5:]
+        if dir and dir_prefix != dir:
+            self.dirname = dir_prefix + '_' + dir
+        else:
+            self.dirname = dir_prefix
+        # Absolute path to this directory
+        self.path = os.path.join(os.path.dirname(os.path.realpath(path)), self.dirname)
+
+        if not os.path.exists(self.path):
+            raise AssertionError("autodetected path {} doesn't exist".format(self.path))
 
         # Display ALL THE DIFFS
         self.maxDiff = None

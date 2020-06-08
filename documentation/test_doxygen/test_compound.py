@@ -30,9 +30,6 @@ from distutils.version import LooseVersion
 from . import IntegrationTestCase, doxygen_version
 
 class Listing(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'listing', *args, **kwargs)
-
     def test_index_pages(self):
         self.run_doxygen(wildcard='index.xml', index_pages=['annotated', 'namespaces', 'pages'])
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
@@ -70,9 +67,6 @@ class Listing(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('page-no-toc.html'))
 
 class Detailed(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'detailed', *args, **kwargs)
-
     def test_namespace(self):
         self.run_doxygen(wildcard='namespaceNamee.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamee.html'))
@@ -114,9 +108,6 @@ class Detailed(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class Ignored(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'ignored', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
@@ -134,9 +125,6 @@ class Ignored(IntegrationTestCase):
         self.assertFalse(os.path.exists(os.path.join(self.path, 'html', 'classBrief.html')))
 
 class Modules(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'modules', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
@@ -145,9 +133,6 @@ class Modules(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('modules.html'))
 
 class ModulesInNamespace(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'modules_in_namespace', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('group__group1.html'))
@@ -156,9 +141,6 @@ class ModulesInNamespace(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('file3_8h.html'))
 
 class Deprecated(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'deprecated', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         # Test that the [deprecated] label is in all places where it should ne
@@ -195,9 +177,6 @@ class Deprecated(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structDeprecatedNamespace_1_1DeprecatedClass.html'))
 
 class NamespaceMembersInFileScope(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'namespace_members_in_file_scope', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='namespaceNamespace.xml')
 
@@ -213,9 +192,6 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class NamespaceMembersInFileScopeDefineBaseUrl(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'namespace_members_in_file_scope_define_base_url', *args, **kwargs)
-
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/653")
     def test(self):
@@ -225,9 +201,6 @@ class NamespaceMembersInFileScopeDefineBaseUrl(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class FilenameCase(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'filename_case', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -239,9 +212,6 @@ class FilenameCase(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('class_u_p_p_e_r_c_l_a_s_s.html'))
 
 class CrazyTemplateParams(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'crazy_template_params', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -249,9 +219,6 @@ class CrazyTemplateParams(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class Includes(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'includes', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -273,9 +240,6 @@ class Includes(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('namespaceEmpty.html'))
 
 class IncludesDisabled(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'includes_disabled', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -288,9 +252,6 @@ class IncludesDisabled(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structSpreadClass.html'))
 
 class IncludesUndocumentedFiles(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'includes_undocumented_files', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -304,9 +265,6 @@ class IncludesUndocumentedFiles(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structSpreadClass.html', '../compound_includes_disabled/structSpreadClass.html'))
 
 class IncludesTemplated(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'includes_templated', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -315,9 +273,6 @@ class IncludesTemplated(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structStruct.html'))
 
 class BaseDerivedInRootNamespace(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'base_derived_in_root_namespace', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -325,9 +280,6 @@ class BaseDerivedInRootNamespace(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structNamespace_1_1BothBaseAndDerivedInRootNamespace.html'))
 
 class Since(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'since', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 
@@ -359,9 +311,6 @@ class Since(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
 class ExceptionReference(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'exception_reference', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))

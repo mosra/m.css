@@ -34,9 +34,6 @@ from _search import pretty_print, searchdata_filename
 from test_doxygen import IntegrationTestCase
 
 class Search(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
@@ -228,10 +225,7 @@ union [59]
 (EntryType.VAR, CssClass.DEFAULT, 'var')
 """.strip())
 
-class SearchLongSuffixLength(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'long_suffix_length', *args, **kwargs)
-
+class LongSuffixLength(IntegrationTestCase):
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 

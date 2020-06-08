@@ -30,10 +30,7 @@ from _search import search_data_header_struct, searchdata_filename
 
 from . import IntegrationTestCase
 
-class Test(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
+class Undocumented(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
 

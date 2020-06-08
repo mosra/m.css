@@ -29,9 +29,6 @@ from distutils.version import LooseVersion
 from . import IntegrationTestCase, doxygen_version
 
 class Example(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
     def test_cpp(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
