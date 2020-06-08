@@ -797,7 +797,7 @@ def _pybind11_default_argument_length(string):
                 raise SyntaxError("Unmatched {} at pos {} in `{}`".format(c, i, string))
     raise SyntaxError("Unexpected end of `{}`".format(string))
 
-def map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
+def _pybind_map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
     if input_type in ['Callable', 'Dict', 'Iterator', 'Iterable', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
         return 'typing.' + input_type
     else:
@@ -808,7 +808,7 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
     if match:
         input_type = match.group(0)
         signature = signature[len(input_type):]
-        type = map_name_prefix_or_add_typing_suffix(state, input_type)
+        type = _pybind_map_name_prefix_or_add_typing_suffix(state, input_type)
         type_link = make_name_link(state, referrer_path, type)
     else:
         raise SyntaxError()
@@ -841,7 +841,7 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
             raise SyntaxError("Bad python type name: {} ".format(signature[i:]))
         input_type = match.group(0)
         i += len(input_type)
-        input_type = map_name_prefix_or_add_typing_suffix(state, input_type)
+        input_type = _pybind_map_name_prefix_or_add_typing_suffix(state, input_type)
         type += input_type
         type_link += make_name_link(state, referrer_path, input_type)
     if lvl != 0:
