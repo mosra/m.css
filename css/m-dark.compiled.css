@@ -2548,6 +2548,23 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-code .il { color: #c7cf2f }
 
 .m-console .hll { background-color: #ffffcc }
+.m-console .g-AnsiBackgroundBlack { background-color: #232627 }
+.m-console .g-AnsiBackgroundBlue { background-color: #1d99f3 }
+.m-console .g-AnsiBackgroundBrightBlack { background-color: #7f8c8d }
+.m-console .g-AnsiBackgroundBrightBlue { background-color: #3daee9 }
+.m-console .g-AnsiBackgroundBrightCyan { background-color: #16a085 }
+.m-console .g-AnsiBackgroundBrightGreen { background-color: #1cdc9a }
+.m-console .g-AnsiBackgroundBrightMagenta { background-color: #8e44ad }
+.m-console .g-AnsiBackgroundBrightRed { background-color: #c0392b }
+.m-console .g-AnsiBackgroundBrightWhite { background-color: #ffffff }
+.m-console .g-AnsiBackgroundBrightYellow { background-color: #fdbc4b }
+.m-console .g-AnsiBackgroundCyan { background-color: #1abc9c }
+.m-console .g-AnsiBackgroundDefault { background-color: #fcfcfc }
+.m-console .g-AnsiBackgroundGreen { background-color: #11d116 }
+.m-console .g-AnsiBackgroundMagenta { background-color: #9b59b6 }
+.m-console .g-AnsiBackgroundRed { background-color: #ed1515 }
+.m-console .g-AnsiBackgroundWhite { background-color: #fcfcfc }
+.m-console .g-AnsiBackgroundYellow { background-color: #f67400 }
 .m-console .g-AnsiBlack { color: #232627 }
 .m-console .g-AnsiBlue { color: #1d99f3 }
 .m-console .g-AnsiBrightBlack { color: #7f8c8d; font-weight: bold }
