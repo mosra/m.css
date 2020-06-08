@@ -76,19 +76,21 @@ def _highlight(code, language, options, *, is_block, filters=[]):
     f = filters_pre.get(lexer.name)
     if f: code = f(code)
 
-    parsed = highlight(code, lexer, formatter).rstrip()
-    if not is_block: parsed.lstrip()
+    highlighted = highlight(code, lexer, formatter).rstrip()
+    # Strip whitespace around if inline code, strip only trailing whitespace if
+    # a block
+    if not is_block: highlighted = highlighted.lstrip()
 
     global filters_post
     # First apply local post filters, if any
     for filter in filters:
         f = filters_post.get((lexer.name, filter))
-        if f: parsed = f(parsed)
+        if f: highlighted = f(highlighted)
     # Then a global post filter, if any
     f = filters_post.get(lexer.name)
-    if f: parsed = f(parsed)
+    if f: highlighted = f(highlighted)
 
-    return class_, parsed
+    return class_, highlighted
 
 class Code(Directive):
     required_arguments = 1
