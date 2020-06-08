@@ -27,3 +27,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   Ryohei Machida (`@machida-mn <https://github.com/machida-mn>`_) ---
     proof-of-concept implementation of ``#include`` information in the Doxygen
     theme
+-   Sergei Izmailov (`@sizmailov <https://github.com/sizmailov>`_) ---
+    improvements to pybind11 support in the Python doc theme
+-   Yuri Edward (`@Yuri6037 <https://github.com/Yuri6037>`_) --- improvements
+    to the Doxygen theme
