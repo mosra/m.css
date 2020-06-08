@@ -2227,6 +2227,10 @@ def extract_metadata(state: State, xml):
                 compound.deprecated = 'deprecated'
             break
 
+    # Inline namespaces
+    if compound.kind == 'namespace':
+        compound.is_inline = compounddef.attrib.get('inline') == 'yes'
+
     # Final classes
     if compound.kind in ['struct', 'class', 'union']:
         compound.is_final = compounddef.attrib.get('final') == 'yes'
@@ -2539,6 +2543,10 @@ def parse_xml(state: State, xml: str):
     else:
         state.current_prefix = []
 
+    # Inline namespaces
+    if compound.kind == 'namespace':
+        compound.is_inline = compounddef.attrib.get('inline') == 'yes'
+
     # Final classes
     if compound.kind in ['struct', 'class', 'union']:
         compound.is_final = compounddef.attrib.get('final') == 'yes'
@@ -2659,6 +2667,7 @@ def parse_xml(state: State, xml: str):
                     namespace.brief = symbol.brief
                     namespace.deprecated = symbol.deprecated
                     namespace.since = symbol.since
+                    namespace.is_inline = compounddef_child.attrib.get('inline') == 'yes'
                     compound.namespaces += [namespace]
 
                 else:
@@ -3253,6 +3262,8 @@ def parse_index_xml(state: State, xml):
         entry.deprecated = compound.deprecated
         entry.since = compound.since
         entry.has_nestable_children = False
+        if compound.kind == 'namespace':
+            entry.is_inline = compound.is_inline
         if compound.kind in ['class', 'struct', 'union']:
             entry.is_final = compound.is_final
 

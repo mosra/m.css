@@ -319,3 +319,15 @@ class BaseTemplateClasses(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('structNamespace_1_1MyClass.html'))
+
+class InlineNamespace(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+
+        with open(os.path.join(self.path, 'xml/namespaceFoo_1_1Bar.xml')) as f:
+            if 'kind="namespace" inline="yes"' not in f.read():
+                self.skipTest("Doxygen doesn't support inline namespaces here")
+
+        self.assertEqual(*self.actual_expected_contents('namespaceFoo_1_1Bar.html'))
+        self.assertEqual(*self.actual_expected_contents('annotated.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaces.html'))

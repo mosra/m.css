@@ -867,6 +867,18 @@ and you have to enable the :ini:`EXTRACT_PRIV_VIRTUAL` Doxyfile option:
     with :gh:`doxygen/doxygen#6729` integrated, the 1.8.15 release does not
     have this option yet.
 
+`Inline namespaces`_
+--------------------
+
+:cpp:`inline namespace`\ s are marked as such in class/namespace index pages,
+namespace documentation pages and nested namespace lists. Doxygen additionally
+flattens those, so their contents appear in the parent namespace as well.
+
+.. note-warning:: Doxygen patches
+
+    This feature requires :gh:`doxygen/doxygen#7828` to work (not merged to
+    Doxygen master yet).
+
 `Include files`_
 ----------------
 
@@ -1669,6 +1681,8 @@ Property                                Description
 :py:`compound.footer_navigation`        Footer navigation of a page. See
                                         `Navigation properties`_ for details.
 :py:`compound.brief`                    Brief description. Can be empty. [1]_
+:py:`compound.is_inline`                Whether the namespace is :cpp:`inline`.
+                                        Set only for namespaces.
 :py:`compound.is_final`                 Whether the class is :cpp:`final`. Set
                                         only for classes.
 :py:`compound.deprecated`               Deprecation status [7]_
@@ -1894,6 +1908,7 @@ Property                        Description
 :py:`namespace.deprecated`      Deprecation status [7]_
 :py:`namespace.since`           Since which version the namespace is available
                                 [8]_
+:py:`namespace.is_inline`       Whether this is an :cpp:`inline` namespace
 =============================== ===============================================
 
 `Class properties`_
@@ -2327,6 +2342,8 @@ Property                        Description
 :py:`i.brief`                   Brief documentation
 :py:`i.deprecated`              Deprecation status [7]_
 :py:`i.since`                   Since which version the entry is available [8]_
+:py:`i.is_inline`               Whether this is an :cpp:`inline` namespace. Set
+                                only for namespaces.
 :py:`i.is_final`                Whether the class is :cpp:`final`. Set only for
                                 classes.
 :py:`i.has_nestable_children`   If the list has nestable children (i.e., dirs
