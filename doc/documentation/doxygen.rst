@@ -413,10 +413,19 @@ Variable                            Description
                                     for more information.
 :py:`M_MATH_CACHE_FILE`             File to cache rendered math formulas. If
                                     not set, ``m.math.cache`` file in the
-                                    output directory is used. Old cached output
-                                    is periodically pruned and new formulas
-                                    added to the file. Set it empty to disable
-                                    caching.
+                                    output directory is used. Equivalent to an
+                                    option of the same name in the
+                                    `m.math plugin <{filename}/plugins/math-and-code.rst#math>`.
+:py:`M_CODE_FILTERS_PRE: Dict`      Filters to apply before a code snippet is
+                                    rendered. Equivalent to an option of the
+                                    same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`.
+                                    Note that due to the limitations of Doxygen
+                                    markup, named filters are not supported.
+:py:`M_CODE_FILTERS_POST: Dict`     Filters to apply after a code snippet is
+                                    rendered. Equivalent to an option of the
+                                    same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`.
+                                    Note that due to the limitations of Doxygen
+                                    markup, named filters are not supported.
 =================================== ===========================================
 
 Note that namespace, directory and page lists are always fully expanded as

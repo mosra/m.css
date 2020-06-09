@@ -120,6 +120,8 @@ default_config = {
     'CLASS_INDEX_EXPAND_INNER': False,
 
     'M_MATH_CACHE_FILE': 'm.math.cache',
+    'M_CODE_FILTERS_PRE': {},
+    'M_CODE_FILTERS_POST': {},
 
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
@@ -1240,10 +1242,19 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             else:
                 formatter = HtmlFormatter(nowrap=True)
 
+            # Apply a global pre filter, if any
+            filter = state.config['M_CODE_FILTERS_PRE'].get(lexer.name)
+            if filter: code = filter(code)
+
             highlighted = highlight(code, lexer, formatter).rstrip()
             # Strip whitespace around if inline code, strip only trailing
             # whitespace if a block
             if not code_block: highlighted = highlighted.lstrip()
+
+            # Apply a global post filter, if any
+            filter = state.config['M_CODE_FILTERS_POST'].get(lexer.name)
+            if filter: highlighted = filter(highlighted)
+
             out.parsed += '<{0} class="{1}{2}">{3}</{0}>'.format(
                 'pre' if code_block else 'code',
                 class_,

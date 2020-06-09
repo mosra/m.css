@@ -359,3 +359,21 @@ class Htmlinclude(IntegrationTestCase):
     def test_warnings(self):
         self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+
+_css_colors_src = re.compile(r"""<span class="mh">#(?P<hex>[0-9a-f]{6})</span>""")
+_css_colors_dst = r"""<span class="mh">#\g<hex><span class="m-code-color" style="background-color: #\g<hex>;"></span></span>"""
+
+def _add_color_swatch(str):
+    return _css_colors_src.sub(_css_colors_dst, str)
+
+class CodeFilters(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='indexpage.xml', config={
+            'M_CODE_FILTERS_PRE': {
+                'CSS': lambda str: str.replace(':', ': ').replace('{', ' {'),
+            },
+            'M_CODE_FILTERS_POST': {
+                'CSS': _add_color_swatch,
+            }
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))

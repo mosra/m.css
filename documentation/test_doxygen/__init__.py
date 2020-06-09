@@ -66,8 +66,8 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
 
-    def run_doxygen(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages):
-        state = State(copy.deepcopy(default_config))
+    def run_doxygen(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, config={}):
+        state = State({**copy.deepcopy(default_config), **config})
         parse_doxyfile(state, os.path.join(self.path, 'Doxyfile'))
         run(state, templates=templates, wildcard=wildcard, index_pages=index_pages, sort_globbed_files=True)
 
