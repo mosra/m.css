@@ -3834,7 +3834,7 @@ if __name__ == '__main__': # pragma: no cover
         doxyfile = os.path.join(os.path.dirname(os.path.abspath(args.config)), config['DOXYFILE'])
     else:
         # Make the Doxyfile path absolute, otherwise everything gets messed up
-        doxyfile = os.path.abspath(args.doxyfile)
+        doxyfile = os.path.abspath(args.config)
 
     state = State(config)
     parse_doxyfile(state, doxyfile)
