@@ -19,21 +19,29 @@ predictable rendering on the CIs.
     :values: 15 30
     :colors: success
 
-.. plot:: A plot with separate colors, extra labels, error bars and custom height
-    :type: barh
-    :labels:
-        January
-        February
-        March
-    :labels_extra:
-        a paradise
-        ..
-        hell!
-    :units: Mondays
-    :values: 3 4 5
-    :errors: 0.1 2.1 1.0
-    :colors: success info danger
-    :bar_height: 0.75
+.. using legacy underscored options below to test the compatibility (the dashed
+    options are used on the site, which should be enough to verify those work)
+
+.. container:: m-col-m-6 m-center-m
+
+    A plot with separate colors, extra labels, error bars and custom width + height
+
+    .. plot:: Yes.
+        :type: barh
+        :labels:
+            January
+            February
+            March
+        :labels_extra:
+            a paradise
+            ..
+            hell!
+        :units: Mondays
+        :values: 3 4 5
+        :errors: 0.1 2.1 1.0
+        :colors: success info danger
+        :plot-width: 4.5
+        :bar_height: 0.75
 
 .. plot:: Stacked plot
     :type: barh

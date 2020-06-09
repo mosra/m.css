@@ -142,6 +142,7 @@ class Plot(rst.Directive):
                    'values': directives.unchanged_required,
                    'errors': directives.unchanged,
                    'colors': directives.unchanged,
+                   'plot-width': directives.unchanged,
                    'bar-height': directives.unchanged,
                    # Legacy options with ugly underscores instead of dashes
                    'labels_extra': directives.unchanged,
@@ -214,7 +215,7 @@ class Plot(rst.Directive):
         # Setup the graph
         fig, ax = plt.subplots()
         # TODO: let matplotlib calculate the height somehow
-        fig.set_size_inches(8, 0.78 + len(labels)*bar_height)
+        fig.set_size_inches(float(self.options.get('plot-width', 8)), 0.78 + len(labels)*bar_height)
         yticks = np.arange(len(labels))
         left = np.array([0.0]*len(labels))
         for i in range(len(value_sets)):

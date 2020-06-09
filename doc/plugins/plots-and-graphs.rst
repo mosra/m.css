@@ -126,7 +126,9 @@ configure bar colors using :rst:`:colors:`. The colors correspond to m.css
 `color classes <{filename}/css/components.rst#colors>`_ and you can either
 use one color for all or one for each value, separated by whitespace. Bar chart
 height is calculated automatically based on amount of values, you can adjust
-the bar height using :rst:`:bar-height:`. Default value is :py:`0.4`.
+the bar height using :rst:`:bar-height:`. Default value is :py:`0.4`. Similarly
+it's possible to specify graph width using :rst:`:plot-width:`, the default
+:py:`8` is tuned for a page-wide plot.
 
 It's possible to add an extra line of labels using :rst:`:labels-extra:`.
 Again, there should be as many entries as primary labels and values. To omit an
