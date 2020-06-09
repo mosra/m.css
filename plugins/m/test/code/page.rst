@@ -30,6 +30,13 @@ rendered as plain monospace text: :code:`code`.
 .. include:: console.ansi
     :code: ansi
 
+Syntax highlighting:
+
+.. code:: py
+
+    # Comment
+    var = "string{}escape\n"
+
 Console colors:
 
 .. include:: console-colors.ansi

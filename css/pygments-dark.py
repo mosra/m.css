@@ -41,6 +41,8 @@ class DarkStyle(Style):
         Name:                   '#dcdcdc',
         String:                 '#e07f7c',
         String.Char:            '#e07cdc',
+        String.Escape:          '#e07cdc', # like char
+        String.Interpol:        '#a5c9ea', # like comment
         Number:                 '#c7cf2f',
         Operator:               '#aaaaaa',
         Punctuation:            "#aaaaaa",
