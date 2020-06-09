@@ -80,14 +80,45 @@
 <p>Anon context, suppressed output:</p>
 <div class="m-code-figure">
 <div class="m-py-exec">
-<pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></pre>
+<pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+</div>
+<div class="m-py-exec">
+<pre class="m-code m-nopad m-console">STDERR
+STDERR</pre>
 </div>
 </div>
 <p>Anon context, suppressed stderr:</p>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
-<span class="nb">print</span><span class="p">(</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+</div>
+<div class="m-py-exec">
+<pre class="m-code m-nopad m-console">STDOUT
+STDOUT</pre>
+</div>
+</div>
+<p>Anon context, stdout+stderr:</p>
+<div class="m-code-figure">
+<div class="m-py-exec">
+<pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+</div>
+<div class="m-py-exec">
+<pre class="m-code m-nopad m-console">STDOUT
+STDERR
+STDOUT
+STDERR</pre>
 </div>
 </div>
 <p>Anon context, huge output, scroll:</p>

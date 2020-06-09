@@ -66,7 +66,11 @@ Anon context, suppressed output:
 .. py-exec::
     :hide-stdout:
 
-    print(4 + 2 / 2)
+    import sys
+    print("STDOUT")
+    print("STDERR", file=sys.stderr)
+    print("STDOUT")
+    print("STDERR", file=sys.stderr)
 
 Anon context, suppressed stderr:
 
@@ -74,7 +78,20 @@ Anon context, suppressed stderr:
     :hide-stderr:
 
     import sys
-    print(4 + 2 / 2, file=sys.stderr)
+    print("STDOUT")
+    print("STDERR", file=sys.stderr)
+    print("STDOUT")
+    print("STDERR", file=sys.stderr)
+
+Anon context, stdout+stderr:
+
+.. py-exec::
+
+    import sys
+    print("STDOUT")
+    print("STDERR", file=sys.stderr)
+    print("STDOUT")
+    print("STDERR", file=sys.stderr)
 
 
 Anon context, huge output, scroll:
