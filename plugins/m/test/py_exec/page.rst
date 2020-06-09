@@ -83,7 +83,7 @@ Anon context, huge output, scroll:
     :hide-stderr:
 
     for i in range(30):
-        print(" \_(^.^)_/ " * 80)
+        print(r" \_(^.^)_/ " * 80)
 
 Anon context, huge output:
 
@@ -92,7 +92,7 @@ Anon context, huge output:
     :class: m-no-vscroll
 
     for i in range(30):
-        print(" \_(^.^)_/ " * 80)
+        print(r" \_(^.^)_/ " * 80)
 
 
 First context, print and destroy context:

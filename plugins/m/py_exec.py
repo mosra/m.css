@@ -86,14 +86,12 @@ class PyCodeExec(Directive):
             if 'discard-context' in self.options:
                 del _exec_contexts[ctx_id]
 
-        code_label=None
+        output = io.StringIO()
+        devnull = io.StringIO()  # replace with portable /dev/null ?
+        stdout = output if 'hide-stdout' not in self.options else devnull
+        stderr = output if 'hide-stderr' not in self.options else devnull
 
-        stdout = io.StringIO()
-        stderr = io.StringIO()
         expected_raise = self.options.get('raises', False)
-
-        if expected_raise:
-            code_label = 'raises ' + expected_raise
 
         try:
             with redirect_stdout(stdout):
@@ -116,10 +114,7 @@ class PyCodeExec(Directive):
                 raise self.severe('Snippet was expected to raise {} exception '.format(expected_raise) +
                                   'but it didn\'t')
         finally:
-            stdout = stdout.getvalue()
-            stderr = stderr.getvalue()
-
-        result = []
+            output = output.getvalue()
 
         pipe_options = self.options.copy()
         output_extra_classes = ['m-nopad']
@@ -130,16 +125,9 @@ class PyCodeExec(Directive):
             del pipe_options['hl_lines']
 
         if 'hide-code' not in self.options:
-            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes,
-                                    label=code_label,
-                                    label_classes=['m-danger']
-                                    ))
-        if 'hide-stdout' not in pipe_options and stdout:
-            result.append(self._run(stdout, 'ansi', pipe_options, filters, classes + output_extra_classes,
-                                    label='stdout', label_classes=['m-dim']))
-        if 'hide-stderr' not in pipe_options and stderr:
-            result.append(self._run(stderr, 'ansi', pipe_options, filters, classes + output_extra_classes,
-                                    label='stderr', label_classes=['m-warning']))
+            result.append(self._run("\n".join(self.content), 'py', self.options, filters, classes))
+        if output:
+            result.append(self._run(output, 'ansi', pipe_options, filters, classes + output_extra_classes))
         if result:
             fig = nodes.container('', classes=['m-code-figure'])
             for el in result:
@@ -149,14 +137,7 @@ class PyCodeExec(Directive):
             return []
 
     @classmethod
-    def _run(cls,
-             content: str,
-             lang: str,
-             options: Dict,
-             filters: List[str],
-             classes: List[str],
-             label=None,
-             label_classes: List[str] = []):
+    def _run(cls, content: str, lang: str, options: Dict, filters: List[str], classes: List[str]):
 
         class_, highlighted = _highlight(content, lang, options, is_block=True, filters=filters)
         classes += [class_]
@@ -167,10 +148,6 @@ class PyCodeExec(Directive):
         pre.append(content)
         div = nodes.container('', classes=['m-py-exec'])
         div.append(pre)
-
-        if label:
-            div.append(nodes.inline(label, label, classes=['m-label'] + label_classes))
-            return div
 
         return div
 

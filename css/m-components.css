@@ -654,21 +654,8 @@ figure.m-figure.m-fullwidth:after {
   max-height: 20rem;
 }
 
-.m-code-figure > div.m-py-exec:last-child > pre, .m-console-figure > div.m-py-exec:last-child > pre {
-  margin-bottom: 0;
-}
-
 .m-code-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll, .m-console-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll {
   max-height: none;
-}
-
-.m-code-figure > div.m-py-exec > .m-label, .m-console-figure > div.m-py-exec > .m-label{
-  position: absolute;
-  right: 0;
-  top: 0;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
 }
 
 /* Figure caption */
