@@ -41,7 +41,7 @@ class Search(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 4836)
+        self.assertEqual(len(serialized), 5112)
         self.assertEqual(search_data_pretty, """
 53 symbols
 deprecated_macro [0]
@@ -80,17 +80,29 @@ deprecated_macro [0]
 ||        class [53]
 ||        struct [54]
 ||        union [58]
-|ir [24]
+|ir [24, 23]
 || /$
 ||  file.h [9]
-macro [3]
+macro [3, 0]
+||   ($
+||    ) [1]
 ||   _function [5]
-||            ($
-||             ) [6]
-||            _with_params [7]
-||            |           ($
-||            |            ) [8]
+||   |        ($
+||   |         ) [6]
+||   |        _with_params [7]
+||   |        |           ($
+||   |        |            ) [8]
 |in() [49]
+file.h [9, 2]
+|unction [5]
+||      ($
+||       ) [6]
+||      _with_params [7]
+||      |           ($
+||      |            ) [8]
+|oo [11, 14, 18, 16, 37]
+|| ($
+||  ) [12, 15, 19, 17, 38]
 glmacro() [4]
 | file() [10]
 | |oo() [13]
@@ -106,11 +118,13 @@ glmacro() [4]
 | namespace() [51]
 | struct() [56]
 | union() [60]
-file.h [9]
-|oo [11, 14, 18, 16]
-|| ($
-||  ) [12, 15, 19, 17]
-namespace [50]
+with_params [7]
+|          ($
+|           ) [8]
+params [7]
+|     ($
+|      ) [8]
+namespace [50, 39]
 |        :$
 |         :class [20]
 |          |    :$
@@ -125,29 +139,31 @@ namespace [50]
 |          variable [48]
 |          struct [55]
 |          union [59]
-class [20]
+class [20, 53]
 |    :$
 |     :foo [11, 14, 18, 16]
 |         ($
 |          ) [12, 15, 19, 17]
+list [22]
 a group [29, 28]
-| page [52]
-| |    $
-| |    0xc2
-| |     0xbb
-| |       subpage [57]
-value [41, 31]
-| riable [48]
-enum [44, 34]
+||page [52]
+|||    $
+|||    0xc2
+|||     0xbb
+|||       subpage [57]
+|brief [40]
+value [41, 31, 33]
+| riable [48, 36]
+enum [44, 34, 32]
 |   :$
 |    :deprecatedvalue [33]
 |     onlyabrief [40]
 |     value [41]
+typedef [46, 35]
 onlyabrief [40]
-typedef [46]
-struct [55]
+struct [55, 54]
 |ubpage [57]
-union [59]
+union [59, 58]
 0: DEPRECATED_MACRO(a, b, c) [suffix_length=9, deprecated, type=DEFINE] -> DeprecatedFile_8h.html#a7f8376730349fef9ff7d103b0245a13e
 1:  [prefix=0[:56], suffix_length=7, deprecated, type=DEFINE] ->
 2: /DeprecatedFile.h [prefix=23[:0], deprecated, type=FILE] -> DeprecatedFile_8h.html
@@ -233,18 +249,30 @@ class LongSuffixLength(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 473)
+        self.assertEqual(len(serialized), 489)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 2 symbols
 file.h [2]
-|     :$
-|      :averylongfunctionname [0]
-|                            ($
-|                             ) [1]
+||    :$
+||     :averylongfunctionname [0]
+||                           ($
+||                            ) [1]
+|unctionname [0]
+||          ($
+||           ) [1]
 averylongfunctionname [0]
 |                    ($
 |                     ) [1]
+verylongfunctionname [0]
+|                   ($
+|                    ) [1]
+longfunctionname [0]
+|               ($
+|                ) [1]
+name [0]
+|   ($
+|    ) [1]
 0: ::aVeryLongFunctionName(const std::reference_wrapper<const std::vector<s…) [prefix=2[:12], suffix_length=53, type=FUNC] -> #a1e9a11887275938ef5541070955c9d9c
 1:  [prefix=0[:46], suffix_length=51, type=FUNC] ->
 2: File.h [type=FILE] -> File_8h.html

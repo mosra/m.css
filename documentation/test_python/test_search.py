@@ -43,7 +43,7 @@ class Search(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 2269)
+        self.assertEqual(len(serialized), 2585)
         self.assertEqual(search_data_pretty, """
 21 symbols
 search [14]
@@ -84,9 +84,12 @@ search [14]
 ||     sub [28]
 ||     |  .$
 ||     |   data_in_a_submodule [27]
+|loth [8]
+||  s [9]
 |ub [28]
 || .$
 ||  data_in_a_submodule [27]
+|| module [27]
 foo [7, 21]
 || .$
 ||  enum [0]
@@ -104,15 +107,15 @@ foo [7, 21]
 || withslots [9]
 || |        .$
 || |         im_a_sloth [8]
-|unc_with_params [12]
-||  |           ($
-||  |            ) [13]
-||  tion [22]
+|unction [10, 22]
 ||  |   ($
-||  |    ) [23]
+||  |    ) [11, 23]
 ||  |   _with_params [24]
 ||  |   |           ($
 ||  |   |            ) [25]
+||  _with_params [12]
+||  |           ($
+||  |            ) [13]
 enum [0]
 |   .$
 |    a_value [1]
@@ -122,26 +125,42 @@ a_value [1]
 |||     ($
 |||      ) [4]
 ||property [5]
+||sloth [8]
+|||ubmodule [27]
 ||function [10]
 |||       ($
 |||        ) [11]
 |nother [2]
+value [1]
+method [3, 17, 19, 15]
+|     ($
+|      ) [4, 18, 20, 16]
+property [5]
+|arams [12, 24]
+||    ($
+||     ) [13, 25]
+|ybind [26]
+||    .$
+||     foo [21]
+||      | .$
+||      |  overloaded_method [17, 19, 15]
+||      |                   ($
+||      |                    ) [18, 20, 16]
+||      unction [22]
+||      |      ($
+||      |       ) [23]
+||      |      _with_params [24]
+||      |      |           ($
+||      |      |            ) [25]
 data_declaration [6]
-|    in_a_submodule [27]
+||   in_a_submodule [27]
+|eclaration [6]
 im_a_sloth [8]
-pybind [26]
-|     .$
-|      foo [21]
-|       | .$
-|       |  overloaded_method [17, 19, 15]
-|       |                   ($
-|       |                    ) [18, 20, 16]
-|       unction [22]
-|       |      ($
-|       |       ) [23]
-|       |      _with_params [24]
-|       |      |           ($
-|       |      |            ) [25]
+|n_a_submodule [27]
+withslots [9]
+|   _params [12, 24]
+|   |      ($
+|   |       ) [13, 25]
 overloaded_method [17, 19, 15]
 |                ($
 |                 ) [18, 20, 16]
@@ -196,18 +215,24 @@ class LongSuffixLength(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 633)
+        self.assertEqual(len(serialized), 755)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 3 symbols
 search_long_suffix_length [4]
-|                        .$
-|                         many_parameters [0, 2]
-|                                        ($
-|                                         ) [1, 3]
+||                       .$
+||                        many_parameters [0, 2]
+||                                       ($
+||                                        ) [1, 3]
+|uffix_length [4]
 many_parameters [0, 2]
 |              ($
 |               ) [1, 3]
+parameters [0, 2]
+|         ($
+|          ) [1, 3]
+long_suffix_length [4]
+|ength [4]
 0: .many_parameters(arg0: typing.Tuple[float, int, str, typing.List[…) [prefix=4[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-06151
 1:  [prefix=0[:52], suffix_length=51, type=FUNCTION] ->
 2: .many_parameters(arg0: typing.Tuple[int, float, str, typing.List[…) [prefix=4[:30], suffix_length=53, type=FUNCTION] -> #many_parameters-31300

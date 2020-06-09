@@ -2344,7 +2344,14 @@ def postprocess_state(state: State):
             links += [(html, title, url, id, sublinks)]
         state.config[var] = links
 
-def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
+_snake_case_point ='_[^_]'
+_camel_case_point = '[^A-Z][A-Z].'
+_snake_case_point_re = re.compile(_snake_case_point)
+_camel_case_point_re = re.compile(_camel_case_point)
+_camel_or_snake_case_point_re = re.compile('({})|({})'.format(_snake_case_point, _camel_case_point))
+
+def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, add_snake_case_suffixes=True,
+                      add_camel_case_suffixes=True, merge_prefixes=True) -> bytearray:
     trie = Trie()
     map = ResultMap()
 
@@ -2425,6 +2432,21 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             if not title: title = search
             keyword_index = map.add(title, '', alias=index, suffix_length=suffix_length)
             trie.insert(search.lower(), keyword_index)
+
+        if add_camel_case_suffixes and add_snake_case_suffixes:
+            prefix_end_re = _camel_or_snake_case_point_re
+        elif add_camel_case_suffixes:
+            prefix_end_re = _camel_case_point_re
+        elif add_snake_case_suffixes:
+            prefix_end_re = _snake_case_point_re
+        else:
+            prefix_end_re = None
+        if prefix_end_re:
+            for m in prefix_end_re.finditer(result.name.lstrip('__')):
+                name = result.name[m.start(0)+1:]
+                trie.insert(name.lower(), index)
+                if hasattr(result, 'params') and result.params is not None:
+                    trie.insert(name.lower() + '()', index_args, lookahead_barriers=[len(name)])
 
         # Add this symbol and all its aliases to total symbol count
         symbol_count += len(result.keywords) + 1
@@ -3628,7 +3650,9 @@ default_index_pages = ['pages', 'files', 'namespaces', 'modules', 'annotated']
 default_wildcard = '*.xml'
 default_templates = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates/doxygen/')
 
-def run(state: State, *, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
+def run(state: State, *, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages,
+        search_add_lookahead_barriers=True, add_snake_case_suffixes=True, add_camel_case_suffixes=True,
+        search_merge_subtrees=True, search_merge_prefixes=True, sort_globbed_files=False):
     xml_input = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'])
     xml_files_metadata = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, "*.xml"))]
     xml_files = [os.path.join(xml_input, f) for f in glob.glob(os.path.join(xml_input, wildcard))]
@@ -3756,7 +3780,9 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
     if not state.config['SEARCH_DISABLED']:
         logging.debug("building search data for {} symbols".format(len(state.search)))
 
-        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
+        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers,
+                                 add_snake_case_suffixes=add_snake_case_suffixes, add_camel_case_suffixes=add_camel_case_suffixes,
+                                 merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         if state.config['SEARCH_DOWNLOAD_BINARY']:
             with open(os.path.join(html_output, searchdata_filename), 'wb') as f:

@@ -140,7 +140,6 @@ default_config = {
     'INPUT_MODULES': [],
     'INPUT_PAGES': [],
     'INPUT_DOCS': [],
-    'OUTPUT': 'output',
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
     'STYLESHEETS': [
@@ -2318,7 +2317,14 @@ def render_page(state: State, path, input_filename, env):
 def is_html_safe(string):
     return '<' not in string and '>' not in string and '&' not in string and '"' not in string and '\'' not in string
 
-def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:
+_snake_case_point ='_[^_]'
+_snake_case_point_re = re.compile(_snake_case_point)
+_camel_case_point = '[^A-Z][A-Z].'
+_camel_case_point_re = re.compile(_camel_case_point)
+_camel_or_snake_case_point_re = re.compile('({})|({})'.format(_snake_case_point, _camel_case_point))
+
+def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True,
+                      add_snake_case_suffixes=True, add_camel_case_suffixes=True, merge_prefixes=True) -> bytearray:
     trie = Trie()
     map = ResultMap()
 
@@ -2382,6 +2388,21 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             if hasattr(result, 'params') and result.params is not None:
                 trie.insert(name.lower() + '()', index_args, lookahead_barriers=lookahead_barriers + [len(name)] if add_lookahead_barriers else [])
 
+        if add_camel_case_suffixes and add_snake_case_suffixes:
+            prefix_end_re = _camel_or_snake_case_point_re
+        elif add_camel_case_suffixes:
+            prefix_end_re = _camel_case_point_re
+        elif add_snake_case_suffixes:
+            prefix_end_re = _snake_case_point_re
+        else:
+            prefix_end_re = None
+        if prefix_end_re:
+            for m in prefix_end_re.finditer(result.name.lstrip('__')):
+                name = result.name[m.start(0)+1:]
+                trie.insert(name.lower(), index)
+                if hasattr(result, 'params') and result.params is not None:
+                    trie.insert(name.lower() + '()', index_args, lookahead_barriers=[len(name)])
+
         # Add this symbol to total symbol count
         symbol_count += 1
 
@@ -2391,7 +2412,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
 
     return serialize_search_data(trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
-def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
+def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_add_snake_case_suffixes=True, search_add_camel_case_suffixes=True, search_merge_subtrees=True, search_merge_prefixes=True):
     # Populate the INPUT, if not specified, make it absolute
     if config['INPUT'] is None: config['INPUT'] = basedir
     else: config['INPUT'] = os.path.join(basedir, config['INPUT'])
@@ -2617,7 +2638,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     if not state.config['SEARCH_DISABLED']:
         logging.debug("building search data for {} symbols".format(len(state.search)))
 
-        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
+        data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, add_snake_case_suffixes=search_add_snake_case_suffixes, add_camel_case_suffixes=search_add_camel_case_suffixes, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         # Joining twice, first before passing those to the URL formatter and
         # second after. If SEARCH_DOWNLOAD_BINARY is a string, use that as a
