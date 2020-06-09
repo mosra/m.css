@@ -135,12 +135,13 @@ default_config = {
     'PROJECT_SUBTITLE': None,
     'PROJECT_LOGO': None,
     'MAIN_PROJECT_URL': None,
+
     'INPUT': None,
     'OUTPUT': 'output',
     'INPUT_MODULES': [],
     'INPUT_PAGES': [],
     'INPUT_DOCS': [],
-    'OUTPUT': 'output',
+
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
     'STYLESHEETS': [
@@ -153,6 +154,7 @@ default_config = {
         ('Classes', 'classes', [])],
     'LINKS_NAVBAR2': [],
 
+    'HTML_HEADER': None,
     'PAGE_HEADER': None,
     'FINE_PRINT': '[default]',
     'FORMATTED_METADATA': ['summary'],
