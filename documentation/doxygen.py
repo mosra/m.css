@@ -717,7 +717,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             add_css_class = parsed.add_css_class
 
             # Bubble up also footer / example navigation, search keywords,
-            # deprecation flag
+            # deprecation flag, since badges
             if parsed.footer_navigation: out.footer_navigation = True
             if parsed.example_navigation: out.example_navigation = parsed.example_navigation
             out.search_keywords += parsed.search_keywords
@@ -828,6 +828,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
                 # Not continuing with a section from before, put a header in
                 if not previous_section or (i.attrib['kind'] != 'par' and previous_section != i.attrib['kind']) or (i.attrib['kind'] == 'par' and i.find('title').text):
+                    # TODO: make it possible to override the class using @m_class,
+                    # document this and document behavior of @par
+
                     if i.attrib['kind'] == 'see':
                         title = 'See also'
                         css_class = 'm-default'
@@ -1078,9 +1081,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'htmlonly':
             # The @htmlonly command has a block version, which is able to get
             # rid of the wrapping paragraph. But @htmlonly is not exposed to
-            # XML. Only @htmlinclude is exposed in XML and that one is always
-            # wrapped in a paragraph. I need to submit another patch to make it
-            # less freaking insane. I guess.
+            # XML because of https://github.com/doxygen/doxygen/pull/381. Only
+            # @htmlinclude is exposed in XML and that one is always wrapped in
+            # a paragraph.
             assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             if i.text: out.parsed += i.text
 
