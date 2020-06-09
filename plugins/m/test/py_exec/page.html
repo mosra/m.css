@@ -42,13 +42,13 @@
 <pre class="m-code"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
 <span class="hll">    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
 </span><span class="n">f</span><span class="p">()</span></pre>
-<span class="m-label m-danger">raises RuntimeError</span></div>
+</div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">Traceback (most recent call last):
-  File &quot;&lt;string&gt;&quot;, line 3, in &lt;module&gt;
-  File &quot;&lt;string&gt;&quot;, line 2, in f
-RuntimeError</pre>
-<span class="m-label m-warning">stderr</span></div>
+<pre class="m-code m-nopad m-console"><span class="g g-AnsiRed">Traceback (most recent call last):</span>
+<span class="g g-AnsiRed">  File &quot;&lt;string&gt;&quot;, line 3, in &lt;module&gt;</span>
+<span class="g g-AnsiRed">  File &quot;&lt;string&gt;&quot;, line 2, in f</span>
+<span class="g g-AnsiRed">RuntimeError</span></pre>
+</div>
 </div>
 <p>Anon context, expect top-level <code>RuntimeError</code>, hide stderr:</p>
 <div class="m-code-figure">
@@ -56,7 +56,7 @@ RuntimeError</pre>
 <pre class="m-code"><span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
 <span class="hll">    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">()</span>
 </span><span class="n">f</span><span class="p">()</span></pre>
-<span class="m-label m-danger">raises RuntimeError</span></div>
+</div>
 </div>
 <p>First context, print to stdout &amp; stderr:</p>
 <div class="m-code-figure">
@@ -67,11 +67,9 @@ RuntimeError</pre>
 <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
 </div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">14</pre>
-<span class="m-label m-dim">stdout</span></div>
-<div class="m-py-exec">
-<pre class="m-code m-nopad m-console">14</pre>
-<span class="m-label m-warning">stderr</span></div>
+<pre class="m-code m-nopad m-console">14
+14</pre>
+</div>
 </div>
 <p>Second context:</p>
 <div class="m-code-figure">
@@ -96,7 +94,7 @@ RuntimeError</pre>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; \_(^.^)_/ &quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span></pre>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; \_(^.^)_/ &quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span></pre>
 </div>
 <div class="m-py-exec">
 <pre class="m-code m-nopad m-console"> \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/ 
@@ -129,13 +127,13 @@ RuntimeError</pre>
  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/ 
  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/ 
  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/</pre>
-<span class="m-label m-dim">stdout</span></div>
+</div>
 </div>
 <p>Anon context, huge output:</p>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-no-vscroll m-code"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; \_(^.^)_/ &quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span></pre>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot; \_(^.^)_/ &quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span></pre>
 </div>
 <div class="m-py-exec">
 <pre class="m-no-vscroll m-code m-nopad m-console"> \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/ 
@@ -168,7 +166,7 @@ RuntimeError</pre>
  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/ 
  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/ 
  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/  \_(^.^)_/</pre>
-<span class="m-label m-dim">stdout</span></div>
+</div>
 </div>
 <p>First context, print and destroy context:</p>
 <div class="m-code-figure">
@@ -177,7 +175,7 @@ RuntimeError</pre>
 </div>
 <div class="m-py-exec">
 <pre class="m-code m-nopad m-console">typing.List</pre>
-<span class="m-label m-dim">stdout</span></div>
+</div>
 </div>
 <p>Second context, print and destroy context:</p>
 <div class="m-code-figure">
@@ -186,28 +184,28 @@ RuntimeError</pre>
 </div>
 <div class="m-py-exec">
 <pre class="m-code m-nopad m-console">[1, 2, 3]</pre>
-<span class="m-label m-dim">stdout</span></div>
+</div>
 </div>
 <p>Both contexts are destroyed now, variable access results to expected <code>NameError</code>:</p>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
-<span class="m-label m-danger">raises NameError</span></div>
+</div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">Traceback (most recent call last):
-  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name &#39;List&#39; is not defined</pre>
-<span class="m-label m-warning">stderr</span></div>
+<pre class="m-code m-nopad m-console"><span class="g g-AnsiRed">Traceback (most recent call last):</span>
+<span class="g g-AnsiRed">  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="g g-AnsiRed">NameError: name &#39;List&#39; is not defined</span></pre>
+</div>
 </div>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="nb">print</span><span class="p">(</span><span class="n">List</span><span class="p">)</span></pre>
-<span class="m-label m-danger">raises NameError</span></div>
+</div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">Traceback (most recent call last):
-  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
-NameError: name &#39;List&#39; is not defined</pre>
-<span class="m-label m-warning">stderr</span></div>
+<pre class="m-code m-nopad m-console"><span class="g g-AnsiRed">Traceback (most recent call last):</span>
+<span class="g g-AnsiRed">  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="g g-AnsiRed">NameError: name &#39;List&#39; is not defined</span></pre>
+</div>
 </div>
 <p>List comprehension:</p>
 <div class="m-code-figure">
@@ -218,7 +216,7 @@ NameError: name &#39;List&#39; is not defined</pre>
 </div>
 <div class="m-py-exec">
 <pre class="m-code m-nopad m-console">[4, 6]</pre>
-<span class="m-label m-dim">stdout</span></div>
+</div>
 </div>
 <!-- /content -->
       </div>
