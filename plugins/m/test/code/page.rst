@@ -18,6 +18,16 @@ m.code
 
 .. code:: c++
     :class: m-inverted
+    :hl-lines: 2
+
+    int main() {
+        return 1;
+    }
+
+Legacy :rst:`:hl_lines:` option should work the same:
+
+.. code:: c++
+    :class: m-inverted
     :hl_lines: 2
 
     int main() {
