@@ -139,7 +139,6 @@ default_config = {
     'INPUT_MODULES': [],
     'INPUT_PAGES': [],
     'INPUT_DOCS': [],
-    'OUTPUT': 'output',
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
     'STYLESHEETS': [
