@@ -145,7 +145,8 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         'end-before': directives.unchanged,
         'strip-prefix': directives.unchanged,
         'class': directives.class_option,
-        'filters': directives.unchanged
+        'filters': directives.unchanged,
+        'hl-lines': directives.unchanged
     }
 
     def run(self):

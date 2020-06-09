@@ -34,6 +34,14 @@ Legacy :rst:`:hl_lines:` option should work the same:
         return 1;
     }
 
+Same as above, but for a :rst:`.. include::`, which should also support line
+highlighting:
+
+.. include:: code.cpp
+    :code: c++
+    :class: m-inverted
+    :hl-lines: 2
+
 Inline code is here: :cpp:`constexpr`. Code without a language should be
 rendered as plain monospace text: :code:`code`.
 
