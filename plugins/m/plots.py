@@ -137,11 +137,14 @@ class Plot(rst.Directive):
                    'name': directives.unchanged,
                    'type': directives.unchanged_required,
                    'labels': directives.unchanged_required,
-                   'labels_extra': directives.unchanged,
+                   'labels-extra': directives.unchanged,
                    'units': directives.unchanged_required,
                    'values': directives.unchanged_required,
                    'errors': directives.unchanged,
                    'colors': directives.unchanged,
+                   'bar-height': directives.unchanged,
+                   # Legacy options with ugly underscores instead of dashes
+                   'labels_extra': directives.unchanged,
                    'bar_height': directives.unchanged}
     has_content = False
 
@@ -156,9 +159,17 @@ class Plot(rst.Directive):
         units = self.options['units']
         labels = self.options['labels'].split('\n')
 
-        # Optional extra labels
+        # Legacy options, convert underscores to dashes
         if 'labels_extra' in self.options:
-            labels_extra = self.options['labels_extra'].split('\n')
+            self.options['labels-extra'] = self.options['labels_extra']
+            del self.options['labels_extra']
+        if 'bar_height' in self.options:
+            self.options['bar-height'] = self.options['bar_height']
+            del self.options['bar_height']
+
+        # Optional extra labels
+        if 'labels-extra' in self.options:
+            labels_extra = self.options['labels-extra'].split('\n')
             assert len(labels_extra) == len(labels)
         else:
             labels_extra = None
@@ -195,7 +206,7 @@ class Plot(rst.Directive):
             color_sets = [style_mapping['default']]*len(value_sets)
 
         # Bar height
-        bar_height = float(self.options.get('bar_height', '0.4'))
+        bar_height = float(self.options.get('bar-height', '0.4'))
 
         # Increase hashsalt for every plot to ensure (hopefully) unique SVG IDs
         mpl.rcParams['svg.hashsalt'] = int(mpl.rcParams['svg.hashsalt']) + 1

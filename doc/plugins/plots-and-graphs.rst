@@ -126,9 +126,9 @@ configure bar colors using :rst:`:colors:`. The colors correspond to m.css
 `color classes <{filename}/css/components.rst#colors>`_ and you can either
 use one color for all or one for each value, separated by whitespace. Bar chart
 height is calculated automatically based on amount of values, you can adjust
-the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
+the bar height using :rst:`:bar-height:`. Default value is :py:`0.4`.
 
-It's possible to add an extra line of labels using :rst:`:labels_extra:`.
+It's possible to add an extra line of labels using :rst:`:labels-extra:`.
 Again, there should be as many entries as primary labels and values. To omit an
 extra label for a value, specify it as the :abbr:`reST <reStructuredText>`
 comment :rst:`..`.
@@ -144,7 +144,7 @@ comment :rst:`..`.
                 Ours default
                 3rd party
                 Full setup
-            :labels_extra:
+            :labels-extra:
                 15 modules
                 60 modules
                 200 modules
@@ -153,7 +153,7 @@ comment :rst:`..`.
             :values: 15.09 84.98 197.13 934.27
             :errors: 0.74 3.65 9.45 25.66
             :colors: success info danger dim
-            :bar_height: 0.6
+            :bar-height: 0.6
 
     .. plot:: Runtime cost
         :type: barh
@@ -162,7 +162,7 @@ comment :rst:`..`.
             Ours default
             3rd party
             Full setup
-        :labels_extra:
+        :labels-extra:
             15 modules
             60 modules
             200 modules
@@ -171,7 +171,7 @@ comment :rst:`..`.
         :values: 15.09 84.98 197.13 934.27
         :errors: 0.74 3.65 9.45 25.66
         :colors: success info danger dim
-        :bar_height: 0.6
+        :bar-height: 0.6
 
 `Stacked values`_
 -----------------
@@ -197,7 +197,7 @@ per value like shown above.
                 Sdl2Application
                 Sdl2Application
                 EmscriptenApplication
-            :labels_extra:
+            :labels-extra:
                 -s USE_SDL=2
                 -s USE_SDL=1
                 ..
@@ -215,7 +215,7 @@ per value like shown above.
             Sdl2Application
             Sdl2Application
             EmscriptenApplication
-        :labels_extra:
+        :labels-extra:
             -s USE_SDL=2
             -s USE_SDL=1
             ..
