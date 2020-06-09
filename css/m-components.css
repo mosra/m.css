@@ -654,15 +654,6 @@ figure.m-figure.m-fullwidth:after {
   max-height: 20rem;
 }
 
-.m-code-figure > div.m-py-exec > pre.m-nopad, .m-console-figure > div.m-py-exec > pre.m-nopad {
-  padding-left: 0.875rem;
-  border-top-left-radius: 0;
-  border-bottom-right-radius: 0;
-  margin-top: 1rem;
-  margin-bottom: 0;
-  max-height: 20rem;
-}
-
 .m-code-figure > div.m-py-exec:last-child > pre, .m-console-figure > div.m-py-exec:last-child > pre {
   margin-bottom: 0;
 }
