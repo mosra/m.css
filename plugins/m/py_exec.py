@@ -108,7 +108,7 @@ class PyCodeExec(Directive):
                                   'Expected exception type: {}\n'.format(expected_raise) +
                                   strip_second_line(traceback.format_exc())
                                   )
-            stderr.write(strip_second_line(traceback.format_exc()))
+            stderr.write("\033[31m" + strip_second_line(traceback.format_exc()) + "\033[0m")
         else:
             if expected_raise:
                 raise self.severe('Snippet was expected to raise {} exception '.format(expected_raise) +
