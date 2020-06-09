@@ -94,8 +94,22 @@ class AuthorList(BlogTestCase):
         })
 
         # Verify both right sidebar and bottom columns on jumbo articles. It's
-        # without tags, which is the third option to be considered there.
+        # without tags, which is tested in AuthorListTags below.
         self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
+
+class AuthorListTags(BlogTestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(__file__, 'author_list_tags', *args, **kwargs)
+
+    def test(self):
+        self.run_pelican({
+            'AUTHOR': "An Author",
+            'M_SHOW_AUTHOR_LIST': True
+        })
+
+        # Verify alignment of categories, tags and authors on the bottom of
+        # the jumbo article
         self.assertEqual(*self.actual_expected_contents('article-jumbo.html'))
 
 class FooterLinks(BlogTestCase):
