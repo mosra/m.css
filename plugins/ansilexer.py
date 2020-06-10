@@ -88,7 +88,7 @@ from pygments.token import *
 #              basic colors
 #    49        set default background color
 #    90..97    set foreground to bright versions of 30..37
-#    100..107  set background, same as 40..47 (bright not supported)
+#    100..107  set background to bright versions of 40..47
 #
 #    Commands 38 and 48 require further arguments:
 #      ;5;x       256 color: values 0..15 are IBGR (black, red, green,
