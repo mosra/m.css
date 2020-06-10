@@ -294,7 +294,7 @@ class HtmlAnsiFormatter(HtmlFormatter):
             ansi_class = ansi_class[:i]
             html_styles.insert(0, 'color: #' + foreground_color)
 
-        if ansi_class != 'g-Ansi':
+        if ansi_class not in ['g-Ansi', 'g-AnsiDefault']:
             html_classes.insert(1, ansi_class)
 
         result = ''

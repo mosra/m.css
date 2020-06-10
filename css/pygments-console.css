@@ -10,7 +10,6 @@
 .m-console .g-AnsiBackgroundBrightWhite { background-color: #ffffff } /* Generic.AnsiBackgroundBrightWhite */
 .m-console .g-AnsiBackgroundBrightYellow { background-color: #fdbc4b } /* Generic.AnsiBackgroundBrightYellow */
 .m-console .g-AnsiBackgroundCyan { background-color: #1abc9c } /* Generic.AnsiBackgroundCyan */
-.m-console .g-AnsiBackgroundDefault { background-color: #fcfcfc } /* Generic.AnsiBackgroundDefault */
 .m-console .g-AnsiBackgroundGreen { background-color: #11d116 } /* Generic.AnsiBackgroundGreen */
 .m-console .g-AnsiBackgroundMagenta { background-color: #9b59b6 } /* Generic.AnsiBackgroundMagenta */
 .m-console .g-AnsiBackgroundRed { background-color: #ed1515 } /* Generic.AnsiBackgroundRed */
@@ -28,7 +27,6 @@
 .m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold } /* Generic.AnsiBrightWhite */
 .m-console .g-AnsiBrightYellow { color: #fdbc4b; font-weight: bold } /* Generic.AnsiBrightYellow */
 .m-console .g-AnsiCyan { color: #1abc9c } /* Generic.AnsiCyan */
-.m-console .g-AnsiDefault { color: #fcfcfc } /* Generic.AnsiDefault */
 .m-console .g-AnsiGreen { color: #11d116 } /* Generic.AnsiGreen */
 .m-console .g-AnsiMagenta { color: #9b59b6 } /* Generic.AnsiMagenta */
 .m-console .g-AnsiRed { color: #ed1515 } /* Generic.AnsiRed */
