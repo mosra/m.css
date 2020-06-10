@@ -151,8 +151,8 @@ class AnsiLexer(RegexLexer):
         RegexLexer.__init__(self, **options)
 
         self._bright = False
-        self._foreground = 'Default'
-        self._background = 'Default'
+        self._foreground = ''
+        self._background = ''
 
     def _callback(self, match):
         commands = match.group('commands')
@@ -168,8 +168,8 @@ class AnsiLexer(RegexLexer):
             command = parameters.pop(0)
             if command == 0:
                 self._bright = False
-                self._foreground = 'Default'
-                self._background = 'Default'
+                self._foreground = ''
+                self._background = ''
             elif command == 1:
                 self._bright = True
             elif command == 22:
@@ -181,11 +181,10 @@ class AnsiLexer(RegexLexer):
                 if mode == 2:
                     rgb = self._read_rgb(parameters)
                 else:
-                    offset = parameters.pop(0)
-                    rgb = self._make_color_from_palette(offset)
-                self._foreground = 'ForegroundColor' + rgb
+                    rgb = self._read_palette_color(parameters)
+                self._foreground = rgb
             elif command == 39:
-                self._foreground = 'Default'
+                self._foreground = ''
             elif command >= 40 and command <= 47:
                 self._background = self._named_colors[command - 40]
             elif command == 48:
@@ -193,11 +192,10 @@ class AnsiLexer(RegexLexer):
                 if mode == 2:
                     rgb = self._read_rgb(parameters)
                 else:
-                    offset = parameters.pop()
-                    rgb = self._make_color_from_palette(offset)
+                    rgb = self._read_palette_color(parameters)
                 self._background = rgb
             elif command == 49:
-                self._background = 'Default'
+                self._background = ''
             elif command >= 90 and command <= 97:
                 self._foreground = ('Bright' +
                                     self._named_colors[command - 90])
@@ -205,33 +203,35 @@ class AnsiLexer(RegexLexer):
                 self._background = ('Bright' +
                                     self._named_colors[command - 100])
 
-        if (self._bright
-            and not self._foreground.startswith('Bright')
-            and not self._foreground.startswith('ForegroundColor')):
-            token = 'Generic.AnsiBright' + self._foreground
+        if self._bright and self._foreground in self._named_colors:
+            token = 'Bright' + self._foreground
+        elif self._bright and not self._foreground:
+            token = 'BrightDefault'
         else:
-            token = 'Generic.Ansi' + self._foreground
+            token = self._foreground
 
-        if (self._background != 'Default'):
-            token += 'BackgroundColor' + self._background
+        if (self._background):
+            token += '-On' + self._background
 
-        if token == 'Generic.AnsiDefault':
-            yield (match.start(), Text, text)
-        else:
+        if token:
+            token = 'Generic.Ansi' + token
             yield (match.start(), string_to_tokentype(token), text)
+        else:
+            yield (match.start(), Text, text)
 
     def _read_rgb(self, parameters):
         r = parameters.pop(0)
         g = parameters.pop(0)
         b = parameters.pop(0)
-        return self._to_hex(r,g,b)
+        return self._to_hex(r, g, b)
 
-    def _make_color_from_palette(self, offset):
+    def _read_palette_color(self, parameters):
         # the palette runs from 0–255 inclusive, consisting of
         #  - 16 specific colors intended to give a good range
         #  - 216 colors laid out on a color cube, with axes for
         #    each of red, green, and blue
         #  - 24 shades of grey, from grey3 to grey93
+        offset = parameters.pop(0)
         if offset < 16:
             return self._palette_start_colors[offset]
         elif offset < 232:
@@ -258,9 +258,11 @@ class AnsiLexer(RegexLexer):
 
 class HtmlAnsiFormatter(HtmlFormatter):
     _ansi_color_re = re.compile(
-        r'(?P<Prefix>class="g )(?P<AnsiClass>g-Ansi\S+)(?P<Suffix>")'
+        '(?P<Prefix>class="g g-Ansi)'
+        '((?P<RGBForeground>[0-9a-f]{6})|(?P<NamedForeground>[A-Za-z]+))?'
+        '(-On((?P<RGBBackground>[0-9a-f]{6})|(?P<NamedBackground>[A-Za-z]+)))?'
+        '(?P<Suffix>")'
     )
-    _rgb_code_re = re.compile(r'[0-9a-f]{6}$')
 
     def wrap(self, source, outfile):
         return self._wrap_code(source)
@@ -274,28 +276,22 @@ class HtmlAnsiFormatter(HtmlFormatter):
     def _replace_ansi_class(self, match):
         html_classes = ['g']
         html_styles = []
-        foreground_color = None
-        background_color = None
-        ansi_class = match.group('AnsiClass')
 
-        i = ansi_class.find('BackgroundColor')
-        if i >= 0:
-            background_color = ansi_class[i + 15:]
-            ansi_class = ansi_class[:i]
+        named_foreground = match.group('NamedForeground')
+        if named_foreground:
+            html_classes.append("g-Ansi" + named_foreground)
+        else:
+            rgb_foreground = match.group('RGBForeground')
+            if rgb_foreground:
+                html_styles.append('color: #' + rgb_foreground)
 
-            if self._rgb_code_re.match(background_color):
-                html_styles.append('background-color: #' + background_color)
-            else:
-                html_classes.append('g-AnsiBackground' + background_color)
-
-        i = ansi_class.find('ForegroundColor')
-        if i >= 0:
-            foreground_color = ansi_class[i + 15:]
-            ansi_class = ansi_class[:i]
-            html_styles.insert(0, 'color: #' + foreground_color)
-
-        if ansi_class not in ['g-Ansi', 'g-AnsiDefault']:
-            html_classes.insert(1, ansi_class)
+        named_background = match.group('NamedBackground')
+        if named_background:
+            html_classes.append("g-AnsiBackground" + named_background)
+        else:
+            rgb_background = match.group('RGBBackground')
+            if rgb_background:
+                html_styles.append('background-color: #' + rgb_background)
 
         result = ''
         if len(html_classes) > 1: # we don't want to emit just g
