@@ -2562,7 +2562,6 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-console .g-AnsiBackgroundBrightWhite { background-color: #ffffff }
 .m-console .g-AnsiBackgroundBrightYellow { background-color: #fdbc4b }
 .m-console .g-AnsiBackgroundCyan { background-color: #1abc9c }
-.m-console .g-AnsiBackgroundDefault { background-color: #fcfcfc }
 .m-console .g-AnsiBackgroundGreen { background-color: #11d116 }
 .m-console .g-AnsiBackgroundMagenta { background-color: #9b59b6 }
 .m-console .g-AnsiBackgroundRed { background-color: #ed1515 }
@@ -2580,7 +2579,6 @@ article:last-child, article section:last-child { margin-bottom: 0; }
 .m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold }
 .m-console .g-AnsiBrightYellow { color: #fdbc4b; font-weight: bold }
 .m-console .g-AnsiCyan { color: #1abc9c }
-.m-console .g-AnsiDefault { color: #fcfcfc }
 .m-console .g-AnsiGreen { color: #11d116 }
 .m-console .g-AnsiMagenta { color: #9b59b6 }
 .m-console .g-AnsiRed { color: #ed1515 }
