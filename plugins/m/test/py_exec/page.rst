@@ -67,10 +67,10 @@ Anon context, suppressed output:
     :hide-stdout:
 
     import sys
-    print("STDOUT")
-    print("STDERR", file=sys.stderr)
-    print("STDOUT")
-    print("STDERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
 
 Anon context, suppressed stderr:
 
@@ -78,20 +78,30 @@ Anon context, suppressed stderr:
     :hide-stderr:
 
     import sys
-    print("STDOUT")
-    print("STDERR", file=sys.stderr)
-    print("STDOUT")
-    print("STDERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
 
 Anon context, stdout+stderr:
 
 .. py-exec::
 
     import sys
-    print("STDOUT")
-    print("STDERR", file=sys.stderr)
-    print("STDOUT")
-    print("STDERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
+
+Avoid recolor in stderr:
+
+.. py-exec::
+    :no-red-stderr:
+
+    import sys
+    print("ERR", file=sys.stderr)
+    print("OUT")
+    print("ERR", file=sys.stderr)
 
 
 Anon context, huge output, scroll:

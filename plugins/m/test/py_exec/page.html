@@ -68,7 +68,7 @@
 </div>
 <div class="m-py-exec">
 <pre class="m-code m-nopad m-console">14
-14</pre>
+<span class="g g-AnsiRed">14</span></pre>
 </div>
 </div>
 <p>Second context:</p>
@@ -81,44 +81,58 @@
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
 </div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">STDERR
-STDERR</pre>
+<pre class="m-code m-nopad m-console"><span class="g g-AnsiRed">ERR</span>
+<span class="g g-AnsiRed">ERR</span></pre>
 </div>
 </div>
 <p>Anon context, suppressed stderr:</p>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
 </div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">STDOUT
-STDOUT</pre>
+<pre class="m-code m-nopad m-console">OUT
+OUT</pre>
 </div>
 </div>
 <p>Anon context, stdout+stderr:</p>
 <div class="m-code-figure">
 <div class="m-py-exec">
 <pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDOUT&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;STDERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
 </div>
 <div class="m-py-exec">
-<pre class="m-code m-nopad m-console">STDOUT
-STDERR
-STDOUT
-STDERR</pre>
+<pre class="m-code m-nopad m-console">OUT
+<span class="g g-AnsiRed">ERR</span>
+OUT
+<span class="g g-AnsiRed">ERR</span></pre>
+</div>
+</div>
+<p>Avoid recolor in stderr:</p>
+<div class="m-code-figure">
+<div class="m-py-exec">
+<pre class="m-code"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERR&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span></pre>
+</div>
+<div class="m-py-exec">
+<pre class="m-code m-nopad m-console">ERR
+OUT
+ERR</pre>
 </div>
 </div>
 <p>Anon context, huge output, scroll:</p>

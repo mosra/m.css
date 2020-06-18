@@ -43,7 +43,41 @@ def strip_second_line(text):
     return text[:l1_pos] + text[l3_pos:]
 
 
-_exec_contexts = {}
+_exec_contexts = {}  # global storage of snippet contexts
+
+
+class StreamWrapper:
+    def __init__(self, terminal: "ConsoleLikeTerminal", kind):
+        self.terminal = terminal
+        self.kind = kind  # "o" stands for stdout and "e" for stderr
+
+    def write(self, data):
+        self.terminal.render(self.kind, data)
+
+
+class ConsoleLikeTerminal:
+
+    def __init__(self, recolor_stderr=True):
+        self._output = []
+        self.recolor_stderr = recolor_stderr
+        self.stdout = StreamWrapper(self, "o")
+        self.stderr = StreamWrapper(self, "e")
+
+    def render(self, kind, data):
+        self._output.append((kind, data))
+
+    def getvalue(self):
+        return "".join(
+            self.format(kind, data) for kind, data in self._output
+        )
+
+    def format(self, kind, data):
+        if not self.recolor_stderr or kind == "o":
+            return data
+        else:
+            # not perfect, might interfere with stdout,
+            # but it's what most of terminals do
+            return "\033[31m" + data + "\033[0m"
 
 
 class PyCodeExec(Directive):
@@ -60,6 +94,7 @@ class PyCodeExec(Directive):
         'hide-stdout': directives.flag,  # suppress snippet stdout
         'hide-stderr': directives.flag,  # suppress snippet stderr
         'discard-context': directives.flag,  # don't forget to clean-up named contexts
+        'no-red-stderr': directives.flag,  # don't make stderr red
     }
     has_content = True
 
@@ -86,10 +121,10 @@ class PyCodeExec(Directive):
             if 'discard-context' in self.options:
                 del _exec_contexts[ctx_id]
 
-        output = io.StringIO()
+        terminal = ConsoleLikeTerminal(recolor_stderr='no-red-stderr' not in self.options)
         devnull = io.StringIO()  # replace with portable /dev/null ?
-        stdout = output if 'hide-stdout' not in self.options else devnull
-        stderr = output if 'hide-stderr' not in self.options else devnull
+        stdout = terminal.stdout if 'hide-stdout' not in self.options else devnull
+        stderr = terminal.stderr if 'hide-stderr' not in self.options else devnull
 
         expected_raise = self.options.get('raises', False)
 
@@ -108,13 +143,13 @@ class PyCodeExec(Directive):
                                   'Expected exception type: {}\n'.format(expected_raise) +
                                   strip_second_line(traceback.format_exc())
                                   )
-            stderr.write("\033[31m" + strip_second_line(traceback.format_exc()) + "\033[0m")
+            stderr.write(strip_second_line(traceback.format_exc()))
         else:
             if expected_raise:
                 raise self.severe('Snippet was expected to raise {} exception '.format(expected_raise) +
                                   'but it didn\'t')
         finally:
-            output = output.getvalue()
+            output = terminal.getvalue()
 
         pipe_options = self.options.copy()
         output_extra_classes = ['m-nopad']
