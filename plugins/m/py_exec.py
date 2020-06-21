@@ -146,8 +146,8 @@ class PyCodeExec(Directive):
             stderr.write(strip_second_line(traceback.format_exc()))
         else:
             if expected_raise:
-                raise self.severe('Snippet was expected to raise {} exception '.format(expected_raise) +
-                                  'but it didn\'t')
+                raise self.severe('Snippet was expected to raise `{}` exception '.format(expected_raise) +
+                                  'but didn\'t')
         finally:
             output = terminal.getvalue()
 

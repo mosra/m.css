@@ -23,12 +23,9 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-import re
+import os
 
 from . import PelicanPluginTestCase
-
-_css_colors_src = re.compile(r"""<span class="mh">#(?P<hex>[0-9a-f]{6})</span>""")
-_css_colors_dst = r"""<span class="mh">#\g<hex><span class="m-code-color" style="background-color: #\g<hex>;"></span></span>"""
 
 
 class PyExec(PelicanPluginTestCase):
@@ -38,10 +35,26 @@ class PyExec(PelicanPluginTestCase):
     def test(self):
         self.run_pelican({
             # Need Source Code Pro for code
-            'M_CSS_FILES': ['https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
-                            'static/m-dark.css'],
+            'M_CSS_FILES': [
+                'https://fonts.googleapis.com/css?family=Source+Code+Pro:400,400i,600%7CSource+Sans+Pro:400,400i,600,600i',
+                'static/m-dark.css'],
+            'PAGE_EXCLUDES': ['errors'],
             'PLUGINS': ['m.htmlsanity', 'm.code', 'm.py_exec']
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
 
+    def test_errors(self):
+        from contextlib import redirect_stderr
+        import io
+        captured_stderr = io.StringIO()
+        with redirect_stderr(captured_stderr):
+            self.run_pelican({
+                'PATH': os.path.join(self.path, 'errors'),
+                'PLUGINS': ['m.htmlsanity', 'm.code', 'm.py_exec']
+            })
+        captured_stderr_value = captured_stderr.getvalue()
+        self.assertIn("Expected exception type: IndexError", captured_stderr_value)
+        self.assertIn("Snippet was expected to raise `Exception` exception but didn't", captured_stderr_value)
+        self.assertIn("Snippet raised exception\n"
+                      "Add `:raises: <exception-type>` to show exceptional snippet", captured_stderr_value)
