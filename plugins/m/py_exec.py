@@ -98,6 +98,12 @@ class PyCodeExec(Directive):
     }
     has_content = True
 
+    def run_before_snippet(self, gl):
+        pass
+
+    def run_after_snippet(self, gl):
+        pass
+
     def run(self):
         self.assert_has_content()
 
@@ -131,7 +137,9 @@ class PyCodeExec(Directive):
         try:
             with redirect_stdout(stdout):
                 with redirect_stderr(stderr):
+                    self.run_before_snippet(gl)
                     exec("\n".join(self.content), gl)
+                    self.run_after_snippet(gl)
         except Exception as exc:
             exc_class_name = exc.__class__.__name__
             if not expected_raise:
