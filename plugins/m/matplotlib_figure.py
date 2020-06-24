@@ -24,38 +24,31 @@
 #
 
 import os
-import shutil
-import io
-import traceback
 
-from contextlib import redirect_stdout, redirect_stderr
 from docutils.parsers import rst
-from docutils.parsers.rst.roles import set_classes
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import directives
 from docutils import nodes
-from typing import List, Dict
 from hashlib import sha1
 
 from m.py_exec import PyCodeExec
 
+MCSS_MPL_DARK = os.path.join(os.path.dirname(__file__), "mcss-dark.mplstyle")
+
 
 class MatplotlibFigure(PyCodeExec):
-    output_path = './'  # initialized by configure_pelican() below
+    output_path = './'  # initialized by configure_pelican() defined below
 
     def run_before_snippet(self, gl):
         import matplotlib
         matplotlib.use('agg')
+        gl['MCSS_MPL_DARK'] = MCSS_MPL_DARK
 
-    # TODO: move this run function to abstract base class (e.g. PythonFigure) to produce
-    #       consistent image styling across different image providers
     def run(self):
-        # TODO: render figures & code nicely, now it's just two adjacent nodes with no styling
         code_figure = super().run()
         if code_figure:
             code_figure = code_figure[0]
         else:
             code_figure = nodes.container('', classes=['m-code-figure'])
-
 
         image_reference = rst.directives.uri(self.image_uri)
         image_node = nodes.image('', uri=image_reference)
@@ -74,10 +67,17 @@ class MatplotlibFigure(PyCodeExec):
         rel_out_path = os.path.join("matplotlib-figures", source_filename_hash)
         os.makedirs(os.path.join(self.output_path, rel_out_path), exist_ok=True)
 
+        # figures are named by line number in source .rst file and hash of .rst path
         self.image_uri = os.path.join(rel_out_path, "line-{:02d}.svg".format(self.lineno))
 
-        # TODO: is there need to choose which figure to render?
+        # render current figure
+        # TODO: is there need to choose which figure(s) to render?
         plt.savefig(os.path.join(self.output_path, self.image_uri))
+
+        # clean-up: reset possibly altered matplotlib state & close all figures
+        if 'context-id' not in self.options or 'discard-context' in self.options:
+            plt.close('all')
+            plt.style.use('default')
 
 
 def register_mcss(**kwargs):

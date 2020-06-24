@@ -1,0 +1,26 @@
+
+lines.color: dcdcdc
+patch.edgecolor: dcdcdc
+
+text.color: e6e6e6
+
+axes.facecolor: 34424d
+axes.edgecolor: dcdcdc
+axes.labelcolor: dcdcdc
+axes.prop_cycle: cycler('color', ['8dd3c7', 'feffb3', 'bfbbd9', 'fa8174', '81b1d2', 'fdb462', 'b3de69', 'bc82bd', 'ccebc4', 'ffed6f'])
+
+xtick.color: dcdcdc
+ytick.color: dcdcdc
+
+grid.color: 2f363f
+
+figure.facecolor: 2f363f
+figure.edgecolor: 2f363f
+
+savefig.facecolor: 2f363f
+savefig.edgecolor: 2f363f
+
+font.family         : sans-serif
+font.sans-serif     : Source Sans Pro
+font.monospace      : Source Code Pro
+svg.fonttype        : none
