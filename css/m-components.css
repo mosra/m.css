@@ -635,23 +635,33 @@ figure.m-figure.m-fullwidth:after {
 }
 
 /* Next classes are for py-exec plugin */
-.m-code-figure > div.m-py-exec, .m-console-figure > div.m-py-exec {
-  position:relative;
+.m-code-figure > div.m-py-exec {
+  position: relative;
   margin-left: -0.875rem;
   margin-right: -0.875rem;
-  margin-top: -1rem;
-  margin-bottom: -0.875rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }
 
-.m-code-figure > div.m-py-exec > pre.m-nopad, .m-console-figure > div.m-py-exec > pre.m-nopad {
-  padding-left: 0.875rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  margin-top: 1rem;
-  margin-bottom: 0;
-  max-height: 20rem;
+.m-code-figure > div.m-py-exec:first-child {
+  margin-top: -0.875rem;
+}
+
+.m-code-figure > div.m-py-exec:last-child {
+  margin-bottom: -1.0rem;
+}
+
+.m-code-figure > div.m-py-exec > * {
+  border-radius: 0;
+  width: 100%;
+}
+
+.m-code-figure > div.m-py-exec:first-child > * {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.m-code-figure > div.m-py-exec:last-child > * {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .m-code-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll, .m-console-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll {
