@@ -50,14 +50,19 @@ class MatplotlibFigure(PyCodeExec):
     #       consistent image styling across different image providers
     def run(self):
         # TODO: render figures & code nicely, now it's just two adjacent nodes with no styling
-        container = nodes.figure('')
-        for el in super().run():
-            container.append(el)
+        code_figure = super().run()
+        if code_figure:
+            code_figure = code_figure[0]
+        else:
+            code_figure = nodes.container('', classes=['m-code-figure'])
+
 
         image_reference = rst.directives.uri(self.image_uri)
         image_node = nodes.image('', uri=image_reference)
-        container.append(image_node)
-        return [container]
+        div = nodes.container('', classes=['m-py-exec'])
+        div.append(image_node)
+        code_figure.append(div)
+        return [code_figure]
 
     def run_after_snippet(self, gl):
         import matplotlib.pyplot as plt
