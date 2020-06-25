@@ -28,7 +28,6 @@ import os
 from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils import nodes
-from hashlib import sha1
 
 from m.py_exec import PyCodeExec
 
@@ -36,7 +35,7 @@ MCSS_MPL_DARK = os.path.join(os.path.dirname(__file__), "mcss-dark.mplstyle")
 
 
 class MatplotlibFigure(PyCodeExec):
-    output_path = './'  # initialized by configure_pelican() defined below
+    input_root = './'  # initialized by configure_pelican() defined below
 
     def run_before_snippet(self, gl):
         import matplotlib
@@ -61,18 +60,18 @@ class MatplotlibFigure(PyCodeExec):
         import matplotlib.pyplot as plt
 
         source_filename = self.state.document.current_source
-        # TODO: replace hash with relative path to source .rst to produce better names
-        source_filename_hash = sha1(source_filename.encode('utf-8')).hexdigest()
+        source_to_root = os.path.relpath(source_filename, self.input_root)
 
-        rel_out_path = os.path.join("matplotlib-figures", source_filename_hash)
-        os.makedirs(os.path.join(self.output_path, rel_out_path), exist_ok=True)
+        output_img_filename = os.path.join(self.input_root, "matplotlib-figures", source_to_root,
+                                           "line-{:02d}.svg".format(self.lineno))
+        os.makedirs(os.path.dirname(output_img_filename), exist_ok=True)
 
-        # figures are named by line number in source .rst file and hash of .rst path
-        self.image_uri = os.path.join(rel_out_path, "line-{:02d}.svg".format(self.lineno))
+        # store relative path
+        self.image_uri = os.path.relpath(output_img_filename, os.path.dirname(source_filename))
 
         # render current figure
         # TODO: is there need to choose which figure(s) to render?
-        plt.savefig(os.path.join(self.output_path, self.image_uri))
+        plt.savefig(output_img_filename)
 
         # clean-up: reset possibly altered matplotlib state & close all figures
         if 'context-id' not in self.options or 'discard-context' in self.options:
@@ -80,18 +79,21 @@ class MatplotlibFigure(PyCodeExec):
             plt.style.use('default')
 
 
-def register_mcss(**kwargs):
+def register_mcss(mcss_settings, **kwargs):
+    MatplotlibFigure.input_root = os.path.abspath(mcss_settings['INPUT'])
     rst.directives.register_directive('matplotlib-figure', MatplotlibFigure)
 
 
 # Below is only Pelican-specific functionality. If Pelican is not found, these
 # do nothing.
 
-def configure_pelican(pelicanobj):
-    MatplotlibFigure.output_path = os.path.join(pelicanobj.output_path)
+def _configure_pelican(pelicanobj):
+    settings = {
+        'INPUT': pelicanobj.settings['PATH'],
+    }
+    register_mcss(mcss_settings=settings)
 
 
 def register():
     import pelican.signals
-    pelican.signals.initialized.connect(configure_pelican)
-    register_mcss()
+    pelican.signals.initialized.connect(_configure_pelican)
