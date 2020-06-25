@@ -67,7 +67,9 @@ class MatplotlibFigure(PyCodeExec):
         os.makedirs(os.path.dirname(output_img_filename), exist_ok=True)
 
         # store relative path
-        self.image_uri = os.path.relpath(output_img_filename, os.path.dirname(source_filename))
+        # TODO: need a reliably way to find resulting .html path, now it's assumed to be output root
+        self.image_uri = os.path.relpath(output_img_filename, self.input_root)
+        # self.image_uri = os.path.relpath(output_img_filename, os.path.dirname(source_filename))
 
         # render current figure
         # TODO: is there need to choose which figure(s) to render?
