@@ -65,7 +65,7 @@ span.m-doc-wrap-bumper {
   margin-right: -1rem;
 }
 span.m-doc-wrap {
-  padding-left: 1rem;
+  margin-left: 1rem;
   display: inline-block;
   vertical-align: text-top;
   white-space: pre-line;
