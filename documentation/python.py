@@ -45,6 +45,7 @@ import shutil
 import typing
 
 from enum import Enum
+from pathlib import Path
 from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Set, Any, List, Callable, Optional
@@ -111,9 +112,11 @@ def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
             url = 'search-v{}.js'.format(searchdata_format_version)
 
         return url, url
-
-    url = '.'.join(path) + '.html'
-    assert '/' not in url
+    if type == EntryType.PAGE:
+        path_sep = '/'
+    else:
+        path_sep = '.'
+    url = path_sep.join(path) + '.html'
     return url, url
 # [/default-url-formatter]
 
@@ -1867,7 +1870,38 @@ def extract_data_doc(state: State, parent, entry: Empty):
 
     return out
 
-def render(*, config, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
+def render(*, state, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
+    config=state.config
+    site_root = ['..'] * filename.count('/')  # relative to generated page
+
+    # Filter to return formatted URL or the full URL, if already absolute
+    def format_url(path):
+        if urllib.parse.urlparse(path).netloc: return path
+
+        # If file is found relative to the conf file, use that
+        if os.path.exists(os.path.join(config['INPUT'], path)):
+            path = os.path.join(config['INPUT'], path)
+        # Otherwise use path relative to script directory
+        else:
+            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+
+        return '/'.join(site_root + [config['URL_FORMATTER'](EntryType.STATIC, [path])[1]]) # TODO: url shortening can be applied
+    # Filter to return URL for given symbol. If the path is a string, first try
+    # to treat it as an URL -- either it needs to have the scheme or at least
+    # one slash for relative links (in contrast, Python names don't have
+    # slashes). If that fails,  turn it into a list and try to look it up in
+    # various dicts.
+    def path_to_url(path):
+        if isinstance(path, str):
+            if urllib.parse.urlparse(path).netloc:
+                return path
+            path = [path]
+        entry = state.name_map['.'.join(path)]
+        return '/'.join(site_root + [entry.url])  # TODO: url shortening can be applied
+
+    env.filters['format_url'] = format_url
+    env.filters['path_to_url'] = path_to_url
+
     template = env.get_template(template)
     rendered = template.render(URL=url,
         SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
@@ -1958,7 +1992,7 @@ def render_module(state: State, path, module, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(config=state.config,
+    render(state=state,
         template='module.html',
         filename=page.filename,
         url=page.url,
@@ -2059,7 +2093,7 @@ def render_class(state: State, path, class_, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(config=state.config,
+    render(state=state,
         template='class.html',
         filename=page.filename,
         url=page.url,
@@ -2254,7 +2288,7 @@ def render_page(state: State, path, input_filename, env):
             entry = state.name_map['.'.join(path)]
             entry.summary = page.summary
             entry.name = page.breadcrumb[-1][0]
-            render(config=state.config,
+            render(state=state,
                 template='page.html',
                 filename=page.filename,
                 url=page.url,
@@ -2288,7 +2322,7 @@ def render_page(state: State, path, input_filename, env):
                 metadata[name.lower()] = value
 
     # Breadcrumb, we don't do page hierarchy yet
-    assert len(path) == 1
+    # assert len(path) == 1
     page.breadcrumb = [(pub.writer.parts.get('title'), url)]
 
     # Set page content and add extra metadata from there
@@ -2310,7 +2344,7 @@ def render_page(state: State, path, input_filename, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(config=state.config,
+    render(state=state,
         template='page.html',
         filename=page.filename,
         url=page.url,
@@ -2412,32 +2446,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(templates), trim_blocks=True,
         lstrip_blocks=True, enable_async=True)
-    # Filter to return formatted URL or the full URL, if already absolute
-    def format_url(path):
-        if urllib.parse.urlparse(path).netloc: return path
 
-        # If file is found relative to the conf file, use that
-        if os.path.exists(os.path.join(config['INPUT'], path)):
-            path = os.path.join(config['INPUT'], path)
-        # Otherwise use path relative to script directory
-        else:
-            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
-
-        return config['URL_FORMATTER'](EntryType.STATIC, [path])[1]
-    # Filter to return URL for given symbol. If the path is a string, first try
-    # to treat it as an URL -- either it needs to have the scheme or at least
-    # one slash for relative links (in contrast, Python names don't have
-    # slashes). If that fails,  turn it into a list and try to look it up in
-    # various dicts.
-    def path_to_url(path):
-        if isinstance(path, str):
-            if urllib.parse.urlparse(path).netloc or '/' in path: return path
-            path = [path]
-        entry = state.name_map['.'.join(path)]
-        return entry.url
-
-    env.filters['format_url'] = format_url
-    env.filters['path_to_url'] = path_to_url
     env.filters['urljoin'] = urljoin
 
     # Set up extra plugin paths. The one for m.css plugins was added above.
@@ -2504,17 +2513,21 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # TODO: turn also into some crawl_page() function? once we have subpages?
     page_index = []
     for page in config['INPUT_PAGES']:
-        page_name = os.path.splitext(os.path.basename(page))[0]
+        page_path = Path(page)
+        page_name = page_path.stem
 
         entry = Empty()
         entry.type = EntryType.PAGE
-        entry.path = [page_name]
+        entry.path = [parent.name for parent in page_path.parents if parent.name not in ['', '.']] + [page_name]
         entry.url = config['URL_FORMATTER'](EntryType.PAGE, entry.path)[1]
         entry.filename = os.path.join(config['INPUT'], page)
-        state.name_map[page_name] = entry
+        # using '.' for pages avoids diversity of separator in `path -> name_map key` conversions (there are many)
+        entry_key = '.'.join(entry.path)
+        state.name_map[entry_key] = entry
 
         # The index page doesn't go to the index
-        if page_name != 'index': page_index += [page_name]
+        if entry.path != ['index']:
+            page_index += [entry_key]
 
     # Call all registered post-crawl hooks
     for hook in state.hooks_post_crawl:
@@ -2592,7 +2605,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     index.pages = page_index
     for file in special_pages[1:]: # exclude index
         filename, url = config['URL_FORMATTER'](EntryType.SPECIAL, [file])
-        render(config=config,
+        render(state=state,
             template=file + '.html',
             filename=filename,
             url=url,
@@ -2609,7 +2622,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         page.filename = filename
         page.url = url
         page.breadcrumb = [(config['PROJECT_TITLE'], url)]
-        render(config=config,
+        render(state=state,
             template='page.html',
             filename=page.filename,
             url=page.url,
