@@ -1870,22 +1870,25 @@ def extract_data_doc(state: State, parent, entry: Empty):
 
     return out
 
+
+# Filter to return formatted URL or the full URL, if already absolute
+def format_url(path, config, site_root):
+    if urllib.parse.urlparse(path).netloc: return path
+
+    # If file is found relative to the conf file, use that
+    if os.path.exists(os.path.join(config['INPUT'], path)):
+        path = os.path.join(config['INPUT'], path)
+    # Otherwise use path relative to script directory
+    else:
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+
+    return '/'.join(site_root + [config['URL_FORMATTER'](EntryType.STATIC, [path])[1]]) # TODO: url shortening can be applied
+
+
 def render(*, state, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
-    config=state.config
+    config = state.config
     site_root = ['..'] * filename.count('/')  # relative to generated page
 
-    # Filter to return formatted URL or the full URL, if already absolute
-    def format_url(path):
-        if urllib.parse.urlparse(path).netloc: return path
-
-        # If file is found relative to the conf file, use that
-        if os.path.exists(os.path.join(config['INPUT'], path)):
-            path = os.path.join(config['INPUT'], path)
-        # Otherwise use path relative to script directory
-        else:
-            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
-
-        return '/'.join(site_root + [config['URL_FORMATTER'](EntryType.STATIC, [path])[1]]) # TODO: url shortening can be applied
     # Filter to return URL for given symbol. If the path is a string, first try
     # to treat it as an URL -- either it needs to have the scheme or at least
     # one slash for relative links (in contrast, Python names don't have
@@ -1899,7 +1902,7 @@ def render(*, state, template: str, url: str, filename: str, env: jinja2.Environ
         entry = state.name_map['.'.join(path)]
         return '/'.join(site_root + [entry.url])  # TODO: url shortening can be applied
 
-    env.filters['format_url'] = format_url
+    env.filters['format_url'] = lambda path: format_url(path, config, site_root)
     env.filters['path_to_url'] = path_to_url
 
     template = env.get_template(template)
@@ -2134,17 +2137,48 @@ class ExtractImages(Transform):
             # Patch the URL according to the URL formatter
             image['uri'] = ExtractImages._url_formatter(EntryType.STATIC, [absolute_uri])[1]
 
+# A work-around for stateless Docutils transforms
+def get_reference_patcher(site_root, config):
+    # Patches references in nested pages
+    class PatchReferences(Transform):
+        # Run after ExtractImages
+        default_priority = 992
+
+        def __init__(self, document, startnode):
+            Transform.__init__(self, document, startnode=startnode)
+
+        def apply(self):
+            for ref in self.document.traverse(docutils.nodes.reference):
+                if 'refuri' in ref.attributes:
+                    old = ref.attributes['refuri']
+                    new = format_url(old, config, site_root)
+                    if old != new:
+                        ref.attributes['refuri'] = new
+                        logging.debug("reference patched {} -> {} ".format(old, new))
+    return PatchReferences
+
+
 class DocumentationWriter(m.htmlsanity.SaneHtmlWriter):
+    def __init__(self, extra_transforms=[]):
+        super().__init__()
+        self.extra_transforms = extra_transforms
+
     def get_transforms(self):
-        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages]
+        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages] + self.extra_transforms
 
 def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator):
     # Make the URL formatter known to the image extractor so it can use it for
     # patching the URLs
     ExtractImages._url_formatter = state.config['URL_FORMATTER']
 
+    # FIXME: should count '/' in output uri, not in source_path
+    if source_path:
+        site_root = ['..'] * os.path.relpath(source_path, state.config['INPUT']).count('/')
+    else:
+        site_root = []
+
     pub = docutils.core.Publisher(
-        writer=DocumentationWriter(),
+        writer=DocumentationWriter(extra_transforms=[get_reference_patcher(site_root, state.config)]),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
