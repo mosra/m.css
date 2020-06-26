@@ -1902,6 +1902,11 @@ def render(*, state, template: str, url: str, filename: str, env: jinja2.Environ
         entry = state.name_map['.'.join(path)]
         return '/'.join(site_root + [entry.url])  # TODO: url shortening can be applied
 
+    # 'format_url' and 'path_to_url' does not take arguments
+    # therefore reasonably treated as stateless by Jinja and cached
+    # A better alternative to cache.clear() would be to pass site_root argument to those filters
+    env.cache.clear()
+
     env.filters['format_url'] = lambda path: format_url(path, config, site_root)
     env.filters['path_to_url'] = path_to_url
 
