@@ -56,6 +56,8 @@ class Nested(BaseTestCase):
                 'examples/advanced/index.rst',
                 'examples/advanced/fooz.rst',
                 'examples/advanced/barz.rst',
+                'sub/page1.rst',
+                'sub/page2.rst',
             ],
             'SEARCH_DISABLED': False,
             'SEARCH_DOWNLOAD_BINARY': True,
@@ -70,6 +72,8 @@ class Nested(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('examples/advanced/index.html'))
         self.assertEqual(*self.actual_expected_contents('examples/advanced/fooz.html'))
         self.assertEqual(*self.actual_expected_contents('examples/advanced/barz.html'))
+        self.assertEqual(*self.actual_expected_contents('sub/page1.html'))
+        self.assertEqual(*self.actual_expected_contents('sub/page2.html'))
 
 class InputSubdir(BaseTestCase):
     def test(self):
