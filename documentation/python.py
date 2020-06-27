@@ -2395,8 +2395,8 @@ def render_page(state: State, path, input_filename, env):
         result = Empty()
         result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)
         result.url = page.url
-        result.prefix = path[:-1]
-        result.name = path[-1]
+        result.prefix = [name for name, _ in breadcrumb]
+        result.name = entry.name
         state.search += [result]
 
     render(state=state,
