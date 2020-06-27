@@ -2153,13 +2153,18 @@ def get_reference_patcher(site_root, config):
             Transform.__init__(self, document, startnode=startnode)
 
         def apply(self):
-            for ref in self.document.traverse(docutils.nodes.reference):
-                if 'refuri' in ref.attributes:
-                    old = ref.attributes['refuri']
-                    new = format_url(old, config, site_root)
-                    if old != new:
-                        ref.attributes['refuri'] = new
-                        logging.debug("reference patched {} -> {} ".format(old, new))
+            for attr, node_type in [
+                ('uri', docutils.nodes.image),
+                ('refuri', docutils.nodes.reference)
+            ]:
+                for ref in self.document.traverse(node_type):
+                    if attr in ref.attributes:
+                        old = ref.attributes[attr]
+                        new = format_url(old, config, site_root)
+                        if old != new:
+                            ref.attributes[attr] = new
+                            logging.debug("reference patched {} -> {} ".format(old, new))
+
     return PatchReferences
 
 
