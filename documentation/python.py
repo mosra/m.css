@@ -2160,7 +2160,8 @@ def get_reference_patcher(site_root, config):
                 for ref in self.document.traverse(node_type):
                     if attr in ref.attributes:
                         old = ref.attributes[attr]
-                        new = format_url(old, config, site_root)
+                        if urllib.parse.urlparse(old).netloc: continue
+                        new = '/'.join(site_root + [old])
                         if old != new:
                             ref.attributes[attr] = new
                             logging.debug("reference patched {} -> {} ".format(old, new))
