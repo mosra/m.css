@@ -1,4 +1,18 @@
+.. _examples:
+
 Examples
 ########
 
-List of basic examples
+Basic
+-----
+
+- :ref:`Foo <std:doc:examples.foo>`
+- :ref:`Bar <std:doc:examples.bar>`
+
+Advanced
+--------
+
+See also :ref:`advanced page <std:doc:examples.advanced.index>`
+
+
+
