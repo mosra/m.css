@@ -264,7 +264,7 @@ class ResultMap:
             if e.flags & ResultFlag.HAS_SUFFIX:
                 output += self.suffix_length_struct.pack(e.suffix_length)
             output += e.name.encode('utf-8')
-            if e.url:
+            if e.name and e.url:
                 output += b'\0'
                 output += e.url.encode('utf-8')
 
