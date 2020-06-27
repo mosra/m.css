@@ -105,6 +105,8 @@ search_type_map = [
 # [default-url-formatter]
 def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
     if type == EntryType.STATIC:
+        if not os.path.isabs(path[0]):
+            return path[0], path[0]
         url = os.path.basename(path[0])
 
         # Encode version information into the search driver
@@ -2116,35 +2118,40 @@ def render_class(state: State, path, class_, env):
     for hook in state.hooks_post_scope:
         hook(type=EntryType.CLASS, path=path)
 
-# Extracts image paths and transforms them to just the filenames
-class ExtractImages(Transform):
-    # Max Docutils priority is 990, be sure that this is applied at the very
-    # last
-    default_priority = 991
 
-    # There is no simple way to have stateful transforms (the publisher always
-    # gets just the class, not the instance) so we have to make all data
-    # awfully global. UGH.
-    # TODO: maybe the pending nodes could solve this?
-    _url_formatter = None
-    _external_data = set()
+# A helper function to work-around for stateless Docutils transforms
+def get_image_extracter(source, external_data:set, config):
 
-    def __init__(self, document, startnode):
-        Transform.__init__(self, document, startnode=startnode)
+    # Extracts image paths and transforms them to just the filenames
+    class ExtractImages(Transform):
+        # Max Docutils priority is 990, be sure that this is applied at the very
+        # last
+        default_priority = 991
 
-    def apply(self):
-        ExtractImages._external_data = set()
-        for image in self.document.traverse(docutils.nodes.image):
-            # Skip absolute URLs
-            if urllib.parse.urlparse(image['uri']).netloc: continue
+        def __init__(self, document, startnode):
+            Transform.__init__(self, document, startnode=startnode)
 
-            # TODO: is there a non-private access to current document source
-            # path?
-            absolute_uri = os.path.join(os.path.dirname(self.document.settings._source), image['uri']) if isinstance(self.document.settings._source, str) else image['uri']
-            ExtractImages._external_data.add(absolute_uri)
+        def apply(self):
+            input_path = os.path.realpath(config['INPUT'])
+            for image in self.document.traverse(docutils.nodes.image):
+                # Skip absolute URLs
+                if urllib.parse.urlparse(image['uri']).netloc:
+                    continue
 
-            # Patch the URL according to the URL formatter
-            image['uri'] = ExtractImages._url_formatter(EntryType.STATIC, [absolute_uri])[1]
+                if isinstance(source, str):
+                    image_abs_path = os.path.realpath(os.path.join(os.path.dirname(source), image['uri']))
+                    # Use relative path if image within INPUT directory, otherwise absolute
+                    if image_abs_path.startswith(input_path):
+                        image_path = os.path.relpath(image_abs_path, input_path)
+                    else:
+                        image_path = image_abs_path
+                else:
+                    image_path = image['uri']
+                external_data.add(image_path)
+
+                # Patch the URL according to the URL formatter
+                image['uri'] = config['URL_FORMATTER'](EntryType.STATIC, [image_path])[1]
+    return ExtractImages
 
 # A work-around for stateless Docutils transforms
 def get_reference_patcher(site_root):
@@ -2181,17 +2188,13 @@ class DocumentationWriter(m.htmlsanity.SaneHtmlWriter):
         self.extra_transforms = extra_transforms
 
     def get_transforms(self):
-        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages] + self.extra_transforms
+        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + self.extra_transforms
 
 def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator, subdir_level=0):
-    # Make the URL formatter known to the image extractor so it can use it for
-    # patching the URLs
-    ExtractImages._url_formatter = state.config['URL_FORMATTER']
-
     site_root = '../' * subdir_level
-
+    external_data = set()
     pub = docutils.core.Publisher(
-        writer=DocumentationWriter(extra_transforms=[get_reference_patcher(site_root)]),
+        writer=DocumentationWriter(extra_transforms=[get_reference_patcher(site_root), get_image_extracter(source_path, external_data, state.config)]),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
@@ -2209,7 +2212,7 @@ def publish_rst(state: State, source, *, source_path=None, translator_class=m.ht
     pub.publish()
 
     # External images to pull later
-    state.external_data = state.external_data.union(ExtractImages._external_data)
+    state.external_data = state.external_data.union(external_data)
 
     return pub
 
@@ -2742,13 +2745,13 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
 
         # If file is found relative to the conf file, use that
         if os.path.exists(os.path.join(config['INPUT'], i)):
+            output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
             i = os.path.join(config['INPUT'], i)
-
         # Otherwise use path relative to script directory
         else:
             i = os.path.join(os.path.dirname(os.path.realpath(__file__)), i)
+            output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
 
-        output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
         output_dir = os.path.dirname(output)
         if not os.path.exists(output_dir): os.makedirs(output_dir)
         logging.debug("copying %s to output", i)

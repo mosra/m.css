@@ -3,4 +3,7 @@
 Fooz
 ####
 
-Fooz example
+Fooz example contains square
+
+.. image:: icon.svg
+	:alt: square 

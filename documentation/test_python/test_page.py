@@ -75,6 +75,8 @@ class Nested(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('sub/page1.html'))
         self.assertEqual(*self.actual_expected_contents('sub/page2.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/icon.svg'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/icon.svg'))
 
 class InputSubdir(BaseTestCase):
     def test(self):
