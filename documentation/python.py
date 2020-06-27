@@ -2360,9 +2360,13 @@ def render_page(state: State, path, input_filename, env):
                     value = body_elem.astext()
                 metadata[name.lower()] = value
 
-    # Breadcrumb, we don't do page hierarchy yet
-    # assert len(path) == 1
-    page.breadcrumb = [(pub.writer.parts.get('title'), url)]
+    site_root = ['..'] * url.count('/')  # relative to generated page
+    breadcrumb = []
+    for i in range(len(path) - (1 if path[-1] != "index" else 2)):
+        parent_path = path[:i + 1] + ['index']
+        parent = state.name_map['.'.join(parent_path)]
+        breadcrumb += [(parent.name, '/'.join(site_root + [parent.url]))]
+    page.breadcrumb = breadcrumb + [(pub.writer.parts.get('title'), url)]
 
     # Set page content and add extra metadata from there
     page.content = pub.writer.parts.get('body').rstrip()
