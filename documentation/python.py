@@ -2642,21 +2642,37 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     for i in range(len(class_index)):
         class_index[i] = fetch_class_index(state.name_map[class_index[i]])
 
-    # Create page index from the toplevel name list
-    # TODO: rework when we have nested page support
-    for i in range(len(page_index)):
-        entry = state.name_map[page_index[i]]
+    page_index_map = {}
+    for page in page_index:
+        entry = state.name_map[page]
         assert entry.type == EntryType.PAGE
 
         index_entry = Empty()
         index_entry.kind = 'page'
         index_entry.name = entry.name
-        index_entry.url = config['URL_FORMATTER'](entry.type, entry.path)[1]
+        index_entry.url = entry.url
         index_entry.summary = entry.summary
+        index_entry.path = entry.path
         index_entry.has_nestable_children = False
         index_entry.children = []
+        page_index_map[entry.url] = index_entry
 
-        page_index[i] = index_entry
+    children_pages = []
+    for page_url in list(page_index_map.keys()):
+        index_entry = page_index_map[page_url]
+        path = index_entry.path
+        # Find first existing parent page starting from longest
+        for i in reversed(range(len(path) - (1 if path[-1] != "index" else 2))):
+            parent_path = path[:i + 1]
+            parent_key = page_path_to_entry_key(parent_path)
+            if parent_key in state.name_map:
+                parent = page_index_map[state.name_map[parent_key].url]
+                parent.has_nestable_children = True
+                parent.children += [index_entry]
+                children_pages += [page_url]
+                break
+
+    page_index = [page for url, page in page_index_map.items() if url not in children_pages]
 
     index = Empty()
     index.classes = class_index

@@ -39,12 +39,20 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>Pages</h2>
         <ul class="m-doc">
-          <li><a href="examples/index.html" class="m-doc">Examples</a> <span class="m-doc"></span></li>
-          <li><a href="examples/foo.html" class="m-doc">Foo</a> <span class="m-doc"></span></li>
-          <li><a href="examples/bar.html" class="m-doc">Bar</a> <span class="m-doc"></span></li>
-          <li><a href="examples/advanced/index.html" class="m-doc">Advanced</a> <span class="m-doc"></span></li>
-          <li><a href="examples/advanced/fooz.html" class="m-doc">Fooz</a> <span class="m-doc"></span></li>
-          <li><a href="examples/advanced/barz.html" class="m-doc">Barz</a> <span class="m-doc"></span></li>
+          <li class="m-doc-collapsible">
+            <a href="#" onclick="return toggle(this)"></a><a href="examples/index.html" class="m-doc">Examples</a> <span class="m-doc"></span>
+            <ul class="m-doc">
+              <li><a href="examples/foo.html" class="m-doc">Foo</a> <span class="m-doc"></span></li>
+              <li><a href="examples/bar.html" class="m-doc">Bar</a> <span class="m-doc"></span></li>
+              <li class="m-doc-collapsible">
+                <a href="#" onclick="return toggle(this)"></a><a href="examples/advanced/index.html" class="m-doc">Advanced</a> <span class="m-doc"></span>
+                <ul class="m-doc">
+                  <li><a href="examples/advanced/fooz.html" class="m-doc">Fooz</a> <span class="m-doc"></span></li>
+                  <li><a href="examples/advanced/barz.html" class="m-doc">Barz</a> <span class="m-doc"></span></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
           <li><a href="sub/page1.html" class="m-doc">Page 1</a> <span class="m-doc"></span></li>
           <li><a href="sub/page2.html" class="m-doc">Page 2</a> <span class="m-doc"></span></li>
         </ul>
