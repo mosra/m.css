@@ -1913,7 +1913,7 @@ def render(*, state, template: str, url: str, filename: str, env: jinja2.Environ
     template = env.get_template(template)
     rendered = template.render(URL=url,
         SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
-        **config, **kwargs)
+        **config, **kwargs, site_root=site_root)
     output = os.path.join(config['OUTPUT'], filename)
     output_dir = os.path.dirname(output)
     if not os.path.exists(output_dir): os.makedirs(output_dir)

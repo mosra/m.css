@@ -57,6 +57,7 @@ class Nested(BaseTestCase):
                 'examples/advanced/fooz.rst',
                 'examples/advanced/barz.rst',
             ],
+            'SEARCH_DISABLED': False,
             'PLUGINS': [
                 'm.sphinx'
             ]
