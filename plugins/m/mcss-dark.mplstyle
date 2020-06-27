@@ -21,6 +21,6 @@ savefig.facecolor: 2f363f
 savefig.edgecolor: 2f363f
 
 font.family         : sans-serif
-font.sans-serif     : Source Sans Pro
-font.monospace      : Source Code Pro
+font.sans-serif     : Source Sans Pro, DejaVu Sans
+font.monospace      : Source Code Pro, DejaVu Sans Mono
 svg.fonttype        : none
