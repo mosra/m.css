@@ -1898,6 +1898,10 @@ def render(*, state, template: str, url: str, filename: str, env: jinja2.Environ
         if isinstance(path, str):
             if urllib.parse.urlparse(path).netloc:
                 return path
+            if '/' in path:
+                if path in state.name_map:
+                    path = state.name_map[path]
+                return site_root + path
             path = [path]
         entry = state.name_map['.'.join(path)]
         return site_root + entry.url  # TODO: url shortening can be applied
