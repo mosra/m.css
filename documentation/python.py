@@ -2301,6 +2301,10 @@ def render_doc(state: State, filename):
         docutils.utils.extract_options = prev_extract_options
         docutils.utils.assemble_option_dict = prev_assemble_option_dict
 
+def page_path_to_entry_key(path):
+    # strip 'index' from entry key except for main page
+    return '/'.join(path[:(-1 if (path[-1] == 'index' and len(path) > 1) else None)])
+
 def render_page(state: State, path, input_filename, env):
     filename, url = state.config['URL_FORMATTER'](EntryType.PAGE, path)
 
@@ -2330,7 +2334,7 @@ def render_page(state: State, path, input_filename, env):
             page.breadcrumb = [(os.path.basename(input_filename), url)]
             page.summary = ''
             page.content = ''
-            entry = state.name_map['.'.join(path)]
+            entry = state.name_map[page_path_to_entry_key(path)]
             entry.summary = page.summary
             entry.name = page.breadcrumb[-1][0]
             render(state=state,
@@ -2369,8 +2373,8 @@ def render_page(state: State, path, input_filename, env):
     site_root = ['..'] * url.count('/')  # relative to generated page
     breadcrumb = []
     for i in range(len(path) - (1 if path[-1] != "index" else 2)):
-        parent_path = path[:i + 1] + ['index']
-        parent = state.name_map['.'.join(parent_path)]
+        parent_path = path[:i + 1]
+        parent = state.name_map[page_path_to_entry_key(parent_path)]
         breadcrumb += [(parent.name, '/'.join(site_root + [parent.url]))]
     page.breadcrumb = breadcrumb + [(pub.writer.parts.get('title'), url)]
 
@@ -2381,7 +2385,7 @@ def render_page(state: State, path, input_filename, env):
 
     # Find itself in the global map, save the page title and summary back there
     # for index
-    entry = state.name_map['.'.join(path)]
+    entry = state.name_map[page_path_to_entry_key(path)]
     entry.summary = page.summary
     entry.name = page.breadcrumb[-1][0]
 
@@ -2570,11 +2574,10 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         entry.path = [parent.name for parent in page_path.parents if parent.name not in ['', '.']][::-1] + [page_name]
         entry.url = config['URL_FORMATTER'](EntryType.PAGE, entry.path)[1]
         entry.filename = os.path.join(config['INPUT'], page)
-        # using '.' for pages avoids diversity of separator in `path -> name_map key` conversions (there are many)
-        entry_key = '.'.join(entry.path)
+        entry_key = page_path_to_entry_key(entry.path)
         state.name_map[entry_key] = entry
 
-        # The index page doesn't go to the index
+        # The main page doesn't go to the index
         if entry.path != ['index']:
             page_index += [entry_key]
 
