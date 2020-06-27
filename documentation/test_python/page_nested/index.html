@@ -80,6 +80,8 @@ See furious <a class="m-doc" href="examples/index.html">Examples page</a></p>
   </div>
 </div>
 <script src="search-v1.js"></script>
-<script src="searchdata-v1.js" async="async"></script>
+<script>
+  Search.download(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1) + 'searchdata-v1.bin');
+</script>
 </body>
 </html>

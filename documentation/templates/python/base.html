@@ -135,7 +135,7 @@
 {% endif %}
 {% if SEARCH_DOWNLOAD_BINARY %}
 <script>
-  Search.download({% if SEARCH_DOWNLOAD_BINARY is string %}'{{ SEARCH_DOWNLOAD_BINARY.format(SEARCHDATA_FORMAT_VERSION)|format_url|e }}'{% else %}window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1) + 'searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.bin'{% endif %});
+  Search.download({% if SEARCH_DOWNLOAD_BINARY is string %}'{{ SEARCH_DOWNLOAD_BINARY.format(SEARCHDATA_FORMAT_VERSION)|format_url|e }}'{% else %}window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1){% if site_root %} + '{{site_root}}' {% endif %} + 'searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.bin'{% endif %});
 </script>
 {% else %}
 <script src="{{ 'searchdata-v{}.js'.format(SEARCHDATA_FORMAT_VERSION)|format_url|e }}" async="async"></script>

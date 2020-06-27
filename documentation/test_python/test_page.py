@@ -58,6 +58,7 @@ class Nested(BaseTestCase):
                 'examples/advanced/barz.rst',
             ],
             'SEARCH_DISABLED': False,
+            'SEARCH_DOWNLOAD_BINARY': True,
             'PLUGINS': [
                 'm.sphinx'
             ]
