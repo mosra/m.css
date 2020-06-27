@@ -2566,7 +2566,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
 
         entry = Empty()
         entry.type = EntryType.PAGE
-        entry.path = [parent.name for parent in page_path.parents if parent.name not in ['', '.']] + [page_name]
+        entry.path = [parent.name for parent in page_path.parents if parent.name not in ['', '.']][::-1] + [page_name]
         entry.url = config['URL_FORMATTER'](EntryType.PAGE, entry.path)[1]
         entry.filename = os.path.join(config['INPUT'], page)
         # using '.' for pages avoids diversity of separator in `path -> name_map key` conversions (there are many)
