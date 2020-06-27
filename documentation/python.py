@@ -1882,12 +1882,12 @@ def format_url(path, config, site_root):
     else:
         path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
 
-    return '/'.join(site_root + [config['URL_FORMATTER'](EntryType.STATIC, [path])[1]]) # TODO: url shortening can be applied
+    return site_root + config['URL_FORMATTER'](EntryType.STATIC, [path])[1] # TODO: url shortening can be applied
 
 
 def render(*, state, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
     config = state.config
-    site_root = ['..'] * filename.count('/')  # relative to generated page
+    site_root = '../' * filename.count('/')  # relative to generated page
 
     # Filter to return URL for given symbol. If the path is a string, first try
     # to treat it as an URL -- either it needs to have the scheme or at least
@@ -1900,7 +1900,7 @@ def render(*, state, template: str, url: str, filename: str, env: jinja2.Environ
                 return path
             path = [path]
         entry = state.name_map['.'.join(path)]
-        return '/'.join(site_root + [entry.url])  # TODO: url shortening can be applied
+        return site_root + entry.url  # TODO: url shortening can be applied
 
     # 'format_url' and 'path_to_url' does not take arguments
     # therefore reasonably treated as stateless by Jinja and cached
@@ -2143,7 +2143,7 @@ class ExtractImages(Transform):
             image['uri'] = ExtractImages._url_formatter(EntryType.STATIC, [absolute_uri])[1]
 
 # A work-around for stateless Docutils transforms
-def get_reference_patcher(site_root, config):
+def get_reference_patcher(site_root):
     # Patches references in nested pages
     class PatchReferences(Transform):
         # Run after ExtractImages
@@ -2153,6 +2153,8 @@ def get_reference_patcher(site_root, config):
             Transform.__init__(self, document, startnode=startnode)
 
         def apply(self):
+            if not site_root:
+                return
             for attr, node_type in [
                 ('uri', docutils.nodes.image),
                 ('refuri', docutils.nodes.reference)
@@ -2161,7 +2163,7 @@ def get_reference_patcher(site_root, config):
                     if attr in ref.attributes:
                         old = ref.attributes[attr]
                         if urllib.parse.urlparse(old).netloc: continue
-                        new = '/'.join(site_root + [old])
+                        new = site_root + old
                         if old != new:
                             ref.attributes[attr] = new
                             logging.debug("reference patched {} -> {} ".format(old, new))
@@ -2177,19 +2179,15 @@ class DocumentationWriter(m.htmlsanity.SaneHtmlWriter):
     def get_transforms(self):
         return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages] + self.extra_transforms
 
-def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator):
+def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator, subdir_level=0):
     # Make the URL formatter known to the image extractor so it can use it for
     # patching the URLs
     ExtractImages._url_formatter = state.config['URL_FORMATTER']
 
-    # FIXME: should count '/' in output uri, not in source_path
-    if source_path:
-        site_root = ['..'] * os.path.relpath(source_path, state.config['INPUT']).count('/')
-    else:
-        site_root = []
+    site_root = '../' * subdir_level
 
     pub = docutils.core.Publisher(
-        writer=DocumentationWriter(extra_transforms=[get_reference_patcher(site_root, state.config)]),
+        writer=DocumentationWriter(extra_transforms=[get_reference_patcher(site_root)]),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
@@ -2326,7 +2324,7 @@ def render_page(state: State, path, input_filename, env):
     # Render the file
     with open(input_filename, 'r') as f:
         try:
-            pub = publish_rst(state, f.read(), source_path=input_filename)
+            pub = publish_rst(state, f.read(), source_path=input_filename, subdir_level=url.count('/'))
         except docutils.utils.SystemMessage:
             logging.error("Failed to process %s, rendering an empty page", input_filename)
 
@@ -2370,12 +2368,16 @@ def render_page(state: State, path, input_filename, env):
                     value = body_elem.astext()
                 metadata[name.lower()] = value
 
-    site_root = ['..'] * url.count('/')  # relative to generated page
+    site_root = '../' * url.count('/')  # relative to generated page
     breadcrumb = []
     for i in range(len(path) - (1 if path[-1] != "index" else 2)):
         parent_path = path[:i + 1]
-        parent = state.name_map[page_path_to_entry_key(parent_path)]
-        breadcrumb += [(parent.name, '/'.join(site_root + [parent.url]))]
+        parent_key = page_path_to_entry_key(parent_path)
+        if parent_key in state.name_map:
+            parent = state.name_map[parent_key]
+            breadcrumb += [(parent.name, site_root + parent.url)]
+        else:
+            logging.warning("Nested parent page `" + parent_key + "` is not found, skipping from breadcrumb")
     page.breadcrumb = breadcrumb + [(pub.writer.parts.get('title'), url)]
 
     # Set page content and add extra metadata from there
