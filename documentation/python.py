@@ -1873,48 +1873,8 @@ def extract_data_doc(state: State, parent, entry: Empty):
     return out
 
 
-# Filter to return formatted URL or the full URL, if already absolute
-def format_url(path, config, site_root):
-    if urllib.parse.urlparse(path).netloc: return path
-
-    # If file is found relative to the conf file, use that
-    if os.path.exists(os.path.join(config['INPUT'], path)):
-        path = os.path.join(config['INPUT'], path)
-    # Otherwise use path relative to script directory
-    else:
-        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
-
-    return site_root + config['URL_FORMATTER'](EntryType.STATIC, [path])[1] # TODO: url shortening can be applied
-
-
-def render(*, state, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
-    config = state.config
+def render(*, config, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
     site_root = '../' * filename.count('/')  # relative to generated page
-
-    # Filter to return URL for given symbol. If the path is a string, first try
-    # to treat it as an URL -- either it needs to have the scheme or at least
-    # one slash for relative links (in contrast, Python names don't have
-    # slashes). If that fails,  turn it into a list and try to look it up in
-    # various dicts.
-    def path_to_url(path):
-        if isinstance(path, str):
-            if urllib.parse.urlparse(path).netloc:
-                return path
-            if '/' in path:
-                if path in state.name_map:
-                    path = state.name_map[path]
-                return site_root + path
-            path = [path]
-        entry = state.name_map['.'.join(path)]
-        return site_root + entry.url  # TODO: url shortening can be applied
-
-    # 'format_url' and 'path_to_url' does not take arguments
-    # therefore reasonably treated as stateless by Jinja and cached
-    # A better alternative to cache.clear() would be to pass site_root argument to those filters
-    env.cache.clear()
-
-    env.filters['format_url'] = lambda path: format_url(path, config, site_root)
-    env.filters['path_to_url'] = path_to_url
 
     template = env.get_template(template)
     rendered = template.render(URL=url,
@@ -2006,7 +1966,7 @@ def render_module(state: State, path, module, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(state=state,
+    render(config=state.config,
         template='module.html',
         filename=page.filename,
         url=page.url,
@@ -2107,7 +2067,7 @@ def render_class(state: State, path, class_, env):
         result.name = path[-1]
         state.search += [result]
 
-    render(state=state,
+    render(config=state.config,
         template='class.html',
         filename=page.filename,
         url=page.url,
@@ -2342,7 +2302,7 @@ def render_page(state: State, path, input_filename, env):
             entry = state.name_map[page_path_to_entry_key(path)]
             entry.summary = page.summary
             entry.name = page.breadcrumb[-1][0]
-            render(state=state,
+            render(config=state.config,
                 template='page.html',
                 filename=page.filename,
                 url=page.url,
@@ -2406,7 +2366,7 @@ def render_page(state: State, path, input_filename, env):
         result.name = entry.name
         state.search += [result]
 
-    render(state=state,
+    render(config=state.config,
         template='page.html',
         filename=page.filename,
         url=page.url,
@@ -2509,6 +2469,38 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         loader=jinja2.FileSystemLoader(templates), trim_blocks=True,
         lstrip_blocks=True, enable_async=True)
 
+    # Filter to return formatted URL or the full URL, if already absolute
+    def format_url(path, site_root):
+        if urllib.parse.urlparse(path).netloc: return path
+
+        # If file is found relative to the conf file, use that
+        if os.path.exists(os.path.join(config['INPUT'], path)):
+            path = os.path.join(config['INPUT'], path)
+        # Otherwise use path relative to script directory
+        else:
+            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+
+        return site_root + config['URL_FORMATTER'](EntryType.STATIC, [path])[1]  # TODO: url shortening can be applied
+
+    # Filter to return URL for given symbol. If the path is a string, first try
+    # to treat it as an URL -- either it needs to have the scheme or at least
+    # one slash for relative links (in contrast, Python names don't have
+    # slashes). If that fails,  turn it into a list and try to look it up in
+    # various dicts.
+    def path_to_url(path, site_root):
+        if isinstance(path, str):
+            if urllib.parse.urlparse(path).netloc:
+                return path
+            if '/' in path:
+                if path in state.name_map:
+                    path = state.name_map[path]
+                return site_root + path
+            path = [path]
+        entry = state.name_map['.'.join(path)]
+        return site_root + entry.url  # TODO: url shortening can be applied
+
+    env.filters['format_url'] = format_url
+    env.filters['path_to_url'] = path_to_url
     env.filters['urljoin'] = urljoin
 
     # Set up extra plugin paths. The one for m.css plugins was added above.
@@ -2682,7 +2674,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     index.pages = page_index
     for file in special_pages[1:]: # exclude index
         filename, url = config['URL_FORMATTER'](EntryType.SPECIAL, [file])
-        render(state=state,
+        render(config=config,
             template=file + '.html',
             filename=filename,
             url=url,
@@ -2699,7 +2691,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         page.filename = filename
         page.url = url
         page.breadcrumb = [(config['PROJECT_TITLE'], url)]
-        render(state=state,
+        render(config=config,
             template='page.html',
             filename=page.filename,
             url=page.url,
