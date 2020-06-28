@@ -33,6 +33,7 @@ var Search = {
     map: null,
     typeMap: null,
     maxResults: 0,
+    siteRoot: '', /* a '(../)*' string, needed for nested page support */
 
     /* Always contains at least the root node offset and then one node offset
        per entered character */
@@ -511,7 +512,7 @@ var Search = {
             let list = '';
             for(let i = 0; i != results.length; ++i) {
                 /* Labels + */
-                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - this.searchString.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + results[i].cssClass + '">' + results[i].typeName + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
+                list += '<li' + (i ? '' : ' id="search-current"') + '><a href="' + this.siteRoot + results[i].url + '" onmouseover="selectResult(event)" data-md-link-title="' + this.escape(results[i].name.substr(results[i].name.length - this.searchString.length - results[i].suffixLength)) + '"><div class="m-label m-flat ' + results[i].cssClass + '">' + results[i].typeName + '</div>' + (results[i].flags & 2 ? '<div class="m-label m-danger">deprecated</div>' : '') + (results[i].flags & 4 ? '<div class="m-label m-danger">deleted</div>' : '');
 
                 /* Render the alias (cut off from the right) */
                 if(results[i].alias) {

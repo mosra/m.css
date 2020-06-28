@@ -44,6 +44,41 @@ class Page(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('error.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
+
+class Nested(BaseTestCase):
+    def test(self):
+        self.run_python({
+            'INPUT_PAGES': [
+                'index.rst',
+                'examples/index.rst',
+                'examples/foo.rst',
+                'examples/bar.rst',
+                'examples/advanced/index.rst',
+                'examples/advanced/fooz.rst',
+                'examples/advanced/barz.rst',
+                'sub/page1.rst',
+                'sub/page2.rst',
+            ],
+            'SEARCH_DISABLED': False,
+            'SEARCH_DOWNLOAD_BINARY': True,
+            'PLUGINS': [
+                'm.sphinx'
+            ],
+            'LINKS_NAVBAR1': [('Custom', './custom', [])]
+        })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/index.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/foo.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/bar.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/index.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/fooz.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/barz.html'))
+        self.assertEqual(*self.actual_expected_contents('sub/page1.html'))
+        self.assertEqual(*self.actual_expected_contents('sub/page2.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
+        self.assertEqual(*self.actual_expected_contents('examples/icon.svg'))
+        self.assertEqual(*self.actual_expected_contents('examples/advanced/icon.svg'))
+
 class InputSubdir(BaseTestCase):
     def test(self):
         self.run_python({

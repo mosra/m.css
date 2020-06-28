@@ -45,6 +45,7 @@ import shutil
 import typing
 
 from enum import Enum
+from pathlib import Path
 from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Set, Any, List, Callable, Optional
@@ -104,6 +105,8 @@ search_type_map = [
 # [default-url-formatter]
 def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
     if type == EntryType.STATIC:
+        if not os.path.isabs(path[0]):
+            return path[0], path[0]
         url = os.path.basename(path[0])
 
         # Encode version information into the search driver
@@ -111,9 +114,11 @@ def default_url_formatter(type: EntryType, path: List[str]) -> Tuple[str, str]:
             url = 'search-v{}.js'.format(searchdata_format_version)
 
         return url, url
-
-    url = '.'.join(path) + '.html'
-    assert '/' not in url
+    if type == EntryType.PAGE:
+        path_sep = '/'
+    else:
+        path_sep = '.'
+    url = path_sep.join(path) + '.html'
     return url, url
 # [/default-url-formatter]
 
@@ -1867,11 +1872,14 @@ def extract_data_doc(state: State, parent, entry: Empty):
 
     return out
 
+
 def render(*, config, template: str, url: str, filename: str, env: jinja2.Environment, **kwargs):
+    site_root = '../' * filename.count('/')  # relative to generated page
+
     template = env.get_template(template)
     rendered = template.render(URL=url,
         SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
-        **config, **kwargs)
+        **config, **kwargs, site_root=site_root)
     output = os.path.join(config['OUTPUT'], filename)
     output_dir = os.path.dirname(output)
     if not os.path.exists(output_dir): os.makedirs(output_dir)
@@ -2070,47 +2078,83 @@ def render_class(state: State, path, class_, env):
     for hook in state.hooks_post_scope:
         hook(type=EntryType.CLASS, path=path)
 
-# Extracts image paths and transforms them to just the filenames
-class ExtractImages(Transform):
-    # Max Docutils priority is 990, be sure that this is applied at the very
-    # last
-    default_priority = 991
 
-    # There is no simple way to have stateful transforms (the publisher always
-    # gets just the class, not the instance) so we have to make all data
-    # awfully global. UGH.
-    # TODO: maybe the pending nodes could solve this?
-    _url_formatter = None
-    _external_data = set()
+# A helper function to work-around for stateless Docutils transforms
+def get_image_extracter(source, external_data:set, config):
 
-    def __init__(self, document, startnode):
-        Transform.__init__(self, document, startnode=startnode)
+    # Extracts image paths and transforms them to just the filenames
+    class ExtractImages(Transform):
+        # Max Docutils priority is 990, be sure that this is applied at the very
+        # last
+        default_priority = 991
 
-    def apply(self):
-        ExtractImages._external_data = set()
-        for image in self.document.traverse(docutils.nodes.image):
-            # Skip absolute URLs
-            if urllib.parse.urlparse(image['uri']).netloc: continue
+        def __init__(self, document, startnode):
+            Transform.__init__(self, document, startnode=startnode)
 
-            # TODO: is there a non-private access to current document source
-            # path?
-            absolute_uri = os.path.join(os.path.dirname(self.document.settings._source), image['uri']) if isinstance(self.document.settings._source, str) else image['uri']
-            ExtractImages._external_data.add(absolute_uri)
+        def apply(self):
+            input_path = os.path.realpath(config['INPUT'])
+            for image in self.document.traverse(docutils.nodes.image):
+                # Skip absolute URLs
+                if urllib.parse.urlparse(image['uri']).netloc:
+                    continue
 
-            # Patch the URL according to the URL formatter
-            image['uri'] = ExtractImages._url_formatter(EntryType.STATIC, [absolute_uri])[1]
+                if isinstance(source, str):
+                    image_abs_path = os.path.realpath(os.path.join(os.path.dirname(source), image['uri']))
+                    # Use relative path if image within INPUT directory, otherwise absolute
+                    if image_abs_path.startswith(input_path):
+                        image_path = os.path.relpath(image_abs_path, input_path)
+                    else:
+                        image_path = image_abs_path
+                else:
+                    image_path = image['uri']
+                external_data.add(image_path)
+
+                # Patch the URL according to the URL formatter
+                image['uri'] = config['URL_FORMATTER'](EntryType.STATIC, [image_path])[1]
+    return ExtractImages
+
+# A work-around for stateless Docutils transforms
+def get_reference_patcher(site_root):
+    # Patches references in nested pages
+    class PatchReferences(Transform):
+        # Run after ExtractImages
+        default_priority = 992
+
+        def __init__(self, document, startnode):
+            Transform.__init__(self, document, startnode=startnode)
+
+        def apply(self):
+            if not site_root:
+                return
+            for attr, node_type in [
+                ('uri', docutils.nodes.image),
+                ('refuri', docutils.nodes.reference)
+            ]:
+                for ref in self.document.traverse(node_type):
+                    if attr in ref.attributes:
+                        old = ref.attributes[attr]
+                        if urllib.parse.urlparse(old).netloc: continue
+                        new = site_root + old
+                        if old != new:
+                            ref.attributes[attr] = new
+                            logging.debug("reference patched {} -> {} ".format(old, new))
+
+    return PatchReferences
+
 
 class DocumentationWriter(m.htmlsanity.SaneHtmlWriter):
+    def __init__(self, extra_transforms=[]):
+        super().__init__()
+        self.extra_transforms = extra_transforms
+
     def get_transforms(self):
-        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + [ExtractImages]
+        return m.htmlsanity.SaneHtmlWriter.get_transforms(self) + self.extra_transforms
 
-def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator):
-    # Make the URL formatter known to the image extractor so it can use it for
-    # patching the URLs
-    ExtractImages._url_formatter = state.config['URL_FORMATTER']
-
+def publish_rst(state: State, source, *, source_path=None, translator_class=m.htmlsanity.SaneHtmlTranslator, subdir_level=0):
+    site_root = '../' * subdir_level
+    external_data = set()
     pub = docutils.core.Publisher(
-        writer=DocumentationWriter(),
+        writer=DocumentationWriter(extra_transforms=[get_reference_patcher(site_root), get_image_extracter(source_path, external_data, state.config)]),
         source_class=docutils.io.StringInput,
         destination_class=docutils.io.StringOutput)
     pub.set_components('standalone', 'restructuredtext', 'html')
@@ -2128,7 +2172,7 @@ def publish_rst(state: State, source, *, source_path=None, translator_class=m.ht
     pub.publish()
 
     # External images to pull later
-    state.external_data = state.external_data.union(ExtractImages._external_data)
+    state.external_data = state.external_data.union(external_data)
 
     return pub
 
@@ -2222,6 +2266,10 @@ def render_doc(state: State, filename):
         docutils.utils.extract_options = prev_extract_options
         docutils.utils.assemble_option_dict = prev_assemble_option_dict
 
+def page_path_to_entry_key(path):
+    # strip 'index' from entry key except for main page
+    return '/'.join(path[:(-1 if (path[-1] == 'index' and len(path) > 1) else None)])
+
 def render_page(state: State, path, input_filename, env):
     filename, url = state.config['URL_FORMATTER'](EntryType.PAGE, path)
 
@@ -2243,7 +2291,7 @@ def render_page(state: State, path, input_filename, env):
     # Render the file
     with open(input_filename, 'r') as f:
         try:
-            pub = publish_rst(state, f.read(), source_path=input_filename)
+            pub = publish_rst(state, f.read(), source_path=input_filename, subdir_level=url.count('/'))
         except docutils.utils.SystemMessage:
             logging.error("Failed to process %s, rendering an empty page", input_filename)
 
@@ -2251,7 +2299,7 @@ def render_page(state: State, path, input_filename, env):
             page.breadcrumb = [(os.path.basename(input_filename), url)]
             page.summary = ''
             page.content = ''
-            entry = state.name_map['.'.join(path)]
+            entry = state.name_map[page_path_to_entry_key(path)]
             entry.summary = page.summary
             entry.name = page.breadcrumb[-1][0]
             render(config=state.config,
@@ -2287,9 +2335,17 @@ def render_page(state: State, path, input_filename, env):
                     value = body_elem.astext()
                 metadata[name.lower()] = value
 
-    # Breadcrumb, we don't do page hierarchy yet
-    assert len(path) == 1
-    page.breadcrumb = [(pub.writer.parts.get('title'), url)]
+    site_root = '../' * url.count('/')  # relative to generated page
+    breadcrumb = []
+    for i in range(len(path) - (1 if path[-1] != "index" else 2)):
+        parent_path = path[:i + 1]
+        parent_key = page_path_to_entry_key(parent_path)
+        if parent_key in state.name_map:
+            parent = state.name_map[parent_key]
+            breadcrumb += [(parent.name, site_root + parent.url)]
+        else:
+            logging.warning("Nested parent page `" + parent_key + "` is not found, skipping from breadcrumb")
+    page.breadcrumb = breadcrumb + [(pub.writer.parts.get('title'), url)]
 
     # Set page content and add extra metadata from there
     page.content = pub.writer.parts.get('body').rstrip()
@@ -2298,7 +2354,7 @@ def render_page(state: State, path, input_filename, env):
 
     # Find itself in the global map, save the page title and summary back there
     # for index
-    entry = state.name_map['.'.join(path)]
+    entry = state.name_map[page_path_to_entry_key(path)]
     entry.summary = page.summary
     entry.name = page.breadcrumb[-1][0]
 
@@ -2306,8 +2362,8 @@ def render_page(state: State, path, input_filename, env):
         result = Empty()
         result.flags = ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)
         result.url = page.url
-        result.prefix = path[:-1]
-        result.name = path[-1]
+        result.prefix = [name for name, _ in breadcrumb]
+        result.name = entry.name
         state.search += [result]
 
     render(config=state.config,
@@ -2412,8 +2468,9 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(templates), trim_blocks=True,
         lstrip_blocks=True, enable_async=True)
+
     # Filter to return formatted URL or the full URL, if already absolute
-    def format_url(path):
+    def format_url(path, site_root):
         if urllib.parse.urlparse(path).netloc: return path
 
         # If file is found relative to the conf file, use that
@@ -2423,18 +2480,24 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         else:
             path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
 
-        return config['URL_FORMATTER'](EntryType.STATIC, [path])[1]
+        return site_root + config['URL_FORMATTER'](EntryType.STATIC, [path])[1]  # TODO: url shortening can be applied
+
     # Filter to return URL for given symbol. If the path is a string, first try
     # to treat it as an URL -- either it needs to have the scheme or at least
     # one slash for relative links (in contrast, Python names don't have
     # slashes). If that fails,  turn it into a list and try to look it up in
     # various dicts.
-    def path_to_url(path):
+    def path_to_url(path, site_root):
         if isinstance(path, str):
-            if urllib.parse.urlparse(path).netloc or '/' in path: return path
+            if urllib.parse.urlparse(path).netloc:
+                return path
+            if '/' in path:
+                if path in state.name_map:
+                    path = state.name_map[path]
+                return site_root + path
             path = [path]
         entry = state.name_map['.'.join(path)]
-        return entry.url
+        return site_root + entry.url  # TODO: url shortening can be applied
 
     env.filters['format_url'] = format_url
     env.filters['path_to_url'] = path_to_url
@@ -2504,17 +2567,20 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # TODO: turn also into some crawl_page() function? once we have subpages?
     page_index = []
     for page in config['INPUT_PAGES']:
-        page_name = os.path.splitext(os.path.basename(page))[0]
+        page_path = Path(page)
+        page_name = page_path.stem
 
         entry = Empty()
         entry.type = EntryType.PAGE
-        entry.path = [page_name]
+        entry.path = [parent.name for parent in page_path.parents if parent.name not in ['', '.']][::-1] + [page_name]
         entry.url = config['URL_FORMATTER'](EntryType.PAGE, entry.path)[1]
         entry.filename = os.path.join(config['INPUT'], page)
-        state.name_map[page_name] = entry
+        entry_key = page_path_to_entry_key(entry.path)
+        state.name_map[entry_key] = entry
 
-        # The index page doesn't go to the index
-        if page_name != 'index': page_index += [page_name]
+        # The main page doesn't go to the index
+        if entry.path != ['index']:
+            page_index += [entry_key]
 
     # Call all registered post-crawl hooks
     for hook in state.hooks_post_crawl:
@@ -2571,21 +2637,37 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     for i in range(len(class_index)):
         class_index[i] = fetch_class_index(state.name_map[class_index[i]])
 
-    # Create page index from the toplevel name list
-    # TODO: rework when we have nested page support
-    for i in range(len(page_index)):
-        entry = state.name_map[page_index[i]]
+    page_index_map = {}
+    for page in page_index:
+        entry = state.name_map[page]
         assert entry.type == EntryType.PAGE
 
         index_entry = Empty()
         index_entry.kind = 'page'
         index_entry.name = entry.name
-        index_entry.url = config['URL_FORMATTER'](entry.type, entry.path)[1]
+        index_entry.url = entry.url
         index_entry.summary = entry.summary
+        index_entry.path = entry.path
         index_entry.has_nestable_children = False
         index_entry.children = []
+        page_index_map[entry.url] = index_entry
 
-        page_index[i] = index_entry
+    children_pages = []
+    for page_url in list(page_index_map.keys()):
+        index_entry = page_index_map[page_url]
+        path = index_entry.path
+        # Find first existing parent page starting from longest
+        for i in reversed(range(len(path) - (1 if path[-1] != "index" else 2))):
+            parent_path = path[:i + 1]
+            parent_key = page_path_to_entry_key(parent_path)
+            if parent_key in state.name_map:
+                parent = page_index_map[state.name_map[parent_key].url]
+                parent.has_nestable_children = True
+                parent.children += [index_entry]
+                children_pages += [page_url]
+                break
+
+    page_index = [page for url, page in page_index_map.items() if url not in children_pages]
 
     index = Empty()
     index.classes = class_index
@@ -2655,13 +2737,13 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
 
         # If file is found relative to the conf file, use that
         if os.path.exists(os.path.join(config['INPUT'], i)):
+            output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
             i = os.path.join(config['INPUT'], i)
-
         # Otherwise use path relative to script directory
         else:
             i = os.path.join(os.path.dirname(os.path.realpath(__file__)), i)
+            output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
 
-        output = os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [i])[0])
         output_dir = os.path.dirname(output)
         if not os.path.exists(output_dir): os.makedirs(output_dir)
         logging.debug("copying %s to output", i)
