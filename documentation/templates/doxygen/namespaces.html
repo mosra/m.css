@@ -2,7 +2,7 @@
 {% extends 'base-index.html' %}
 
 {% block main %}
-        <h1>Namespaces</h2>
+        <h1>Namespaces</h1>
         <ul class="m-doc">
           {% for i in index.symbols|selectattr('kind', 'equalto', 'namespace') recursive %}
           {% if i.has_nestable_children %}
