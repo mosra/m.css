@@ -63,7 +63,8 @@ class Nested(BaseTestCase):
             'SEARCH_DOWNLOAD_BINARY': True,
             'PLUGINS': [
                 'm.sphinx'
-            ]
+            ],
+            'LINKS_NAVBAR1': [('Custom', './custom', [])]
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertEqual(*self.actual_expected_contents('examples/index.html'))
