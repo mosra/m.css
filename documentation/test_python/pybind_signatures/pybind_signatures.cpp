@@ -79,7 +79,7 @@ PYBIND11_MODULE(pybind_signatures, m) {
 
         .def("full_docstring", &voidFunction, R"(A summary
 
-And a larger docstring as well, which is currently ignored.)");
+And a larger docstring as well.)");
 
     py::class_<MyClass>(m, "MyClass", "My fun class!")
         .def_static("static_function", &MyClass::staticFunction, "Static method with positional-only args")
