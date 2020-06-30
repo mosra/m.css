@@ -61,3 +61,9 @@ pybind11_add_module(pybind_submodules_package pybind_submodules_package/sub.cpp)
 set_target_properties(pybind_submodules_package PROPERTIES
     OUTPUT_NAME sub
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_submodules_package/pybind_submodules_package)
+
+# Need a special name for this one
+pybind11_add_module(pybind_docstrings pybind_docstrings/pybind_docstrings.cpp)
+set_target_properties(pybind_docstrings PROPERTIES
+    OUTPUT_NAME pybind_docstrings
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_docstrings)
