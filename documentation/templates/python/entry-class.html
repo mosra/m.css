@@ -1,2 +1,2 @@
-            <dt>class <a href="{{ class.url }}" class="m-doc">{{ class.name }}</a>{% if class.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %}</dt>
+            <dt>{%if class.is_exception%}exception{%else%}class{%endif%} <a href="{{ class.url }}" class="m-doc">{{ class.name }}</a>{% if class.is_deprecated %} <span class="m-label m-danger">deprecated</span>{% endif %}</dt>
             <dd>{{ class.summary }}</dd>

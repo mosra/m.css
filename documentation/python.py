@@ -398,6 +398,7 @@ def crawl_class(state: State, path: List[str], class_):
     class_entry.type = EntryType.CLASS
     class_entry.object = class_
     class_entry.path = path
+    class_entry.is_exception = issubclass(class_, BaseException)
     class_entry.css_classes = ['m-doc']
     class_entry.url = state.config['URL_FORMATTER'](EntryType.CLASS, path)[1]
     class_entry.members = []
@@ -1264,6 +1265,7 @@ def extract_class_doc(state: State, entry: Empty):
     out = Empty()
     out.url = entry.url
     out.name = entry.path[-1]
+    out.is_exception = entry.is_exception
     out.summary = extract_docs(state, state.class_docs, entry.type, entry.path, entry.object.__doc__, summary_only=True)
 
     # Call all scope exit hooks last
@@ -1913,6 +1915,7 @@ def render_module(state: State, path, module, env):
     page.enums = []
     page.functions = []
     page.data = []
+    page.exceptions = []
     page.has_enum_details = False
     page.has_function_details = False
     page.has_data_details = False
@@ -1933,7 +1936,11 @@ def render_module(state: State, path, module, env):
         if member_entry.type == EntryType.MODULE:
             page.modules += [extract_module_doc(state, member_entry)]
         elif member_entry.type == EntryType.CLASS:
-            page.classes += [extract_class_doc(state, member_entry)]
+            doc_ = extract_class_doc(state, member_entry)
+            if doc_.is_exception:
+                page.exceptions += [doc_]
+            else:
+                page.classes += [doc_]
         elif member_entry.type == EntryType.ENUM:
             enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
@@ -2004,6 +2011,7 @@ def render_class(state: State, path, class_, env):
     page.methods = []
     page.properties = []
     page.data = []
+    page.exceptions = []
     page.has_enum_details = False
     page.has_function_details = False
     page.has_property_details = False
@@ -2024,7 +2032,11 @@ def render_class(state: State, path, class_, env):
             logging.warning("%s is undocumented", subpath_str)
 
         if member_entry.type == EntryType.CLASS:
-            page.classes += [extract_class_doc(state, member_entry)]
+            doc_ = extract_class_doc(state, member_entry)
+            if doc_.is_exception:
+                page.exceptions += [doc_]
+            else:
+                page.classes += [doc_]
         elif member_entry.type == EntryType.ENUM:
             enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
@@ -2547,7 +2559,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # from the top-level index list and gather all class/module children.
     def fetch_class_index(entry):
         index_entry = Empty()
-        index_entry.kind = 'module' if entry.type == EntryType.MODULE else 'class'
+        index_entry.kind = 'module' if entry.type == EntryType.MODULE else ('exception' if entry.is_exception else 'class')
         index_entry.name = entry.path[-1]
         index_entry.url = state.config['URL_FORMATTER'](entry.type, entry.path)[1]
         index_entry.summary = entry.summary

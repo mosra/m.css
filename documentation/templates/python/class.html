@@ -15,7 +15,7 @@
 
 {% block main %}
         <h1>
-          {%+ for name, target in page.breadcrumb[:-1] %}<span class="m-breadcrumb"><a href="{{ target }}">{{ name }}</a>.<wbr/></span>{% endfor %}{{ page.breadcrumb[-1][0] }} <span class="m-thin">class</span>
+          {%+ for name, target in page.breadcrumb[:-1] %}<span class="m-breadcrumb"><a href="{{ target }}">{{ name }}</a>.<wbr/></span>{% endfor %}{{ page.breadcrumb[-1][0] }} <span class="m-thin">{% if page.is_exception %}exception{% else %}class{% endif %}</span>
         </h1>
         {% if page.summary %}
         <p>{{ page.summary }}</p>
@@ -50,6 +50,9 @@
                 {% endif %}
                 {% if page.data %}
                 <li><a href="#data">Data</a></li>
+                {% endif %}
+                {% if page.exceptions %}
+                <li><a href="#exceptions">Exceptions</a></li>
                 {% endif %}
               </ul>
             </li>
@@ -135,6 +138,16 @@
           <dl class="m-doc">
             {% for data in page.data %}
 {{ entry_data(data) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+        {% if page.exceptions %}
+        <section id="exceptions">
+          <h2><a href="#exceptions">Exceptions</a></h2>
+          <dl class="m-doc">
+            {% for exception in page.exceptions %}
+{{ entry_class(exception) }}
             {% endfor %}
           </dl>
         </section>
