@@ -1162,6 +1162,9 @@ Property                                Description
                                         `Function properties`_ for details.
 :py:`page.methods`                      List of methods. See
                                         `Function properties`_ for details.
+:py:`page.exceptions`                   List of exceptions, does not overlap
+                                        with py:`page.classes`. See
+                                        `Class properties`_ for details.
 :py:`page.dunder_methods`               List of double-underscored special
                                         functions. See
                                         `Function properties`_ for details.
@@ -1199,6 +1202,7 @@ Property                                Description
 ======================================= =======================================
 :py:`class_.url`                        URL of detailed class documentation
 :py:`class_.name`                       Class name
+:py:`class_.is_exception`               Marks exceptions
 :py:`class_.summary`                    Doc summary
 ======================================= =======================================
 
@@ -1396,7 +1400,8 @@ The form of each list entry is the same:
 Property                        Description
 =============================== ===============================================
 :py:`i.kind`                    Entry kind (one of :py:`'module'`,
-                                :py:`'class'` or :py:`'page'`)
+                                :py:`'class'`, :py:`'exception'` or
+                                :py:`'page'`)
 :py:`i.name`                    Name
 :py:`i.url`                     URL of the file with detailed documentation
 :py:`i.summary`                 Doc summary
