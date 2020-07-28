@@ -2020,7 +2020,7 @@ def parse_func(state: State, element: ET.Element):
         name = p.find('declname')
         param = Empty()
         param.name = name.text if name is not None else ''
-        param.type = parse_type(state, p.find('type'))
+        param.type = parse_type(state, p.find('type')) or ''
 
         # Recombine parameter name and array information back
         array = p.find('array')
