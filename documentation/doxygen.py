@@ -3354,7 +3354,10 @@ def parse_index_xml(state: State, xml):
     return parsed
 
 def parse_doxyfile(state: State, doxyfile, values = None):
-    state.basedir = os.path.dirname(doxyfile)
+    # Use top-level Doxyfile path as base, don't let it get overriden by
+    # subsequently @INCLUDE'd Doxyfile
+    if not state.basedir:
+        state.basedir = os.path.dirname(doxyfile)
 
     logging.debug("Parsing configuration from {}".format(doxyfile))
 
