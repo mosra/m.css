@@ -34,6 +34,10 @@ def annotation(param: List[int], another: bool, third: str = "hello") -> float:
     """An annotated function"""
     pass
 
+def annotation_strings(param: 'List[int]', another: 'bool', third: 'str' = "hello") -> 'float':
+    """Annotated using strings, should result in exactly the same as annotation()"""
+    pass
+
 def no_annotation(a, b, z):
     """Non-annotated function"""
     pass
