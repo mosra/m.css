@@ -60,9 +60,8 @@ install:
   # Needed for doxygen binaries
   - if [ "$WITH_DOCUMENTATION" == "ON" ]; then mkdir -p $HOME/bin && export PATH=$HOME/bin:$PATH; fi
 
-  # Old releases are randomly deleted from this location, so even if I would
-  # want to, I can't test with older versions
-  - if [ "$WITH_DOCUMENTATION" == "ON" ] && [ ! -f $HOME/bin/doxygen ]; then wget "http://doxygen.nl/files/doxygen-1.8.17.linux.bin.tar.gz" && tar -xzf doxygen-1.8.17.linux.bin.tar.gz && cp doxygen-1.8.17/bin/doxygen $HOME/bin && doxygen -v; fi
+  # Old releases are randomly deleted from doxygen.nl, use sourceforge instead
+  - if [ "$WITH_DOCUMENTATION" == "ON" ] && [ ! -f $HOME/bin/doxygen ]; then wget "https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.linux.bin.tar.gz" && tar -xzf doxygen-1.8.17.linux.bin.tar.gz && cp doxygen-1.8.17/bin/doxygen $HOME/bin && doxygen -v; fi
 
 script:
   # Test the theme. No code coverage there.
