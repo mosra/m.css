@@ -505,6 +505,13 @@ option:
         'fastmath._native': 'fastmath'
     }
 
+.. block-warning:: Overrides based an environment variable
+
+    When m.css is run, an environment variable named
+    :sh:`$MCSS_GENERATING_OUTPUT` is set. This can be used for *really dirty*
+    hacks when monkey-patching imported modules is not enough (for example in
+    order to change behavior inside native modules).
+
 `Docstrings`_
 -------------
 

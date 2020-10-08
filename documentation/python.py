@@ -2677,6 +2677,14 @@ if __name__ == '__main__': # pragma: no cover
     parser.add_argument('--debug', help="verbose debug output", action='store_true')
     args = parser.parse_args()
 
+    # Set an environment variable indicating m.css is being run. This can be
+    # used for REALLY DIRTY hacks when monkey-patching imported modules is not
+    # enough (for example in order to change behavior inside native modules and
+    # such)
+    #
+    # Since this is done here in __main__, it can't be checked by a test.
+    os.environ['MCSS_GENERATING_OUTPUT'] = '1'
+
     # Load configuration from a file, update the defaults with it
     config = copy.deepcopy(default_config)
     name, _ = os.path.splitext(os.path.basename(args.conf))
