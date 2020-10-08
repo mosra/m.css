@@ -187,7 +187,7 @@ class Figure(Image):
             elif not (isinstance(first_node, nodes.comment)
                       and len(first_node) == 0):
                 error = self.state_machine.reporter.error(
-                      'Figure caption must be a paragraph or empty comment.',
+                      'Figure caption must be a paragraph or empty comment, got %s' % type(first_node),
                       nodes.literal_block(self.block_text, self.block_text),
                       line=self.lineno)
                 return [figure_node, error]
