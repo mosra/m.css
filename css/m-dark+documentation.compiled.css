@@ -898,6 +898,9 @@ figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcapt
   font-weight: 600;
   font-size: 1.17rem;
 }
+figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure figcaption a {
+  text-decoration: none;
+}
 .m-imagegrid > div {
   background-color: #2f363f;
 }

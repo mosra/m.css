@@ -641,6 +641,9 @@ figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcapt
   font-weight: var(--heading-font-weight);
   font-size: 1.17rem; /* taken from webkit defaults for h3 */
 }
+figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure figcaption a {
+  text-decoration: var(--link-decoration-heading);
+}
 
 /* Image grid */
 .m-imagegrid > div {
