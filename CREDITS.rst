@@ -18,7 +18,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   `@Bridouz <https://github.com/Bridouz>`_ --- documentation improvements
 -   Cris Luengo (`@crisluengo <https://github.com/crisluengo>`_) ---
     complete handling of Doxygen entities and super/subscript elements, fixes
-    for external docs in Markdown files
+    for external docs in Markdown files, style fixes
 -   `@DarkContact <https://github.com/DarkContact>`_ --- Windows-related fixes
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
 -   `Lukas Pirl <https://github.com/lpirl>`_ --- Pelican theme improvements
@@ -30,6 +30,7 @@ Listing only people with code contributions, because otherwise there's too many
     proof-of-concept implementation of ``#include`` information in the Doxygen
     theme
 -   Sergei Izmailov (`@sizmailov <https://github.com/sizmailov>`_) ---
-    improvements to pybind11 support in the Python doc theme
+    improvements to pybind11 support in the Python doc theme; theme, style and
+    search fixes
 -   Yuri Edward (`@Yuri6037 <https://github.com/Yuri6037>`_) --- improvements
     to the Doxygen theme
