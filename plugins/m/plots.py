@@ -72,14 +72,25 @@ style_mapping = {
 }
 
 # Patch to remove preamble and hardcoded sizes. Matplotlib 2.2 has a http URL
-# while matplotlib 3 has a https URL, check for both.
+# while matplotlib 3 has a https URL, check for both. Matplotlib 3.3 has a new
+# <metadata> field (which we're not interested in) and slightly different
+# formatting of the global style after (which we unify to the compact version).
 _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="utf-8" standalone="no"\?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1\.1//EN"
   "http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd">
 <!-- Created with matplotlib \(https?://matplotlib.org/\) -->
-<svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">
-""")
+<svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">(
+ <metadata>.+</metadata>)?
+ <defs>
+  <style type="text/css">
+?\*{stroke-linecap:butt;stroke-linejoin:round;}(
+  )?</style>
+ </defs>
+""", re.DOTALL)
 _patch_dst = r"""<svg \g<viewBox>>
+ <defs>
+  <style type="text/css">*{stroke-linecap:butt;stroke-linejoin:round;}</style>
+ </defs>
 """
 
 # Remove needless newlines and trailing space in path data
@@ -98,14 +109,21 @@ _class_mapping = [
     # <use>, everything is defined in <defs>, no need to repeat
     ('<use style="fill:#cafe02;stroke:#cafe02;stroke-width:0.8;"', '<use'),
 
+    # Text styles have `font-stretch:normal;` added in matplotlib 3.3, so
+    # all of them are duplicated to handle this
+
     # Label text on left
     ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label"'),
+    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;"', 'class="m-label"'),
     # Label text on bottom (has extra style params)
     ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
+    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
     # Secondary label text
     ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
+    ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
     # Title text
     ('style="fill:#cafe02;font-family:{font};font-size:13px;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
+    ('style="fill:#cafe02;font-family:{font};font-size:13px;font-stretch:normal;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
 
     # Bar colors. Keep in sync with latex2svgextra.
     ('style="fill:#cafe03;"', 'class="m-bar m-default"'),
