@@ -65,6 +65,15 @@ def annotation_any(a: Any):
 def annotation_union(a: Union[float, int]):
     """Annotation with the Union type"""
 
+def annotation_optional(a: Optional[float]):
+    """Annotation with the Optional type"""
+
+def annotation_union_second_bracketed(a: Union[float, List[int]]):
+    """Annotation with the Union type and second type bracketed, where we can't use isinstance"""
+
+def annotation_union_of_undefined(a: Union[int, 'something.Undefined']):
+    """Annotation with an union that has an undefined type inside, where we can't use isinstance either"""
+
 def annotation_list_noparam(a: List):
     """Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions"""
 if sys.version_info < (3, 7):
@@ -72,12 +81,6 @@ if sys.version_info < (3, 7):
 
 def annotation_generic(a: List[_T]) -> _T:
     """Annotation with a generic type"""
-
-def annotation_optional(a: Optional[float]):
-    """Annotation with the Optional type"""
-
-def annotation_union_second_bracketed(a: Union[float, List[int]]):
-    """Annotation with the Union type and second type bracketed, where we can't use isinstance"""
 
 def annotation_callable(a: Callable[[float, int], str]):
     """Annotation with the Callable type"""

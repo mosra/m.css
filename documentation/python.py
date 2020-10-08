@@ -1147,9 +1147,19 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
         if hasattr(annotation, '__origin__') and annotation.__origin__ is typing.Union:
             # FOR SOME REASON `annotation.__args__[1] is None` is always False,
             # so we have to use isinstance(). HOWEVER, we *can't* use
-            # isinstance if it's a "bracketed" type -- it'll die. So check that
-            # first.
-            if len(annotation.__args__) == 2 and not hasattr(annotation.__args__[1], '__args__') and isinstance(None, annotation.__args__[1]):
+            # isinstance if:
+            #   - it's a "bracketed" type, having __args__
+            #     (see the `annotation_union_second_bracketed()` test)
+            #   - it's a ForwardRef because get_type_hints_or_nothing() failed
+            #     due to a type error (see the `annotation_union_of_undefined()`
+            #     test)
+            # because it'll die. So check that first.
+            if (len(annotation.__args__) == 2 and
+                not hasattr(annotation.__args__[1], '__args__') and
+                # Same 3.6 ForwardRef workaround as above
+                not isinstance(annotation.__args__[1], typing.ForwardRef if sys.version_info >= (3, 7) else typing._ForwardRef) and
+                isinstance(None, annotation.__args__[1])
+            ):
                 name = 'typing.Optional'
                 args = annotation.__args__[:1]
             else:
