@@ -2585,7 +2585,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # TODO: rework when we have nested page support
     for i in range(len(page_index)):
         entry = state.name_map[page_index[i]]
-        assert entry.type == EntryType.PAGE
+        assert entry.type == EntryType.PAGE, "page %s already used as %s (%s)" % (page_index[i], entry.type, entry.url)
 
         index_entry = Empty()
         index_entry.kind = 'page'
