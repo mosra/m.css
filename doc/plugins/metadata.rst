@@ -224,7 +224,7 @@ and matching a category named *Guest posts*:
 .. note-info::
 
     See how category info is rendered in the m.css Pelican theme
-    `on the category page <{category}a-category>`_ and
+    `on the category page <{category}examples>`_ and
     `on the article page <{filename}/examples/article.rst>`_.
 
 `Tag metadata`_
