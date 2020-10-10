@@ -32,5 +32,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   Sergei Izmailov (`@sizmailov <https://github.com/sizmailov>`_) ---
     improvements to pybind11 support in the Python doc theme; theme, style and
     search fixes
+-   `@shniubobo <https://github.com/shniubobo>`_ --- Fixes for Pelican 4.5
+    compatibility
 -   Yuri Edward (`@Yuri6037 <https://github.com/Yuri6037>`_) --- improvements
     to the Doxygen theme
