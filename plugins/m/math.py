@@ -164,8 +164,8 @@ def _configure_pelican(pelicanobj):
     register_mcss(mcss_settings=pelicanobj.settings, hooks_pre_page=[], hooks_post_run=[])
 
 def register():
-    import pelican.signals
+    from pelican import signals
 
-    pelican.signals.initialized.connect(_configure_pelican)
-    pelican.signals.finalized.connect(save_cache)
-    pelican.signals.content_object_init.connect(new_page)
+    signals.initialized.connect(_configure_pelican)
+    signals.finalized.connect(save_cache)
+    signals.content_object_init.connect(new_page)

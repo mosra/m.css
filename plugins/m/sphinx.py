@@ -658,13 +658,13 @@ def _pelican_configure(pelicanobj):
          inventories=pelicanobj.settings.get('M_SPHINX_INVENTORIES', []))
 
 def register(): # for Pelican
-    import pelican.signals
+    from pelican import signals
 
     rst.roles.register_local_role('ref', ref)
 
-    pelican.signals.initialized.connect(_pelican_configure)
-    pelican.signals.article_generator_preread.connect(_pelican_new_page)
-    pelican.signals.page_generator_preread.connect(_pelican_new_page)
+    signals.initialized.connect(_pelican_configure)
+    signals.article_generator_preread.connect(_pelican_new_page)
+    signals.page_generator_preread.connect(_pelican_new_page)
 
 def pretty_print_intersphinx_inventory(file):
     return ''.join([

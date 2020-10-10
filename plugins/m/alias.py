@@ -74,6 +74,6 @@ def register_mcss(**kwargs):
 def _pelican_get_generators(generators): return AliasGenerator
 
 def register(): # for Pelican
-    import pelican.signals
+    from pelican import signals
 
-    pelican.signals.get_generators.connect(_pelican_get_generators)
+    signals.get_generators.connect(_pelican_get_generators)

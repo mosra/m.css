@@ -309,7 +309,7 @@ def _pelican_configure(pelicanobj):
     register_mcss(mcss_settings=pelicanobj.settings, hooks_pre_page=[])
 
 def register(): # for Pelican
-    import pelican.signals
+    from pelican import signals
 
-    pelican.signals.initialized.connect(_pelican_configure)
-    pelican.signals.content_object_init.connect(new_page)
+    signals.initialized.connect(_pelican_configure)
+    signals.content_object_init.connect(new_page)
