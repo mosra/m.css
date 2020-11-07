@@ -3843,8 +3843,10 @@ if __name__ == '__main__': # pragma: no cover
     parse_doxyfile(state, doxyfile)
 
     # Doxygen is stupid and can't create nested directories, create the input
-    # directory for it
-    os.makedirs(state.doxyfile['OUTPUT_DIRECTORY'], exist_ok=True)
+    # directory for it. Don't do it when the argument is empty, because
+    # apparently makedirs() is also stupid.
+    if state.doxyfile['OUTPUT_DIRECTORY']:
+        os.makedirs(state.doxyfile['OUTPUT_DIRECTORY'], exist_ok=True)
 
     if not args.no_doxygen:
         logging.debug("running Doxygen on {}".format(doxyfile))
