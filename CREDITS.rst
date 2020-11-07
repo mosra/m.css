@@ -21,7 +21,10 @@ Listing only people with code contributions, because otherwise there's too many
     for external docs in Markdown files, style fixes
 -   `@DarkContact <https://github.com/DarkContact>`_ --- Windows-related fixes
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
+-   `Guillaume Jacquemin <https://github.com/williamjcm>`_ --- Pelican theme
+    fixes
 -   `Lukas Pirl <https://github.com/lpirl>`_ --- Pelican theme improvements
+-   `Marin <https://github.com/marinjurjevic>`_ --- Doxygen theme fixes
 -   `Rémi Marche <https://github.com/Marr11317>`_ --- Doxygen theme
     improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
