@@ -56,7 +56,9 @@ matrix:
 install:
   # Everything broken with Pelican 4.5, stay on older version until that's
   # resolved: https://github.com/mosra/m.css/issues/178
-  - if [ "$WITH_THEME" == "ON" ]; then pip install jinja2 pelican==4.2.0 Pyphen Pillow coverage codecov matplotlib qrcode; fi
+  # Pyphen 0.10 has significantly different hyphenation results, staying on an
+  # older version until I can investigate
+  - if [ "$WITH_THEME" == "ON" ]; then pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov matplotlib qrcode; fi
   - if [ "$WITH_NODE" == "ON" ]; then npm install istanbul codecov; fi
 
   # Needed for doxygen binaries
