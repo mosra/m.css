@@ -818,7 +818,17 @@ as well:
 
 Grapviz ``dot`` graphs from the ``@dot`` and ``@dotfile`` commands are rendered
 as an inline SVG. Graph name and the ``sizespec`` works equivalently to the
-`Images and figures`_.
+`Images and figures`_. In order to be consistent with the theme, set a matching
+font name and size in the `Doxyfile` --- these values match the default dark
+theme:
+
+.. code:: ini
+
+    DOT_FONTNAME = Source Sans Pro
+    DOT_FONTSIZE = 16.0
+
+See documentation of the `m.dot <{filename}/plugins/plots-and-graphs.rst#graphs>`_
+plugin for detailed information about behavior and supported features.
 
 `Pages, sections and table of contents`_
 ----------------------------------------
