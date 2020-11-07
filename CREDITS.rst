@@ -14,7 +14,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   Arvid Gerstmann (`@Leandros <https://github.com/Leandros>`_) ---
     Windows-related fixes, bugreports
 -   Blair Conrad (`@blairconrad <https://github.com/blairconrad>`_) ---
-    complete rewrite of the ANSI color lexer to be the best ever
+    complete rewrite of the ANSI color lexer to be the *best ever*
 -   `@Bridouz <https://github.com/Bridouz>`_ --- documentation improvements
 -   Cris Luengo (`@crisluengo <https://github.com/crisluengo>`_) ---
     complete handling of Doxygen entities and super/subscript elements, fixes
