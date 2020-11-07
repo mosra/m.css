@@ -269,7 +269,7 @@ distribution package manager, for example on Ubuntu:
 
     sudo apt install graphviz
 
-The plugin produces SVG graphcs that make use of the
+The plugin produces SVG graphs that make use of the
 `CSS graph styling <{filename}/css/components.rst#graphs>`_.
 
 `Directed graphs`_
