@@ -1508,6 +1508,10 @@ positives, this information is not present in the non-verbose output.
     DEBUG:root:dir_22305cb0964bbe63c21991dd2265ce48.xml: neither brief nor
     detailed description present, skipping
 
+Alternatively, there's a possibility to just show everything, however that may
+include also things you don't want to have shown. See
+`Showing undocumented symbols and files`_ for more information.
+
 `Output is not styled`_
 -----------------------
 
