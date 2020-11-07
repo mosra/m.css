@@ -70,15 +70,11 @@ switch.
 `Basic usage`_
 ==============
 
-.. note-warning::
+.. note-info::
 
-    The script depends on features released in Doxygen 1.8.14 (December 2017).
-    It may work reasonably well with older versions, but I can't guarantee
-    that. Upgrade to the latest version to have the best experience.
-
-    Some features depend on newer versions or patches that are not yet
-    integrated in Doxygen, in that case the documentation mentions which
-    revision to use or which patch you need to apply.
+    The script requires at least Doxygen 1.8.14, but preferrably version 1.8.15
+    and newer. Some features depend on newer versions, in that case the
+    documentation mentions which version contains the support.
 
 The base is contained in a single Python script and related style/template
 files, for advanced features such as math rendering it'll make use of internals
@@ -854,10 +850,10 @@ its XML output. To match the behavior of stock HTML output, enable the
 
     XML_NS_MEMB_FILE_SCOPE = YES
 
-.. note-warning:: Doxygen patches
+.. note-warning:: Doxygen support
 
-    In order to use the :ini:`XML_NS_MEMB_FILE_SCOPE` option, you need Doxygen
-    1.8.15 (released December 2018).
+    In order to use the :ini:`XML_NS_MEMB_FILE_SCOPE` option, you need at least
+    Doxygen 1.8.15.
 
 Please note that APIs listed in file documentation pages lose all namespace
 information (and when it appears in search, it's prefixed with the file name
@@ -880,11 +876,10 @@ and you have to enable the :ini:`EXTRACT_PRIV_VIRTUAL` Doxyfile option:
     INHERIT_DOCS = NO
     EXTRACT_PRIV_VIRTUAL = YES
 
-.. note-warning:: Doxygen patches
+.. note-warning:: Doxygen support
 
-    In order to use the :ini:`EXTRACT_PRIV_VIRTUAL` option, you need Doxygen
-    with :gh:`doxygen/doxygen#6729` integrated, the 1.8.15 release does not
-    have this option yet.
+    In order to use the :ini:`EXTRACT_PRIV_VIRTUAL` option, you need at least
+    Doxygen 1.8.16.
 
 `Inline namespaces`_
 --------------------
@@ -893,10 +888,9 @@ and you have to enable the :ini:`EXTRACT_PRIV_VIRTUAL` Doxyfile option:
 namespace documentation pages and nested namespace lists. Doxygen additionally
 flattens those, so their contents appear in the parent namespace as well.
 
-.. note-warning:: Doxygen patches
+.. note-warning:: Doxygen support
 
-    This feature requires :gh:`doxygen/doxygen#7828` to work (not merged to
-    Doxygen master yet).
+    This feature requires Doxygen 1.8.19 or newer.
 
 `Include files`_
 ----------------
@@ -926,12 +920,11 @@ Doxyfile to hide all :cpp:`#include`-related information:
 
     SHOW_INCLUDE_FILES = NO
 
-.. note-warning:: Doxygen patches
+.. note-warning:: Doxygen support
 
-    Current stable Doxygen release (1.8.15) doesn't correctly provide location
-    information for function and variable declarations. A fix is present since
-    :gh:`doxygen/doxygen@7f40e488e27bcea4bb15045df05479dc5fbd9d6d` (formerly
-    :gh:`doxygen/doxygen#6722`).
+    Doxygen 1.8.15 doesn't correctly provide location information for function
+    and variable declarations and you might encounter issues. The behavior is
+    fixed since 1.8.16.
 
 `Code highlighting`_
 --------------------
