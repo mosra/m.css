@@ -2334,6 +2334,7 @@ def postprocess_state(state: State):
     # Resolve navbar links that are just an ID
     def resolve_link(html, title, url, id):
         if not html and not title and not url:
+            assert id in state.compounds, "Navbar references {} which wasn't found".format(id)
             found = state.compounds[id]
             title, url = found.name, found.url
         return html, title, url, id
