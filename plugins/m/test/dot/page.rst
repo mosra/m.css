@@ -80,3 +80,26 @@ Structs:
         :class: m-danger
 
         a -> b
+
+Subgraphs:
+
+.. huh why the subgraphs have to be prefixed with cluster_?!
+
+.. digraph::
+
+    subgraph cluster_Outer {
+        label="Outer"
+
+        A -> B -> D
+
+        A -> C
+
+        subgraph cluster_Inner {
+            label="Inner"
+
+            class="m-info"
+
+            B2 -> B
+        }
+
+    }
