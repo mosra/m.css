@@ -634,6 +634,40 @@ figure.m-figure.m-fullwidth:after {
   padding-left: 0.875rem;
 }
 
+/* Next classes are for py-exec plugin */
+.m-code-figure > div.m-py-exec {
+  position: relative;
+  margin-left: -0.875rem;
+  margin-right: -0.875rem;
+}
+
+.m-code-figure > div.m-py-exec:first-child {
+  margin-top: -0.875rem;
+}
+
+.m-code-figure > div.m-py-exec:last-child {
+  margin-bottom: -1.0rem;
+}
+
+.m-code-figure > div.m-py-exec > * {
+  border-radius: 0;
+  width: 100%;
+}
+
+.m-code-figure > div.m-py-exec:first-child > * {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.m-code-figure > div.m-py-exec:last-child > * {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.m-code-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll, .m-console-figure > div.m-py-exec > pre.m-nopad.m-no-vscroll {
+  max-height: none;
+}
+
 /* Figure caption */
 figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcaption {
   margin-top: 0.5rem;
