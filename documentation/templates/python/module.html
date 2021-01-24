@@ -41,6 +41,9 @@
                 {% if page.data %}
                 <li><a href="#data">Data</a></li>
                 {% endif %}
+                {% if page.exceptions %}
+                <li><a href="#exceptions">Exceptions</a></li>
+                {% endif %}
               </ul>
             </li>
           </ul>
@@ -95,6 +98,16 @@
           <dl class="m-doc">
             {% for data in page.data %}
 {{ entry_data(data) }}
+            {% endfor %}
+          </dl>
+        </section>
+        {% endif %}
+        {% if page.exceptions %}
+        <section id="exceptions">
+          <h2><a href="#exceptions">Exceptions</a></h2>
+          <dl class="m-doc">
+            {% for exception in page.exceptions %}
+{{ entry_class(exception) }}
             {% endfor %}
           </dl>
         </section>
