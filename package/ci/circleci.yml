@@ -39,6 +39,9 @@ commands:
 
   install-python-deps:
     parameters:
+      extra:
+        type: string
+        default: ""
       matplotlib-version:
         type: string
         default: ""
@@ -53,7 +56,7 @@ commands:
         # older until I can investigate; on Py3.5 there's only 3.0 so this is
         # being set explicitly in py36 and py37 build
         command: |
-          pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >>
+          pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -186,6 +189,7 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
+        extra: attrs
     - checkout
     - test-theme
     - test-plugins
@@ -201,6 +205,7 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
+        extra: attrs
     - checkout
     - test-theme
     - test-plugins
