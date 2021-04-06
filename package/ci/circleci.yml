@@ -74,7 +74,7 @@ commands:
         name: Test the theme
         command: |
           cd pelican-theme
-          python -m unittest
+          python -m unittest -v
     - run:
         name: Verify compiled CSS is up-to-date
         command: |
@@ -90,7 +90,7 @@ commands:
         # TODO: add tests for the math plugin as well
         command: |
           cd plugins
-          coverage run -m unittest
+          coverage run -m unittest -v
           cp .coverage ../.coverage.plugins
 
   test-documentation-themes:
@@ -140,7 +140,7 @@ commands:
         name: Test documentation themes
         command: |
           cd documentation
-          coverage run -m unittest
+          coverage run -m unittest -v
           cp .coverage ../.coverage.documentation
 
   test-search:
