@@ -292,12 +292,8 @@ class SaneHtmlTranslator(HTMLTranslator):
         atts = {}
         uri = node['uri']
         ext = os.path.splitext(uri)[1].lower()
-        if ext in self.object_image_types:
-            atts['data'] = uri
-            atts['type'] = self.object_image_types[ext]
-        else:
-            atts['src'] = uri
-            if 'alt' in node: atts['alt'] = node['alt']
+        atts['src'] = uri
+        if 'alt' in node: atts['alt'] = node['alt']
         style = []
         if node.get('width'):
             style += ['width: {}'.format(node['width'])]
@@ -312,12 +308,7 @@ class SaneHtmlTranslator(HTMLTranslator):
             suffix = ''
         else:
             suffix = '\n'
-        if ext in self.object_image_types:
-            # do NOT use an empty tag: incorrect rendering in browsers
-            self.body.append(self.starttag(node, 'object', suffix, **atts) +
-                             node.get('alt', uri) + '</object>' + suffix)
-        else:
-            self.body.append(self.emptytag(node, 'img', suffix, **atts))
+        self.body.append(self.emptytag(node, 'img', suffix, **atts))
 
     def depart_image(self, node):
         pass
