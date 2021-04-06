@@ -55,6 +55,8 @@ commands:
         # Matplotlib 3.4.1 has different output AGAIN, staying on something
         # older until I can investigate; on Py3.5 there's only 3.0 so this is
         # being set explicitly in py36 and py37 build
+        # Attrs 20.3 add some new properties that I need to ignore first, using
+        # 19.3 instead
         command: |
           pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
@@ -189,7 +191,7 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs
+        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
@@ -205,7 +207,7 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs
+        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
