@@ -38,6 +38,10 @@ commands:
           apt install -y git << parameters.extra >>
 
   install-python-deps:
+    parameters:
+      matplotlib-version:
+        type: string
+        default: ""
     steps:
     - run:
         name: Install Python dependencies
@@ -45,8 +49,11 @@ commands:
         # that's  resolved: https://github.com/mosra/m.css/issues/178
         # Pyphen 0.10 has significantly different hyphenation results, staying
         # on an  older version until I can investigate
+        # Matplotlib 3.4.1 has different output AGAIN, staying on something
+        # older until I can investigate; on Py3.5 there's only 3.0 so this is
+        # being set explicitly in py36 and py37 build
         command: |
-          pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov matplotlib qrcode
+          pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -177,7 +184,8 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps
+    - install-python-deps:
+        matplotlib-version: ==3.3.4
     - checkout
     - test-theme
     - test-plugins
@@ -191,7 +199,8 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps
+    - install-python-deps:
+        matplotlib-version: ==3.3.4
     - checkout
     - test-theme
     - test-plugins
