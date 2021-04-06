@@ -121,10 +121,11 @@ Test organization: files named ``test_something.py`` take their input from
 case of Doxygen, comment-out the line that removes the ``html`` directory in
 ``__init__.py`` to see all test output files.
 
-The project is built on Travis CI on Linux with Python 3.5, 3.6 and 3.7;
-documentation themes are tested only on 3.6+ and math rendering is disabled as
-it's impossible to get it working on Travis (https://github.com/mosra/m.css/pull/75).
-Build and coverage status is presented at https://mcss.mosra.cz/build-status/.
+The project is built on CircleCI on Linux with Python 3.5, 3.6 and 3.7;
+documentation themes are tested only on 3.6+ and math rendering is currently
+disabled as getting it to work was historically impossible
+(https://github.com/mosra/m.css/pull/75). Build and coverage status is
+presented at https://mcss.mosra.cz/build-status/.
 
 Contact
 =======
