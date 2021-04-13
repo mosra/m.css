@@ -635,7 +635,7 @@ class SaneHtmlTranslator(HTMLTranslator):
 
     # no class="docutils" in <hr>
     def visit_transition(self, node):
-        if 'm-transition' in node['classes']:
+        if len(node.children) > 0:
             self.body.append(self.starttag(node, 'p', ''))
         else:
             self.body.append(self.emptytag(node, 'hr'))
