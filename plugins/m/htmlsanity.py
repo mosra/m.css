@@ -641,7 +641,8 @@ class SaneHtmlTranslator(HTMLTranslator):
             self.body.append(self.emptytag(node, 'hr'))
 
     def depart_transition(self, node):
-        pass
+        if 'm-transition' in node['classes']:
+            self.body.append('</p>\n')
 
 class _SaneFieldBodyTranslator(SaneHtmlTranslator):
     """
