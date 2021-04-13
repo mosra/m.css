@@ -35,7 +35,7 @@ class Transition(rst.Directive):
     def run(self):
         text = ' '.join(self.arguments)
         title_nodes, _ = self.state.inline_text(text, self.lineno)
-        transition_node = nodes.paragraph('', '', *title_nodes)
+        transition_node = nodes.transition('', *title_nodes)
         transition_node['classes'] += ['m-transition']
         return [transition_node]
 
