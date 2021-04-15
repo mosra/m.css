@@ -918,17 +918,17 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
-            summary = inspect.cleandoc(original_signature[end + 1:]).partition('\n\n')[0]
+            docstring = inspect.cleandoc(original_signature[end + 1:])
         else:
-            summary = ''
-        return (name, summary, [('…', None, None, None)], None, None)
+            docstring = ''
+        return (name, docstring, [('…', None, None, None)], None, None)
 
     if len(signature) > 1 and signature[1] == '\n':
-        summary = inspect.cleandoc(signature[2:]).partition('\n\n')[0]
+        docstring = inspect.cleandoc(signature[2:])
     else:
-        summary = ''
+        docstring = ''
 
-    return (name, summary, args, return_type, return_type_link)
+    return (name, docstring, args, return_type, return_type_link)
 
 def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
     name = referrer_path[-1]

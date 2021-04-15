@@ -304,6 +304,29 @@ class Signatures(BaseInspectTestCase):
         if pybind_signatures.MyClass23.is_pybind23:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass23.html'))
 
+class Docstrings(BaseInspectTestCase):
+
+    def test_doctest(self):
+        if self.path not in sys.path:
+            sys.path.append(self.path)
+        import doctest
+        import pybind_docstrings
+        failure_count, test_count = doctest.testmod(pybind_docstrings)
+        assert failure_count == 0
+
+    def test_page_generation(self):
+        if self.path not in sys.path:
+            sys.path.append(self.path)
+        import pybind_docstrings
+        self.run_python({
+            'INPUT_MODULES': [pybind_docstrings],
+            'PYBIND11_COMPATIBILITY': True,
+            'M_SPHINX_PARSE_DOCSTRINGS': True,
+            'PLUGINS': ['m.sphinx']
+        })
+
+        self.assertEqual(*self.actual_expected_contents('pybind_docstrings.html'))
+
 class Enums(BaseInspectTestCase):
     def test(self):
         self.run_python({
