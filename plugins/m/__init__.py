@@ -24,3 +24,23 @@
 
 # This file is here only to make python unittest work, it's not needed
 # otherwise
+from . import (
+    abbr,
+    alias,
+    code,
+    components,
+    dot,
+    dox,
+    filesize,
+    gh,
+    gl,
+    htmlsanity,
+    images,
+    link,
+    math,
+    metadata,
+    #  plots,  # requires matplotlib, numpy
+    #  qr,  # requires qrcode
+    sphinx,
+    vk,
+)
