@@ -2,7 +2,7 @@
 
 import sys
 
-from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar, Generic
+from typing import List, Tuple, Dict, Any, Union, Optional, Callable, TypeVar, Generic, Iterator
 
 class Foo:
     """A class with properties"""
@@ -21,12 +21,21 @@ class FooSlots:
 
 _T = TypeVar('Tp')
 
-# Triggers a corner case with _gorg on Py3.6
+# Triggers a corner case with _gorg on Py3.6 (the member has to be ignored).
+# AContainer2 is not derived directly from Generic but has _gorg also.
+# Additionally, on Py3.6 these classes will have a __next_in_mro__ member,
+# which should be ignored as well
 class AContainer(Generic[_T]):
     """A generic class. No parent class info extracted yet."""
+class AContainer2(Iterator):
+    """Another class derived from a typing thing."""
 
 def annotation(param: List[int], another: bool, third: str = "hello") -> float:
     """An annotated function"""
+    pass
+
+def annotation_strings(param: 'List[int]', another: 'bool', third: 'str' = "hello") -> 'float':
+    """Annotated using strings, should result in exactly the same as annotation()"""
     pass
 
 def no_annotation(a, b, z):
@@ -56,6 +65,15 @@ def annotation_any(a: Any):
 def annotation_union(a: Union[float, int]):
     """Annotation with the Union type"""
 
+def annotation_optional(a: Optional[float]):
+    """Annotation with the Optional type"""
+
+def annotation_union_second_bracketed(a: Union[float, List[int]]):
+    """Annotation with the Union type and second type bracketed, where we can't use isinstance"""
+
+def annotation_union_of_undefined(a: Union[int, 'something.Undefined']):
+    """Annotation with an union that has an undefined type inside, where we can't use isinstance either"""
+
 def annotation_list_noparam(a: List):
     """Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions"""
 if sys.version_info < (3, 7):
@@ -63,12 +81,6 @@ if sys.version_info < (3, 7):
 
 def annotation_generic(a: List[_T]) -> _T:
     """Annotation with a generic type"""
-
-def annotation_optional(a: Optional[float]):
-    """Annotation with the Optional type"""
-
-def annotation_union_second_bracketed(a: Union[float, List[int]]):
-    """Annotation with the Union type and second type bracketed, where we can't use isinstance"""
 
 def annotation_callable(a: Callable[[float, int], str]):
     """Annotation with the Callable type"""

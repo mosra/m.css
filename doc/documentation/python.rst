@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -44,6 +44,8 @@ Python docs
     :language: js
 .. role:: py(code)
     :language: py
+.. role:: sh(code)
+    :language: sh
 .. role:: rst(code)
     :language: rst
 
@@ -456,49 +458,61 @@ below the parent package. If a module's :py:`__package__` is empty, it's
 assumed to be a plain module (instead of a package) and since those can't have
 submodules, all found submodules in it are ignored.
 
-.. block-success:: Overriding the set of included names, module reorganization
+`Documentation-only overrides`_
+-------------------------------
 
-    In case the autodetection includes more than you want or, conversely, you
-    need to include names that would otherwise be excluded (such as underscored
-    names), you can temporarily override the :py:`__all__` attribute when
-    generating the docs. For example, the following will list just the
-    :py:`pow()` and :py:`log()` funtions from the :py:`math` module, ignoring
-    the rest:
+While the inspection and autodetection follows the structure of the original
+code, it might not be always desirable to show it exactly that way in the docs.
+Fortunately, thanks to Python's dynamic nature, a lot can be done by
+`monkey-patching <https://en.wikipedia.org/wiki/Monkey_patch>`_ during doc
+generation.
 
-    .. code:: py
+In case the autodetection includes more than you want or, conversely, you need
+to include names that would otherwise be excluded (such as underscored names),
+you can temporarily override the :py:`__all__` attribute when generating the
+docs. For example, the following will list just the :py:`pow()` and :py:`log()`
+funtions from the :py:`math` module, ignoring the rest:
 
-        import math
-        math.__all__ = ['pow', 'log']
+.. code:: py
 
-        INPUT_MODULES = [math]
+    import math
+    math.__all__ = ['pow', 'log']
 
-    In other cases, especially when native modules are involved, the inspected
-    name locations might not be what you want. By putting the names into
-    :py:`__all__` you tell the script it should map the inspected location to
-    the one provided. Note you should also hide the original location from the
-    script to avoid duplicate definitons (unless it's underscored, in which
-    case it'll get ignored automatically).
+    INPUT_MODULES = [math]
 
-    .. code:: py
+In other cases, especially when native modules are involved, the inspected name locations might not be what you want. By putting the names into :py:`__all__`
+you tell the script it should map the inspected location to the one provided.
+Note you should also hide the original location from the script to avoid
+duplicate definitons (unless it's underscored, in which case it'll get ignored
+automatically).
 
-        # module math
+.. code:: py
 
-        from _native_math import fast_sin as sin
-        from _native_math import fast_cos as cos
-        __all__ = ['sin', 'cos']
+    # module math
 
-    Additionally, for mapping types of external libraries where the
-    autodetection from :py:`__all__` can't be performed, you can use the
-    :py:`NAME_MAPPING` option:
+    from _native_math import fast_sin as sin
+    from _native_math import fast_cos as cos
+    __all__ = ['sin', 'cos']
 
-    .. code:: py
+Additionally, for mapping types of external libraries where the autodetection
+from :py:`__all__` can't be performed, you can use the :py:`NAME_MAPPING`
+option:
 
-        NAME_MAPPING = {
-            'fastmath._native.Vector3': 'fastmath.Vector3',
-            'fastmath._native.Quaternion': 'fastmath.Quaternion',
-            # or, equivalently, if the mapping is the same for all members:
-            'fastmath._native': 'fastmath'
-        }
+.. code:: py
+
+    NAME_MAPPING = {
+        'fastmath._native.Vector3': 'fastmath.Vector3',
+        'fastmath._native.Quaternion': 'fastmath.Quaternion',
+        # or, equivalently, if the mapping is the same for all members:
+        'fastmath._native': 'fastmath'
+    }
+
+.. block-warning:: Overrides based an environment variable
+
+    When m.css is run, an environment variable named
+    :sh:`$MCSS_GENERATING_OUTPUT` is set. This can be used for *really dirty*
+    hacks when monkey-patching imported modules is not enough (for example in
+    order to change behavior inside native modules).
 
 `Docstrings`_
 -------------

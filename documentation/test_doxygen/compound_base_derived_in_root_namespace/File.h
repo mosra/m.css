@@ -9,7 +9,7 @@ struct Base {};
 namespace Namespace {
 
 /** @brief A namespaced class with both base and derived in the root NS */
-struct BothBaseAndDerivedInRootNamespace: Base {}
+struct BothBaseAndDerivedInRootNamespace: Base {};
 
 }
 

@@ -41,7 +41,11 @@ void bar();
 /** @brief Variable in a group */
 constexpr void* variable = nullptr;
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 
@@ -74,7 +78,11 @@ void bar();
 /** @brief Variable in a group */
 constexpr void* variable = nullptr;
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 
@@ -91,6 +99,7 @@ class Class {
 };
 
 /** @defgroup group A group
+@brief Brief description. If this is not present, the detailed description gets interpreted as brief in 1.8.18. FFS.
 
 All entries inside should have include information. (Unless the includes are disabled globally or the file is not documented.)
 @{ */
@@ -110,7 +119,11 @@ void foo();
 /** @brief A define */
 #define A_DEFINE
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 /**
 @brief This namespace should not have a global include
@@ -142,3 +155,5 @@ namespace ContainsNamespace {
 Even though it has no members that could set the global include for it.
 */
 namespace Empty {}
+
+template <typename> struct SpreadClass;

@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -22,12 +22,13 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import copy
 import os
 import shutil
 import subprocess
 import unittest
 
-from doxygen import parse_doxyfile, State
+from doxygen import parse_doxyfile, State, default_config
 
 from . import BaseTestCase
 
@@ -38,29 +39,46 @@ class Doxyfile(unittest.TestCase):
         # Display ALL THE DIFFS
         self.maxDiff = None
 
-    def test(self):
-        state = State()
-        parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile')
-        self.assertEqual(state.doxyfile, {
-            'DOT_FONTNAME': 'Helvetica',
-            'DOT_FONTSIZE': 10,
-            'HTML_EXTRA_FILES': ['css', 'another.png', 'hello'],
-            'HTML_EXTRA_STYLESHEET': ['a.css', 'b.css'],
-            'HTML_OUTPUT': 'html',
-            'M_CLASS_TREE_EXPAND_LEVELS': 1,
-            'M_EXPAND_INNER_TYPES': False,
-            'M_FAVICON': 'favicon-dark.png',
-            'M_FILE_TREE_EXPAND_LEVELS': 1,
-            'M_LINKS_NAVBAR1': ['pages', 'modules'],
-            'M_LINKS_NAVBAR2': ['files', 'annotated'], # different order
-            'M_MATH_CACHE_FILE': 'm.math.cache',
-            'M_PAGE_FINE_PRINT': 'this is "quotes"',
-            'M_PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
-            'M_SEARCH_DISABLED': False,
-            'M_SEARCH_DOWNLOAD_BINARY': False,
-            'M_SEARCH_BASE_URL': '',
-            'M_SEARCH_EXTERNAL_URL': '',
-            'M_SEARCH_HELP':
+    expected_doxyfile = {
+        'DOT_FONTNAME': 'Helvetica',
+        'DOT_FONTSIZE': 10,
+        'HTML_OUTPUT': 'html',
+        'OUTPUT_DIRECTORY': '',
+        'PROJECT_BRIEF': 'is cool',
+        'PROJECT_LOGO': '',
+        'PROJECT_NAME': 'My Pet Project',
+        'SHOW_INCLUDE_FILES': True,
+        'XML_OUTPUT': 'xml'
+    }
+    expected_config = {
+        'DOXYFILE': 'Doxyfile',
+
+        'FAVICON': ('favicon-dark.png', 'image/png'),
+        'LINKS_NAVBAR1': [(None, 'Pages', 'pages.html', 'pages', []),
+                          (None, 'Modules', 'modules.html', 'modules', [])],
+        # different order
+        'LINKS_NAVBAR2': [(None, 'Files', 'files.html', 'files', []),
+                          (None, 'Classes', 'annotated.html', 'annotated', [])],
+        'FINE_PRINT': 'this is "quotes"',
+        'THEME_COLOR': '#22272e',
+        'STYLESHEETS': ['a.css', 'b.css'],
+        'HTML_HEADER': None,
+        'EXTRA_FILES': ['css', 'another.png', 'hello'],
+        'PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
+
+        'CLASS_INDEX_EXPAND_LEVELS': 1,
+        'CLASS_INDEX_EXPAND_INNER': False,
+        'FILE_INDEX_EXPAND_LEVELS': 1,
+
+        'M_CODE_FILTERS_PRE': {},
+        'M_CODE_FILTERS_POST': {},
+        'M_MATH_CACHE_FILE': 'm.math.cache',
+
+        'SEARCH_DISABLED': False,
+        'SEARCH_DOWNLOAD_BINARY': False,
+        'SEARCH_BASE_URL': None,
+        'SEARCH_EXTERNAL_URL': None,
+        'SEARCH_HELP':
 """<p class="m-noindent">Search for symbols, directories, files, pages or
 modules. You can omit any prefix from the symbol or file path; adding a
 <code>:</code> or <code>/</code> suffix lists all members of given symbol or
@@ -73,32 +91,52 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 <span class="m-label m-dim">L</span> while <span class="m-label m-dim">⌘</span>
 <span class="m-label m-dim">M</span> produces a Markdown link.</p>
 """,
-            'M_SHOW_UNDOCUMENTED': False,
-            'M_THEME_COLOR': '#22272e',
-            'M_VERSION_LABELS': False,
-            'OUTPUT_DIRECTORY': '',
-            'PROJECT_BRIEF': 'is cool',
-            'PROJECT_LOGO': '',
-            'PROJECT_NAME': 'My Pet Project',
-            'SHOW_INCLUDE_FILES': True,
-            'XML_OUTPUT': 'xml'
-        })
+
+        'SHOW_UNDOCUMENTED': False,
+        'VERSION_LABELS': False,
+    }
+
+    def test(self):
+        # Basically mirroring what's in the Doxyfile-legacy. It's silly because
+        # we don't need to check most of these here anyway but whatever. To
+        # make this a bit saner, all existing tests are using the
+        # "legacy Doxyfile" config anyway, so it should be tested more than
+        # enough... until we port away from that. This should get then further
+        # extended to cover the cases that are no longer tested by other code.
+        state = State({**copy.deepcopy(default_config), **{
+            'EXTRA_FILES': ['css', 'another.png', 'hello'],
+            'STYLESHEETS': ['a.css', 'b.css'],
+            'PAGE_HEADER': 'this is "quotes" \'apostrophes\'',
+            'FINE_PRINT': 'this is "quotes"',
+            'LINKS_NAVBAR1': [(None, 'pages', []),
+                              (None, 'modules', [])],
+            'LINKS_NAVBAR2': [(None, 'files', []),
+                              (None, 'annotated', [])]
+        }})
+
+        parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile')
+        self.assertEqual(state.doxyfile, self.expected_doxyfile)
+        self.assertEqual(state.config, self.expected_config)
+
+    def test_legacy(self):
+        state = State(copy.deepcopy(default_config))
+
+        parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-legacy')
+        self.assertEqual(state.doxyfile, self.expected_doxyfile)
+        self.assertEqual(state.config, self.expected_config)
 
     def test_subdirs(self):
-        state = State()
+        state = State(copy.deepcopy(default_config))
         with self.assertRaises(NotImplementedError):
             parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
 
-class Upgrade(BaseTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, 'upgrade_custom_variables', *args, **kwargs)
-
+class UpgradeCustomVariables(BaseTestCase):
     def test(self):
         # Copy the Doxyfile to a new location because it gets overwritten
         shutil.copyfile(os.path.join(self.path, 'Doxyfile'),
                         os.path.join(self.path, 'Doxyfile-upgrade'))
 
-        subprocess.run(['doxygen', '-u', 'Doxyfile-upgrade'], cwd=self.path)
+        subprocess.run(['doxygen', '-u', 'Doxyfile-upgrade'], cwd=self.path, check=True)
         with open(os.path.join(self.path, 'Doxyfile-upgrade'), 'r') as f:
             contents = f.read()
 

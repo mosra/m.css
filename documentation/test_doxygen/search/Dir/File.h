@@ -76,6 +76,7 @@ enum class Enum {
 };
 
 /** @defgroup group A group
+ * @brief Brief description. If this is not present, the detailed description gets interpreted as brief in 1.8.18. FFS.
  *
  * @m_keywords{GL_GROUP}
  * @{
@@ -95,7 +96,11 @@ union Union {};
  */
 struct Struct {};
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 

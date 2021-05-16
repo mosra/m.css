@@ -14,7 +14,11 @@ namespace NS {
 
 int var; /**< @brief A variable */
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }
 

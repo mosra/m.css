@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -48,7 +48,7 @@ def custom_url_formatter(type: EntryType, path: List[str]) -> str:
             url = 'search-v{}.js'.format(searchdata_format_version)
         # Everything except the search data (which don't exist yet) should be
         # absolute
-        if url != 'absolutesearchdata-v1.bin':
+        if url != 'absolutesearchdata-v{}.bin'.format(searchdata_format_version):
             assert os.path.isabs(path[0]) and os.path.exists(path[0]), path[0]
         filename = 't.' + url
     else: assert False
@@ -114,6 +114,6 @@ class LinkFormatting(BaseInspectTestCase):
         # Static data
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.favicon-light.png')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.m-dark+documentation.compiled.css')))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.search-v1.js')))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.absolutesearchdata-v1.bin')))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.search-v{}.js'.format(searchdata_format_version))))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.absolutesearchdata-v{}.bin'.format(searchdata_format_version))))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/t.tiny.png')))

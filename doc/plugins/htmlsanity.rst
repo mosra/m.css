@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -32,6 +32,8 @@ HTML sanity
 
         `Plugins <{filename}/plugins.rst>`_ | `Components » <{filename}/plugins/components.rst>`_
 
+.. role:: css(code)
+    :language: css
 .. role:: html(code)
     :language: html
 .. role:: jinja(code)
@@ -116,6 +118,15 @@ horrible, right?) with a custom HTML5 writer derived from
 -   The :html:`<abbr>` tag now properly includes a ``title`` attribute
 -   :abbr:`reST <reStructuredText>` comments are simply ignored, instead of
     being put into :html:`<!-- -->`
+
+Additionally, the following m.css-specific changes are done:
+
+-   Footnotes and footnote references have the :css:`.m-footnote`
+    `styling classes <{filename}/css/typography.rst#footnotes-and-footnote-references>`_
+    applied
+-   Links that are just URLs have :css:`.m-link-wrap` appied `to better wrap on narrow screens <{filename}/css/typography.rst#footnotes-and-footnote-references>`_.
+    Note that it's also possible to apply this and other CSS classes explicitly
+    with the `m.link <{filename}/plugins/links.rst#stylable-links>`_ plugin.
 
 `Typography`_
 =============

@@ -25,7 +25,17 @@
 {% if article and article.cover %}
   <nav class="m-navpanel m-container">
     <div class="m-row">
-      <div class="m-col-s-4 m-col-l-2 {% if M_SHOW_AUTHOR_LIST %}m-push-l-1{% elif tags %}m-push-s-2 m-push-l-3{% else %}m-push-s-4 m-push-l-5{% endif %}">
+      {# If we have both an author list and tags, put tags into a wider column
+         in the center on M and L size and onto a full-width row below the
+         category/authors on S size -- that way if there's many tags, it
+         doesn't cause a bottom of the page to look weirdly misbalanced.
+
+         In other cases put two columns next to each other with the same size,
+         as there's not really much we can do to make that work. See the
+         article-jumbo.html in Blog, BlogAuthorList and BlogAuthorListTags
+         tests for a visual, don't forget to resize your browser to all
+         T/S/M/l stops when making further changes. #}
+      <div class="{% if M_SHOW_AUTHOR_LIST and tags %}m-col-s-6 m-col-m-3 m-col-l-2 m-push-l-1{% else %}m-col-s-4 m-col-l-2 {% if M_SHOW_AUTHOR_LIST %}m-push-l-1{% elif tags %}m-push-s-2 m-push-l-3{% else %}m-push-s-4 m-push-l-5{% endif %}{% endif %}">
         <h3>{{ "Categories"|hyphenate(lang='en') }}</h3>
         <ol class="m-block-bar-s">
           {% for cat, null in categories %}
@@ -34,7 +44,7 @@
         </ol>
       </div>
       {% if M_SHOW_AUTHOR_LIST %}
-      <div class="m-col-s-4 m-col-l-2 {% if tags %}m-push-l-3{% else %}m-push-s-4 m-push-l-7{% endif %}">
+      <div class="{% if tags %}m-col-s-6 m-col-m-3 m-push-m-6 m-col-l-2 m-push-l-7{% else %}m-col-s-4 m-col-l-2 m-push-s-4 m-push-l-7{% endif %}">
         <h3>{{ "Authors"|hyphenate(lang='en') }}</h3>
         <ol class="m-block-bar-s">
           {% for author, null in authors %}
@@ -44,7 +54,7 @@
       </div>
       {% endif %}
       {% if tags %}
-      <div class="m-col-s-4 m-col-l-2 {% if M_SHOW_AUTHOR_LIST %}m-push-l-5{% else %}m-push-s-2 m-push-l-5{% endif %}">
+      <div class="{% if M_SHOW_AUTHOR_LIST and tags %}m-col-s-12 m-col-m-6 m-col-l-4 m-pull-m-3 m-pull-l-0{% else %}m-col-s-4 m-col-l-2 {% if M_SHOW_AUTHOR_LIST %}m-push-l-5{% else %}m-push-s-2 m-push-l-5{% endif %}{% endif %}">
         <h3>{{ "Tag cloud"|hyphenate(lang='en') }}</h3>
         <ul class="m-tagcloud">
           {% set max_articles_per_tag = tags|map(attribute='1')|map('length')|sort|last %}

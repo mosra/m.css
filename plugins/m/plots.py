@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -72,14 +72,25 @@ style_mapping = {
 }
 
 # Patch to remove preamble and hardcoded sizes. Matplotlib 2.2 has a http URL
-# while matplotlib 3 has a https URL, check for both.
+# while matplotlib 3 has a https URL, check for both. Matplotlib 3.3 has a new
+# <metadata> field (which we're not interested in) and slightly different
+# formatting of the global style after (which we unify to the compact version).
 _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="utf-8" standalone="no"\?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1\.1//EN"
   "http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd">
 <!-- Created with matplotlib \(https?://matplotlib.org/\) -->
-<svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">
-""")
+<svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">(
+ <metadata>.+</metadata>)?
+ <defs>
+  <style type="text/css">
+?\*{stroke-linecap:butt;stroke-linejoin:round;}(
+  )?</style>
+ </defs>
+""", re.DOTALL)
 _patch_dst = r"""<svg \g<viewBox>>
+ <defs>
+  <style type="text/css">*{stroke-linecap:butt;stroke-linejoin:round;}</style>
+ </defs>
 """
 
 # Remove needless newlines and trailing space in path data
@@ -98,14 +109,21 @@ _class_mapping = [
     # <use>, everything is defined in <defs>, no need to repeat
     ('<use style="fill:#cafe02;stroke:#cafe02;stroke-width:0.8;"', '<use'),
 
+    # Text styles have `font-stretch:normal;` added in matplotlib 3.3, so
+    # all of them are duplicated to handle this
+
     # Label text on left
     ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label"'),
+    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;"', 'class="m-label"'),
     # Label text on bottom (has extra style params)
     ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
+    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
     # Secondary label text
     ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
+    ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
     # Title text
     ('style="fill:#cafe02;font-family:{font};font-size:13px;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
+    ('style="fill:#cafe02;font-family:{font};font-size:13px;font-stretch:normal;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
 
     # Bar colors. Keep in sync with latex2svgextra.
     ('style="fill:#cafe03;"', 'class="m-bar m-default"'),
@@ -137,11 +155,15 @@ class Plot(rst.Directive):
                    'name': directives.unchanged,
                    'type': directives.unchanged_required,
                    'labels': directives.unchanged_required,
-                   'labels_extra': directives.unchanged,
+                   'labels-extra': directives.unchanged,
                    'units': directives.unchanged_required,
                    'values': directives.unchanged_required,
                    'errors': directives.unchanged,
                    'colors': directives.unchanged,
+                   'plot-width': directives.unchanged,
+                   'bar-height': directives.unchanged,
+                   # Legacy options with ugly underscores instead of dashes
+                   'labels_extra': directives.unchanged,
                    'bar_height': directives.unchanged}
     has_content = False
 
@@ -156,9 +178,17 @@ class Plot(rst.Directive):
         units = self.options['units']
         labels = self.options['labels'].split('\n')
 
-        # Optional extra labels
+        # Legacy options, convert underscores to dashes
         if 'labels_extra' in self.options:
-            labels_extra = self.options['labels_extra'].split('\n')
+            self.options['labels-extra'] = self.options['labels_extra']
+            del self.options['labels_extra']
+        if 'bar_height' in self.options:
+            self.options['bar-height'] = self.options['bar_height']
+            del self.options['bar_height']
+
+        # Optional extra labels
+        if 'labels-extra' in self.options:
+            labels_extra = self.options['labels-extra'].split('\n')
             assert len(labels_extra) == len(labels)
         else:
             labels_extra = None
@@ -195,7 +225,7 @@ class Plot(rst.Directive):
             color_sets = [style_mapping['default']]*len(value_sets)
 
         # Bar height
-        bar_height = float(self.options.get('bar_height', '0.4'))
+        bar_height = float(self.options.get('bar-height', '0.4'))
 
         # Increase hashsalt for every plot to ensure (hopefully) unique SVG IDs
         mpl.rcParams['svg.hashsalt'] = int(mpl.rcParams['svg.hashsalt']) + 1
@@ -203,7 +233,7 @@ class Plot(rst.Directive):
         # Setup the graph
         fig, ax = plt.subplots()
         # TODO: let matplotlib calculate the height somehow
-        fig.set_size_inches(8, 0.78 + len(labels)*bar_height)
+        fig.set_size_inches(float(self.options.get('plot-width', 8)), 0.78 + len(labels)*bar_height)
         yticks = np.arange(len(labels))
         left = np.array([0.0]*len(labels))
         for i in range(len(value_sets)):

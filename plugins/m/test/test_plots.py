@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -42,9 +42,11 @@ class Plots(PelicanPluginTestCase):
         })
 
         # FUCK this is annoying
-        if LooseVersion(matplotlib.__version__) >= LooseVersion("3.0"):
+        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.2'):
+            self.assertEqual(*self.actual_expected_contents('page.html'))
+        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.0'):
             if LooseVersion(sys.version) >= LooseVersion("3.6"):
-                self.assertEqual(*self.actual_expected_contents('page.html'))
+                self.assertEqual(*self.actual_expected_contents('page-30.html'))
             else:
                 self.assertEqual(*self.actual_expected_contents('page.html', 'page-py35.html'))
         else:

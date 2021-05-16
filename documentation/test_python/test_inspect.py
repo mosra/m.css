@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -88,6 +88,9 @@ class Annotations(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
+
+        # This should not list any internal stuff from the typing module
+        self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
 
     # https://github.com/python/cpython/pull/13394
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7.4'),
@@ -252,3 +255,15 @@ class Underscored(BaseInspectTestCase):
 
         self.assertEqual(*self.actual_expected_contents('inspect_underscored.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_underscored.Class.html'))
+
+class ValueFormatting(BaseInspectTestCase):
+    def test(self):
+        self.run_python({})
+        self.assertEqual(*self.actual_expected_contents('inspect_value_formatting.html'))
+
+class DuplicateClass(BaseInspectTestCase):
+    def test(self):
+        self.run_python({})
+        self.assertEqual(*self.actual_expected_contents('inspect_duplicate_class.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_duplicate_class.sub.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_duplicate_class.Bar.html'))

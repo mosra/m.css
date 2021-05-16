@@ -45,7 +45,11 @@ constexpr void* variable = nullptr;
 /** @brief A define in a group */
 #define A_DEFINE_IN_A_GROUP
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }}
 

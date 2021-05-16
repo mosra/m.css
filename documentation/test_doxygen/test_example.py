@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -29,9 +29,6 @@ from distutils.version import LooseVersion
 from . import IntegrationTestCase, doxygen_version
 
 class Example(IntegrationTestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(__file__, '', *args, **kwargs)
-
     def test_cpp(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 

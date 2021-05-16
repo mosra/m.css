@@ -96,7 +96,11 @@ constexpr void* variableInAGroup = nullptr;
 /* An undocumented define in a group */
 #define A_DEFINE_IN_A_GROUP
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 /** @defgroup group A module
 @{ */
@@ -125,7 +129,11 @@ constexpr const int VarInModule = 3;
 /* An undocumented function in a module */
 void fooInModule();
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }}
 

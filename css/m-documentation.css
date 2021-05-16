@@ -1,7 +1,7 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -65,7 +65,7 @@ span.m-doc-wrap-bumper {
   margin-right: -1rem;
 }
 span.m-doc-wrap {
-  padding-left: 1rem;
+  margin-left: 1rem;
   display: inline-block;
   vertical-align: text-top;
   white-space: pre-line;

@@ -82,7 +82,11 @@ union DeprecatedUnion {};
 */
 struct DeprecatedStruct {};
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 /** @defgroup deprecated-group A group
  * @ingroup group

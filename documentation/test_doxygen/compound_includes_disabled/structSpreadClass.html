@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SpreadClass struct | My Project</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">My Project</a>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          <div class="m-doc-template">template&lt;class T&gt;</div>
+          SpreadClass <span class="m-thin">struct</span>
+        </h1>
+        <p>A class forward-declared in one file but defined in another.</p>
+        <div class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#pub-methods">Public functions</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+<p>Because Doxygen is stupid, it reports the class to be defined in First.h even though there&#x27;s just a fwdecl. Happens only if the class is a template, a non-templated class would have its location reported correctly.</p><p>If includes are enabled, members should have Second.h listed as their include, but if they are disabled, brief-only members shouldn&#x27;t have detailed sections at all.</p>
+        <section id="pub-methods">
+          <h2><a href="#pub-methods">Public functions</a></h2>
+          <dl class="m-doc">
+            <dt id="a0537e4d57c78086a29ab6143da0d9a21">
+              <span class="m-doc-wrap-bumper">void <a href="#a0537e4d57c78086a29ab6143da0d9a21" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">)</span>
+            </dt>
+            <dd>A function with (detailed) include information but no details if includes are disabled.</dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+</body>
+</html>

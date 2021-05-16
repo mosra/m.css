@@ -1,0 +1,14 @@
+/** @mainpage
+
+Adding typographically correct spaces before and a color swatch after --- and
+for inline as well: @code{.css} p{ color:#ff3366; } @endcode
+
+@code{.css}
+
+    p{
+        color:#ff3366;
+    }
+
+@endcode
+
+*/

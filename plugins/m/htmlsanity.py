@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -292,12 +292,8 @@ class SaneHtmlTranslator(HTMLTranslator):
         atts = {}
         uri = node['uri']
         ext = os.path.splitext(uri)[1].lower()
-        if ext in self.object_image_types:
-            atts['data'] = uri
-            atts['type'] = self.object_image_types[ext]
-        else:
-            atts['src'] = uri
-            if 'alt' in node: atts['alt'] = node['alt']
+        atts['src'] = uri
+        if 'alt' in node: atts['alt'] = node['alt']
         style = []
         if node.get('width'):
             style += ['width: {}'.format(node['width'])]
@@ -312,12 +308,7 @@ class SaneHtmlTranslator(HTMLTranslator):
             suffix = ''
         else:
             suffix = '\n'
-        if ext in self.object_image_types:
-            # do NOT use an empty tag: incorrect rendering in browsers
-            self.body.append(self.starttag(node, 'object', suffix, **atts) +
-                             node.get('alt', uri) + '</object>' + suffix)
-        else:
-            self.body.append(self.emptytag(node, 'img', suffix, **atts))
+        self.body.append(self.emptytag(node, 'img', suffix, **atts))
 
     def depart_image(self, node):
         pass
@@ -370,6 +361,15 @@ class SaneHtmlTranslator(HTMLTranslator):
         # why?!?!
         #if not isinstance(node.parent, nodes.TextElement):
             #assert len(node) == 1 and isinstance(node[0], nodes.image)
+
+        # If the link is a plain URL without explicitly specified title, apply
+        # m-link-wrap so it doesn't leak out of the view on narrow screens.
+        # This can be disabled by explicitly providing the URL also as a title
+        # --- then the node will have a name attribute and we'll skip in that
+        # case.
+        if len(node.children) == 1 and isinstance(node.children[0], nodes.Text) and 'name' not in node and 'refuri' in node and node.children[0] == node['refuri']:
+            node['classes'] += ['m-link-wrap']
+
         self.body.append(self.starttag(node, 'a', '', **atts))
 
     def depart_reference(self, node):

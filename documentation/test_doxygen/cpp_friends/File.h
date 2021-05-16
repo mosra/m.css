@@ -40,7 +40,11 @@ class Class {
         /** @brief A friend grouped function */
         friend void friendGroupedFunction();
 
-        /*@}*/
+        /* Since 1.8.17, the original short-hand group closing doesn't work
+           anymore. FFS. */
+        /**
+         * @}
+         */
 };
 
 /** @brief Class with template parameters */

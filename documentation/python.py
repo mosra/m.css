@@ -3,7 +3,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2020 Sergei Izmailov <sergei.a.izmailov@gmail.com>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -134,12 +135,13 @@ default_config = {
     'PROJECT_SUBTITLE': None,
     'PROJECT_LOGO': None,
     'MAIN_PROJECT_URL': None,
+
     'INPUT': None,
     'OUTPUT': 'output',
     'INPUT_MODULES': [],
     'INPUT_PAGES': [],
     'INPUT_DOCS': [],
-    'OUTPUT': 'output',
+
     'THEME_COLOR': '#22272e',
     'FAVICON': 'favicon-dark.png',
     'STYLESHEETS': [
@@ -152,6 +154,7 @@ default_config = {
         ('Classes', 'classes', [])],
     'LINKS_NAVBAR2': [],
 
+    'HTML_HEADER': None,
     'PAGE_HEADER': None,
     'FINE_PRINT': '[default]',
     'FORMATTED_METADATA': ['summary'],
@@ -377,10 +380,18 @@ def crawl_enum(state: State, path: List[str], enum_, parent_url):
 def crawl_class(state: State, path: List[str], class_):
     assert inspect.isclass(class_)
 
-    # TODO: if this fires, it means there's a class duplicated in more than one
-    # __all__ (or it gets picked up implicitly and then in __all__) -- how to
-    # handle gracefully?
-    assert id(class_) not in state.crawled
+    # If this fires, it means there's a class duplicated in more than one
+    # __all__ (or it gets picked up implicitly and then in __all__). It usually
+    # means there's a mess in imports, unfortunately this is more common than
+    # one would hope so we can't just assert.
+    if id(class_) in state.crawled:
+        for name, previous_entry in state.name_map.items():
+            if id(previous_entry.object) == id(class_): break
+        else: assert False, "%s marked as crawled but can't find it" % '.'.join(path)
+        logging.error("Class %s previously found in %s, only one occurence will be chosen. Ensure each class is exposed only in a single module for generating correct documentation.", '.'.join(path), '.'.join(previous_entry.path))
+        state.name_map['.'.join(path)] = previous_entry
+        return
+
     state.crawled.add(id(class_))
 
     class_entry = Empty()
@@ -392,40 +403,53 @@ def crawl_class(state: State, path: List[str], class_):
     class_entry.members = []
 
     for name, object in inspect.getmembers(class_):
-        type = object_type(state, object, name)
+        type_ = object_type(state, object, name)
         subpath = path + [name]
 
         # Crawl the subclasses recursively (they also add itself to the
         # name_map)
-        if type == EntryType.CLASS:
+        if type_ == EntryType.CLASS:
             if name in ['__base__', '__class__']: continue # TODO
             # Classes derived from typing.Generic in 3.6 have a _gorg property
             # that causes a crawl cycle, firing an assert in crawl_class(). Not
-            # present from 3.7 onwards.
-            if sys.version_info < (3, 7) and class_.__base__ is typing.Generic and name == '_gorg': continue
-            if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+            # present from 3.7 onwards. Can't use isinstance(object, Generic)
+            # because "Class typing.Generic cannot be used with class or
+            # instance checks" (ugh), object.__base__ == Generic is also not
+            # enough because it fails for typing.Iterator.__base__.
+            if sys.version_info < (3, 7) and name == '_gorg' and type(object) == typing.GenericMeta: continue
+            # __next_in_mro__ is an internal typing thing in 3.6, ignore as
+            # well
+            if sys.version_info < (3, 7) and name == '__next_in_mro__': continue
+            if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
 
             crawl_class(state, subpath, object)
 
         # Crawl enum values (they also add itself ot the name_map)
-        elif type == EntryType.ENUM:
-            if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+        elif type_ == EntryType.ENUM:
+            if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
 
             crawl_enum(state, subpath, object, class_entry.url)
 
         # Add other members directly
         else:
             # Filter out private / unwanted members
-            if type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
+            if type_ in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
                 # Filter out undocumented underscored methods (but not dunder
                 # methods such as __init__)
                 # TODO: this won't look into docs saved under a signature but
                 #   for that we'd need to parse the signature first, ugh
-                if not (name.startswith('__') and name.endswith('__')) and is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+                if not (name.startswith('__') and name.endswith('__')) and is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
                 # Filter out dunder methods that ...
                 if name.startswith('__'):
                     # ... don't have their own docs
                     if (name, object.__doc__) in _filtered_builtin_functions: continue
+                    # are added by typing.Generic on Py3.7+. Like above, can't
+                    # use isinstance(object, Generic) because "Class
+                    # typing.Generic cannot be used with class or instance
+                    # checks" and there's nothing else to catch on, so this
+                    # filters out all undocumented cases of these two
+                    if sys.version_info >= (3, 7) and name in ['__init_subclass__', '__class_getitem__'] and not object.__doc__:
+                        continue
                     # ... or are auto-generated by attrs
                     if state.config['ATTRS_COMPATIBILITY']:
                         if (name, object.__doc__) in _filtered_attrs_functions: continue
@@ -438,20 +462,20 @@ def crawl_class(state: State, path: List[str], class_):
                                     continue
                             except ValueError: # pragma: no cover
                                 pass
-            elif type == EntryType.PROPERTY:
+            elif type_ == EntryType.PROPERTY:
                 if (name, object.__doc__) in _filtered_builtin_properties: continue
                 # TODO: are there any interesting dunder props?
-                if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
-            elif type == EntryType.DATA:
-                if is_underscored_and_undocumented(state, type, subpath, object.__doc__): continue
+                if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
+            elif type_ == EntryType.DATA:
+                if is_underscored_and_undocumented(state, type_, subpath, object.__doc__): continue
             else: # pragma: no cover
-                assert type is None; continue # ignore unknown object types
+                assert type_ is None; continue # ignore unknown object types
 
             entry = Empty()
-            entry.type = type
+            entry.type = type_
             entry.object = object
             entry.path = subpath
-            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](type, subpath[-1:]))
+            entry.url = '{}#{}'.format(class_entry.url, state.config['ID_FORMATTER'](type_, subpath[-1:]))
             entry.css_classes = ['m-doc']
             state.name_map['.'.join(subpath)] = entry
 
@@ -461,7 +485,7 @@ def crawl_class(state: State, path: List[str], class_):
     # inspect.getmembers() ignores those probably because trying to access any
     # of them results in an AttributeError.
     if hasattr(class_, '__annotations__'):
-        for name, type in class_.__annotations__.items():
+        for name, type_ in class_.__annotations__.items():
             subpath = path + [name]
 
             # No docstrings (the best we could get would be a docstring of the
@@ -760,51 +784,72 @@ def make_name_link(state: State, referrer_path: List[str], name) -> str:
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
-_pybind_default_value_rx = re.compile('[^,)]+')
 
-def parse_pybind_type(state: State, referrer_path: List[str], signature: str) -> str:
-    # If this doesn't match, it's because we're in Callable[[arg, ...], retval]
+def _pybind11_default_argument_length(string):
+    """Returns length of balanced []()-expression at begin of input string until `,` or `)`"""
+    stack = []
+    for i, c in enumerate(string):
+        if len(stack) == 0 and (c == ',' or c == ')'):
+            return i
+        if c == '(':
+            stack.append(')')
+        elif c == '[':
+            stack.append(']')
+        elif c == ')' or c == ']':
+            if len(stack) == 0 or c != stack.pop():
+                raise SyntaxError("Unmatched {} at pos {} in `{}`".format(c, i, string))
+    raise SyntaxError("Unexpected end of `{}`".format(string))
+
+def _pybind_map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
+    if input_type in ['Callable', 'Dict', 'Iterator', 'Iterable', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
+        return 'typing.' + input_type
+    else:
+        return map_name_prefix(state, input_type)
+
+def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
     match = _pybind_type_rx.match(signature)
     if match:
         input_type = match.group(0)
         signature = signature[len(input_type):]
-        # Prefix types with the typing module to be consistent with pure
-        # Python annotations and allow them to be linked to
-        if input_type in ['Callable', 'Dict', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
-            type = 'typing.' + input_type
-            type_link = make_name_link(state, referrer_path, type)
-        else:
-            type = map_name_prefix(state, input_type)
-            type_link = make_name_link(state, referrer_path, type)
+        type = _pybind_map_name_prefix_or_add_typing_suffix(state, input_type)
+        type_link = make_name_link(state, referrer_path, type)
     else:
-        assert signature[0] == '['
-        type = ''
-        type_link = ''
+        raise SyntaxError()
 
-    # This is a generic type (or the list in Callable)
-    if signature and signature[0] == '[':
-        type += '['
-        type_link += '['
-        signature = signature[1:]
-        while signature[0] != ']':
-            signature, inner_type, inner_type_link = parse_pybind_type(state, referrer_path, signature)
-            type += inner_type
-            type_link += inner_type_link
-
-            if signature[0] == ']': break
-
-            # Expecting the next item now, if not there, we failed
-            if not signature.startswith(', '): raise SyntaxError()
-            signature = signature[2:]
-
-            type += ', '
-            type_link += ', '
-
-        assert signature[0] == ']'
-        signature = signature[1:]
-        type += ']'
-        type_link += ']'
-
+    lvl = 0
+    i = 0
+    while i < len(signature):
+        c = signature[i]
+        if c == '[':
+            i += 1
+            lvl += 1
+            type += c
+            type_link += c
+            continue
+        if lvl == 0:
+            break
+        if c == ']':
+            i += 1
+            lvl -= 1
+            type += c
+            type_link += c
+            continue
+        if c in ', ':
+            i += 1
+            type += c
+            type_link += c
+            continue
+        match = _pybind_type_rx.match(signature[i:])
+        if match is None:
+            raise SyntaxError("Bad python type name: {} ".format(signature[i:]))
+        input_type = match.group(0)
+        i += len(input_type)
+        input_type = _pybind_map_name_prefix_or_add_typing_suffix(state, input_type)
+        type += input_type
+        type_link += make_name_link(state, referrer_path, input_type)
+    if lvl != 0:
+        raise SyntaxError("Unbalanced [] in python type {}".format(signature))
+    signature = signature[i:]
     return signature, type, type_link
 
 # Returns function name, summary, list of arguments (name, type, type with HTML
@@ -836,14 +881,14 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
                 arg_type = None
                 arg_type_link = None
 
-            # Default (optional) -- for now take everything until the next comma
-            # TODO: ugh, do properly
+            # Default (optional)
             # The equals has spaces around since 2.3.0, preserve 2.2 compatibility.
             # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
             if signature.startswith(('=', ' = ')):
                 signature = signature[1 if signature[0] == '=' else 3:]
-                default = _pybind_default_value_rx.match(signature).group(0)
-                signature = signature[len(default):]
+                default_length = _pybind11_default_argument_length(signature)
+                default = signature[:default_length]
+                signature = signature[default_length:]
             else:
                 default = None
 
@@ -915,7 +960,7 @@ def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> 
 
 # Used to format function default arguments and data values. *Not* pybind's
 # function default arguments, as those are parsed from a string representation.
-def format_value(state: State, referrer_path: List[str], value: str) -> Optional[str]:
+def format_value(state: State, referrer_path: List[str], value) -> Optional[str]:
     if value is None: return str(value)
     if isinstance(value, enum.Enum):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
@@ -924,6 +969,8 @@ def format_value(state: State, referrer_path: List[str], value: str) -> Optional
     # out of a str() instead.
     elif state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__'):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, str(value).partition('.')[2]))
+    elif inspect.isfunction(value):
+        return html.escape('<function {}>'.format(value.__name__))
     elif '__repr__' in type(value).__dict__:
         rendered = repr(value)
         # TODO: tuples of non-representable values will still be ugly
@@ -1100,9 +1147,19 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
         if hasattr(annotation, '__origin__') and annotation.__origin__ is typing.Union:
             # FOR SOME REASON `annotation.__args__[1] is None` is always False,
             # so we have to use isinstance(). HOWEVER, we *can't* use
-            # isinstance if it's a "bracketed" type -- it'll die. So check that
-            # first.
-            if len(annotation.__args__) == 2 and not hasattr(annotation.__args__[1], '__args__') and isinstance(None, annotation.__args__[1]):
+            # isinstance if:
+            #   - it's a "bracketed" type, having __args__
+            #     (see the `annotation_union_second_bracketed()` test)
+            #   - it's a ForwardRef because get_type_hints_or_nothing() failed
+            #     due to a type error (see the `annotation_union_of_undefined()`
+            #     test)
+            # because it'll die. So check that first.
+            if (len(annotation.__args__) == 2 and
+                not hasattr(annotation.__args__[1], '__args__') and
+                # Same 3.6 ForwardRef workaround as above
+                not isinstance(annotation.__args__[1], typing.ForwardRef if sys.version_info >= (3, 7) else typing._ForwardRef) and
+                isinstance(None, annotation.__args__[1])
+            ):
                 name = 'typing.Optional'
                 args = annotation.__args__[:1]
             else:
@@ -2528,7 +2585,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
     # TODO: rework when we have nested page support
     for i in range(len(page_index)):
         entry = state.name_map[page_index[i]]
-        assert entry.type == EntryType.PAGE
+        assert entry.type == EntryType.PAGE, "page %s already used as %s (%s)" % (page_index[i], entry.type, entry.url)
 
         index_entry = Empty()
         index_entry.kind = 'page'
@@ -2629,6 +2686,14 @@ if __name__ == '__main__': # pragma: no cover
     parser.add_argument('--templates', help="template directory", default=default_templates)
     parser.add_argument('--debug', help="verbose debug output", action='store_true')
     args = parser.parse_args()
+
+    # Set an environment variable indicating m.css is being run. This can be
+    # used for REALLY DIRTY hacks when monkey-patching imported modules is not
+    # enough (for example in order to change behavior inside native modules and
+    # such)
+    #
+    # Since this is done here in __main__, it can't be checked by a test.
+    os.environ['MCSS_GENERATING_OUTPUT'] = '1'
 
     # Load configuration from a file, update the defaults with it
     config = copy.deepcopy(default_config)

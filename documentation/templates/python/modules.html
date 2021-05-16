@@ -2,7 +2,7 @@
 {% extends 'base-index.html' %}
 
 {% block main %}
-        <h1>Modules</h2>
+        <h1>Modules</h1>
         <ul class="m-doc">
           {% for i in index.classes|selectattr('kind', 'equalto', 'module') recursive %}
           {% if i.has_nestable_children %}

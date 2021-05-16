@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -126,9 +126,11 @@ configure bar colors using :rst:`:colors:`. The colors correspond to m.css
 `color classes <{filename}/css/components.rst#colors>`_ and you can either
 use one color for all or one for each value, separated by whitespace. Bar chart
 height is calculated automatically based on amount of values, you can adjust
-the bar height using :rst:`:bar_height:`. Default value is :py:`0.4`.
+the bar height using :rst:`:bar-height:`. Default value is :py:`0.4`. Similarly
+it's possible to specify graph width using :rst:`:plot-width:`, the default
+:py:`8` is tuned for a page-wide plot.
 
-It's possible to add an extra line of labels using :rst:`:labels_extra:`.
+It's possible to add an extra line of labels using :rst:`:labels-extra:`.
 Again, there should be as many entries as primary labels and values. To omit an
 extra label for a value, specify it as the :abbr:`reST <reStructuredText>`
 comment :rst:`..`.
@@ -144,7 +146,7 @@ comment :rst:`..`.
                 Ours default
                 3rd party
                 Full setup
-            :labels_extra:
+            :labels-extra:
                 15 modules
                 60 modules
                 200 modules
@@ -153,7 +155,7 @@ comment :rst:`..`.
             :values: 15.09 84.98 197.13 934.27
             :errors: 0.74 3.65 9.45 25.66
             :colors: success info danger dim
-            :bar_height: 0.6
+            :bar-height: 0.6
 
     .. plot:: Runtime cost
         :type: barh
@@ -162,7 +164,7 @@ comment :rst:`..`.
             Ours default
             3rd party
             Full setup
-        :labels_extra:
+        :labels-extra:
             15 modules
             60 modules
             200 modules
@@ -171,7 +173,7 @@ comment :rst:`..`.
         :values: 15.09 84.98 197.13 934.27
         :errors: 0.74 3.65 9.45 25.66
         :colors: success info danger dim
-        :bar_height: 0.6
+        :bar-height: 0.6
 
 `Stacked values`_
 -----------------
@@ -197,7 +199,7 @@ per value like shown above.
                 Sdl2Application
                 Sdl2Application
                 EmscriptenApplication
-            :labels_extra:
+            :labels-extra:
                 -s USE_SDL=2
                 -s USE_SDL=1
                 ..
@@ -215,7 +217,7 @@ per value like shown above.
             Sdl2Application
             Sdl2Application
             EmscriptenApplication
-        :labels_extra:
+        :labels-extra:
             -s USE_SDL=2
             -s USE_SDL=1
             ..
@@ -267,7 +269,7 @@ distribution package manager, for example on Ubuntu:
 
     sudo apt install graphviz
 
-The plugin produces SVG graphcs that make use of the
+The plugin produces SVG graphs that make use of the
 `CSS graph styling <{filename}/css/components.rst#graphs>`_.
 
 `Directed graphs`_

@@ -77,7 +77,7 @@ content<br />
 <h2><a href="#id6">Section title</a></h2>
 <p>An <em>emphasised text</em>, <strong>strong text</strong> and a <code>literal</code>. Link to
 <a href="https://google.com">Google</a>, <a href="#a-heading">the heading below</a> or just an
-URL as-is: <a href="https://mcss.mosra.cz/">https://mcss.mosra.cz/</a>. <a href="mailto:mosra&#64;centrum.cz">E-mail</a>. A footnote
+URL as-is: <a class="m-link-wrap" href="https://mcss.mosra.cz/">https://mcss.mosra.cz/</a>. <a href="mailto:mosra&#64;centrum.cz">E-mail</a>. A footnote
 reference on a single thing <a class="m-footnote" href="#id4" id="id1">1</a> and more things <a class="m-footnote" href="#id4" id="id2">1</a> <a class="m-footnote" href="#id5" id="id3">2</a></p>
 <dl class="m-footnote">
 <dt id="id4">1.</dt>
@@ -85,6 +85,16 @@ reference on a single thing <a class="m-footnote" href="#id4" id="id1">1</a> and
 <dt id="id5">2</a>.</dt>
 <dd><span class="m-footnote"><a href="#id3">^</a></span> Second thing description</dd>
 </dl>
+<div class="m-row">
+<div class="m-col-m-4 m-push-m-4 m-col-t-6 m-push-t-3 m-nopady">
+<p>A link that gets auto-wrapped:</p>
+<p><a class="m-link-wrap" href="http://llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk">http://llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk</a></p>
+<p>A link that doesn't, because the title is different:</p>
+<p><a href="http://llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk">llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk</a></p>
+<p>A link that also doesn't, because the title is the same, but specified explicitly:</p>
+<p><a href="http://llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk">http://llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch.co.uk</a></p>
+</div>
+</div>
 <section id="section-title-with-link">
 <h3><a href="#section-title-with-link">Section title with link</a></h3>
 <p>A line:</p>

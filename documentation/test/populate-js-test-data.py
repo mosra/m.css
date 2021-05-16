@@ -3,7 +3,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -32,14 +32,14 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
 from _search_test_metadata import EntryType, search_type_map
-from _search import Trie, ResultMap, ResultFlag, serialize_search_data
+from _search import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'
 
 # Basic error handling
 
 with open(basedir/'short.bin', 'wb') as f:
-    f.write(b'')
+    f.write(b'#'*(search_data_header_struct.size - 1))
 with open(basedir/'wrong-magic.bin', 'wb') as f:
     f.write(b'MOS\1                      ')
 with open(basedir/'wrong-version.bin', 'wb') as f:

@@ -30,6 +30,10 @@ With details.
 */
 enum Enum {};
 
-/*@}*/
+/* Since 1.8.17, the original short-hand group closing doesn't work anymore.
+   FFS. */
+/**
+ * @}
+ */
 
 }

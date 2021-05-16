@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -80,7 +80,7 @@ symbols to a file to be linked from elsewhere, see
     PLUGINS += ['m.sphinx']
     M_SPHINX_INVENTORIES = [...]
     M_SPHINX_INVENTORY_OUTPUT = 'objects.inv'
-    M_SPHIMX_PARSE_DOCSTRINGS = False
+    M_SPHINX_PARSE_DOCSTRINGS = False
 
 `Links to external Sphinx documentation`_
 =========================================
@@ -511,7 +511,7 @@ By default, docstrings are `treated by the Python doc generator as plain text <{
 and only externally-supplied docs are parsed. This is done because, for example
 in Python standard library, embedded docstrings are often very terse without
 any markup and full docs are external. If you want the docstrings to be parsed,
-enable the :py:`M_SPHIMX_PARSE_DOCSTRINGS` option. Compared to the directives
+enable the :py:`M_SPHINX_PARSE_DOCSTRINGS` option. Compared to the directives
 above, there's only one difference --- instead of a :rst:`:summary:` option,
 the first paragraph is taken as a summary, the second paragraph as the option
 list (if it contains option fields) and the rest as documentation content.
