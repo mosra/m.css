@@ -551,7 +551,7 @@ column, two items in the right columns, with no submenus:
         ("Pages", 'pages', []),
         ("Namespaces", 'namespaces', [])
     ]
-    'LINKS_NAVBAR2' = [
+    LINKS_NAVBAR2 = [
         ("Classes", 'annotated', []),
         ("Files", 'files', [])
     ]
