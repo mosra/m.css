@@ -236,9 +236,11 @@ def parse_ref(state: State, element: ET.Element, add_inline_css_class: str = Non
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
-def make_include(state: State, file) -> Tuple[str, str]:
+def make_include(state: State, file, includeStr=None) -> Tuple[str, str]:
+    if includeStr is None:
+        includeStr = file
     if file in state.includes and state.compounds[state.includes[file]].has_details:
-        return (html.escape('<{}>'.format(file)), state.compounds[state.includes[file]].url)
+        return (html.escape('<{}>'.format(includeStr)), state.compounds[state.includes[file]].url)
     return None
 
 def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str], bool]:
@@ -2572,7 +2574,8 @@ def parse_xml(state: State, xml: str):
     if compound.kind in ['struct', 'class', 'union'] or (compound.kind == 'namespace' and compounddef.find('innerclass') is None and compounddef.find('innernamespace') is None and compounddef.find('sectiondef') is None):
         location_attribs = compounddef.find('location').attrib
         file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
-        compound.include = make_include(state, file)
+        include_str = compounddef.find('includes').text if compounddef.find('includes') is not None else file
+        compound.include = make_include(state, file, include_str)
 
         # Save include for current compound. Every enum/var/function/... parser
         # checks against it and resets to None in case the include differs for
