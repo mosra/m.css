@@ -50,6 +50,8 @@ class Doxyfile(unittest.TestCase):
         'PROJECT_LOGO': '',
         'PROJECT_NAME': 'My Pet Project',
         'SHOW_INCLUDE_FILES': True,
+        'STRIP_FROM_INC_PATH': [],
+        'STRIP_FROM_PATH': [],
         'XML_OUTPUT': 'xml'
     }
     expected_config = {

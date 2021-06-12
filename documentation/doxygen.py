@@ -260,9 +260,20 @@ def parse_ref(state: State, element: ET.Element, add_inline_css_class: str = Non
 
     return '<a href="{}" class="{}">{}</a>'.format(url, class_, add_wbr(parse_inline_desc(state, element).strip()))
 
+# Returns a shortened path if the prefix matches
+def remove_path_prefix(path: str, prefix: str) -> str:
+    common_path = os.path.commonprefix([path, prefix])
+    return path[len(common_path):].lstrip(os.path.sep) if common_path else path
+
+# Return the string that has the longest prefix stripped, as defined by Doxygen
+# in src/util.cpp
+def make_include_strip_from_path(path: str, prefixes: List[str]) -> str:
+    strip_candidates = list(filter(bool, map(lambda x: remove_path_prefix(path, x), prefixes)))
+    return min(strip_candidates, key=len) if strip_candidates else path
+
 def make_include(state: State, file, include_str=None) -> Tuple[str, str]:
     if include_str is None:
-        include_str = file
+        include_str = make_include_strip_from_path(file, state.doxyfile['STRIP_FROM_INC_PATH']) if state.doxyfile['STRIP_FROM_INC_PATH'] is not None else file
 
     if file in state.includes and state.compounds[state.includes[file]].has_details:
         return (html.escape('<{}>'.format(include_str)), state.compounds[state.includes[file]].url)
@@ -3726,7 +3737,9 @@ def parse_doxyfile(state: State, doxyfile, values = None):
         'HTML_OUTPUT': ['html'],
         'DOT_FONTNAME': ['Helvetica'],
         'DOT_FONTSIZE': ['10'],
-        'SHOW_INCLUDE_FILES': ['YES']
+        'SHOW_INCLUDE_FILES': ['YES'],
+        'STRIP_FROM_PATH': [''],
+        'STRIP_FROM_INC_PATH': [''],
     }
 
     # Defaults so we don't fail with minimal Doxyfiles and also that the
@@ -3840,6 +3853,8 @@ def parse_doxyfile(state: State, doxyfile, values = None):
         ('INTERNAL_DOCS', None, bool),
         ('SHOW_INCLUDE_FILES', None, bool),
         ('TAGFILES', None, list),
+        ('STRIP_FROM_PATH', None, list),
+        ('STRIP_FROM_INC_PATH', None, list),
 
         ('M_THEME_COLOR', 'THEME_COLOR', str),
         ('M_FAVICON', 'FAVICON', str), # plus special handling below
@@ -3943,6 +3958,22 @@ def parse_doxyfile(state: State, doxyfile, values = None):
             navbar_links += [extract_link(links[0]) + (sublinks, )]
 
         state.config[alias] = navbar_links
+
+    # File paths extracted from <location file="loc"/> have already been
+    # stripped with respect to the Doxygen STRIP_FROM_PATH option. However, the
+    # make_include function needs to additionally strip any prefix present in
+    # STRIP_FROM_INC_PATH if present.
+    if state.doxyfile['STRIP_FROM_INC_PATH'] is not None:
+        all_prefixes = state.doxyfile['STRIP_FROM_INC_PATH']
+        # Add all the prefixes in STRIP_FROM_INC_PATH which have a common
+        # prefix with STRIP_FROM_PATH
+        for path_prefix in state.doxyfile['STRIP_FROM_PATH']:
+            # Construct the list of non empty suffixes of STRIP_FROM_INC_PATH
+            # for this STRIP_FROM_PATH prefix
+            from_path_strip = list(filter(bool, map(lambda x: remove_path_prefix(x, path_prefix), state.doxyfile['STRIP_FROM_INC_PATH'])))
+            all_prefixes += from_path_strip
+        # Remove duplicates
+        state.doxyfile['STRIP_FROM_INC_PATH'] = list(set(all_prefixes))
 
     # Below we finalize the config values, converting them to formats that are
     # easy to understand by the code / templates (but not easy to write from
