@@ -1029,14 +1029,18 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 elif 'height' in i.attrib:
                     sizespec = ' style="height: {};"'.format(i.attrib['height'])
 
+                altspec = 'Image'
+                if 'alt' in i.attrib:
+                    altspec = i.attrib['alt']
+
                 caption = i.text
                 if caption:
-                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="Image"{} /><figcaption>{}</figcaption></figure>'.format(
+                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="{}"{} /><figcaption>{}</figcaption></figure>'.format(
                         ' ' + add_css_class if add_css_class else '',
-                        name, sizespec, html.escape(caption))
+                        name, altspec, sizespec, html.escape(caption))
                 else:
-                    out.parsed += '<img class="m-image{}" src="{}" alt="Image"{} />'.format(
-                        ' ' + add_css_class if add_css_class else '', name, sizespec)
+                    out.parsed += '<img class="m-image{}" src="{}" alt="{}"{} />'.format(
+                        ' ' + add_css_class if add_css_class else '', name, altspec, sizespec)
 
         elif i.tag in ['dot', 'dotfile']:
             assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
