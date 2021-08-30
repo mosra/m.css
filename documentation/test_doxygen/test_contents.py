@@ -126,7 +126,14 @@ class CodeLanguage(IntegrationTestCase):
 class Image(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Versions before 1.9.1(?) don't have the alt attribute preserved for
+        # <img>
+        if parse_version(doxygen_version()) >= parse_version("1.9.1"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-1820.html'))
+
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'tiny.png')))
 
     def test_warnings(self):

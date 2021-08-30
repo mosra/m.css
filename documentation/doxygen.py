@@ -1092,14 +1092,19 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 elif 'height' in i.attrib:
                     sizespec = ' style="height: {};"'.format(i.attrib['height'])
 
+                # The alt text can apparently be specified only with the HTML
+                # <img> tag, not with @image. It's also present only since
+                # 1.9.1(?).
+                alt = i.attrib.get('alt', 'Image')
+
                 caption = i.text
                 if caption:
-                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="Image"{} /><figcaption>{}</figcaption></figure>'.format(
+                    out.parsed += '<figure class="m-figure{}"><img src="{}" alt="{}"{} /><figcaption>{}</figcaption></figure>'.format(
                         ' ' + add_css_class if add_css_class else '',
-                        name, sizespec, html.escape(caption))
+                        name, alt, sizespec, html.escape(caption))
                 else:
-                    out.parsed += '<img class="m-image{}" src="{}" alt="Image"{} />'.format(
-                        ' ' + add_css_class if add_css_class else '', name, sizespec)
+                    out.parsed += '<img class="m-image{}" src="{}" alt="{}"{} />'.format(
+                        ' ' + add_css_class if add_css_class else '', name, alt, sizespec)
 
         elif i.tag in ['dot', 'dotfile']:
             assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']

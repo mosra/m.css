@@ -16,6 +16,10 @@ Explicit height and a caption:
 
 @image html tiny.png "This is 64 pixels high." height=64px
 
+Alt text. Can be only specified with the HTML tag, not with `@image`.
+
+<img src="tiny.png" alt="This is an alt text." />
+
 */
 
 /** @page warnings Images that produce warnings
