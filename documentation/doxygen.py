@@ -2192,6 +2192,11 @@ def extract_metadata(state: State, xml):
 
     compounddef: ET.Element = root.find('compounddef')
 
+    # Skip XML-files without metadata (e.g. doxygen 1.9.x's Doxyfile.xml)
+    if compounddef is None:
+        logging.debug("No metadata found in {}, skipping".format(os.path.basename(xml)))
+        return
+
     if compounddef.attrib['kind'] not in ['namespace', 'group', 'class', 'struct', 'union', 'dir', 'file', 'page']:
         logging.debug("No useful info in {}, skipping".format(os.path.basename(xml)))
         return
@@ -2454,10 +2459,14 @@ def parse_xml(state: State, xml: str):
         return
 
     root = tree.getroot()
-    assert root.tag == 'doxygen'
+    if root.tag != 'doxygen':
+        logging.debug("Root element is '{}' but should be 'doxygen', skipping".format(root.tag))
+        return
 
     compounddef: ET.Element = root[0]
-    assert compounddef.tag == 'compounddef'
+    if compounddef.tag != 'compounddef':
+        logging.debug("First child element is '{}' but should be 'compounddef', skipping".format(compounddef.tag))
+        return
     assert len([i for i in root]) == 1
 
     # Ignoring private structs/classes and unnamed namespaces
