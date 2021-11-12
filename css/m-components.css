@@ -519,7 +519,7 @@ figure.m-figure {
   position: relative;
   display: table;
 }
-figure.m-figure:before {
+figure.m-figure::before {
   position: absolute;
   content: ' ';
   top: 0;
@@ -532,7 +532,7 @@ figure.m-figure:before {
   border-radius: var(--border-radius);
   border-color: var(--line-color);
 }
-figure.m-figure.m-flat:before {
+figure.m-figure.m-flat::before {
   border-color: transparent;
 }
 figure.m-figure > * {
@@ -578,7 +578,7 @@ figure.m-figure.m-fullwidth > *:first-child {
 figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
   width: 100%;
 }
-figure.m-figure.m-fullwidth:after {
+figure.m-figure.m-fullwidth::after {
   /* Specifying bottom margin on the last element works only if it is displayed
      as table caption, so I have to hack it here. */
   content: ' ';
@@ -596,7 +596,7 @@ figure.m-figure.m-fullwidth:after {
   position: relative;
   padding: 1rem;
 }
-.m-code-figure:before, .m-console-figure:before {
+.m-code-figure::before, .m-console-figure::before {
   position: absolute;
   content: ' ';
   top: 0;
@@ -608,13 +608,13 @@ figure.m-figure.m-fullwidth:after {
   border-width: 0.125rem;
   border-radius: var(--border-radius);
 }
-.m-code-figure:before {
+.m-code-figure::before {
   border-color: var(--code-background-color);
 }
-.m-console-figure:before {
+.m-console-figure::before {
   border-color: var(--console-background-color);
 }
-.m-code-figure.m-flat:before, .m-console-figure.m-flat:before {
+.m-code-figure.m-flat::before, .m-console-figure.m-flat::before {
   border-color: transparent;
 }
 .m-code-figure > pre:first-child, .m-console-figure > pre:first-child {
@@ -1273,19 +1273,19 @@ table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
 }
 
 /* Colored figure */
-figure.m-figure.m-default:before { border-color: var(--default-filled-background-color); }
+figure.m-figure.m-default::before { border-color: var(--default-filled-background-color); }
 figure.m-figure.m-default figcaption { color: var(--default-color); }
-figure.m-figure.m-primary:before { border-color: var(--primary-filled-background-color); }
+figure.m-figure.m-primary::before { border-color: var(--primary-filled-background-color); }
 figure.m-figure.m-primary figcaption { color: var(--primary-color); }
-figure.m-figure.m-success:before { border-color: var(--success-filled-background-color); }
+figure.m-figure.m-success::before { border-color: var(--success-filled-background-color); }
 figure.m-figure.m-success figcaption { color: var(--success-color); }
-figure.m-figure.m-warning:before { border-color: var(--warning-filled-background-color); }
+figure.m-figure.m-warning::before { border-color: var(--warning-filled-background-color); }
 figure.m-figure.m-warning figcaption { color: var(--warning-color); }
-figure.m-figure.m-danger:before { border-color: var(--danger-filled-background-color); }
+figure.m-figure.m-danger::before { border-color: var(--danger-filled-background-color); }
 figure.m-figure.m-danger figcaption { color: var(--danger-color); }
-figure.m-figure.m-info:before { border-color: var(--info-filled-background-color); }
+figure.m-figure.m-info::before { border-color: var(--info-filled-background-color); }
 figure.m-figure.m-info figcaption { color: var(--info-color); }
-figure.m-figure.m-dim:before { border-color: var(--dim-filled-background-color); }
+figure.m-figure.m-dim::before { border-color: var(--dim-filled-background-color); }
 figure.m-figure.m-dim { color: var(--dim-color); }
 figure.m-figure.m-dim a { color: var(--dim-link-color); }
 figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
