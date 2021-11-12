@@ -446,7 +446,7 @@ table.m-table :is(th, td):is(.m-default, .m-primary, .m-success, .m-warning, .m-
 }
 
 /* Image. Ensure everything is done for both <img> and <svg>. */
-img.m-image, svg.m-image {
+:is(img, svg).m-image {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -454,11 +454,11 @@ img.m-image, svg.m-image {
 div.m-image {
   text-align: center;
 }
-img.m-image, svg.m-image, div.m-image img, div.m-image svg {
+:is(img, svg).m-image, div.m-image :is(img, svg) {
   max-width: 100%;
   border-radius: var(--border-radius);
 }
-div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
+div.m-image.m-fullwidth :is(img, svg) {
   width: 100%;
 }
 /* Image badge. Deliberately omitting <svg> since I don't see any use for those
@@ -507,7 +507,7 @@ figure.m-figure > *:last-child {
      priority than this */
   margin-bottom: 1rem !important;
 }
-figure.m-figure img, figure.m-figure svg {
+figure.m-figure :is(img, svg) {
   position: relative; /* so it's above the border */
   margin-left: 0;
   margin-right: 0;
@@ -516,11 +516,11 @@ figure.m-figure img, figure.m-figure svg {
   border-top-right-radius: var(--border-radius);
   max-width: 100%;
 }
-figure.m-figure.m-flat img, figure.m-figure.m-flat svg {
+figure.m-figure.m-flat :is(img, svg) {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
-figure.m-figure a img, figure.m-figure a svg {
+figure.m-figure a :is(img, svg) {
   margin-left: -1rem;
   margin-right: -1rem;
 }
@@ -532,7 +532,7 @@ figure.m-figure.m-fullwidth > *:first-child {
   /* otherwise figure with clickable image is centered differently */
   display: inline;
 }
-figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
+figure.m-figure.m-fullwidth :is(img, svg) {
   width: 100%;
 }
 figure.m-figure.m-fullwidth::after {
@@ -1512,8 +1512,8 @@ div.m-plot svg .m-bar.m-dim,
    figure.m-figure. */
 p, ul, ol, dl, blockquote, pre, .m-code-figure, .m-console-figure, hr, .m-note,
 .m-frame, .m-block, div.m-button, div.m-scroll, table.m-table, div.m-image,
-img.m-image, svg.m-image, figure.m-figure, .m-imagegrid, div.m-math,
-div.m-graph, div.m-plot {
+:is(img, svg).m-image, figure.m-figure, .m-imagegrid, div.m-math, div.m-graph,
+div.m-plot {
   margin-bottom: 1rem;
 }
 p:last-child, p.m-nopadb, ul:last-child, ul.m-nopadb,
@@ -1526,8 +1526,7 @@ hr:last-child, hr.m-nopadb, .m-note:last-child, .m-note.m-nopadb,
 div.m-button:last-child, div.m-button.m-nopadb,
 div.m-scroll:last-child, div.m-scroll.m-nopadb,
 table.m-table:last-child, table.m-table.m-nopadb,
-img.m-image:last-child, img.m-image.m-nopadb,
-svg.m-image:last-child, svg.m-image.m-nopadb,
+:is(img, svg).m-image:last-child, :is(img, svg).m-image.m-nopadb,
 div.m-image:last-child, div.m-image.m-nopadb,
 figure.m-figure:last-child, figure.m-figure.m-nopadb,
 .m-imagegrid:last-child, .m-imagegrid.m-nopadb,
@@ -1544,7 +1543,7 @@ li > p:last-child, li > blockquote:last-child, li > pre:last-child,
 li > .m-code-figure:last-child, li > .m-console-figure:last-child,
 li > .m-note:last-child, li > .m-frame:last-child, li > .m-block:last-child,
 li > div.m-button:last-child, li > div.m-scroll:last-child, li > table.m-table:last-child,
-li > img.m-image:last-child, li > svg.m-image:last-child, li > div.m-image:last-child,
+li > :is(img, svg).m-image:last-child, li > div.m-image:last-child,
 li > figure.m-figure:last-child, li > div.m-math:last-child,
 li > div.m-graph:last-child, li > div.m-plot:last-child {
   margin-bottom: 1rem;
@@ -1560,8 +1559,7 @@ li:last-child > .m-block:last-child, li:last-child > .m-block.m-nopadb,
 li:last-child > div.m-button:last-child, li:last-child > div.m-button.m-nopadb,
 li:last-child > div.m-scroll:last-child, li:last-child > div.m-scroll.m-nopadb,
 li:last-child > table.m-table:last-child, li:last-child > table.m-table.m-nopadb,
-li:last-child > img.m-image:last-child, li:last-child > img.m-image.m-nopadb,
-li:last-child > svg.m-image:last-child, li:last-child > svg.m-image.m-nopadb,
+li:last-child > :is(img, svg).m-image:last-child, li:last-child > :is(img, svg).m-image.m-nopadb,
 li:last-child > div.m-image:last-child, li:last-child > div.m-image.m-nopadb,
 li:last-child > figure.m-figure:last-child, li:last-child > figure.m-figure.m-nopadb,
 li:last-child > div.m-math:last-child, li:last-child > div.m-math.m-nopadb,
