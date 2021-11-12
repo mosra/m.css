@@ -544,7 +544,7 @@ figure.m-figure.m-fullwidth::after {
   position: relative;
   padding: 1rem;
 }
-.m-code-figure::before, .m-console-figure::before {
+:is(.m-code-figure, .m-console-figure)::before {
   position: absolute;
   content: ' ';
   top: 0;
@@ -562,10 +562,10 @@ figure.m-figure.m-fullwidth::after {
 .m-console-figure::before {
   border-color: var(--console-background-color);
 }
-.m-code-figure.m-flat::before, .m-console-figure.m-flat::before {
+:is(.m-code-figure, .m-console-figure).m-flat::before {
   border-color: transparent;
 }
-.m-code-figure > pre:first-child, .m-console-figure > pre:first-child {
+:is(.m-code-figure, .m-console-figure) > pre:first-child {
   position: relative; /* so it's above the border */
   margin: -1rem -1rem 1rem -1rem;
   border-bottom-left-radius: 0;
@@ -574,7 +574,7 @@ figure.m-figure.m-fullwidth::after {
 
 /* "Nopad" code block inside a code/console figure -- show code and console
    output nicely packed together */
-.m-code-figure > pre.m-nopad, .m-console-figure > pre.m-nopad {
+:is(.m-code-figure, .m-console-figure) > pre.m-nopad {
   margin-left: -0.875rem;
   margin-right: -0.875rem;
   margin-top: -1rem;
@@ -583,13 +583,13 @@ figure.m-figure.m-fullwidth::after {
 }
 
 /* Figure caption */
-figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcaption {
+:is(figure.m-figure, .m-code-figure, .m-console-figure) figcaption {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   font-weight: var(--heading-font-weight);
   font-size: 1.17rem; /* taken from webkit defaults for h3 */
 }
-figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure figcaption a {
+:is(figure.m-figure, .m-code-figure, .m-console-figure) figcaption a {
   text-decoration: var(--link-decoration-heading);
 }
 
@@ -603,10 +603,8 @@ figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure fig
   position: relative;
   margin: 0;
 }
-.m-imagegrid > div > figure > div,
-.m-imagegrid > div > figure > figcaption,
-.m-imagegrid > div > figure > a > div,
-.m-imagegrid > div > figure > a > figcaption {
+.m-imagegrid > div > figure > :is(div, figcaption),
+.m-imagegrid > div > figure > a > :is(div, figcaption) {
   position: absolute;
   top: 0;
   left: 0;
@@ -617,16 +615,12 @@ figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure fig
   border-width: 0.25rem;
   padding: 0.5rem;
 }
-.m-imagegrid > div > figure:first-child > div,
-.m-imagegrid > div > figure:first-child > figcaption,
-.m-imagegrid > div > figure:first-child > a > div,
-.m-imagegrid > div > figure:first-child > a > figcaption {
+.m-imagegrid > div > figure:first-child > :is(div, figcaption),
+.m-imagegrid > div > figure:first-child > a > :is(div, figcaption) {
   border-left-width: 0;
 }
-.m-imagegrid > div > figure:last-child > div,
-.m-imagegrid > div > figure:last-child > figcaption,
-.m-imagegrid > div > figure:last-child > a > div,
-.m-imagegrid > div > figure:last-child > a > figcaption {
+.m-imagegrid > div > figure:last-child > :is(div, figcaption),
+.m-imagegrid > div > figure:last-child > a > :is(div, figcaption) {
   border-right-width: 0;
 }
 .m-imagegrid > div > figure > figcaption,
@@ -637,10 +631,8 @@ figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure fig
   white-space: nowrap;
   font-size: 0.75rem;
 }
-.m-imagegrid > div > figure > div::before,
-.m-imagegrid > div > figure > figcaption::before,
-.m-imagegrid > div > figure > a > div::before,
-.m-imagegrid > div > figure > a > figcaption::before {
+.m-imagegrid > div > figure > :is(div, figcaption)::before,
+.m-imagegrid > div > figure > a > :is(div, figcaption)::before {
   content: '';
   display: inline-block;
   height: 100%;
@@ -668,10 +660,8 @@ figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure fig
     float: none;
     width: 100% !important;
   }
-  .m-imagegrid > div > figure > div,
-  .m-imagegrid > div > figure > figcaption,
-  .m-imagegrid > div > figure > a > div,
-  .m-imagegrid > div > figure > a > figcaption {
+  .m-imagegrid > div > figure > :is(div, figcaption),
+  .m-imagegrid > div > figure > a > :is(div, figcaption) {
     border-left-width: 0;
     border-right-width: 0;
   }

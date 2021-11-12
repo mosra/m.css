@@ -479,7 +479,7 @@ ul.m-tagcloud li.m-tag-4 { font-size: 1.25rem; }
 ul.m-tagcloud li.m-tag-5 { font-size: 1.5rem; }
 
 /* Avoid selection border being above figure border */
-article section:target figure.m-code-figure, article section:target figure.m-console-figure {
+article section:target figure:is(.m-code-figure, .m-console-figure) {
   z-index: 1;
 }
 
@@ -549,8 +549,7 @@ article:last-child, article section:last-child { margin-bottom: 0; }
   border-bottom-left-radius: 0;
   border-left-width: 0.25rem;
 }
-.m-container-inflatable section:target > .m-code-figure > pre.m-nopad,
-.m-container-inflatable section:target > .m-console-figure > pre.m-nopad {
+.m-container-inflatable section:target > :is(.m-code-figure, .m-console-figure) > pre.m-nopad {
   margin-left: -0.75rem;
   padding-left: -0.75rem;
 }
