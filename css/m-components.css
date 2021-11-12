@@ -103,7 +103,7 @@ a {
 a.m-flat {
   text-decoration: none;
 }
-a:hover, a:focus, a:active {
+a:is(:hover, :focus, :active) {
   color: var(--link-active-color);
 }
 a img { border: 0; } /* Why you so special, IE?! */
@@ -875,8 +875,10 @@ div.m-math svg {
 }
 div.m-button a svg.m-math { fill: var(--button-background-color); }
 div.m-button.m-flat a svg.m-math { fill: var(--color); }
-div.m-button.m-flat a:hover svg.m-math, div.m-button.m-default a:focus svg.m-math,
-div.m-button.m-default a:active svg.m-math {
+:is(
+  div.m-button.m-flat a:hover,
+  div.m-button.m-default a:is(:focus, :active)
+) svg.m-math {
   fill: var(--link-active-color);
 }
 
@@ -970,8 +972,8 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
   color: var(--dim-color);
 }
 .m-block.m-dim a, .m-text.m-dim a { color: var(--dim-link-color); }
-.m-block.m-dim a:hover, .m-block.m-dim a:focus, .m-block.m-dim a:active,
-.m-text.m-dim a:hover, .m-text.m-dim a:focus, .m-text.m-dim a:active {
+.m-block.m-dim a:is(:hover, :focus, :active),
+.m-text.m-dim a:is(:hover, :focus, :active) {
   color: var(--dim-link-active-color);
 }
 .m-block.m-flat { border-color: transparent; }
@@ -981,47 +983,47 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 
 /* Active link in a block header (gawd, this is verbose as hell). Dim blocks
    have the link colors already defined above. */
-.m-block.m-default h3 a:hover, .m-block.m-default h3 a:focus, .m-block.m-default h3 a:active,
-.m-block.m-default h4 a:hover, .m-block.m-default h4 a:focus, .m-block.m-default h4 a:active,
-.m-block.m-default h5 a:hover, .m-block.m-default h5 a:focus, .m-block.m-default h5 a:active,
-.m-block.m-default h6 a:hover, .m-block.m-default h6 a:focus, .m-block.m-default h6 a:active {
+.m-block.m-default h3 a:is(:hover, :focus, :active),
+.m-block.m-default h4 a:is(:hover, :focus, :active),
+.m-block.m-default h5 a:is(:hover, :focus, :active),
+.m-block.m-default h6 a:is(:hover, :focus, :active) {
   color: var(--default-link-active-color);
 }
-.m-block.m-primary h3 a:hover, .m-block.m-primary h3 a:focus, .m-block.m-primary h3 a:active,
-.m-block.m-primary h4 a:hover, .m-block.m-primary h4 a:focus, .m-block.m-primary h4 a:active,
-.m-block.m-primary h5 a:hover, .m-block.m-primary h5 a:focus, .m-block.m-primary h5 a:active,
-.m-block.m-primary h6 a:hover, .m-block.m-primary h6 a:focus, .m-block.m-primary h6 a:active {
+.m-block.m-primary h3 a:is(:hover, :focus, :active),
+.m-block.m-primary h4 a:is(:hover, :focus, :active),
+.m-block.m-primary h5 a:is(:hover, :focus, :active),
+.m-block.m-primary h6 a:is(:hover, :focus, :active) {
   color: var(--primary-link-active-color);
 }
-.m-block.m-success h3 a:hover, .m-block.m-success h3 a:focus, .m-block.m-success h3 a:active,
-.m-block.m-success h4 a:hover, .m-block.m-success h4 a:focus, .m-block.m-success h4 a:active,
-.m-block.m-success h5 a:hover, .m-block.m-success h5 a:focus, .m-block.m-success h5 a:active,
-.m-block.m-success h6 a:hover, .m-block.m-success h6 a:focus, .m-block.m-success h6 a:active {
+.m-block.m-success h3 a:is(:hover, :focus, :active),
+.m-block.m-success h4 a:is(:hover, :focus, :active),
+.m-block.m-success h5 a:is(:hover, :focus, :active),
+.m-block.m-success h6 a:is(:hover, :focus, :active) {
   color: var(--success-link-active-color);
 }
-.m-block.m-warning h3 a:hover, .m-block.m-warning h3 a:focus, .m-block.m-warning h3 a:active,
-.m-block.m-warning h4 a:hover, .m-block.m-warning h4 a:focus, .m-block.m-warning h4 a:active,
-.m-block.m-warning h5 a:hover, .m-block.m-warning h5 a:focus, .m-block.m-warning h5 a:active,
-.m-block.m-warning h6 a:hover, .m-block.m-warning h6 a:focus, .m-block.m-warning h6 a:active {
+.m-block.m-warning h3 a:is(:hover, :focus, :active),
+.m-block.m-warning h4 a:is(:hover, :focus, :active),
+.m-block.m-warning h5 a:is(:hover, :focus, :active),
+.m-block.m-warning h6 a:is(:hover, :focus, :active) {
   color: var(--warning-link-active-color);
 }
-.m-block.m-danger h3 a:hover, .m-block.m-danger h3 a:focus, .m-block.m-danger h3 a:active,
-.m-block.m-danger h4 a:hover, .m-block.m-danger h4 a:focus, .m-block.m-danger h4 a:active,
-.m-block.m-danger h5 a:hover, .m-block.m-danger h5 a:focus, .m-block.m-danger h5 a:active,
-.m-block.m-danger h6 a:hover, .m-block.m-danger h6 a:focus, .m-block.m-danger h6 a:active {
+.m-block.m-danger h3 a:is(:hover, :focus, :active),
+.m-block.m-danger h4 a:is(:hover, :focus, :active),
+.m-block.m-danger h5 a:is(:hover, :focus, :active),
+.m-block.m-danger h6 a:is(:hover, :focus, :active) {
   color: var(--danger-link-active-color);
 }
-.m-block.m-info h3 a:hover, .m-block.m-info h3 a:focus, .m-block.m-info h3 a:active,
-.m-block.m-info h4 a:hover, .m-block.m-info h4 a:focus, .m-block.m-info h4 a:active,
-.m-block.m-info h5 a:hover, .m-block.m-info h5 a:focus, .m-block.m-info h5 a:active,
-.m-block.m-info h6 a:hover, .m-block.m-info h6 a:focus, .m-block.m-info h6 a:active {
+.m-block.m-info h3 a:is(:hover, :focus, :active),
+.m-block.m-info h4 a:is(:hover, :focus, :active),
+.m-block.m-info h5 a:is(:hover, :focus, :active),
+.m-block.m-info h6 a:is(:hover, :focus, :active) {
   color: var(--info-link-active-color);
 }
 
 /* Colored button, non-flat label */
 div.m-button a, .m-label { color: var(--button-background-color); }
 div.m-button.m-flat a { color: var(--color); }
-div.m-button.m-flat a:hover, div.m-button.m-default a:focus, div.m-button.m-default a:active {
+div.m-button.m-flat a:is(:hover, :focus, :active) {
   color: var(--link-active-color);
 }
 div.m-button.m-default a, .m-label:not(.m-flat).m-default { background-color: var(--default-color); }
@@ -1031,25 +1033,25 @@ div.m-button.m-warning a, .m-label:not(.m-flat).m-warning { background-color: va
 div.m-button.m-danger a, .m-label:not(.m-flat).m-danger { background-color: var(--danger-color); }
 div.m-button.m-info a, .m-label:not(.m-flat).m-info { background-color: var(--info-color); }
 div.m-button.m-dim a, .m-label:not(.m-flat).m-dim { background-color: var(--dim-color); }
-div.m-button.m-default a:hover, div.m-button.m-default a:focus, div.m-button.m-default a:active {
+div.m-button.m-default a:is(:hover, :focus, :active) {
   background-color: var(--default-link-active-color);
 }
-div.m-button.m-primary a:hover, div.m-button.m-primary a:focus, div.m-button.m-primary a:active {
+div.m-button.m-primary a:is(:hover, :focus, :active) {
   background-color: var(--primary-link-active-color);
 }
-div.m-button.m-success a:hover, div.m-button.m-success a:focus, div.m-button.m-success a:active {
+div.m-button.m-success a:is(:hover, :focus, :active) {
   background-color: var(--success-link-active-color);
 }
-div.m-button.m-warning a:hover, div.m-button.m-warning a:focus, div.m-button.m-warning a:active {
+div.m-button.m-warning a:is(:hover, :focus, :active) {
   background-color: var(--warning-link-active-color);
 }
-div.m-button.m-danger a:hover, div.m-button.m-danger a:focus, div.m-button.m-danger a:active {
+div.m-button.m-danger a:is(:hover, :focus, :active) {
   background-color: var(--danger-link-active-color);
 }
-div.m-button.m-info a:hover, div.m-button.m-info a:focus, div.m-button.m-info a:active {
+div.m-button.m-info a:is(:hover, :focus, :active) {
   background-color: var(--info-link-active-color);
 }
-div.m-button.m-dim a:hover, div.m-button.m-dim a:focus, div.m-button.m-dim a:active {
+div.m-button.m-dim a:is(:hover, :focus, :active) {
   /* Using a dedicated color here because we want the button dim by default,
      not highlighted as other links */
   background-color: var(--dim-button-active-color);
@@ -1213,7 +1215,7 @@ figure.m-figure.m-info figcaption { color: var(--info-color); }
 figure.m-figure.m-dim::before { border-color: var(--dim-filled-background-color); }
 figure.m-figure.m-dim { color: var(--dim-color); }
 figure.m-figure.m-dim a { color: var(--dim-link-color); }
-figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
+figure.m-figure.m-dim a:is(:hover, :focus, :active) {
   color: var(--dim-link-active-color);
 }
 

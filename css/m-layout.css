@@ -132,24 +132,18 @@ body > header > nav .m-row > [class*='m-col-'] {
   padding-top: 0;
   padding-bottom: 0;
 }
-body > header > nav a:hover, body > header > nav a:focus, body > header > nav a:active {
+body > header > nav a:is(:hover, :focus, :active) {
   color: var(--header-link-active-color);
 }
 body > header > nav #m-navbar-collapse li:hover {
   border-color: var(--header-link-active-color);
 }
-body > header > nav #m-navbar-collapse li a:hover,
-body > header > nav #m-navbar-collapse li a:focus,
-body > header > nav #m-navbar-collapse li a:active {
+body > header > nav #m-navbar-collapse li a:is(:hover, :focus, :active) {
   border-color: var(--header-link-active-color);
   background-color: var(--header-link-active-background-color);
 }
-body > header > nav.m-navbar-landing #m-navbar-collapse li a:hover,
-body > header > nav.m-navbar-cover #m-navbar-collapse li a:hover,
-body > header > nav.m-navbar-landing #m-navbar-collapse li a:focus,
-body > header > nav.m-navbar-cover #m-navbar-collapse li a:focus,
-body > header > nav.m-navbar-landing #m-navbar-collapse li a:active,
-body > header > nav.m-navbar-cover #m-navbar-collapse li a:active {
+body > header > nav.m-navbar-landing #m-navbar-collapse li a:is(:hover, :focus, :active),
+body > header > nav.m-navbar-cover #m-navbar-collapse li a:is(:hover, :focus, :active) {
   background-color: var(--header-link-active-background-color-semi);
 }
 
@@ -246,7 +240,7 @@ body > footer > nav a {
   text-transform: var(--nav-menu-case);
   color: var(--footer-link-color);
 }
-body > footer > nav a:hover, body > footer > nav a:focus, body > footer > nav a:active {
+body > footer > nav a:is(:hover, :focus, :active) {
   color: var(--footer-link-active-color);
 }
 
@@ -267,7 +261,7 @@ article h1 .m-breadcrumb {
 article h1 .m-breadcrumb a {
   color: var(--article-heading-color);
 }
-article h1 .m-breadcrumb a:hover, article h1 a:focus, article h1 a:active {
+article h1 .m-breadcrumb a:is(:hover, :focus, :active) {
   color: var(--article-heading-active-color);
 }
 
@@ -284,12 +278,12 @@ article section > h5, article section > h5 a,
 article section > h6, article section > h6 a {
   color: var(--article-heading-color);
 }
-article h1 a:hover, article > header h1 a:hover, article > header h1 a:focus, article > header h1 a:active,
-article section > h2 a:hover, article section > h2 a:focus, article section > h2 a:active,
-article section > h3 a:hover, article section > h3 a:focus, article section > h3 a:active,
-article section > h4 a:hover, article section > h4 a:focus, article section > h4 a:active,
-article section > h5 a:hover, article section > h5 a:focus, article section > h5 a:active,
-article section > h6 a:hover, article section > h6 a:focus, article section > h6 a:active {
+article h1 a:hover, article > header h1 a:is(:hover, :focus, :active),
+article section > h2 a:is(:hover, :focus, :active),
+article section > h3 a:is(:hover, :focus, :active),
+article section > h4 a:is(:hover, :focus, :active),
+article section > h5 a:is(:hover, :focus, :active),
+article section > h6 a:is(:hover, :focus, :active) {
   color: var(--article-heading-active-color);
 }
 article > header .m-date {
@@ -415,14 +409,14 @@ article#m-jumbo > header h2 {
 article#m-jumbo > header, article#m-jumbo > header h1, article#m-jumbo > header a {
   color: #ffffff;
 }
-article#m-jumbo > header a:hover, article#m-jumbo > header a:focus, article#m-jumbo > header a:active {
+article#m-jumbo > header a:is(:hover, :focus, :active) {
   color: #f0f0f0;
 }
 
 article#m-jumbo.m-inverted > header, article#m-jumbo.m-inverted > header h1, article#m-jumbo.m-inverted > header a {
   color: #000000;
 }
-article#m-jumbo.m-inverted > header a:hover, article#m-jumbo.m-inverted > header a:focus, article#m-jumbo.m-inverted > header a:active {
+article#m-jumbo.m-inverted > header a:is(:hover, :focus, :active) {
   color: #0f0f0f;
 }
 
@@ -432,7 +426,7 @@ article#m-jumbo.m-inverted > header a:hover, article#m-jumbo.m-inverted > header
   text-decoration: none;
   text-transform: var(--nav-heading-case);
 }
-.m-landing-news h3 a:hover, .m-landing-news h3 a:hover, .m-landing-news h3 a:focus, .m-landing-news h3 a:active {
+.m-landing-news h3 a:is(:hover, :focus, :active) {
   color: var(--article-heading-color);
 }
 .m-landing-news time {
@@ -466,7 +460,7 @@ nav.m-navpanel a {
   color: var(--navpanel-link-color);
   text-decoration: var(--link-decoration-nav);
 }
-nav.m-navpanel a:hover, nav.m-navpanel a:focus, nav.m-navpanel a:active {
+nav.m-navpanel a:is(:hover, :focus, :active) {
   color: var(--navpanel-link-active-color);
 }
 
