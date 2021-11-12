@@ -458,7 +458,7 @@ nav.m-navpanel h3 {
 nav.m-navpanel ol {
   text-transform: var(--nav-categories-case);
 }
-nav.m-navpanel ol, nav.m-navpanel ul {
+nav.m-navpanel :is(ul, ol) {
   list-style-type: none;
   padding: 0;
 }
