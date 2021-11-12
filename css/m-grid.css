@@ -39,7 +39,7 @@ body { margin: 0; }
   margin-left: -1rem;
   margin-right: -1rem;
 }
-.m-row:after { /* avoid rows floating around each other */
+.m-row::after { /* avoid rows floating around each other */
   content: ' ';
   clear: both;
   display: table;
