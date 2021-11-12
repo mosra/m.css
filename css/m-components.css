@@ -386,7 +386,7 @@ div.m-scroll > table.m-table:last-child {
 table.m-table:not(.m-flat) tbody tr:hover {
   background-color: var(--line-color);
 }
-table.m-table th, table.m-table td {
+table.m-table :is(th, td) {
   vertical-align: top;
   border-style: solid;
   border-top-width: 0.0625rem;
@@ -398,20 +398,20 @@ table.m-table th, table.m-table td {
 table.m-table caption {
   padding-bottom: 0.5rem;
 }
-table.m-table thead tr:first-child th, table.m-table thead tr:first-child td {
+table.m-table thead tr:first-child :is(th, td) {
   border-top-width: 0.125rem;
 }
-table.m-table thead th, table.m-table thead td {
+table.m-table thead :is(th, td) {
   border-bottom-width: 0.125rem;
   vertical-align: bottom;
 }
-table.m-table tfoot th, table.m-table tfoot td {
+table.m-table tfoot :is(th, td) {
   border-top-width: 0.125rem;
 }
-table.m-table th, table.m-table td {
+table.m-table :is(th, td) {
   padding: 0.5rem;
 }
-table.m-table.m-big th, table.m-table.m-big td {
+table.m-table.m-big :is(th, td) {
   padding: 0.75rem 1rem;
 }
 table.m-table th {
@@ -420,71 +420,28 @@ table.m-table th {
 table.m-table th.m-thin {
   font-weight: normal;
 }
-table.m-table td.m-default, table.m-table th.m-default,
-table.m-table td.m-primary, table.m-table th.m-primary,
-table.m-table td.m-success, table.m-table th.m-success,
-table.m-table td.m-warning, table.m-table th.m-warning,
-table.m-table td.m-danger, table.m-table th.m-danger,
-table.m-table td.m-info, table.m-table th.m-info,
-table.m-table td.m-dim, table.m-table th.m-dim {
+table.m-table :is(th, td):is(.m-default, .m-primary, .m-success, .m-warning, .m-danger, .m-info, .m-dim) {
   padding-left: 0.4375rem;
   padding-right: 0.4375rem;
   border-left-width: 0.0625rem;
 /*   border-right-width: 0.0625rem; causes horizontal scrollbar */
 }
-table.m-table.m-big td.m-default, table.m-table.m-big th.m-default,
-table.m-table.m-big td.m-primary, table.m-table.m-big th.m-primary,
-table.m-table.m-big td.m-success, table.m-table.m-big th.m-success,
-table.m-table.m-big td.m-warning, table.m-table.m-big th.m-warning,
-table.m-table.m-big td.m-danger, table.m-table.m-big th.m-danger,
-table.m-table.m-big td.m-info, table.m-table.m-big th.m-info,
-table.m-table.m-big td.m-dim, table.m-table.m-big th.m-dim {
+table.m-table.m-big :is(th, td):is(.m-default, .m-primary, .m-success, .m-warning, .m-danger, .m-info, .m-dim) {
   padding-left: 0.9375rem;
   padding-right: 0.9375rem;
   border-left-width: 0.0625rem;
 /*   border-right-width: 0.0625rem; causes horizontal scrollbar */
 }
-
-table.m-table tr.m-default td, table.m-table td.m-default,
-table.m-table tr.m-default th, table.m-table th.m-default,
-table.m-table tr.m-primary td, table.m-table td.m-primary,
-table.m-table tr.m-primary th, table.m-table th.m-primary,
-table.m-table tr.m-success td, table.m-table td.m-success,
-table.m-table tr.m-success th, table.m-table th.m-success,
-table.m-table tr.m-warning td, table.m-table td.m-warning,
-table.m-table tr.m-warning th, table.m-table th.m-warning,
-table.m-table tr.m-danger td, table.m-table td.m-danger,
-table.m-table tr.m-danger th, table.m-table th.m-danger,
-table.m-table tr.m-info td, table.m-table td.m-info,
-table.m-table tr.m-info th, table.m-table th.m-info,
-table.m-table tr.m-dim td, table.m-table td.m-dim,
-table.m-table tr.m-dim th, table.m-table th.m-dim {
+table.m-table tr:is(.m-default, .m-primary, .m-success, .m-warning, .m-danger, .m-info, .m-dim) :is(th, td),
+table.m-table :is(th, td):is(.m-default, .m-primary, .m-success, .m-warning, .m-danger, .m-info, .m-dim) {
   border-color: var(--background-color);
 }
 
 /* Code on a colored background has a semi-transparent background */
-.m-note pre, .m-note code,
-table.m-table tr.m-default pre, table.m-table tr.m-default code,
-table.m-table td.m-default pre, table.m-table td.m-default code,
-table.m-table th.m-default pre, table.m-table th.m-default code,
-table.m-table tr.m-primary pre, table.m-table tr.m-primary code,
-table.m-table td.m-primary pre, table.m-table td.m-primary code,
-table.m-table th.m-primary pre, table.m-table th.m-primary code,
-table.m-table tr.m-success pre, table.m-table tr.m-success code,
-table.m-table td.m-success pre, table.m-table td.m-success code,
-table.m-table th.m-success pre, table.m-table th.m-success code,
-table.m-table tr.m-warning pre, table.m-table tr.m-warning code,
-table.m-table td.m-warning pre, table.m-table td.m-warning code,
-table.m-table th.m-warning pre, table.m-table th.m-warning code,
-table.m-table tr.m-danger pre, table.m-table tr.m-danger code,
-table.m-table td.m-danger pre, table.m-table td.m-danger code,
-table.m-table th.m-danger pre, table.m-table th.m-danger code,
-table.m-table tr.m-info pre, table.m-table tr.m-info code,
-table.m-table td.m-info pre, table.m-table td.m-info code,
-table.m-table th.m-info pre, table.m-table th.m-info code,
-table.m-table tr.m-dim pre, table.m-table tr.m-dim code,
-table.m-table td.m-dim pre, table.m-table td.m-dim code,
-table.m-table th.m-dim pre, table.m-table th.m-dim code {
+:is(
+  .m-note,
+  table.m-table :is(tr, td, th):is(.m-default, .m-primary, .m-success, .m-warning, .m-danger, .m-info, .m-dim)
+) :is(pre, code) {
   background-color: var(--code-note-background-color);
 }
 
@@ -1120,155 +1077,142 @@ div.m-button.m-dim a:hover, div.m-button.m-dim a:focus, div.m-button.m-dim a:act
 /* Colored note, table coloring */
 .m-note.m-default { background-color: var(--default-filled-background-color); }
 .m-note.m-default,
-table.m-table tr.m-default td, table.m-table td.m-default,
-table.m-table tr.m-default th, table.m-table th.m-default {
+table.m-table tr.m-default :is(td, th),
+table.m-table :is(td, th).m-default {
   /* No background for default table to keep the row hover */
   color: var(--default-filled-color);
 }
-.m-note.m-default a:hover,
-table.m-table tr.m-default td a:hover, table.m-table td.m-default a:hover,
-table.m-table tr.m-default th a:hover, table.m-table th.m-default a:hover,
-.m-note.m-default a:focus,
-table.m-table tr.m-default td a:focus, table.m-table td.m-default a:focus,
-table.m-table tr.m-default th a:focus, table.m-table th.m-default a:focus,
-.m-note.m-default a:active,
-table.m-table tr.m-default td a:active, table.m-table td.m-default a:active,
-table.m-table tr.m-default th a:active, table.m-table th.m-default a:active {
+:is(
+  .m-note.m-default,
+  table.m-table tr.m-default :is(td, th),
+  table.m-table :is(td, th).m-default
+) a:is(:hover, :focus, :active) {
   color: var(--default-filled-link-active-color);
 }
-.m-note.m-primary a,
-table.m-table tr.m-primary td a, table.m-table td.m-primary a,
-table.m-table tr.m-primary th a, table.m-table th.m-primary a {
-  color: var(--default-filled-link-color);
-}
+
 .m-note.m-primary,
-table.m-table tr.m-primary td, table.m-table td.m-primary,
-table.m-table tr.m-primary th, table.m-table th.m-primary {
+table.m-table tr.m-primary :is(td, th),
+table.m-table :is(td, th).m-primary {
   background-color: var(--primary-filled-background-color);
   color: var(--primary-filled-color);
 }
-.m-note.m-primary a,
-table.m-table tr.m-primary td a, table.m-table td.m-primary a,
-table.m-table tr.m-primary th a, table.m-table th.m-primary a {
+:is(
+  .m-note.m-primary,
+  table.m-table tr.m-primary :is(td, th),
+  table.m-table :is(td, th).m-primary
+) a {
   color: var(--primary-filled-link-color);
 }
-.m-note.m-primary a:hover,
-table.m-table tr.m-primary td a:hover, table.m-table td.m-primary a:hover,
-table.m-table tr.m-primary th a:hover, table.m-table th.m-primary a:hover,
-.m-note.m-primary a:focus,
-table.m-table tr.m-primary td a:focus, table.m-table td.m-primary a:focus,
-table.m-table tr.m-primary th a:focus, table.m-table th.m-primary a:focus,
-.m-note.m-primary a:active,
-table.m-table tr.m-primary td a:active, table.m-table td.m-primary a:active,
-table.m-table tr.m-primary th a:active, table.m-table th.m-primary a:active {
+:is(
+  .m-note.m-primary,
+  table.m-table tr.m-primary :is(td, th),
+  table.m-table :is(td, th).m-primary
+) a:is(:hover, :focus, :active) {
   color: var(--primary-filled-link-active-color);
 }
+
 .m-note.m-success,
-table.m-table tr.m-success td, table.m-table td.m-success,
-table.m-table tr.m-success th, table.m-table th.m-success {
+table.m-table tr.m-success :is(td, th),
+table.m-table :is(td, th).m-success {
   background-color: var(--success-filled-background-color);
   color: var(--success-filled-color);
 }
-.m-note.m-success a,
-table.m-table tr.m-success td a, table.m-table td.m-success a,
-table.m-table tr.m-success th a, table.m-table th.m-success a {
+:is(
+  .m-note.m-success,
+  table.m-table tr.m-success :is(td, th),
+  table.m-table :is(td, th).m-success
+) a {
   color: var(--success-filled-link-color);
 }
-.m-note.m-success a:hover,
-table.m-table tr.m-success td a:hover, table.m-table td.m-success a:hover,
-table.m-table tr.m-success th a:hover, table.m-table th.m-success a:hover,
-.m-note.m-success a:focus,
-table.m-table tr.m-success td a:focus, table.m-table td.m-success a:focus,
-table.m-table tr.m-success th a:focus, table.m-table th.m-success a:focus,
-.m-note.m-success a:active,
-table.m-table tr.m-success td a:active, table.m-table td.m-success a:active,
-table.m-table tr.m-success th a:active, table.m-table th.m-success a:active {
+:is(
+  .m-note.m-success,
+  table.m-table tr.m-success :is(td, th),
+  table.m-table :is(td, th).m-success
+) a:is(:hover, :focus, :active) {
   color: var(--success-filled-link-active-color);
 }
-.m-note.m-warning, table.m-table tr.m-warning td, table.m-table td.m-warning,
-                   table.m-table tr.m-warning th, table.m-table th.m-warning {
+
+.m-note.m-warning,
+table.m-table tr.m-warning :is(td, th),
+table.m-table :is(td, th).m-warning {
   background-color: var(--warning-filled-background-color);
   color: var(--warning-filled-color);
 }
-.m-note.m-warning a, table.m-table tr.m-warning td a, table.m-table td.m-warning a,
-                     table.m-table tr.m-warning th a, table.m-table th.m-warning a {
+:is(
+  .m-note.m-warning,
+  table.m-table tr.m-warning :is(td, th),
+  table.m-table :is(td, th).m-warning
+) a {
   color: var(--warning-filled-link-color);
 }
-.m-note.m-warning a:hover,
-table.m-table tr.m-warning td a:hover, table.m-table td.m-warning a:hover,
-table.m-table tr.m-warning th a:hover, table.m-table th.m-warning a:hover,
-.m-note.m-warning a:focus,
-table.m-table tr.m-warning td a:focus, table.m-table td.m-warning a:focus,
-table.m-table tr.m-warning th a:focus, table.m-table th.m-warning a:focus,
-.m-note.m-warning a:active,
-table.m-table tr.m-warning td a:active, table.m-table td.m-warning a:active,
-table.m-table tr.m-warning th a:active, table.m-table th.m-warning a:active {
+:is(
+  .m-note.m-warning,
+  table.m-table tr.m-warning :is(td, th),
+  table.m-table :is(td, th).m-warning
+) a:is(:hover, :focus, :active) {
   color: var(--warning-filled-link-active-color);
 }
+
 .m-note.m-danger,
-table.m-table tr.m-danger td, table.m-table td.m-danger,
-table.m-table tr.m-danger th, table.m-table th.m-danger {
+table.m-table tr.m-danger :is(td, th),
+table.m-table :is(td, th).m-danger {
   background-color: var(--danger-filled-background-color);
   color: var(--danger-filled-color);
 }
-.m-note.m-danger a,
-table.m-table tr.m-danger td a, table.m-table td.m-danger a,
-table.m-table tr.m-danger th a, table.m-table th.m-danger a {
+:is(
+  .m-note.m-danger,
+  table.m-table tr.m-danger :is(td, th),
+  table.m-table :is(td, th).m-danger
+) a {
   color: var(--danger-filled-link-color);
 }
-.m-note.m-danger a:hover,
-table.m-table tr.m-danger td a:hover, table.m-table td.m-danger a:hover,
-table.m-table tr.m-danger th a:hover, table.m-table th.m-danger a:hover,
-.m-note.m-danger a:focus,
-table.m-table tr.m-danger td a:focus, table.m-table td.m-danger a:focus,
-table.m-table tr.m-danger th a:focus, table.m-table th.m-danger a:focus,
-.m-note.m-danger a:active,
-table.m-table tr.m-danger td a:active, table.m-table td.m-danger a:active,
-table.m-table tr.m-danger th a:active, table.m-table th.m-danger a:active {
+:is(
+  .m-note.m-danger,
+  table.m-table tr.m-danger :is(td, th),
+  table.m-table :is(td, th).m-danger
+) a:is(:hover, :focus, :active) {
   color: var(--danger-filled-link-active-color);
 }
+
 .m-note.m-info,
-table.m-table tr.m-info td, table.m-table td.m-info,
-table.m-table tr.m-info th, table.m-table th.m-info {
+table.m-table tr.m-info :is(td, th),
+table.m-table :is(td, th).m-info {
   background-color: var(--info-filled-background-color);
   color: var(--info-filled-color);
 }
-.m-note.m-info a,
-table.m-table tr.m-info td a, table.m-table td.m-info a,
-table.m-table tr.m-info th a, table.m-table th.m-info a {
+:is(
+  .m-note.m-info,
+  table.m-table tr.m-info :is(td, th),
+  table.m-table :is(td, th).m-info
+) a {
   color: var(--info-filled-link-color);
 }
-.m-note.m-info a:hover,
-table.m-table tr.m-info td a:hover, table.m-table td.m-info a:hover,
-table.m-table tr.m-info th a:hover, table.m-table th.m-info a:hover,
-.m-note.m-info a:focus,
-table.m-table tr.m-info td a:focus, table.m-table td.m-info a:focus,
-table.m-table tr.m-info th a:focus, table.m-table th.m-info a:focus,
-.m-note.m-info a:active,
-table.m-table tr.m-info td a:active, table.m-table td.m-info a:active,
-table.m-table tr.m-info th a:active, table.m-table th.m-info a:active {
+:is(
+  .m-note.m-info,
+  table.m-table tr.m-info :is(td, th),
+  table.m-table :is(td, th).m-info
+) a:is(:hover, :focus, :active) {
   color: var(--info-filled-link-active-color);
 }
+
 .m-note.m-dim,
-table.m-table tr.m-dim td, table.m-table td.m-dim,
-table.m-table tr.m-dim th, table.m-table th.m-dim {
+table.m-table tr.m-dim :is(td, th),
+table.m-table :is(td, th).m-dim {
   background-color: var(--dim-filled-background-color);
   color: var(--dim-filled-color);
 }
-.m-note.m-dim a,
-table.m-table tr.m-dim td a, table.m-table td.m-dim a,
-table.m-table tr.m-dim th a, table.m-table th.m-dim a {
+:is(
+  .m-note.m-dim,
+  table.m-table tr.m-dim :is(td, th),
+  table.m-table :is(td, th).m-dim
+) a {
   color: var(--dim-filled-link-color);
 }
-.m-note.m-dim a:hover,
-table.m-table tr.m-dim td a:hover, table.m-table td.m-dim a:hover,
-table.m-table tr.m-dim th a:hover, table.m-table th.m-dim a:hover,
-.m-note.m-dim a:focus,
-table.m-table tr.m-dim td a:focus, table.m-table td.m-dim a:focus,
-table.m-table tr.m-dim th a:focus, table.m-table th.m-dim a:focus,
-.m-note.m-dim a:active,
-table.m-table tr.m-dim td a:active, table.m-table td.m-dim a:active,
-table.m-table tr.m-dim th a:active, table.m-table th.m-dim a:active {
+:is(
+  .m-note.m-dim,
+  table.m-table tr.m-dim :is(td, th),
+  table.m-table :is(td, th).m-dim
+) a:is(:hover, :focus, :active) {
   color: var(--dim-filled-link-active-color);
 }
 
