@@ -716,33 +716,15 @@ figure.m-figure.m-fullwidth::after {
 }
 
 @media screen and (min-width: 576px) {
-  .m-container-inflatable .m-center-s > .m-note,
-  .m-container-inflatable .m-center-s > .m-frame,
-  .m-container-inflatable .m-center-s > .m-block,
-  .m-container-inflatable .m-center-s > .m-imagegrid,
-  .m-container-inflatable .m-center-s > pre,
-  .m-container-inflatable .m-center-s > .m-code-figure,
-  .m-container-inflatable .m-center-s > .m-console-figure {
+  .m-container-inflatable .m-center-s > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: -1rem;
     margin-right: -1rem;
   }
-  .m-container-inflatable .m-left-s > .m-note,
-  .m-container-inflatable .m-left-s > .m-frame,
-  .m-container-inflatable .m-left-s > .m-block,
-  .m-container-inflatable .m-left-s > .m-imagegrid,
-  .m-container-inflatable .m-left-s > pre,
-  .m-container-inflatable .m-left-s > .m-code-figure,
-  .m-container-inflatable .m-left-s > .m-console-figure {
+  .m-container-inflatable .m-left-s > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: -1rem;
     margin-right: 0;
   }
-  .m-container-inflatable .m-right-s > .m-note,
-  .m-container-inflatable .m-right-s > .m-frame,
-  .m-container-inflatable .m-right-s > .m-block,
-  .m-container-inflatable .m-right-s > .m-imagegrid,
-  .m-container-inflatable .m-right-s > pre,
-  .m-container-inflatable .m-right-s > .m-code-figure,
-  .m-container-inflatable .m-right-s > .m-console-figure {
+  .m-container-inflatable .m-right-s > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: 0;
     margin-right: -1rem;
   }
@@ -754,33 +736,15 @@ figure.m-figure.m-fullwidth::after {
   }
 }
 @media screen and (min-width: 768px) {
-  .m-container-inflatable .m-center-m > .m-note,
-  .m-container-inflatable .m-center-m > .m-frame,
-  .m-container-inflatable .m-center-m > .m-block,
-  .m-container-inflatable .m-center-m > .m-imagegrid,
-  .m-container-inflatable .m-center-m > pre,
-  .m-container-inflatable .m-center-m > .m-code-figure,
-  .m-container-inflatable .m-center-m > .m-console-figure {
+  .m-container-inflatable .m-center-m > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: -1rem;
     margin-right: -1rem;
   }
-  .m-container-inflatable .m-left-m > .m-note,
-  .m-container-inflatable .m-left-m > .m-frame,
-  .m-container-inflatable .m-left-m > .m-block,
-  .m-container-inflatable .m-left-m > .m-imagegrid,
-  .m-container-inflatable .m-left-m > pre,
-  .m-container-inflatable .m-left-m > .m-code-figure,
-  .m-container-inflatable .m-left-m > .m-console-figure {
+  .m-container-inflatable .m-left-m > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: -1rem;
     margin-right: 0;
   }
-  .m-container-inflatable .m-right-m > .m-note,
-  .m-container-inflatable .m-right-m > .m-frame,
-  .m-container-inflatable .m-right-m > .m-block,
-  .m-container-inflatable .m-right-m > .m-imagegrid,
-  .m-container-inflatable .m-right-m > pre,
-  .m-container-inflatable .m-right-m > .m-code-figure,
-  .m-container-inflatable .m-right-m > .m-console-figure {
+  .m-container-inflatable .m-right-m > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: 0;
     margin-right: -1rem;
   }
@@ -792,33 +756,15 @@ figure.m-figure.m-fullwidth::after {
   }
 }
 @media screen and (min-width: 992px) {
-  .m-container-inflatable .m-center-l > .m-note,
-  .m-container-inflatable .m-center-l > .m-frame,
-  .m-container-inflatable .m-center-l > .m-block,
-  .m-container-inflatable .m-center-l > .m-imagegrid,
-  .m-container-inflatable .m-center-l > pre,
-  .m-container-inflatable .m-center-l > .m-code-figure,
-  .m-container-inflatable .m-center-l > .m-console-figure {
+  .m-container-inflatable .m-center-l > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: -1rem;
     margin-right: -1rem;
   }
-  .m-container-inflatable .m-left-l > .m-note,
-  .m-container-inflatable .m-left-l > .m-frame,
-  .m-container-inflatable .m-left-l > .m-block,
-  .m-container-inflatable .m-left-l > .m-imagegrid,
-  .m-container-inflatable .m-left-l > pre,
-  .m-container-inflatable .m-left-l > .m-code-figure,
-  .m-container-inflatable .m-left-l > .m-console-figure {
+  .m-container-inflatable .m-left-l > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: -1rem;
     margin-right: 0;
   }
-  .m-container-inflatable .m-right-l > .m-note,
-  .m-container-inflatable .m-right-l > .m-frame,
-  .m-container-inflatable .m-right-l > .m-block,
-  .m-container-inflatable .m-right-l > .m-imagegrid,
-  .m-container-inflatable .m-right-l > pre,
-  .m-container-inflatable .m-right-l > .m-code-figure,
-  .m-container-inflatable .m-right-l > .m-console-figure {
+  .m-container-inflatable .m-right-l > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
     margin-left: 0;
     margin-right: -1rem;
   }

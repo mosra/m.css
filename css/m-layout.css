@@ -568,26 +568,22 @@ article, article > header, article section { margin-bottom: 1rem; }
     border-bottom-left-radius: var(--border-radius);
     padding-left: 1rem;
   }
-  .m-container-inflatable section:target .m-center-s > .m-block,
-  .m-container-inflatable section:target .m-right-s > .m-block {
+  .m-container-inflatable section:target :is(.m-center-s, .m-right-s) > .m-block {
     /* Block keep the same left border width at all times */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
   }
-  .m-container-inflatable section:target .m-center-s > .m-frame,
-  .m-container-inflatable section:target .m-right-s > .m-frame {
+  .m-container-inflatable section:target :is(.m-center-s, .m-right-s) > .m-frame {
     /* Frame has a thinner border */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
     border-left-width: 0.125rem;
     padding-left: 0.875rem;
   }
-  .m-container-inflatable section:target .m-right-s > .m-block,
-  .m-container-inflatable section:target .m-right-s > .m-frame {
+  .m-container-inflatable section:target .m-right-s > :is(.m-block, .m-frame) {
     margin-left: 0;
   }
-  .m-container-inflatable section:target .m-right-s > .m-note,
-  .m-container-inflatable section:target .m-right-s > pre {
+  .m-container-inflatable section:target .m-right-s > :is(.m-note, pre) {
     /* Note and pre has no border */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
@@ -619,26 +615,22 @@ article, article > header, article section { margin-bottom: 1rem; }
     border-bottom-left-radius: var(--border-radius);
     padding-left: 1rem;
   }
-  .m-container-inflatable section:target .m-center-m > .m-block,
-  .m-container-inflatable section:target .m-right-m > .m-block {
+  .m-container-inflatable section:target :is(.m-center-m, .m-right-m) > .m-block {
     /* Block keep the same left border width at all times */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
   }
-  .m-container-inflatable section:target .m-center-m > .m-frame,
-  .m-container-inflatable section:target .m-right-m > .m-frame {
+  .m-container-inflatable section:target :is(.m-center-m, .m-right-m) > .m-frame {
     /* Frame has a thinner border */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
     border-left-width: 0.125rem;
     padding-left: 0.875rem;
   }
-  .m-container-inflatable section:target .m-right-m > .m-block,
-  .m-container-inflatable section:target .m-right-m > .m-frame {
+  .m-container-inflatable section:target .m-right-m > :is(.m-block, .m-frame) {
     margin-left: 0;
   }
-  .m-container-inflatable section:target .m-right-m > .m-note,
-  .m-container-inflatable section:target .m-right-m > pre {
+  .m-container-inflatable section:target .m-right-m > :is(.m-note, pre) {
     /* Note and pre has no border */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
@@ -670,26 +662,22 @@ article, article > header, article section { margin-bottom: 1rem; }
     border-bottom-left-radius: var(--border-radius);
     padding-left: 1rem;
   }
-  .m-container-inflatable section:target .m-center-l > .m-block,
-  .m-container-inflatable section:target .m-right-l > .m-block {
+  .m-container-inflatable section:target :is(.m-center-l, .m-right-l) > .m-block {
     /* Block keep the same left border width at all times */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
   }
-  .m-container-inflatable section:target .m-center-l > .m-frame,
-  .m-container-inflatable section:target .m-right-l > .m-frame {
+  .m-container-inflatable section:target :is(.m-center-l, .m-right-l) > .m-frame {
     /* Frame has a thinner border */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
     border-left-width: 0.125rem;
     padding-left: 0.875rem;
   }
-  .m-container-inflatable section:target .m-right-l > .m-block,
-  .m-container-inflatable section:target .m-right-l > .m-frame {
+  .m-container-inflatable section:target .m-right-l > :is(.m-block, .m-frame) {
     margin-left: 0;
   }
-  .m-container-inflatable section:target .m-right-l > .m-note,
-  .m-container-inflatable section:target .m-right-l > pre {
+  .m-container-inflatable section:target .m-right-l > :is(.m-note, pre) {
     /* Note and pre has no border */
     border-top-left-radius: var(--border-radius);
     border-bottom-left-radius: var(--border-radius);
@@ -728,32 +716,26 @@ article, article > header, article section { margin-bottom: 1rem; }
    conditionally revert that. Left-aligned content is touching the left border
    both in full size and aligned, so we revert it only for center and right. */
 @media screen and (min-width: 576px) {
-  .m-container-inflatable section:target .m-center-s > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-s > figure.m-code-figure::before {
+  .m-container-inflatable section:target :is(.m-center-s, .m-right-s) > figure.m-code-figure::before {
     border-color: var(--code-background-color);
   }
-  .m-container-inflatable section:target .m-center-s > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-s > figure.m-console-figure::before {
+  .m-container-inflatable section:target :is(.m-center-s, .m-right-s) > figure.m-console-figure::before {
     border-color: var(--console-background-color);
   }
 }
 @media screen and (min-width: 768px) {
-  .m-container-inflatable section:target .m-center-m > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-m > figure.m-code-figure::before {
+  .m-container-inflatable section:target :is(.m-center-m, .m-right-m) > figure.m-code-figure::before {
     border-color: var(--code-background-color);
   }
-  .m-container-inflatable section:target .m-center-m > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-m > figure.m-console-figure::before {
+  .m-container-inflatable section:target :is(.m-center-m, .m-right-m) > figure.m-console-figure::before {
     border-color: var(--console-background-color);
   }
 }
 @media screen and (min-width: 992px) {
-  .m-container-inflatable section:target .m-center-l > figure.m-code-figure::before,
-  .m-container-inflatable section:target .m-right-l > figure.m-code-figure::before {
+  .m-container-inflatable section:target :is(.m-center-l, .m-right-l) > figure.m-code-figure::before {
     border-color: var(--code-background-color);
   }
-  .m-container-inflatable section:target .m-center-l > figure.m-console-figure::before,
-  .m-container-inflatable section:target .m-right-l > figure.m-console-figure::before {
+  .m-container-inflatable section:target :is(.m-center-l, .m-right-l) > figure.m-console-figure::before {
     border-color: var(--console-background-color);
   }
 }
@@ -761,8 +743,7 @@ article, article > header, article section { margin-bottom: 1rem; }
 /* These don't have any border otherwise, so we don't need to restrict the
    selectors or border sides like above. */
 .m-container-inflatable section:target pre,
-.m-container-inflatable section:target figure.m-code-figure > pre:first-child,
-.m-container-inflatable section:target figure.m-console-figure > pre:first-child {
+.m-container-inflatable section:target figure:is(.m-code-figure, .m-console-figure) > pre:first-child {
   border-color: var(--line-color);
 }
 .m-container-inflatable section:target .m-note.m-default {
