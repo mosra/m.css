@@ -28,8 +28,7 @@ body > header > nav {
   background-color: var(--header-background-color);
   min-height: 3rem;
 }
-body > header > nav.m-navbar-landing,
-body > header > nav.m-navbar-cover {
+body > header > nav:is(.m-navbar-landing, .m-navbar-cover) {
   background-color: transparent;
   position: relative;
 }
@@ -40,13 +39,11 @@ body > header > nav.m-navbar-cover {
   background-color: var(--header-background-color-jumbo);
   opacity: 1;
 }
-body > header > nav.m-navbar-landing:hover,
-body > header > nav.m-navbar-cover:hover {
+body > header > nav:is(.m-navbar-landing, .m-navbar-cover):hover {
   background-color: var(--header-background-color-landing);
   opacity: 1;
 }
-body> header > nav.m-navbar-landing:target,
-body> header > nav.m-navbar-cover:target {
+body> header > nav:is(.m-navbar-landing, .m-navbar-cover):target {
   background-color: var(--header-background-color);
   opacity: 1;
 }
@@ -69,16 +66,26 @@ body > header > nav a {
   line-height: 2.75rem;
   color: var(--header-link-color);
 }
-body > header > nav #m-navbar-brand, body > header > nav a#m-navbar-show, body > header > nav a#m-navbar-hide {
+body > header > nav :is(
+  #m-navbar-brand,
+  a#m-navbar-show,
+  a#m-navbar-hide
+) {
   font-weight: var(--heading-font-weight);
   font-size: 1.125rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }
-body > header > nav a#m-navbar-brand, body > header > nav #m-navbar-brand a {
+body > header > nav :is(
+  a#m-navbar-brand,
+  #m-navbar-brand a
+) {
   text-transform: var(--nav-brand-case);
 }
-body > header > nav a#m-navbar-brand img, body > header > nav #m-navbar-brand a img {
+body > header > nav :is(
+  a#m-navbar-brand,
+  #m-navbar-brand a
+) img {
   /* unfortuately, with SVGs, unless the size is hardcoded like this, it will
      cause ugly jumps during loading :( */
   width: 1.75rem;
@@ -96,7 +103,7 @@ body > header > nav #m-navbar-brand .m-thin {
 body > header > nav #m-navbar-brand .m-breadcrumb {
   color: var(--header-breadcrumb-color);
 }
-body > header > nav a#m-navbar-show::before, body > header > nav a#m-navbar-hide::before {
+body > header > nav a:is(#m-navbar-show, #m-navbar-hide)::before {
   content:'\2630';
 }
 body > header > nav #m-navbar-collapse {
@@ -142,8 +149,7 @@ body > header > nav #m-navbar-collapse li a:is(:hover, :focus, :active) {
   border-color: var(--header-link-active-color);
   background-color: var(--header-link-active-background-color);
 }
-body > header > nav.m-navbar-landing #m-navbar-collapse li a:is(:hover, :focus, :active),
-body > header > nav.m-navbar-cover #m-navbar-collapse li a:is(:hover, :focus, :active) {
+body > header > nav:is(.m-navbar-landing, .m-navbar-cover) #m-navbar-collapse li a:is(:hover, :focus, :active) {
   background-color: var(--header-link-active-background-color-semi);
 }
 
@@ -163,14 +169,14 @@ body > header > nav:target #m-navbar-hide {
 
 /* Header navigation -- 768px and up (tablets, desktops) */
 @media screen and (min-width: 768px) {
-  body > header > nav #m-navbar-show, body > header > nav #m-navbar-hide,
-  body > header > nav:target #m-navbar-show, body > header > nav:target #m-navbar-hide {
+  body > header > nav :is(#m-navbar-show, #m-navbar-hide),
+  body > header > nav:target :is(#m-navbar-show, #m-navbar-hide) {
     display: none;
   }
   body > header > nav #m-navbar-collapse li a {
     line-height: 2.75rem;
   }
-  body > header > nav a, body > header > nav #m-navbar-collapse li a {
+  body > header > nav :is(a, #m-navbar-collapse li a) {
     margin-left: 0;
     padding-left: 1rem;
     padding-right: 1rem;
