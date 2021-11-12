@@ -59,7 +59,7 @@ main p {
   text-align: var(--paragraph-align);
 }
 /* Remove indentation and justification where it doesn't make sense */
-main p.m-noindent, li > p, dd > p, table.m-table td > p {
+main p.m-noindent, :is(li, dd, table.m-table td) > p {
   text-indent: 0;
   text-align: left;
 }
@@ -124,7 +124,7 @@ pre, code {
   color: var(--code-color);
   background-color: var(--code-background-color);
 }
-pre.m-console, code.m-console {
+:is(pre, code).m-console {
   color: var(--console-color);
   background-color: var(--console-background-color);
 }
@@ -250,14 +250,14 @@ dl.m-diary dd {
 }
 
 /* Footnotes, footnote references */
-a.m-footnote, dl.m-footnote dd span.m-footnote {
+:is(a, dl, dd).m-footnote {
   top: -0.35rem; /* Same as .m-text.m-sup */
   font-size: 0.75rem;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
 }
-a.m-footnote, dl.m-footnote dd span.m-footnote a {
+:is(a, dl, dd).m-footnote a {
   text-decoration: none;
 }
 a.m-footnote::before { content: '['; }
@@ -838,10 +838,10 @@ pre.m-code span.hll {
 }
 
 /* Inverted code block / inline code */
-.m-code.m-inverted > span, .m-console.m-inverted > span {
+:is(.m-code, .m-console).m-inverted > span {
   opacity: 0.3333;
 }
-.m-code.m-inverted > span.hll, .m-console.m-inverted > span.hll {
+:is(.m-code, .m-console).m-inverted > span.hll {
   opacity: 1;
   background-color: transparent; /* TODO: handle this in pygments directly */
   border-color: transparent;
@@ -885,7 +885,7 @@ div.m-button.m-flat a svg.m-math { fill: var(--color); }
 /* Plots, graphs. Graphs can be either div.m-graph svg or svg.m-graph, so using
    just .m-graph when referencing both a <div> graph and a <figure> graph. */
 .m-graph { font-size: var(--font-size); }
-div.m-plot svg, div.m-graph svg {
+div:is(.m-plot, .m-graph) svg {
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -918,20 +918,18 @@ div.m-plot svg .m-label.m-dim { fill: var(--dim-color); }
    ensure it's applied only on the immediately first svg inside. Because we
    want a background under the padding as well, switch the box sizing to
    content box. */
-figure.m-figure > svg.m-math:first-child,
-figure.m-figure > svg.m-graph:first-child {
+figure.m-figure > svg:is(.m-math, .m-graph):first-child {
   padding: 1rem;
   box-sizing: content-box;
 }
-figure.m-figure:not(.m-flat) > svg.m-math:first-child,
-figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
+figure.m-figure:not(.m-flat) > svg:is(.m-math, .m-graph):first-child {
   background-color: var(--line-color);
 }
 
 /* Colored block, header links in a colored block, colored text, flat label */
 .m-block.m-default { border-left-color: var(--line-color); }
 .m-block.m-default :is(h3, h4, h5, h6),
-.m-text.m-default, .m-label.m-flat.m-default {
+:is(.m-text, .m-label.m-flat).m-default {
   color: var(--default-color);
 }
 .m-block.m-default :is(h3, h4, h5, h6) a {
@@ -940,40 +938,39 @@ figure.m-figure:not(.m-flat) > svg.m-graph:first-child {
 .m-block.m-primary { border-left-color: var(--primary-color); }
 .m-block.m-primary :is(h3, h4, h5, h6),
 .m-block.m-primary :is(h3, h4, h5, h6) a,
-.m-text.m-primary, .m-label.m-flat.m-primary {
+:is(.m-text, .m-label.m-flat).m-primary {
   color: var(--primary-color);
 }
 .m-block.m-success { border-left-color: var(--success-color); }
 .m-block.m-success :is(h3, h4, h5, h6),
 .m-block.m-success :is(h3, h4, h5, h6) a,
-.m-text.m-success, .m-label.m-flat.m-success {
+:is(.m-text, .m-label.m-flat).m-success {
   color: var(--success-color);
 }
 .m-block.m-warning { border-left-color: var(--warning-color); }
 .m-block.m-warning :is(h3, h4, h5, h6),
 .m-block.m-warning :is(h3, h4, h5, h6) a,
-.m-text.m-warning, .m-label.m-flat.m-warning {
+:is(.m-text, .m-label.m-flat).m-warning {
   color: var(--warning-color);
 }
 .m-block.m-danger { border-left-color: var(--danger-color); }
 .m-block.m-danger :is(h3, h4, h5, h6),
 .m-block.m-danger :is(h3, h4, h5, h6) a,
-.m-text.m-danger, .m-label.m-flat.m-danger {
+:is(.m-text, .m-label.m-flat).m-danger {
   color: var(--danger-color);
 }
 .m-block.m-info { border-left-color: var(--info-color); }
 .m-block.m-info :is(h3, h4, h5, h6),
 .m-block.m-info :is(h3, h4, h5, h6) a,
-.m-text.m-info, .m-label.m-flat.m-info {
+:is(.m-text, .m-label.m-flat).m-info {
   color: var(--info-color);
 }
 .m-block.m-dim { border-left-color: var(--dim-color); }
-.m-block.m-dim, .m-text.m-dim, .m-label.m-flat.m-dim {
+:is(.m-text, .m-label.m-flat, .m-block).m-dim {
   color: var(--dim-color);
 }
-.m-block.m-dim a, .m-text.m-dim a { color: var(--dim-link-color); }
-.m-block.m-dim a:is(:hover, :focus, :active),
-.m-text.m-dim a:is(:hover, :focus, :active) {
+:is(.m-block, .m-text).m-dim a { color: var(--dim-link-color); }
+:is(.m-block, .m-text).m-dim a:is(:hover, :focus, :active) {
   color: var(--dim-link-active-color);
 }
 .m-block.m-flat { border-color: transparent; }
@@ -1212,7 +1209,7 @@ figure.m-figure.m-dim a:is(:hover, :focus, :active) {
     https://mcss.mosra.cz/plugins/math-and-code/test/
     https://mcss.mosra.cz/plugins/plots-and-graphs/test/ */
 .m-math { fill: var(--color); }
-.m-math.m-default, .m-math g.m-default, .m-math rect.m-default,
+.m-math.m-default, .m-math :is(g, rect).m-default,
 div.m-plot svg .m-bar.m-default,
 .m-graph g.m-edge polygon,
 .m-graph g.m-node:not(.m-flat) ellipse,

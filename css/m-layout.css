@@ -410,14 +410,14 @@ article#m-jumbo > header h2 {
   }
 }
 
-article#m-jumbo > header, article#m-jumbo > header h1, article#m-jumbo > header a {
+article#m-jumbo > header, article#m-jumbo > header :is(h1, a) {
   color: #ffffff;
 }
 article#m-jumbo > header a:is(:hover, :focus, :active) {
   color: #f0f0f0;
 }
 
-article#m-jumbo.m-inverted > header, article#m-jumbo.m-inverted > header h1, article#m-jumbo.m-inverted > header a {
+article#m-jumbo.m-inverted > header, article#m-jumbo.m-inverted > header :is(h1, a) {
   color: #000000;
 }
 article#m-jumbo.m-inverted > header a:is(:hover, :focus, :active) {
@@ -483,7 +483,7 @@ article section:target figure:is(.m-code-figure, .m-console-figure) {
 
 /* Spacing after every block element, but not after the last */
 article, article > header, article section { margin-bottom: 1rem; }
-article:last-child, article section:last-child { margin-bottom: 0; }
+:is(article, article section):last-child { margin-bottom: 0; }
 
 /* Active sections in inflatable content affect left border of some components
    --- restrict to components directly in active section, its subsections and
