@@ -668,49 +668,16 @@ figure.m-figure.m-fullwidth::after {
 }
 
 /* Inflatable content */
-.m-container-inflatable > .m-row > [class*='m-col-'] > .m-note,
-.m-container-inflatable > .m-row > [class*='m-col-'] > .m-frame,
-.m-container-inflatable > .m-row > [class*='m-col-'] > .m-block,
-.m-container-inflatable > .m-row > [class*='m-col-'] > .m-imagegrid,
-.m-container-inflatable > .m-row > [class*='m-col-'] > pre,
-.m-container-inflatable > .m-row > [class*='m-col-'] > .m-code-figure,
-.m-container-inflatable > .m-row > [class*='m-col-'] > .m-console-figure,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-note,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-frame,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-block,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-imagegrid,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > pre,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-code-figure,
-.m-container-inflatable > .m-row > [class*='m-col-'] section > .m-console-figure,
-.m-container-inflatable [class*='m-center-'] > .m-note,
-.m-container-inflatable [class*='m-center-'] > .m-frame,
-.m-container-inflatable [class*='m-center-'] > .m-block,
-.m-container-inflatable [class*='m-center-'] > .m-imagegrid,
-.m-container-inflatable [class*='m-center-'] > pre,
-.m-container-inflatable [class*='m-center-'] > .m-code-figure,
-.m-container-inflatable [class*='m-center-'] > .m-console-figure,
-.m-container-inflatable [class*='m-left-'] > .m-note,
-.m-container-inflatable [class*='m-left-'] > .m-frame,
-.m-container-inflatable [class*='m-left-'] > .m-block,
-.m-container-inflatable [class*='m-left-'] > .m-imagegrid,
-.m-container-inflatable [class*='m-left-'] > pre,
-.m-container-inflatable [class*='m-left-'] > .m-code-figure,
-.m-container-inflatable [class*='m-left-'] > .m-console-figure,
-.m-container-inflatable [class*='m-right-'] > .m-note,
-.m-container-inflatable [class*='m-right-'] > .m-frame,
-.m-container-inflatable [class*='m-right-'] > .m-block,
-.m-container-inflatable [class*='m-right-'] > .m-imagegrid,
-.m-container-inflatable [class*='m-right-'] > pre,
-.m-container-inflatable [class*='m-right-'] > .m-code-figure,
-.m-container-inflatable [class*='m-right-'] > .m-console-figure,
-.m-container-inflatable .m-container-inflate > .m-note,
-.m-container-inflatable .m-container-inflate > .m-frame,
-.m-container-inflatable .m-container-inflate > .m-block,
-.m-container-inflatable .m-container-inflate > .m-imagegrid,
-.m-container-inflatable .m-container-inflate > pre,
-.m-container-inflatable .m-container-inflate > .m-code-figure,
-.m-container-inflatable .m-container-inflate > .m-console-figure
-{
+:is(
+  .m-container-inflatable > .m-row > [class*='m-col-'],
+  .m-container-inflatable > .m-row > [class*='m-col-'] section,
+  .m-container-inflatable :is(
+    [class*='m-center-'],
+    [class*='m-left-'],
+    [class*='m-right-'],
+    .m-container-inflate
+  )
+) > :is(.m-note, .m-frame, .m-block, .m-imagegrid, pre, .m-code-figure, .m-console-figure) {
   margin-left: -1rem;
   margin-right: -1rem;
 }
