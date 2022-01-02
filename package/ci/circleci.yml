@@ -63,8 +63,10 @@ commands:
         # 19.3 instead
         # New qrcode (7.3? or the older ones as well?) chages the SVG preamble
         # so the current regex no longer works. I have to update it.
+        # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
+        # differently, I have to update the expected output first.
         command: |
-          pip install jinja2 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode==6.1 matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 pygments==2.9.0 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode==6.1 matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
