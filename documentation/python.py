@@ -814,7 +814,7 @@ def parse_pybind_type(state: State, referrer_path: List[str], signature: str):
         type = _pybind_map_name_prefix_or_add_typing_suffix(state, input_type)
         type_link = make_name_link(state, referrer_path, type)
     else:
-        raise SyntaxError()
+        raise SyntaxError("Cannot match pybind type")
 
     lvl = 0
     i = 0
@@ -886,9 +886,7 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
             # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
             if signature.startswith(('=', ' = ')):
                 signature = signature[1 if signature[0] == '=' else 3:]
-                default_length = _pybind11_default_argument_length(signature)
-                default = signature[:default_length]
-                signature = signature[default_length:]
+                signature, default = _pybind11_extract_default_argument(signature)
             else:
                 default = None
 
@@ -897,7 +895,7 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
             if signature[0] == ')': break
 
             # Expecting the next argument now, if not there, we failed
-            if not signature.startswith(', '): raise SyntaxError()
+            if not signature.startswith(', '): raise SyntaxError("Expected comma and next argument, got `{}`".format(signature))
             signature = signature[2:]
 
         assert signature[0] == ')'
@@ -911,12 +909,12 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
             return_type, return_type_link = None, None
 
         # Expecting end of the signature line now, if not there, we failed
-        if signature and signature[0] != '\n': raise SyntaxError()
+        if signature and signature[0] != '\n': raise SyntaxError("Expected end of the signature, got `{}`".format(signature))
 
     # Failed to parse, return an ellipsis and docs
-    except SyntaxError:
+    except SyntaxError as e:
         end = original_signature.find('\n')
-        logging.warning("cannot parse pybind11 function signature %s", original_signature[:end if end != -1 else None])
+        logging.warning("cannot parse pybind11 function signature %s: %s", (original_signature[:end if end != -1 else None]), e)
         if end != -1 and len(original_signature) > end + 1 and original_signature[end + 1] == '\n':
             summary = inspect.cleandoc(original_signature[end + 1:]).partition('\n\n')[0]
         else:
