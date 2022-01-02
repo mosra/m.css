@@ -54,7 +54,10 @@ beautiful image galleries.
 Download the `m/images.py <{filename}/plugins.rst>`_ file, put it including the
 ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add ``m.images``
 package to your :py:`PLUGINS` in ``pelicanconf.py``. This plugin assumes
-presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_.
+presence of `m.htmlsanity <{filename}/plugins/htmlsanity.rst>`_. The following
+shows the minimal configuration together with default values of all available
+options. Not specifying the option is equivalent to setting it to a default
+value.
 
 .. code:: python
 
@@ -74,7 +77,9 @@ library installed. Get it via ``pip`` or your distribution package manager:
 
 Simply list the plugin in your :py:`PLUGINS`. The `m.htmlsanity`_ plugin is
 available always, no need to mention it explicitly. The same dependencies as
-for `Pelican`_ apply here.
+for `Pelican`_ apply here. The following shows the minimal configuration
+together with default values of all available options. Not specifying the
+option is equivalent to setting it to a default value.
 
 .. code:: py
 
