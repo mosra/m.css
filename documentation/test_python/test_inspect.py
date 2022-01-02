@@ -92,8 +92,12 @@ class Annotations(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
 
-        # This should not list any internal stuff from the typing module
-        self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
+        # This should not list any internal stuff from the typing module. The
+        # Generic.__new__() is gone in 3.9: https://bugs.python.org/issue39168
+        if LooseVersion(sys.version) >= LooseVersion('3.9.0'):
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html', 'inspect_annotations.AContainer-py36-38.html'))
 
     # https://github.com/python/cpython/pull/13394
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7.4'),
