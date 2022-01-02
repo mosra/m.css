@@ -57,13 +57,16 @@ the current century.
 
 Download the `m/htmlsanity.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.htmlsanity` package to your :py:`PLUGINS` in ``pelicanconf.py``.
+:py:`m.htmlsanity` package to your :py:`PLUGINS` in ``pelicanconf.py``. The
+following shows the minimal configuration together with default values of all
+available options. Not specifying the option is equivalent to setting it to a
+default value.
 
 .. code:: python
 
     PLUGINS += ['m.htmlsanity']
-    M_HTMLSANITY_SMART_QUOTES = True
-    M_HTMLSANITY_HYPHENATION = True
+    M_HTMLSANITY_SMART_QUOTES = False
+    M_HTMLSANITY_HYPHENATION = False
 
 Hyphenation (see below) requires the `Pyphen <https://pyphen.org/>`_ library,
 either install it via ``pip`` or your distribution package manager or disable
@@ -78,12 +81,14 @@ it with the above setting.
 
 The ``m.htmlsanity`` plugin is available always, no need to mention it
 explicitly. However, the options aren't, so you might want to supply them.
-The same dependencies as for `Pelican`_ apply here.
+The same dependencies as for `Pelican`_ apply here. The following shows the
+minimal configuration together with default values of all available options.
+Not specifying the option is equivalent to setting it to a default value.
 
 .. code:: py
 
-    M_HTMLSANITY_SMART_QUOTES = True
-    M_HTMLSANITY_HYPHENATION = True
+    M_HTMLSANITY_SMART_QUOTES = False
+    M_HTMLSANITY_HYPHENATION = False
 
 `Doxygen theme`_
 ----------------
