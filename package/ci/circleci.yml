@@ -48,8 +48,6 @@ commands:
     steps:
     - run:
         name: Install Python dependencies
-        # Everything broken with Pelican 4.5, stay on older version until
-        # that's  resolved: https://github.com/mosra/m.css/issues/178
         # Pyphen 0.10 has significantly different hyphenation results, staying
         # on an  older version until I can investigate
         # Matplotlib 3.4.1 has different output AGAIN, staying on something
@@ -58,7 +56,7 @@ commands:
         # Attrs 20.3 add some new properties that I need to ignore first, using
         # 19.3 instead
         command: |
-          pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting

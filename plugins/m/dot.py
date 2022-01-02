@@ -30,7 +30,16 @@ from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 
-import dot2svg
+try:
+    import dot2svg
+except ImportError:
+    # While the above was enough to make things work with Pelican 4.2 and
+    # before (and also works with other m.css tools like the Python doc
+    # generator), Pelican 4.5.1+ needs the below (4.5.0 didn't work with
+    # namespaced plugins at all). See the comment in m.code for further info.
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+    import dot2svg
 
 def _is_graph_figure(parent):
     # The parent has to be a figure, marked as m-figure

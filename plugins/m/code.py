@@ -40,7 +40,29 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-import ansilexer
+try:
+    import ansilexer
+except ImportError:
+    # The above worked well on Pelican 4.2 and before, and also works with
+    # other m.css tools like the Python doc generator. Pelican 4.5.0 changed to
+    # "namespace plugins" and broke packaged plugins completely, 4.5.1 was
+    # fixed to load namespaced plugins again, however the loading code is
+    # different from 4.2 and thus anything from the root plugins/ directory
+    # *isn't* in PATH anymore. Thus attempting to import those modules fails
+    # and as a DIRTY hack I have to add the path back.
+    #
+    # TODO: Pelican 4.5+ treats everything that isn't in the pelican.plugins
+    # namespace as "legacy plugins", which is unfortunate because then I
+    # wouldn't be able to easily share the plugin code with other m.css tools
+    # which don't (and shouldn't need to) care about Pelican at all. Allowing
+    # 3rd party plugins without enforcing implicit assumptions on them (the
+    # namespace, an unprefixed register() function...) would probably involve a
+    # complex discussion with Pelican maintainers which I don't have the energy
+    # for right now. Let's hope the "legacy plugins" codepath stays in for the
+    # foreseeable future.
+    import sys
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+    import ansilexer
 
 filters_pre = None
 filters_post = None
