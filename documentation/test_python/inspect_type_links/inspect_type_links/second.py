@@ -65,6 +65,9 @@ def type_string(a: 'Foo'):
 def type_nested(a: Tuple[Foo, List[Enum], Any]):
     """A function with nested type annotation"""
 
+def type_nested_ellipsis(a: Tuple[int, ...]):
+    """A function with a variadic tuple annotation"""
+
 def type_string_nested(a: 'Tuple[Foo, List[Enum], Any]'):
     """A function with string nested type annotation"""
 

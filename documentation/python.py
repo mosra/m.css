@@ -1191,10 +1191,14 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
     elif isinstance(annotation, typing.TypeVar):
         return annotation.__name__, annotation.__name__
 
-    # Ellipsis -- print a literal `...`
-    # TODO: any chance to link this to python official docs?
+    # Ellipsis -- print a literal `...`, link to Ellipsis in python docs
     elif annotation is ...:
-        return '...', '...'
+        # TODO m.sphinx needs to have a special case to extract `...` from
+        # python.inv (which is a `std.term`, alongside generic stuff like
+        # "class", "py" etc. which we DON'T want to link to) and convert it to
+        # a link to Ellipsis, or alternatively pass Ellipsis here but make it
+        # display as a literal ...
+        return '...', make_name_link(state, referrer_path, 'Ellipsis')
 
     # If the annotation is from the typing module, it ... gets complicated. It
     # could be a "bracketed" type, in which case we want to recurse to its
