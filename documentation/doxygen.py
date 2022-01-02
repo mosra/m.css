@@ -145,7 +145,7 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
     'VERSION_LABELS': False
 }
 
-xref_id_rx = re.compile(r"""(.*)_1(_[a-z-]+[0-9]+|@)$""")
+xref_id_rx = re.compile(r"""(.*)_1(_[a-z-0-9]+|@)$""")
 slugify_nonalnum_rx = re.compile(r"""[^\w\s-]""")
 slugify_hyphens_rx = re.compile(r"""[-\s]+""")
 
