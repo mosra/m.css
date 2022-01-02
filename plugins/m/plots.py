@@ -57,8 +57,11 @@ mpl.rcParams['axes.spines.bottom'] = False
 mpl.rcParams['svg.fonttype'] = 'none' # otherwise it renders text to paths
 mpl.rcParams['figure.autolayout'] = True # so it relayouts everything to fit
 
-# Gets increased for every graph on a page to (hopefully) ensure unique SVG IDs
-mpl.rcParams['svg.hashsalt'] = 0
+# Gets increased for every graph on a page to (hopefully) ensure unique SVG
+# IDs. The parameter is a number but "Support for setting an rcParam that
+# expects a str value to a non-str value is deprecated since 3.5 and support
+# will be removed two minor releases later", so we pass a string.
+mpl.rcParams['svg.hashsalt'] = '0'
 
 # Color codes for bars. Keep in sync with latex2svgextra.
 style_mapping = {
@@ -227,8 +230,12 @@ class Plot(rst.Directive):
         # Bar height
         bar_height = float(self.options.get('bar-height', '0.4'))
 
-        # Increase hashsalt for every plot to ensure (hopefully) unique SVG IDs
-        mpl.rcParams['svg.hashsalt'] = int(mpl.rcParams['svg.hashsalt']) + 1
+        # Increase hashsalt for every plot to ensure (hopefully) unique SVG
+        # IDs. The parameter is a number but "Support for setting an rcParam
+        # that expects a str value to a non-str value is deprecated since 3.5
+        # and support will be removed two minor releases later", so we convert
+        # back to a string.
+        mpl.rcParams['svg.hashsalt'] = str(int(mpl.rcParams['svg.hashsalt']) + 1)
 
         # Setup the graph
         fig, ax = plt.subplots()
@@ -289,7 +296,10 @@ class Plot(rst.Directive):
         return [container]
 
 def new_page(*args, **kwargs):
-    mpl.rcParams['svg.hashsalt'] = 0
+    # The parameter is a number but "Support for setting an rcParam that
+    # expects a str value to a non-str value is deprecated since 3.5 and
+    # support will be removed two minor releases later", so we pass a string.
+    mpl.rcParams['svg.hashsalt'] = '0'
 
 def register_mcss(mcss_settings, hooks_pre_page, **kwargs):
     font = mcss_settings.get('M_PLOTS_FONT', 'Source Sans Pro')
