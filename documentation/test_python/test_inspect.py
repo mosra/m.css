@@ -85,7 +85,10 @@ class AllProperty(BaseInspectTestCase):
 class Annotations(BaseInspectTestCase):
     def test(self):
         self.run_python()
-        self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
+        if LooseVersion(sys.version) >= LooseVersion('3.7.0') and LooseVersion(sys.version) < LooseVersion('3.9.0'):
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.html', 'inspect_annotations-py37+38.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
 

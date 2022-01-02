@@ -75,9 +75,7 @@ def annotation_union_of_undefined(a: Union[int, 'something.Undefined']):
     """Annotation with an union that has an undefined type inside, where we can't use isinstance either"""
 
 def annotation_list_noparam(a: List):
-    """Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions"""
-if sys.version_info < (3, 7):
-    annotation_list_noparam.__annotations__['a'] = List[TypeVar('T')]
+    """Annotation with the unparametrized List type. 3.7 and 3.8 adds an implicit TypeVar to it, 3.6, 3.9 and 3.10 not, so the output is different between the versions."""
 
 def annotation_generic(a: List[_T]) -> _T:
     """Annotation with a generic type"""
