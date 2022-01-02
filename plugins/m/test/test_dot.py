@@ -43,7 +43,8 @@ class Dot(PelicanPluginTestCase):
             'M_DOT_FONT': 'DejaVu Sans'
         })
 
-        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'page.html'
         elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
             file = 'page-240.html'

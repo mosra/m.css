@@ -82,8 +82,8 @@ class Plugins(BaseTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-        # The output is different for every other Graphviz
-        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'dot.html'
         elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
             file = 'dot-240.html'
