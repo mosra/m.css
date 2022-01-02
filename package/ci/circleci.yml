@@ -65,8 +65,10 @@ commands:
         # so the current regex no longer works. I have to update it.
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
         # differently, I have to update the expected output first.
+        # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
+        # to update the code first.
         command: |
-          pip install jinja2 pygments==2.9.0 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode==6.1 matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode==6.1 matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
