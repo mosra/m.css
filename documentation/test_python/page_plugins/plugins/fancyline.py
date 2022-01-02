@@ -69,12 +69,24 @@ def _post_run(**kwargs):
     global post_run_call_count
     post_run_call_count = post_run_call_count + 1
 
-def register_mcss(hooks_post_crawl, hooks_pre_scope, hooks_post_scope, hooks_docstring, hooks_pre_page, hooks_post_run, **kwargs):
+def register_mcss(
+    # The * is to ensure all arguments are passed as keyword
+    *, hooks_post_crawl, hooks_pre_scope, hooks_post_scope, hooks_docstring, hooks_pre_page, hooks_post_run,
+    # These are not used here, but requiring them to ensure these get passed
+    # always
+    mcss_settings, jinja_environment, module_doc_contents, class_doc_contents, enum_doc_contents, enum_value_doc_contents, function_doc_contents, property_doc_contents, data_doc_contents,
+    # This is asserted to be empty below to ensure the test is always updated
+    # for newly added hooks
+    **kwargs) \
+:
     hooks_post_crawl += [_post_crawl]
     hooks_pre_scope += [_pre_scope]
     hooks_post_scope += [_post_scope]
     hooks_docstring += [_docstring]
     hooks_pre_page += [_pre_page]
     hooks_post_run += [_post_run]
+
+    # To ensure the test is always updated for newly added hooks
+    assert not kwargs, "Expected empty kwargs but got %s" % kwargs
 
     rst.directives.register_directive('fancy-line', FancyLine)
