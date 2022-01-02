@@ -210,6 +210,47 @@ class Signature(unittest.TestCase):
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ))'), bad_signature)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ])'), bad_signature)
 
+    # https://github.com/pybind/pybind11/pull/2126, extremely stupid and
+    # annoying but what can I do. Want to support both this and the original
+    # behavior in case they revert the insanity again, so test that both
+    # variants give the same output.
+    def test_default_values_pybind26(self):
+        # Before the insane change
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: bar.Enum = Enum.FOO_BAR)'),
+            ('foo', '', [
+                ('a', 'bar.Enum', 'bar.Enum', 'Enum.FOO_BAR')
+            ], None, None))
+
+        # After the insane change
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: bar.Enum = <Enum.FOO_BAR: -13376>)'),
+            ('foo', '', [
+                ('a', 'bar.Enum', 'bar.Enum', 'Enum.FOO_BAR')
+            ], None, None))
+
+        # Nested
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: bar.Enum = (4, [<Enum.FOO_BAR: -13376>], <Enum.FIZZ_PISS: 1>))'),
+            ('foo', '', [
+                ('a', 'bar.Enum', 'bar.Enum', '(4, [Enum.FOO_BAR], Enum.FIZZ_PISS)')
+            ], None, None))
+
+        # This isn't really expected to happen but yeah it still treats it as
+        # an enum
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: Enum = <Enum_MISSING_DOT:>)'),
+            ('foo', '', [
+                ('a', 'Enum', 'Enum', 'Enum_MISSING_DOT')
+            ], None, None))
+
+        # This will fail
+        bad_signature = ('foo', '', [('…', None, None, None)], None, None)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.MISSING_COLON>)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.MISSING_GT)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER>a)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER><)'), bad_signature)
+
     def test_bad_return_type(self):
         bad_signature = ('foo', '', [('…', None, None, None)], None, None)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo() -> List[[]'), bad_signature)

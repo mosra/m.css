@@ -785,12 +785,40 @@ _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
 
-def _pybind11_default_argument_length(string):
-    """Returns length of balanced []()-expression at begin of input string until `,` or `)`"""
+def _pybind11_extract_default_argument(string):
+    """Consumes a balanced []()-expression at begin of input string until `,`
+    or `)`, while also replacing all `<Enum.FOO: -12354>` with just
+    `Enum.FOO`."""
     stack = []
-    for i, c in enumerate(string):
+    default = ''
+    i = 0
+    while i < len(string):
+        c = string[i]
+
+        # At the end, what follows is the next argument or end of the argument
+        # list, exit with what we got so far
         if len(stack) == 0 and (c == ',' or c == ')'):
-            return i
+            return string[i:], default
+
+        # Pybind 2.6+ enum in the form of <Enum.FOO_BAR: -2986>, extract
+        # everything until the colon and discard the rest. It can however be a
+        # part of a rogue C++ type name, so pick the < only if directly at the
+        # start or after a space or bracket, and the > only if at the end
+        # again.
+        if c == '<' and (i == 0 or string[i - 1] in [' ', '(', '[']):
+            name_end = string.find(':', i)
+            if name_end == -1:
+                raise SyntaxError("Enum expected to have a value: `{}`".format(string))
+
+            default += string[i + 1:name_end]
+            i = string.find('>', name_end + 1) + 1
+
+            if i == -1 or (i < len(string) and string[i] not in [',', ')', ']']):
+                raise SyntaxError("Unexpected content after enum value: `{}`".format(string[i:]))
+
+            continue
+
+        # Brackets
         if c == '(':
             stack.append(')')
         elif c == '[':
@@ -798,6 +826,12 @@ def _pybind11_default_argument_length(string):
         elif c == ')' or c == ']':
             if len(stack) == 0 or c != stack.pop():
                 raise SyntaxError("Unmatched {} at pos {} in `{}`".format(c, i, string))
+
+        # If there would be find_first_not_of(), I wouldn't have to iterate
+        # byte by byte LIKE A CAVEMAN
+        default += string[i]
+        i += 1
+
     raise SyntaxError("Unexpected end of `{}`".format(string))
 
 def _pybind_map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
