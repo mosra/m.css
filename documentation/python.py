@@ -1406,7 +1406,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
         overloads = []
         for name, summary, args, type, type_link in funcs:
             out = Empty()
-            out.name = entry.path[-1]
+            out.name = name
             out.params = []
             out.has_complex_params = False
             out.has_details = False
@@ -2590,7 +2590,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         index_entry = Empty()
         index_entry.kind = 'page'
         index_entry.name = entry.name
-        index_entry.url = config['URL_FORMATTER'](entry.type, entry.path)[1]
+        index_entry.url = entry.url
         index_entry.summary = entry.summary
         index_entry.has_nestable_children = False
         index_entry.children = []
