@@ -10,15 +10,21 @@ notify:
     #- url: https://webhooks.gitter.im/e/cfbadbd34d28708a57c6
 
 executors:
-  python-3_5:
+  python-3_06:
     docker:
-    - image: python:3.5.10
-  python-3_6:
+    - image: python:3.6.15
+  python-3_07:
     docker:
-    - image: python:3.6.12
-  python-3_7:
+    - image: python:3.7.12
+  python-3_08:
     docker:
-    - image: python:3.7.9
+    - image: python:3.8.12
+  python-3_09:
+    docker:
+    - image: python:3.9.8
+  python-3_10:
+    docker:
+    - image: python:3.10.1
   node-10:
     docker:
     - image: node:10.24.0-buster-slim
@@ -171,19 +177,8 @@ commands:
           codecov
 
 jobs:
-  py35:
-    executor: python-3_5
-    steps:
-    - install-base:
-        extra: graphviz
-    - install-python-deps
-    - checkout
-    - test-theme
-    - test-plugins
-    - coverage
-
-  py36:
-    executor: python-3_6
+  py306:
+    executor: python-3_06
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
@@ -198,8 +193,8 @@ jobs:
         pybind-version: "2.2.4"
     - coverage
 
-  py37:
-    executor: python-3_7
+  py307:
+    executor: python-3_07
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
@@ -212,6 +207,60 @@ jobs:
     - test-documentation-themes:
         python-version: "3.7"
         pybind-version: "2.3.0"
+    - coverage
+
+  py308:
+    executor: python-3_08
+    steps:
+    - install-base:
+        extra: graphviz cmake ninja-build wget
+    - install-python-deps:
+        matplotlib-version: ==3.3.4
+        extra: attrs==19.3.0
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.8"
+        # 2.4.1 fixes a Py3.8-specific bug, so the 2.3 versions are probably
+        # not wise to use here
+        pybind-version: "2.4.3"
+    - coverage
+
+  py309:
+    executor: python-3_09
+    steps:
+    - install-base:
+        extra: graphviz cmake ninja-build wget
+    - install-python-deps:
+        matplotlib-version: ==3.3.4
+        extra: attrs==19.3.0
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.9"
+        # 2.5.0 is the first that properly searches for Python 3.9 in CMake, so
+        # anything before that probably won't work at all.
+        pybind-version: "2.5.0"
+    - coverage
+
+  py310:
+    executor: python-3_10
+    steps:
+    - install-base:
+        extra: graphviz cmake ninja-build wget
+    - install-python-deps:
+        matplotlib-version: ==3.3.4
+        extra: attrs==19.3.0
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.10"
+        # Python 3.10 and Pybind 2.8 were both released on 2021-10-04, so
+        # assume anything older won't really work there.
+        pybind-version: "2.8.0"
     - coverage
 
   js:
@@ -229,7 +278,9 @@ workflows:
   version: 2
   build:
     jobs:
-    - py35
-    - py36
-    - py37
+    - py306
+    - py307
+    - py308
+    - py309
+    - py310
     - js
