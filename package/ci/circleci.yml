@@ -61,8 +61,10 @@ commands:
         # being set explicitly in py36 and py37 build
         # Attrs 20.3 add some new properties that I need to ignore first, using
         # 19.3 instead
+        # New qrcode (7.3? or the older ones as well?) chages the SVG preamble
+        # so the current regex no longer works. I have to update it.
         command: |
-          pip install jinja2 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode==6.1 matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
