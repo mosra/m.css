@@ -239,6 +239,11 @@ Variable                            Description
                                     bandwidth and initial processing time. If
                                     not set, :py:`False` is used. See `Search options`_
                                     for more information.
+:py:`SEARCH_FILENAME_PREFIX: str`   Search data filename prefix. Useful to
+                                    prevent file conflicts if both C++ and
+                                    Python documentation shares the same
+                                    directory. If not set, ``searchdata`` is
+                                    used.
 :py:`SEARCH_HELP: str`              :abbr:`reST <reStructuredText>` markup to
                                     display as help text on empty search popup.
                                     If not set, a default message is used. Has

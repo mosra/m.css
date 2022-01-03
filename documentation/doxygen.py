@@ -125,6 +125,7 @@ default_config = {
 
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
+    'SEARCH_FILENAME_PREFIX': 'searchdata',
     'SEARCH_HELP':
 """<p class="m-noindent">Search for symbols, directories, files, pages or
 modules. You can omit any prefix from the symbol or file path; adding a
@@ -3508,6 +3509,7 @@ def parse_doxyfile(state: State, doxyfile, values = None):
 
         ('M_SEARCH_DISABLED', 'SEARCH_DISABLED', bool),
         ('M_SEARCH_DOWNLOAD_BINARY', 'SEARCH_DOWNLOAD_BINARY', bool),
+        ('M_SEARCH_FILENAME_PREFIX', 'SEARCH_FILENAME_PREFIX', str),
         ('M_SEARCH_HELP', 'SEARCH_HELP', str),
         ('M_SEARCH_BASE_URL', 'SEARCH_BASE_URL', str),
         ('M_SEARCH_EXTERNAL_URL', 'SEARCH_EXTERNAL_URL', str),
@@ -3768,10 +3770,10 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
         data = build_search_data(state, add_lookahead_barriers=search_add_lookahead_barriers, merge_subtrees=search_merge_subtrees, merge_prefixes=search_merge_prefixes)
 
         if state.config['SEARCH_DOWNLOAD_BINARY']:
-            with open(os.path.join(html_output, searchdata_filename), 'wb') as f:
+            with open(os.path.join(html_output, searchdata_filename.format(search_filename_prefix=state.config['SEARCH_FILENAME_PREFIX'])), 'wb') as f:
                 f.write(data)
         else:
-            with open(os.path.join(html_output, searchdata_filename_b85), 'wb') as f:
+            with open(os.path.join(html_output, searchdata_filename_b85.format(search_filename_prefix=state.config['SEARCH_FILENAME_PREFIX'])), 'wb') as f:
                 f.write(base85encode_search_data(data))
 
         # OpenSearch metadata, in case we have the base URL

@@ -140,10 +140,10 @@
 <script src="search-v{{ SEARCHDATA_FORMAT_VERSION }}.js"></script>
 {% if SEARCH_DOWNLOAD_BINARY %}
 <script>
-  Search.download(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1) + 'searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.bin');
+  Search.download(window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1) + '{{ SEARCH_FILENAME_PREFIX }}-v{{ SEARCHDATA_FORMAT_VERSION }}.bin');
 </script>
 {% else %}
-<script src="searchdata-v{{ SEARCHDATA_FORMAT_VERSION }}.js" async="async"></script>
+<script src="{{ SEARCH_FILENAME_PREFIX }}-v{{ SEARCHDATA_FORMAT_VERSION }}.js" async="async"></script>
 {% endif %}
 {% endif %}
 {% if FINE_PRINT %}

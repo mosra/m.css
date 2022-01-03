@@ -34,7 +34,7 @@ class Layout(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('pages.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'm-dark+documentation.compiled.css')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', search_filename)))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename_b85)))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename_b85.format(search_filename_prefix='searchdata'))))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'favicon-light.png')))
 
 class GeneratedDoxyfile(BaseTestCase):
@@ -85,7 +85,7 @@ class SearchBinary(BaseTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename)))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='searchdata'))))
 
 class SearchOpensearch(BaseTestCase):
     def test(self):

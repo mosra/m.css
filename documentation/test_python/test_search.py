@@ -36,10 +36,11 @@ class Search(BaseInspectTestCase):
         self.run_python({
             'SEARCH_DISABLED': False,
             'SEARCH_DOWNLOAD_BINARY': True,
+            'SEARCH_FILENAME_PREFIX': 'secretblob',
             'PYBIND11_COMPATIBILITY': True
         })
 
-        with open(os.path.join(self.path, 'output', searchdata_filename), 'rb') as f:
+        with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='secretblob')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
@@ -192,7 +193,7 @@ class LongSuffixLength(BaseInspectTestCase):
             'PYBIND11_COMPATIBILITY': True
         })
 
-        with open(os.path.join(self.path, 'output', searchdata_filename), 'rb') as f:
+        with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)

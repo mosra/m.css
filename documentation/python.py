@@ -171,6 +171,7 @@ default_config = {
 
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
+    'SEARCH_FILENAME_PREFIX': 'searchdata',
     'SEARCH_HELP': """.. raw:: html
 
     <p class="m-noindent">Search for modules, classes, functions and other
@@ -2686,10 +2687,10 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         # TODO: any chance we could write the file *before* it gets ever passed
         # to URL formatters so we can add cache buster hashes to its URL?
         if state.config['SEARCH_DOWNLOAD_BINARY']:
-            with open(os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [os.path.join(config['OUTPUT'], state.config['SEARCH_DOWNLOAD_BINARY'] if isinstance(state.config['SEARCH_DOWNLOAD_BINARY'], str) else searchdata_filename)])[0]), 'wb') as f:
+            with open(os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [os.path.join(config['OUTPUT'], state.config['SEARCH_DOWNLOAD_BINARY'] if isinstance(state.config['SEARCH_DOWNLOAD_BINARY'], str) else searchdata_filename.format(search_filename_prefix=state.config['SEARCH_FILENAME_PREFIX']))])[0]), 'wb') as f:
                 f.write(data)
         else:
-            with open(os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [os.path.join(config['OUTPUT'], searchdata_filename_b85)])[0]), 'wb') as f:
+            with open(os.path.join(config['OUTPUT'], config['URL_FORMATTER'](EntryType.STATIC, [os.path.join(config['OUTPUT'], searchdata_filename_b85.format(search_filename_prefix=state.config['SEARCH_FILENAME_PREFIX']))])[0]), 'wb') as f:
                 f.write(base85encode_search_data(data))
 
         # OpenSearch metadata, in case we have the base URL

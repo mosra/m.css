@@ -37,7 +37,7 @@ class Search(IntegrationTestCase):
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
-        with open(os.path.join(self.path, 'html', searchdata_filename), 'rb') as f:
+        with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='secretblob')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
@@ -229,7 +229,7 @@ class LongSuffixLength(IntegrationTestCase):
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')
 
-        with open(os.path.join(self.path, 'html', searchdata_filename), 'rb') as f:
+        with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)

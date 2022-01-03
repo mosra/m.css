@@ -385,6 +385,11 @@ Variable                            Description
                                     bandwidth and initial processing time. If
                                     not set, :py:`False` is used. See
                                     `Search options`_ for more information.
+:py:`SEARCH_FILENAME_PREFIX: str`   Search data filename prefix. Useful to
+                                    prevent file conflicts if both C++ and
+                                    Python documentation shares the same
+                                    directory. If not set, ``searchdata`` is
+                                    used.
 :py:`SEARCH_HELP: str`              HTML code to display as help text on empty
                                     search popup. If not set, a default message
                                     is used. Has effect only if
@@ -473,6 +478,7 @@ these are not expected to be excessively large.
     :ini:`M_MATH_CACHE_FILE`            :py:`M_MATH_CACHE_FILE`
     :ini:`M_SEARCH_DISABLED`            :py:`SEARCH_DISABLED`
     :ini:`M_SEARCH_DOWNLOAD_BINARY`     :py:`SEARCH_DOWNLOAD_BINARY`
+    :ini:`M_SEARCH_FILENAME_PREFIX`     :py:`SEARCH_FILENAME_PREFIX`
     :ini:`M_SEARCH_HELP`                :py:`SEARCH_HELP`
     :ini:`M_SEARCH_BASE_URL`            :py:`SEARCH_BASE_URL`
     :ini:`M_SEARCH_EXTERNAL_URL`        :py:`SEARCH_EXTERNAL_URL`

@@ -60,7 +60,7 @@ class Layout(BaseTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/m-dark+documentation.compiled.css')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/favicon-light.png')))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/search-v{}.js'.format(searchdata_format_version))))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename_b85)))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename_b85.format(search_filename_prefix='searchdata'))))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/sitemap.xml')))
 
 class SearchBinary(BaseTestCase):
@@ -71,7 +71,7 @@ class SearchBinary(BaseTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output', 'search-v{}.js'.format(searchdata_format_version))))
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename)))
+        self.assertTrue(os.path.exists(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata'))))
 
 class SearchOpenSearch(BaseTestCase):
     def test(self):
