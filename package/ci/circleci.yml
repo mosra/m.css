@@ -195,6 +195,8 @@ jobs:
     - test-plugins
     - test-documentation-themes:
         python-version: "3.6"
+        # Again, deliberately using an old version to verify the old hacks
+        # still work for it
         pybind-version: "2.2.4"
     - coverage
 
