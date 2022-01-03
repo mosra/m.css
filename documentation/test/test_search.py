@@ -28,7 +28,7 @@ import unittest
 from types import SimpleNamespace as Empty
 
 from ._search_test_metadata import EntryType, search_type_map
-from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print, searchdata_filename
+from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print
 
 from test_doxygen import IntegrationTestCase
 
