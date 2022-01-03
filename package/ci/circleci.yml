@@ -45,9 +45,6 @@ commands:
 
   install-python-deps:
     parameters:
-      extra:
-        type: string
-        default: ""
       matplotlib-version:
         type: string
         default: ""
@@ -64,7 +61,7 @@ commands:
         # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
         # to update the code first.
         command: |
-          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs==19.3.0
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -186,7 +183,6 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
@@ -202,7 +198,6 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
@@ -218,7 +213,6 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
@@ -236,7 +230,6 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
@@ -254,7 +247,6 @@ jobs:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
         matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
     - checkout
     - test-theme
     - test-plugins
