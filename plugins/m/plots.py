@@ -78,10 +78,12 @@ style_mapping = {
 # while matplotlib 3 has a https URL, check for both. Matplotlib 3.3 has a new
 # <metadata> field (which we're not interested in) and slightly different
 # formatting of the global style after (which we unify to the compact version).
+# Matplotlib 3.4 drops the "Created with" comment, as that's in the <metadata>
+# already anyway.
 _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="utf-8" standalone="no"\?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1\.1//EN"
-  "http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd">
-<!-- Created with matplotlib \(https?://matplotlib.org/\) -->
+  "http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd">(
+<!-- Created with matplotlib \(https?://matplotlib.org/\) -->)?
 <svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">(
  <metadata>.+</metadata>)?
  <defs>

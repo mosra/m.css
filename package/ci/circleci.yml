@@ -51,9 +51,8 @@ commands:
     steps:
     - run:
         name: Install Python dependencies
-        # Matplotlib 3.4.1 has different output AGAIN, staying on something
-        # older until I can investigate; on Py3.5 there's only 3.0 so this is
-        # being set explicitly in py36 and py37 build
+        # Matplotlib 3.5.1 has different order of attributes than 3.4, so can't
+        # just use the latest (and 3.4 is not on the Python 3.6 image)
         # Attrs 20.3 add some new properties that I need to ignore first, using
         # 19.3 instead
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
@@ -197,7 +196,7 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
-        matplotlib-version: ==3.3.4
+        matplotlib-version: ==3.4.3
     - checkout
     - test-theme
     - test-plugins
@@ -212,7 +211,7 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
-        matplotlib-version: ==3.3.4
+        matplotlib-version: ==3.4.3
     - checkout
     - test-theme
     - test-plugins
@@ -229,7 +228,7 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
-        matplotlib-version: ==3.3.4
+        matplotlib-version: ==3.4.3
     - checkout
     - test-theme
     - test-plugins
@@ -246,7 +245,7 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
-        matplotlib-version: ==3.3.4
+        matplotlib-version: ==3.4.3
     - checkout
     - test-theme
     - test-plugins

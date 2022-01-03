@@ -92,8 +92,11 @@ class Plugins(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('dot.html', file))
 
         # I assume this will be a MASSIVE ANNOYANCE at some point as well so
-        # keeping it separate
-        self.assertEqual(*self.actual_expected_contents('plots.html'))
+        # keeping it separate. (Yes, thank you past mosra. Very helpful.)
+        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
+            self.assertEqual(*self.actual_expected_contents('plots.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-32.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
 
         import fancyline
