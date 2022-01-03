@@ -244,12 +244,26 @@ class Signature(unittest.TestCase):
                 ('a', 'Enum', 'Enum', 'Enum_MISSING_DOT')
             ], None, None))
 
+        # This is how pybind prints various objects, should be passed as-is.
+        # It should not corrupt any parameters after.
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: FooBar = <FooBar object at 0xabcd>, b: int = 3)'),
+            ('foo', '', [
+                ('a', 'FooBar', 'FooBar', '<FooBar object at 0xabcd>'),
+                ('b', 'int', 'int', '3')
+            ], None, None))
+
+        # This is weird and so will be passed as-is.
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: Enum = <Enum_MISSING_GT: -1)'),
+            ('foo', '', [
+                ('a', 'Enum', 'Enum', '<Enum_MISSING_GT: -1')
+            ], None, None))
+
         # This will fail
         bad_signature = ('foo', '', [('…', None, None, None)], None, None)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.MISSING_COLON>)'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.MISSING_GT)'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER>a)'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER><)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER: 17>a)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER: 89><)'), bad_signature)
 
     def test_bad_return_type(self):
         bad_signature = ('foo', '', [('…', None, None, None)], None, None)

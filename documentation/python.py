@@ -822,16 +822,15 @@ def _pybind11_extract_default_argument(string):
         # everything until the colon and discard the rest. It can however be a
         # part of a rogue C++ type name, so pick the < only if directly at the
         # start or after a space or bracket, and the > only if at the end
-        # again.
-        if c == '<' and (i == 0 or string[i - 1] in [' ', '(', '[']):
-            name_end = string.find(':', i)
-            if name_end == -1:
-                raise SyntaxError("Enum expected to have a value: `{}`".format(string))
+        # again. Also ignore stuff like <FooBar object at 0x1234> -- a : has to
+        # be before a >. Ugh maybe I should just use a regex here.
+        if c == '<' and (i == 0 or string[i - 1] in [' ', '(', '[']) and -1 < string.find(':', i + 1) < string.find('>', i + 1):
+            name_end = string.index(':', i + 1)
 
             default += string[i + 1:name_end]
-            i = string.find('>', name_end + 1) + 1
+            i = string.index('>', name_end + 1) + 1
 
-            if i == -1 or (i < len(string) and string[i] not in [',', ')', ']']):
+            if i < len(string) and string[i] not in [',', ')', ']']:
                 raise SyntaxError("Unexpected content after enum value: `{}`".format(string[i:]))
 
             continue
