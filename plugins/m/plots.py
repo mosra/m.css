@@ -79,22 +79,25 @@ style_mapping = {
 # <metadata> field (which we're not interested in) and slightly different
 # formatting of the global style after (which we unify to the compact version).
 # Matplotlib 3.4 drops the "Created with" comment, as that's in the <metadata>
-# already anyway.
+# already anyway. Matplotlib 3.5 changes order of the <svg> attributes (which
+# we ignore anyway, so those aren't matched anymore), order of stroke CSS
+# properties and whitespace/semicolons (which we preserve for consistency with
+# the rest of the output).
 _patch_src = re.compile(r"""<\?xml version="1\.0" encoding="utf-8" standalone="no"\?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1\.1//EN"
   "http://www\.w3\.org/Graphics/SVG/1\.1/DTD/svg11\.dtd">(
 <!-- Created with matplotlib \(https?://matplotlib.org/\) -->)?
-<svg height="\d+(\.\d+)?pt" version="1.1" (?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?") width="\d+(\.\d+)?pt" xmlns="http://www\.w3\.org/2000/svg" xmlns:xlink="http://www\.w3\.org/1999/xlink">(
+<svg [^>]+(?P<viewBox>viewBox="0 0 \d+ \d+(\.\d+)?")[^>]+>(
  <metadata>.+</metadata>)?
  <defs>
   <style type="text/css">
-?\*{stroke-linecap:butt;stroke-linejoin:round;}(
+?\*{(?P<style>stroke-linecap:butt;stroke-linejoin:round;|stroke-linejoin: round; stroke-linecap: butt)}(
   )?</style>
  </defs>
 """, re.DOTALL)
 _patch_dst = r"""<svg \g<viewBox>>
  <defs>
-  <style type="text/css">*{stroke-linecap:butt;stroke-linejoin:round;}</style>
+  <style type="text/css">*{\g<style>}</style>
  </defs>
 """
 
@@ -104,47 +107,47 @@ _path_patch_dst = '\\g<prev> \\g<next>'
 _path_patch2_src = re.compile(' ?\n"')
 _path_patch2_dst = '"'
 
-# Mapping from color codes to CSS classes
+# Mapping from color codes to CSS classes. Matplotlib 3.5 added quite a lot of
+# spacing to the style attributes compared to previous versions (and dropped
+# trailing semicolons), so there's a lot of ` ?` and ` ;` to cover both
+# variants.
 _class_mapping = [
     # Graph background
-    ('style="fill:#cafe01;"', 'class="m-background"'),
+    (re.compile('style="fill: ?#cafe01;?"'), 'class="m-background"'),
 
     # Tick <path> definition in <defs>
-    ('style="stroke:#cafe02;stroke-width:0.8;"', 'class="m-line"'),
-    # <use>, everything is defined in <defs>, no need to repeat
-    ('<use style="fill:#cafe02;stroke:#cafe02;stroke-width:0.8;"', '<use'),
+    (re.compile('style="stroke: ?#cafe02; ?stroke-width: ?0.8;?"'), 'class="m-line"'),
+    # <use>, everything is defined in <defs>, no need to repeat. Matplotlib 3.5
+    # has style at the end of the tag, so preserving whatever is in between.
+    (re.compile('<use([^>]*) style="fill: ?#cafe02; ?stroke: ?#cafe02; ?stroke-width: ?0.8;?"'), '<use\\1'),
 
-    # Text styles have `font-stretch:normal;` added in matplotlib 3.3, so
-    # all of them are duplicated to handle this
+    # Text styles have `font-stretch:normal;` added in matplotlib 3.3;
+    # 3.5 changes all font properties to just a single `font:` declaration.
 
     # Label text on left
-    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label"'),
-    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;"', 'class="m-label"'),
+    (re.compile('style="fill: ?#cafe02;(font-family:[^;]+;font-size:11px;(font-stretch:normal;)?font-style:normal;font-weight:normal;| font: 11px \'[^\']+\')"'), 'class="m-label"'),
     # Label text on bottom (has extra style params)
-    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
-    ('style="fill:#cafe02;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;', 'class="m-label" style="'),
+    (re.compile('style="fill: ?#cafe02;(font-family:[^;]+;font-size:11px;(font-stretch:normal;)?font-style:normal;font-weight:normal;| font: 11px \'[^\']+\'; )'), 'class="m-label" style="'),
     # Secondary label text
-    ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
-    ('style="fill:#cafe0b;font-family:{font};font-size:11px;font-stretch:normal;font-style:normal;font-weight:normal;"', 'class="m-label m-dim"'),
-    # Title text
-    ('style="fill:#cafe02;font-family:{font};font-size:13px;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
-    ('style="fill:#cafe02;font-family:{font};font-size:13px;font-stretch:normal;font-style:normal;font-weight:normal;', 'class="m-title" style="'),
+    (re.compile('style="fill: ?#cafe0b;(font-family:[^;]+;font-size:11px;(font-stretch:normal;)?font-style:normal;font-weight:normal;| font: 11px \'[^\']+\')"'), 'class="m-label m-dim"'),
+    # Title text (has extra style params)
+    (re.compile('style="fill: ?#cafe02;(font-family:[^;]+;font-size:13px;(font-stretch:normal;)?font-style:normal;font-weight:normal;| font: 13px \'[^\']+\'; )'), 'class="m-title" style="'),
 
     # Bar colors. Keep in sync with latex2svgextra.
-    ('style="fill:#cafe03;"', 'class="m-bar m-default"'),
-    ('style="fill:#cafe04;"', 'class="m-bar m-primary"'),
-    ('style="fill:#cafe05;"', 'class="m-bar m-success"'),
-    ('style="fill:#cafe06;"', 'class="m-bar m-warning"'),
-    ('style="fill:#cafe07;"', 'class="m-bar m-danger"'),
-    ('style="fill:#cafe08;"', 'class="m-bar m-info"'),
-    ('style="fill:#cafe09;"', 'class="m-bar m-dim"'),
+    (re.compile('style="fill: ?#cafe03;?"'), 'class="m-bar m-default"'),
+    (re.compile('style="fill: ?#cafe04;?"'), 'class="m-bar m-primary"'),
+    (re.compile('style="fill: ?#cafe05;?"'), 'class="m-bar m-success"'),
+    (re.compile('style="fill: ?#cafe06;?"'), 'class="m-bar m-warning"'),
+    (re.compile('style="fill: ?#cafe07;?"'), 'class="m-bar m-danger"'),
+    (re.compile('style="fill: ?#cafe08;?"'), 'class="m-bar m-info"'),
+    (re.compile('style="fill: ?#cafe09;?"'), 'class="m-bar m-dim"'),
 
     # Error bar line
-    ('style="fill:none;stroke:#cafe0a;stroke-width:1.5;"', 'class="m-error"'),
+    (re.compile('style="fill: ?none; ?stroke: ?#cafe0a; ?stroke-width: ?1.5;?"'), 'class="m-error"'),
     # Error bar <path> definition in <defs>
-    ('style="stroke:#cafe0a;"', 'class="m-error"'),
+    (re.compile('style="stroke: ?#cafe0a;?"'), 'class="m-error"'),
     # <use>, everything is defined in <defs>, no need to repeat
-    ('<use style="fill:#cafe0a;stroke:#cafe0a;"', '<use'),
+    (re.compile('<use([^>]*) style="fill: ?#cafe0a; ?stroke: ?#cafe0a;?"'), '<use\\1'),
 ]
 
 # Titles for bars
@@ -279,7 +282,7 @@ class Plot(rst.Directive):
         # Remove needless newlines and trailing whitespace in path data
         imgdata = _path_patch2_src.sub(_path_patch2_dst, _path_patch_src.sub(_path_patch_dst, imgdata))
         # Replace color codes with CSS classes
-        for src, dst in _class_mapping: imgdata = imgdata.replace(src, dst)
+        for src, dst in _class_mapping: imgdata = src.sub(dst, imgdata)
         # Add titles for bars
         for i in range(len(value_sets)):
             for j in range(len(labels)):
@@ -305,9 +308,6 @@ def new_page(*args, **kwargs):
 
 def register_mcss(mcss_settings, hooks_pre_page, **kwargs):
     font = mcss_settings.get('M_PLOTS_FONT', 'Source Sans Pro')
-    for i in range(len(_class_mapping)):
-        src, dst = _class_mapping[i]
-        _class_mapping[i] = (src.format(font=font), dst)
     mpl.rcParams['font.family'] = font
 
     hooks_pre_page += [new_page]

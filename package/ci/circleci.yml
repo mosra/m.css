@@ -57,8 +57,6 @@ commands:
     steps:
     - run:
         name: Install Python dependencies
-        # Matplotlib 3.5.1 has different order of attributes than 3.4, so can't
-        # just use the latest (and 3.4 is not on the Python 3.6 image)
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
         # differently, I have to update the expected output first.
         # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
@@ -206,6 +204,8 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Matplotlib 3.5 has significantly different output, be sure to have
+        # at least one job testing 3.4 so we don't regress
         matplotlib-version: ==3.4.3
     - checkout
     - test-theme
@@ -220,8 +220,7 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps:
-        matplotlib-version: ==3.4.3
+    - install-python-deps
     - checkout
     - test-theme
     - test-plugins
@@ -237,8 +236,7 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps:
-        matplotlib-version: ==3.4.3
+    - install-python-deps
     - checkout
     - test-theme
     - test-plugins
@@ -254,8 +252,7 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps:
-        matplotlib-version: ==3.4.3
+    - install-python-deps
     - checkout
     - test-theme
     - test-plugins

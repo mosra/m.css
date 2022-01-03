@@ -42,8 +42,10 @@ class Plots(PelicanPluginTestCase):
         })
 
         # FUCK this is annoying
-        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
+        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.5'):
             self.assertEqual(*self.actual_expected_contents('page.html'))
+        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-34.html'))
         elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.2'):
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-32.html'))
         elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.0'):
