@@ -109,8 +109,8 @@ class Image(Directive):
         if 'scale' in self.options:
             file = os.path.join(os.getcwd(), settings['INPUT'])
             absuri = os.path.join(file, reference.format(filename=file, static=file))
-            im = PIL.Image.open(absuri)
-            width = "{}px".format(int(im.width*self.options['scale']/100.0))
+            with PIL.Image.open(absuri) as im:
+                width = "{}px".format(int(im.width*self.options['scale']/100.0))
         elif 'width' in self.options:
             width = self.options['width']
         elif 'height' in self.options:
@@ -226,30 +226,30 @@ class ImageGrid(rst.Directive):
             # also prepend the absolute path in case we're not Pelican
             file = os.path.join(os.getcwd(), settings['INPUT'])
             absuri = os.path.join(file, uri.format(filename=file, static=file))
-            im = PIL.Image.open(absuri)
 
             # If no caption provided, get EXIF info, if it's there
-            if not caption and hasattr(im, '_getexif') and im._getexif() is not None:
-                exif = {
-                    PIL.ExifTags.TAGS[k]: v
-                    for k, v in im._getexif().items()
-                    if k in PIL.ExifTags.TAGS and len(str(v)) < 256
-                }
+            with PIL.Image.open(absuri) as im:
+                if not caption and hasattr(im, '_getexif') and im._getexif() is not None:
+                    exif = {
+                        PIL.ExifTags.TAGS[k]: v
+                        for k, v in im._getexif().items()
+                        if k in PIL.ExifTags.TAGS and len(str(v)) < 256
+                    }
 
-                # Not all info might be present
-                caption = []
-                if 'FNumber' in exif:
-                    numerator, denominator = _to_numerator_denominator_tuple(exif['FNumber'])
-                    caption += ["F{}".format(float(numerator)/float(denominator))]
-                if 'ExposureTime' in exif:
-                    numerator, denominator = _to_numerator_denominator_tuple(exif['ExposureTime'])
-                    if int(numerator) > int(denominator):
-                        caption += ["{} s".format(float(numerator)/float(denominator))]
-                    else:
-                        caption += ["{}/{} s".format(numerator, denominator)]
-                if 'ISOSpeedRatings' in exif:
-                    caption += ["ISO {}".format(exif['ISOSpeedRatings'])]
-                caption = ', '.join(caption)
+                    # Not all info might be present
+                    caption = []
+                    if 'FNumber' in exif:
+                        numerator, denominator = _to_numerator_denominator_tuple(exif['FNumber'])
+                        caption += ["F{}".format(float(numerator)/float(denominator))]
+                    if 'ExposureTime' in exif:
+                        numerator, denominator = _to_numerator_denominator_tuple(exif['ExposureTime'])
+                        if int(numerator) > int(denominator):
+                            caption += ["{} s".format(float(numerator)/float(denominator))]
+                        else:
+                            caption += ["{}/{} s".format(numerator, denominator)]
+                    if 'ISOSpeedRatings' in exif:
+                        caption += ["ISO {}".format(exif['ISOSpeedRatings'])]
+                    caption = ', '.join(caption)
 
             # If the caption is `..`, it's meant to be explicitly disabled
             if caption == '..': caption = ''
