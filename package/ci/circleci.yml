@@ -51,6 +51,9 @@ commands:
       matplotlib-version:
         type: string
         default: ""
+      pelican-version:
+        type: string
+        default: ""
     steps:
     - run:
         name: Install Python dependencies
@@ -61,7 +64,7 @@ commands:
         # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
         # to update the code first.
         command: |
-          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
+          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -186,6 +189,7 @@ jobs:
         # various packages to avoid regressions
         attrs-version: ==19.3.0
         matplotlib-version: ==3.3.4
+        pelican-version: ==4.2.0
     - checkout
     - test-theme
     - test-plugins
