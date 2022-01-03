@@ -45,6 +45,9 @@ commands:
 
   install-python-deps:
     parameters:
+      attrs-version:
+        type: string
+        default: ""
       matplotlib-version:
         type: string
         default: ""
@@ -53,14 +56,12 @@ commands:
         name: Install Python dependencies
         # Matplotlib 3.5.1 has different order of attributes than 3.4, so can't
         # just use the latest (and 3.4 is not on the Python 3.6 image)
-        # Attrs 20.3 add some new properties that I need to ignore first, using
-        # 19.3 instead
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
         # differently, I have to update the expected output first.
         # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
         # to update the code first.
         command: |
-          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs==19.3.0
+          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -181,6 +182,9 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Since 3.6 is EOL'd, using this job to test with older versions of
+        # various packages to avoid regressions
+        attrs-version: ==19.3.0
         matplotlib-version: ==3.3.4
     - checkout
     - test-theme

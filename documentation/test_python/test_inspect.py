@@ -249,8 +249,12 @@ class Attrs(BaseInspectTestCase):
             'ATTRS_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClass.html'))
-        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html'))
-        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html'))
+        if attr.__version_info__ >= (20, 1):
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html'))
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html', 'inspect_attrs.MyClassAutoAttribs-attrs193.html'))
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html', 'inspect_attrs.MySlotClass-attrs193.html'))
 
 class Underscored(BaseInspectTestCase):
     def test(self):
