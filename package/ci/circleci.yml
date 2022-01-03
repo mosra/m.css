@@ -54,8 +54,6 @@ commands:
     steps:
     - run:
         name: Install Python dependencies
-        # Pyphen 0.10 has significantly different hyphenation results, staying
-        # on an  older version until I can investigate
         # Matplotlib 3.4.1 has different output AGAIN, staying on something
         # older until I can investigate; on Py3.5 there's only 3.0 so this is
         # being set explicitly in py36 and py37 build
@@ -66,7 +64,7 @@ commands:
         # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
         # to update the code first.
         command: |
-          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
