@@ -468,16 +468,15 @@ class SaneHtmlTranslator(HTMLTranslator):
 
     # Footnote list. Replacing the classes with just .m-footnote.
     def visit_footnote(self, node):
-        if not self.in_footnote_list:
+        previous_node = node.parent[node.parent.index(node)-1]
+        if not isinstance(previous_node, type(node)):
             self.body.append('<dl class="m-footnote">\n')
-            self.in_footnote_list = True
 
     def depart_footnote(self, node):
         self.body.append('</dd>\n')
         if not isinstance(node.next_node(descend=False, siblings=True),
-                          nodes.footnote):
+                          type(node)):
             self.body.append('</dl>\n')
-            self.in_footnote_list = False
 
     # Footnote reference
     def visit_footnote_reference(self, node):

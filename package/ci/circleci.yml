@@ -48,6 +48,9 @@ commands:
       attrs-version:
         type: string
         default: ""
+      docutils-version:
+        type: string
+        default: ""
       matplotlib-version:
         type: string
         default: ""
@@ -59,10 +62,8 @@ commands:
         name: Install Python dependencies
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
         # differently, I have to update the expected output first.
-        # Docutils 0.18 drops some attribute that htmlsanity relies on, I need
-        # to update the code first.
         command: |
-          pip install jinja2 docutils==0.17.1 pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
+          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -188,6 +189,8 @@ jobs:
         attrs-version: ==19.3.0
         matplotlib-version: ==3.3.4
         pelican-version: ==4.2.0
+        # Ubuntu 18.04 has docutils 0.14
+        docutils-version: ==0.14
     - checkout
     - test-theme
     - test-plugins
@@ -207,6 +210,8 @@ jobs:
         # Matplotlib 3.5 has significantly different output, be sure to have
         # at least one job testing 3.4 so we don't regress
         matplotlib-version: ==3.4.3
+        # Docutils 0.17 dropped `object_image_types`, test that it works there
+        docutils-version: ==0.17.1
     - checkout
     - test-theme
     - test-plugins
@@ -220,7 +225,10 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps
+    - install-python-deps:
+        # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
+        # 0.18.1 reverted again, test we're not affected by those
+        docutils-version: ==0.18.0
     - checkout
     - test-theme
     - test-plugins
