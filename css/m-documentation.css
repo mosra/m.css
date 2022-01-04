@@ -45,8 +45,8 @@ ul.m-doc li.m-doc-collapsible > a:first-child:active {
   color: var(--color);
 }
 a.m-doc-self,
-ul.m-doc li.m-doc-expansible > a:first-child:before,
-ul.m-doc li.m-doc-collapsible > a:first-child:before {
+ul.m-doc li.m-doc-expansible > a:first-child::before,
+ul.m-doc li.m-doc-collapsible > a:first-child::before {
   color: var(--article-heading-color);
 }
 a.m-doc-self:hover, a.m-doc-self:focus, a.m-doc-self:active,
@@ -110,14 +110,14 @@ ul.m-doc li.m-doc-expansible, ul.m-doc li.m-doc-collapsible {
 ul.m-doc li.m-doc-expansible > ul.m-doc, ul.m-doc li.m-doc-collapsible > ul.m-doc {
   margin-left: 0.5rem;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before, ul.m-doc li.m-doc-collapsible > a:first-child:before {
+ul.m-doc li.m-doc-expansible > a:first-child::before, ul.m-doc li.m-doc-collapsible > a:first-child::before {
   background-color: var(--background-color);
   display: inline-block;
   width: 0.4rem;
   font-weight: bold;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before { content: '⊕'; }
-ul.m-doc li.m-doc-collapsible > a:first-child:before { content: '⊖'; }
+ul.m-doc li.m-doc-expansible > a:first-child::before { content: '⊕'; }
+ul.m-doc li.m-doc-collapsible > a:first-child::before { content: '⊖'; }
 
 h1 .m-doc-template, h1 .m-doc-include {
   font-size: 1.3rem;

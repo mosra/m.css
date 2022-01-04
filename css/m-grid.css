@@ -39,7 +39,7 @@ body { margin: 0; }
   margin-left: -1rem;
   margin-right: -1rem;
 }
-.m-row:after { /* avoid rows floating around each other */
+.m-row::after { /* avoid rows floating around each other */
   content: ' ';
   clear: both;
   display: table;
@@ -68,20 +68,16 @@ body { margin: 0; }
 
 /* Padding overrides for container and columns. Works for both columns inside
    rows and floating columns. */
-.m-container.m-nopad, [class*='m-col-'].m-nopad,
-.m-container.m-nopadx, [class*='m-col-'].m-nopadx,
-.m-container.m-nopadl, [class*='m-col-'].m-nopadl {
+:is(.m-container, [class*='m-col-']):is(.m-nopad, .m-nopadx, .m-nopadl) {
   padding-left: 0;
 }
-.m-container.m-nopad, [class*='m-col-'].m-nopad,
-.m-container.m-nopadx, [class*='m-col-'].m-nopadx,
-.m-container.m-nopadr, [class*='m-col-'].m-nopadr {
+:is(.m-container, [class*='m-col-']):is(.m-nopad, .m-nopadx, .m-nopadr) {
   padding-right: 0;
 }
-[class*='m-col-'].m-nopad, [class*='m-col-'].m-nopady, [class*='m-col-'].m-nopadt {
+[class*='m-col-']:is(.m-nopad, .m-nopady, .m-nopadt) {
   padding-top: 0;
 }
-[class*='m-col-'].m-nopad, [class*='m-col-'].m-nopady, [class*='m-col-'].m-nopadb,
+[class*='m-col-']:is(.m-nopad, .m-nopady, .m-nopadb),
 .m-container-inflate.m-nopadb {
   padding-bottom: 0;
 }
