@@ -85,6 +85,28 @@ Second text.</div>
 </div>
 <p>Inline elements: <span class="m-label m-primary">Primary label</span>,
 <span class="m-label m-flat m-warning">Flat warning label</span>.</p>
+<section id="transitions-builtin">
+<h2><a href="#transitions-builtin">Transitions, builtin</a></h2>
+<p>Builtin transition in the middle of a section, stays inside the section node:</p>
+<hr />
+<p>Builtin transition at the end of a section, gets extracted outside of the
+section node. Clicking on the section header will not include it in the
+highlight.</p>
+</section>
+<hr />
+<section id="transitions-m-css">
+<h2><a href="#transitions-m-css">Transitions, m.css</a></h2>
+<p>M.css transition in the middle of a section, stays inside the section node:</p>
+<p class="m-transition">~ * ~ * ~</p>
+<p>M.css transition at the end of a section, gets extracted outside of the section
+node the same as a builtin transition. Clicking on the section header will not
+include it in the highlight.</p>
+</section>
+<p class="m-transition">~ * ~ * ~</p>
+<section id="section-after">
+<h2>Section after</h2>
+<p>Docutils says &quot;Document may not end with a transition&quot;, eh.</p>
+</section>
 <!-- /content -->
       </div>
     </div>

@@ -72,8 +72,16 @@ reference on a single thing [1]_ and more things [1]_ [2]_
 `Section title with link`_
 --------------------------
 
-A line:
+A line in the middle of a section, stays inside the section node:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-And a paragraph after.
+A line at the end of a section, gets extracted outside of the section node.
+Clicking on the section header will not include it in the highlight.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Section after
+=============
+
+Docutils says "Document may not end with a transition", eh.

@@ -30,6 +30,7 @@
 <li><a href="#section-title-with-link" id="id7">Section title with link</a></li>
 </ul>
 </li>
+<li><a href="#section-after" id="id8">Section after</a></li>
 </ul>
 </aside>
 <p>A paragraph.</p>
@@ -97,10 +98,16 @@ reference on a single thing <a class="m-footnote" href="#id4" id="id1">1</a> and
 </div>
 <section id="section-title-with-link">
 <h3><a href="#section-title-with-link">Section title with link</a></h3>
-<p>A line:</p>
+<p>A line in the middle of a section, stays inside the section node:</p>
 <hr />
-<p>And a paragraph after.</p>
+<p>A line at the end of a section, gets extracted outside of the section node.
+Clicking on the section header will not include it in the highlight.</p>
 </section>
+</section>
+<hr />
+<section id="section-after">
+<h2><a href="#id8">Section after</a></h2>
+<p>Docutils says &quot;Document may not end with a transition&quot;, eh.</p>
 </section>
 <!-- /content -->
       </div>
