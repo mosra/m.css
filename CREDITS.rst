@@ -19,11 +19,14 @@ Listing only people with code contributions, because otherwise there's too many
 -   Cris Luengo (`@crisluengo <https://github.com/crisluengo>`_) ---
     complete handling of Doxygen entities and super/subscript elements, fixes
     for external docs in Markdown files, style fixes
+-   Dale Lukas Peterson (`@hazelnusse <https://github.com/hazelnusse>`_) ---
+    documentation improvements
 -   `@DarkContact <https://github.com/DarkContact>`_ --- Windows-related fixes
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
 -   `Guillaume Jacquemin <https://github.com/williamjcm>`_ --- Pelican theme
-    fixes
--   `Lukas Pirl <https://github.com/lpirl>`_ --- Pelican theme improvements
+    fixes, semantic improvements to the ``m.htmlsanity`` plugin
+-   `Lukas Pirl <https://github.com/lpirl>`_ --- Pelican theme improvements,
+    fixes for Pelican 4.5+ support
 -   `Marin <https://github.com/marinjurjevic>`_ --- Doxygen theme fixes
 -   `Rémi Marche <https://github.com/Marr11317>`_ --- Doxygen theme
     improvements
