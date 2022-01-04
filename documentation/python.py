@@ -934,9 +934,7 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
                 arg_type_link = None
 
             # Default (optional)
-            # The equals has spaces around since 2.3.0, preserve 2.2 compatibility.
-            # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8
-            if signature.startswith(('=', ' = ')):
+            if signature.startswith(' = '):
                 signature = signature[1 if signature[0] == '=' else 3:]
                 signature, default = _pybind11_extract_default_argument(signature)
             else:
@@ -1014,11 +1012,9 @@ def format_value(state: State, referrer_path: List[str], value) -> Optional[str]
     if value is None: return str(value)
     if isinstance(value, enum.Enum):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
-    # pybind enums have the __members__ attribute instead. Since 2.3 pybind11
-    # has .name like enum.Enum, but we still need to support 2.2 so hammer it
-    # out of a str() instead.
+    # pybind enums have the __members__ attribute instead
     elif state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__'):
-        return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, str(value).partition('.')[2]))
+        return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
     elif inspect.isfunction(value):
         return html.escape('<function {}>'.format(value.__name__))
     elif '__repr__' in type(value).__dict__:

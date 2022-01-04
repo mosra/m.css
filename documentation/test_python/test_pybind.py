@@ -127,53 +127,7 @@ class Signature(unittest.TestCase):
                 ('**kwargs', None, None, None),
             ], None, None))
 
-    # https://github.com/pybind/pybind11/commit/0826b3c10607c8d96e1d89dc819c33af3799a7b8,
-    # released in 2.3.0. We want to support both, so test both.
-    def test_default_values_pybind22(self):
-        self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: float=1.0, b: str=\'hello\')'),
-            ('foo', '', [
-                ('a', 'float', 'float', '1.0'),
-                ('b', 'str', 'str', '\'hello\''),
-            ], None, None))
-
-        self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: float=libA.foo(libB.goo(123), libB.bar + 13) + 2, b=3)'),
-            ('foo', '', [
-                ('a', 'float', 'float', 'libA.foo(libB.goo(123), libB.bar + 13) + 2'),
-                ('b', None, None, '3'),
-            ], None, None))
-
-        self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: List=[1, 2, 3], b: Tuple=(1, 2, 3, "str"))'),
-            ('foo', '', [
-                ('a', 'typing.List', 'typing.List', '[1, 2, 3]'),
-                ('b', "typing.Tuple", "typing.Tuple", '(1, 2, 3, "str")'),
-            ], None, None))
-
-        self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: Tuple[int, ...]=(1,("hello", \'world\'),3,4))'),
-            ('foo', '', [
-                ('a', 'typing.Tuple[int, ...]',
-                      'typing.Tuple[int, ...]',
-                 '(1,("hello", \'world\'),3,4)')
-            ], None, None))
-
-        self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: str=[dict(key="A", value=\'B\')["key"][0], None][0])'),
-             ('foo', '', [
-                 ('a', 'str', 'str', '[dict(key="A", value=\'B\')["key"][0], None][0]')
-             ], None, None))
-
-        bad_signature = ('foo', '', [('…', None, None, None)], None, None)
-
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=[0][)'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=()'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=(()'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=))'), bad_signature)
-        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float=])'), bad_signature)
-
-    def test_default_values_pybind23(self):
+    def test_default_values(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: float = 1.0, b: str = \'hello\')'),
             ('foo', '', [
@@ -182,7 +136,7 @@ class Signature(unittest.TestCase):
             ], None, None))
 
         self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: float = libA.foo(libB.goo(123), libB.bar + 13) + 2, b=3)'),
+            'foo(a: float = libA.foo(libB.goo(123), libB.bar + 13) + 2, b = 3)'),
             ('foo', '', [
                 ('a', 'float', 'float', 'libA.foo(libB.goo(123), libB.bar + 13) + 2'),
                 ('b', None, None, '3'),
@@ -214,7 +168,7 @@ class Signature(unittest.TestCase):
     # annoying but what can I do. Want to support both this and the original
     # behavior in case they revert the insanity again, so test that both
     # variants give the same output.
-    def test_default_values_pybind26(self):
+    def test_default_enum_values_pybind26(self):
         # Before the insane change
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: bar.Enum = Enum.FOO_BAR)'),
