@@ -347,10 +347,16 @@ class Dot(IntegrationTestCase):
         self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
-class Htmlinclude(IntegrationTestCase):
-    def test(self):
+class HtmlonlyHtmlinclude(IntegrationTestCase):
+    def test_htmlinclude(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.18"),
+        "1.8.17 and older doesn't include @htmlonly in XML output")
+    def test_htmlonly(self):
+        self.run_doxygen(wildcard='html-only.xml')
+        self.assertEqual(*self.actual_expected_contents('html-only.html'))
 
     def test_warnings(self):
         self.run_doxygen(wildcard='warnings.xml')

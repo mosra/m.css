@@ -1,0 +1,18 @@
+/** @mainpage
+
+@htmlinclude file.html
+*/
+
+/** @page html-only The htmlonly command
+
+Works only since Doxygen 1.8.18, before it was not included in the XML output.
+
+@htmlonly
+<iframe style="width: 500px; height: 500px;" src="https://mcss.mosra.cz">
+@endhtmlonly
+*/
+
+/** @page warnings This will produce a warning
+
+@htmlinclude nonexistent.html
+*/
