@@ -256,6 +256,9 @@ class SaneHtmlTranslator(HTMLTranslator):
         if not hasattr(self, 'in_word_wrap_point'):
             self.in_word_wrap_point = HTMLTranslator.sollbruchstelle
 
+        # Used by depart_caption() and depart_figure(), see there for details
+        self.in_figure_caption_with_description = False
+
     # Somehow this does the trick and removes docinfo from the body. Was
     # present in the HTML4 translator but not in the HTML5 one, so copying it
     # verbatim over
@@ -323,13 +326,14 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.section_level -= 1
         self.body.append('</section>\n')
 
-    # Legend inside figure -- print as <span> (instead of <div class="legend">,
-    # as that's not valid inside HTML5 <figure> element)
+    # Legend inside figure. This is handled in a special way inside
+    # depart_caption() and depart_figure() already, no need to add any extra
+    # tag again.
     def visit_legend(self, node):
-        self.body.append(self.starttag(node, 'span'))
+        pass
 
     def depart_legend(self, node):
-        self.body.append('</span>\n')
+        pass
 
     # Literal -- print as <code> (instead of some <span>)
     def visit_literal(self, node):
@@ -450,13 +454,31 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.body.append(self.starttag(node, 'figure', **atts))
 
     def depart_figure(self, node):
+        # See depart_caption() below for details
+        if self.in_figure_caption_with_description:
+            self.body.append('</span>\n</figcaption>\n')
+            self.in_figure_caption_with_description = False
         self.body.append('</figure>\n')
 
     def visit_caption(self, node):
         self.body.append(self.starttag(node, 'figcaption', ''))
 
     def depart_caption(self, node):
-        self.body.append('</figcaption>\n')
+        # If this is a .m-figure and there's more content after a <figcaption>,
+        # we have to put all that into <figcaption> as well, otherwise FF will
+        # ignore it (due to `display: table-caption` being set for all
+        # .m-figure children, which apparently makes FF render just the first
+        # element). To avoid all that content styled as a caption, put it
+        # inside a .m-figure-description that undoes the styling for
+        # <figcaption>.
+        # TODO this may have false positives if there are reST comments and
+        # such, figure out a way to query if there are useful nodes. Can't
+        # check for just nodes.legend, as there can be arbitrary other stuff.
+        if 'classes' in node.parent and 'm-figure' in node.parent['classes'] and node.next_node(descend=False, siblings=True) is not None:
+            self.body.append(self.starttag(node, 'span', CLASS='m-figure-description'))
+            self.in_figure_caption_with_description = True
+        else:
+            self.body.append('</figcaption>\n')
 
     # Line blocks are <p> with lines separated using simple <br />. No need for
     # nested <div>s.
