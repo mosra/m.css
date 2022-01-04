@@ -39,9 +39,8 @@ _patch_custom_size_dst = r"""<svg{attribs} style="{size}" viewBox="\g<viewBox>">
 
 _comment_src = re.compile(r"""<!--[^-]+-->\n""")
 
-# Graphviz < 2.40 (Ubuntu 16.04 and older) doesn't have a linebreak between <g>
-# and <title>
-_class_src = re.compile(r"""<g id="(edge|node|clust)\d+" class="(?P<type>edge|node|cluster)(?P<classes>[^"]*)">[\n]?<title>(?P<title>[^<]*)</title>
+_class_src = re.compile(r"""<g id="(edge|node|clust)\d+" class="(?P<type>edge|node|cluster)(?P<classes>[^"]*)">
+<title>(?P<title>[^<]*)</title>
 <(?P<element>ellipse|polygon|path|text)( fill="(?P<fill>[^"]+)" stroke="[^"]+")? """)
 
 _class_dst = r"""<g class="{classes}">
@@ -52,8 +51,8 @@ _attributes_src = re.compile(r"""<(?P<element>ellipse|polygon|polyline) fill="[^
 
 _attributes_dst = r"""<\g<element> """
 
-# re.compile() is called after replacing {font} in configure(). Graphviz < 2.40
-# doesn't put the fill="" attribute there
+# re.compile() is called after replacing {font} in configure(). The fill
+# attribute is sometimes omitted.
 _text_src_src = ' font-family="{font}" font-size="(?P<size>[^"]+)"( fill="[^"]+")?'
 
 _text_dst = ' style="font-size: {size}px;"'

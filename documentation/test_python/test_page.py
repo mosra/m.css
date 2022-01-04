@@ -85,10 +85,8 @@ class Plugins(BaseTestCase):
         # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
         if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'dot.html'
-        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+        else:
             file = 'dot-240.html'
-        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
-            file = 'dot-238.html'
         self.assertEqual(*self.actual_expected_contents('dot.html', file))
 
         # I assume this will be a MASSIVE ANNOYANCE at some point as well so
