@@ -901,6 +901,15 @@ figure.m-figure figcaption, .m-code-figure figcaption, .m-console-figure figcapt
 figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure figcaption a {
   text-decoration: none;
 }
+figure.m-figure figcaption .m-figure-description {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: normal;
+  font-size: 1rem;
+}
+figure.m-figure figcaption .m-figure-description a {
+  text-decoration: underline;
+}
 .m-imagegrid > div {
   background-color: #ffffff;
 }
@@ -1493,14 +1502,19 @@ figure.m-figure.m-default:before { border-color: #fbf0ec; }
 figure.m-figure.m-default figcaption { color: #000000; }
 figure.m-figure.m-primary:before { border-color: #ef9069; }
 figure.m-figure.m-primary figcaption { color: #cb4b16; }
+figure.m-figure.m-primary figcaption .m-figure-description { color: #000000; }
 figure.m-figure.m-success:before { border-color: #4dd376; }
 figure.m-figure.m-success figcaption { color: #31c25d; }
+figure.m-figure.m-success figcaption .m-figure-description { color: #000000; }
 figure.m-figure.m-warning:before { border-color: #d1d34d; }
 figure.m-figure.m-warning figcaption { color: #c7cf2f; }
+figure.m-figure.m-warning figcaption .m-figure-description { color: #000000; }
 figure.m-figure.m-danger:before { border-color: #e23e3e; }
 figure.m-figure.m-danger figcaption { color: #f60000; }
+figure.m-figure.m-danger figcaption .m-figure-description { color: #000000; }
 figure.m-figure.m-info:before { border-color: #4c93d3; }
 figure.m-figure.m-info figcaption { color: #2e7dc5; }
+figure.m-figure.m-info figcaption .m-figure-description { color: #000000; }
 figure.m-figure.m-dim:before { border-color: #f1f1f1; }
 figure.m-figure.m-dim { color: #bdbdbd; }
 figure.m-figure.m-dim a { color: #c0c0c0; }
