@@ -632,7 +632,8 @@ class SaneHtmlTranslator(HTMLTranslator):
     def depart_definition_list(self, node):
         self.body.append('</dl>\n')
 
-    # no class="docutils" in <hr>
+    # no class="docutils" in <hr>; if it's m.css .. transition:: directive
+    # (having children), put it in a <p> instead
     def visit_transition(self, node):
         if len(node.children) > 0:
             self.body.append(self.starttag(node, 'p', ''))
@@ -640,7 +641,7 @@ class SaneHtmlTranslator(HTMLTranslator):
             self.body.append(self.emptytag(node, 'hr'))
 
     def depart_transition(self, node):
-        if 'm-transition' in node['classes']:
+        if len(node.children) > 0:
             self.body.append('</p>\n')
 
 class _SaneFieldBodyTranslator(SaneHtmlTranslator):
