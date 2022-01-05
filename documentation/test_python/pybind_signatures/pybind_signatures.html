@@ -67,6 +67,16 @@
               <span class="m-doc-wrap-bumper">def <a href="#full_docstring" class="m-doc">full_docstring</a>(</span><span class="m-doc-wrap">arg0: int<span class="m-text m-dim">, /</span>) -&gt; None</span>
             </dt>
             <dd>A summary</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#full_docstring_overloaded-e9329" class="m-doc">full_docstring_overloaded</a>(</span><span class="m-doc-wrap">arg0: int,
+              arg1: int<span class="m-text m-dim">, /</span>) -&gt; None</span>
+            </dt>
+            <dd>An overload summary</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">def <a href="#full_docstring_overloaded-fe11a" class="m-doc">full_docstring_overloaded</a>(</span><span class="m-doc-wrap">arg0: float,
+              arg1: float<span class="m-text m-dim">, /</span>) -&gt; None</span>
+            </dt>
+            <dd>Another overload summary</dd>
             <dt id="overloaded-46f8a">
               <span class="m-doc-wrap-bumper">def <a href="#overloaded-46f8a" class="m-doc-self">overloaded</a>(</span><span class="m-doc-wrap">arg0: int<span class="m-text m-dim">, /</span>) -&gt; str</span>
             </dt>
@@ -161,6 +171,26 @@
             </h3>
             <p>A summary</p>
 <p>And a larger docstring as well.</p>
+          </div></section>
+          <section class="m-doc-details" id="full_docstring_overloaded-e9329"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def pybind_signatures.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#full_docstring_overloaded-e9329" class="m-doc-self">full_docstring_overloaded</a>(</span><span class="m-doc-wrap">arg0: int,
+              arg1: int<span class="m-text m-dim">, /</span>) -&gt; None</span></span>
+            </h3>
+            <p>An overload summary</p>
+<p>This function takes a value of 2. full_docstring_overloaded(a: float, b: float)
+takes just 3 instead.</p>
+          </div></section>
+          <section class="m-doc-details" id="full_docstring_overloaded-fe11a"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">def pybind_signatures.<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#full_docstring_overloaded-fe11a" class="m-doc-self">full_docstring_overloaded</a>(</span><span class="m-doc-wrap">arg0: float,
+              arg1: float<span class="m-text m-dim">, /</span>) -&gt; None</span></span>
+            </h3>
+            <p>Another overload summary</p>
+<p>This overload, however, takes just a 32-bit (or 64-bit) floating point value of
+3. full_docstring_overloaded(a: int, b: int)
+takes just 2. There&#x27;s nothing for 4. full_docstring_overloaded(a: poo, b: foo)
+could be another, but it&#x27;s not added yet.</p>
           </div></section>
         </section>
       </div>
