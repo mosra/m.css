@@ -400,7 +400,10 @@ def crawl_class(state: State, path: List[str], class_):
     # one would hope so we can't just assert.
     if id(class_) in state.crawled:
         for name, previous_entry in state.name_map.items():
-            if id(previous_entry.object) == id(class_): break
+            # Enum value entries don't have the object property, don't try to
+            # match them
+            if hasattr(previous_entry, 'object') and id(previous_entry.object) == id(class_):
+                break
         else: assert False, "%s marked as crawled but can't find it" % '.'.join(path)
         logging.error("Class %s previously found in %s, only one occurence will be chosen. Ensure each class is exposed only in a single module for generating correct documentation.", '.'.join(path), '.'.join(previous_entry.path))
         state.name_map['.'.join(path)] = previous_entry
