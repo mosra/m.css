@@ -117,7 +117,8 @@ horrible, right?) with a custom HTML5 writer derived from
 -   Even the Docutils HTML5 writer was putting *frightening* :html:`<colgroup>`
     things into HTML tables. Not anymore.
 -   Topics are using HTML5 :html:`<aside>` tag, topic headers are using
-    :html:`<h3>` instead of a nondescript :html:`<div>`
+    :html:`<h3>` instead of a nondescript :html:`<div>`. A special case is
+    Table of Contents, which is a :html:`<nav>` instead of :html:`<aside>`
 -   Line blocks are simply :html:`<p>` elements with lines delimited using
     :html:`<br>`
 -   The :html:`<abbr>` tag now properly includes a ``title`` attribute

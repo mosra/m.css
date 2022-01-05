@@ -382,13 +382,22 @@ class SaneHtmlTranslator(HTMLTranslator):
             self.body.append('\n')
         self.in_mailto = False
 
-    # Use <aside> instead of a meaningless <div>
+    # Use <aside> for general topics, <nav> for table of contents (but drop the
+    # contents class and ID)
     def visit_topic(self, node):
-        self.body.append(self.starttag(node, 'aside'))
         self.topic_classes = node['classes']
 
+        if 'contents' in node['classes']:
+            node.html_tagname = 'nav'
+            node['classes'].remove('contents')
+            node['ids'].remove('contents')
+        else:
+            node.html_tagname = 'aside'
+
+        self.body.append(self.starttag(node, node.html_tagname))
+
     def depart_topic(self, node):
-        self.body.append('</aside>\n')
+        self.body.append('</{}>\n'.format(node.html_tagname))
         self.topic_classes = []
 
     # Don't use <colgroup> or other shit in tables
