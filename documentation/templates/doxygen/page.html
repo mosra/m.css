@@ -24,7 +24,7 @@
         <p>{{ compound.brief }}</p>
         {% endif %}
         {% if compound.sections %}
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             {% for id, name, children in compound.sections recursive %}
@@ -40,7 +40,7 @@
             {% endif %}
             {% endfor %}
           </ul>
-        </div>
+        </nav>
         {% endif %}
         {% if compound.description %}
 {{ compound.description }}
