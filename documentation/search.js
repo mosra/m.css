@@ -708,7 +708,6 @@ if(typeof document !== 'undefined') {
                     document.body.style.overflow = 'auto';
                     document.body.style.paddingRight = '0';
                 }
-
                 return false; /* so the form doesn't get sent */
 
             /* Copy (Markdown) link to keyboard */
