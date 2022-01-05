@@ -984,19 +984,23 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
 def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> List[Tuple[str, str, List[Tuple[str, str, str]], str]]:
     name = referrer_path[-1]
 
-    # Multiple overloads, parse each separately
-    overload_header = "{}(*args, **kwargs)\nOverloaded function.\n\n".format(name);
+    # Multiple overloads, parse each separately. It's not possible to fully
+    # prevent accidentally matching contents of the docstring as a next
+    # overload so at least expect each overload to start with two newlines and
+    # a monotonic counter number, which hopefully skips most cases where a
+    # function is referenced in the middle of a paragraph.
+    overload_header = "{}(*args, **kwargs)\nOverloaded function.".format(name);
     if doc.startswith(overload_header):
         doc = doc[len(overload_header):]
         overloads = []
         id = 1
         while True:
-            assert doc.startswith('{}. {}('.format(id, name))
+            assert doc.startswith('\n\n{}. {}('.format(id, name))
             id = id + 1
-            next = doc.find('{}. {}('.format(id, name))
+            next = doc.find('\n\n{}. {}('.format(id, name))
 
             # Parse the signature and docs from known slice
-            overloads += [parse_pybind_signature(state, referrer_path, doc[len(str(id - 1)) + 2:next])]
+            overloads += [parse_pybind_signature(state, referrer_path, doc[len(str(id - 1)) + 4:next])]
             assert overloads[-1][0] == name
             if next == -1: break
 
