@@ -30,6 +30,7 @@
               <ul>
                 <li><a href="#packages">Modules</a></li>
                 <li><a href="#classes">Classes</a></li>
+                <li><a href="#enums">Enums</a></li>
               </ul>
             </li>
           </ul>
@@ -46,6 +47,16 @@
           <dl class="m-doc">
             <dt>class <a href="inspect_duplicate_class.Bar.html" class="m-doc">Bar</a></dt>
             <dd>A class present in two modules.</dd>
+          </dl>
+        </section>
+        <section id="enums">
+          <h2><a href="#enums">Enums</a></h2>
+          <dl class="m-doc">
+            <dt id="AnEnum">
+              <span class="m-doc-wrap-bumper">class <a href="#AnEnum" class="m-doc-self">AnEnum</a>(enum.Enum): </span><span class="m-doc-wrap"><a href="#AnEnum-AAA" class="m-doc-self" id="AnEnum-AAA">AAA</a> = 3</span>
+            </dt>
+            <dd>An enum which is earlier than Bar, and with values that shouldn&#x27;t be
+checked for duplicates because they don&#x27;t have the .object property</dd>
           </dl>
         </section>
       </div>
