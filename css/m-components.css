@@ -653,7 +653,6 @@ figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure fig
    ignoring everything after that. So it has to be all inside <figcaption>. See
    also https://github.com/mosra/m.css/issues/117 for details. */
 figure.m-figure figcaption .m-figure-description {
-  display: block;
   margin-top: 0.5rem;
   font-weight: normal;
   font-size: 1rem;

@@ -665,7 +665,7 @@ Use the HTML5 :html:`<figure>` tag together with :css:`.m-figure` to style it.
 As with plain image, it's by default centered, slightly rounded and has a
 border around the caption and description. The caption is expected to be in the
 :html:`<figcaption>` element. Inside it, there can optionally be a longer
-description wrapped in a :css:`.m-figure-description` element. The
+description wrapped in a :css:`div.m-figure-description` element. The
 :css:`.m-fullwidth` class works here too and you can also wrap the
 :html:`<img>` / :html:`<svg>` element in an :html:`<a>` tag to make it
 clickable.
@@ -685,9 +685,9 @@ staying unaffected) by adding one of the `CSS color classes <#colors>`_ to the
           <img src="ship.jpg" alt="Ship" />
           <figcaption>
             A Ship
-            <span class="m-figure-description">
+            <div class="m-figure-description">
               Photo © <a href="http://blog.mosra.cz/">The Author</a>
-            </span>
+            </div>
           </figcaption>
         </figure>
 
@@ -697,9 +697,9 @@ staying unaffected) by adding one of the `CSS color classes <#colors>`_ to the
           <img src="{static}/static/ship-small.jpg" alt="Ship" />
           <figcaption>
             A Ship
-            <span class="m-figure-description">
+            <div class="m-figure-description">
               Photo © <a href="http://blog.mosra.cz/">The Author</a>
-            </span>
+            </div>
           </figcaption>
         </figure>
 
@@ -708,15 +708,16 @@ staying unaffected) by adding one of the `CSS color classes <#colors>`_ to the
     While a description *could* be put also after a :html:`<figcaption>` such
     as in the following snippet, CSS styling used by m.css causes Firefox to
     display only the :html:`<figcaption>`, ignoring everything after. Thus it's
-    recommended to always nest the description in a :css:`.m-figure-description`
-    element inside. See also :gh:`mosra/m.css#117` for more information.
+    recommended to always nest the description in a
+    :css:`div.m-figure-description` element inside. See also
+    :gh:`mosra/m.css#117` for more information.
 
     .. code:: html
 
         <figure class="m-figure">
           <img src="ship.jpg" alt="Ship" />
           <figcaption>A Ship</figcaption>
-          <span>Photo © The Author</span> <!-- This will get ignored by Firefox! -->
+          <div>Photo © The Author</div> <!-- This will get ignored by Firefox! -->
         </figure>
 
 .. note-info::
@@ -1157,7 +1158,7 @@ assigned caption and description. It behaves the same as `image figures`_, the
 figure width being defined by the math equation size. Create a
 :html:`<figure class="m-figure">` element and put :html:`<svg class="m-math">`
 as a first child. The remaining content of the figure can be
-:html:`<figcaption>` with optional :css:`.m-figure-description` same as with
+:html:`<figcaption>` with optional :css:`div.m-figure-description` same as with
 `image figures <#figures>`_. Add the :css:`.m-flat` class to the
 :html:`<figure>` to remove the outer border and equation background,
 `CSS color classes`_ on the :html:`<figure>` affect the figure, on the
@@ -1174,7 +1175,7 @@ as a first child. The remaining content of the figure can be
           </svg>
           <figcaption>
             Theorem
-            <span class="m-figure-description">A Pythagorean one.</span>
+            <div class="m-figure-description">A Pythagorean one.</div>
           </figcaption>
         </figure>
 
@@ -1204,7 +1205,7 @@ as a first child. The remaining content of the figure can be
           </svg>
           <figcaption>
             Theorem
-            <span class="m-figure-description">A Pythagorean one.</span>
+            <div class="m-figure-description">A Pythagorean one.</div>
           </figcaption>
         </figure>
 
@@ -1345,7 +1346,7 @@ right after.
           </svg>
           <figcaption>
             Impenetrable logic
-            <span class="m-figure-description">No.</span>
+            <div class="m-figure-description">No.</div>
           </figcaption>
         </figure>
 
@@ -1381,7 +1382,7 @@ right after.
         </svg>
         <figcaption>
           Impenetrable logic
-          <span class="m-figure-description">No.</span>
+          <div class="m-figure-description">No.</div>
         </figcaption>
         </figure>
 

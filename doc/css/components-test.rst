@@ -1013,8 +1013,9 @@ Figure, centered:
       <img src="{static}/static/ship-small.jpg" />
       <figcaption>
         A Ship
-        <span class="m-figure-description">Photo ©
-        <a href="http://blog.mosra.cz/">The Author</a></span>
+        <div class="m-figure-description">
+          Photo © <a href="http://blog.mosra.cz/">The Author</a>
+        </div>
       </figcaption>
     </figure>
 
@@ -1026,8 +1027,9 @@ Figure, centered, image link, flat:
       <a href="http://blog.mosra.cz/"><img src="{static}/static/ship-small.jpg" /></a>
       <figcaption>
         A Ship
-        <span class="m-figure-description">Photo ©
-        <a href="http://blog.mosra.cz/">The Author</a></span>
+        <div class="m-figure-description">
+          Photo © <a href="http://blog.mosra.cz/">The Author</a>
+        </div>
       </figcaption>
     </figure>
 
@@ -1049,10 +1051,11 @@ unnecessary wrapping of the text:
       <img src="{static}/static/ship-small.jpg" />
       <figcaption>
         A Somewhat Lengthy Caption For A Photo
-        <span class="m-figure-description">The Photo Displayed Above Was Kindly
-        Taken And Allowed To Be Used On This Page By
-        <a href="http://blog.mosra.cz/">The Author</a>. All Rights
-        Reserved.</span>
+        <div class="m-figure-description">
+          The Photo Displayed Above Was Kindly Taken And Allowed To Be Used On
+          This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+          Rights Reserved.
+        </div>
       </figcaption>
     </figure>
 
@@ -1065,10 +1068,11 @@ leaking of the image outside of the page:
       <img src="{static}/static/ship.jpg" />
       <figcaption>
         A Somewhat Lengthy Caption For A Photo
-        <span class="m-figure-description">The Photo Displayed Above Was Kindly
-        Taken And Allowed To Be Used On This Page By
-        <a href="http://blog.mosra.cz/">The Author</a>. All Rights
-        Reserved.</span>
+        <div class="m-figure-description">
+          The Photo Displayed Above Was Kindly Taken And Allowed To Be Used On
+          This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+          Rights Reserved.
+        </div>
       </figcaption>
     </figure>
 
@@ -1081,10 +1085,11 @@ instead of extending the border and there should be proper padding on bottom):
       <img src="{static}/static/ship-small.jpg" />
       <figcaption>
         A Somewhat Lengthy Caption For A Photo
-        <span class="m-figure-description">The Photo Displayed Above Was Kindly
-        Taken And Allowed To Be Used On This Page By
-        <a href="http://blog.mosra.cz/">The Author</a>. All Rights
-        Reserved.</span>
+        <div class="m-figure-description">
+          The Photo Displayed Above Was Kindly Taken And Allowed To Be Used On
+          This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+          Rights Reserved.
+        </div>
       </figcaption>
     </figure>
 
@@ -1105,7 +1110,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Default figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>
@@ -1114,7 +1119,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Primary figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>
@@ -1123,7 +1128,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Success figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>
@@ -1132,7 +1137,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Warning figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>
@@ -1143,7 +1148,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Danger figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>
@@ -1152,7 +1157,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Info figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>
@@ -1161,7 +1166,7 @@ Figures of varying colors:
           <img src="{static}/static/ship-small.jpg" />
           <figcaption>
             Dim figure
-            <span class="m-figure-description">Text.</span>
+            <div class="m-figure-description">Text.</div>
           </figcaption>
         </figure>
       </div>

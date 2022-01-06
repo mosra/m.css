@@ -902,7 +902,6 @@ figure.m-figure figcaption a, .m-code-figure figcaption a, .m-console-figure fig
   text-decoration: none;
 }
 figure.m-figure figcaption .m-figure-description {
-  display: block;
   margin-top: 0.5rem;
   font-weight: normal;
   font-size: 1rem;

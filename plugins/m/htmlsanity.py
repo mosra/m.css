@@ -465,7 +465,7 @@ class SaneHtmlTranslator(HTMLTranslator):
     def depart_figure(self, node):
         # See depart_caption() below for details
         if self.in_figure_caption_with_description:
-            self.body.append('</span>\n</figcaption>\n')
+            self.body.append('</div>\n</figcaption>\n')
             self.in_figure_caption_with_description = False
         self.body.append('</figure>\n')
 
@@ -484,7 +484,7 @@ class SaneHtmlTranslator(HTMLTranslator):
         # such, figure out a way to query if there are useful nodes. Can't
         # check for just nodes.legend, as there can be arbitrary other stuff.
         if 'classes' in node.parent and 'm-figure' in node.parent['classes'] and node.next_node(descend=False, siblings=True) is not None:
-            self.body.append(self.starttag(node, 'span', CLASS='m-figure-description'))
+            self.body.append(self.starttag(node, 'div', CLASS='m-figure-description'))
             self.in_figure_caption_with_description = True
         else:
             self.body.append('</figcaption>\n')
