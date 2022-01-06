@@ -87,41 +87,44 @@ class ResultFlag(enum.Flag):
     _TYPE14 = 14 << 4
     _TYPE15 = 15 << 4
 
+# Result map encoding -- the "file size" is there so size of item N can be
+# always retrieved as `offsets[N + 1] - offsets[N]`
+#
+# item 1 flags | item 2 flags |   | item N flags | file | item 1 |
+#   + offset   |   + offset   | … |   + offset   | size |  data  | …
+#    8 + 24b   |    8 + 24b   |   |    8 + 24b   |  32b |        |
+#
+# basic item (flags & 0b11 == 0b00):
+#
+# name | \0 | URL
+#      |    |
+#      | 8b |
+#
+# suffixed item (flags & 0b11 == 0b01):
+#
+# suffix | name | \0 | URL
+# length |      |    |
+#   8b   |      | 8b |
+#
+# prefixed item (flags & 0xb11 == 0b10):
+#
+#  prefix  |  name  | \0 |  URL
+# id + len | suffix |    | suffix
+# 16b + 8b |        | 8b |
+#
+# prefixed & suffixed item (flags & 0xb11 == 0b11):
+#
+#  prefix  | suffix |  name  | \0 | URL
+# id + len | length | suffix |    |
+# 16b + 8b |   8b   |        | 8b |
+#
+# alias item (flags & 0xf0 == 0x00), flags & 0xb11 then denote what's in the
+# `…` portion, alias have no URL so the alias name is in place of it:
+#
+# alias |   | alias
+#  id   | … | name
+#  16b  |   |
 class ResultMap:
-    # item 1 flags | item 2 flags |     | item N flags | file | item 1 |
-    #   + offset   |   + offset   | ... |   + offset   | size |  data  | ...
-    #    8 + 24b   |    8 + 24b   |     |    8 + 24b   |  32b |        |
-    #
-    # basic item (flags & 0b11 == 0b00):
-    #
-    # name | \0 | URL
-    #      |    |
-    #      | 8b |
-    #
-    # suffixed item (flags & 0b11 == 0b01):
-    #
-    # suffix | name | \0 | URL
-    # length |      |    |
-    #   8b   |      | 8b |
-    #
-    # prefixed item (flags & 0xb11 == 0b10):
-    #
-    #  prefix  |  name  | \0 |  URL
-    # id + len | suffix |    | suffix
-    # 16b + 8b |        | 8b |
-    #
-    # prefixed & suffixed item (flags & 0xb11 == 0b11):
-    #
-    #  prefix  | suffix |  name  | \0 | URL
-    # id + len | length | suffix |    |
-    # 16b + 8b |   8b   |        | 8b |
-    #
-    # alias item (flags & 0xf0 == 0x00):
-    #
-    # alias |     | alias
-    #  id   | ... | name
-    #  16b  |     |
-    #
     offset_struct = struct.Struct('<I')
     flags_struct = struct.Struct('<B')
     prefix_struct = struct.Struct('<HB')
@@ -271,17 +274,18 @@ class ResultMap:
         assert len(output) == offset
         return output
 
+# Trie encoding:
+#
+#  root  |   |       header         | results | child 1 | child 1 | child 1 |
+# offset | … | | result # | child # |    …    |  char   | barrier | offset  | …
+#  32b   |   |0|    7b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
+#
+# if result count > 127, it's instead:
+#
+#  root  |   |      header          | results | child 1 | child 1 | child 1 |
+# offset | … | | result # | child # |    …    |  char   | barrier | offset  | …
+#  32b   |   |1|   11b    |   4b    |  n*16b  |   8b    |    1b   |   23b   |
 class Trie:
-    #  root  |     |       header         | results | child 1 | child 1 | child 1 |
-    # offset | ... | | result # | child # |   ...   |  char   | barrier | offset  | ...
-    #  32b   |     |0|    7b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
-    #
-    # if result count > 127, it's instead:
-    #
-    #  root  |     |      header          | results | child 1 | child 1 | child 1 |
-    # offset | ... | | result # | child # |   ...   |  char   | barrier | offset  | ...
-    #  32b   |     |1|   11b    |   4b    |  n*16b  |   8b    |    1b   |   23b   |
-
     root_offset_struct = struct.Struct('<I')
     header_struct = struct.Struct('<BB')
     result_struct = struct.Struct('<H')
@@ -391,10 +395,12 @@ class Trie:
         self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output, merge_subtrees=merge_subtrees))
         return output
 
-#     type 1     |     type 2     |     |         |        | type 1 |
-# class |  name  | class |  name  | ... | padding |  end   |  name  | ...
-#   ID  | offset |   ID  | offset |     |         | offset |  data  |
-#   8b  |   8b   |   8b  |   8b   |     |    8b   |   8b   |        |
+# Type map encoding:
+#
+#     type 1     |     type 2     |   |         |        | type 1 |
+# class |  name  | class |  name  | … | padding |  end   |  name  | …
+#   ID  | offset |   ID  | offset |   |         | offset |  data  |
+#   8b  |   8b   |   8b  |   8b   |   |    8b   |   8b   |        |
 type_map_entry_struct = struct.Struct('<BB')
 
 def serialize_type_map(map: List[Tuple[CssClass, str]]) -> bytearray:
@@ -418,10 +424,12 @@ def serialize_type_map(map: List[Tuple[CssClass, str]]) -> bytearray:
 
     return serialized + names
 
-# magic  | version | symbol | result |  type  |
-# header |         | count  |  map   |  map   |
-#        |         |        | offset | offset |
-#  24b   |   8b    |  16b   |  32b   |  32b   |
+# Whole file encoding:
+#
+# magic  | version | symbol | result |  type  | trie | result | type
+# header |         | count  |  map   |  map   | data |  map   | map
+#        |         |        | offset | offset |      |  data  | data
+#  24b   |   8b    |  16b   |  32b   |  32b   |  …   |   …    |  …
 search_data_header_struct = struct.Struct('<3sBHII')
 
 def serialize_search_data(trie: Trie, map: ResultMap, type_map: List[Tuple[CssClass, str]], symbol_count, *, merge_subtrees=True, merge_prefixes=True) -> bytearray:
