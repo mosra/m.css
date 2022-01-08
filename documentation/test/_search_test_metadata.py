@@ -44,3 +44,48 @@ search_type_map = [
     (CssClass.PRIMARY, "class"),
     (CssClass.INFO, "func")
 ]
+
+# Tries don't store any strings, so name_size_bytes can be whatever
+trie_type_sizes = [
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 2,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 3,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 4,
+     'name_size_bytes': 1},
+
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 2,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 3,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 4,
+     'name_size_bytes': 1},
+]
+
+type_sizes = trie_type_sizes + [
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 2,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 3,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 4,
+     'name_size_bytes': 2},
+
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 2,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 3,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 4,
+     'name_size_bytes': 2},
+]

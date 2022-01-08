@@ -27,8 +27,8 @@ import sys
 import unittest
 from types import SimpleNamespace as Empty
 
-from ._search_test_metadata import EntryType, search_type_map
-from _search import Trie, ResultMap, ResultFlag, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print
+from ._search_test_metadata import EntryType, search_type_map, trie_type_sizes, type_sizes
+from _search import Trie, ResultMap, ResultFlag, Serializer, Deserializer, serialize_search_data, pretty_print_trie, pretty_print_map, pretty_print
 
 from test_doxygen import IntegrationTestCase
 
@@ -37,28 +37,40 @@ class TrieSerialization(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.maxDiff = None
 
-    def compare(self, serialized: bytes, expected: str):
-        pretty = pretty_print_trie(serialized)[0]
+    def compare(self, deserializer: Deserializer, serialized: bytes, expected: str):
+        pretty = pretty_print_trie(deserializer, serialized)[0]
         #print(pretty)
         self.assertEqual(pretty, expected.strip())
 
     def test_empty(self):
         trie = Trie()
 
-        serialized = trie.serialize()
-        self.compare(serialized, "")
-        self.assertEqual(len(serialized), 6)
+        for i in trie_type_sizes:
+            with self.subTest(**i):
+                serialized = trie.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, "")
+                self.assertEqual(len(serialized), 6)
 
     def test_single(self):
         trie = Trie()
         trie.insert("magnum", 1337)
         trie.insert("magnum", 21)
 
-        serialized = trie.serialize()
-        self.compare(serialized, """
+        for i in trie_type_sizes:
+            with self.subTest(**i):
+                serialized = trie.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, """
 magnum [1337, 21]
 """)
-        self.assertEqual(len(serialized), 46)
+                # Verify just the smallest and largest size, everything else
+                # should fit in between
+                if i['file_offset_bytes'] == 3 and i['result_id_bytes'] == 2:
+                    self.assertEqual(len(serialized), 46)
+                elif i['file_offset_bytes'] == 4 and i['result_id_bytes'] == 4:
+                    self.assertEqual(len(serialized), 56)
+                else:
+                    self.assertGreater(len(serialized), 46)
+                    self.assertLess(len(serialized), 56)
 
     def test_multiple(self):
         trie = Trie()
@@ -94,8 +106,10 @@ magnum [1337, 21]
         trie.insert("range::max", 10)
         trie.insert("max", 10)
 
-        serialized = trie.serialize()
-        self.compare(serialized, """
+        for i in trie_type_sizes:
+            with self.subTest(**i):
+                serialized = trie.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, """
 math [0]
 ||| :$
 |||  :vector [1]
@@ -123,7 +137,15 @@ range [2]
 |     :min [9]
 |       ax [10]
 """)
-        self.assertEqual(len(serialized), 340)
+                # Verify just the smallest and largest size, everything else
+                # should fit in between
+                if i['file_offset_bytes'] == 3 and i['result_id_bytes'] == 2:
+                    self.assertEqual(len(serialized), 340)
+                elif i['file_offset_bytes'] == 4 and i['result_id_bytes'] == 4:
+                    self.assertEqual(len(serialized), 428)
+                else:
+                    self.assertGreater(len(serialized), 340)
+                    self.assertLess(len(serialized), 428)
 
     def test_unicode(self):
         trie = Trie()
@@ -131,8 +153,8 @@ range [2]
         trie.insert("hýždě", 0)
         trie.insert("hárá", 1)
 
-        serialized = trie.serialize()
-        self.compare(serialized, """
+        serialized = trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+        self.compare(Deserializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1), serialized, """
 h0xc3
   0xbd
    0xc5
@@ -147,7 +169,7 @@ h0xc3
 """)
         self.assertEqual(len(serialized), 82)
 
-    def test_many_results(self):
+    def test_16bit_result_count(self):
         trie = Trie()
 
         for i in range(128):
@@ -158,39 +180,99 @@ h0xc3
         for i in [203, 215, 267]:
             trie.insert("__init__subclass__", i)
 
-        serialized = trie.serialize()
-        self.compare(serialized, """
+        for i in trie_type_sizes:
+            with self.subTest(**i):
+                serialized = trie.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, """
 __init__ [{}]
         subclass__ [203, 215, 267]
 """.format(', '.join([str(i) for i in range(128)])))
-        self.assertEqual(len(serialized), 376)
+                # Verify just the smallest and largest size, everything else
+                # should fit in between
+                if i['file_offset_bytes'] == 3 and i['result_id_bytes'] == 2:
+                    self.assertEqual(len(serialized), 377)
+                elif i['file_offset_bytes'] == 4 and i['result_id_bytes'] == 4:
+                    self.assertEqual(len(serialized), 657)
+                else:
+                    self.assertGreater(len(serialized), 377)
+                    self.assertLess(len(serialized), 657)
+
+    def test_16bit_result_id_too_small(self):
+        trie = Trie()
+        trie.insert("a", 65536)
+        with self.assertRaises(OverflowError):
+            trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+
+        # This should work
+        trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
+
+    def test_24bit_result_id_too_small(self):
+        trie = Trie()
+        trie.insert("a", 16*1024*1024)
+        with self.assertRaises(OverflowError):
+            trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
+
+        # This should work
+        trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=4, name_size_bytes=1))
+
+    def test_23bit_file_offset_too_small(self):
+        trie = Trie()
+
+        # The hight bit of the child offset stores a lookahead barrier, so the
+        # file has to be smaller than 8M, not 16. Python has a recursion limit
+        # of 1000, so we can't really insert a 8M character long string.
+        # Instead, insert one 130-character string where each char has 32k
+        # 16bit result IDs. 129 isn't enough to overflow the offsets.
+        results_32k = [j for j in range(32767)]
+        for i in range(130):
+            trie.insert('a'*i, results_32k)
+
+        with self.assertRaises(OverflowError):
+            trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+
+        # This should work
+        trie.serialize(Serializer(file_offset_bytes=4, result_id_bytes=2, name_size_bytes=1))
 
 class MapSerialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.maxDiff = None
 
-    def compare(self, serialized: bytes, expected: str):
-        pretty = pretty_print_map(serialized, entryTypeClass=EntryType)
+    def compare(self, deserializer: Deserializer, serialized: bytes, expected: str):
+        pretty = pretty_print_map(deserializer, serialized, entryTypeClass=EntryType)
         #print(pretty)
         self.assertEqual(pretty, expected.strip())
 
     def test_empty(self):
         map = ResultMap()
 
-        serialized = map.serialize()
-        self.compare(serialized, "")
-        self.assertEqual(len(serialized), 4)
+        for i in type_sizes:
+            with self.subTest(**i):
+                serialized = map.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, "")
+                self.assertEqual(len(serialized), i['file_offset_bytes'])
 
     def test_single(self):
         map = ResultMap()
+
         self.assertEqual(map.add("Magnum", "namespaceMagnum.html", suffix_length=11, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.NAMESPACE)), 0)
 
-        serialized = map.serialize()
-        self.compare(serialized, """
+        for i in type_sizes:
+            with self.subTest(**i):
+                serialized = map.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, """
 0: Magnum [suffix_length=11, type=NAMESPACE] -> namespaceMagnum.html
 """)
-        self.assertEqual(len(serialized), 36)
+                # Verify just the smallest and largest size, everything else
+                # should fit in between. The `result_id_bytes` don't affect
+                # this case.
+                if i['file_offset_bytes'] == 3 and i['name_size_bytes'] == 1:
+                    self.assertEqual(len(serialized), 35)
+                elif i['file_offset_bytes'] == 4 and i['name_size_bytes'] == 2:
+                    self.assertEqual(len(serialized), 38)
+                else:
+                    self.assertGreater(len(serialized), 35)
+                    self.assertLess(len(serialized), 38)
 
     def test_multiple(self):
         map = ResultMap()
@@ -203,8 +285,10 @@ class MapSerialization(unittest.TestCase):
         self.assertEqual(map.add("Rectangle", "", alias=2), 5)
         self.assertEqual(map.add("Rectangle::Rect()", "", suffix_length=2, alias=2), 6)
 
-        serialized = map.serialize()
-        self.compare(serialized, """
+        for i in type_sizes:
+            with self.subTest(**i):
+                serialized = map.serialize(Serializer(**i))
+                self.compare(Deserializer(**i), serialized, """
 0: Math [type=NAMESPACE] -> namespaceMath.html
 1: ::Vector [prefix=0[:0], type=CLASS] -> classMath_1_1Vector.html
 2: ::Range [prefix=0[:0], type=CLASS] -> classMath_1_1Range.html
@@ -213,7 +297,97 @@ class MapSerialization(unittest.TestCase):
 5: Rectangle [alias=2] ->
 6: ::Rect() [alias=2, prefix=5[:0], suffix_length=2] ->
 """)
-        self.assertEqual(len(serialized), 203)
+                # Verify just the smallest and largest size, everything else
+                # should fit in between
+                if i['file_offset_bytes'] == 3 and i['result_id_bytes'] == 2 and i['name_size_bytes'] == 1:
+                    self.assertEqual(len(serialized), 202)
+                elif i['file_offset_bytes'] == 4 and i['result_id_bytes'] == 4 and i['name_size_bytes'] == 2:
+                    self.assertEqual(len(serialized), 231)
+                else:
+                    self.assertGreater(len(serialized), 202)
+                    self.assertLess(len(serialized), 231)
+
+    def test_24bit_file_offset_too_small(self):
+        map = ResultMap()
+        # 3 bytes for the initial offset, 3 bytes for file size, 1 byte for the
+        # flags, 1 byte for the null terminator, 6 bytes for the URL
+        map.add('F'*(16*1024*1024 - 14), 'f.html', flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
+
+        with self.assertRaises(OverflowError):
+            # Disabling prefix merging otherwise memory usage goes to hell
+            map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1), merge_prefixes=False)
+
+        # This should work. Disabling prefix merging otherwise memory usage
+        # goes to hell.
+        map.serialize(Serializer(file_offset_bytes=4, result_id_bytes=2, name_size_bytes=1), merge_prefixes=False)
+
+    def test_8bit_suffix_length_too_small(self):
+        map = ResultMap()
+        map.add("F()" + ';'*256, "f.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC), suffix_length=256)
+
+        with self.assertRaises(OverflowError):
+            map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+
+        # This should work
+        map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=2))
+
+    def test_8bit_prefix_length_too_small(self):
+        map = ResultMap()
+        map.add("A", 'a'*251 + ".html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
+        map.add("A::foo()", 'a'*251 + ".html#foo", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC))
+
+        with self.assertRaises(OverflowError):
+            map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+
+        # This should work
+        map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=2))
+
+    def test_16bit_prefix_id_too_small(self):
+        map = ResultMap()
+
+        # Adding A0 to A65535 would be too slow due to the recursive Trie
+        # population during prefix merging (SIGH) so trying this instead. It's
+        # still hella slow, but at least not TWO MINUTES.
+        for i in range(128):
+            for j in range(128):
+                for k in range(4):
+                    map.add(bytes([i, j, k]).decode('utf-8'), "a.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
+
+        self.assertEqual(map.add("B", "b.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)), 65536)
+        map.add("B::foo()", "b.html#foo", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC))
+
+        with self.assertRaises(OverflowError):
+            map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+
+        # This should work
+        map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
+
+        # Testing this error for a 24bit prefix seems infeasibly slow, not
+        # doing that
+
+    def test_16bit_alias_id_too_small(self):
+        map = ResultMap()
+
+        # The alias doesn't exist of course, hopefully that's fine in this case
+        map.add("B", "", alias=65536)
+
+        with self.assertRaises(OverflowError):
+            map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
+
+        # This should work
+        map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
+
+    def test_24bit_alias_id_too_small(self):
+        map = ResultMap()
+
+        # The alias doesn't exist of course, hopefully that's fine in this case
+        map.add("B", "", alias=16*1024*1024)
+
+        with self.assertRaises(OverflowError):
+            map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
+
+        # This should work
+        map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=4, name_size_bytes=1))
 
 class Serialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -237,8 +411,10 @@ class Serialization(unittest.TestCase):
         trie.insert("math::range", index)
         trie.insert("range", index)
 
-        serialized = serialize_search_data(trie, map, search_type_map, 3)
-        self.compare(serialized, """
+        for i in type_sizes:
+            with self.subTest(**i):
+                serialized = serialize_search_data(Serializer(**i), trie, map, search_type_map, 3)
+                self.compare(serialized, """
 3 symbols
 math [0]
 |   ::vector [1]
@@ -253,4 +429,12 @@ range [2]
 (EntryType.CLASS, CssClass.PRIMARY, 'class'),
 (EntryType.FUNC, CssClass.INFO, 'func')
 """)
-        self.assertEqual(len(serialized), 277)
+                # Verify just the smallest and largest size, everything else
+                # should fit in between
+                if i['file_offset_bytes'] == 3 and i['result_id_bytes'] == 2 and i['name_size_bytes'] == 1:
+                    self.assertEqual(len(serialized), 282)
+                elif i['file_offset_bytes'] == 4 and i['result_id_bytes'] == 4 and i['name_size_bytes'] == 2:
+                    self.assertEqual(len(serialized), 317)
+                else:
+                    self.assertGreater(len(serialized), 282)
+                    self.assertLess(len(serialized), 317)

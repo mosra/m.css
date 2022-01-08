@@ -29,13 +29,262 @@ import base64
 import enum
 import struct
 from types import SimpleNamespace as Empty
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 # Version 0 was without the type map
-searchdata_format_version = 1
+searchdata_format_version = 2
 search_filename = f'search-v{searchdata_format_version}.js'
 searchdata_filename = f'{{search_filename_prefix}}-v{searchdata_format_version}.bin'
 searchdata_filename_b85 = f'{{search_filename_prefix}}-v{searchdata_format_version}.js'
+
+# In order to be both space-efficient and flexible enough to accomodate for
+# larger projects, the bit counts for particular data types can vary in each
+# file. There's the following categories:
+#
+# - NAME_SIZE_BITS, how many bits is needed to store name lengths (such as
+#   prefix length). Can be either 8 or 16.
+# - RESULT_ID_BITS, how many bits is needed for IDs pointing into the result
+#   map. Can be either 16, 24 or 32.
+# - FILE_OFFSET_BITS, how many bits is needed to store general offsets into
+#   the file. Can be either 24 or 32.
+#
+# Whole file encoding
+# ===================
+#
+# magic | version | type | not  | symbol | result | type   | trie | result | type
+# 'MCS' | (0x02)  | data | used | count  |  map   |  map   | data |  map   | map
+#       |         |      |      |        | offset | offset |      |  data  | data
+#  24b  |   8b    |  8b  | 24b  |  32b   |  32b   |  32b   |  …   |   …    |  …
+#
+# The type data encode the NAME_SIZE_BITS, RESULT_ID_BITS and
+# FILE_OFFSET_BITS:
+#
+# not  | NAME_SIZE_BITS | RESULT_ID_BITS | FILE_OFFSET_BITS
+# used | 0b0 = 8b       | 0b00 = 16b     | 0b0 = 24b
+#      | 0b1 = 16b      | 0b01 = 24b     | 0b1 = 32b
+#      |                | 0b10 = 32b     |
+#  4b  |     1b         |       2b       |       1b
+#
+# Trie encoding
+# =============
+#
+# Because child tries are serialized first, the trie containing the initial
+# characters is never the first, and instead the root offset points to it. If
+# result count < 128:
+#
+#  root  |   |         header       |      results     | children
+# offset | … | | result # | child # |         …        |  data
+#  32b   |   |0|    7b    |   8b    | n*RESULT_ID_BITS |    …
+#
+# If result count > 127, it's instead this -- since entries with very large
+# number of results (such as python __init__()) are rather rare, it doesn't
+# make sense to have it globally configurable and then waste 8 bits in the
+# majority of cases. Note that the 15-bit value is stored as Big-Endian,
+# otherwise the leftmost bit couldn't be used to denote the size.
+#
+#  root  |   |         header       |      results     | children
+# offset | … | | result # | child # |         …        |  data
+#  32b   |   |1| 15b (BE) |   8b    | n*RESULT_ID_BITS |    …
+#
+# Trie children data encoding, the barrier is stored in the topmost offset bit:
+#
+# child 1 | child 2 |   |     child 1      |      child 2     |
+#  char   |  char   | … | barrier + offset | barrier + offset | …
+#   8b    |   8b    |   | FILE_OFFSET_BITS | FILE_OFFSET_BITS |
+#
+# Result map encoding
+# ===================
+#
+# First all flags, then all offsets, so we don't need to have weird paddings or
+# alignments. The "file size" is there so size of item N can be always
+# retrieved as `offsets[N + 1] - offsets[N]`
+#
+#       item         |       file       | item  | item 1 | item 2 |
+#      offsets       |       size       | flags |  data  |  data  | …
+# n*FILE_OFFSET_BITS | FILE_OFFSET_BITS | n*8b  |        |        |
+#
+# Basic item data (flags & 0b11 == 0b00):
+#
+# name | \0 | URL
+#      |    |
+#      | 8b |
+#
+# Suffixed item data (flags & 0b11 == 0b01):
+#
+#     suffix     | name | \0 | URL
+#     length     |      |    |
+# NAME_SIZE_BITS |      | 8b |
+#
+# Prefixed item data (flags & 0xb11 == 0b10):
+#
+#     prefix     |     prefix     |  name  | \0 |  URL
+#       id       |     length     | suffix |    | suffix
+# RESULT_ID_BITS | NAME_SIZE_BITS |        | 8b |
+#
+# Prefixed & suffixed item (flags & 0xb11 == 0b11):
+#
+#     prefix     |     prefix     |     suffix     |  name  | \0 | URL
+#       id       |     length     |     length     | suffix |    |
+# RESULT_ID_BITS | NAME_SIZE_BITS | NAME_SIZE_BITS |        | 8b |
+#
+# Alias item (flags & 0xf0 == 0x00), flags & 0xb11 then denote what's in the
+# `…` portion, alias have no URL so the alias name is in place of it:
+#
+#     alias      |   | alias
+#       id       | … | name
+# RESULT_ID_BITS |   |
+#
+# Type map encoding
+# =================
+#
+# Again the "end offset" is here so size of type N can be always retrieved as
+# `offsets[N + 1] - offsets[N]`. Type names are not expected to have more than
+# 255 chars, so NAME_SIZE_BITS is not used here.
+#
+#     type 1     |     type 2     |   |         |        | type 1 |
+# class |  name  | class |  name  | … | padding |  end   |  name  | …
+#   ID  | offset |   ID  | offset |   |         | offset |  data  |
+#   8b  |   8b   |   8b  |   8b   |   |    8b   |   8b   |        |
+
+class Serializer:
+    # This is currently hardcoded
+    result_map_flag_bytes = 1
+
+    header_struct = struct.Struct('<3sBBxxxIII')
+    result_map_flags_struct = struct.Struct('<B')
+    trie_root_offset_struct = struct.Struct('<I')
+    type_map_entry_struct = struct.Struct('<BB')
+
+    def __init__(self, *, file_offset_bytes, result_id_bytes, name_size_bytes):
+        assert file_offset_bytes in [3, 4]
+        self.file_offset_bytes = file_offset_bytes
+
+        assert result_id_bytes in [2, 3, 4]
+        self.result_id_bytes = result_id_bytes
+
+        assert name_size_bytes in [1, 2]
+        self.name_size_bytes = name_size_bytes
+
+    def pack_header(self, symbol_count, trie_size, result_map_size):
+        return self.header_struct.pack(b'MCS', searchdata_format_version,
+            (self.file_offset_bytes - 3) << 0 |
+            (self.result_id_bytes - 2) << 1 |
+            (self.name_size_bytes - 1) << 3,
+            symbol_count,
+            self.header_struct.size + trie_size,
+            self.header_struct.size + trie_size + result_map_size)
+
+    def pack_result_map_flags(self, flags: int):
+        return self.result_map_flags_struct.pack(flags)
+    def pack_result_map_offset(self, offset: int):
+        return offset.to_bytes(self.file_offset_bytes, byteorder='little')
+    def pack_result_map_prefix(self, id: int, length: int):
+        return id.to_bytes(self.result_id_bytes, byteorder='little') + \
+           length.to_bytes(self.name_size_bytes, byteorder='little')
+    def pack_result_map_suffix_length(self, length: int):
+        return length.to_bytes(self.name_size_bytes, byteorder='little')
+    def pack_result_map_alias(self, id: int):
+        return id.to_bytes(self.result_id_bytes, byteorder='little')
+
+    def pack_trie_root_offset(self, offset: int):
+        return self.trie_root_offset_struct.pack(offset)
+    def pack_trie_node(self, result_ids: List[int], child_chars_offsets_barriers: List[Tuple[int, int, bool]]):
+        out = bytearray()
+        # If the result count fits into 7 bits, pack it into a single byte
+        if len(result_ids) < 128:
+            out += len(result_ids).to_bytes(1, byteorder='little')
+        # Otherwise use the leftmost bit to denote it's two-byte, and store the
+        # higher 8 bits in a second byte. Which is the same as storing the
+        # value as Big-Endian.
+        else:
+            assert len(result_ids) < 32768
+            out += (len(result_ids) | 0x8000).to_bytes(2, byteorder='big')
+        out += len(child_chars_offsets_barriers).to_bytes(1, byteorder='little')
+        for id in result_ids:
+            out += id.to_bytes(self.result_id_bytes, byteorder='little')
+        out += bytes([char for char, offset, barrier in child_chars_offsets_barriers])
+        child_barrier_mask = 1 << (self.file_offset_bytes*8 - 1)
+        for char, offset, barrier in child_chars_offsets_barriers:
+            if offset >= child_barrier_mask: raise OverflowError
+            out += (offset | (barrier*child_barrier_mask)).to_bytes(self.file_offset_bytes, byteorder='little')
+        return out
+
+    def pack_type_map_entry(self, class_: int, offset: int):
+        return self.type_map_entry_struct.pack(class_, offset)
+
+class Deserializer:
+    def __init__(self, *, file_offset_bytes, result_id_bytes, name_size_bytes):
+        assert file_offset_bytes in [3, 4]
+        self.file_offset_bytes = file_offset_bytes
+
+        assert result_id_bytes in [2, 3, 4]
+        self.result_id_bytes = result_id_bytes
+
+        assert name_size_bytes in [1, 2]
+        self.name_size_bytes = name_size_bytes
+
+    @classmethod
+    def from_serialized(self, serialized: bytes):
+        magic, version, type_data, symbol_count, map_offset, type_map_offset = Serializer.header_struct.unpack_from(serialized)
+        assert magic == b'MCS'
+        assert version == searchdata_format_version
+        out = Deserializer(
+            file_offset_bytes=[3, 4][(type_data & 0b0001) >> 0],
+            result_id_bytes=[2, 3, 4][(type_data & 0b0110) >> 1],
+            name_size_bytes=[1, 2][(type_data & 0b1000) >> 3])
+        out.symbol_count = symbol_count
+        out.map_offset = map_offset
+        out.type_map_offset = type_map_offset
+        return out
+
+    # The last tuple item is number of bytes extracted
+    def unpack_result_map_flags(self, serialized: bytes, offset: int) -> Tuple[int, int]:
+        return Serializer.result_map_flags_struct.unpack_from(serialized, offset) + (Serializer.result_map_flags_struct.size, )
+    def unpack_result_map_offset(self, serialized: bytes, offset: int) -> Tuple[int, int]:
+        return int.from_bytes(serialized[offset:offset + self.file_offset_bytes], byteorder='little'), self.file_offset_bytes
+    def unpack_result_map_prefix(self, serialized: bytes, offset: int) -> Tuple[int, int, int]:
+        return int.from_bytes(serialized[offset:offset + self.result_id_bytes], byteorder='little'), int.from_bytes(serialized[offset + self.result_id_bytes:offset + self.result_id_bytes + self.name_size_bytes], byteorder='little'), self.result_id_bytes + self.name_size_bytes
+    def unpack_result_map_suffix_length(self, serialized: bytes, offset: int) -> Tuple[int, int]:
+        return int.from_bytes(serialized[offset:offset + self.name_size_bytes], byteorder='little'), self.name_size_bytes
+    def unpack_result_map_alias(self, serialized: bytes, offset: int) -> Tuple[int, int]:
+        return int.from_bytes(serialized[offset:offset + self.result_id_bytes], byteorder='little'), self.result_id_bytes
+
+    def unpack_trie_root_offset(self, serialized: bytes, offset: int) -> Tuple[int, int]:
+        return Serializer.trie_root_offset_struct.unpack_from(serialized, offset) + (Serializer.trie_root_offset_struct.size, )
+    def unpack_trie_node(self, serialized: bytes, offset: int) -> Tuple[List[int], List[int], List[Tuple[int, int, bool]], int]:
+        prev_offset = offset
+        # Result count, first try 8-bit, if it has the highest bit set, extract
+        # two bytes (as a BE) and then remove the highest bit
+        result_count = int.from_bytes(serialized[offset:offset + 1], byteorder='little')
+        if result_count & 0x80:
+            result_count = int.from_bytes(serialized[offset:offset + 2], byteorder='big') & ~0x8000
+            offset += 1
+        offset += 1
+        child_count = int.from_bytes(serialized[offset:offset + 1], byteorder='little')
+        offset += 1
+
+        # Unpack all result IDs
+        result_ids = []
+        for i in range(result_count):
+            result_ids += [int.from_bytes(serialized[offset:offset + self.result_id_bytes], byteorder='little')]
+            offset += self.result_id_bytes
+
+        # Unpack all child chars
+        child_chars = list(serialized[offset:offset + child_count])
+        offset += child_count
+
+        # Unpack all children offsets and lookahead barriers
+        child_chars_offsets_barriers = []
+        child_barrier_mask = 1 << (self.file_offset_bytes*8 - 1)
+        for i in range(child_count):
+            child_offset_barrier = int.from_bytes(serialized[offset:offset + self.file_offset_bytes], byteorder='little')
+            child_chars_offsets_barriers += [(child_chars[i], child_offset_barrier & ~child_barrier_mask, bool(child_offset_barrier & child_barrier_mask))]
+            offset += self.file_offset_bytes
+
+        return result_ids, child_chars_offsets_barriers, offset - prev_offset
+
+    def unpack_type_map_entry(self, serialized: bytes, offset: int) -> Tuple[int, int, int]:
+        return Serializer.type_map_entry_struct.unpack_from(serialized, offset) + (Serializer.type_map_entry_struct.size, )
 
 class CssClass(enum.Enum):
     DEFAULT = 0
@@ -87,50 +336,7 @@ class ResultFlag(enum.Flag):
     _TYPE14 = 14 << 4
     _TYPE15 = 15 << 4
 
-# Result map encoding -- the "file size" is there so size of item N can be
-# always retrieved as `offsets[N + 1] - offsets[N]`
-#
-# item 1 flags | item 2 flags |   | item N flags | file | item 1 |
-#   + offset   |   + offset   | … |   + offset   | size |  data  | …
-#    8 + 24b   |    8 + 24b   |   |    8 + 24b   |  32b |        |
-#
-# basic item (flags & 0b11 == 0b00):
-#
-# name | \0 | URL
-#      |    |
-#      | 8b |
-#
-# suffixed item (flags & 0b11 == 0b01):
-#
-# suffix | name | \0 | URL
-# length |      |    |
-#   8b   |      | 8b |
-#
-# prefixed item (flags & 0xb11 == 0b10):
-#
-#  prefix  |  name  | \0 |  URL
-# id + len | suffix |    | suffix
-# 16b + 8b |        | 8b |
-#
-# prefixed & suffixed item (flags & 0xb11 == 0b11):
-#
-#  prefix  | suffix |  name  | \0 | URL
-# id + len | length | suffix |    |
-# 16b + 8b |   8b   |        | 8b |
-#
-# alias item (flags & 0xf0 == 0x00), flags & 0xb11 then denote what's in the
-# `…` portion, alias have no URL so the alias name is in place of it:
-#
-# alias |   | alias
-#  id   | … | name
-#  16b  |   |
 class ResultMap:
-    offset_struct = struct.Struct('<I')
-    flags_struct = struct.Struct('<B')
-    prefix_struct = struct.Struct('<HB')
-    suffix_length_struct = struct.Struct('<B')
-    alias_struct = struct.Struct('<H')
-
     def __init__(self):
         self.entries = []
 
@@ -151,9 +357,7 @@ class ResultMap:
         self.entries += [entry]
         return len(self.entries) - 1
 
-    def serialize(self, merge_prefixes=True) -> bytearray:
-        output = bytearray()
-
+    def serialize(self, serializer: Serializer, merge_prefixes=True) -> bytearray:
         if merge_prefixes:
             # Put all entry names into a trie to discover common prefixes
             trie = Trie()
@@ -225,25 +429,24 @@ class ResultMap:
             # Everything merged, replace the original list
             self.entries = merged
 
-        # Write the offset array. Starting offset for items is after the offset
-        # array and the file size
-        offset = (len(self.entries) + 1)*4
+        # Write the offset array. Starting offset for items is after the
+        # (aligned) flag array and (aligned) offset + file size array.
+        output = bytearray()
+        offset = len(self.entries)*serializer.result_map_flag_bytes + (len(self.entries) + 1)*serializer.file_offset_bytes
         for e in self.entries:
-            assert offset < 2**24
-            output += self.offset_struct.pack(offset)
-            self.flags_struct.pack_into(output, len(output) - 1, e.flags.value)
+            output += serializer.pack_result_map_offset(offset)
 
             # The entry is an alias, extra field for alias index
             if e.flags & ResultFlag._TYPE == ResultFlag.ALIAS:
-                offset += self.alias_struct.size
+                offset += serializer.result_id_bytes
 
             # Extra field for prefix index and length
             if e.flags & ResultFlag.HAS_PREFIX:
-                offset += self.prefix_struct.size
+                offset += serializer.result_id_bytes + serializer.name_size_bytes
 
             # Extra field for suffix length
             if e.flags & ResultFlag.HAS_SUFFIX:
-                offset += self.suffix_length_struct.size
+                offset += serializer.name_size_bytes
 
             # Length of the name
             offset += len(e.name.encode('utf-8'))
@@ -254,18 +457,22 @@ class ResultMap:
                  offset += len(e.url.encode('utf-8')) + 1
 
         # Write file size
-        output += self.offset_struct.pack(offset)
+        output += serializer.pack_result_map_offset(offset)
+
+        # Write the flag array
+        for e in self.entries:
+            output += serializer.pack_result_map_flags(e.flags.value)
 
         # Write the entries themselves
         for e in self.entries:
             if e.flags & ResultFlag._TYPE == ResultFlag.ALIAS:
                 assert not e.alias is None
                 assert not e.url
-                output += self.alias_struct.pack(e.alias)
+                output += serializer.pack_result_map_alias(e.alias)
             if e.flags & ResultFlag.HAS_PREFIX:
-                output += self.prefix_struct.pack(e.prefix, e.prefix_length)
+                output += serializer.pack_result_map_prefix(e.prefix, e.prefix_length)
             if e.flags & ResultFlag.HAS_SUFFIX:
-                output += self.suffix_length_struct.pack(e.suffix_length)
+                output += serializer.pack_result_map_suffix_length(e.suffix_length)
             output += e.name.encode('utf-8')
             if e.url:
                 output += b'\0'
@@ -274,31 +481,21 @@ class ResultMap:
         assert len(output) == offset
         return output
 
-# Trie encoding:
-#
-#  root  |   |       header         | results | child 1 | child 1 | child 1 |
-# offset | … | | result # | child # |    …    |  char   | barrier | offset  | …
-#  32b   |   |0|    7b    |   8b    |  n*16b  |   8b    |    1b   |   23b   |
-#
-# if result count > 127, it's instead:
-#
-#  root  |   |      header          | results | child 1 | child 1 | child 1 |
-# offset | … | | result # | child # |    …    |  char   | barrier | offset  | …
-#  32b   |   |1|   11b    |   4b    |  n*16b  |   8b    |    1b   |   23b   |
 class Trie:
-    root_offset_struct = struct.Struct('<I')
-    header_struct = struct.Struct('<BB')
-    result_struct = struct.Struct('<H')
-    child_struct = struct.Struct('<I')
-    child_char_struct = struct.Struct('<B')
-
     def __init__(self):
         self.results = []
         self.children = {}
 
-    def _insert(self, path: bytes, result, lookahead_barriers):
+    def _insert(self, path: bytes, result: Union[int, List[int]], lookahead_barriers):
         if not path:
-            self.results += [result]
+            # Inserting a list is mainly used by the
+            # TrieSerialization.test_23bit_file_offset_too_small() test, as
+            # otherwise it'd be WAY too slow.
+            # TODO this whole thing needs optimizing with less recursion
+            if type(result) is list:
+                self.results += result
+            else:
+                self.results += [result]
             return
 
         char = path[0]
@@ -309,7 +506,7 @@ class Trie:
             self.children[char] = (True, self.children[char][1])
         self.children[char][1]._insert(path[1:], result, [b - 1 for b in lookahead_barriers])
 
-    def insert(self, path: str, result, lookahead_barriers=[]):
+    def insert(self, path: str, result: Union[int, List[int]], lookahead_barriers=[]):
         self._insert(path.encode('utf-8'), result, lookahead_barriers)
 
     def _sort(self, key):
@@ -342,40 +539,15 @@ class Trie:
         self._sort(key)
 
     # Returns offset of the serialized thing in `output`
-    def _serialize(self, hashtable, output: bytearray, merge_subtrees) -> int:
+    def _serialize(self, serializer: Serializer, hashtable, output: bytearray, merge_subtrees) -> int:
         # Serialize all children first
-        child_offsets = []
+        child_chars_offsets_barriers = []
         for char, child in self.children.items():
-            offset = child[1]._serialize(hashtable, output, merge_subtrees=merge_subtrees)
-            child_offsets += [(char, child[0], offset)]
+            offset = child[1]._serialize(serializer, hashtable, output, merge_subtrees=merge_subtrees)
+            child_chars_offsets_barriers += [(char, offset, child[0])]
 
-        # Serialize this node. Sometimes we'd have an insane amount of results
-        # (such as Python's __init__), but very little children to go with
-        # that. Then we can make the result count storage larger (11 bits,
-        # 2048 results) and the child count storage smaller (4 bits, 16
-        # children). Hopefully that's enough. The remaining leftmost bit is
-        # used as an indicator of this shifted state.
-        serialized = bytearray()
-        if len(self.results) > 127:
-            assert len(self.children) < 16 and len(self.results) < 2048
-            result_count = (len(self.results) & 0x7f) | 0x80
-            children_count = ((len(self.results) & 0xf80) >> 3) | len(self.children)
-        else:
-            result_count = len(self.results)
-            children_count = len(self.children)
-        serialized += self.header_struct.pack(result_count, children_count)
-        for v in self.results:
-            serialized += self.result_struct.pack(v)
-
-        # Serialize child offsets
-        for char, lookahead_barrier, abs_offset in child_offsets:
-            assert abs_offset < 2**23
-
-            # write them over each other because that's the only way to pack
-            # a 24 bit field
-            offset = len(serialized)
-            serialized += self.child_struct.pack(abs_offset | ((1 if lookahead_barrier else 0) << 23))
-            self.child_char_struct.pack_into(serialized, offset + 3, char)
+        # Serialize this node
+        serialized = serializer.pack_trie_node(self.results, child_chars_offsets_barriers)
 
         # Subtree merging: if this exact tree is already in the table, return
         # its offset. Otherwise add it and return the new offset.
@@ -389,21 +561,13 @@ class Trie:
             if merge_subtrees: hashtable[hashable] = offset
             return offset
 
-    def serialize(self, merge_subtrees=True) -> bytearray:
+    def serialize(self, serializer: Serializer, merge_subtrees=True) -> bytearray:
         output = bytearray(b'\x00\x00\x00\x00')
         hashtable = {}
-        self.root_offset_struct.pack_into(output, 0, self._serialize(hashtable, output, merge_subtrees=merge_subtrees))
+        output[0:4] = serializer.pack_trie_root_offset(self._serialize(serializer, hashtable, output, merge_subtrees=merge_subtrees))
         return output
 
-# Type map encoding:
-#
-#     type 1     |     type 2     |   |         |        | type 1 |
-# class |  name  | class |  name  | … | padding |  end   |  name  | …
-#   ID  | offset |   ID  | offset |   |         | offset |  data  |
-#   8b  |   8b   |   8b  |   8b   |   |    8b   |   8b   |        |
-type_map_entry_struct = struct.Struct('<BB')
-
-def serialize_type_map(map: List[Tuple[CssClass, str]]) -> bytearray:
+def serialize_type_map(serializer: Serializer, map: List[Tuple[CssClass, str]]) -> bytearray:
     serialized = bytearray()
     names = bytearray()
 
@@ -412,42 +576,31 @@ def serialize_type_map(map: List[Tuple[CssClass, str]]) -> bytearray:
     assert len(map) <= 15
 
     # Initial name offset is after all the offset entries plus the final one
-    initial_name_offset = (len(map) + 1)*type_map_entry_struct.size
+    initial_name_offset = (len(map) + 1)*serializer.type_map_entry_struct.size
 
     # Add all entries (and the final offset), encode the names separately,
     # concatenate at the end
     for css_class, name in map:
-        serialized += type_map_entry_struct.pack(css_class.value, initial_name_offset + len(names))
+        serialized += serializer.pack_type_map_entry(css_class.value, initial_name_offset + len(names))
         names += name.encode('utf-8')
-    serialized += type_map_entry_struct.pack(0, initial_name_offset + len(names))
+    serialized += serializer.pack_type_map_entry(0, initial_name_offset + len(names))
     assert len(serialized) == initial_name_offset
 
     return serialized + names
 
-# Whole file encoding:
-#
-# magic  | version | symbol | result |  type  | trie | result | type
-# header |         | count  |  map   |  map   | data |  map   | map
-#        |         |        | offset | offset |      |  data  | data
-#  24b   |   8b    |  16b   |  32b   |  32b   |  …   |   …    |  …
-search_data_header_struct = struct.Struct('<3sBHII')
+def serialize_search_data(serializer: Serializer, trie: Trie, map: ResultMap, type_map: List[Tuple[CssClass, str]], symbol_count, *, merge_subtrees=True, merge_prefixes=True) -> bytearray:
+    serialized_trie = trie.serialize(serializer, merge_subtrees=merge_subtrees)
+    serialized_map = map.serialize(serializer, merge_prefixes=merge_prefixes)
+    serialized_type_map = serialize_type_map(serializer, type_map)
 
-def serialize_search_data(trie: Trie, map: ResultMap, type_map: List[Tuple[CssClass, str]], symbol_count, *, merge_subtrees=True, merge_prefixes=True) -> bytearray:
-    serialized_trie = trie.serialize(merge_subtrees=merge_subtrees)
-    serialized_map = map.serialize(merge_prefixes=merge_prefixes)
-    serialized_type_map = serialize_type_map(type_map)
-
-    preamble = search_data_header_struct.pack(b'MCS',
-        searchdata_format_version, symbol_count,
-        search_data_header_struct.size + len(serialized_trie),
-        search_data_header_struct.size + len(serialized_trie) + len(serialized_map))
+    preamble = serializer.pack_header(symbol_count, len(serialized_trie), len(serialized_map))
     return preamble + serialized_trie + serialized_map + serialized_type_map
 
 def base85encode_search_data(data: bytearray) -> bytearray:
     return (b"/* Generated by https://mcss.mosra.cz/documentation/doxygen/. Do not edit. */\n" +
             b"Search.load('" + base64.b85encode(data, True) + b"');\n")
 
-def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, indent, *, show_merged, show_lookahead_barriers, color_map) -> str:
+def _pretty_print_trie(deserializer: Deserializer, serialized: bytearray, hashtable, stats, base_offset, indent, *, show_merged, show_lookahead_barriers, color_map) -> str:
     # Visualize where the trees were merged
     if show_merged and base_offset in hashtable:
         return color_map['red'] + '#' + color_map['reset']
@@ -455,46 +608,35 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
     stats.node_count += 1
 
     out = ''
-    result_count, child_count = Trie.header_struct.unpack_from(serialized, base_offset)
-    # If result count has the high bit set, it's stored in 11 bits and child
-    # count in 4 bits instead of 7 + 8
-    if result_count & 0x80:
-        result_count = (result_count & 0x7f) | ((child_count & 0xf0) << 3)
-        child_count = child_count & 0x0f
-    stats.max_node_results = max(result_count, stats.max_node_results)
-    stats.max_node_children = max(child_count, stats.max_node_children)
-    offset = base_offset + Trie.header_struct.size
+    result_ids, child_chars_offsets_barriers, offset = deserializer.unpack_trie_node(serialized, base_offset)
+
+    stats.max_node_results = max(len(result_ids), stats.max_node_results)
+    stats.max_node_children = max(len(child_chars_offsets_barriers), stats.max_node_children)
 
     # print results, if any
-    if result_count:
+    if result_ids:
         out += color_map['blue'] + ' ['
-        for i in range(result_count):
+        for i, result in enumerate(result_ids):
             if i: out += color_map['blue']+', '
-            result = Trie.result_struct.unpack_from(serialized, offset)[0]
             stats.max_node_result_index = max(result, stats.max_node_result_index)
             out += color_map['cyan'] + str(result)
-            offset += Trie.result_struct.size
         out += color_map['blue'] + ']'
 
     # print children, if any
-    for i in range(child_count):
-        if result_count or i:
+    for i, (char, offset, barrier) in enumerate(child_chars_offsets_barriers):
+        if len(result_ids) or i:
             out += color_map['reset'] + '\n'
             out += color_map['blue'] + indent + color_map['white']
-        char = Trie.child_char_struct.unpack_from(serialized, offset + 3)[0]
         if char <= 127:
             out += chr(char)
         else:
             out += color_map['reset'] + hex(char)
-        if (show_lookahead_barriers and Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000):
+        if (show_lookahead_barriers and barrier):
             out += color_map['green'] + '$'
-        if char > 127 or (show_lookahead_barriers and Trie.child_struct.unpack_from(serialized, offset)[0] & 0x00800000):
+        if char > 127 or (show_lookahead_barriers and barrier):
             out += color_map['reset'] + '\n' + color_map['blue'] + indent + ' ' + color_map['white']
-        child_offset = Trie.child_struct.unpack_from(serialized, offset)[0] & 0x007fffff
-        stats.max_node_child_offset = max(child_offset, stats.max_node_child_offset)
-        offset += Trie.child_struct.size
-        out += _pretty_print_trie(serialized, hashtable, stats, child_offset, indent + ('|' if child_count > 1 else ' '), show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
-        child_count += 1
+        stats.max_node_child_offset = max(offset, stats.max_node_child_offset)
+        out += _pretty_print_trie(deserializer, serialized, hashtable, stats, offset, indent + ('|' if len(child_chars_offsets_barriers) > 1 else ' '), show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
 
     hashtable[base_offset] = True
     return out
@@ -515,7 +657,7 @@ color_map_dummy = {'blue': '',
                    'yellow': '',
                    'reset': ''}
 
-def pretty_print_trie(serialized: bytes, *, show_merged=False, show_lookahead_barriers=True, colors=False):
+def pretty_print_trie(deserializer: Deserializer, serialized: bytes, *, show_merged=False, show_lookahead_barriers=True, colors=False):
     color_map = color_map_colors if colors else color_map_dummy
 
     hashtable = {}
@@ -527,7 +669,7 @@ def pretty_print_trie(serialized: bytes, *, show_merged=False, show_lookahead_ba
     stats.max_node_result_index = 0
     stats.max_node_child_offset = 0
 
-    out = _pretty_print_trie(serialized, hashtable, stats, Trie.root_offset_struct.unpack_from(serialized, 0)[0], '', show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
+    out = _pretty_print_trie(deserializer, serialized, hashtable, stats, deserializer.unpack_trie_root_offset(serialized, 0)[0], '', show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, color_map=color_map)
     if out: out = color_map['white'] + out
     stats = """
 node count:             {}
@@ -537,59 +679,61 @@ max node result index:  {}
 max node child offset:  {}""".lstrip().format(stats.node_count, stats.max_node_results, stats.max_node_children, stats.max_node_result_index, stats.max_node_child_offset)
     return out, stats
 
-def pretty_print_map(serialized: bytes, *, entryTypeClass, colors=False):
+def pretty_print_map(deserializer: Deserializer, serialized: bytes, *, entryTypeClass, colors=False):
     color_map = color_map_colors if colors else color_map_dummy
 
     # The first item gives out offset of first value, which can be used to
     # calculate total value count
-    offset = ResultMap.offset_struct.unpack_from(serialized, 0)[0] & 0x00ffffff
-    size = int(offset/4 - 1)
+    offset, offset_size = deserializer.unpack_result_map_offset(serialized, 0)
+    size = int((offset - offset_size)/(offset_size + Serializer.result_map_flag_bytes))
+    flags_offset = (size + 1)*offset_size
 
     out = ''
     for i in range(size):
         if i: out += '\n'
-        flags = ResultFlag(ResultMap.flags_struct.unpack_from(serialized, i*4 + 3)[0])
+        flags = ResultFlag(deserializer.unpack_result_map_flags(serialized, flags_offset + i*Serializer.result_map_flag_bytes)[0])
         extra = []
         if flags & ResultFlag._TYPE == ResultFlag.ALIAS:
-            extra += ['alias={}'.format(ResultMap.alias_struct.unpack_from(serialized, offset)[0])]
-            offset += ResultMap.alias_struct.size
+            alias, alias_bytes = deserializer.unpack_result_map_alias(serialized, offset)
+            extra += ['alias={}'.format(alias)]
+            offset += alias_bytes
         if flags & ResultFlag.HAS_PREFIX:
-            extra += ['prefix={}[:{}]'.format(*ResultMap.prefix_struct.unpack_from(serialized, offset))]
-            offset += ResultMap.prefix_struct.size
+            prefix_id, prefix_length, prefix_bytes = deserializer.unpack_result_map_prefix(serialized, offset)
+            extra += ['prefix={}[:{}]'.format(prefix_id, prefix_length)]
+            offset += prefix_bytes
         if flags & ResultFlag.HAS_SUFFIX:
-            extra += ['suffix_length={}'.format(ResultMap.suffix_length_struct.unpack_from(serialized, offset)[0])]
-            offset += ResultMap.suffix_length_struct.size
+            suffix_length, suffix_bytes = deserializer.unpack_result_map_suffix_length(serialized, offset)
+            extra += ['suffix_length={}'.format(suffix_length)]
+            offset += suffix_bytes
         if flags & ResultFlag.DEPRECATED:
             extra += ['deprecated']
         if flags & ResultFlag.DELETED:
             extra += ['deleted']
         if flags & ResultFlag._TYPE:
             extra += ['type={}'.format(entryTypeClass(flags.type).name)]
-        next_offset = ResultMap.offset_struct.unpack_from(serialized, (i + 1)*4)[0] & 0x00ffffff
+        next_offset = deserializer.unpack_result_map_offset(serialized, (i + 1)*offset_size)[0]
         name, _, url = serialized[offset:next_offset].partition(b'\0')
         out += color_map['cyan'] + str(i) + color_map['blue'] + ': ' + color_map['white'] + name.decode('utf-8') + color_map['blue'] + ' [' + color_map['yellow'] + (color_map['blue'] + ', ' + color_map['yellow']).join(extra) + color_map['blue'] + '] ->' + (' ' + color_map['reset'] + url.decode('utf-8') if url else '')
         offset = next_offset
     return out
 
-def pretty_print_type_map(serialized: bytes, *, entryTypeClass):
+def pretty_print_type_map(deserializer: Deserializer, serialized: bytes, *, entryTypeClass):
     # Unpack until we aren't at EOF
     i = 0
     out = ''
-    class_id, offset = type_map_entry_struct.unpack_from(serialized, 0)
-    while offset < len(serialized):
+    class_id, name_offset, type_map_bytes = deserializer.unpack_type_map_entry(serialized, 0)
+    while name_offset < len(serialized):
         if i: out += ',\n'
-        next_class_id, next_offset = type_map_entry_struct.unpack_from(serialized, (i + 1)*type_map_entry_struct.size)
-        out += "({}, {}, '{}')".format(entryTypeClass(i + 1), CssClass(class_id), serialized[offset:next_offset].decode('utf-8'))
+        next_class_id, next_name_offset = deserializer.unpack_type_map_entry(serialized, (i + 1)*type_map_bytes)[:2]
+        out += "({}, {}, '{}')".format(entryTypeClass(i + 1), CssClass(class_id), serialized[name_offset:next_name_offset].decode('utf-8'))
         i += 1
-        class_id, offset = next_class_id, next_offset
+        class_id, name_offset = next_class_id, next_name_offset
     return out
 
 def pretty_print(serialized: bytes, *, entryTypeClass, show_merged=False, show_lookahead_barriers=True, colors=False):
-    magic, version, symbol_count, map_offset, type_map_offset = search_data_header_struct.unpack_from(serialized)
-    assert magic == b'MCS'
-    assert version == searchdata_format_version
+    deserializer = Deserializer.from_serialized(serialized)
 
-    pretty_trie, stats = pretty_print_trie(serialized[search_data_header_struct.size:map_offset], show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, colors=colors)
-    pretty_map = pretty_print_map(serialized[map_offset:type_map_offset], entryTypeClass=entryTypeClass, colors=colors)
-    pretty_type_map = pretty_print_type_map(serialized[type_map_offset:], entryTypeClass=entryTypeClass)
-    return '{} symbols\n'.format(symbol_count) + pretty_trie + '\n' + pretty_map + '\n' + pretty_type_map, stats
+    pretty_trie, stats = pretty_print_trie(deserializer, serialized[Serializer.header_struct.size:deserializer.map_offset], show_merged=show_merged, show_lookahead_barriers=show_lookahead_barriers, colors=colors)
+    pretty_map = pretty_print_map(deserializer, serialized[deserializer.map_offset:deserializer.type_map_offset], entryTypeClass=entryTypeClass, colors=colors)
+    pretty_type_map = pretty_print_type_map(deserializer, serialized[deserializer.type_map_offset:], entryTypeClass=entryTypeClass)
+    return '{} symbols\n'.format(deserializer.symbol_count) + pretty_trie + '\n' + pretty_map + '\n' + pretty_type_map, stats

@@ -26,7 +26,7 @@
 
 import os
 
-from _search import search_data_header_struct, searchdata_filename
+from _search import Serializer, searchdata_filename
 
 from . import IntegrationTestCase
 
@@ -53,5 +53,5 @@ class Undocumented(IntegrationTestCase):
         # TODO: reuse the search data deserialization API once done
         with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
             serialized = f.read()
-            magic, version, symbol_count, map_offset, type_map_offset = search_data_header_struct.unpack_from(serialized)
+            magic, version, type_data, symbol_count, map_offset, type_map_offset = Serializer.header_struct.unpack_from(serialized)
             self.assertEqual(symbol_count, 44)

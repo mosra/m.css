@@ -31,23 +31,37 @@ import pathlib
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__))))
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-from _search_test_metadata import EntryType, search_type_map
-from _search import Trie, ResultMap, ResultFlag, serialize_search_data, search_data_header_struct
+from _search_test_metadata import EntryType, search_type_map, type_sizes
+from _search import Trie, ResultMap, ResultFlag, serialize_search_data, Serializer
 
 basedir = pathlib.Path(os.path.dirname(os.path.realpath(__file__)))/'js-test-data'
 
+def type_size_suffix(*, name_size_bytes, result_id_bytes, file_offset_bytes):
+    return f'ns{name_size_bytes}-ri{result_id_bytes}-fo{file_offset_bytes}'
+
 # Basic error handling
 
-with open(basedir/'short.bin', 'wb') as f:
-    f.write(b'#'*(search_data_header_struct.size - 1))
-with open(basedir/'wrong-magic.bin', 'wb') as f:
-    f.write(b'MOS\1                      ')
-with open(basedir/'wrong-version.bin', 'wb') as f:
-    f.write(b'MCS\0                      ')
-with open(basedir/'empty.bin', 'wb') as f:
-    f.write(serialize_search_data(Trie(), ResultMap(), [], 0))
+min_size = len(serialize_search_data(Serializer(name_size_bytes=1, result_id_bytes=2, file_offset_bytes=3), Trie(), ResultMap(), [], 0))
 
-# General test
+with open(basedir/'short.bin', 'wb') as f:
+    f.write(b'#'*(min_size - 1))
+with open(basedir/'wrong-magic.bin', 'wb') as f:
+    f.write(b'MOS\2')
+    f.write(b'\0'*(min_size - 4))
+with open(basedir/'wrong-version.bin', 'wb') as f:
+    f.write(b'MCS\1')
+    f.write(b'\0'*(min_size - 4))
+with open(basedir/'wrong-result-id-bytes.bin', 'wb') as f:
+    f.write(Serializer.header_struct.pack(b'MCS', 2, 3 << 1, 0, 0, 0))
+    f.write(b'\0'*(min_size - Serializer.header_struct.size))
+
+# Empty file, in all possible type size combinations
+
+for i in type_sizes:
+    with open(basedir/'empty-{}.bin'.format(type_size_suffix(**i)), 'wb') as f:
+        f.write(serialize_search_data(Serializer(**i), Trie(), ResultMap(), [], 0))
+
+# General test, in all possible type size combinations
 
 trie = Trie()
 map = ResultMap()
@@ -78,12 +92,16 @@ trie.insert("subpage", index)
 trie.insert("rectangle", map.add("Rectangle", "", alias=range_index))
 trie.insert("rect", map.add("Rectangle::Rect()", "", suffix_length=2, alias=range_index))
 
-with open(basedir/'searchdata.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, search_type_map, 7))
-with open(basedir/'searchdata.b85', 'wb') as f:
-    f.write(base64.b85encode(serialize_search_data(trie, map, search_type_map, 7), True))
+for i in type_sizes:
+    with open(basedir/'searchdata-{}.bin'.format(type_size_suffix(**i)), 'wb') as f:
+        f.write(serialize_search_data(Serializer(**i), trie, map, search_type_map, 7))
 
-# UTF-8 names
+# The Base-85 file however doesn't need to have all type size variants as it's
+# just used to verify it decodes to the right binary variant
+with open(basedir/'searchdata-{}.b85'.format(type_size_suffix(**type_sizes[0])), 'wb') as f:
+    f.write(base64.b85encode(serialize_search_data(Serializer(**type_sizes[0]), trie, map, search_type_map, 7), True))
+
+# UTF-8 names, nothing size-dependent here so just one variant
 
 trie = Trie()
 map = ResultMap()
@@ -92,9 +110,9 @@ trie.insert("hýždě", map.add("Hýždě", "#a", flags=ResultFlag.from_type(Res
 trie.insert("hárá", map.add("Hárá", "#b", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.PAGE)))
 
 with open(basedir/'unicode.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, search_type_map, 2))
+    f.write(serialize_search_data(Serializer(**type_sizes[0]), trie, map, search_type_map, 2))
 
-# Heavy prefix nesting
+# Heavy prefix nesting, nothing size-dependent here so just one variant
 
 trie = Trie()
 map = ResultMap()
@@ -105,9 +123,10 @@ trie.insert("geometry", map.add("Magnum::Math::Geometry", "namespaceMagnum_1_1Ma
 trie.insert("range", map.add("Magnum::Math::Range", "classMagnum_1_1Math_1_1Range.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)))
 
 with open(basedir/'nested.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, search_type_map, 4))
+    f.write(serialize_search_data(Serializer(**type_sizes[0]), trie, map, search_type_map, 4))
 
-# Extreme amount of search results (Python's __init__, usually)
+# Extreme amount of search results (Python's __init__, usually), in all
+# possible type size combinations
 
 trie = Trie()
 map = ResultMap()
@@ -120,5 +139,6 @@ for i in range(128):
 for i in [3, 15, 67]:
     trie.insert("__init__subclass__", map.add(f"Foo{i}.__init__subclass__(self)", f"Foo{i}.html#__init__subclass__", suffix_length=6, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC)))
 
-with open(basedir/'manyresults.bin', 'wb') as f:
-    f.write(serialize_search_data(trie, map, search_type_map, 128 + 3))
+for i in type_sizes:
+    with open(basedir/'manyresults-{}.bin'.format(type_size_suffix(**i)), 'wb') as f:
+        f.write(serialize_search_data(Serializer(**i), trie, map, search_type_map, 128 + 3))

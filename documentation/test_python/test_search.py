@@ -44,7 +44,7 @@ class Search(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 2269)
+        self.assertEqual(len(serialized), 2274)
         self.assertEqual(search_data_pretty, """
 21 symbols
 search [14]
@@ -197,7 +197,7 @@ class LongSuffixLength(BaseInspectTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 633)
+        self.assertEqual(len(serialized), 638)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 3 symbols
