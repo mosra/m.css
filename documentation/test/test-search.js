@@ -96,7 +96,7 @@ const { StringDecoder } = require('string_decoder');
     assert.ok(!Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
 }
 
-/* Opening file with  */
+/* Opening file with wrong version */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/wrong-version.bin"));
     assert.ok(!Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));

@@ -74,7 +74,7 @@ var Search = {
             return false;
         }
 
-        /* Separate the data into the trie and the result map */
+        /* Separate the data into the trie and the result / type map */
         let mapOffset = view.getUint32(6, true);
         let typeMapOffset = view.getUint32(10, true);
         this.trie = new DataView(buffer, 14, mapOffset - 14);
