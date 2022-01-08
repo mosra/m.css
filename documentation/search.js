@@ -256,7 +256,6 @@ var Search = {
         for(; foundPrefix != searchString.length; ++foundPrefix) {
             /* Calculate offset and count of children */
             let offset = this.searchStack[this.searchStack.length - 1];
-            let relChildOffset = 2 + this.trie.getUint8(offset)*2;
 
             /* Calculate child count. If there's a lot of results, the count
                "leaks over" to the child count storage. */
@@ -268,7 +267,7 @@ var Search = {
             }
 
             /* Go through all children and find the next offset */
-            let childOffset = offset + relChildOffset;
+            let childOffset = offset + 2 + resultCount*2;
             let found = false;
             for(let j = 0; j != childCount; ++j) {
                 if(String.fromCharCode(this.trie.getUint8(childOffset + j*4 + 3)) != searchString[foundPrefix])
@@ -339,9 +338,7 @@ var Search = {
             }
 
             /* Dig deeper */
-            /* TODO: hmmm. this is helluvalot duplicated code. hmm. */
-            let relChildOffset = 2 + this.trie.getUint8(offset)*2;
-            let childOffset = offset + relChildOffset;
+            let childOffset = offset + 2 + resultCount*2;
             for(let j = 0; j != childCount; ++j) {
                 let offsetBarrier = this.trie.getUint32(childOffset + j*4, true);
 
