@@ -147,6 +147,24 @@ h0xc3
 """)
         self.assertEqual(len(serialized), 82)
 
+    def test_many_results(self):
+        trie = Trie()
+
+        for i in range(128):
+            trie.insert("__init__", i)
+        # It's __init_subclass__ (one underscore, not two), but here I want to
+        # trigger the case of both a high amount of results and some children
+        # as well.
+        for i in [203, 215, 267]:
+            trie.insert("__init__subclass__", i)
+
+        serialized = trie.serialize()
+        self.compare(serialized, """
+__init__ [{}]
+        subclass__ [203, 215, 267]
+""".format(', '.join([str(i) for i in range(128)])))
+        self.assertEqual(len(serialized), 376)
+
 class MapSerialization(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

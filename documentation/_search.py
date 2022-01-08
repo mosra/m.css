@@ -456,6 +456,11 @@ def _pretty_print_trie(serialized: bytearray, hashtable, stats, base_offset, ind
 
     out = ''
     result_count, child_count = Trie.header_struct.unpack_from(serialized, base_offset)
+    # If result count has the high bit set, it's stored in 11 bits and child
+    # count in 4 bits instead of 7 + 8
+    if result_count & 0x80:
+        result_count = (result_count & 0x7f) | ((child_count & 0xf0) << 3)
+        child_count = child_count & 0x0f
     stats.max_node_results = max(result_count, stats.max_node_results)
     stats.max_node_children = max(child_count, stats.max_node_children)
     offset = base_offset + Trie.header_struct.size

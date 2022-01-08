@@ -115,8 +115,8 @@ map = ResultMap()
 for i in range(128):
     trie.insert("__init__", map.add(f"Foo{i}.__init__(self)", f"Foo{i}.html#__init__", suffix_length=6, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC)))
 
-# It's __init_subclass__, but here I want to trigger the case of both a high
-# amount of results and some children as well.
+# It's __init_subclass__ (one underscore, not two), but here I want to trigger
+# the case of both a high amount of results and some children as well.
 for i in [3, 15, 67]:
     trie.insert("__init__subclass__", map.add(f"Foo{i}.__init__subclass__(self)", f"Foo{i}.html#__init__subclass__", suffix_length=6, flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC)))
 
