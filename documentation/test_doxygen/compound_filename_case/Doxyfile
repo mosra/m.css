@@ -5,7 +5,6 @@ GENERATE_HTML           = NO
 GENERATE_LATEX          = NO
 GENERATE_XML            = YES
 XML_PROGRAMLISTING      = NO
-CASE_SENSE_NAMES        = YES
 
 ##! M_PAGE_FINE_PRINT   =
 ##! M_THEME_COLOR       =
