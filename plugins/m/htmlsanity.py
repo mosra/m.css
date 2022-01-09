@@ -390,7 +390,9 @@ class SaneHtmlTranslator(HTMLTranslator):
         if 'contents' in node['classes']:
             node.html_tagname = 'nav'
             node['classes'].remove('contents')
-            node['ids'].remove('contents')
+            # If the TOC has a title, the ID will be different, and in that
+            # case we'll leave it there.
+            if 'contents' in node['ids']: node['ids'].remove('contents')
         else:
             node.html_tagname = 'aside'
 

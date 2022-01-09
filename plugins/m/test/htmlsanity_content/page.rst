@@ -6,6 +6,14 @@ A page
 .. contents::
     :class: m-block m-default
 
+.. contents:: TOC title, to catch wrong assumptions in ``topic`` processing
+    :class: m-block m-primary
+
+.. topic:: A topic that's not a TOC
+    :class: m-block m-dim
+
+    To catch even more wrong assumptions about ``topic`` nodes.
+
 A paragraph.
 
     A block quote.
