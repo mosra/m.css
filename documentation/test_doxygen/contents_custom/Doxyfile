@@ -10,6 +10,10 @@ CASE_SENSE_NAMES        = YES
 DOTFILE_DIRS            = .
 DOT_FONTNAME            = DejaVu Sans
 DOT_FONTSIZE            = 16
+# Needs to be set since 1.9.2, before that the dot output was included in the
+# XML unconditionally. Funny since passing the data to the XML doesn't actually
+# need Graphviz at all.
+HAVE_DOT                = YES
 
 ##! M_PAGE_FINE_PRINT   =
 ##! M_THEME_COLOR       =

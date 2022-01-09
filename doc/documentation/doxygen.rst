@@ -862,6 +862,9 @@ theme:
 
     DOT_FONTNAME = Source Sans Pro
     DOT_FONTSIZE = 16.0
+    # Required to be explicitly set since Doxygen 1.9.2, otherwise the graphs
+    # won't be included in the output
+    HAVE_DOT = YES
 
 See documentation of the `m.dot <{filename}/plugins/plots-and-graphs.rst#graphs>`_
 plugin for detailed information about behavior and supported features.
