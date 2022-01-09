@@ -227,14 +227,15 @@ namespace Warning {
 /**
 @brief Wrong
 @param wrong This parameter is not here
-@return Returns nothing.
-@return Returns nothing, but second time. This is ignored.
+@return Returns something.
+@return Returns something, but second time. This is ignored.
 
 Function details.
 
-@return Returns nothing, third time, in a different paragraph. Ignored as well.
+@return Returns something, third time, in a different paragraph. Ignored as
+    well.
 */
-void bar();
+int bar();
 
 }
 
