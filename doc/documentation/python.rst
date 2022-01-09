@@ -244,6 +244,18 @@ Variable                            Description
                                     Python documentation shares the same
                                     directory. If not set, ``searchdata`` is
                                     used.
+:py:`SEARCH_RESULT_ID_BYTES: int`   Search data packing option. A value of
+                                    :py:`2`, :py:`3` or :py:`4` is allowed. If
+                                    not set, :py:`2` is used. See
+                                    `Search options`_ for more information.
+:py:`SEARCH_FILE_OFFSET_BYTES: int` Search data packing option. A value of
+                                    :py:`3` or :py:`4` is allowed. If not set,
+                                    :py:`3` is used. See `Search options`_ for
+                                    more information.
+:py:`SEARCH_NAME_SIZE_BYTES: int`   Search data packing option. A value of
+                                    :py:`1` or :py:`2` is allowed. If not set,
+                                    :py:`1` is used. See `Search options`_ for
+                                    more information.
 :py:`SEARCH_HELP: str`              :abbr:`reST <reStructuredText>` markup to
                                     display as help text on empty search popup.
                                     If not set, a default message is used. Has
@@ -396,6 +408,21 @@ search to a subdomain:
 .. code:: py
 
     SEARCH_EXTERNAL_URL = 'https://google.com/search?q=site:doc.magnum.graphics+{query}'
+
+The search binary is implicitly made with the tightest packing possible for
+smallest download sizes. On large projects with tens of thousands of symbols it
+may however happen that the data won't fit and doc generation fails with an
+exception such as the following, suggesting you to increase the packed type
+sizes:
+
+    OverflowError: Trie result ID too large to store in 16 bits, set
+    SEARCH_RESULT_ID_BYTES = 3 in your conf.py.
+
+The relevant `configuration`_ is :py:`SEARCH_RESULT_ID_BYTES`,
+:py:`SEARCH_FILE_OFFSET_BYTES` and :py:`SEARCH_NAME_SIZE_BYTES`. Simply update
+your ``conf.py`` with suggested values and restart the generator. Due to the
+way the search data get processed during serialization it's unfortunately not
+feasible to estimate the packing sizes beforehand.
 
 `Custom URL formatters`_
 ------------------------

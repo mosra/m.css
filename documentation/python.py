@@ -172,6 +172,9 @@ default_config = {
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
     'SEARCH_FILENAME_PREFIX': 'searchdata',
+    'SEARCH_RESULT_ID_BYTES': 2,
+    'SEARCH_FILE_OFFSET_BYTES': 3,
+    'SEARCH_NAME_SIZE_BYTES': 1,
     'SEARCH_HELP': """.. raw:: html
 
     <p class="m-noindent">Search for modules, classes, functions and other
@@ -2454,7 +2457,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
     # order by default
     trie.sort(map)
 
-    return serialize_search_data(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1), trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
+    return serialize_search_data(Serializer(file_offset_bytes=state.config['SEARCH_FILE_OFFSET_BYTES'], result_id_bytes=state.config['SEARCH_RESULT_ID_BYTES'], name_size_bytes=state.config['SEARCH_NAME_SIZE_BYTES']), trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
 def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
     # Populate the INPUT, if not specified, make it absolute

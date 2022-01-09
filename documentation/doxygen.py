@@ -126,6 +126,9 @@ default_config = {
     'SEARCH_DISABLED': False,
     'SEARCH_DOWNLOAD_BINARY': False,
     'SEARCH_FILENAME_PREFIX': 'searchdata',
+    'SEARCH_RESULT_ID_BYTES': 2,
+    'SEARCH_FILE_OFFSET_BYTES': 3,
+    'SEARCH_NAME_SIZE_BYTES': 1,
     'SEARCH_HELP':
 """<p class="m-noindent">Search for symbols, directories, files, pages or
 modules. You can omit any prefix from the symbol or file path; adding a
@@ -2440,7 +2443,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
     # order by default
     trie.sort(map)
 
-    return serialize_search_data(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1), trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
+    return serialize_search_data(Serializer(file_offset_bytes=state.config['SEARCH_FILE_OFFSET_BYTES'], result_id_bytes=state.config['SEARCH_RESULT_ID_BYTES'], name_size_bytes=state.config['SEARCH_NAME_SIZE_BYTES']), trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
 
 def parse_xml(state: State, xml: str):
     # Reset counter for unique math formulas
@@ -3510,6 +3513,9 @@ def parse_doxyfile(state: State, doxyfile, values = None):
         ('M_SEARCH_DISABLED', 'SEARCH_DISABLED', bool),
         ('M_SEARCH_DOWNLOAD_BINARY', 'SEARCH_DOWNLOAD_BINARY', bool),
         ('M_SEARCH_FILENAME_PREFIX', 'SEARCH_FILENAME_PREFIX', str),
+        ('M_SEARCH_RESULT_ID_BYTES', 'SEARCH_RESULT_ID_BYTES', int),
+        ('M_SEARCH_FILE_OFFSET_BYTES', 'SEARCH_FILE_OFFSET_BYTES', int),
+        ('M_SEARCH_NAME_SIZE_BYTES', 'SEARCH_NAME_SIZE_BYTES', int),
         ('M_SEARCH_HELP', 'SEARCH_HELP', str),
         ('M_SEARCH_BASE_URL', 'SEARCH_BASE_URL', str),
         ('M_SEARCH_EXTERNAL_URL', 'SEARCH_EXTERNAL_URL', str),

@@ -77,6 +77,9 @@ class Doxyfile(unittest.TestCase):
         'SEARCH_DISABLED': False,
         'SEARCH_DOWNLOAD_BINARY': False,
         'SEARCH_FILENAME_PREFIX': 'searchdata',
+        'SEARCH_RESULT_ID_BYTES': 2,
+        'SEARCH_FILE_OFFSET_BYTES': 3,
+        'SEARCH_NAME_SIZE_BYTES': 1,
         'SEARCH_BASE_URL': None,
         'SEARCH_EXTERNAL_URL': None,
         'SEARCH_HELP':

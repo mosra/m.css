@@ -185,6 +185,25 @@ overloaded_method [17, 19, 15]
 (EntryType.DATA, CssClass.DEFAULT, 'data')
 """.strip())
 
+    def test_byte_sizes(self):
+        for config, bytes, size in [
+            ('SEARCH_RESULT_ID_BYTES', 3, 2333),
+            ('SEARCH_RESULT_ID_BYTES', 4, 2392),
+            ('SEARCH_FILE_OFFSET_BYTES', 4, 2525),
+            ('SEARCH_NAME_SIZE_BYTES', 2, 2313)
+        ]:
+            with self.subTest(config=config, bytes=bytes, size=size):
+                self.run_python({
+                    'SEARCH_DISABLED': False,
+                    'SEARCH_DOWNLOAD_BINARY': True,
+                    config: bytes,
+                    'PYBIND11_COMPATIBILITY': True
+                })
+
+                with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
+                    serialized = f.read()
+                self.assertEqual(len(serialized), size)
+
 class LongSuffixLength(BaseInspectTestCase):
     def test(self):
         self.run_python({

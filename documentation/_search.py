@@ -177,13 +177,23 @@ class Serializer:
     def pack_result_map_flags(self, flags: int):
         return self.result_map_flags_struct.pack(flags)
     def pack_result_map_offset(self, offset: int):
+        if offset >= 256**self.file_offset_bytes:
+            raise OverflowError("Result map offset too large to store in {} bits, set SEARCH_FILE_OFFSET_BYTES = {} in your conf.py.".format(self.file_offset_bytes*8, self.file_offset_bytes + 1))
         return offset.to_bytes(self.file_offset_bytes, byteorder='little')
     def pack_result_map_prefix(self, id: int, length: int):
+        if id >= 256**self.result_id_bytes:
+            raise OverflowError("Result map prefix ID too large to store in {} bits, set SEARCH_RESULT_ID_BYTES = {} in your conf.py.".format(self.result_id_bytes*8, self.result_id_bytes + 1))
+        if length >= 256**self.name_size_bytes:
+            raise OverflowError("Result map prefix length too large to store in {} bits, set SEARCH_NAME_SIZE_BYTES = {} in your conf.py.".format(self.name_size_bytes*8, self.name_size_bytes + 1))
         return id.to_bytes(self.result_id_bytes, byteorder='little') + \
            length.to_bytes(self.name_size_bytes, byteorder='little')
     def pack_result_map_suffix_length(self, length: int):
+        if length >= 256**self.name_size_bytes:
+            raise OverflowError("Result map suffix length too large to store in {} bits, set SEARCH_NAME_SIZE_BYTES = {} in your conf.py.".format(self.name_size_bytes*8, self.name_size_bytes + 1))
         return length.to_bytes(self.name_size_bytes, byteorder='little')
     def pack_result_map_alias(self, id: int):
+        if id >= 256**self.result_id_bytes:
+            raise OverflowError("Result map alias ID too large to store in {} bits, set SEARCH_RESULT_ID_BYTES = {} in your conf.py.".format(self.result_id_bytes*8, self.result_id_bytes + 1))
         return id.to_bytes(self.result_id_bytes, byteorder='little')
 
     def pack_trie_root_offset(self, offset: int):
@@ -201,11 +211,14 @@ class Serializer:
             out += (len(result_ids) | 0x8000).to_bytes(2, byteorder='big')
         out += len(child_chars_offsets_barriers).to_bytes(1, byteorder='little')
         for id in result_ids:
+            if id >= 256**self.result_id_bytes:
+                raise OverflowError("Trie result ID too large to store in {} bits, set SEARCH_RESULT_ID_BYTES = {} in your conf.py.".format(self.result_id_bytes*8, self.result_id_bytes + 1))
             out += id.to_bytes(self.result_id_bytes, byteorder='little')
         out += bytes([char for char, offset, barrier in child_chars_offsets_barriers])
         child_barrier_mask = 1 << (self.file_offset_bytes*8 - 1)
         for char, offset, barrier in child_chars_offsets_barriers:
-            if offset >= child_barrier_mask: raise OverflowError
+            if offset >= child_barrier_mask:
+                raise OverflowError("Trie child offset too large to store in {} bits, set SEARCH_FILE_OFFSET_BYTES = {} in your conf.py.".format(self.file_offset_bytes*8 - 1, self.file_offset_bytes + 1))
             out += (offset | (barrier*child_barrier_mask)).to_bytes(self.file_offset_bytes, byteorder='little')
         return out
 

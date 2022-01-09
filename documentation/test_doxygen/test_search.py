@@ -225,6 +225,22 @@ union [59]
 (EntryType.VAR, CssClass.DEFAULT, 'var')
 """.strip())
 
+    def test_byte_sizes(self):
+        for config, bytes, size in [
+            ('SEARCH_RESULT_ID_BYTES', 3, 4959),
+            ('SEARCH_RESULT_ID_BYTES', 4, 5077),
+            ('SEARCH_FILE_OFFSET_BYTES', 4, 5302),
+            ('SEARCH_NAME_SIZE_BYTES', 2, 4893)
+        ]:
+            with self.subTest(config=config, bytes=bytes, size=size):
+                self.run_doxygen(index_pages=[], wildcard='*.xml', config={
+                    config: bytes
+                })
+
+                with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='secretblob')), 'rb') as f:
+                    serialized = f.read()
+                self.assertEqual(len(serialized), size)
+
 class LongSuffixLength(IntegrationTestCase):
     def test(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')

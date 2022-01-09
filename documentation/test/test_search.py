@@ -200,7 +200,7 @@ __init__ [{}]
     def test_16bit_result_id_too_small(self):
         trie = Trie()
         trie.insert("a", 65536)
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Trie result ID too large to store in 16 bits, set SEARCH_RESULT_ID_BYTES = 3 in your conf.py."):
             trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
 
         # This should work
@@ -209,7 +209,7 @@ __init__ [{}]
     def test_24bit_result_id_too_small(self):
         trie = Trie()
         trie.insert("a", 16*1024*1024)
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Trie result ID too large to store in 24 bits, set SEARCH_RESULT_ID_BYTES = 4 in your conf.py."):
             trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
 
         # This should work
@@ -227,7 +227,7 @@ __init__ [{}]
         for i in range(130):
             trie.insert('a'*i, results_32k)
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Trie child offset too large to store in 23 bits, set SEARCH_FILE_OFFSET_BYTES = 4 in your conf.py."):
             trie.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
 
         # This should work
@@ -313,7 +313,7 @@ class MapSerialization(unittest.TestCase):
         # flags, 1 byte for the null terminator, 6 bytes for the URL
         map.add('F'*(16*1024*1024 - 14), 'f.html', flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Result map offset too large to store in 24 bits, set SEARCH_FILE_OFFSET_BYTES = 4 in your conf.py."):
             # Disabling prefix merging otherwise memory usage goes to hell
             map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1), merge_prefixes=False)
 
@@ -325,7 +325,7 @@ class MapSerialization(unittest.TestCase):
         map = ResultMap()
         map.add("F()" + ';'*256, "f.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC), suffix_length=256)
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Result map suffix length too large to store in 8 bits, set SEARCH_NAME_SIZE_BYTES = 2 in your conf.py."):
             map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
 
         # This should work
@@ -336,7 +336,7 @@ class MapSerialization(unittest.TestCase):
         map.add("A", 'a'*251 + ".html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS))
         map.add("A::foo()", 'a'*251 + ".html#foo", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC))
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Result map prefix length too large to store in 8 bits, set SEARCH_NAME_SIZE_BYTES = 2 in your conf.py."):
             map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
 
         # This should work
@@ -356,7 +356,7 @@ class MapSerialization(unittest.TestCase):
         self.assertEqual(map.add("B", "b.html", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.CLASS)), 65536)
         map.add("B::foo()", "b.html#foo", flags=ResultFlag.from_type(ResultFlag.NONE, EntryType.FUNC))
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Result map prefix ID too large to store in 16 bits, set SEARCH_RESULT_ID_BYTES = 3 in your conf.py."):
             map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
 
         # This should work
@@ -371,7 +371,7 @@ class MapSerialization(unittest.TestCase):
         # The alias doesn't exist of course, hopefully that's fine in this case
         map.add("B", "", alias=65536)
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Result map alias ID too large to store in 16 bits, set SEARCH_RESULT_ID_BYTES = 3 in your conf.py."):
             map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=2, name_size_bytes=1))
 
         # This should work
@@ -383,7 +383,7 @@ class MapSerialization(unittest.TestCase):
         # The alias doesn't exist of course, hopefully that's fine in this case
         map.add("B", "", alias=16*1024*1024)
 
-        with self.assertRaises(OverflowError):
+        with self.assertRaisesRegex(OverflowError, "Result map alias ID too large to store in 24 bits, set SEARCH_RESULT_ID_BYTES = 4 in your conf.py."):
             map.serialize(Serializer(file_offset_bytes=3, result_id_bytes=3, name_size_bytes=1))
 
         # This should work
