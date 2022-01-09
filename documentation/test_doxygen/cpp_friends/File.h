@@ -26,16 +26,10 @@ class Class {
         friend struct FriendStruct;
         friend union FriendUnion;
 
-        /** @brief Ignored friend class with a warning because it has docs */
-        friend class FriendClassWarning;
-
         /** @brief A friend function */
         friend void friendFunction(int a, void* b);
 
         /** @{ @name Group with friend functions */
-
-        /** @brief Ignored friend class with a warning because it has docs */
-        friend class GroupedFriendClassWarning;
 
         /** @brief A friend grouped function */
         friend void friendGroupedFunction();
@@ -45,6 +39,23 @@ class Class {
         /**
          * @}
          */
+};
+
+/** @brief A class producing warnings */
+struct Warning {
+    /** @brief Ignored friend class with a warning because it has docs */
+    friend class FriendClassWarning;
+
+    /** @{ @name Group with friend functions */
+
+    /** @brief Ignored friend class with a warning because it has docs */
+    friend class GroupedFriendClassWarning;
+
+    /* Since 1.8.17, the original short-hand group closing doesn't work
+        anymore. FFS. */
+    /**
+     * @}
+     */
 };
 
 /** @brief Class with template parameters */

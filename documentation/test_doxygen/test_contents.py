@@ -89,8 +89,15 @@ class Code(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:warnings.xml: no filename attribute in <programlisting>, assuming C++",
+            "WARNING:root:warnings.xml: inline code has multiple lines, fallback to a code block",
+            "WARNING:root:warnings.xml: inline code has multiple lines, fallback to a code block"
+        ])
 
 class CodeLanguage(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
@@ -108,8 +115,15 @@ class CodeLanguage(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/621")
     def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:warnings.xml: no filename attribute in <programlisting>, assuming C++",
+            "WARNING:root:warnings.xml: unrecognized language of .whatthehell in <programlisting>, highlighting disabled",
+            "WARNING:root:warnings.xml: @include / @snippet / @skip[line] produced an empty code block, probably a wrong match expression?"
+        ])
 
 class Image(IntegrationTestCase):
     def test(self):
@@ -118,11 +132,16 @@ class Image(IntegrationTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'tiny.png')))
 
     def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:warnings.xml: image nonexistent.png was not found in XML_OUTPUT"
+        ])
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.15"),
-                         "fully fixed after 1:8.15")
+                         "fully fixed after 1.8.15")
     def test_imagelink(self):
         self.run_doxygen(wildcard='imagelink.xml')
         self.assertEqual(*self.actual_expected_contents('imagelink.html'))
@@ -283,19 +302,58 @@ class AutobriefCppComments(IntegrationTestCase):
 class AutobriefHr(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
                          "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
+    def test_1814(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceNamespace.xml')
+
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace_1814.html'))
+        # Twice because it's a namespace docs and once it's parsed in
+        # extract_metadata() and once in parse_xml()
+        self.assertEqual(cm.output, 2*[
+            "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of <hr/>"
+        ])
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
         self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
 class AutobriefMultiline(IntegrationTestCase):
     def test(self):
-        self.run_doxygen(wildcard='namespaceNamespace.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceNamespace.xml')
+
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+        # Twice because it's a namespace docs and once it's parsed in
+        # extract_metadata() and once in parse_xml(). Can't put it into a
+        # function doc because the @{ then wouldn't work there as it has no
+        # associated @name.
+        self.assertEqual(cm.output, 2*[
+            "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a multi-line brief description. That's not supported, using just the first paragraph of <p>First line of a brief output</p><p>Second line of a brief output gets ignored with a warning.</p>",
+        ])
 
 class AutobriefHeading(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
                          "1.8.15 doesn't put <heading> into <briefdescription> anymore")
+    def test_1814(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceNamespace.xml')
+
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace_1814.html'))
+        # Twice because it's a namespace docs and once it's parsed in
+        # extract_metadata() and once in parse_xml()
+        self.assertEqual(cm.output, 2*[
+            "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of <p>===============</p><h4>The Thing </h4>",
+        ])
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
         self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
@@ -309,13 +367,22 @@ class SectionsHeadings(IntegrationTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
-        self.assertEqual(*self.actual_expected_contents('warnings.html'))
-
     def test_functions(self):
         self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+    def test_warnings(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='*arnings*.xml')
+
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(*self.actual_expected_contents('Warnings_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
+            "WARNING:root:Warnings_8h.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
+            "WARNING:root:warnings.xml: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>",
+            "WARNING:root:warnings.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
+        ])
 
 class AnchorInBothGroupAndNamespace(IntegrationTestCase):
     def test(self):
@@ -330,8 +397,19 @@ class AnchorHtmlNoPrefixBug(IntegrationTestCase):
 
 class UnexpectedSections(IntegrationTestCase):
     def test(self):
-        self.run_doxygen(wildcard='File_8h.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='File_8h.xml')
+
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:File_8h.xml: unexpected @tparam / @param / @return / @retval / @exception found inside a @section, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @param / @return / @retval / @exception found in top-level description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @tparam / @retval / @exception found in macro description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @tparam / @param / @return / @retval / @exception found in enum description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @tparam / @param / @return / @retval / @exception found in enum value description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @param / @return / @retval / @exception found in typedef description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @param / @return / @retval / @exception found in variable description, ignoring",
+        ])
 
 class Dot(IntegrationTestCase):
     def test(self):

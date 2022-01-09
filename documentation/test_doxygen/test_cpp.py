@@ -65,6 +65,15 @@ class Friends(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('classTemplate.html'))
 
+    def test_warnings(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='structWarning.xml')
+        self.assertEqual(*self.actual_expected_contents('structWarning.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:structWarning.xml: doxygen is unable to cross-link friend class GroupedFriendClassWarning, ignoring, sorry",
+            "WARNING:root:structWarning.xml: doxygen is unable to cross-link friend class FriendClassWarning, ignoring, sorry"
+        ])
+
 class SignalsSlots(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='classClass.xml')

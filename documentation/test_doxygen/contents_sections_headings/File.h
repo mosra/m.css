@@ -27,14 +27,3 @@ Mooore.
 @return Does not return anything.
 */
 void foo(int bar);
-
-/**
-@brief This produces warnings
-
-#### Markdown heading 4 that's rendered the same as 3
-
-Markdown heading, underlined, is misparsed
-##########################################
-
-*/
-void bar(int foo);

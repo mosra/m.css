@@ -132,8 +132,12 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 
     def test_subdirs(self):
         state = State(copy.deepcopy(default_config))
-        with self.assertRaises(NotImplementedError):
-            parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
+        with self.assertLogs() as cm:
+            with self.assertRaises(NotImplementedError):
+                parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
+        self.assertEqual(cm.output, [
+            "CRITICAL:root:test_doxygen/doxyfile/Doxyfile-subdirs: CREATE_SUBDIRS is not supported, sorry. Disable it and try again."
+        ])
 
 class UpgradeCustomVariables(BaseTestCase):
     def test(self):
