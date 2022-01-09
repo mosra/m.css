@@ -28,13 +28,12 @@ text.</pre>
 
 @anchor an-anchor
 
-This is a `typewriter text`, *emphasis*, **bold** and ~~strikethrough~~ in
-<s>various</s> <del>ways</del>. <em>Emphasis with <tt>typewriter</tt> and
-<strong>bold</strong> nested.</em> http://google.com and
-[URL](http://google.com). <small>Small *text*.</small> En-dash -- and em-dash
----. Reference to a @ref section. Named reference with special characters in
-title: @ref section "&raquo; Warnings &laquo;". Reference with escaped
-characters in&nbsp;title: @ref an-anchor "<anchor>".
+This is a `typewriter text`, *emphasis*, **bold**. <em>Emphasis with
+<tt>typewriter</tt> and <strong>bold</strong> nested.</em> http://google.com
+and [URL](http://google.com). <small>Small *text*.</small> En-dash -- and
+em-dash ---. Reference to a @ref section. Named reference with special
+characters in title: @ref section "&raquo; Warnings &laquo;". Reference with
+escaped characters in&nbsp;title: @ref an-anchor "<anchor>".
 
 2<sup>nd</sup> is L<sub>&infin;</sub> &forall; &nabla; &pi; &real; &image;
 This costs no $, &euro;, &pound;, &yen; or &curren;.
@@ -45,4 +44,11 @@ Empty elements: <em></em> <tt></tt> <strong></strong> <pre></pre> <small></small
 
 Above is a horizontal line.
 
+*/
+
+/**
+@page doxygen1817 Features fully supported since 1.8.17
+
+~~Strikethrough~~ in <s>various</s> <del>ways</del>. 1.8.16 knows only del and
+tildes, 1.8.13 none of these.
 */

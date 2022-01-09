@@ -44,6 +44,11 @@ class Typography(IntegrationTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.17"), "new features in 1.8.17")
+    def test_1817(self):
+        self.run_doxygen(wildcard='doxygen1817.xml')
+        self.assertEqual(*self.actual_expected_contents('doxygen1817.html'))
+
 class Blocks(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
