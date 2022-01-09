@@ -1054,6 +1054,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 if 'name' in i.attrib:
                     with open(i.attrib['name'], 'r') as f:
                         source = f.read()
+                # Since 1.8.16 the whole <dotfile> tag is dropped if the file
+                # doesn't exist. Such a great solution that it's unfathomable.
+                # FFS.
                 else:
                     logging.warning("{}: file passed to @dotfile was not found, rendering an empty graph".format(state.current))
                     source = 'digraph "" {}'

@@ -423,9 +423,24 @@ class Dot(IntegrationTestCase):
 
         self.assertEqual(*self.actual_expected_contents('index.html', file))
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),
+        "1.8.16+ drops the whole <dotfile> tag if the file doesn't exist, which is incredibly dumb")
     def test_warnings(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
         self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.16"),
+        "1.8.16+ drops the whole <dotfile> tag if the file doesn't exist, which is incredibly dumb")
+    def test_warnings_1815(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
+        self.assertEqual(*self.actual_expected_contents('warnings.html', 'warnings_1815.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:warnings.xml: file passed to @dotfile was not found, rendering an empty graph"
+        ])
 
 class HtmlonlyHtmlinclude(IntegrationTestCase):
     def test_htmlinclude(self):
