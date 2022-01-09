@@ -61,19 +61,22 @@ class Blocks(IntegrationTestCase):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('doxygen1818.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
-                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
-    def test_xrefitem1814(self):
-        self.run_doxygen(wildcard='*.xml')
-        self.assertEqual(*self.actual_expected_contents('todo.html'))
-        self.assertEqual(*self.actual_expected_contents('old.html'))
-
-    @unittest.skipUnless(LooseVersion(doxygen_version()) <= LooseVersion("1.8.14"),
-                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
     def test_xrefitem(self):
         self.run_doxygen(wildcard='*.xml')
-        self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
-        self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
+
+        if LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
+            self.assertEqual(*self.actual_expected_contents('todo.html'))
+        # https://github.com/doxygen/doxygen/pull/6587 fucking broke this
+        else:
+            self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
+
+        # 1.8.18 has a different order, not sure why
+        if LooseVersion(doxygen_version()) >= LooseVersion("1.8.18"):
+            self.assertEqual(*self.actual_expected_contents('old.html'))
+        elif LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
+            self.assertEqual(*self.actual_expected_contents('old.html', 'old_1817.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
 class Internal(IntegrationTestCase):
     def test(self):
