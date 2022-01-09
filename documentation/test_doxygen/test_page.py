@@ -74,6 +74,8 @@ class EmptyTitle(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('untitled.html'))
 
 class SubpageOfIndex(IntegrationTestCase):
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.17"),
+        "1.8.16 and below doesn't mark the page as subpage of index")
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('page.html'))

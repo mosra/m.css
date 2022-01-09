@@ -207,7 +207,7 @@ class FilenameCase(IntegrationTestCase):
 
         # Verify that all filenames are "converted" to lowercase and the links
         # and page tree work properly as well
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('page.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
         self.assertEqual(*self.actual_expected_contents('_u_p_p_e_r_c_a_s_e.html'))
         self.assertEqual(*self.actual_expected_contents('class_u_p_p_e_r_c_l_a_s_s.html'))
