@@ -272,13 +272,6 @@ class Custom(IntegrationTestCase):
 
         self.assertEqual(*self.actual_expected_contents('dot.html', file))
 
-class ParseError(BaseTestCase):
-    def test(self):
-        self.run_doxygen(wildcard='broken.xml')
-
-        # The index file should be generated, no abort
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'index.html')))
-
 class AutobriefCppComments(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='File_8h.xml')

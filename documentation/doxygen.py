@@ -2176,18 +2176,26 @@ def is_a_stupid_empty_markdown_page(compounddef: ET.Element):
     return compounddef.find('compoundname').text.startswith('md_') and compounddef.find('compoundname').text.endswith(compounddef.find('title').text) and not compounddef.find('briefdescription') and not compounddef.find('detaileddescription')
 
 def extract_metadata(state: State, xml):
-    logging.debug("Extracting metadata from {}".format(os.path.basename(xml)))
+    basename = os.path.basename(xml)
+
+    # These early returns should be kept consistent with parse_xml()
+    if basename == 'Doxyfile.xml':
+        logging.debug("Ignoring {}".format(basename))
+        return
+
+    logging.debug("Extracting metadata from {}".format(basename))
 
     try:
         tree = ET.parse(xml)
     except ET.ParseError as e:
-        logging.error("{}: XML parse error, skipping: {}".format(os.path.basename(xml), e))
+        logging.error("{}: XML parse error, skipping whole file: {}".format(basename, e))
         return
 
     root = tree.getroot()
 
-    # We need just list of all example files in correct order, nothing else
-    if os.path.basename(xml) == 'index.xml':
+    # From index.xml we need just list of all example files in correct order,
+    # nothing else
+    if basename == 'index.xml':
         for i in root:
             if i.attrib['kind'] == 'example':
                 compound = Empty()
@@ -2197,10 +2205,18 @@ def extract_metadata(state: State, xml):
                 state.examples += [compound]
         return
 
-    compounddef: ET.Element = root.find('compounddef')
+    # From other files we expect <doxygen><compounddef>
+    if root.tag != 'doxygen':
+        logging.warning("{}: root element expected to be <doxygen> but is <{}>, skipping whole file".format(basename, root.tag))
+        return
+    compounddef: ET.Element = root[0]
+    if compounddef.tag != 'compounddef':
+        logging.warning("{}: first child element expected to be <compounddef> but is <{}>, skipping whole file".format(basename, compounddef.tag))
+        return
+    assert len([i for i in root]) == 1
 
     if compounddef.attrib['kind'] not in ['namespace', 'group', 'class', 'struct', 'union', 'dir', 'file', 'page']:
-        logging.debug("No useful info in {}, skipping".format(os.path.basename(xml)))
+        logging.debug("No useful info in {}, skipping".format(basename))
         return
 
     # In order to show also undocumented members, go through all empty
@@ -2452,19 +2468,24 @@ def parse_xml(state: State, xml: str):
 
     state.current = os.path.basename(xml)
 
+    # All these early returns were logged in extract_metadata() already, no
+    # need to print the same warnings/erorrs twice. Keep the two consistent.
+    if state.current == 'Doxyfile.html':
+        return
+
     logging.debug("Parsing {}".format(state.current))
 
     try:
         tree = ET.parse(xml)
     except ET.ParseError as e:
-        logging.error("{}: XML parse error, skipping: {}".format(state.current, e))
+        return
+    root = tree.getroot()
+    if root.tag != 'doxygen':
+        return
+    compounddef: ET.Element = root[0]
+    if compounddef.tag != 'compounddef':
         return
 
-    root = tree.getroot()
-    assert root.tag == 'doxygen'
-
-    compounddef: ET.Element = root[0]
-    assert compounddef.tag == 'compounddef'
     assert len([i for i in root]) == 1
 
     # Ignoring private structs/classes and unnamed namespaces
