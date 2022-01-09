@@ -106,6 +106,8 @@ commands:
         type: string
       python-version:
         type: string
+      doxygen-version:
+        type: string
     steps:
     - run:
         name: Install Doxygen
@@ -113,9 +115,9 @@ commands:
           mkdir -p $HOME/bin
           export PATH=$HOME/bin:$PATH
           echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
-          wget https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.linux.bin.tar.gz
-          tar -xzf doxygen-1.8.17.linux.bin.tar.gz
-          cp doxygen-1.8.17/bin/doxygen $HOME/bin
+          wget https://sourceforge.net/projects/doxygen/files/rel-<< parameters.doxygen-version >>/doxygen-<< parameters.doxygen-version >>.linux.bin.tar.gz
+          tar -xzf doxygen-<< parameters.doxygen-version >>.linux.bin.tar.gz
+          cp doxygen-<< parameters.doxygen-version >>/bin/doxygen $HOME/bin
           doxygen -v
     - run:
         name: Install pybind11
@@ -198,6 +200,10 @@ jobs:
         python-version: "3.6"
         # We don't support anything before 2.3.0 anymore.
         pybind-version: "2.3.0"
+        # Ubuntu 18.04 has doxygen 1.8.13, but it's too much of a nightmare to
+        # make the tests working again.
+        # TODO either drop support for everything below 1.8.16 or fix these
+        doxygen-version: "1.8.16"
     - coverage
 
   py307:
@@ -217,6 +223,9 @@ jobs:
     - test-documentation-themes:
         python-version: "3.7"
         pybind-version: "2.3.0"
+        # 1.8.14 and 1.8.15 binaries link against libclang.so.6 so they're
+        # useless
+        doxygen-version: "1.8.16"
     - coverage
 
   py308:
@@ -236,13 +245,15 @@ jobs:
         # 2.4.1 fixes a Py3.8-specific bug, so the 2.3 versions are probably
         # not wise to use here
         pybind-version: "2.4.3"
+        doxygen-version: "1.8.17"
     - coverage
 
   py309:
     executor: python-3_09
     steps:
     - install-base:
-        extra: graphviz cmake ninja-build wget
+        # libtinfo5 needed by doxygen 1.8.18, wtf
+        extra: graphviz cmake ninja-build wget libtinfo5
     - install-python-deps
     - checkout
     - test-theme
@@ -252,13 +263,15 @@ jobs:
         # 2.5.0 is the first that properly searches for Python 3.9 in CMake, so
         # anything before that probably won't work at all.
         pybind-version: "2.5.0"
+        doxygen-version: "1.8.18"
     - coverage
 
   py310:
     executor: python-3_10
     steps:
     - install-base:
-        extra: graphviz cmake ninja-build wget
+        # libtinfo5 needed by doxygen 1.8.18, wtf
+        extra: graphviz cmake ninja-build wget libtinfo5
     - install-python-deps
     - checkout
     - test-theme
@@ -268,6 +281,7 @@ jobs:
         # Python 3.10 and Pybind 2.8 were both released on 2021-10-04, so
         # assume anything older won't really work there.
         pybind-version: "2.8.0"
+        doxygen-version: "1.8.18"
     - coverage
 
   js:
