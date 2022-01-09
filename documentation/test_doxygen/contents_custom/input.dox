@@ -71,7 +71,7 @@ above note. WHAT THE HELL!!!
 @m_class{m-code-figure}
 
 @parblock
-@code
+@code{.cpp}
 // this is the code
 printf("The answer to the universe and everything is %d.", 5*9)
 @endcode
