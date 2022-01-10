@@ -70,11 +70,11 @@ class Blocks(IntegrationTestCase):
         else:
             self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
 
-        # 1.8.18 has a different order, not sure why
-        if LooseVersion(doxygen_version()) >= LooseVersion("1.8.18"):
-            self.assertEqual(*self.actual_expected_contents('old.html'))
+        # 1.8.18 to 1.8.20 has a different order, not sure why
+        if LooseVersion(doxygen_version()) >= LooseVersion("1.8.18") and LooseVersion(doxygen_version()) < LooseVersion("1.9.0"):
+            self.assertEqual(*self.actual_expected_contents('old.html', 'old_1818.html'))
         elif LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
-            self.assertEqual(*self.actual_expected_contents('old.html', 'old_1817.html'))
+            self.assertEqual(*self.actual_expected_contents('old.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
