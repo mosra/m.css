@@ -1052,7 +1052,12 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             caption = None
             if i.tag == 'dotfile':
                 if 'name' in i.attrib:
-                    with open(i.attrib['name'], 'r') as f:
+                    # Since 1.9.3, the file is copied to the XML output
+                    # directory and name contains its relative path. Before
+                    # that, the name was absolute, os.path.join() should do the
+                    # right thing in both cases.
+                    path = os.path.join(state.basedir, state.doxyfile['OUTPUT_DIRECTORY'], state.doxyfile['XML_OUTPUT'], i.attrib['name'])
+                    with open(path, 'r') as f:
                         source = f.read()
                 # Since 1.8.16 the whole <dotfile> tag is dropped if the file
                 # doesn't exist. Such a great solution that it's unfathomable.
