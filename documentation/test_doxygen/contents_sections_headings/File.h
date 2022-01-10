@@ -24,6 +24,6 @@ A subsection.
 Mooore.
 
 @param bar A param.
-@return Does not return anything.
+@return Does return something, yes.
 */
-void foo(int bar);
+int foo(int bar);
