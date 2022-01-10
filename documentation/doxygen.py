@@ -395,6 +395,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
     # kind), set only if there is no i.tail, reset in the next iteration.
     previous_section = None
 
+    # So we can peek what the previous element was. Needed by Doxygen 1.9
+    # code-after-blockquote discovery.
+    previous_element = None
+
     # A CSS class to be added inline (not propagated outside of the paragraph)
     add_inline_css_class = None
 
@@ -461,13 +465,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # so for @include and related, though.)
                 ('filename' in i.attrib and not i.attrib['filename'].startswith('.')) or
 
-                # or is code right after a note/attention/... section,
+                # or is
+                #   - code right after a note/attention/... section
+                #   - or in Doxygen 1.9 code right after a blockquote, which is
+                #     no longer wrapped into its own <para>,
                 # there's no text after and it's the last thing in the
                 # paragraph (Doxygen ALSO doesn't separate end of a section
                 # and begin of a code block by a paragraph even if there is
                 # a blank line. But it does so for xrefitems such as @todo.
                 # I don't even.)
-                (previous_section and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
+                ((previous_section or (previous_element and previous_element.tag == 'blockquote')) and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
             ):
                 code_block = True
 
@@ -1663,6 +1670,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             elif out.parsed.endswith('<br />'):
                 tail = tail.lstrip()
             out.parsed += tail
+
+        # Remember the previous element. Needed by Doxygen 1.9
+        # code-after-blockquote discovery.
+        previous_element = i
 
     # A section was left open in the last iteration, close it. Expect that
     # there was nothing after that would mess with us.
