@@ -427,7 +427,24 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             out.deprecated = parsed.deprecated
 
     i: ET.Element
+    # The index gets only used in <programlisting> code vs inline detection, to
+    # check if there are any elements in the block element after it. All uses
+    # of it need to take into account the <zwj/> skipping in Doxygen 1.9
+    # blockquotes below.
     for index, i in enumerate(element):
+        # As of 1.9.3 and https://github.com/doxygen/doxygen/pull/7422, a
+        # stupid &zwj; is added at the front of every Markdown blockquote for
+        # some silly reason, and then the Markdown is processed as a HTML,
+        # resulting in <blockquote><para><zwj/>. Drop the <zwj/> from there, as
+        # it's useless and messes up with our <para> patching logic.
+        if index == 0 and i.tag == 'zwj' and element.tag == 'para' and immediate_parent and immediate_parent.tag == 'blockquote':
+            if i.tail:
+                tail: str = html.escape(i.tail)
+                if trim:
+                    tail = tail.strip()
+                out.parsed += tail
+            continue
+
         # State used later
         code_block = None
         formula_block = None
@@ -450,7 +467,16 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
         # <programlisting> is autodetected to be either block or inline
         elif i.tag == 'programlisting':
-            element_children_count = len([listing for listing in element])
+            # In a blockquote we need to not count the initial <zwj/> added by
+            # Doxygen 1.9. Otherwise all code blocks alone in a blockquote
+            # would be treated as inline.
+            if element.tag == 'para' and immediate_parent and immediate_parent.tag == 'blockquote':
+                element_children_count = 0
+                for listing_index, listing in enumerate(element):
+                    if listing_index == 0 and listing.tag == 'zwj': continue
+                    element_children_count += 1
+            else:
+                element_children_count = len([listing for listing in element])
 
             # If it seems to be a standalone code paragraph, don't wrap it
             # in <p> and use <pre>:
