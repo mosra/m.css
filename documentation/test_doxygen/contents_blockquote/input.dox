@@ -5,6 +5,8 @@ Mainly containing tests for Doxygen 1.9 parsing regressions and weirdness.
 > A blockquote. In 1.9 it has a ZWJ added in the XML, which should get stripped
 > away again.
 
+.
+
     Preformatted text after a blockquote. In 1.9 it will get parsed just as a
     regular paragraph unless there's a dot before.
 
