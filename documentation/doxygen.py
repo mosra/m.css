@@ -1159,9 +1159,14 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Doxygen doesn't add a space before <programlisting> if it's
             # inline, add it manually in case there should be a space before
-            # it. However, it does add a space after it always.
+            # it. However, it does add a space after it always so we don't need
+            # to.
+            #
+            # There doesn't need to be a space if it's a start of a tag, if
+            # there's already one, if there's an opening brace before or if
+            # <para> patching started a new paragraph right before.
             if not code_block:
-                if out.parsed and not out.parsed[-1].isspace() and not out.parsed[-1] in '([{':
+                if out.parsed and not out.parsed[-1].isspace() and not out.parsed[-1] in '([{' and not out.parsed.endswith('<p>'):
                     out.parsed += ' '
 
             # Hammer unhighlighted code out of the block
