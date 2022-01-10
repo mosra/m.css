@@ -357,6 +357,26 @@ class AutobriefHeading(IntegrationTestCase):
         self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
+class BriefMultilineIngroup(IntegrationTestCase):
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.16"),
+        "1.8.16 doesn't merge adjacent paragraphs into brief in presence of an @ingroup anymore")
+    def test_1815(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='group__thatgroup.xml')
+
+        self.assertEqual(*self.actual_expected_contents('group__thatgroup.html', 'group__thatgroup_1815.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:group__thatgroup.xml: brief description containing multiple paragraphs, possibly due to @ingroup following a @brief. That's not supported, ignoring the whole contents of <p>Function that's in a group</p><p>Lines of detailed description that get merged to the brief for no freaking reason.</p>"
+        ])
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),
+        "1.8.16 doesn't merge adjacent paragraphs into brief in presence of an @ingroup anymore")
+    def test(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
+        self.run_doxygen(wildcard='group__thatgroup.xml')
+        self.assertEqual(*self.actual_expected_contents('group__thatgroup.html'))
+
 class SectionUnderscoreOne(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')

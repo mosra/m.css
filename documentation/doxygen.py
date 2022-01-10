@@ -1688,13 +1688,20 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
                 out.parsed = out.parsed[3:-4]
 
-        # Sane behavior otherwise
+        # Sane behavior otherwise. Well, no. I give up.
         else:
-            assert not has_block_elements and paragraph_count <= 1, \
-                "{}: brief description containing multiple paragraphs, possibly due to @ingroup following a @brief in {}. This was a bug in Doxygen 1.8.15/16 and fixed since, please upgrade.".format(state.current, out.parsed)
-            if paragraph_count == 1:
-                assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
-                out.parsed = out.parsed[3:-4]
+            # In 1.8.15 if @brief is followed by an @ingroup, then the
+            # immediately following paragraph gets merged with it for some
+            # freaking reason. See the contents_brief_multiline_ingroup test
+            # for details. Fixed since 1.8.16.
+            if paragraph_count > 1:
+                logging.warning("{}: brief description containing multiple paragraphs, possibly due to @ingroup following a @brief. That's not supported, ignoring the whole contents of {}".format(state.current, out.parsed))
+                out.parsed = ''
+            else:
+                assert not has_block_elements and paragraph_count <= 1
+                if paragraph_count == 1:
+                    assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
+                    out.parsed = out.parsed[3:-4]
 
     # Strip superfluous <p> for simple elments (list items, parameter and
     # return value description, table cells), but only if there is just a
