@@ -296,6 +296,16 @@ class AutobriefCppComments(IntegrationTestCase):
         self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
+class AutobriefBlockquote(IntegrationTestCase):
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='File_8h.xml')
+
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:File_8h.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <blockquote><p>An enum on the right</p></blockquote>"
+        ])
+
 # JAVADOC_AUTOBRIEF should be nuked from orbit. Or implemented from scratch,
 # properly.
 
@@ -366,7 +376,7 @@ class BriefMultilineIngroup(IntegrationTestCase):
 
         self.assertEqual(*self.actual_expected_contents('group__thatgroup.html', 'group__thatgroup_1815.html'))
         self.assertEqual(cm.output, [
-            "WARNING:root:group__thatgroup.xml: brief description containing multiple paragraphs, possibly due to @ingroup following a @brief. That's not supported, ignoring the whole contents of <p>Function that's in a group</p><p>Lines of detailed description that get merged to the brief for no freaking reason.</p>"
+            "WARNING:root:group__thatgroup.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <p>Function that's in a group</p><p>Lines of detailed description that get merged to the brief for no freaking reason.</p>"
         ])
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),

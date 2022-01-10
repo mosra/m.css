@@ -1694,14 +1694,17 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # immediately following paragraph gets merged with it for some
             # freaking reason. See the contents_brief_multiline_ingroup test
             # for details. Fixed since 1.8.16.
-            if paragraph_count > 1:
-                logging.warning("{}: brief description containing multiple paragraphs, possibly due to @ingroup following a @brief. That's not supported, ignoring the whole contents of {}".format(state.current, out.parsed))
+            #
+            # In 1.8.18+, if ///> is accidentally used to mark "a docblock for
+            # the following symbol", it leads to a <blockquote> contained in
+            # the brief. Not much to do except for ignoring the whole thing.
+            # See the contents_autobrief_blockquote test for details.
+            if has_block_elements or paragraph_count > 1:
+                logging.warning("{}: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: {}".format(state.current, out.parsed))
                 out.parsed = ''
-            else:
-                assert not has_block_elements and paragraph_count <= 1
-                if paragraph_count == 1:
-                    assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
-                    out.parsed = out.parsed[3:-4]
+            elif paragraph_count == 1:
+                assert out.parsed.startswith('<p>') and out.parsed.endswith('</p>')
+                out.parsed = out.parsed[3:-4]
 
     # Strip superfluous <p> for simple elments (list items, parameter and
     # return value description, table cells), but only if there is just a
