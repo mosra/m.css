@@ -504,3 +504,8 @@ class CodeFilters(IntegrationTestCase):
             }
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class Blockquote(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='indexpage.xml')
+        self.assertEqual(*self.actual_expected_contents('index.html'))
