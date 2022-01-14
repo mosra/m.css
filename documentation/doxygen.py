@@ -2087,7 +2087,11 @@ def parse_func(state: State, element: ET.Element):
         name = p.find('declname')
         param = Empty()
         param.name = name.text if name is not None else ''
-        param.type = parse_type(state, p.find('type'))
+        param_type = p.find('type')
+        if param_type is None:
+            logging.warning("{}: parameter {} of function {} has no type, ignoring the whole function as it's suspected to be a mishandled macro call".format(state.current, param.name, func.name))
+            return None
+        param.type = parse_type(state, param_type)
 
         # Recombine parameter name and array information back
         array = p.find('array')

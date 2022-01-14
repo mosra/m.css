@@ -97,3 +97,12 @@ class FunctionAttributesNospace(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='structFoo.xml')
         self.assertEqual(*self.actual_expected_contents('structFoo.html'))
+
+class MishandledMacroCall(IntegrationTestCase):
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:File_8h.xml: parameter $ of function DEFINE_FUNCTION has no type, ignoring the whole function as it's suspected to be a mishandled macro call"
+        ])
