@@ -219,7 +219,7 @@ __init__ [{}]
     def test_23bit_file_offset_too_small(self):
         trie = Trie()
 
-        # The hight bit of the child offset stores a lookahead barrier, so the
+        # The high bit of the child offset stores a lookahead barrier, so the
         # file has to be smaller than 8M, not 16. Python has a recursion limit
         # of 1000, so we can't really insert a 8M character long string.
         # Instead, insert one 130-character string where each char has 32k

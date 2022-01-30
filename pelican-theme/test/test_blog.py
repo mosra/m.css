@@ -173,7 +173,7 @@ class Pagination(BlogTestCase):
         })
 
         # Test the category pages as well (same as author/tag). Couldn't test
-        # that in the above test case because of the overriden pagination
+        # that in the above test case because of the overridden pagination
         # patterns.
         self.assertEqual(*self.actual_expected_contents('category-misc.html'))
         self.assertEqual(*self.actual_expected_contents('category-misc2.html'))

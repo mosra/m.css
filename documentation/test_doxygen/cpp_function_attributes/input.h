@@ -86,7 +86,7 @@ class Base {
 /** @brief A derived class */
 class Derived: public Base {
     protected:
-        /** @brief Do a thing, overriden, now protected */
+        /** @brief Do a thing, overridden, now protected */
         void doThing() const noexcept(false) override;
 
     private:

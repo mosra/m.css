@@ -5,7 +5,7 @@
 /**
 @brief A friend class
 
-Not displayed among @ref Class friends becase Doxygen doesn't provide any
+Not displayed among @ref Class friends because Doxygen doesn't provide any
 useful info for it.
 */
 class FriendClassWarning {};
@@ -13,7 +13,7 @@ class FriendClassWarning {};
 /**
 @brief A friend class
 
-Not displayed among @ref Class friends becase Doxygen doesn't provide any
+Not displayed among @ref Class friends because Doxygen doesn't provide any
 useful info for it.
 */
 class GroupedFriendClassWarning {};
