@@ -40,7 +40,7 @@ _camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
 # filesystem location. For a `test_inspect.NameMapping` class, it will look
 # for the `inspect_name_mapping` directory. If the class name is equivalent to
 # the filename (e.g. `test_page.Page`), then it will be looking for just `page`
-# instead of `page_page`. If needed, the directory name can be overriden by
+# instead of `page_page`. If needed, the directory name can be overridden by
 # passing it via dir to __init__().
 class BaseTestCase(unittest.TestCase):
     def __init__(self, *args, dir=None, **kwargs):

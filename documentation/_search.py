@@ -38,7 +38,7 @@ search_filename = f'search-v{searchdata_format_version}.js'
 searchdata_filename = f'{{search_filename_prefix}}-v{searchdata_format_version}.bin'
 searchdata_filename_b85 = f'{{search_filename_prefix}}-v{searchdata_format_version}.js'
 
-# In order to be both space-efficient and flexible enough to accomodate for
+# In order to be both space-efficient and flexible enough to accommodate for
 # larger projects, the bit counts for particular data types can vary in each
 # file. There's the following categories:
 #

@@ -121,7 +121,7 @@ swatch after --- and for inline as well: :css:`p{ color:#ff3366; }`
     :language: css
     :filters: lowercase replace_colors
 
-Applied explicity and then by default --- and for inline as well:
+Applied explicitly and then by default --- and for inline as well:
 :css-filtered:`P{ COLOR:#C0FFEE; }`
 
 .. code:: css

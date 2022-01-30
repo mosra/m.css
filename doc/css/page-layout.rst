@@ -420,7 +420,7 @@ the fold", *not* the cover image.
         </div>
       </div>
       <div class="m-container">
-        <!-- content "below the fold" folows -->
+        <!-- content "below the fold" follows -->
       </div>
     </article></main>
 
