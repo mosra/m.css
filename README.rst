@@ -72,7 +72,6 @@ Feel free to visit the project website or contact the author at:
 -   Gitter --- https://gitter.im/mosra/m.css
 -   Twitter --- https://twitter.com/czmosra
 -   E-mail --- mosra@centrum.cz
--   Jabber --- mosra@jabbim.cz
 
 CREDITS
 =======
