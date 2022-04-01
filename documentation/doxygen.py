@@ -2536,7 +2536,7 @@ def parse_xml(state: State, xml: str):
 
     # All these early returns were logged in extract_metadata() already, no
     # need to print the same warnings/errors twice. Keep the two consistent.
-    if state.current == 'Doxyfile.html':
+    if state.current == 'Doxyfile.xml':
         return
 
     logging.debug("Parsing {}".format(state.current))
