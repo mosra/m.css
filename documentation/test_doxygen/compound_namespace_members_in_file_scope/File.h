@@ -12,6 +12,13 @@ Detailed function docs.
 */
 void foo();
 
+/**
+@overload
+
+Function overload with no brief.
+*/
+void foo(float);
+
 /** @brief Function with just a brief */
 void fooBrief();
 
@@ -65,6 +72,13 @@ namespace UndocumentedNamespace {
 Detailed function docs.
 */
 void foo();
+
+/**
+@overload
+
+Function overload with no brief.
+*/
+void foo(float);
 
 /** @brief Function with just a brief */
 void fooBrief();

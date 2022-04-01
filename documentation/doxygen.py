@@ -2121,11 +2121,31 @@ def parse_func(state: State, element: ET.Element):
     # Some param description got unused
     if params: logging.warning("{}: function parameter description doesn't match parameter names: {}".format(state.current, repr(params)))
 
-    if func.base_url == state.current_compound_url and (func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions):
-        func.has_details = True # has_details might already be True from above
-    if func.brief or func.has_details:
-        # Avoid duplicates in search
-        if func.base_url == state.current_compound_url and not state.config['SEARCH_DISABLED']:
+    # If there's a detailed description or template, param, return value or
+    # exception details, the function can have a detailed block
+    #
+    # This also means has_details is always False for functions in
+    # namespaces referenced from header file docs.
+    can_have_details = func.description or func.has_template_details or func.has_param_details or func.return_value or func.return_values or func.exceptions
+
+    # If we're in the compound where the function originates (so in the
+    # namespace where the function is and not in a header file docs which
+    # reference functions from that namespace)
+    if func.base_url == state.current_compound_url:
+        # This means has_details is always False for namespace functions
+        # referenced from header file docs -- if it wouldn't be, the same docs
+        # would be shown both in the namespace and in file docs, which is a
+        # useless duplication.
+        #
+        # The has_details might also already be True from above when we need to
+        # show a different include than the global compound include.
+        if can_have_details:
+            func.has_details = True
+
+        # Then, if the function has some actual documentation, add it to the
+        # search. Again, the compound URL check means the search entry is not
+        # duplicated for functions referenced from file docs.
+        if (func.brief or func.has_details) and not state.config['SEARCH_DISABLED']:
             result = Empty()
             result.flags = ResultFlag.from_type((ResultFlag.DEPRECATED if func.deprecated else ResultFlag(0))|(ResultFlag.DELETED if func.is_deleted else ResultFlag(0)), EntryType.FUNC)
             result.url = func.base_url + '#' + func.id
@@ -2135,8 +2155,11 @@ def parse_func(state: State, element: ET.Element):
             result.params = [param.type for param in func.params]
             result.suffix = func.suffix
             state.search += [result]
-        return func
-    return None
+
+    # Return the function only if it has some documentation. Testing just for
+    # func.has_details would errorneously omit functions that have e.g. just
+    # /** @overload */ from file docs.
+    return func if func.brief or can_have_details else None
 
 def parse_var(state: State, element: ET.Element):
     assert element.tag == 'memberdef' and element.attrib['kind'] == 'variable'
