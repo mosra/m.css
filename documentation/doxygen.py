@@ -2157,7 +2157,7 @@ def parse_func(state: State, element: ET.Element):
             state.search += [result]
 
     # Return the function only if it has some documentation. Testing just for
-    # func.has_details would errorneously omit functions that have e.g. just
+    # func.has_details would erroneously omit functions that have e.g. just
     # /** @overload */ from file docs.
     return func if func.brief or can_have_details else None
 
