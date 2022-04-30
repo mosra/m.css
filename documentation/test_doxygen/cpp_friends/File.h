@@ -29,6 +29,12 @@ class Class {
         /** @brief A friend function */
         friend void friendFunction(int a, void* b);
 
+        /** @brief A 'hidden friend' operator */
+        friend bool operator==(const Class&, const Class&) noexcept;
+
+        /** @brief A constexpr 'hidden friend' operator */
+        friend constexpr bool operator!=(const Class&, const Class&) noexcept;
+
         /** @{ @name Group with friend functions */
 
         /** @brief A friend grouped function */

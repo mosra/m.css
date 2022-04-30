@@ -11,11 +11,25 @@ struct Foo {
     constexpr static int constexprStaticFunction();
 
     /**
+     * @brief Consteval before static
+     *
+     * Same as above, but for C++20's consteval.
+     */
+    consteval static int constevalStaticFunction();
+
+    /**
      * @brief Constexpr after static
      *
      * In this case, `static` is not in the return type. FFS.
      */
     static constexpr int staticConstexprFunction();
+
+    /**
+     * @brief Consteval after static
+     *
+     * Same as above, but for C++20's consteval.
+     */
+    static consteval int staticConstevalFunction();
 
     /**
      * @brief Combined default and noexcept
