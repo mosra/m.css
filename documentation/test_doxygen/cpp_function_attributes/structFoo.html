@@ -44,9 +44,17 @@
             </dt>
             <dd>Constexpr before static.</dd>
             <dt>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a37fb9b85cc5a56110f12460a822112a9" class="m-doc">constevalStaticFunction</a>(</span><span class="m-doc-wrap">) -&gt; int <span class="m-label m-flat m-primary">consteval</span></span>
+            </dt>
+            <dd>Consteval before static.</dd>
+            <dt>
               <span class="m-doc-wrap-bumper">static auto <a href="#a178c5f6f19fa2ffb1fc7a346e2e877d9" class="m-doc">staticConstexprFunction</a>(</span><span class="m-doc-wrap">) -&gt; int <span class="m-label m-flat m-primary">constexpr</span></span>
             </dt>
             <dd>Constexpr after static.</dd>
+            <dt>
+              <span class="m-doc-wrap-bumper">static auto <a href="#a26b977ac73c54993504324aae7a08e08" class="m-doc">staticConstevalFunction</a>(</span><span class="m-doc-wrap">) -&gt; int <span class="m-label m-flat m-primary">consteval</span></span>
+            </dt>
+            <dd>Consteval after static.</dd>
           </dl>
         </section>
         <section id="typeless-methods">
@@ -92,12 +100,26 @@
             <p>Constexpr before static.</p>
 <p>1.8.18 puts both <code>constexpr</code> and <code>static</code> into the return type so I have to remove them. WHY! HOW IS THAT USEFUL IN ANY WAY?!</p>
           </div></section>
+          <section class="m-doc-details" id="a37fb9b85cc5a56110f12460a822112a9"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">static int Foo::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a37fb9b85cc5a56110f12460a822112a9" class="m-doc-self">constevalStaticFunction</a>(</span><span class="m-doc-wrap">) <span class="m-label m-primary">consteval</span></span></span>
+            </h3>
+            <p>Consteval before static.</p>
+<p>Same as above, but for C++20&#x27;s consteval.</p>
+          </div></section>
           <section class="m-doc-details" id="a178c5f6f19fa2ffb1fc7a346e2e877d9"><div>
             <h3>
               <span class="m-doc-wrap-bumper">static int Foo::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a178c5f6f19fa2ffb1fc7a346e2e877d9" class="m-doc-self">staticConstexprFunction</a>(</span><span class="m-doc-wrap">) <span class="m-label m-primary">constexpr</span></span></span>
             </h3>
             <p>Constexpr after static.</p>
 <p>In this case, <code>static</code> is not in the return type. FFS.</p>
+          </div></section>
+          <section class="m-doc-details" id="a26b977ac73c54993504324aae7a08e08"><div>
+            <h3>
+              <span class="m-doc-wrap-bumper">static int Foo::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a26b977ac73c54993504324aae7a08e08" class="m-doc-self">staticConstevalFunction</a>(</span><span class="m-doc-wrap">) <span class="m-label m-primary">consteval</span></span></span>
+            </h3>
+            <p>Consteval after static.</p>
+<p>Same as above, but for C++20&#x27;s consteval.</p>
           </div></section>
           <section class="m-doc-details" id="ad5953d17211071264b501747c67e6fdc"><div>
             <h3>

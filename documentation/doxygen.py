@@ -1992,39 +1992,62 @@ def parse_func(state: State, element: ET.Element):
     func.brief = parse_desc(state, element.find('briefdescription'))
     func.description, templates, params, func.return_value, func.return_values, func.exceptions, search_keywords, func.deprecated, func.since = parse_func_desc(state, element)
 
-    # Friend functions have friend as type. That's just awful. COME ON.
-    if func.type.startswith('friend '):
-        func.type = func.type[7:]
-
     def is_identifier(a): return a == '_' or a.isalnum()
 
     # Extract function signature to prefix, suffix and various flags. Important
     # things affecting caller such as static or const (and rvalue overloads)
     # are put into signature prefix/suffix, other things to various is_*
     # properties.
-    if func.type == 'constexpr': # Constructors
-        func.type = ''
-        func.is_constexpr = True
-    elif func.type.startswith('constexpr'):
-        func.type = func.type[10:]
-        func.is_constexpr = True
-    # For some effing reason, when a constexpr function has decltype(auto)
-    # return type, Doxygen swaps the order of those two, causing the constexpr
-    # to be last. See the cpp_function_attributes test for a verification.
-    elif func.type.endswith('constexpr'):
-        func.type = func.type[:-10]
-        func.is_constexpr = True
-    else:
-        func.is_constexpr = False
-    # When 1.8.18 encounters `constexpr static`, it keeps the static there. For
-    # `static constexpr` it doesn't. In both cases the static="yes" is put
-    # there correctly. WHY DOXYGEN, WHY?!
-    if func.type.startswith('static'):
-        func.type = func.type[7:]
+    #
+    # First the prefix keywords - Doxygen has a habit of leaking attributes and
+    # other specifiers into the function's return type, and not necessarily
+    # in any consistent order (including swapping it with the actual type!)
+    #
+    # (Note that since 1.8.16 the keyword/type ordering has not been a problem,
+    # but this handling is left as a future-proofing mechanism.)
+    exposed_attribute_keywords = [
+        'constexpr',
+        'consteval',
+        'explicit',
+        'virtual'
+    ]
+    ignored_attribute_keywords = [
+        'static', # Included in func.prefix already
+        'friend',
+        'inline'
+    ]
+    for kw in exposed_attribute_keywords:
+        setattr(func, 'is_' + kw, False)
+    is_static = False
+    matched_bad_keyword = True
+    while matched_bad_keyword:
+        matched_bad_keyword = False
+        for kw in exposed_attribute_keywords + ignored_attribute_keywords:
+            if func.type == kw: # constructors
+                func.type = ''
+            elif func.type.startswith(kw + ' '):
+                func.type = func.type[len(kw):].strip()
+            elif func.type.endswith(' ' + kw):
+                func.type = func.type[:len(kw)].strip()
+            else:
+                continue
+            matched_bad_keyword = True
+            if kw in exposed_attribute_keywords:
+                setattr(func, 'is_' + kw, True)
+            elif kw == 'static':
+                is_static = True
+    # Merge any leaked attributes with their corresponding XML attributes to
+    # account for the situation where Doxygen has only half got it right
+    # (which, honestly, is most of the time)
+    func.is_explicit = func.is_explicit or element.attrib['explicit'] == 'yes'
+    func.is_virtual = func.is_virtual or element.attrib['virt'] != 'non-virtual'
+    is_static = is_static or element.attrib['static'] == 'yes'
+    if 'constexpr' in element.attrib:
+        func.is_constexpr = func.is_constexpr or element.attrib['constexpr'] == 'yes'
+    if 'consteval' in element.attrib:
+        func.is_consteval = func.is_consteval or element.attrib['consteval'] == 'yes'
     func.prefix = ''
-    func.is_explicit = element.attrib['explicit'] == 'yes'
-    func.is_virtual = element.attrib['virt'] != 'non-virtual'
-    if element.attrib['static'] == 'yes':
+    if is_static:
         func.prefix += 'static '
     # Extract additional C++11 stuff from the signature. Order matters, going
     # from the keywords that can be rightmost to the leftmost.

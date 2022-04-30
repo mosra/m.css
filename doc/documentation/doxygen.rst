@@ -2171,6 +2171,7 @@ Property                            Description
 :py:`func.is_conditional_noexcept`  If the function is conditionally
                                     :cpp:`noexcept`.
 :py:`func.is_constexpr`             If the function is :cpp:`constexpr`
+:py:`func.is_consteval`             If the function is :cpp:`consteval`
 :py:`func.is_defaulted`             If the function is :cpp:`default`\ ed
 :py:`func.is_deleted`               If the function is :cpp:`delete`\ d
 :py:`func.is_signal`                If the function is a Qt signal. Set only
