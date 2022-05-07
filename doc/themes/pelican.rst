@@ -136,7 +136,7 @@ example as a submodule:
 
 .. code:: sh
 
-    git submodule add git://github.com/mosra/m.css
+    git submodule add https://github.com/mosra/m.css
 
 The most minimal configuration to use the theme is the following. Basically you
 need to tell Pelican where the theme resides (it's in the ``pelican-theme/``
