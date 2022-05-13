@@ -2002,9 +2002,6 @@ def parse_func(state: State, element: ET.Element):
     # First the prefix keywords - Doxygen has a habit of leaking attributes and
     # other specifiers into the function's return type, and not necessarily
     # in any consistent order (including swapping it with the actual type!)
-    #
-    # (Note that since 1.8.16 the keyword/type ordering has not been a problem,
-    # but this handling is left as a future-proofing mechanism.)
     exposed_attribute_keywords = [
         'constexpr',
         'consteval',
@@ -2028,6 +2025,10 @@ def parse_func(state: State, element: ET.Element):
             elif func.type.startswith(kw + ' '):
                 func.type = func.type[len(kw):].strip()
             elif func.type.endswith(' ' + kw):
+                # Uncovered; since 1.8.16 the keyword/type ordering (with
+                # decltype(auto), see the cpp_function_attributes test for a
+                # repro case) has not been a problem, but this handling is left
+                # as a future-proofing mechanism.
                 func.type = func.type[:len(kw)].strip()
             else:
                 continue
@@ -2045,6 +2046,8 @@ def parse_func(state: State, element: ET.Element):
     if 'constexpr' in element.attrib:
         func.is_constexpr = func.is_constexpr or element.attrib['constexpr'] == 'yes'
     if 'consteval' in element.attrib:
+        # consteval XML attribute is since Doxygen 1.9, earlier versions keep
+        # the keyword in the signature
         func.is_consteval = func.is_consteval or element.attrib['consteval'] == 'yes'
     func.prefix = ''
     if is_static:
