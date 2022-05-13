@@ -49,5 +49,7 @@ Listing only people with code contributions, because otherwise there's too many
     search fixes
 -   `@shniubobo <https://github.com/shniubobo>`_ --- Fixes for Pelican 4.5
     compatibility
+-   Varun Gandhi (`@typesanitizer <https://github.com/typesanitizer>`_) ---
+    documentation updates
 -   Yuri Edward (`@Yuri6037 <https://github.com/Yuri6037>`_) --- improvements
     to the Doxygen theme
