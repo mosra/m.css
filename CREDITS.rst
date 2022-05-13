@@ -25,18 +25,21 @@ Listing only people with code contributions, because otherwise there's too many
 -   Dale Lukas Peterson (`@hazelnusse <https://github.com/hazelnusse>`_) ---
     documentation improvements
 -   `@DarkContact <https://github.com/DarkContact>`_ --- Windows-related fixes
--   Erik Smistad `@smistad <https://github.com/smistad>`_ --- search
+-   Erik Smistad (`@smistad <https://github.com/smistad>`_) --- search
     autocompletion fixes for mobile browsers
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
--   `Guillaume Jacquemin <https://github.com/williamjcm>`_ --- Pelican theme
-    fixes, semantic improvements to the ``m.htmlsanity`` plugin
+-   Guillaume Jacquemin (`@williamjcm <https://github.com/williamjcm>`_) ---
+    Pelican theme fixes, semantic improvements to the ``m.htmlsanity`` plugin
 -   `@joshyrobot <https://github.com/joshyrobot>`_ --- CSS validity fixes
--   `Lukas Pirl <https://github.com/lpirl>`_ --- Pelican theme improvements,
-    fixes for Pelican 4.5+ support
+-   Lukas Pirl (`@lpirl <https://github.com/lpirl>`_) --- Pelican theme
+    improvements, fixes for Pelican 4.5+ support
 -   `@luzpaz <https://github.com/luzpaz>`_ --- Typo fixes
--   `Marin <https://github.com/marinjurjevic>`_ --- Doxygen theme fixes
--   `Rémi Marche <https://github.com/Marr11317>`_ --- Doxygen theme
+-   Marin (`@marinjurjevic <https://github.com/marinjurjevic>`_) --- Doxygen
+    theme fixes
+-   Mark Gillard (`@marzer <https://github.com/marzer>`_) --- Doxygen theme
     improvements
+-   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
+    theme improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
 -   Ryohei Machida (`@machida-mn <https://github.com/machida-mn>`_) ---
