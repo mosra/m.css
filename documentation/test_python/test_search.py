@@ -3,7 +3,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -36,14 +37,15 @@ class Search(BaseInspectTestCase):
         self.run_python({
             'SEARCH_DISABLED': False,
             'SEARCH_DOWNLOAD_BINARY': True,
+            'SEARCH_FILENAME_PREFIX': 'secretblob',
             'PYBIND11_COMPATIBILITY': True
         })
 
-        with open(os.path.join(self.path, 'output', searchdata_filename), 'rb') as f:
+        with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='secretblob')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 2269)
+        self.assertEqual(len(serialized), 2274)
         self.assertEqual(search_data_pretty, """
 21 symbols
 search [14]
@@ -184,6 +186,25 @@ overloaded_method [17, 19, 15]
 (EntryType.DATA, CssClass.DEFAULT, 'data')
 """.strip())
 
+    def test_byte_sizes(self):
+        for config, bytes, size in [
+            ('SEARCH_RESULT_ID_BYTES', 3, 2333),
+            ('SEARCH_RESULT_ID_BYTES', 4, 2392),
+            ('SEARCH_FILE_OFFSET_BYTES', 4, 2525),
+            ('SEARCH_NAME_SIZE_BYTES', 2, 2313)
+        ]:
+            with self.subTest(config=config, bytes=bytes, size=size):
+                self.run_python({
+                    'SEARCH_DISABLED': False,
+                    'SEARCH_DOWNLOAD_BINARY': True,
+                    config: bytes,
+                    'PYBIND11_COMPATIBILITY': True
+                })
+
+                with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
+                    serialized = f.read()
+                self.assertEqual(len(serialized), size)
+
 class LongSuffixLength(BaseInspectTestCase):
     def test(self):
         self.run_python({
@@ -192,11 +213,11 @@ class LongSuffixLength(BaseInspectTestCase):
             'PYBIND11_COMPATIBILITY': True
         })
 
-        with open(os.path.join(self.path, 'output', searchdata_filename), 'rb') as f:
+        with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 633)
+        self.assertEqual(len(serialized), 638)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 3 symbols

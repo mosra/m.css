@@ -1,11 +1,11 @@
 /** @file
 @brief A file
 
-@return Files don't return anyhting.
+@return Files don't return anything.
 
 @section section A section
 
-@tparam huh Setions shouldn't have template params.
+@tparam huh Sections shouldn't have template params.
 */
 
 /**

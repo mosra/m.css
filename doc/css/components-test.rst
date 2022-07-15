@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -1011,8 +1012,12 @@ Figure, centered:
 
     <figure class="m-figure">
       <img src="{static}/static/ship-small.jpg" />
-      <figcaption>A Ship</figcaption>
-      <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
+      <figcaption>
+        A Ship
+        <div class="m-figure-description">
+          Photo © <a href="http://blog.mosra.cz/">The Author</a>
+        </div>
+      </figcaption>
     </figure>
 
 Figure, centered, image link, flat:
@@ -1021,8 +1026,12 @@ Figure, centered, image link, flat:
 
     <figure class="m-figure m-flat">
       <a href="http://blog.mosra.cz/"><img src="{static}/static/ship-small.jpg" /></a>
-      <figcaption>A Ship</figcaption>
-      <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
+      <figcaption>
+        A Ship
+        <div class="m-figure-description">
+          Photo © <a href="http://blog.mosra.cz/">The Author</a>
+        </div>
+      </figcaption>
     </figure>
 
 Figure, fullwidth, without description (yes, it should be pixelated):
@@ -1041,10 +1050,14 @@ unnecessary wrapping of the text:
 
     <figure class="m-figure m-fullwidth">
       <img src="{static}/static/ship-small.jpg" />
-      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
-      <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
-      On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
-      Rights Reserved.</span>
+      <figcaption>
+        A Somewhat Lengthy Caption For A Photo
+        <div class="m-figure-description">
+          The Photo Displayed Above Was Kindly Taken And Allowed To Be Used On
+          This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+          Rights Reserved.
+        </div>
+      </figcaption>
     </figure>
 
 Figure with a large image but not fullwidth, should look the same as above, no
@@ -1054,10 +1067,14 @@ leaking of the image outside of the page:
 
     <figure class="m-figure">
       <img src="{static}/static/ship.jpg" />
-      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
-      <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
-      On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
-      Rights Reserved.</span>
+      <figcaption>
+        A Somewhat Lengthy Caption For A Photo
+        <div class="m-figure-description">
+          The Photo Displayed Above Was Kindly Taken And Allowed To Be Used On
+          This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+          Rights Reserved.
+        </div>
+      </figcaption>
     </figure>
 
 Figure with a long caption and description, then just a caption (it should wrap
@@ -1067,10 +1084,14 @@ instead of extending the border and there should be proper padding on bottom):
 
     <figure class="m-figure">
       <img src="{static}/static/ship-small.jpg" />
-      <figcaption>A Somewhat Lengthy Caption For A Photo</figcaption>
-      <span>The Photo Displayed Above Was Kindly Taken And Allowed To Be Used
-      On This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
-      Rights Reserved.</span>
+      <figcaption>
+        A Somewhat Lengthy Caption For A Photo
+        <div class="m-figure-description">
+          The Photo Displayed Above Was Kindly Taken And Allowed To Be Used On
+          This Page By <a href="http://blog.mosra.cz/">The Author</a>. All
+          Rights Reserved.
+        </div>
+      </figcaption>
     </figure>
 
 .. raw:: html
@@ -1088,29 +1109,37 @@ Figures of varying colors:
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-default">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Default figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Default figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-primary">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Primary figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Primary figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-success">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Success figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Success figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-warning">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Warning figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Warning figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
     </div>
@@ -1118,22 +1147,28 @@ Figures of varying colors:
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-danger">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Danger figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Danger figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-info">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Info figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Info figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
       <div class="m-col-m-3 m-col-s-6">
         <figure class="m-figure m-dim">
           <img src="{static}/static/ship-small.jpg" />
-          <figcaption>Dim figure</figcaption>
-          <span>Text.</span>
+          <figcaption>
+            Dim figure
+            <div class="m-figure-description">Text.</div>
+          </figcaption>
         </figure>
       </div>
     </div>

@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -76,6 +77,10 @@ class Doxyfile(unittest.TestCase):
 
         'SEARCH_DISABLED': False,
         'SEARCH_DOWNLOAD_BINARY': False,
+        'SEARCH_FILENAME_PREFIX': 'searchdata',
+        'SEARCH_RESULT_ID_BYTES': 2,
+        'SEARCH_FILE_OFFSET_BYTES': 3,
+        'SEARCH_NAME_SIZE_BYTES': 1,
         'SEARCH_BASE_URL': None,
         'SEARCH_EXTERNAL_URL': None,
         'SEARCH_HELP':
@@ -127,8 +132,12 @@ copy a link to the result using <span class="m-label m-dim">⌘</span>
 
     def test_subdirs(self):
         state = State(copy.deepcopy(default_config))
-        with self.assertRaises(NotImplementedError):
-            parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
+        with self.assertLogs() as cm:
+            with self.assertRaises(NotImplementedError):
+                parse_doxyfile(state, 'test_doxygen/doxyfile/Doxyfile-subdirs')
+        self.assertEqual(cm.output, [
+            "CRITICAL:root:test_doxygen/doxyfile/Doxyfile-subdirs: CREATE_SUBDIRS is not supported, sorry. Disable it and try again."
+        ])
 
 class UpgradeCustomVariables(BaseTestCase):
     def test(self):

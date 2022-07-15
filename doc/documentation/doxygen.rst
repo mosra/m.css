@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -72,7 +73,7 @@ switch.
 
 .. note-info::
 
-    The script requires at least Doxygen 1.8.14, but preferrably version 1.8.15
+    The script requires at least Doxygen 1.8.14, but preferably version 1.8.15
     and newer. Some features depend on newer versions, in that case the
     documentation mentions which version contains the support.
 
@@ -84,7 +85,7 @@ into the ``documentation/`` directory:
 
 .. code:: sh
 
-    git clone git://github.com/mosra/m.css
+    git clone https://github.com/mosra/m.css
     cd m.css/documentation
 
 The script requires Python 3.6, depends on `Jinja2 <http://jinja.pocoo.org/>`_
@@ -204,7 +205,7 @@ In addition to features `shared by all doc generators <{filename}/documentation.
 
     This list presents my opinions. Not everybody likes my opinions.
 
-Features that I don't see a point in because they just artifically inflate the
+Features that I don't see a point in because they just artificially inflate the
 amount of generated content for no added value.
 
 -   Class hierarchy graphs are ignored (it only inflates the documentation with
@@ -385,6 +386,23 @@ Variable                            Description
                                     bandwidth and initial processing time. If
                                     not set, :py:`False` is used. See
                                     `Search options`_ for more information.
+:py:`SEARCH_FILENAME_PREFIX: str`   Search data filename prefix. Useful to
+                                    prevent file conflicts if both C++ and
+                                    Python documentation shares the same
+                                    directory. If not set, ``searchdata`` is
+                                    used.
+:py:`SEARCH_RESULT_ID_BYTES: int`   Search data packing option. A value of
+                                    :py:`2`, :py:`3` or :py:`4` is allowed. If
+                                    not set, :py:`2` is used. See
+                                    `Search options`_ for more information.
+:py:`SEARCH_FILE_OFFSET_BYTES: int` Search data packing option. A value of
+                                    :py:`3` or :py:`4` is allowed. If not set,
+                                    :py:`3` is used. See `Search options`_ for
+                                    more information.
+:py:`SEARCH_NAME_SIZE_BYTES: int`   Search data packing option. A value of
+                                    :py:`1` or :py:`2` is allowed. If not set,
+                                    :py:`1` is used. See `Search options`_ for
+                                    more information.
 :py:`SEARCH_HELP: str`              HTML code to display as help text on empty
                                     search popup. If not set, a default message
                                     is used. Has effect only if
@@ -473,6 +491,10 @@ these are not expected to be excessively large.
     :ini:`M_MATH_CACHE_FILE`            :py:`M_MATH_CACHE_FILE`
     :ini:`M_SEARCH_DISABLED`            :py:`SEARCH_DISABLED`
     :ini:`M_SEARCH_DOWNLOAD_BINARY`     :py:`SEARCH_DOWNLOAD_BINARY`
+    :ini:`M_SEARCH_FILENAME_PREFIX`     :py:`SEARCH_FILENAME_PREFIX`
+    :ini:`M_SEARCH_RESULT_ID_BYTES`     :py:`SEARCH_RESULT_ID_BYTES`
+    :ini:`M_SEARCH_FILE_OFFSET_BYTES`   :py:`SEARCH_FILE_OFFSET_BYTES`
+    :ini:`M_SEARCH_NAME_SIZE_BYTES`     :py:`SEARCH_NAME_SIZE_BYTES`
     :ini:`M_SEARCH_HELP`                :py:`SEARCH_HELP`
     :ini:`M_SEARCH_BASE_URL`            :py:`SEARCH_BASE_URL`
     :ini:`M_SEARCH_EXTERNAL_URL`        :py:`SEARCH_EXTERNAL_URL`
@@ -551,7 +573,7 @@ column, two items in the right columns, with no submenus:
         ("Pages", 'pages', []),
         ("Namespaces", 'namespaces', [])
     ]
-    'LINKS_NAVBAR2' = [
+    LINKS_NAVBAR2 = [
         ("Classes", 'annotated', []),
         ("Files", 'files', [])
     ]
@@ -578,7 +600,7 @@ If the title is :py:`None`, it's taken implicitly from the page it links to.
 Empty :py:`LINKS_NAVBAR2` will cause the navigation appear in a single column,
 setting both empty will cause the navbar links to not be rendered at all.
 
-A menu item is higlighted if a compound with the same ID is the current page
+A menu item is highlighted if a compound with the same ID is the current page
 (and similarly for the special ``pages``, ... IDs).
 
 Alternatively, a link can be a plain HTML instead of the first pair of tuple
@@ -705,6 +727,22 @@ search to a subdomain:
 
     SEARCH_EXTERNAL_URL = "https://google.com/search?q=site:doc.magnum.graphics+{query}"
 
+The search binary is implicitly made with the tightest packing possible for
+smallest download sizes. On large projects with tens of thousands of symbols it
+may however happen that the data won't fit and doc generation fails with an
+exception such as the following, suggesting you to increase the packed type
+sizes:
+
+    OverflowError: Trie result ID too large to store in 16 bits, set
+    SEARCH_RESULT_ID_BYTES = 3 in your conf.py.
+
+The relevant `configuration`_ is :py:`SEARCH_RESULT_ID_BYTES`,
+:py:`SEARCH_FILE_OFFSET_BYTES` and :py:`SEARCH_NAME_SIZE_BYTES`. Simply update
+your ``conf.py`` with suggested values (or the ``Doxyfile-mcss`` with this
+option prefixed with ``M_``) and restart the generator. Due to the way the
+search data get processed during serialization it's unfortunately not feasible
+to estimate the packing sizes beforehand.
+
 `Showing undocumented symbols and files`_
 -----------------------------------------
 
@@ -824,6 +862,9 @@ theme:
 
     DOT_FONTNAME = Source Sans Pro
     DOT_FONTSIZE = 16.0
+    # Required to be explicitly set since Doxygen 1.9.2, otherwise the graphs
+    # won't be included in the output
+    HAVE_DOT = YES
 
 See documentation of the `m.dot <{filename}/plugins/plots-and-graphs.rst#graphs>`_
 plugin for detailed information about behavior and supported features.
@@ -1228,7 +1269,7 @@ rendered HTML output:
 
 It's possible to combine ``@par`` with ``@parblock`` to create blocks, notes
 and other `m.css components <{filename}/css/components.rst>`_ with arbitrary
-contents. The ``@par`` command visuals can be fully overriden by putting ``@m_class`` in front, the ``@parblock`` after will ensure everything will
+contents. The ``@par`` command visuals can be fully overridden by putting ``@m_class`` in front, the ``@parblock`` after will ensure everything will
 belong inside. A bit recursive example:
 
 .. code-figure::
@@ -1333,7 +1374,7 @@ the page will be discoverable both using its primary title and using
 *TCB spline support*, in the second and third case the two overloads of the
 :cpp:`lerp()` function are discoverable also via :cpp:`mix()`, displaying
 either *GLSL mix()* or *GLSL mix(genType, genType, float)* in the search
-results. The last parameter is suffix length, needed to correctly higlight the
+results. The last parameter is suffix length, needed to correctly highlight the
 *mix* substring when there are additional characters at the end of the title.
 If not specified, it defaults to :cpp:`0`, meaning the search string is a
 suffix of the title.
@@ -1612,9 +1653,9 @@ Filename                Use
                         saved as ``*-example.html``
 ``file.html``           File documentation, read from ``*.xml`` and saved as
                         ``*.html``
-``namespace.html``      Namespace documentation, read fron ``namespace*.xml``
+``namespace.html``      Namespace documentation, read from ``namespace*.xml``
                         and saved as ``namespace*.html``
-``group.html``          Module documentation, read fron ``group_*.xml``
+``group.html``          Module documentation, read from ``group_*.xml``
                         and saved as ``group_*.html``
 ``page.html``           Page, read from ``*.xml``/``indexpage.xml`` and saved
                         as ``*.html``/``index.html``
@@ -2130,6 +2171,7 @@ Property                            Description
 :py:`func.is_conditional_noexcept`  If the function is conditionally
                                     :cpp:`noexcept`.
 :py:`func.is_constexpr`             If the function is :cpp:`constexpr`
+:py:`func.is_consteval`             If the function is :cpp:`consteval`
 :py:`func.is_defaulted`             If the function is :cpp:`default`\ ed
 :py:`func.is_deleted`               If the function is :cpp:`delete`\ d
 :py:`func.is_signal`                If the function is a Qt signal. Set only

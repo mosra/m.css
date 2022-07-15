@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -43,6 +44,11 @@ class Typography(IntegrationTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.17"), "new features in 1.8.17")
+    def test_1817(self):
+        self.run_doxygen(wildcard='doxygen1817.xml')
+        self.assertEqual(*self.actual_expected_contents('doxygen1817.html'))
+
 class Blocks(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
@@ -55,19 +61,22 @@ class Blocks(IntegrationTestCase):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('doxygen1818.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
-                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
-    def test_xrefitem1814(self):
-        self.run_doxygen(wildcard='*.xml')
-        self.assertEqual(*self.actual_expected_contents('todo.html'))
-        self.assertEqual(*self.actual_expected_contents('old.html'))
-
-    @unittest.skipUnless(LooseVersion(doxygen_version()) <= LooseVersion("1.8.14"),
-                         "https://github.com/doxygen/doxygen/pull/6587 fucking broke this")
     def test_xrefitem(self):
         self.run_doxygen(wildcard='*.xml')
-        self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
-        self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
+
+        if LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
+            self.assertEqual(*self.actual_expected_contents('todo.html'))
+        # https://github.com/doxygen/doxygen/pull/6587 fucking broke this
+        else:
+            self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
+
+        # 1.8.18 to 1.8.20 has a different order, not sure why
+        if LooseVersion(doxygen_version()) >= LooseVersion("1.8.18") and LooseVersion(doxygen_version()) < LooseVersion("1.9.0"):
+            self.assertEqual(*self.actual_expected_contents('old.html', 'old_1818.html'))
+        elif LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
+            self.assertEqual(*self.actual_expected_contents('old.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
 
 class Internal(IntegrationTestCase):
     def test(self):
@@ -80,8 +89,15 @@ class Code(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
     def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:warnings.xml: no filename attribute in <programlisting>, assuming C++",
+            "WARNING:root:warnings.xml: inline code has multiple lines, fallback to a code block",
+            "WARNING:root:warnings.xml: inline code has multiple lines, fallback to a code block"
+        ])
 
 class CodeLanguage(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
@@ -99,8 +115,15 @@ class CodeLanguage(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/621")
     def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:warnings.xml: no filename attribute in <programlisting>, assuming C++",
+            "WARNING:root:warnings.xml: unrecognized language of .whatthehell in <programlisting>, highlighting disabled",
+            "WARNING:root:warnings.xml: @include / @snippet / @skip[line] produced an empty code block, probably a wrong match expression?"
+        ])
 
 class Image(IntegrationTestCase):
     def test(self):
@@ -109,11 +132,16 @@ class Image(IntegrationTestCase):
         self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'tiny.png')))
 
     def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:warnings.xml: image nonexistent.png was not found in XML_OUTPUT"
+        ])
 
     @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.15"),
-                         "fully fixed after 1:8.15")
+                         "fully fixed after 1.8.15")
     def test_imagelink(self):
         self.run_doxygen(wildcard='imagelink.xml')
         self.assertEqual(*self.actual_expected_contents('imagelink.html'))
@@ -255,28 +283,28 @@ class Custom(IntegrationTestCase):
     def test_dot(self):
         self.run_doxygen(wildcard='dot.xml')
 
-        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'dot.html'
-        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
-            file = 'dot-240.html'
-        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
-            file = 'dot-238.html'
         else:
-            file = 'dot-236.html'
+            file = 'dot-240.html'
 
         self.assertEqual(*self.actual_expected_contents('dot.html', file))
-
-class ParseError(BaseTestCase):
-    def test(self):
-        self.run_doxygen(wildcard='broken.xml')
-
-        # The index file should be generated, no abort
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'html', 'index.html')))
 
 class AutobriefCppComments(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+class AutobriefBlockquote(IntegrationTestCase):
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='File_8h.xml')
+
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:File_8h.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <blockquote><p>An enum on the right</p></blockquote>"
+        ])
 
 # JAVADOC_AUTOBRIEF should be nuked from orbit. Or implemented from scratch,
 # properly.
@@ -284,21 +312,80 @@ class AutobriefCppComments(IntegrationTestCase):
 class AutobriefHr(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
                          "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
+    def test_1814(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceNamespace.xml')
+
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace_1814.html'))
+        # Twice because it's a namespace docs and once it's parsed in
+        # extract_metadata() and once in parse_xml()
+        self.assertEqual(cm.output, 2*[
+            "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of <hr/>"
+        ])
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
         self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
 class AutobriefMultiline(IntegrationTestCase):
     def test(self):
-        self.run_doxygen(wildcard='namespaceNamespace.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceNamespace.xml')
+
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+        # Twice because it's a namespace docs and once it's parsed in
+        # extract_metadata() and once in parse_xml(). Can't put it into a
+        # function doc because the @{ then wouldn't work there as it has no
+        # associated @name.
+        self.assertEqual(cm.output, 2*[
+            "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a multi-line brief description. That's not supported, using just the first paragraph of <p>First line of a brief output</p><p>Second line of a brief output gets ignored with a warning.</p>",
+        ])
 
 class AutobriefHeading(IntegrationTestCase):
     @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
                          "1.8.15 doesn't put <heading> into <briefdescription> anymore")
+    def test_1814(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceNamespace.xml')
+
+        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace_1814.html'))
+        # Twice because it's a namespace docs and once it's parsed in
+        # extract_metadata() and once in parse_xml()
+        self.assertEqual(cm.output, 2*[
+            "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of <p>===============</p><h4>The Thing </h4>",
+        ])
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.15"),
+                         "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
         self.run_doxygen(wildcard='namespaceNamespace.xml')
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+
+class BriefMultilineIngroup(IntegrationTestCase):
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.16"),
+        "1.8.16 doesn't merge adjacent paragraphs into brief in presence of an @ingroup anymore")
+    def test_1815(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='group__thatgroup.xml')
+
+        self.assertEqual(*self.actual_expected_contents('group__thatgroup.html', 'group__thatgroup_1815.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:group__thatgroup.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <p>Function that's in a group</p><p>Lines of detailed description that get merged to the brief for no freaking reason.</p>"
+        ])
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),
+        "1.8.16 doesn't merge adjacent paragraphs into brief in presence of an @ingroup anymore")
+    def test(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
+        self.run_doxygen(wildcard='group__thatgroup.xml')
+        self.assertEqual(*self.actual_expected_contents('group__thatgroup.html'))
 
 class SectionUnderscoreOne(IntegrationTestCase):
     def test(self):
@@ -310,13 +397,22 @@ class SectionsHeadings(IntegrationTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    def test_warnings(self):
-        self.run_doxygen(wildcard='warnings.xml')
-        self.assertEqual(*self.actual_expected_contents('warnings.html'))
-
     def test_functions(self):
         self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+
+    def test_warnings(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='*arnings*.xml')
+
+        self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        self.assertEqual(*self.actual_expected_contents('Warnings_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
+            "WARNING:root:Warnings_8h.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
+            "WARNING:root:warnings.xml: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>",
+            "WARNING:root:warnings.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
+        ])
 
 class AnchorInBothGroupAndNamespace(IntegrationTestCase):
     def test(self):
@@ -331,30 +427,61 @@ class AnchorHtmlNoPrefixBug(IntegrationTestCase):
 
 class UnexpectedSections(IntegrationTestCase):
     def test(self):
-        self.run_doxygen(wildcard='File_8h.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='File_8h.xml')
+
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:File_8h.xml: unexpected @tparam / @param / @return / @retval / @exception found inside a @section, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @param / @return / @retval / @exception found in top-level description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @tparam / @retval / @exception found in macro description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @tparam / @param / @return / @retval / @exception found in enum description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @tparam / @param / @return / @retval / @exception found in enum value description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @param / @return / @retval / @exception found in typedef description, ignoring",
+            "WARNING:root:File_8h.xml: unexpected @param / @return / @retval / @exception found in variable description, ignoring",
+        ])
 
 class Dot(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
 
-        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'index.html'
-        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+        else:
             file = 'index-240.html'
-        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
-            file = 'index-238.html'
 
         self.assertEqual(*self.actual_expected_contents('index.html', file))
 
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),
+        "1.8.16+ drops the whole <dotfile> tag if the file doesn't exist, which is incredibly dumb")
     def test_warnings(self):
+        # No warnings should be produced here
+        # TODO use self.assertNoLongs() on 3.10+
         self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
-class Htmlinclude(IntegrationTestCase):
-    def test(self):
+    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.16"),
+        "1.8.16+ drops the whole <dotfile> tag if the file doesn't exist, which is incredibly dumb")
+    def test_warnings_1815(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='warnings.xml')
+
+        self.assertEqual(*self.actual_expected_contents('warnings.html', 'warnings_1815.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:warnings.xml: file passed to @dotfile was not found, rendering an empty graph"
+        ])
+
+class HtmlonlyHtmlinclude(IntegrationTestCase):
+    def test_htmlinclude(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
+
+    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.18"),
+        "1.8.17 and older doesn't include @htmlonly in XML output")
+    def test_htmlonly(self):
+        self.run_doxygen(wildcard='html-only.xml')
+        self.assertEqual(*self.actual_expected_contents('html-only.html'))
 
     def test_warnings(self):
         self.run_doxygen(wildcard='warnings.xml')
@@ -376,4 +503,9 @@ class CodeFilters(IntegrationTestCase):
                 'CSS': _add_color_swatch,
             }
         })
+        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+class Blockquote(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))

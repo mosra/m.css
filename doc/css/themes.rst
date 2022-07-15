@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -122,8 +123,8 @@ together and it will create a ``*.compiled.css`` file in the same directory:
     cd css
     ./postprocess.py m-dark.css # Creates a m-dark.compiled.css file
 
-`Modifying the Pygments higlighting style`_
--------------------------------------------
+`Modifying the Pygments highlighting style`_
+--------------------------------------------
 
 If you want to modify the Pygments style, it's a bit more involved. You need to
 edit the ``*.py`` file instead of the ``*.css``:

@@ -50,7 +50,7 @@
         </table>
         {% endif %}
         {% if compound.sections or compound.public_types or compound.public_static_funcs or compound.typeless_funcs or compound.public_funcs or compound.signals or compound.public_slots or compound.public_static_vars or compound.public_vars or compound.protected_types or compound.protected_static_funcs or compound.protected_funcs or compound.protected_signals or compound.protected_static_vars or compound.protected_vars or compound.private_funcs or compound.private_slots or compound.groups or compound.friend_funcs or compound.related %}
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             {% for id, name, children in compound.sections recursive %}
@@ -134,7 +134,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
         {% endif %}
         {% if compound.description %}
 {{ compound.description }}

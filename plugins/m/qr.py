@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -26,14 +27,23 @@ import io
 import qrcode
 import qrcode.image.svg
 import re
+import sys
 
 from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
 
-_svg_preamble_src = re.compile(r"""<\?xml version='1.0' encoding='UTF-8'\?>
+# Not sure why exactly, but since Python 3.8 the order of attributes in the
+# <svg> is different, with the exact same version of qrcode. So I suppose it's
+# due to some differences in Python standard library and not qrcode.
+if sys.version_info[0:2] >= (3, 8):
+    _svg_preamble_src = re.compile(r"""<\?xml version='1.0' encoding='UTF-8'\?>
+<svg width="(?P<width>\d+)mm" height="(?P<height>\d+)mm" version="1.1" viewBox="(?P<viewBox>0 0 \d+ \d+)" xmlns="http://www.w3.org/2000/svg">""")
+else:
+    _svg_preamble_src = re.compile(r"""<\?xml version='1.0' encoding='UTF-8'\?>
 <svg height="(?P<height>\d+)mm" version="1.1" viewBox="(?P<viewBox>0 0 \d+ \d+)" width="(?P<width>\d+)mm" xmlns="http://www.w3.org/2000/svg">""")
+
 _svg_preamble_dst = '<svg{attribs} style="width: {size}; height: {size};" viewBox="{viewBox}">'
 
 def _mm2rem(mm): return mm*9.6/2.54/16.0

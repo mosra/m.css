@@ -1,4 +1,4 @@
-/** @mainpage
+/** @page page A page
 
 -   @subpage UPPERCASE
 -   @ref UPPERCLASS

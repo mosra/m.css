@@ -3,7 +3,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -537,7 +538,7 @@ def merge_inventories(name_map, **kwargs):
             # py:attribute, so that's probably it
             type_string = 'py:attribute'
         elif entry.type == EntryType.ENUM:
-            type_string = 'py:enum' # this desn't exist in Sphinx
+            type_string = 'py:enum' # this doesn't exist in Sphinx
         elif entry.type == EntryType.ENUM_VALUE:
             type_string = 'py:enumvalue' # these don't exist in Sphinx
         elif entry.type == EntryType.DATA:

@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -64,6 +65,15 @@ class Friends(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('classTemplate.html'))
 
+    def test_warnings(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='structWarning.xml')
+        self.assertEqual(*self.actual_expected_contents('structWarning.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:structWarning.xml: doxygen is unable to cross-link friend class GroupedFriendClassWarning, ignoring, sorry",
+            "WARNING:root:structWarning.xml: doxygen is unable to cross-link friend class FriendClassWarning, ignoring, sorry"
+        ])
+
 class SignalsSlots(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='classClass.xml')
@@ -87,3 +97,12 @@ class FunctionAttributesNospace(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='structFoo.xml')
         self.assertEqual(*self.actual_expected_contents('structFoo.html'))
+
+class MishandledMacroCall(IntegrationTestCase):
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='*.xml')
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:File_8h.xml: parameter $ of function DEFINE_FUNCTION has no type, ignoring the whole function as it's suspected to be a mishandled macro call"
+        ])

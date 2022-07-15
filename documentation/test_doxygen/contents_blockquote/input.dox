@@ -1,0 +1,34 @@
+/** @mainpage
+
+Mainly containing tests for Doxygen 1.9 parsing regressions and weirdness.
+
+> A blockquote. In 1.9 it has a ZWJ added in the XML, which should get stripped
+> away again.
+
+.
+
+    Preformatted text after a blockquote. In 1.9 it will get parsed just as a
+    regular paragraph unless there's a dot before.
+
+> Another blockquote.
+
+@code{.cpp}
+// code block that shouldn't be treated as inline
+@endcode
+
+> @code{.cpp}
+> // quoted code block that should be neither inline nor in a paragraph
+> @endcode
+
+A delimiting paragraph, just to not have a blockqoute right after another
+blockquote.
+
+> Another blockquote.
+
+@code{.cpp} "inline" + code @endcode in a usual paragraph.
+
+> Another blockquote.
+
+@code{.cpp} "inline" + code @endcode <b>with a tag after.</b>
+
+*/

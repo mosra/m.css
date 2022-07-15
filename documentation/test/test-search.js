@@ -1,7 +1,8 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -76,11 +77,28 @@ const { StringDecoder } = require('string_decoder');
     assert.deepEqual(Buffer.from(buf), Buffer.from([0, 0, 0, 0]));
 }
 
-/* Verify that base85-decoded file is equivalent to the binary */
+let type_size_suffixes = [
+    'ns1-ri2-fo3',
+    'ns1-ri2-fo4',
+    'ns1-ri3-fo3',
+    'ns1-ri3-fo4',
+    'ns1-ri4-fo3',
+    'ns1-ri4-fo4',
+
+    'ns2-ri2-fo3',
+    'ns2-ri2-fo4',
+    'ns2-ri3-fo3',
+    'ns2-ri3-fo4',
+    'ns2-ri4-fo3',
+    'ns2-ri4-fo4',
+]
+
+/* Verify that base85-decoded file is equivalent to the binary. Nothing
+   type-size-dependent in the decoder, so test just on the first variant. */
 {
-    let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
-    assert.equal(binary.byteLength, 745);
-    let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
+    let binary = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata-" + type_size_suffixes[0] + ".bin"));
+    assert.equal(binary.byteLength, 750);
+    let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata-" + type_size_suffixes[0] + ".b85"), {encoding: 'utf-8'});
     assert.deepEqual(new DataView(binary.buffer.slice(binary.byteOffset, binary.byteOffset + binary.byteLength)), new DataView(Search.base85decode(b85), 0, binary.byteLength));
 }
 
@@ -96,27 +114,54 @@ const { StringDecoder } = require('string_decoder');
     assert.ok(!Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
 }
 
-/* Opening file with  */
+/* Opening file with wrong version */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/wrong-version.bin"));
     assert.ok(!Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
 }
 
-/* Search with empty data */
+/* Opening file with wrong result id byte count */
 {
-    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/empty.bin"));
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/wrong-result-id-bytes.bin"));
+    assert.ok(!Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
+}
+
+/* Search with empty data, in all type size variants */
+for(let i = 0; i != type_size_suffixes.length; ++i) {
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/empty-" + type_size_suffixes[i] + ".bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 26);
+
+    /* Test just the smallest and largest size, everything else should be in
+       between */
+    if(i == 0)
+        assert.equal(Search.dataSize, 31);
+    else if(i == type_size_suffixes.length - 1)
+        assert.equal(Search.dataSize, 32);
+    else {
+        assert.ok(Search.dataSize >= 31 && Search.dataSize <= 32);
+    }
+
     assert.equal(Search.symbolCount, "0 symbols (0 kB)");
     assert.deepEqual(Search.search(''), [[], '']);
 }
 
-/* Search */
-{
-    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
+/* Search, in all type size variants */
+for(let i = 0; i != type_size_suffixes.length; ++i) {
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata-" + type_size_suffixes[i] + ".bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 745);
-    assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
+
+    /* Test just the smallest and largest size, everything else should be in
+       between */
+    if(i == 0) {
+        assert.equal(Search.dataSize, 750);
+        assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
+    } else if(i == type_size_suffixes.length - 1) {
+        assert.equal(Search.dataSize, 883);
+        assert.equal(Search.symbolCount, "7 symbols (0.9 kB)");
+    } else {
+        assert.ok(Search.dataSize > 750 && Search.dataSize < 883);
+    }
+
     assert.equal(Search.maxResults, 100);
 
     /* Blow up */
@@ -217,11 +262,12 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 8 }], '']);
 }
 
-/* Search with spaces */
+/* Search with spaces. Nothing type-size-dependent here, so test just on the
+   first variant. */
 {
-    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata-" + type_size_suffixes[0] + ".bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 745);
+    assert.equal(Search.dataSize, 750);
     assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 100);
 
@@ -269,11 +315,12 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 10 }], Search.toUtf8('» subpage')]);
 }
 
-/* Search, limiting the results to 3 */
+/* Search, limiting the results to 3. Nothing type-size-dependent here, so test
+   just on the first variant. */
 {
-    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.bin"));
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata-" + type_size_suffixes[0] + ".bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 3));
-    assert.equal(Search.dataSize, 745);
+    assert.equal(Search.dataSize, 750);
     assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 3);
     assert.deepEqual(Search.search('m'), [[
@@ -297,11 +344,12 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 10 }], '']);
 }
 
-/* Search loaded from a base85-encoded file should work properly */
+/* Search loaded from a base85-encoded file should work properly. Nothing
+   type-size-dependent here, so test just on the first variant. */
 {
-    let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata.b85"), {encoding: 'utf-8'});
+    let b85 = fs.readFileSync(path.join(__dirname, "js-test-data/searchdata-" + type_size_suffixes[0] + ".b85"), {encoding: 'utf-8'});
     assert.ok(Search.load(b85));
-    assert.equal(Search.dataSize, 748); /* some padding on the end, that's okay */
+    assert.equal(Search.dataSize, 752); /* some padding on the end, that's okay */
     assert.equal(Search.symbolCount, "7 symbols (0.7 kB)");
     assert.equal(Search.maxResults, 100);
     assert.deepEqual(Search.search('min'), [[
@@ -325,11 +373,11 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 8 }], '()']);
 }
 
-/* Search, Unicode */
+/* Search, Unicode. Nothing type-size-dependent here. */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/unicode.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 160);
+    assert.equal(Search.dataSize, 165);
     assert.equal(Search.symbolCount, "2 symbols (0.2 kB)");
     /* Both "Hýždě" and "Hárá" have common autocompletion to "h\xA1", which is
        not valid UTF-8, so it has to get truncated */
@@ -363,11 +411,11 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 }], Search.toUtf8('rá')]);
 }
 
-/* Properly combine heavily nested URLs */
+/* Properly combine heavily nested URLs. Nothing type-size-dependent here. */
 {
     let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/nested.bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
-    assert.equal(Search.dataSize, 331);
+    assert.equal(Search.dataSize, 336);
     assert.equal(Search.symbolCount, "4 symbols (0.3 kB)");
     assert.deepEqual(Search.search('geo'), [[
         { name: 'Magnum::Math::Geometry',
@@ -386,12 +434,24 @@ const { StringDecoder } = require('string_decoder');
           suffixLength: 3 }], 'nge']);
 }
 
-/* Extreme amount of search results */
-{
-    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/manyresults.bin"));
+/* Extreme amount of search results, in all type size variants to ensure no
+   size assumptions were left there */
+for(let i = 0; i != type_size_suffixes.length; ++i) {
+    let buffer = fs.readFileSync(path.join(__dirname, "js-test-data/manyresults-" + type_size_suffixes[i] + ".bin"));
     assert.ok(Search.init(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength), 10000));
-    assert.equal(Search.dataSize, 6415);
-    assert.equal(Search.symbolCount, "131 symbols (6.3 kB)");
+
+    /* Test just the smallest and largest size, everything else should be in
+       between */
+    if(i == 0) {
+        assert.equal(Search.dataSize, 6421);
+        assert.equal(Search.symbolCount, "131 symbols (6.3 kB)");
+    } else if(i == type_size_suffixes.length - 1) {
+        assert.equal(Search.dataSize, 6964);
+        assert.equal(Search.symbolCount, "131 symbols (6.8 kB)");
+    } else {
+        assert.ok(Search.dataSize > 6421 && Search.dataSize < 6964);
+    }
+
     assert.equal(Search.maxResults, 10000);
     assert.deepEqual(Search.search('__init__')[0].length, 128 + 3);
     assert.deepEqual(Search.search('__init__')[1], '');

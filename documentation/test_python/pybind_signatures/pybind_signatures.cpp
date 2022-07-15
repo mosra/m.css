@@ -75,7 +75,21 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("tenOverloads", &tenOverloads<float, bool>, "Ten overloads of a function")
         .def("tenOverloads", &tenOverloads<int, bool>, "Ten overloads of a function")
         .def("tenOverloads", &tenOverloads<bool, bool>, "Ten overloads of a function")
-        .def("tenOverloads", &tenOverloads<std::string, std::string>, "Ten overloads of a function");
+        .def("tenOverloads", &tenOverloads<std::string, std::string>, "Ten overloads of a function")
+
+        .def("full_docstring", &voidFunction, R"(A summary
+
+And a larger docstring as well.)")
+        .def("full_docstring_overloaded", &tenOverloads<int, int>, R"(An overload summary
+
+This function takes a value of 2. full_docstring_overloaded(a: float, b: float)
+takes just 3 instead.)")
+        .def("full_docstring_overloaded", &tenOverloads<float, float>, R"(Another overload summary
+
+This overload, however, takes just a 32-bit (or 64-bit) floating point value of
+3. full_docstring_overloaded(a: int, b: int)
+takes just 2. There's nothing for 4. full_docstring_overloaded(a: poo, b: foo)
+could be another, but it's not added yet.)");
 
     py::class_<MyClass>(m, "MyClass", "My fun class!")
         .def_static("static_function", &MyClass::staticFunction, "Static method with positional-only args")

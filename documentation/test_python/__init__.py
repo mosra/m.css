@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -39,7 +40,7 @@ _camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
 # filesystem location. For a `test_inspect.NameMapping` class, it will look
 # for the `inspect_name_mapping` directory. If the class name is equivalent to
 # the filename (e.g. `test_page.Page`), then it will be looking for just `page`
-# instead of `page_page`. If needed, the directory name can be overriden by
+# instead of `page_page`. If needed, the directory name can be overridden by
 # passing it via dir to __init__().
 class BaseTestCase(unittest.TestCase):
     def __init__(self, *args, dir=None, **kwargs):

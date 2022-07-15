@@ -5,7 +5,7 @@
 /**
 @brief A friend class
 
-Not displayed among @ref Class friends becase Doxygen doesn't provide any
+Not displayed among @ref Class friends because Doxygen doesn't provide any
 useful info for it.
 */
 class FriendClassWarning {};
@@ -13,7 +13,7 @@ class FriendClassWarning {};
 /**
 @brief A friend class
 
-Not displayed among @ref Class friends becase Doxygen doesn't provide any
+Not displayed among @ref Class friends because Doxygen doesn't provide any
 useful info for it.
 */
 class GroupedFriendClassWarning {};
@@ -26,16 +26,16 @@ class Class {
         friend struct FriendStruct;
         friend union FriendUnion;
 
-        /** @brief Ignored friend class with a warning because it has docs */
-        friend class FriendClassWarning;
-
         /** @brief A friend function */
         friend void friendFunction(int a, void* b);
 
-        /** @{ @name Group with friend functions */
+        /** @brief A 'hidden friend' operator */
+        friend bool operator==(const Class&, const Class&) noexcept;
 
-        /** @brief Ignored friend class with a warning because it has docs */
-        friend class GroupedFriendClassWarning;
+        /** @brief A constexpr 'hidden friend' operator */
+        friend constexpr bool operator!=(const Class&, const Class&) noexcept;
+
+        /** @{ @name Group with friend functions */
 
         /** @brief A friend grouped function */
         friend void friendGroupedFunction();
@@ -45,6 +45,23 @@ class Class {
         /**
          * @}
          */
+};
+
+/** @brief A class producing warnings */
+struct Warning {
+    /** @brief Ignored friend class with a warning because it has docs */
+    friend class FriendClassWarning;
+
+    /** @{ @name Group with friend functions */
+
+    /** @brief Ignored friend class with a warning because it has docs */
+    friend class GroupedFriendClassWarning;
+
+    /* Since 1.8.17, the original short-hand group closing doesn't work
+        anymore. FFS. */
+    /**
+     * @}
+     */
 };
 
 /** @brief Class with template parameters */

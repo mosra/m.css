@@ -23,7 +23,7 @@
           inspect_annotations <span class="m-thin">module</span>
         </h1>
         <p>Annotation parsing. For links inside annotations see test_inspect.TypeLinks.</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -35,7 +35,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>
           <dl class="m-doc">
@@ -94,9 +94,9 @@
             </dt>
             <dd>Annotation with a generic type</dd>
             <dt id="annotation_list_noparam">
-              <span class="m-doc-wrap-bumper">def <a href="#annotation_list_noparam" class="m-doc-self">annotation_list_noparam</a>(</span><span class="m-doc-wrap">a: typing.List[T])</span>
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_list_noparam" class="m-doc-self">annotation_list_noparam</a>(</span><span class="m-doc-wrap">a: typing.List)</span>
             </dt>
-            <dd>Annotation with the unparametrized List type. 3.7 adds an implicit TypeVar to it, 3.6 not, emulate that to make the test pass on older versions</dd>
+            <dd>Annotation with the unparametrized List type. 3.7 and 3.8 adds an implicit TypeVar to it, 3.6, 3.9 and 3.10 not, so the output is different between the versions.</dd>
             <dt id="annotation_optional">
               <span class="m-doc-wrap-bumper">def <a href="#annotation_optional" class="m-doc-self">annotation_optional</a>(</span><span class="m-doc-wrap">a: typing.Optional[float])</span>
             </dt>

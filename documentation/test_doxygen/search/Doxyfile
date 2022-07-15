@@ -21,3 +21,4 @@ ALIASES                 = \
 ##! M_LINKS_NAVBAR1     =
 ##! M_LINKS_NAVBAR2     =
 ##! M_SEARCH_DOWNLOAD_BINARY = YES
+##! M_SEARCH_FILENAME_PREFIX = secretblob

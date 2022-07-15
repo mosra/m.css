@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -261,9 +262,9 @@ paragraph before the actual graph block, see the
 for more information. Font name and size is controlled using the builtin
 :ini:`DOT_FONTNAME` and :ini:`DOT_FONTSIZE` options.
 
-In addition you need the
-`Graphviz <https://graphviz.org/>`_ library installed. Get it via your
-distribution package manager, for example on Ubuntu:
+In addition you need the `Graphviz <https://graphviz.org/>`_ library installed
+(version 2.40.1 at least). Get it via your distribution package manager, for
+example on Ubuntu:
 
 .. code:: sh
 
@@ -324,11 +325,6 @@ extensive `attribute documentation <https://www.graphviz.org/doc/info/attrs.html
 
     Note that currently all styling is discarded and only the
     ``class`` and ``fontsize`` attributes are taken into account.
-
-.. note-warning::
-
-    The ``class`` attribute is new in Graphviz 2.40.1. If you have an older
-    version on your system, this attribute will get ignored.
 
 `Undirected graphs`_
 --------------------

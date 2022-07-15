@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -69,7 +70,14 @@ class PelicanPluginTestCase(unittest.TestCase):
             'M_FINE_PRINT': None,
             'M_DISABLE_SOCIAL_META_TAGS': True,
             'DIRECT_TEMPLATES': [],
-            'SLUGIFY_SOURCE': 'basename'
+            'SLUGIFY_SOURCE': 'basename',
+
+            'DOCUTILS_SETTINGS': {
+                # Default changed to '%' in 0.18, keep the old setting to
+                # have consistent output across versions
+                # TODO maybe change this to '%' everywhere instead?
+                'auto_id_prefix': 'id'
+            }
         }
         implicit_settings.update(settings)
         settings = read_settings(path=None, override=implicit_settings)

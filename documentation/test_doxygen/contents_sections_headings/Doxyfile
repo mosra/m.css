@@ -1,4 +1,4 @@
-INPUT                   = File.h input.dox
+INPUT                   = File.h Warnings.h input.dox
 QUIET                   = YES
 GENERATE_HTML           = NO
 GENERATE_LATEX          = NO

@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -37,4 +38,9 @@ class Qr(PelicanPluginTestCase):
             'PLUGINS': ['m.htmlsanity', 'm.qr']
         })
 
-        self.assertEqual(*self.actual_expected_contents('page.html', 'page.html' if LooseVersion(sys.version) >= LooseVersion("3.7") else 'page-py36.html'))
+        if LooseVersion(sys.version) >= LooseVersion("3.8"):
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page.html'))
+        elif LooseVersion(sys.version) >= LooseVersion("3.7"):
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-py37.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-py36.html'))

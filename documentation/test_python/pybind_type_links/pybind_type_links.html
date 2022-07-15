@@ -23,7 +23,7 @@
           pybind_type_links <span class="m-thin">module</span>
         </h1>
         <p>pybind11 type linking</p>
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -36,7 +36,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
         <section id="classes">
           <h2><a href="#classes">Classes</a></h2>
           <dl class="m-doc">
@@ -57,14 +57,18 @@
         <section id="functions">
           <h2><a href="#functions">Functions</a></h2>
           <dl class="m-doc">
-            <dt id="type_enum">
-              <span class="m-doc-wrap-bumper">def <a href="#type_enum" class="m-doc-self">type_enum</a>(</span><span class="m-doc-wrap">value: <a href="pybind_type_links.html#Enum" class="m-doc">Enum</a> = <a href="pybind_type_links.html#Enum-SECOND" class="m-doc">Enum.SECOND</a>) -&gt; <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a></span>
+            <dt id="type_enum_and_default">
+              <span class="m-doc-wrap-bumper">def <a href="#type_enum_and_default" class="m-doc-self">type_enum_and_default</a>(</span><span class="m-doc-wrap">value: <a href="pybind_type_links.html#Enum" class="m-doc">Enum</a> = <a href="pybind_type_links.html#Enum-SECOND" class="m-doc">Enum.SECOND</a>) -&gt; <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a></span>
             </dt>
-            <dd>A function taking an enum</dd>
+            <dd>A function taking an enum with a default</dd>
             <dt id="type_nested">
               <span class="m-doc-wrap-bumper">def <a href="#type_nested" class="m-doc-self">type_nested</a>(</span><span class="m-doc-wrap">arg0: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="pybind_type_links.Foo.html" class="m-doc">Foo</a>, <a href="https://docs.python.org/3/library/typing.html#typing.List" class="m-doc-external">typing.List</a>[<a href="pybind_type_links.html#Enum" class="m-doc">Enum</a>]]<span class="m-text m-dim">, /</span>) -&gt; <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a></span>
             </dt>
             <dd>A function with nested type annotation</dd>
+            <dt id="type_nested_enum_and_default">
+              <span class="m-doc-wrap-bumper">def <a href="#type_nested_enum_and_default" class="m-doc-self">type_nested_enum_and_default</a>(</span><span class="m-doc-wrap">value: <a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="m-doc-external">typing.Tuple</a>[<a href="https://docs.python.org/3/library/functions.html#int" class="m-doc-external">int</a>, <a href="pybind_type_links.html#Enum" class="m-doc">Enum</a>] = (3, Enum.FIRST)) -&gt; <a href="https://docs.python.org/3/library/constants.html#None" class="m-doc-external">None</a></span>
+            </dt>
+            <dd>A function taking a nested enum with a default. This won&#x27;t have a link.</dd>
             <dt id="type_return">
               <span class="m-doc-wrap-bumper">def <a href="#type_return" class="m-doc-self">type_return</a>(</span><span class="m-doc-wrap">) -&gt; <a href="pybind_type_links.Foo.html" class="m-doc">Foo</a></span>
             </dt>

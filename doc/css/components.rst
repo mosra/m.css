@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -664,8 +665,8 @@ together with :css:`.m-image` will make the image round. Works for both plain
 Use the HTML5 :html:`<figure>` tag together with :css:`.m-figure` to style it.
 As with plain image, it's by default centered, slightly rounded and has a
 border around the caption and description. The caption is expected to be in the
-:html:`<figcaption>` element. The description is optional, but should be
-wrapped in some tag as well (for example a :html:`<span>`). The
+:html:`<figcaption>` element. Inside it, there can optionally be a longer
+description wrapped in a :css:`div.m-figure-description` element. The
 :css:`.m-fullwidth` class works here too and you can also wrap the
 :html:`<img>` / :html:`<svg>` element in an :html:`<a>` tag to make it
 clickable.
@@ -673,8 +674,9 @@ clickable.
 Figure always expects at least the caption to be present. If you want just an
 image, use the plain image tag. If you have a lot of figures on the page and
 the border is distracting, apply the :css:`.m-flat` class to hide it.
-Optionally you can color the figure border and caption by adding one of the
-`CSS color classes <#colors>`_ to the :html:`<figure>` element.
+Optionally you can color the figure border and caption (with the description
+staying unaffected) by adding one of the `CSS color classes <#colors>`_ to the
+:html:`<figure>` element.
 
 .. code-figure::
 
@@ -682,16 +684,41 @@ Optionally you can color the figure border and caption by adding one of the
 
         <figure class="m-figure">
           <img src="ship.jpg" alt="Ship" />
-          <figcaption>A Ship</figcaption>
-          <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
+          <figcaption>
+            A Ship
+            <div class="m-figure-description">
+              Photo © <a href="http://blog.mosra.cz/">The Author</a>
+            </div>
+          </figcaption>
         </figure>
 
     .. raw:: html
 
         <figure class="m-figure">
           <img src="{static}/static/ship-small.jpg" alt="Ship" />
+          <figcaption>
+            A Ship
+            <div class="m-figure-description">
+              Photo © <a href="http://blog.mosra.cz/">The Author</a>
+            </div>
+          </figcaption>
+        </figure>
+
+.. note-danger:: Firefox-specific behavior
+
+    While a description *could* be put also after a :html:`<figcaption>` such
+    as in the following snippet, CSS styling used by m.css causes Firefox to
+    display only the :html:`<figcaption>`, ignoring everything after. Thus it's
+    recommended to always nest the description in a
+    :css:`div.m-figure-description` element inside. See also
+    :gh:`mosra/m.css#117` for more information.
+
+    .. code:: html
+
+        <figure class="m-figure">
+          <img src="ship.jpg" alt="Ship" />
           <figcaption>A Ship</figcaption>
-          <span>Photo © <a href="http://blog.mosra.cz/">The Author</a></span>
+          <div>Photo © The Author</div> <!-- This will get ignored by Firefox! -->
         </figure>
 
 .. note-info::
@@ -1131,8 +1158,9 @@ Similarly to `code figure`_, math can be also put in a :html:`<figure>` with
 assigned caption and description. It behaves the same as `image figures`_, the
 figure width being defined by the math equation size. Create a
 :html:`<figure class="m-figure">` element and put :html:`<svg class="m-math">`
-as a first child. The remaining content of the figure can be :html:`<figcaption>`
-and/or arbitrary other markup. Add the :css:`.m-flat` class to the
+as a first child. The remaining content of the figure can be
+:html:`<figcaption>` with optional :css:`div.m-figure-description` same as with
+`image figures <#figures>`_. Add the :css:`.m-flat` class to the
 :html:`<figure>` to remove the outer border and equation background,
 `CSS color classes`_ on the :html:`<figure>` affect the figure, on the
 :html:`<svg>` affect the equation.
@@ -1146,7 +1174,10 @@ and/or arbitrary other markup. Add the :css:`.m-flat` class to the
             <title>a^2 = b^2 + c^2</title>
             <g>...</g>
           </svg>
-          <figcaption>Pythagorean theorem</figcaption>
+          <figcaption>
+            Theorem
+            <div class="m-figure-description">A Pythagorean one.</div>
+          </figcaption>
         </figure>
 
     .. raw:: html
@@ -1173,7 +1204,10 @@ and/or arbitrary other markup. Add the :css:`.m-flat` class to the
               <use x='219.8' xlink:href='#math1-g1-50' y='-5.84939'/>
             </g>
           </svg>
-          <figcaption>Pythagorean theorem</figcaption>
+          <figcaption>
+            Theorem
+            <div class="m-figure-description">A Pythagorean one.</div>
+          </figcaption>
         </figure>
 
 `Plots`_
@@ -1212,7 +1246,7 @@ with :css:`.m-line`, error bars with :css:`.m-error`. Use
 
 .. note-info::
 
-    Plot styling is designed to be used with extenal tools, for example Python
+    Plot styling is designed to be used with external tools, for example Python
     Matplotlib. If you use Pelican, m.css has a
     `m.plots <{filename}/plugins/plots-and-graphs.rst#plots>`__ plugin that
     allows you to produce plots using :rst:`.. plot::` directives directly in
@@ -1300,7 +1334,8 @@ on a :css:`.m-node` to make it just an outline instead of filled.
 
 Similarly to `math figure`_, graphs also can be :html:`<figure>`\ s. The
 behavior is almost identical, create a :html:`<figure class="m-figure m-graph">`
-element and put the :html:`<svg>` as a first child, all other content after.
+element and put the :html:`<svg>` as a first child and a :html:`<figcaption>`
+right after.
 
 .. code-figure::
 
@@ -1310,7 +1345,10 @@ element and put the :html:`<svg>` as a first child, all other content after.
           <svg class="m-graph m-warning">
             ...
           </svg>
-          <figcaption>Impenetrable logic</figcaption>
+          <figcaption>
+            Impenetrable logic
+            <div class="m-figure-description">No.</div>
+          </figcaption>
         </figure>
 
     .. raw:: html
@@ -1343,7 +1381,10 @@ element and put the :html:`<svg>` as a first child, all other content after.
         </g>
         </g>
         </svg>
-        <figcaption>Impenetrable logic</figcaption>
+        <figcaption>
+          Impenetrable logic
+          <div class="m-figure-description">No.</div>
+        </figcaption>
         </figure>
 
 `Padding and floating`_

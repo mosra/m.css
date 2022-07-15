@@ -95,3 +95,34 @@ m.components
 
 Inline elements: :label-primary:`Primary label`,
 :label-flat-warning:`Flat warning label`.
+
+`Transitions, builtin`_
+=======================
+
+Builtin transition in the middle of a section, stays inside the section node:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Builtin transition at the end of a section, gets extracted outside of the
+section node. Clicking on the section header will not include it in the
+highlight.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+`Transitions, m.css`_
+=====================
+
+M.css transition in the middle of a section, stays inside the section node:
+
+.. transition:: ~ * ~ * ~
+
+M.css transition at the end of a section, gets extracted outside of the section
+node the same as a builtin transition. Clicking on the section header will not
+include it in the highlight.
+
+.. transition:: ~ * ~ * ~
+
+Section after
+=============
+
+Docutils says "Document may not end with a transition", eh.

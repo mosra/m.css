@@ -3,7 +3,8 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -46,8 +47,8 @@ ul.m-doc li.m-doc-collapsible > a:first-child:active {
   color: #dcdcdc;
 }
 a.m-doc-self,
-ul.m-doc li.m-doc-expansible > a:first-child:before,
-ul.m-doc li.m-doc-collapsible > a:first-child:before {
+ul.m-doc li.m-doc-expansible > a:first-child::before,
+ul.m-doc li.m-doc-collapsible > a:first-child::before {
   color: #a5c9ea;
 }
 a.m-doc-self:hover, a.m-doc-self:focus, a.m-doc-self:active,
@@ -108,14 +109,14 @@ ul.m-doc li.m-doc-expansible, ul.m-doc li.m-doc-collapsible {
 ul.m-doc li.m-doc-expansible > ul.m-doc, ul.m-doc li.m-doc-collapsible > ul.m-doc {
   margin-left: 0.5rem;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before, ul.m-doc li.m-doc-collapsible > a:first-child:before {
+ul.m-doc li.m-doc-expansible > a:first-child::before, ul.m-doc li.m-doc-collapsible > a:first-child::before {
   background-color: #2f363f;
   display: inline-block;
   width: 0.4rem;
   font-weight: bold;
 }
-ul.m-doc li.m-doc-expansible > a:first-child:before { content: '⊕'; }
-ul.m-doc li.m-doc-collapsible > a:first-child:before { content: '⊖'; }
+ul.m-doc li.m-doc-expansible > a:first-child::before { content: '⊕'; }
+ul.m-doc li.m-doc-collapsible > a:first-child::before { content: '⊖'; }
 h1 .m-doc-template, h1 .m-doc-include {
   font-size: 1.3rem;
   font-weight: normal;

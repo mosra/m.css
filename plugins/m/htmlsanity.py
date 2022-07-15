@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -256,6 +257,9 @@ class SaneHtmlTranslator(HTMLTranslator):
         if not hasattr(self, 'in_word_wrap_point'):
             self.in_word_wrap_point = HTMLTranslator.sollbruchstelle
 
+        # Used by depart_caption() and depart_figure(), see there for details
+        self.in_figure_caption_with_description = False
+
     # Somehow this does the trick and removes docinfo from the body. Was
     # present in the HTML4 translator but not in the HTML5 one, so copying it
     # verbatim over
@@ -323,13 +327,14 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.section_level -= 1
         self.body.append('</section>\n')
 
-    # Legend inside figure -- print as <span> (instead of <div class="legend">,
-    # as that's not valid inside HTML5 <figure> element)
+    # Legend inside figure. This is handled in a special way inside
+    # depart_caption() and depart_figure() already, no need to add any extra
+    # tag again.
     def visit_legend(self, node):
-        self.body.append(self.starttag(node, 'span'))
+        pass
 
     def depart_legend(self, node):
-        self.body.append('</span>\n')
+        pass
 
     # Literal -- print as <code> (instead of some <span>)
     def visit_literal(self, node):
@@ -378,13 +383,24 @@ class SaneHtmlTranslator(HTMLTranslator):
             self.body.append('\n')
         self.in_mailto = False
 
-    # Use <aside> instead of a meaningless <div>
+    # Use <aside> for general topics, <nav> for table of contents (but drop the
+    # contents class and ID)
     def visit_topic(self, node):
-        self.body.append(self.starttag(node, 'aside'))
         self.topic_classes = node['classes']
 
+        if 'contents' in node['classes']:
+            node.html_tagname = 'nav'
+            node['classes'].remove('contents')
+            # If the TOC has a title, the ID will be different, and in that
+            # case we'll leave it there.
+            if 'contents' in node['ids']: node['ids'].remove('contents')
+        else:
+            node.html_tagname = 'aside'
+
+        self.body.append(self.starttag(node, node.html_tagname))
+
     def depart_topic(self, node):
-        self.body.append('</aside>\n')
+        self.body.append('</{}>\n'.format(node.html_tagname))
         self.topic_classes = []
 
     # Don't use <colgroup> or other shit in tables
@@ -450,13 +466,31 @@ class SaneHtmlTranslator(HTMLTranslator):
         self.body.append(self.starttag(node, 'figure', **atts))
 
     def depart_figure(self, node):
+        # See depart_caption() below for details
+        if self.in_figure_caption_with_description:
+            self.body.append('</div>\n</figcaption>\n')
+            self.in_figure_caption_with_description = False
         self.body.append('</figure>\n')
 
     def visit_caption(self, node):
         self.body.append(self.starttag(node, 'figcaption', ''))
 
     def depart_caption(self, node):
-        self.body.append('</figcaption>\n')
+        # If this is a .m-figure and there's more content after a <figcaption>,
+        # we have to put all that into <figcaption> as well, otherwise FF will
+        # ignore it (due to `display: table-caption` being set for all
+        # .m-figure children, which apparently makes FF render just the first
+        # element). To avoid all that content styled as a caption, put it
+        # inside a .m-figure-description that undoes the styling for
+        # <figcaption>.
+        # TODO this may have false positives if there are reST comments and
+        # such, figure out a way to query if there are useful nodes. Can't
+        # check for just nodes.legend, as there can be arbitrary other stuff.
+        if 'classes' in node.parent and 'm-figure' in node.parent['classes'] and node.next_node(descend=False, siblings=True) is not None:
+            self.body.append(self.starttag(node, 'div', CLASS='m-figure-description'))
+            self.in_figure_caption_with_description = True
+        else:
+            self.body.append('</figcaption>\n')
 
     # Line blocks are <p> with lines separated using simple <br />. No need for
     # nested <div>s.
@@ -468,16 +502,15 @@ class SaneHtmlTranslator(HTMLTranslator):
 
     # Footnote list. Replacing the classes with just .m-footnote.
     def visit_footnote(self, node):
-        if not self.in_footnote_list:
+        previous_node = node.parent[node.parent.index(node)-1]
+        if not isinstance(previous_node, type(node)):
             self.body.append('<dl class="m-footnote">\n')
-            self.in_footnote_list = True
 
     def depart_footnote(self, node):
         self.body.append('</dd>\n')
         if not isinstance(node.next_node(descend=False, siblings=True),
-                          nodes.footnote):
+                          type(node)):
             self.body.append('</dl>\n')
-            self.in_footnote_list = False
 
     # Footnote reference
     def visit_footnote_reference(self, node):
@@ -633,12 +666,17 @@ class SaneHtmlTranslator(HTMLTranslator):
     def depart_definition_list(self, node):
         self.body.append('</dl>\n')
 
-    # no class="docutils" in <hr>
+    # no class="docutils" in <hr>; if it's m.css .. transition:: directive
+    # (having children), put it in a <p> instead
     def visit_transition(self, node):
-        self.body.append(self.emptytag(node, 'hr'))
+        if len(node.children) > 0:
+            self.body.append(self.starttag(node, 'p', ''))
+        else:
+            self.body.append(self.emptytag(node, 'hr'))
 
     def depart_transition(self, node):
-        pass
+        if len(node.children) > 0:
+            self.body.append('</p>\n')
 
 class _SaneFieldBodyTranslator(SaneHtmlTranslator):
     """

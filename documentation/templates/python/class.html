@@ -21,7 +21,7 @@
         <p>{{ page.summary }}</p>
         {% endif %}
         {% if page.classes or page.classmethods or page.staticmethods or page.methods or page.dunder_methods or page.properties or page.data %}
-        <div class="m-block m-default">
+        <nav class="m-block m-default">
           <h3>Contents</h3>
           <ul>
             <li>
@@ -54,7 +54,7 @@
               </ul>
             </li>
           </ul>
-        </div>
+        </nav>
         {% endif %}
         {% if page.content %}
 {{ page.content }}

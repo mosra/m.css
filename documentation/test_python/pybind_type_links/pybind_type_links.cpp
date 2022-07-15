@@ -9,7 +9,7 @@ enum class Enum {
     First, Second
 };
 
-void typeEnum(Enum) {}
+void typeEnumAndDefault(Enum) {}
 
 struct Foo {
     Enum property;
@@ -18,6 +18,8 @@ struct Foo {
 Foo typeReturn() { return {}; }
 
 void typeNested(const std::pair<Foo, std::vector<Enum>>&) {}
+
+void typeNestedEnumAndDefault(std::pair<int, Enum>) {}
 
 }
 
@@ -34,9 +36,10 @@ PYBIND11_MODULE(pybind_type_links, m) {
         .def_readwrite("property", &Foo::property, "A property");
 
     m
-        .def("type_enum", &typeEnum, "A function taking an enum", py::arg("value") = Enum::Second)
+        .def("type_enum_and_default", &typeEnumAndDefault, "A function taking an enum with a default", py::arg("value") = Enum::Second)
         .def("type_return", &typeReturn, "A function returning a type")
-        .def("type_nested", &typeNested, "A function with nested type annotation");
+        .def("type_nested", &typeNested, "A function with nested type annotation")
+        .def("type_nested_enum_and_default", &typeNestedEnumAndDefault, "A function taking a nested enum with a default. This won't have a link.", py::arg("value") = std::pair<int, Enum>{3, Enum::First});
 
     /* Test also attributes (annotated from within Python) */
     m.attr("TYPE_DATA") = Foo{Enum::First};

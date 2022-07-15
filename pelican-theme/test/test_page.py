@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -159,7 +160,9 @@ class HtmlEscape(PageTestCase):
         self.assertEqual(*self.actual_expected_contents('landing.html'))
         self.assertEqual(*self.actual_expected_contents('breadcrumb.html'))
 
-    @unittest.skipUnless(LooseVersion(pelican.__version__) > LooseVersion("4.2.0"),
+    # Not merged for 4.7 yet and no time from my side to push the PR through,
+    # so let's defer this to blow up at some point in the future.
+    @unittest.skipUnless(LooseVersion(pelican.__version__) > LooseVersion("5.0.0"),
                          "https://github.com/getpelican/pelican/pull/2260")
     def test_content(self):
         self.run_pelican({

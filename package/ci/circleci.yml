@@ -10,15 +10,21 @@ notify:
     #- url: https://webhooks.gitter.im/e/cfbadbd34d28708a57c6
 
 executors:
-  python-3_5:
+  python-3_06:
     docker:
-    - image: python:3.5.10
-  python-3_6:
+    - image: python:3.6.15
+  python-3_07:
     docker:
-    - image: python:3.6.12
-  python-3_7:
+    - image: python:3.7.12
+  python-3_08:
     docker:
-    - image: python:3.7.9
+    - image: python:3.8.12
+  python-3_09:
+    docker:
+    - image: python:3.9.8
+  python-3_10:
+    docker:
+    - image: python:3.10.1
   node-10:
     docker:
     - image: node:10.24.0-buster-slim
@@ -39,26 +45,25 @@ commands:
 
   install-python-deps:
     parameters:
-      extra:
+      attrs-version:
+        type: string
+        default: ""
+      docutils-version:
         type: string
         default: ""
       matplotlib-version:
         type: string
         default: ""
+      pelican-version:
+        type: string
+        default: ""
     steps:
     - run:
         name: Install Python dependencies
-        # Everything broken with Pelican 4.5, stay on older version until
-        # that's  resolved: https://github.com/mosra/m.css/issues/178
-        # Pyphen 0.10 has significantly different hyphenation results, staying
-        # on an  older version until I can investigate
-        # Matplotlib 3.4.1 has different output AGAIN, staying on something
-        # older until I can investigate; on Py3.5 there's only 3.0 so this is
-        # being set explicitly in py36 and py37 build
-        # Attrs 20.3 add some new properties that I need to ignore first, using
-        # 19.3 instead
+        # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
+        # differently, I have to update the expected output first.
         command: |
-          pip install jinja2 pelican==4.2.0 Pyphen==0.9.5 Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> << parameters.extra >>
+          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -101,6 +106,8 @@ commands:
         type: string
       python-version:
         type: string
+      doxygen-version:
+        type: string
     steps:
     - run:
         name: Install Doxygen
@@ -108,9 +115,9 @@ commands:
           mkdir -p $HOME/bin
           export PATH=$HOME/bin:$PATH
           echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
-          wget https://sourceforge.net/projects/doxygen/files/rel-1.8.17/doxygen-1.8.17.linux.bin.tar.gz
-          tar -xzf doxygen-1.8.17.linux.bin.tar.gz
-          cp doxygen-1.8.17/bin/doxygen $HOME/bin
+          wget https://sourceforge.net/projects/doxygen/files/rel-<< parameters.doxygen-version >>/doxygen-<< parameters.doxygen-version >>.linux.bin.tar.gz
+          tar -xzf doxygen-<< parameters.doxygen-version >>.linux.bin.tar.gz
+          cp doxygen-<< parameters.doxygen-version >>/bin/doxygen $HOME/bin
           doxygen -v
     - run:
         name: Install pybind11
@@ -173,47 +180,108 @@ commands:
           codecov
 
 jobs:
-  py35:
-    executor: python-3_5
-    steps:
-    - install-base:
-        extra: graphviz
-    - install-python-deps
-    - checkout
-    - test-theme
-    - test-plugins
-    - coverage
-
-  py36:
-    executor: python-3_6
+  py306:
+    executor: python-3_06
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Since 3.6 is EOL'd, using this job to test with older versions of
+        # various packages to avoid regressions
+        attrs-version: ==19.3.0
         matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
+        pelican-version: ==4.2.0
+        # Ubuntu 18.04 has docutils 0.14
+        docutils-version: ==0.14
     - checkout
     - test-theme
     - test-plugins
     - test-documentation-themes:
         python-version: "3.6"
-        pybind-version: "2.2.4"
+        # We don't support anything before 2.3.0 anymore.
+        pybind-version: "2.3.0"
+        # Ubuntu 18.04 has doxygen 1.8.13, but it's too much of a nightmare to
+        # make the tests working again.
+        # TODO either drop support for everything below 1.8.16 or fix these
+        doxygen-version: "1.8.16"
     - coverage
 
-  py37:
-    executor: python-3_7
+  py307:
+    executor: python-3_07
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
-        matplotlib-version: ==3.3.4
-        extra: attrs==19.3.0
+        # Matplotlib 3.5 has significantly different output, be sure to have
+        # at least one job testing 3.4 so we don't regress
+        matplotlib-version: ==3.4.3
+        # Docutils 0.17 dropped `object_image_types`, test that it works there
+        docutils-version: ==0.17.1
     - checkout
     - test-theme
     - test-plugins
     - test-documentation-themes:
         python-version: "3.7"
         pybind-version: "2.3.0"
+        # 1.8.14 and 1.8.15 binaries link against libclang.so.6 so they're
+        # useless
+        doxygen-version: "1.8.16"
+    - coverage
+
+  py308:
+    executor: python-3_08
+    steps:
+    - install-base:
+        extra: graphviz cmake ninja-build wget
+    - install-python-deps:
+        # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
+        # 0.18.1 reverted again, test we're not affected by those
+        docutils-version: ==0.18.0
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.8"
+        # 2.4.1 fixes a Py3.8-specific bug, so the 2.3 versions are probably
+        # not wise to use here
+        pybind-version: "2.4.3"
+        doxygen-version: "1.8.17"
+    - coverage
+
+  py309:
+    executor: python-3_09
+    steps:
+    - install-base:
+        # libtinfo5 needed by doxygen 1.8.18, wtf
+        extra: graphviz cmake ninja-build wget libtinfo5
+    - install-python-deps
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.9"
+        # 2.5.0 is the first that properly searches for Python 3.9 in CMake, so
+        # anything before that probably won't work at all.
+        pybind-version: "2.5.0"
+        doxygen-version: "1.8.18"
+    - coverage
+
+  py310:
+    executor: python-3_10
+    steps:
+    - install-base:
+        # libtinfo5 needed by doxygen 1.8.18, wtf
+        extra: graphviz cmake ninja-build wget libtinfo5
+    - install-python-deps
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.10"
+        # Python 3.10 and Pybind 2.8 were both released on 2021-10-04, so
+        # assume anything older won't really work there.
+        pybind-version: "2.8.0"
+        doxygen-version: "1.8.18"
     - coverage
 
   js:
@@ -231,7 +299,9 @@ workflows:
   version: 2
   build:
     jobs:
-    - py35
-    - py36
-    - py37
+    - py306
+    - py307
+    - py308
+    - py309
+    - py310
     - js

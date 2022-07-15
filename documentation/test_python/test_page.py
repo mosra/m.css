@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -82,18 +83,21 @@ class Plugins(BaseTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-        # The output is different for every other Graphviz
-        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'dot.html'
-        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+        else:
             file = 'dot-240.html'
-        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
-            file = 'dot-238.html'
         self.assertEqual(*self.actual_expected_contents('dot.html', file))
 
         # I assume this will be a MASSIVE ANNOYANCE at some point as well so
-        # keeping it separate
-        self.assertEqual(*self.actual_expected_contents('plots.html'))
+        # keeping it separate. (Yes, thank you past mosra. Very helpful.)
+        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.5'):
+            self.assertEqual(*self.actual_expected_contents('plots.html'))
+        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
+            self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-34.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-32.html'))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
 
         import fancyline

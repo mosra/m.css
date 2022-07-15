@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -85,12 +86,19 @@ class AllProperty(BaseInspectTestCase):
 class Annotations(BaseInspectTestCase):
     def test(self):
         self.run_python()
-        self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
+        if LooseVersion(sys.version) >= LooseVersion('3.7.0') and LooseVersion(sys.version) < LooseVersion('3.9.0'):
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.html', 'inspect_annotations-py37+38.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_annotations.FooSlots.html'))
 
-        # This should not list any internal stuff from the typing module
-        self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
+        # This should not list any internal stuff from the typing module. The
+        # Generic.__new__() is gone in 3.9: https://bugs.python.org/issue39168
+        if LooseVersion(sys.version) >= LooseVersion('3.9.0'):
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html', 'inspect_annotations.AContainer-py36-38.html'))
 
     # https://github.com/python/cpython/pull/13394
     @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7.4'),
@@ -242,8 +250,12 @@ class Attrs(BaseInspectTestCase):
             'ATTRS_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClass.html'))
-        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html'))
-        self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html'))
+        if attr.__version_info__ >= (20, 1):
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html'))
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MyClassAutoAttribs.html', 'inspect_attrs.MyClassAutoAttribs-attrs193.html'))
+            self.assertEqual(*self.actual_expected_contents('inspect_attrs.MySlotClass.html', 'inspect_attrs.MySlotClass-attrs193.html'))
 
 class Underscored(BaseInspectTestCase):
     def test(self):

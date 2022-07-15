@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -131,7 +132,7 @@ M_LINKS_FOOTER4 = [('Plugins', 'plugins/'),
                    ('Sphinx', 'plugins/sphinx/')]
 
 M_FINE_PRINT = """
-| m.css. Copyright © `Vladimír Vondruš <http://mosra.cz>`_, 2017--2020. Site
+| m.css. Copyright © `Vladimír Vondruš <http://mosra.cz>`_, 2017--2022. Site
   powered by `Pelican <https://getpelican.com>`_ and m.css.
 | Code and content is `available on GitHub under MIT <https://github.com/mosra/m.css>`_.
   Contact the author via `Gitter <https://gitter.im/mosra/m.css>`_,

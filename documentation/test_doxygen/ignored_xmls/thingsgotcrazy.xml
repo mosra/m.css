@@ -1,0 +1,7 @@
+<!-- this file should get opened but skipped because it doesn't contain a
+     <compounddef> as the first thing in the <doxygen> element. Might be a bit
+     too tight, but better safe than sorry AGAIN. -->
+<doxygen>
+  <crazyisay/>
+  <compounddef/>
+</doxygen>

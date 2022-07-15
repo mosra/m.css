@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -57,13 +58,16 @@ the current century.
 
 Download the `m/htmlsanity.py <{filename}/plugins.rst>`_ file, put it
 including the ``m/`` directory into one of your :py:`PLUGIN_PATHS` and add
-:py:`m.htmlsanity` package to your :py:`PLUGINS` in ``pelicanconf.py``.
+:py:`m.htmlsanity` package to your :py:`PLUGINS` in ``pelicanconf.py``. The
+following shows the minimal configuration together with default values of all
+available options. Not specifying the option is equivalent to setting it to a
+default value.
 
 .. code:: python
 
     PLUGINS += ['m.htmlsanity']
-    M_HTMLSANITY_SMART_QUOTES = True
-    M_HTMLSANITY_HYPHENATION = True
+    M_HTMLSANITY_SMART_QUOTES = False
+    M_HTMLSANITY_HYPHENATION = False
 
 Hyphenation (see below) requires the `Pyphen <https://pyphen.org/>`_ library,
 either install it via ``pip`` or your distribution package manager or disable
@@ -78,12 +82,14 @@ it with the above setting.
 
 The ``m.htmlsanity`` plugin is available always, no need to mention it
 explicitly. However, the options aren't, so you might want to supply them.
-The same dependencies as for `Pelican`_ apply here.
+The same dependencies as for `Pelican`_ apply here. The following shows the
+minimal configuration together with default values of all available options.
+Not specifying the option is equivalent to setting it to a default value.
 
 .. code:: py
 
-    M_HTMLSANITY_SMART_QUOTES = True
-    M_HTMLSANITY_HYPHENATION = True
+    M_HTMLSANITY_SMART_QUOTES = False
+    M_HTMLSANITY_HYPHENATION = False
 
 `Doxygen theme`_
 ----------------
@@ -112,7 +118,8 @@ horrible, right?) with a custom HTML5 writer derived from
 -   Even the Docutils HTML5 writer was putting *frightening* :html:`<colgroup>`
     things into HTML tables. Not anymore.
 -   Topics are using HTML5 :html:`<aside>` tag, topic headers are using
-    :html:`<h3>` instead of a nondescript :html:`<div>`
+    :html:`<h3>` instead of a nondescript :html:`<div>`. A special case is
+    Table of Contents, which is a :html:`<nav>` instead of :html:`<aside>`
 -   Line blocks are simply :html:`<p>` elements with lines delimited using
     :html:`<br>`
 -   The :html:`<abbr>` tag now properly includes a ``title`` attribute
@@ -124,7 +131,7 @@ Additionally, the following m.css-specific changes are done:
 -   Footnotes and footnote references have the :css:`.m-footnote`
     `styling classes <{filename}/css/typography.rst#footnotes-and-footnote-references>`_
     applied
--   Links that are just URLs have :css:`.m-link-wrap` appied `to better wrap on narrow screens <{filename}/css/typography.rst#footnotes-and-footnote-references>`_.
+-   Links that are just URLs have :css:`.m-link-wrap` applied `to better wrap on narrow screens <{filename}/css/typography.rst#footnotes-and-footnote-references>`_.
     Note that it's also possible to apply this and other CSS classes explicitly
     with the `m.link <{filename}/plugins/links.rst#stylable-links>`_ plugin.
 
@@ -179,7 +186,7 @@ included in the :py:`FORMATTED_FIELDS`. See for yourself:
     *"Autres temps, autres mœurs"*
 
 The default language is taken from the standard :py:`DEFAULT_LANG` option,
-which defaults to :py:`'en'`, and can be also overriden on per-page or
+which defaults to :py:`'en'`, and can be also overridden on per-page or
 per-article basis using the :rst:`:lang:` metadata option. This feature is
 controlled by the :py:`M_HTMLSANITY_SMART_QUOTES` option, which, similarly to
 the builtin :py:`TYPOGRIFY` option, defaults to :py:`False`.
@@ -380,7 +387,7 @@ pass language name to the ``lang`` argument. You can also take the value from
 
 Sometimes, on the other hand, you might want to de-hyphenate text that was
 already hyphenated, for example to avoid potential issues in :html:`<meta>`
-tags. The ``dehyphenate`` filter simply removes all occurences of :html:`&shy;`
+tags. The ``dehyphenate`` filter simply removes all occurrences of :html:`&shy;`
 from passed text. The ``enable`` argument works the same as with the
 ``hyphenate`` filter.
 

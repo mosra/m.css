@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -43,4 +44,49 @@ search_type_map = [
     (CssClass.PRIMARY, "namespace"),
     (CssClass.PRIMARY, "class"),
     (CssClass.INFO, "func")
+]
+
+# Tries don't store any strings, so name_size_bytes can be whatever
+trie_type_sizes = [
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 2,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 3,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 4,
+     'name_size_bytes': 1},
+
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 2,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 3,
+     'name_size_bytes': 1},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 4,
+     'name_size_bytes': 1},
+]
+
+type_sizes = trie_type_sizes + [
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 2,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 3,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 3,
+     'result_id_bytes': 4,
+     'name_size_bytes': 2},
+
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 2,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 3,
+     'name_size_bytes': 2},
+    {'file_offset_bytes': 4,
+     'result_id_bytes': 4,
+     'name_size_bytes': 2},
 ]

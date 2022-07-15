@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -31,7 +32,7 @@ Plugins
 In addition to providing a theme for `Pelican <{filename}/themes/pelican.rst>`_
 or `Doxygen <{filename}/documentation/doxygen.rst>`_  that styles the overall
 page layout and basic typography, m.css also contains a collection of plugins,
-extending the capabilities futher.
+extending the capabilities further.
 
 `Usage`_
 ========

@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -43,11 +44,10 @@ class Dot(PelicanPluginTestCase):
             'M_DOT_FONT': 'DejaVu Sans'
         })
 
-        if LooseVersion(dot_version()) >= LooseVersion("2.44.0"):
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
             file = 'page.html'
-        elif LooseVersion(dot_version()) > LooseVersion("2.40.0"):
+        else:
             file = 'page-240.html'
-        elif LooseVersion(dot_version()) >= LooseVersion("2.38.0"):
-            file = 'page-238.html'
 
         self.assertEqual(*self.actual_expected_contents('page.html', file))

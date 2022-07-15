@@ -1,7 +1,8 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+              Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -96,7 +97,7 @@ m.css math
             .. button-warning:: {filename}/css/components.rst#math
                 :class: m-fullwidth
 
-                See the possibilites
+                See the possibilities
 
     .. container:: m-col-m-4
 

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>inspect_annotations | My Python Project</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i%7CSource+Code+Pro:400,400i,600" />
+  <link rel="stylesheet" href="m-dark+documentation.compiled.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="index.html" id="m-navbar-brand" class="m-col-t-8 m-col-m-none m-left-m">My Python Project</a>
+    </div>
+  </div>
+</nav></header>
+<main><article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>
+          inspect_annotations <span class="m-thin">module</span>
+        </h1>
+        <p>Annotation parsing. For links inside annotations see test_inspect.TypeLinks.</p>
+        <nav class="m-block m-default">
+          <h3>Contents</h3>
+          <ul>
+            <li>
+              Reference
+              <ul>
+                <li><a href="#classes">Classes</a></li>
+                <li><a href="#functions">Functions</a></li>
+                <li><a href="#data">Data</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <section id="classes">
+          <h2><a href="#classes">Classes</a></h2>
+          <dl class="m-doc">
+            <dt>class <a href="inspect_annotations.AContainer.html" class="m-doc">AContainer</a></dt>
+            <dd>A generic class. No parent class info extracted yet.</dd>
+            <dt>class <a href="inspect_annotations.AContainer2.html" class="m-doc">AContainer2</a></dt>
+            <dd>Another class derived from a typing thing.</dd>
+            <dt>class <a href="inspect_annotations.Foo.html" class="m-doc">Foo</a></dt>
+            <dd>A class with properties</dd>
+            <dt>class <a href="inspect_annotations.FooSlots.html" class="m-doc">FooSlots</a></dt>
+            <dd>A class with slots</dd>
+          </dl>
+        </section>
+        <section id="functions">
+          <h2><a href="#functions">Functions</a></h2>
+          <dl class="m-doc">
+            <dt id="annotated_positional_keyword">
+              <span class="m-doc-wrap-bumper">def <a href="#annotated_positional_keyword" class="m-doc-self">annotated_positional_keyword</a>(</span><span class="m-doc-wrap">bar = False,<span class="m-text m-dim"> *,</span>
+              foo: str,
+              **kwargs)</span>
+            </dt>
+            <dd>Function with explicitly delimited keyword args and type annotations</dd>
+            <dt id="annotation">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation" class="m-doc-self">annotation</a>(</span><span class="m-doc-wrap">param: typing.List[int],
+              another: bool,
+              third: str = &#x27;hello&#x27;) -&gt; float</span>
+            </dt>
+            <dd>An annotated function</dd>
+            <dt id="annotation_any">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_any" class="m-doc-self">annotation_any</a>(</span><span class="m-doc-wrap">a: typing.Any)</span>
+            </dt>
+            <dd>Annotation with the Any type</dd>
+            <dt id="annotation_callable">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_callable" class="m-doc-self">annotation_callable</a>(</span><span class="m-doc-wrap">a: typing.Callable[[float, int], str])</span>
+            </dt>
+            <dd>Annotation with the Callable type</dd>
+            <dt id="annotation_callable_no_args">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_callable_no_args" class="m-doc-self">annotation_callable_no_args</a>(</span><span class="m-doc-wrap">a: typing.Callable[[], typing.Dict[int, float]])</span>
+            </dt>
+            <dd>Annotation with the Callable type w/o arguments</dd>
+            <dt id="annotation_ellipsis">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_ellipsis" class="m-doc-self">annotation_ellipsis</a>(</span><span class="m-doc-wrap">a: typing.Callable[[...], int],
+              b: typing.Tuple[str, ...])</span>
+            </dt>
+            <dd>Annotation with ellipsis</dd>
+            <dt id="annotation_func_instead_of_type">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_func_instead_of_type" class="m-doc-self">annotation_func_instead_of_type</a>(</span><span class="m-doc-wrap">a)</span>
+            </dt>
+            <dd>Annotation with a function instead of a type, ignored</dd>
+            <dt id="annotation_func_instead_of_type_nested">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_func_instead_of_type_nested" class="m-doc-self">annotation_func_instead_of_type_nested</a>(</span><span class="m-doc-wrap">a, b, c)</span>
+            </dt>
+            <dd>Annotations with nested problems, ignoring the whole thing</dd>
+            <dt id="annotation_generic">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_generic" class="m-doc-self">annotation_generic</a>(</span><span class="m-doc-wrap">a: typing.List[Tp]) -&gt; Tp</span>
+            </dt>
+            <dd>Annotation with a generic type</dd>
+            <dt id="annotation_list_noparam">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_list_noparam" class="m-doc-self">annotation_list_noparam</a>(</span><span class="m-doc-wrap">a: typing.List[T])</span>
+            </dt>
+            <dd>Annotation with the unparametrized List type. 3.7 and 3.8 adds an implicit TypeVar to it, 3.6, 3.9 and 3.10 not, so the output is different between the versions.</dd>
+            <dt id="annotation_optional">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_optional" class="m-doc-self">annotation_optional</a>(</span><span class="m-doc-wrap">a: typing.Optional[float])</span>
+            </dt>
+            <dd>Annotation with the Optional type</dd>
+            <dt id="annotation_strings">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_strings" class="m-doc-self">annotation_strings</a>(</span><span class="m-doc-wrap">param: typing.List[int],
+              another: bool,
+              third: str = &#x27;hello&#x27;) -&gt; float</span>
+            </dt>
+            <dd>Annotated using strings, should result in exactly the same as annotation()</dd>
+            <dt id="annotation_tuple_instead_of_tuple">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_tuple_instead_of_tuple" class="m-doc-self">annotation_tuple_instead_of_tuple</a>(</span><span class="m-doc-wrap">a)</span>
+            </dt>
+            <dd>Annotation with a tuple instead of Tuple, ignored</dd>
+            <dt id="annotation_union">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_union" class="m-doc-self">annotation_union</a>(</span><span class="m-doc-wrap">a: typing.Union[float, int])</span>
+            </dt>
+            <dd>Annotation with the Union type</dd>
+            <dt id="annotation_union_of_undefined">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_union_of_undefined" class="m-doc-self">annotation_union_of_undefined</a>(</span><span class="m-doc-wrap">a: typing.Union[int, something.Undefined])</span>
+            </dt>
+            <dd>Annotation with an union that has an undefined type inside, where we can&#x27;t use isinstance either</dd>
+            <dt id="annotation_union_second_bracketed">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_union_second_bracketed" class="m-doc-self">annotation_union_second_bracketed</a>(</span><span class="m-doc-wrap">a: typing.Union[float, typing.List[int]])</span>
+            </dt>
+            <dd>Annotation with the Union type and second type bracketed, where we can&#x27;t use isinstance</dd>
+            <dt id="args_kwargs">
+              <span class="m-doc-wrap-bumper">def <a href="#args_kwargs" class="m-doc-self">args_kwargs</a>(</span><span class="m-doc-wrap">a, b, *args, **kwargs)</span>
+            </dt>
+            <dd>Function with args and kwargs</dd>
+            <dt id="no_annotation">
+              <span class="m-doc-wrap-bumper">def <a href="#no_annotation" class="m-doc-self">no_annotation</a>(</span><span class="m-doc-wrap">a, b, z)</span>
+            </dt>
+            <dd>Non-annotated function</dd>
+            <dt id="no_annotation_default_param">
+              <span class="m-doc-wrap-bumper">def <a href="#no_annotation_default_param" class="m-doc-self">no_annotation_default_param</a>(</span><span class="m-doc-wrap">param,
+              another,
+              third = &#x27;hello&#x27;)</span>
+            </dt>
+            <dd>Non-annotated function with a default parameter</dd>
+            <dt id="partial_annotation">
+              <span class="m-doc-wrap-bumper">def <a href="#partial_annotation" class="m-doc-self">partial_annotation</a>(</span><span class="m-doc-wrap">foo,
+              param: typing.Tuple[int, int],
+              unannotated,
+              cls: object)</span>
+            </dt>
+            <dd>Partially annotated function</dd>
+            <dt id="positional_keyword">
+              <span class="m-doc-wrap-bumper">def <a href="#positional_keyword" class="m-doc-self">positional_keyword</a>(</span><span class="m-doc-wrap">positional_kw,<span class="m-text m-dim"> *,</span> kw_only)</span>
+            </dt>
+            <dd>Function with explicitly delimited keyword args</dd>
+            <dt id="returns_none">
+              <span class="m-doc-wrap-bumper">def <a href="#returns_none" class="m-doc-self">returns_none</a>(</span><span class="m-doc-wrap">a: typing.Callable[[], None]) -&gt; None</span>
+            </dt>
+            <dd>In order to disambiguate between a missing return annotation and an
+annotated none, the None return annotation is kept, converted from NoneType
+to None</dd>
+            <dt id="returns_none_type">
+              <span class="m-doc-wrap-bumper">def <a href="#returns_none_type" class="m-doc-self">returns_none_type</a>(</span><span class="m-doc-wrap">a: typing.Callable[[], None]) -&gt; None</span>
+            </dt>
+            <dd>And it should behave the same when using None or type(None)</dd>
+          </dl>
+        </section>
+        <section id="data">
+          <h2><a href="#data">Data</a></h2>
+          <dl class="m-doc">
+            <dt id="ANNOTATED_VAR">
+              <a href="#ANNOTATED_VAR" class="m-doc-self">ANNOTATED_VAR</a>: typing.Tuple[bool, str] = (False, &#x27;No.&#x27;)
+            </dt>
+            <dd></dd>
+            <dt id="UNANNOTATED_VAR">
+              <a href="#UNANNOTATED_VAR" class="m-doc-self">UNANNOTATED_VAR</a> = 3.45
+            </dt>
+            <dd></dd>
+          </dl>
+        </section>
+      </div>
+    </div>
+  </div>
+</article></main>
+</body>
+</html>

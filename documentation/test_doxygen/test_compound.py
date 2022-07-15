@@ -1,7 +1,8 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020 Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -62,6 +63,15 @@ class Listing(IntegrationTestCase):
         self.run_doxygen(wildcard='classRoot_1_1Directory_1_1Sub_1_1Class.xml')
         self.assertEqual(*self.actual_expected_contents('classRoot_1_1Directory_1_1Sub_1_1Class.html'))
 
+    def test_class_no_group_name_warning(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='structRoot_1_1Directory_1_1Sub_1_1Warning.xml')
+
+        self.assertEqual(*self.actual_expected_contents('structRoot_1_1Directory_1_1Sub_1_1Warning.html'))
+        self.assertEqual(cm.output, [
+            "ERROR:root:structRoot_1_1Directory_1_1Sub_1_1Warning.xml: member groups without @name are not supported, ignoring"
+        ])
+
     def test_page_no_toc(self):
         self.run_doxygen(wildcard='page-no-toc.xml')
         self.assertEqual(*self.actual_expected_contents('page-no-toc.html'))
@@ -80,8 +90,14 @@ class Detailed(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structTemplate_3_01void_01_4.html'))
 
     def test_class_template_warnings(self):
-        self.run_doxygen(wildcard='structTemplateWarning.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='structTemplateWarning.xml')
+
         self.assertEqual(*self.actual_expected_contents('structTemplateWarning.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:structTemplateWarning.xml: unexpected @param / @return / @retval / @exception found in top-level description, ignoring",
+            "WARNING:root:structTemplateWarning.xml: template parameter description doesn't match parameter names: {'WTF': 'And this one does not exist'}"
+        ])
 
     def test_function(self):
         self.run_doxygen(wildcard='namespaceFoo.xml')
@@ -92,8 +108,15 @@ class Detailed(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('namespaceEno.html'))
 
     def test_function_enum_warnings(self):
-        self.run_doxygen(wildcard='namespaceWarning.xml')
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='namespaceWarning.xml')
+
         self.assertEqual(*self.actual_expected_contents('namespaceWarning.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:namespaceWarning.xml: superfluous @return section found, ignoring: Returns something, but second time. This is ignored.",
+            "WARNING:root:namespaceWarning.xml: superfluous @return section found, ignoring: Returns something, third time, in a different paragraph. Ignored as well.",
+            "WARNING:root:namespaceWarning.xml: function parameter description doesn't match parameter names: {'wrong': ('This parameter is not here', '')}"
+        ])
 
     def test_typedef(self):
         self.run_doxygen(wildcard='namespaceType.xml')
@@ -206,7 +229,7 @@ class FilenameCase(IntegrationTestCase):
 
         # Verify that all filenames are "converted" to lowercase and the links
         # and page tree work properly as well
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+        self.assertEqual(*self.actual_expected_contents('page.html'))
         self.assertEqual(*self.actual_expected_contents('pages.html'))
         self.assertEqual(*self.actual_expected_contents('_u_p_p_e_r_c_a_s_e.html'))
         self.assertEqual(*self.actual_expected_contents('class_u_p_p_e_r_c_l_a_s_s.html'))

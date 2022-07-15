@@ -18,7 +18,7 @@ class Class:
         """A dunder method"""
 
     def method(self):
-        """This summary will get overriden from the docs"""
+        """This summary will get overridden from the docs"""
 
     def method_with_details(self):
         pass
