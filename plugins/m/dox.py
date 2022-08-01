@@ -92,19 +92,26 @@ def init(tagfiles, input):
                 # Linking to namespaces, structs and classes
                 if child.attrib['kind'] in ['class', 'struct', 'namespace']:
                     name = child.find('name').text
-                    link = path + child.findtext('filename') # <filename> can be empty (cppreference tag file)
+                    # The cppreference tag file has <filename> empty
+                    link = path + child.findtext('filename')
                     symbol_mapping[name] = (None, link, css_classes)
                     for member in child.findall('member'):
                         if not 'kind' in member.attrib: continue
 
+                        # In case of the cppreference tag file, <compound>
+                        # <filename> is empty, and <anchorfile> inside <member>
+                        # is used instead. Doxygen fills both, so use
+                        # <anchorfile> to cover both cases.
+                        link = path + member.find('anchorfile').text
+
                         # Typedefs, constants, variables
                         if member.attrib['kind'] in ['typedef', 'enumvalue', 'variable']:
-                            symbol_mapping[name + '::' + member.find('name').text] = (None, link + '#' + member.findtext('anchor'), css_classes)
+                            symbol_mapping[name + '::' + member.find('name').text] = (None, link + ('#' + member.findtext('anchor') if member.findtext('anchor') else ''), css_classes)
 
                         # Functions
                         if member.attrib['kind'] == 'function':
                             # <filename> can be empty (cppreference tag file)
-                            symbol_mapping[name + '::' + member.find('name').text + "()"] = (None, link + '#' + member.findtext('anchor'), css_classes)
+                            symbol_mapping[name + '::' + member.find('name').text + "()"] = (None, link + ('#' + member.findtext('anchor') if member.findtext('anchor') else ''), css_classes)
 
                         # Enums with values
                         if member.attrib['kind'] == 'enumeration':

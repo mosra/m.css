@@ -23,6 +23,11 @@ m.dox
 -   :dox:`Link to class with query and hash after <Utility::Path?q=hello#search>`
 -   Flat link: :dox-flat:`plugin-management`
 
+STL tagfile, which uses slightly different semantic:
+
+-   Function: :dox:`std::memchr()`
+-   Variable: :dox:`std::div_t::quot`
+
 These should produce warnings:
 
 -   Link to nonexistent name will be rendered as code: :dox:`nonExistent()`

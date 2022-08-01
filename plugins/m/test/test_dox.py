@@ -33,7 +33,8 @@ class Dox(PelicanPluginTestCase):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.dox'],
             'M_DOX_TAGFILES': [
-                ('../doc/documentation/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'])]
+                ('../doc/documentation/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::']),
+                ('m/test/dox/stl.tag', 'http://en.cppreference.com/w/', [])]
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
@@ -42,7 +43,8 @@ class Dox(PelicanPluginTestCase):
         self.run_pelican({
             'PLUGINS': ['m.htmlsanity', 'm.dox'],
             'M_DOX_TAGFILES': [
-                ('../doc/documentation/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'], ['m-flat', 'm-text', 'm-strong'])]
+                ('../doc/documentation/corrade.tag', 'https://doc.magnum.graphics/corrade/', ['Corrade::'], ['m-flat', 'm-text', 'm-strong']),
+                ('m/test/dox/stl.tag', 'http://en.cppreference.com/w/', [], ['m-flat', 'm-text'])]
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html', 'page_css_classes.html'))
