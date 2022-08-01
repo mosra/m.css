@@ -121,7 +121,10 @@ def init(tagfiles, input):
                             for value in member.findall('enumvalue'):
                                 symbol_mapping[enumeration + '::' + value.text] = (None, link + '#' + value.attrib['anchor'], css_classes)
 
-                # Sections
+                # Sections. While rather strange, these reuse the `link`
+                # variable defined by whatever came earlier --- because pages
+                # have it with implicit `.html` but e.g. files with explicit
+                # `.html`. TODO: fix more robustly
                 for section in child.findall('docanchor'):
                     symbol_mapping[section.text] = (section.attrib.get('title', ''), link + '#' + section.text, css_classes)
 
