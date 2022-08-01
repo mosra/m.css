@@ -4,16 +4,19 @@ m.dox
 .. role:: dox-flat(dox)
     :class: m-flat
 
--   Function link: :dox:`Utility::Directory::mkpath()`
--   Class link: :dox:`Interconnect::Emitter`
+-   Function link: :dox:`Utility::Path::make()`
+-   Class link: :dox:`Containers::String`
 -   Page link: :dox:`building-corrade`
+-   Typedef link: :dox:`Containers::StringView`
+-   Enum link: :dox:`Utility::Path::ListFlag`
+-   Enum value link: :dox:`Utility::Path::ListFlag::SkipDirectories`
 -   :dox:`Custom link title <testsuite>`
 -   :dox:`Page link with custom title <corrade-cmake>`
 -   :dox:`Link to index page <corrade>`
--   :dox:`Link to class documentation section <TestSuite-Tester-command-line>`
+-   :dox:`Link to class documentation section <Containers-String-stl>`
 -   :dox:`Link to index page with hash after <corrade#search>`
 -   :dox:`Link to page with hash after <corrade-cmake#search>`
--   :dox:`Link to class with query and hash after <Utility::Directory?q=hello#search>`
+-   :dox:`Link to class with query and hash after <Utility::Path?q=hello#search>`
 -   Flat link: :dox-flat:`plugin-management`
 
 These should produce warnings:

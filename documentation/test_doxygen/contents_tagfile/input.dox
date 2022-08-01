@@ -1,6 +1,6 @@
 /** @mainpage
 
-See @ref CORRADE_INTERNAL_ASSERT() for more information.
+See @ref CORRADE_ASSERT() for more information.
 
 @code{.cpp}
 Corrade::Utility::Resource rx;

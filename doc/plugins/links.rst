@@ -294,23 +294,23 @@ and adding the :rst:`:class:` option.
         .. role:: dox-flat(dox)
             :class: m-flat
 
-        -   Function link: :dox:`Utility::Directory::mkpath()`
-        -   Class link: :dox:`Interconnect::Emitter`
-        -   Page link: :dox:`building-corrade`
+        -   Function link: :dox:`Utility::Path::make()`
+        -   Class link: :dox:`Containers::String`
+        -   Page link: :dox:`corrade-cmake`
         -   :dox:`Custom link title <testsuite>`
         -   :dox:`Link to documentation index page <corrade>`
-        -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
+        -   :dox:`Link to an anchor <Containers::String#pub-methods>`
         -   Flat link: :dox-flat:`plugin-management`
 
     .. role:: dox-flat(dox)
         :class: m-flat
 
-    -   Function link: :dox:`Utility::Directory::mkpath()`
-    -   Class link: :dox:`Interconnect::Emitter`
-    -   Page link: :dox:`building-corrade`
+    -   Function link: :dox:`Utility::Path::make()`
+    -   Class link: :dox:`Containers::String`
+    -   Page link: :dox:`corrade-cmake`
     -   :dox:`Custom link title <testsuite>`
     -   :dox:`Link to documentation index page <corrade>`
-    -   :dox:`Link to an anchor <Interconnect::Emitter#pub-methods>`
+    -   :dox:`Link to an anchor <Containers::String#pub-methods>`
     -   Flat link: :dox-flat:`plugin-management`
 
 It's also possible to add custom CSS classes via a fourth tuple item. For
