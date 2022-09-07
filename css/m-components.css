@@ -1298,16 +1298,16 @@ figure.m-figure.m-primary figcaption .m-figure-description { color: var(--defaul
 figure.m-figure.m-success::before { border-color: var(--success-filled-background-color); }
 figure.m-figure.m-success figcaption { color: var(--success-color); }
 figure.m-figure.m-success figcaption .m-figure-description { color: var(--default-color); }
-figure.m-figure.m-warning:::before { border-color: var(--warning-filled-background-color); }
+figure.m-figure.m-warning::before { border-color: var(--warning-filled-background-color); }
 figure.m-figure.m-warning figcaption { color: var(--warning-color); }
 figure.m-figure.m-warning figcaption .m-figure-description { color: var(--default-color); }
-figure.m-figure.m-danger:::before { border-color: var(--danger-filled-background-color); }
+figure.m-figure.m-danger::before { border-color: var(--danger-filled-background-color); }
 figure.m-figure.m-danger figcaption { color: var(--danger-color); }
 figure.m-figure.m-danger figcaption .m-figure-description { color: var(--default-color); }
-figure.m-figure.m-info:::before { border-color: var(--info-filled-background-color); }
+figure.m-figure.m-info::before { border-color: var(--info-filled-background-color); }
 figure.m-figure.m-info figcaption { color: var(--info-color); }
 figure.m-figure.m-info figcaption .m-figure-description { color: var(--default-color); }
-figure.m-figure.m-dim:::before { border-color: var(--dim-filled-background-color); }
+figure.m-figure.m-dim::before { border-color: var(--dim-filled-background-color); }
 figure.m-figure.m-dim { color: var(--dim-color); }
 figure.m-figure.m-dim a { color: var(--dim-link-color); }
 figure.m-figure.m-dim a:hover, figure.m-figure.m-dim a:focus, figure.m-figure.m-dim a:active {
