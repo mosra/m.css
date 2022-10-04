@@ -37,7 +37,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   Marin (`@marinjurjevic <https://github.com/marinjurjevic>`_) --- Doxygen
     theme fixes
 -   Mark Gillard (`@marzer <https://github.com/marzer>`_) --- Doxygen theme
-    improvements
+    improvements, CSS fixes
 -   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
     theme improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
