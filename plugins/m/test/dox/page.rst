@@ -7,9 +7,12 @@ m.dox
 -   Function link: :dox:`Utility::Path::make()`
 -   Class link: :dox:`Containers::String`
 -   Page link: :dox:`building-corrade`
+-   File link: :dox:`/home/mosra/Code/corrade/src/Corrade/Corrade.h`
 -   Typedef link: :dox:`Containers::StringView`
 -   Enum link: :dox:`Utility::Path::ListFlag`
 -   Enum value link: :dox:`Utility::Path::ListFlag::SkipDirectories`
+-   Define link: :dox:`CORRADE_TARGET_AVX512F`
+-   Macro function link: :dox:`CORRADE_ASSERT()`
 -   Variable link: :dox:`Containers::AllocatedInit`
 -   :dox:`Custom link title <testsuite>`
 -   :dox:`Page link with custom title <corrade-cmake>`

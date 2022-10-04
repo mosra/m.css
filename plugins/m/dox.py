@@ -79,7 +79,7 @@ def init(tagfiles, input):
                 # Linking to files
                 if child.attrib['kind'] == 'file':
                     file_path = child.find('path')
-                    link = path + child.find('filename').text + ".html"
+                    link = path + child.find('filename').text
                     symbol_mapping[(file_path.text if file_path is not None else '') + child.find('name').text] = (None, link, css_classes)
 
                     for member in child.findall('member'):
@@ -99,7 +99,7 @@ def init(tagfiles, input):
 
                         # Typedefs, constants, variables
                         if member.attrib['kind'] in ['typedef', 'enumvalue', 'variable']:
-                            symbol_mapping[name + '::' + member.find('name').text] = (None, link + '#' + member.find('anchor').text, css_classes)
+                            symbol_mapping[name + '::' + member.find('name').text] = (None, link + '#' + member.findtext('anchor'), css_classes)
 
                         # Functions
                         if member.attrib['kind'] == 'function':

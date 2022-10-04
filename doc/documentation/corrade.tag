@@ -68,4 +68,28 @@
     <title>Plugin management</title>
     <filename>plugin-management</filename>
   </compound>
+  <compound kind="file">
+    <name>Corrade.h</name>
+    <path>/home/mosra/Code/corrade/src/Corrade/</path>
+    <filename>Corrade_8h.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>CORRADE_TARGET_AVX512F</name>
+      <anchorfile>Corrade_8h.html</anchorfile>
+      <anchor>a9238a5d202ed321a0435d2885e2ff47c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>Assert.h</name>
+    <path>/home/mosra/Code/corrade/src/Corrade/Utility/</path>
+    <filename>Assert_8h.html</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>CORRADE_ASSERT</name>
+      <anchorfile>Assert_8h.html</anchorfile>
+      <anchor>a83f7361970111951c88f1564a4f148e8</anchor>
+      <arglist>(condition, message, returnValue)</arglist>
+    </member>
+  </compound>
 </tagfile>
