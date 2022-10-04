@@ -3,6 +3,6 @@ charset = utf-8
 indent_style = space
 indent_size = 4
 
-[*.{css,html,yml}]
+[*.{css,html,tag,yml}]
 indent_style = space
 indent_size = 2
