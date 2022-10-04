@@ -234,6 +234,9 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
+        # until I have it on Arch and can test it locally
+        matplotlib-version: ==3.5.2
         # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
         # 0.18.1 reverted again, test we're not affected by those
         docutils-version: ==0.18.0
@@ -254,7 +257,10 @@ jobs:
     - install-base:
         # libtinfo5 needed by doxygen 1.8.18, wtf
         extra: graphviz cmake ninja-build wget libtinfo5
-    - install-python-deps
+    - install-python-deps:
+        # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
+        # until I have it on Arch and can test it locally
+        matplotlib-version: ==3.5.2
     - checkout
     - test-theme
     - test-plugins
@@ -272,7 +278,10 @@ jobs:
     - install-base:
         # libtinfo5 needed by doxygen 1.8.18, wtf
         extra: graphviz cmake ninja-build wget libtinfo5
-    - install-python-deps
+    - install-python-deps:
+        # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
+        # until I have it on Arch and can test it locally
+        matplotlib-version: ==3.5.2
     - checkout
     - test-theme
     - test-plugins
