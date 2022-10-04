@@ -97,8 +97,8 @@ def init(tagfiles, input):
                     for member in child.findall('member'):
                         if not 'kind' in member.attrib: continue
 
-                        # Typedefs, constants
-                        if member.attrib['kind'] == 'typedef' or member.attrib['kind'] == 'enumvalue':
+                        # Typedefs, constants, variables
+                        if member.attrib['kind'] in ['typedef', 'enumvalue', 'variable']:
                             symbol_mapping[name + '::' + member.find('name').text] = (None, link + '#' + member.find('anchor').text, css_classes)
 
                         # Functions

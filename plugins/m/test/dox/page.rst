@@ -10,6 +10,7 @@ m.dox
 -   Typedef link: :dox:`Containers::StringView`
 -   Enum link: :dox:`Utility::Path::ListFlag`
 -   Enum value link: :dox:`Utility::Path::ListFlag::SkipDirectories`
+-   Variable link: :dox:`Containers::AllocatedInit`
 -   :dox:`Custom link title <testsuite>`
 -   :dox:`Page link with custom title <corrade-cmake>`
 -   :dox:`Link to index page <corrade>`

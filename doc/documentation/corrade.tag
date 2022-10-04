@@ -34,6 +34,13 @@
       <anchor>a5ac77ad25e27290ff059450af138fbed</anchor>
       <arglist></arglist>
     </member>
+    <member kind="variable">
+      <type>constexpr AllocatedInitT</type>
+      <name>AllocatedInit</name>
+      <anchorfile>namespaceCorrade_1_1Containers.html</anchorfile>
+      <anchor>a1f81c0df1f144ff03f4f02f6721f615b</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="class">
     <name>Corrade::Containers::String</name>
