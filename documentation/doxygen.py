@@ -1033,7 +1033,14 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         elif i.tag == 'variablelist':
             assert element.tag in ['para', '{http://mcss.mosra.cz/doxygen/}div']
             has_block_elements = True
-            out.parsed += '<dl class="m-doc">'
+            # Usually, <variablelist> is used to format todo lists and other
+            # xrefitems (without being explicitly marked as such, of course),
+            # in which case the styling is provided by the m-doc CSS class. But
+            # if the user explicitly provided a CSS class using @m_class, then
+            # it was probably literal <dl> directly in the markup, used for
+            # example for a footnote list. In that case use the provided class
+            # instead of m-doc.
+            out.parsed += '<dl class="{}">'.format(add_css_class if add_css_class else 'm-doc')
 
             for var in i:
                 if var.tag == 'varlistentry':
