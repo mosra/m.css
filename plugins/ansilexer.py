@@ -261,7 +261,7 @@ class AnsiLexer(RegexLexer):
             return self._palette_start_colors[offset]
         elif offset < 232:
             offset = offset - 16
-            offset, b = divmod (offset,6)
+            offset, b = divmod(offset, 6)
             r, g = divmod(offset, 6)
             r = self._palette_cube_steps[r]
             g = self._palette_cube_steps[g]
