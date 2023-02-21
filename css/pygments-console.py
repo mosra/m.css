@@ -40,6 +40,7 @@ class ConsoleStyle(Style):
 
         # ANSI highlighting. Same order as in Konsole style dialog, following
         # the Breeze theme.
+        Generic.AnsiInvertedDefault:          '#1a1c1d',
         Generic.AnsiBlack:                    '#232627',
         Generic.AnsiRed:                      '#ed1515',
         Generic.AnsiGreen:                    '#11d116',
@@ -48,6 +49,7 @@ class ConsoleStyle(Style):
         Generic.AnsiMagenta:                  '#9b59b6',
         Generic.AnsiCyan:                     '#1abc9c',
         Generic.AnsiWhite:                    '#fcfcfc',
+        Generic.AnsiBrightInvertedDefault:    'bold #1a1c1d',
         Generic.AnsiBrightBlack:              'bold #7f8c8d',
         Generic.AnsiBrightRed:                'bold #c0392b',
         Generic.AnsiBrightGreen:              'bold #1cdc9a',

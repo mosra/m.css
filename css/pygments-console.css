@@ -22,12 +22,14 @@
 .m-console .g-AnsiBrightCyan { color: #16a085; font-weight: bold } /* Generic.AnsiBrightCyan */
 .m-console .g-AnsiBrightDefault { color: #ffffff; font-weight: bold } /* Generic.AnsiBrightDefault */
 .m-console .g-AnsiBrightGreen { color: #1cdc9a; font-weight: bold } /* Generic.AnsiBrightGreen */
+.m-console .g-AnsiBrightInvertedDefault { color: #1a1c1d; font-weight: bold } /* Generic.AnsiBrightInvertedDefault */
 .m-console .g-AnsiBrightMagenta { color: #8e44ad; font-weight: bold } /* Generic.AnsiBrightMagenta */
 .m-console .g-AnsiBrightRed { color: #c0392b; font-weight: bold } /* Generic.AnsiBrightRed */
 .m-console .g-AnsiBrightWhite { color: #ffffff; font-weight: bold } /* Generic.AnsiBrightWhite */
 .m-console .g-AnsiBrightYellow { color: #fdbc4b; font-weight: bold } /* Generic.AnsiBrightYellow */
 .m-console .g-AnsiCyan { color: #1abc9c } /* Generic.AnsiCyan */
 .m-console .g-AnsiGreen { color: #11d116 } /* Generic.AnsiGreen */
+.m-console .g-AnsiInvertedDefault { color: #1a1c1d } /* Generic.AnsiInvertedDefault */
 .m-console .g-AnsiMagenta { color: #9b59b6 } /* Generic.AnsiMagenta */
 .m-console .g-AnsiRed { color: #ed1515 } /* Generic.AnsiRed */
 .m-console .g-AnsiWhite { color: #fcfcfc } /* Generic.AnsiWhite */
