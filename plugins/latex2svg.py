@@ -143,6 +143,13 @@ def latex2svg(code, params=default_params, working_directory=None):
             return None
 
     output = ret.stderr.decode('utf-8')
+
+    # Since we rely on Ghostscript to give us a "depth" (= vertical alignment)
+    # value, dvisvgm not using it means the output would be broken and it makes
+    # no sense to continue.
+    if 'Ghostscript not found' in output:
+        raise RuntimeError('libgs not detected by dvisvgm, point the LIBGS environment variable to its location')
+
     width, height = get_size(output)
     depth = get_measure(output, 'depth')
     return {'svg': svg, 'depth': depth, 'width': width, 'height': height}
