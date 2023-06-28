@@ -323,6 +323,12 @@ else:
         ('__sizeof__', "__sizeof__() -> int\nsize of object in memory, in bytes")
     })
 
+# Python 3.11 adds another
+if sys.version_info >= (3, 11):
+    _filtered_builtin_functions.update({
+        ('__getstate__', "Helper for pickle.")
+    })
+
 _filtered_builtin_properties = set([
     ('__weakref__', "list of weak references to the object (if defined)")
 ])
