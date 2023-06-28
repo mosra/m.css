@@ -419,3 +419,8 @@ class ExternalOverloadDocs(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.Class.html'))
+
+        sys.path.append(self.path)
+        import pybind_external_overload_docs
+        if pybind_external_overload_docs.Class26.is_pybind26:
+            self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.Class26.html'))
