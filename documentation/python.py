@@ -50,7 +50,6 @@ from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Set, Any, List, Callable, Optional
 from urllib.parse import urljoin
-from distutils.version import LooseVersion
 from docutils.transforms import Transform
 
 import jinja2
@@ -307,7 +306,7 @@ _filtered_builtin_functions = set([
 ])
 
 # Python 3.6 has slightly different docstrings than 3.7
-if LooseVersion(sys.version) >= LooseVersion("3.7"):
+if sys.version_info >= (3, 7):
     _filtered_builtin_functions.update({
         ('__dir__', "Default dir() implementation."),
         ('__format__', "Default object formatter."),
