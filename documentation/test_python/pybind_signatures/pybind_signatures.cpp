@@ -45,6 +45,12 @@ struct MyClass23 {
     void setFooCrazy(const Crazy<3, int>&) {}
 };
 
+struct MyClass26 {
+    static int positionalOnly(int, float) { return 1; }
+    static int keywordOnly(float, const std::string&) { return 2; }
+    static int positionalKeywordOnly(int, float, const std::string&) { return 3; }
+};
+
 void duck(py::args, py::kwargs) {}
 
 template<class T, class U> void tenOverloads(T, U) {}
@@ -116,5 +122,24 @@ could be another, but it's not added yet.)");
     pybind23
         .def_property("writeonly", nullptr, &MyClass23::setFoo, "A write-only property")
         .def_property("writeonly_crazy", nullptr, &MyClass23::setFooCrazy, "A write-only property with a type that can't be parsed");
+    #endif
+
+    py::class_<MyClass26> pybind26{m, "MyClass26", "Testing pybind 2.6 features"};
+
+    /* Checker so the Python side can detect if testing pybind 2.6 features is
+       feasible */
+    pybind26.attr("is_pybind26") =
+        #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
+        true
+        #else
+        false
+        #endif
+        ;
+
+    #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
+    pybind26
+        .def_static("positional_only", &MyClass26::positionalOnly, "Positional-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"))
+        .def_static("keyword_only", &MyClass26::keywordOnly, "Keyword-only arguments", py::arg("b"), py::kw_only{}, py::arg("keyword") = "no")
+        .def_static("positional_keyword_only", &MyClass26::positionalKeywordOnly, "Positional and keyword-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"), py::kw_only{}, py::arg("keyword") = "no");
     #endif
 }
