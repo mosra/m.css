@@ -296,6 +296,8 @@ have lists inside quotes and the like.
             Literal block is itroduced with ::, which can be even part of previous
             paragraph (in which case it's reduced to a single colon).
 
+        .. class:: m-table
+
         ========= ============
         Heading 1 Heading 2
         ========= ============
