@@ -171,6 +171,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         'filters': directives.unchanged,
         'hl-lines': directives.unchanged
     }
+    has_content = False
 
     def run(self):
         """
