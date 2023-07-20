@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
@@ -295,6 +295,8 @@ have lists inside quotes and the like.
 
             Literal block is itroduced with ::, which can be even part of previous
             paragraph (in which case it's reduced to a single colon).
+
+        .. class:: m-table
 
         ========= ============
         Heading 1 Heading 2

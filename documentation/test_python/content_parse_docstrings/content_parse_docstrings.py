@@ -9,6 +9,8 @@ class Class:
     With a multi-line summary. Relative reference to :ref:`a_property` works
     even from a summary.
 
+    :property another_property: This property is documented in the class
+
     And class **details** as well."""
 
     @property
@@ -16,6 +18,10 @@ class Class:
         """The :ref:`a_property` has a *serious* docstring.
 
         And property **details** as well."""
+
+    @property
+    def another_property():
+        pass
 
 class Enum(enum.Enum):
     """This enum has a *serious* docstring. :ref:`VALUE` works from a summary.

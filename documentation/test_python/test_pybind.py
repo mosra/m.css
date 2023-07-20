@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #   Copyright © 2020 Sergei Izmailov <sergei.a.izmailov@gmail.com>
 #
@@ -126,6 +126,17 @@ class Signature(unittest.TestCase):
             ('foo', '', [
                 ('*args', None, None, None),
                 ('**kwargs', None, None, None),
+            ], None, None))
+
+    def test_keyword_positional_only(self):
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: int, /, b: float, *, keyword: str)'),
+            ('foo', '', [
+                ('a', 'int', 'int', None),
+                ('/', None, None, None),
+                ('b', 'float', 'float', None),
+                ('*', None, None, None),
+                ('keyword', 'str', 'str', None),
             ], None, None))
 
     def test_default_values(self):
@@ -298,6 +309,40 @@ class Signatures(BaseInspectTestCase):
         with self.assertRaises(TypeError):
             pybind_signatures.MyClass.another(self=a)
 
+    def test_explicit_positional_args(self):
+        sys.path.append(self.path)
+        import pybind_signatures
+
+        # Similar to above, but these functions have explicit py::pos_only and
+        # py::kw_only placeholders
+
+        if not pybind_signatures.MyClass26.is_pybind26:
+            self.skipTest("only on pybind 2.6+")
+
+        # The a: int argument is always before the / and thus shouldn't be
+        # callable with a keyword
+        self.assertEqual(pybind_signatures.MyClass26.positional_only(1, 3.0), 1)
+        self.assertEqual(pybind_signatures.MyClass26.positional_keyword_only(1, 3.0), 3)
+        with self.assertRaises(TypeError):
+            pybind_signatures.MyClass26.positional_only(a=1, b=3.0)
+        with self.assertRaises(TypeError):
+            pybind_signatures.MyClass26.positional_keyword_only(a=1, b=3.0)
+
+        # The b argument is always between / and * and thus should be callable
+        # both without (done above/below) and with
+        self.assertEqual(pybind_signatures.MyClass26.positional_only(1, b=3.0), 1)
+        self.assertEqual(pybind_signatures.MyClass26.keyword_only(b=3.0), 2)
+        self.assertEqual(pybind_signatures.MyClass26.positional_keyword_only(1, b=3.0), 3)
+
+        # The keyword: str argument is always after the / and thus shouldn't be
+        # callable without a keyword
+        self.assertEqual(pybind_signatures.MyClass26.keyword_only(3.0, keyword='yes'), 2)
+        self.assertEqual(pybind_signatures.MyClass26.positional_keyword_only(1, 3.0, keyword='yes'), 3)
+        with self.assertRaises(TypeError):
+            pybind_signatures.MyClass26.keyword_only(3.0, 'yes')
+        with self.assertRaises(TypeError):
+            pybind_signatures.MyClass26.positional_keyword_only(1, 3.0, 'yes')
+
     def test(self):
         sys.path.append(self.path)
         import pybind_signatures
@@ -309,10 +354,10 @@ class Signatures(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass.html'))
         self.assertEqual(*self.actual_expected_contents('false_positives.html'))
 
-        sys.path.append(self.path)
-        import pybind_signatures
         if pybind_signatures.MyClass23.is_pybind23:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass23.html'))
+        if pybind_signatures.MyClass26.is_pybind26:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass26.html'))
 
 class Enums(BaseInspectTestCase):
     def test(self):
@@ -374,3 +419,8 @@ class ExternalOverloadDocs(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.Class.html'))
+
+        sys.path.append(self.path)
+        import pybind_external_overload_docs
+        if pybind_external_overload_docs.Class26.is_pybind26:
+            self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.Class26.html'))

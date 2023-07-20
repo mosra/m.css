@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
@@ -29,8 +29,8 @@ m.css
 :save_as: index.html
 :url:
 :cover: {static}/static/cover.jpg
-:summary: A no-nonsense, no-JavaScript CSS framework and Pelican theme for
-    content-oriented websites
+:summary: A no-nonsense, no-JavaScript CSS framework, site and documentation
+    theme for content-oriented websites
 :hide_navbar_brand: True
 :landing:
     .. container:: m-row
@@ -45,8 +45,8 @@ m.css
 
         .. container:: m-col-l-6 m-push-l-1 m-col-m-7 m-nopadt
 
-            *A no-nonsense, no-JavaScript CSS framework and Pelican theme for
-            content-oriented websites.*
+            *A no-nonsense, no-JavaScript CSS framework, site and documentation
+            theme for content-oriented websites.*
 
             Do you *hate* contemporary web development like I do? Do you also
             feel that it's not right for a web page to take *seconds* and

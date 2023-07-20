@@ -57,13 +57,16 @@ commands:
       pelican-version:
         type: string
         default: ""
+      qrcode-version:
+        type: string
+        default: ""
     steps:
     - run:
         name: Install Python dependencies
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
         # differently, I have to update the expected output first.
         command: |
-          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
+          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode<< parameters.qrcode-version >> matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -217,6 +220,8 @@ jobs:
         matplotlib-version: ==3.4.3
         # Docutils 0.17 dropped `object_image_types`, test that it works there
         docutils-version: ==0.17.1
+        # 7.4 has different output, no time to bother with that ATM
+        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
@@ -240,6 +245,8 @@ jobs:
         # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
         # 0.18.1 reverted again, test we're not affected by those
         docutils-version: ==0.18.0
+        # 7.4 has different output, no time to bother with that ATM
+        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
@@ -261,6 +268,8 @@ jobs:
         # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
         # until I have it on Arch and can test it locally
         matplotlib-version: ==3.5.2
+        # 7.4 has different output, no time to bother with that ATM
+        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
@@ -282,6 +291,8 @@ jobs:
         # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
         # until I have it on Arch and can test it locally
         matplotlib-version: ==3.5.2
+        # 7.4 has different output, no time to bother with that ATM
+        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins

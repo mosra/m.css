@@ -50,7 +50,7 @@ ASan reports:
 <p>Syntax highlighting:</p>
 <pre class="m-code"><span class="c1"># Comment</span>
 <span class="n">var</span> <span class="o">=</span> <span class="s2">&quot;string</span><span class="si">{}</span><span class="s2">escape</span><span class="se">\n</span><span class="s2">&quot;</span></pre>
-<p>Console colors:</p>
+<p>Console colors, including <code class="m-console"><span class="g g-AnsiRed">inline</span></code> code:</p>
 <pre class="m-console"><span class="g g-AnsiBrightDefault">Named foreground colors:</span>
   <span class="g g-AnsiBlack">Black </span><span class="g g-AnsiRed">Red </span><span class="g g-AnsiGreen">Green </span><span class="g g-AnsiYellow">Yellow </span><span class="g g-AnsiBlue">Blue </span><span class="g g-AnsiMagenta">Magenta </span><span class="g g-AnsiCyan">Cyan </span><span class="g g-AnsiWhite">White </span>Default
   <span class="g g-AnsiBrightBlack">BrightBlack </span><span class="g g-AnsiBrightRed">BrightRed </span><span class="g g-AnsiBrightGreen">BrightGreen </span><span class="g g-AnsiBrightYellow">BrightYellow</span>
@@ -138,18 +138,24 @@ ASan reports:
   <span style="color: #008080; background-color: #008080">RGB 0,128,128 on RGB 0,128,128</span>
   <span style="color: #c0c000; background-color: #008080">RGB 192,192,0 on RGB 0,128,128</span>
 
+<span class="g g-AnsiBrightDefault">Inverted colors:</span>
+  <span class="g g-AnsiBlue">Blue </span><span class="g g-AnsiInvertedDefault g-AnsiBackgroundBlue">Inverted Inverted again</span> Reset
+  <span class="g g-AnsiBlue">Blue </span><span class="g g-AnsiInvertedDefault g-AnsiBackgroundBlue">Inverted</span><span class="g g-AnsiBlue"> Inverted back</span> Reset
+  <span class="g g-AnsiBlue">Blue </span><span class="g g-AnsiBrightInvertedDefault g-AnsiBackgroundBlue">Inverted and bright Inverted again</span> Reset
+  <span class="g g-AnsiBlue">Blue </span><span class="g g-AnsiBrightInvertedDefault g-AnsiBackgroundBlue">Inverted and bright</span><span class="g g-AnsiBrightBlue"> Inverted back</span> Reset
+  <span class="g g-AnsiBrightBlue">Bright blue </span><span class="g g-AnsiBrightInvertedDefault g-AnsiBackgroundBlue">Inverted Inverted again</span> Reset
+  <span class="g g-AnsiBrightBlue">Bright blue </span><span class="g g-AnsiBrightInvertedDefault g-AnsiBackgroundBlue">Inverted</span><span class="g g-AnsiBrightBlue"> Inverted back</span> Reset
+
 <span class="g g-AnsiBrightDefault">Other commands are ignored</span>
   half-bright
   set underscore
   set blink
-  set reverse video
   reset selected mapping, display control flag, and toggle
   select null mapping, set display control flag, reset
   select null mapping, set display control flag, set toggle
   set underline
   underline off
-  blink off
-  reverse video off</pre>
+  blink off</pre>
 <pre class="m-code">// this language is not highlighted</pre>
 <p>Properly preserve backslashes: <code class="m-code"><span class="k">\frac</span><span class="nb">{</span>a<span class="nb">}{</span>b<span class="nb">}</span></code> ... and backticks:
 <code class="m-code"><span class="na">:ref:</span><span class="nv">`a function &lt;os.path.join()&gt;`</span></code></p>

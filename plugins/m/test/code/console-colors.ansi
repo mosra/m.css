@@ -85,15 +85,21 @@ nor do RGB or palette-based colors[0m
   [38;2;0;128;128;48;2;0;128;128mRGB 0,128,128 on RGB 0,128,128[0m
   [38;2;192;192;0;48;2;0;128;128mRGB 192,192,0 on RGB 0,128,128[0m
 
+[1mInverted colors:[0m
+  [34mBlue [7;34mInverted[7;34m Inverted again[0m Reset
+  [34mBlue [7;34mInverted[27;34m Inverted back[0m Reset
+  [34mBlue [1;7;34mInverted and bright[7;34m Inverted again[0m Reset
+  [34mBlue [1;7;34mInverted and bright[27;34m Inverted back[0m Reset
+  [1;34mBright blue [7;34mInverted[7;34m Inverted again[0m Reset
+  [1;34mBright blue [7;34mInverted[27;34m Inverted back[0m Reset
+
 [1mOther commands are ignored[0m
   [2mhalf-bright[0m
   [4mset underscore[0m
   [5mset blink[0m
-  [7mset reverse video[0m
   [10mreset selected mapping, display control flag, and toggle[0m
   [11mselect null mapping, set display control flag, reset[0m
   [12mselect null mapping, set display control flag, set toggle[0m
   [21mset underline[0m
   [24munderline off[0m
   [25mblink off[0m
-  [27mreverse video off[0m

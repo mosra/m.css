@@ -1,8 +1,8 @@
 m.css
 #####
 
-*A no-nonsense, no-JavaScript CSS framework and Pelican theme for
-content-oriented websites.*
+*A no-nonsense, no-JavaScript CSS framework, site and documentation theme for
+content-oriented websites*
 
 .. image:: https://badges.gitter.im/mosra/m.css.svg
     :alt: Join the chat at https://gitter.im/mosra/m.css

@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
@@ -519,11 +519,13 @@ bold, all :html:`<th>` and :html:`<td>` are aligned to left while table
           </tfoot>
         </table>
 
-Rows are highlighted on hover, if you want to disable that, put :css:`.m-flat`
-CSS class on the :html:`<table>` element. You can also put :css:`.m-thin` onto
-:html:`<th>` elements to remove the bold styling. Similarly to other
-components, you can color particular :html:`<tr>` or :html:`<td>` elements
-using the color classes from above:
+Use the :css:`.m-fullwidth` CSS class on the :html:`<table>` element to make
+the table span the full width instead of being centered. Rows are highlighted
+on hover, if you want to disable that, put :css:`.m-flat` on the
+:html:`<table>` element. You can also  put :css:`.m-thin` onto :html:`<th>`
+elements to remove the bold styling. Similarly to other components, you can
+color particular :html:`<tr>` or :html:`<td>` elements using the color classes
+from above:
 
 .. raw:: html
 

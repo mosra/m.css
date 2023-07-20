@@ -48,8 +48,8 @@ default_params = {
     'libgs': None,
 }
 
-
-if not hasattr(os.environ, 'LIBGS') and not find_library('gs'):
+libgs = find_library('gs')
+if not hasattr(os.environ, 'LIBGS') and not libgs:
     if sys.platform == 'darwin':
         # Fallback to homebrew Ghostscript on macOS
         homebrew_libgs = '/usr/local/opt/ghostscript/lib/libgs.dylib'
@@ -57,7 +57,20 @@ if not hasattr(os.environ, 'LIBGS') and not find_library('gs'):
             default_params['libgs'] = homebrew_libgs
     if not default_params['libgs']:
         print('Warning: libgs not found')
-
+# dvisvgm < 3.0 only looks for ghostscript < 10 on its own, attempt to supply
+# it directly if version 10 is found. Fixed in
+# https://github.com/mgieseki/dvisvgm/commit/46b11c02a46883309a824e3fc798f8093041daec
+# TODO remove once https://bugs.archlinux.org/task/76083 is resolved and
+# there's no other similar case in other distros
+elif '.so.10' in str(libgs):
+    # Just winging it here, there doesn't seem to be an easy way to get the
+    # actual full path the library was found in -- ctypes/util.py does crazy
+    # stuff like invoking gcc (!!) to get the library filename.
+    libgs_absolute = os.path.join('/usr/lib', libgs)
+    if os.path.exists(libgs_absolute):
+        default_params['libgs'] = libgs_absolute
+    else:
+        raise RuntimeError('libgs found, but is not in ' +  libgs_absolute)
 
 def latex2svg(code, params=default_params, working_directory=None):
     """Convert LaTeX to SVG using dvisvgm.
@@ -143,6 +156,13 @@ def latex2svg(code, params=default_params, working_directory=None):
             return None
 
     output = ret.stderr.decode('utf-8')
+
+    # Since we rely on Ghostscript to give us a "depth" (= vertical alignment)
+    # value, dvisvgm not using it means the output would be broken and it makes
+    # no sense to continue.
+    if 'Ghostscript not found' in output:
+        raise RuntimeError('libgs not detected by dvisvgm, point the LIBGS environment variable to its location')
+
     width, height = get_size(output)
     depth = get_measure(output, 'depth')
     return {'svg': svg, 'depth': depth, 'width': width, 'height': height}

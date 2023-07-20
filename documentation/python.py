@@ -3,7 +3,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #   Copyright © 2020 Sergei Izmailov <sergei.a.izmailov@gmail.com>
 #
@@ -50,7 +50,6 @@ from types import SimpleNamespace as Empty
 from importlib.machinery import SourceFileLoader
 from typing import Tuple, Dict, Set, Any, List, Callable, Optional
 from urllib.parse import urljoin
-from distutils.version import LooseVersion
 from docutils.transforms import Transform
 
 import jinja2
@@ -307,7 +306,7 @@ _filtered_builtin_functions = set([
 ])
 
 # Python 3.6 has slightly different docstrings than 3.7
-if LooseVersion(sys.version) >= LooseVersion("3.7"):
+if sys.version_info >= (3, 7):
     _filtered_builtin_functions.update({
         ('__dir__', "Default dir() implementation."),
         ('__format__', "Default object formatter."),
@@ -322,6 +321,12 @@ else:
         ('__reduce__', "helper for pickle"),
         ('__reduce_ex__', "helper for pickle"),
         ('__sizeof__', "__sizeof__() -> int\nsize of object in memory, in bytes")
+    })
+
+# Python 3.11 adds another
+if sys.version_info >= (3, 11):
+    _filtered_builtin_functions.update({
+        ('__getstate__', "Helper for pickle.")
     })
 
 _filtered_builtin_properties = set([
@@ -808,7 +813,7 @@ def make_name_link(state: State, referrer_path: List[str], name) -> str:
     return '<a href="{}" class="{}">{}</a>'.format(entry.url, ' '.join(entry.css_classes), relative_name)
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
-_pybind_arg_name_rx = re.compile('[*a-zA-Z0-9_]+')
+_pybind_arg_name_rx = re.compile('[/*a-zA-Z0-9_]+')
 _pybind_type_rx = re.compile('[a-zA-Z0-9_.]+')
 
 def _pybind11_extract_default_argument(string):
@@ -1481,32 +1486,48 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             else:
                 out.is_staticmethod = False
 
-            # Guesstimate whether the arguments are positional-only or
-            # position-or-keyword. It's either all or none. This is a brown
-            # magic, sorry.
+            # If the arguments contain a literal * or / (which is only if
+            # py::pos_only{} or py::kw_only{} got explicitly used), it's
+            # following the usual logic:
+            for arg in args:
+                # If / is among the arguments, everything until the / is
+                # positional-only
+                if arg[0] == '/':
+                    param_kind = 'POSITIONAL_ONLY'
+                    break
+                # Otherwise, if * is among the arguments, everythign until the
+                # * is positional-or-keyword. Assuming pybind11 sanity, so
+                # not handling cases where * would be before / and such.
+                if arg[0] == '*':
+                    param_kind = 'POSITIONAL_OR_KEYWORD'
+                    break
 
-            # For instance methods positional-only argument names are either
-            # self (for the first argument) or arg(I-1) (for second
-            # argument and further). Also, the `self` argument is
-            # positional-or-keyword only if there are positional-or-keyword
-            # arguments afgter it, otherwise it's positional-only.
-            if inspect.isclass(parent) and not out.is_staticmethod:
-                assert args and args[0][0] == 'self'
-
-                positional_only = True
-                for i, arg in enumerate(args[1:]):
-                    if arg[0] != 'arg{}'.format(i):
-                        positional_only = False
-                        break
-
-            # For static methods or free functions positional-only arguments
-            # are argI.
+            # If they don't contain either, guesstimate whether the arguments
+            # are positional-only or position-or-keyword. It's either all or none.
+            # This is a brown magic, sorry.
             else:
-                positional_only = True
-                for i, arg in enumerate(args):
-                    if arg[0] != 'arg{}'.format(i):
-                        positional_only = False
-                        break
+                # For instance methods positional-only argument names are
+                # either self (for the first argument) or arg(I-1) (for second
+                # argument and further). Also, the `self` argument is
+                # positional-or-keyword only if there are positional-or-keyword
+                # arguments afgter it, otherwise it's positional-only.
+                if inspect.isclass(parent) and not out.is_staticmethod:
+                    assert args and args[0][0] == 'self'
+
+                    param_kind = 'POSITIONAL_ONLY'
+                    for i, arg in enumerate(args[1:]):
+                        if arg[0] != 'arg{}'.format(i):
+                            param_kind = 'POSITIONAL_OR_KEYWORD'
+                            break
+
+                # For static methods or free functions positional-only
+                # arguments are argI.
+                else:
+                    param_kind = 'POSITIONAL_ONLY'
+                    for i, arg in enumerate(args):
+                        if arg[0] != 'arg{}'.format(i):
+                            param_kind = 'POSITIONAL_OR_KEYWORD'
+                            break
 
             param_names = []
             param_types = []
@@ -1516,6 +1537,17 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 param = Empty()
                 param.name = arg_name
                 param_names += [arg_name]
+
+                # Skip * and / placeholders, update the param_kind instead
+                if arg_name == '/':
+                    assert param_kind == 'POSITIONAL_ONLY'
+                    param_kind = 'POSITIONAL_OR_KEYWORD'
+                    continue
+                if arg_name == '*':
+                    assert param_kind == 'POSITIONAL_OR_KEYWORD'
+                    param_kind = 'KEYWORD_ONLY'
+                    continue
+
                 # Don't include redundant type for the self argument
                 if i == 0 and arg_name == 'self':
                     param.type, param.type_link = None, None
@@ -1525,6 +1557,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     param.type, param.type_link = arg_type, arg_type_link
                     param_types += [arg_type]
                     signature += ['{}: {}'.format(arg_name, arg_type)]
+
                 if arg_default:
                     # If the type is a registered enum, try to make a link to
                     # the value -- for an enum of type `module.EnumType`,
@@ -1547,7 +1580,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     param.name = 'kwargs'
                     param.kind = 'VAR_KEYWORD'
                 else:
-                    param.kind = 'POSITIONAL_ONLY' if positional_only else 'POSITIONAL_OR_KEYWORD'
+                    param.kind = param_kind
 
                 out.params += [param]
 

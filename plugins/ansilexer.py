@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #   Copyright © 2020 Blair Conrad <blair@blairconrad.com>
 #
@@ -30,9 +30,8 @@ from pygments.lexer import RegexLexer
 from pygments.formatters import HtmlFormatter
 from pygments.token import *
 
-# Support ANSI SGR codes in input, styling the output.
-# Code definitions are taken from
-# http://man7.org/linux/man-pages/man4/console_codes.4.html, which
+# Support ANSI SGR codes in input, styling the output. Code definitions are
+# taken from http://man7.org/linux/man-pages/man4/console_codes.4.html, which
 # appears in part below, in case it disappears:
 #
 # ECMA-48 Set Graphics Rendition
@@ -100,9 +99,8 @@ from pygments.token import *
 # For historical reasons, all "brown"s above are replaced with "yellow"
 # by m.css.
 #
-# AnsiLexer supports commands 0, 1, 22, 30–39, 40–49, 90–97, and 100–107
-# (ranges inclusive).
-# All other commands will be ignored completely.
+# AnsiLexer supports commands 0, 1, 7, 22, 27, 30–39, 40–49, 90–97, and 100–107
+# (ranges inclusive). All other commands will be ignored completely.
 #
 # Foreground colors named Bright* are not affected by the "bright" SGR
 # setting—they will always appear bright, even after command 22 resets the
@@ -152,6 +150,7 @@ class AnsiLexer(RegexLexer):
         RegexLexer.__init__(self, **options)
 
         self._bright = False
+        self._invert = False
         self._foreground = ''
         self._background = ''
 
@@ -169,12 +168,17 @@ class AnsiLexer(RegexLexer):
             command = parameters.pop(0)
             if command == 0:
                 self._bright = False
+                self._invert = False
                 self._foreground = ''
                 self._background = ''
             elif command == 1:
                 self._bright = True
+            elif command == 7:
+                self._invert = True
             elif command == 22:
                 self._bright = False
+            elif command == 27:
+                self._invert = False
             elif command >= 30 and command <= 37:
                 self._foreground = self._named_colors[command - 30]
             elif command == 38:
@@ -204,15 +208,35 @@ class AnsiLexer(RegexLexer):
                 self._background = ('Bright' +
                                     self._named_colors[command - 100])
 
-        if self._bright and self._foreground in self._named_colors:
-            token = 'Bright' + self._foreground
-        elif self._bright and not self._foreground:
-            token = 'BrightDefault'
+        # For "inverse video", foreground and background colors are swapped
+        if self._invert:
+            foreground, background = self._background, self._foreground
         else:
-            token = self._foreground
+            foreground, background = self._foreground, self._background
 
-        if (self._background):
-            token += '-On' + self._background
+        # If the bright bit is set for named colors (foreground or background
+        # in case of reverse video), use their bright variant
+        if self._bright and (not foreground or (foreground in self._named_colors)):
+            token = 'Bright'
+        else:
+            token = ''
+
+        # If the foreground color (or background in case of inverse video) is
+        # set, use it. Otherwise pick a default if it's needed for the bright
+        # variant, for inverse video or both.
+        if foreground:
+            token += foreground
+        else:
+            if self._invert:
+                token += 'Inverted'
+            if token:
+                token += 'Default'
+
+        # If the background color is set (or foreground in case of inverse
+        # video), use it as well. This gets subsequently separated to either a
+        # secondary CSS class or a separate background-color style item.
+        if background:
+            token += '-On' + background
 
         if token:
             token = 'Generic.Ansi' + token
@@ -237,7 +261,7 @@ class AnsiLexer(RegexLexer):
             return self._palette_start_colors[offset]
         elif offset < 232:
             offset = offset - 16
-            offset, b = divmod (offset,6)
+            offset, b = divmod(offset, 6)
             r, g = divmod(offset, 6)
             r = self._palette_cube_steps[r]
             g = self._palette_cube_steps[g]

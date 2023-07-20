@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -171,6 +171,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         'filters': directives.unchanged,
         'hl-lines': directives.unchanged
     }
+    has_content = False
 
     def run(self):
         """
