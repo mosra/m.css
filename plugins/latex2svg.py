@@ -60,17 +60,25 @@ if not hasattr(os.environ, 'LIBGS') and not libgs:
 # dvisvgm < 3.0 only looks for ghostscript < 10 on its own, attempt to supply
 # it directly if version 10 is found. Fixed in
 # https://github.com/mgieseki/dvisvgm/commit/46b11c02a46883309a824e3fc798f8093041daec
-# TODO remove once https://bugs.archlinux.org/task/76083 is resolved and
-# there's no other similar case in other distros
+# TODO related https://bugs.archlinux.org/task/76083 was resolved on May 29th
+# 2023, remove after enough time passes if no similar case happens in other
+# distros
 elif '.so.10' in str(libgs):
     # Just winging it here, there doesn't seem to be an easy way to get the
     # actual full path the library was found in -- ctypes/util.py does crazy
     # stuff like invoking gcc (!!) to get the library filename.
-    libgs_absolute = os.path.join('/usr/lib', libgs)
-    if os.path.exists(libgs_absolute):
-        default_params['libgs'] = libgs_absolute
+    #
+    # On Arch /usr/lib64 is a symlink to /usr/lib, so only the former is
+    # needed; on Fedora it's two distinct directories and libgs is in the
+    # latter (ugh).
+    prefixes = ['/usr/lib', '/usr/lib64']
+    for prefix in prefixes:
+        libgs_absolute = os.path.join(prefix, libgs)
+        if os.path.exists(libgs_absolute):
+            default_params['libgs'] = libgs_absolute
+            break
     else:
-        raise RuntimeError('libgs found, but is not in ' +  libgs_absolute)
+        raise RuntimeError('libgs found by linker magic, but is not in {}'.format(' or '.join(prefixes)))
 
 def latex2svg(code, params=default_params, working_directory=None):
     """Convert LaTeX to SVG using dvisvgm.
