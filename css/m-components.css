@@ -489,8 +489,8 @@ table.m-table th.m-dim pre, table.m-table th.m-dim code {
   background-color: var(--code-note-background-color);
 }
 
-/* Image. Ensure everything is done for both <img> and <svg>. */
-img.m-image, svg.m-image {
+/* Image. Ensure everything is done for <img>, <svg> and <video> as well. */
+img.m-image, svg.m-image, video.m-image {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -498,20 +498,23 @@ img.m-image, svg.m-image {
 div.m-image {
   text-align: center;
 }
-img.m-image, svg.m-image, div.m-image img, div.m-image svg {
+img.m-image, svg.m-image, video.m-image,
+div.m-image img, div.m-image svg, div.m-image video {
   max-width: 100%;
   border-radius: var(--border-radius);
 }
-div.m-image.m-fullwidth img, div.m-image.m-fullwidth svg {
+div.m-image.m-fullwidth img,
+div.m-image.m-fullwidth svg,
+div.m-image.m-fullwidth video {
   width: 100%;
 }
 /* Image badge. Deliberately omitting <svg> since I don't see any use for those
-   as avatars yet. */
+   as avatars yet, <video> as well. */
 img.m-image.m-badge, div.m-image.m-badge img {
   border-radius: 50%;
 }
 
-/* Figure. Ensure everything is done for both <img> and <svg>. */
+/* Figure. Ensure everything is done for <img>, <svg> and <video> as well. */
 figure.m-figure {
   max-width: 100%;
   margin-top: 0;
@@ -553,7 +556,9 @@ figure.m-figure > *:last-child {
      priority than this */
   margin-bottom: 1rem !important;
 }
-figure.m-figure img, figure.m-figure svg {
+figure.m-figure img,
+figure.m-figure svg,
+figure.m-figure video {
   position: relative; /* so it's above the border */
   margin-left: 0;
   margin-right: 0;
@@ -562,11 +567,15 @@ figure.m-figure img, figure.m-figure svg {
   border-top-right-radius: var(--border-radius);
   max-width: 100%;
 }
-figure.m-figure.m-flat img, figure.m-figure.m-flat svg {
+figure.m-figure.m-flat img,
+figure.m-figure.m-flat svg,
+figure.m-figure.m-flat video {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
-figure.m-figure a img, figure.m-figure a svg {
+figure.m-figure a img,
+figure.m-figure a svg,
+figure.m-figure a video {
   margin-left: -1rem;
   margin-right: -1rem;
 }
@@ -578,7 +587,9 @@ figure.m-figure.m-fullwidth > *:first-child {
   /* otherwise figure with clickable image is centered differently */
   display: inline;
 }
-figure.m-figure.m-fullwidth img, figure.m-figure.m-fullwidth svg {
+figure.m-figure.m-fullwidth img,
+figure.m-figure.m-fullwidth svg,
+figure.m-figure.m-fullwidth video {
   width: 100%;
 }
 figure.m-figure.m-fullwidth::after {
