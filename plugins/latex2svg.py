@@ -64,21 +64,34 @@ if not hasattr(os.environ, 'LIBGS') and not libgs:
 # 2023, remove after enough time passes if no similar case happens in other
 # distros
 elif '.so.10' in str(libgs):
+    # If dvisvgm seems to be at least 3.0, don't even attempt to find libgs and
+    # just assume it works
+    dvisvgm_is_new_enough = False
+    try:
+        ret = subprocess.run(['dvisvgm', '--version'], stdout=subprocess.PIPE)
+        if b'dvisvgm 3' in ret.stdout:
+            dvisvgm_is_new_enough = True
+    except:
+        pass
+
     # Just winging it here, there doesn't seem to be an easy way to get the
     # actual full path the library was found in -- ctypes/util.py does crazy
     # stuff like invoking gcc (!!) to get the library filename.
     #
     # On Arch /usr/lib64 is a symlink to /usr/lib, so only the former is
     # needed; on Fedora it's two distinct directories and libgs is in the
-    # latter (ugh).
-    prefixes = ['/usr/lib', '/usr/lib64']
-    for prefix in prefixes:
-        libgs_absolute = os.path.join(prefix, libgs)
-        if os.path.exists(libgs_absolute):
-            default_params['libgs'] = libgs_absolute
-            break
-    else:
-        raise RuntimeError('libgs found by linker magic, but is not in {}'.format(' or '.join(prefixes)))
+    # latter (ugh). Elsewhere it might be /usr/lib/x86_64-linux-gnu or just
+    # anything else, so let's just bet that dvisvgm is 3.0+ in most cases and
+    # this gets hit only very rarely.
+    if not dvisvgm_is_new_enough:
+        prefixes = ['/usr/lib', '/usr/lib64']
+        for prefix in prefixes:
+            libgs_absolute = os.path.join(prefix, libgs)
+            if os.path.exists(libgs_absolute):
+                default_params['libgs'] = libgs_absolute
+                break
+        else:
+            raise RuntimeError('libgs found by linker magic, but is not in {}'.format(' or '.join(prefixes)))
 
 def latex2svg(code, params=default_params, working_directory=None):
     """Convert LaTeX to SVG using dvisvgm.
