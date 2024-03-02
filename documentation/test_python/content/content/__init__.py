@@ -48,6 +48,12 @@ class Class:
 
     DATA_WITH_DETAILS: str = 'this blows'
 
+    class ClassError(RuntimeError):
+        """This exception belongs to class"""
+
+class FreeStandingError(RuntimeError):
+    """This exception belongs to module"""
+
 class ClassWithSummary:
     """This class has summary from the docstring"""
 
