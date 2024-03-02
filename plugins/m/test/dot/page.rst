@@ -59,6 +59,17 @@ Structs:
 
     another [label="a | { b | c } | d | e" shape=record]
 
+Links:
+
+.. digraph::
+
+    A [label="link to #" URL="#" style=filled class="m-primary"]
+    B [label="link to /" URL="#" class="m-success"]
+
+    A -> B [label="link to m.css" URL="http://mcss.mosra.cz/" class="m-warning"]
+
+Figures:
+
 .. graph-figure:: This is a title.
 
     .. digraph:: A to B
