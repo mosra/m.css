@@ -67,6 +67,15 @@ terminal output) on your website, there's also a builtin style for
 -   :gh:`pygments-console.css <mosra/m.css$master/css/pygments-console.css>`,
     generated from :gh:`pygments-console.py <mosra/m.css$master/css/pygments-console.py>`
 
+For designing presentations instead of pages and articles, the following files
+replace the ``m-layout.css`` and ``m-dark.css`` / ``m-light.css`` entry points:
+
+-   :gh:`m-presentation.css <mosra/m.css$master/css/m-presentation.css>`
+-   :gh:`m-dark-presentation.css <mosra/m.css$master/css/m-dark-presentation.css>`
+    or :gh:`m-light-presentation.css <mosra/m.css$master/css/m-light-presentation.css>`
+    that :css:`@import` all relevant files for a convenient single-line
+    referencing
+
 Once you have the files, reference them from your HTML markup. The top-level
 ``m-dark.css`` / ``m-light.css`` file includes the others via a CSS
 :css:`@import` statement, so you don't need to link all of them. The dark theme
@@ -106,6 +115,17 @@ to include a proper :html:`<meta>` tag. The HTML5 DOCTYPE is also required.
     -   :gh:`m-light.compiled.css <mosra/m.css$master/css/m-light.compiled.css>`
         (:filesize:`{static}/../css/m-light.compiled.css`,
         :filesize-gz:`{static}/../css/m-light.compiled.css` compressed)
+
+    Or, the presentation style:
+
+    -   :gh:`m-dark-presentation.compiled.css <mosra/m.css$master/css/m-dark-presentation.compiled.css>`
+        (:filesize:`{filename}/../css/m-dark-presentation.compiled.css`,
+        :filesize-gz:`{filename}/../css/m-dark-presentation.compiled.css`
+        compressed)
+    -   :gh:`m-light-presentation.compiled.css <mosra/m.css$master/css/m-light-presentation.compiled.css>`
+        (:filesize:`{filename}/../css/m-light-presentation.compiled.css`,
+        :filesize-gz:`{filename}/../css/m-light-presentation.compiled.css`
+        compressed)
 
     I recommend using the original files for development and switching to the
     compiled versions when publishing the website.
@@ -152,6 +172,12 @@ image grid.
 In ``m-layout.css`` there's a styling for the whole page including navigation
 --- header and footer, section headings, article styling with sidebar, tag
 cloud, active section highlighting and more.
+
+`Presentation » <{filename}/css/presentation.rst>`_
+===================================================
+
+The ``m-presentation.css`` file contains styling for presentation layouts,
+together with presenter view and PDF printing support.
 
 `Themes » <{filename}/css/themes.rst>`_
 =======================================
