@@ -32,6 +32,8 @@ from docutils.utils.error_reporting import SafeString, ErrorString, locale_encod
 from docutils.parsers.rst import Directive, directives
 import docutils.parsers.rst.directives.misc
 from docutils import io, nodes, utils, statemachine
+# For python2 platform check
+import sys
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
@@ -188,7 +190,14 @@ class Include(docutils.parsers.rst.directives.misc.Include):
             path = os.path.join(self.standard_include_path, path[1:-1])
         path = os.path.normpath(os.path.join(source_dir, path))
         path = utils.relative_path(None, path)
-        path = nodes.reprunicode(path)
+
+        # Note: reprunicode is a compatibility hack for python 2. 
+        # It has been removed from docutils in v0.21.
+        # https://docutils.sourceforge.io/HISTORY.html#release-0-21-2024-04-09
+        is_python2 = int(sys.version[0]) == 2
+        if is_python2:
+            path = nodes.reprunicode(path)
+
         e_handler=self.state.document.settings.input_encoding_error_handler
         tab_width = self.options.get(
             'tab-width', self.state.document.settings.tab_width)
