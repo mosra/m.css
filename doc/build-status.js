@@ -114,29 +114,28 @@ function fetchLatestCodecovJobs(project, branch) {
     var req = window.XDomainRequest ? new XDomainRequest() : new XMLHttpRequest();
     if(!req) return;
 
-    req.open("GET", 'https://codecov.io/api/gh/' + project + '/branch/' + branch, true);
+    req.open("GET", 'https://api.codecov.io/api/v2/github/' + project.split('/')[0] + '/repos/' + project.split('/')[1] + '/branches/' + branch + '/', true);
     req.responseType = 'json';
     req.onreadystatechange = function() {
         if(req.readyState != 4) return;
 
         //console.log(req.response);
 
-        var repo = req.response['repo']['name'];
-        var id = 'coverage-' + repo.replace("m.css", "mcss");
+        var id = 'coverage-' + project.split('/')[1].replace("m.css", "mcss");
         var elem = document.getElementById(id);
 
-        var commit = req.response['commit'];
-        var coverage = (commit['totals']['c']*1.0).toFixed(1);
+        var commit = req.response['head_commit'];
+        var coverage = commit['totals']['coverage'].toFixed(1);
         var type;
         if(commit['state'] != 'complete') type = 'm-info';
         else if(Math.round(coverage) > 90) type = 'm-success';
         else if(Math.round(coverage) > 50) type = 'm-warning';
         else type = 'm-danger';
 
-        var date = commit['updatestamp'];
+        var date = req.response['updatestamp'];
         var age = timeDiff(new Date(Date.parse(date)), new Date(Date.now()));
 
-        elem.innerHTML = '<a href="https://codecov.io/gh/mosra/' + repo + '/tree/' + commit['commitid'] + '" title="@ ' + date + '"><strong>' + coverage + '</strong>%<br /><span class="m-text m-small">' + age + '</span></a>';
+        elem.innerHTML = '<a href="https://app.codecov.io/github/' + project + '/tree/' + branch + '" title="@ ' + date + '"><strong>' + coverage + '</strong>%<br /><span class="m-text m-small">' + age + '</span></a>';
         elem.className = type;
     };
     req.send();
