@@ -30,6 +30,8 @@ Listing only people with code contributions, because otherwise there's too many
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
 -   Guillaume Jacquemin (`@williamjcm <https://github.com/williamjcm>`_) ---
     Pelican theme fixes, semantic improvements to the ``m.htmlsanity`` plugin
+-   `John Turner <https://github.com/jturner65>`_ --- docutils compatibility
+    fixes
 -   `@joshyrobot <https://github.com/joshyrobot>`_ --- CSS validity fixes
 -   Lukas Pirl (`@lpirl <https://github.com/lpirl>`_) --- Pelican theme
     improvements, fixes for Pelican 4.5+ support
