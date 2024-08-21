@@ -2188,7 +2188,7 @@ class ExtractImages(Transform):
 
     def apply(self):
         ExtractImages._external_data = set()
-        for image in self.document.traverse(docutils.nodes.image):
+        for image in self.document.findall(docutils.nodes.image):
             # Skip absolute URLs
             if urllib.parse.urlparse(image['uri']).netloc: continue
 
@@ -2368,7 +2368,7 @@ def render_page(state: State, path, input_filename, env):
 
     # Extract metadata from the page
     metadata = {}
-    for docinfo in pub.document.traverse(docutils.nodes.docinfo):
+    for docinfo in pub.document.findall(docutils.nodes.docinfo):
         for element in docinfo.children:
             if element.tagname == 'field':
                 name_elem, body_elem = element.children
