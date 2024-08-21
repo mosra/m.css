@@ -330,7 +330,9 @@ if sys.version_info >= (3, 11):
     })
 
 _filtered_builtin_properties = set([
-    ('__weakref__', "list of weak references to the object (if defined)")
+    # (if defined) is gone in https://github.com/python/cpython/issues/112266
+    # which is backported all the way to 3.11
+    ('__weakref__', "list of weak references to the object" if sys.version_info >= (3, 11) else "list of weak references to the object (if defined)")
 ])
 
 _automatically_created_by_attrs = """
