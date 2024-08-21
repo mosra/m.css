@@ -28,7 +28,6 @@ import os.path
 import docutils
 from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
-from docutils.utils.error_reporting import SafeString, ErrorString, locale_encoding
 from docutils.parsers.rst import Directive, directives
 import docutils.parsers.rst.directives.misc
 from docutils import io, nodes, utils, statemachine
@@ -203,7 +202,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
                               (self.name, SafeString(path)))
         except IOError as error:
             raise self.severe('Problems with "%s" directive path:\n%s.' %
-                      (self.name, ErrorString(error)))
+                      (self.name, str(error)))
         startline = self.options.get('start-line', None)
         endline = self.options.get('end-line', None)
         try:
@@ -214,7 +213,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
                 rawtext = include_file.read()
         except UnicodeError as error:
             raise self.severe('Problem with "%s" directive:\n%s' %
-                              (self.name, ErrorString(error)))
+                              (self.name, str(error)))
         # start-after/end-before: no restrictions on newlines in match-text,
         # and no restrictions on matching inside lines vs. line boundaries
         after_text = self.options.get('start-after', None)
