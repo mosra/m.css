@@ -220,7 +220,8 @@ jobs:
         matplotlib-version: ==3.4.3
         # Docutils 0.17 dropped `object_image_types`, test that it works there
         docutils-version: ==0.17.1
-        # 7.4 has different output, no time to bother with that ATM
+        # 7.4 has different output, however on 3.7 and older it's too annoying
+        # to check what version is installed, so pin to 7.3
         qrcode-version: ==7.3.1
     - checkout
     - test-theme
@@ -245,8 +246,6 @@ jobs:
         # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
         # 0.18.1 reverted again, test we're not affected by those
         docutils-version: ==0.18.0
-        # 7.4 has different output, no time to bother with that ATM
-        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
@@ -268,8 +267,6 @@ jobs:
         # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
         # until I have it on Arch and can test it locally
         matplotlib-version: ==3.5.2
-        # 7.4 has different output, no time to bother with that ATM
-        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
@@ -291,8 +288,6 @@ jobs:
         # Matplotlib 3.6 has significantly different output AGAIN, pin on 3.5.2
         # until I have it on Arch and can test it locally
         matplotlib-version: ==3.5.2
-        # 7.4 has different output, no time to bother with that ATM
-        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
