@@ -81,9 +81,13 @@ class Plugins(BaseTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
-        if parse_version(dot_version()) >= parse_version("2.42.2"):
+        # The damn thing adopted Chrome versioning apparently. No idea if the
+        # output changed in version 7, 8 or 9 already.
+        if parse_version(dot_version()) >= parse_version("10.0"):
             file = 'dot.html'
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        elif parse_version(dot_version()) >= parse_version("2.42.2"):
+            file = 'dot-2.html'
         else:
             file = 'dot-240.html'
         self.assertEqual(*self.actual_expected_contents('dot.html', file))
