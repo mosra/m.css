@@ -41,13 +41,18 @@ class Plots(PelicanPluginTestCase):
         })
 
         # FUCK this is annoying
-        if parse_version(matplotlib.__version__) >= parse_version('3.5'):
-            self.assertEqual(*self.actual_expected_contents('page.html'))
+        if parse_version(matplotlib.__version__) >= parse_version('3.6'):
+            # https://github.com/matplotlib/matplotlib/commit/1cf5a33b5b5fb07f8fd3956322b85efa0e307b18
+            file = 'page.html'
+        elif parse_version(matplotlib.__version__) >= parse_version('3.5'):
+            file = 'page-35.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-34.html'))
+            file = 'page-34.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.2'):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-32.html'))
+            file = 'page-32.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.0'):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-30.html'))
+            file = 'page-30.html'
         else:
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-22.html'))
+            file = 'page-22.html'
+
+        self.assertEqual(*self.actual_expected_contents('page.html', file))

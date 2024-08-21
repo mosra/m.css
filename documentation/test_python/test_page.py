@@ -90,12 +90,16 @@ class Plugins(BaseTestCase):
 
         # I assume this will be a MASSIVE ANNOYANCE at some point as well so
         # keeping it separate. (Yes, thank you past mosra. Very helpful.)
-        if parse_version(matplotlib.__version__) >= parse_version('3.5'):
-            self.assertEqual(*self.actual_expected_contents('plots.html'))
+        if parse_version(matplotlib.__version__) >= parse_version('3.6'):
+            # https://github.com/matplotlib/matplotlib/commit/1cf5a33b5b5fb07f8fd3956322b85efa0e307b18
+            file = 'plots.html'
+        elif parse_version(matplotlib.__version__) >= parse_version('3.5'):
+            file = 'plots-35.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
-            self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-34.html'))
+            file = 'plots-34.html'
         else:
-            self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-32.html'))
+            file = 'plots-32.html'
+        self.assertEqual(*self.actual_expected_contents('plots.html', file))
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
 
         import fancyline
