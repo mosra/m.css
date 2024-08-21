@@ -29,10 +29,8 @@ import os
 import sys
 import unittest
 
-from distutils.version import LooseVersion
-
 from python import default_templates
-from . import BaseInspectTestCase
+from . import BaseInspectTestCase, parse_version
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../plugins'))
 import m.sphinx
@@ -86,7 +84,7 @@ class AllProperty(BaseInspectTestCase):
 class Annotations(BaseInspectTestCase):
     def test(self):
         self.run_python()
-        if LooseVersion(sys.version) >= LooseVersion('3.7.0') and LooseVersion(sys.version) < LooseVersion('3.9.0'):
+        if sys.version_info >= (3, 7) and sys.version_info < (3, 9):
             self.assertEqual(*self.actual_expected_contents('inspect_annotations.html', 'inspect_annotations-py37+38.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('inspect_annotations.html'))
@@ -95,13 +93,13 @@ class Annotations(BaseInspectTestCase):
 
         # This should not list any internal stuff from the typing module. The
         # Generic.__new__() is gone in 3.9: https://bugs.python.org/issue39168
-        if LooseVersion(sys.version) >= LooseVersion('3.9.0'):
+        if sys.version_info >= (3, 9):
             self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html', 'inspect_annotations.AContainer-py36-38.html'))
 
     # https://github.com/python/cpython/pull/13394
-    @unittest.skipUnless(LooseVersion(sys.version) >= LooseVersion('3.7.4'),
+    @unittest.skipUnless(sys.version_info >= (3, 7, 4),
         "signature with / for pow() is not present in 3.6, "
         "3.7.3 and below has a different docstring")
     def test_math(self):
@@ -120,7 +118,7 @@ class Annotations(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('math.html'))
 
     # https://github.com/python/cpython/pull/13394
-    @unittest.skipUnless(LooseVersion(sys.version) < LooseVersion('3.7.4') and LooseVersion(sys.version) >= LooseVersion('3.7'),
+    @unittest.skipUnless(sys.version_info < (3, 7, 4) and sys.version_info >= (3, 7),
         "signature with / for pow() is not present in 3.6, "
         "3.7.3 and below has a different docstring")
     def test_math373(self):
@@ -138,7 +136,7 @@ class Annotations(BaseInspectTestCase):
 
         self.assertEqual(*self.actual_expected_contents('math.html', 'math373.html'))
 
-    @unittest.skipUnless(LooseVersion(sys.version) < LooseVersion('3.7'),
+    @unittest.skipUnless(sys.version_info < (3, 7),
         "docstring for log() is different in 3.7")
     def test_math36(self):
         # From math export only pow() so we have the verification easier, and

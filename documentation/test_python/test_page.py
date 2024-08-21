@@ -28,9 +28,7 @@ import os
 import re
 import subprocess
 
-from distutils.version import LooseVersion
-
-from . import BaseTestCase
+from . import BaseTestCase, parse_version
 
 def dot_version():
     return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
@@ -84,7 +82,7 @@ class Plugins(BaseTestCase):
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
         # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
-        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
+        if parse_version(dot_version()) >= parse_version("2.42.2"):
             file = 'dot.html'
         else:
             file = 'dot-240.html'
@@ -92,9 +90,9 @@ class Plugins(BaseTestCase):
 
         # I assume this will be a MASSIVE ANNOYANCE at some point as well so
         # keeping it separate. (Yes, thank you past mosra. Very helpful.)
-        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.5'):
+        if parse_version(matplotlib.__version__) >= parse_version('3.5'):
             self.assertEqual(*self.actual_expected_contents('plots.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
+        elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
             self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-34.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('plots.html', 'plots-32.html'))

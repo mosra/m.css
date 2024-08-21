@@ -25,9 +25,7 @@
 
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import IntegrationTestCase, doxygen_version
+from . import IntegrationTestCase, doxygen_version, parse_version
 
 class Example(IntegrationTestCase):
     def test_cpp(self):
@@ -36,7 +34,7 @@ class Example(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('path-prefix_2configure_8h_8cmake-example.html'))
         self.assertEqual(*self.actual_expected_contents('path-prefix_2main_8cpp-example.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "needs to have file extension exposed in the XML")
     def test_other(self):
         self.run_doxygen(index_pages=[], wildcard='*.xml')

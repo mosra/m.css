@@ -27,9 +27,7 @@ import re
 import subprocess
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import PelicanPluginTestCase
+from . import PelicanPluginTestCase, parse_version
 
 def dot_version():
     return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
@@ -45,7 +43,7 @@ class Dot(PelicanPluginTestCase):
         })
 
         # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
-        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
+        if parse_version(dot_version()) >= parse_version("2.42.2"):
             file = 'page.html'
         else:
             file = 'page-240.html'

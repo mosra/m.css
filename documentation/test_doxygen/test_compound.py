@@ -26,9 +26,7 @@
 import os
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import IntegrationTestCase, doxygen_version
+from . import IntegrationTestCase, doxygen_version, parse_version
 
 class Listing(IntegrationTestCase):
     def test_index_pages(self):
@@ -206,7 +204,7 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
         # The namespace should have the detailed docs
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/653")
     def test_file(self):
         self.run_doxygen(wildcard='File_8h.xml')
@@ -215,7 +213,7 @@ class NamespaceMembersInFileScope(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class NamespaceMembersInFileScopeDefineBaseUrl(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.14"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.14"),
                          "https://github.com/doxygen/doxygen/pull/653")
     def test(self):
         self.run_doxygen(wildcard='File_8h.xml')

@@ -29,6 +29,18 @@ import unittest
 
 from pelican import read_settings, Pelican
 
+# distutils is deprecated, so I can no longer use LooseVersion to compare
+# versions. The only sane alternative was pkg_resources, suggested at
+# https://stackoverflow.com/a/57634066, but that's now ALSO deprecated, and one
+# is instructed to INSTALL the packaging module in order to perform BASIC
+# functionality. Fuck off.
+#
+# This returns a tuple of integers which should behave as intended for most
+# cases, a corresponding test is in test.py. Copied to pelican-theme/test,
+# documentation/test_python/ and documentation/test_doxygen.
+def parse_version(string: str):
+    return tuple([int(i) for i in string.split('.')])
+
 class PelicanPluginTestCase(unittest.TestCase):
     def __init__(self, path, dir, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)

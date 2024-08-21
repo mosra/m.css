@@ -28,9 +28,7 @@ import os
 import sys
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import PelicanPluginTestCase
+from . import PelicanPluginTestCase, parse_version
 
 class Plots(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
@@ -43,13 +41,13 @@ class Plots(PelicanPluginTestCase):
         })
 
         # FUCK this is annoying
-        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.5'):
+        if parse_version(matplotlib.__version__) >= parse_version('3.5'):
             self.assertEqual(*self.actual_expected_contents('page.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
+        elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-34.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.2'):
+        elif parse_version(matplotlib.__version__) >= parse_version('3.2'):
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-32.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.0'):
+        elif parse_version(matplotlib.__version__) >= parse_version('3.0'):
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-30.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-22.html'))

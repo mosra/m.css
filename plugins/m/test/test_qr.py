@@ -25,8 +25,6 @@
 
 import sys
 
-from distutils.version import LooseVersion
-
 from . import PelicanPluginTestCase
 
 class Qr(PelicanPluginTestCase):
@@ -38,9 +36,9 @@ class Qr(PelicanPluginTestCase):
             'PLUGINS': ['m.htmlsanity', 'm.qr']
         })
 
-        if LooseVersion(sys.version) >= LooseVersion("3.8"):
+        if sys.version_info >= (3, 8):
             self.assertEqual(*self.actual_expected_contents('page.html', 'page.html'))
-        elif LooseVersion(sys.version) >= LooseVersion("3.7"):
+        elif sys.version_info >= (3, 7):
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-py37.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('page.html', 'page-py36.html'))

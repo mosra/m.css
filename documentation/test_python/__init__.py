@@ -36,6 +36,11 @@ from python import run, default_templates, default_config
 # https://stackoverflow.com/a/12867228
 _camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
 
+# A copy of the same utility that's in plugins/m/test/__init__.py because
+# distutils is deprecated and alternatives are insane. See there for details.
+def parse_version(string: str):
+    return tuple([int(i) for i in string.split('.')])
+
 # The test files are automatically detected from derived class name and
 # filesystem location. For a `test_inspect.NameMapping` class, it will look
 # for the `inspect_name_mapping` directory. If the class name is equivalent to

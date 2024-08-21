@@ -29,6 +29,11 @@ import unittest
 
 from pelican import read_settings, Pelican
 
+# A copy of the same utility that's in plugins/m/test/__init__.py because
+# distutils is deprecated and alternatives are insane. See there for details.
+def parse_version(string: str):
+    return tuple([int(i) for i in string.split('.')])
+
 class MinimalTestCase(unittest.TestCase):
     def __init__(self, path, dir, *args, **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)

@@ -37,7 +37,12 @@ from doxygen import State, parse_doxyfile, run, default_templates, default_wildc
 _camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
 
 def doxygen_version():
-    return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip()
+    return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip().split(' ')[0]
+
+# A copy of the same utility that's in plugins/m/test/__init__.py because
+# distutils is deprecated and alternatives are insane. See there for details.
+def parse_version(string: str):
+    return tuple([int(i) for i in string.split('.')])
 
 class BaseTestCase(unittest.TestCase):
     def __init__(self, *args, dir=None, **kwargs):
