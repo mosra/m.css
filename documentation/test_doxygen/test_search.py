@@ -32,6 +32,9 @@ import sys
 from doxygen import EntryType
 from _search import pretty_print, searchdata_filename
 
+from distutils.version import LooseVersion
+from . import doxygen_version
+
 from test_doxygen import IntegrationTestCase
 
 class Search(IntegrationTestCase):
@@ -42,7 +45,7 @@ class Search(IntegrationTestCase):
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 4841)
+        self.assertEqual(len(serialized), 4850)
         self.assertEqual(search_data_pretty, """
 53 symbols
 deprecated_macro [0]
@@ -223,15 +226,16 @@ union [59]
 (EntryType.DEFINE, CssClass.INFO, 'define'),
 (EntryType.ENUM, CssClass.PRIMARY, 'enum'),
 (EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
-(EntryType.VAR, CssClass.DEFAULT, 'var')
+(EntryType.VAR, CssClass.DEFAULT, 'var'),
+(EntryType.CONCEPT, CssClass.PRIMARY, 'concept')
 """.strip())
 
     def test_byte_sizes(self):
         for config, bytes, size in [
-            ('SEARCH_RESULT_ID_BYTES', 3, 4959),
-            ('SEARCH_RESULT_ID_BYTES', 4, 5077),
-            ('SEARCH_FILE_OFFSET_BYTES', 4, 5302),
-            ('SEARCH_NAME_SIZE_BYTES', 2, 4893)
+            ('SEARCH_RESULT_ID_BYTES', 3, 4968),
+            ('SEARCH_RESULT_ID_BYTES', 4, 5086),
+            ('SEARCH_FILE_OFFSET_BYTES', 4, 5311),
+            ('SEARCH_NAME_SIZE_BYTES', 2, 4902)
         ]:
             with self.subTest(config=config, bytes=bytes, size=size):
                 self.run_doxygen(index_pages=[], wildcard='*.xml', config={
@@ -249,8 +253,12 @@ class LongSuffixLength(IntegrationTestCase):
         with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
             serialized = f.read()
             search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
+            if LooseVersion(doxygen_version()) >= LooseVersion("1.9.2"):
+                # Doxygen's hash ID generation differs in some circumstances from 1.9.2 onward;
+                # this ugly hack allows the test to pass in either case
+                search_data_pretty = search_data_pretty.replace('a2a7357e0cfd97ec186a2a4e92732611c', 'a1e9a11887275938ef5541070955c9d9c')
         #print(search_data_pretty)
-        self.assertEqual(len(serialized), 478)
+        self.assertEqual(len(serialized), 487)
         # The parameters get cut off with an ellipsis
         self.assertEqual(search_data_pretty, """
 2 symbols
@@ -278,7 +286,8 @@ averylongfunctionname [0]
 (EntryType.DEFINE, CssClass.INFO, 'define'),
 (EntryType.ENUM, CssClass.PRIMARY, 'enum'),
 (EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
-(EntryType.VAR, CssClass.DEFAULT, 'var')
+(EntryType.VAR, CssClass.DEFAULT, 'var'),
+(EntryType.CONCEPT, CssClass.PRIMARY, 'concept')
 """.strip())
 
 if __name__ == '__main__': # pragma: no cover

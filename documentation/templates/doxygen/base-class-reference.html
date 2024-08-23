@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% macro entry_class(class) %}{% include 'entry-class.html' %}{% endmacro %}
+{% macro entry_concept(concept) %}{% include 'entry-concept.html' %}{% endmacro %}
 {% macro entry_typedef(typedef, mark_nonpublic=False) %}{% include 'entry-typedef.html' %}{% endmacro %}
 {% macro entry_enum(enum, mark_nonpublic=False) %}{% include 'entry-enum.html' %}{% endmacro %}
 {% macro entry_func(func, mark_nonpublic=False) %}{% include 'entry-func.html' %}{% endmacro %}
@@ -166,6 +167,8 @@
             {% for kind, type in compound.public_types %}
             {% if kind == 'class' %}
 {{ entry_class(type) }}
+            {% elif kind == 'concept' %}
+{{ entry_concept(type) }}
             {% elif kind == 'enum' %}
 {{ entry_enum(type) }}
             {% elif kind == 'typedef' %}
@@ -252,6 +255,8 @@
             {% for kind, type in compound.protected_types %}
             {% if kind == 'class' %}
 {{ entry_class(type) }}
+            {% elif kind == 'concept' %}
+{{ entry_concept(type) }}
             {% elif kind == 'enum' %}
 {{ entry_enum(type) }}
             {% elif kind == 'typedef' %}
