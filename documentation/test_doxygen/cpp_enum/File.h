@@ -16,3 +16,8 @@ enum E: int {
 
 /** @brief Strong implicitly typed enum */
 enum class F {};
+
+enum: long {
+    /** @brief Constant in an unnamed typed enum */
+    Unnamed = -1337
+};

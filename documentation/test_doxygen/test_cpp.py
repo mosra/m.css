@@ -27,7 +27,7 @@ import unittest
 
 from . import IntegrationTestCase, doxygen_version, parse_version
 
-class EnumClass(IntegrationTestCase):
+class Enum(IntegrationTestCase):
     @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/627")
     def test(self):
