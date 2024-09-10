@@ -1856,7 +1856,11 @@ def parse_enum(state: State, element: ET.Element):
     state.current_definition_url_base, enum.base_url, enum.id, enum.include, enum.has_details = parse_id_and_include(state, element)
     enum.type = parse_type(state, element.find('type'))
     enum.name = element.find('name').text
-    if enum.name.startswith('@'): enum.name = '(anonymous)'
+    # Doxygen < 1.9.7 puts a generated name into the XML, starting with @,
+    # newer versions strip those away, leading to an empty name
+    # https://github.com/doxygen/doxygen/commit/a18e4c76ed6415893800c7d77a2f798614fb638b
+    if not enum.name or enum.name.startswith('@'):
+        enum.name = '(anonymous)'
     enum.brief = parse_desc(state, element.find('briefdescription'))
     enum.description, search_keywords, search_enum_values_as_keywords, enum.deprecated, enum.since = parse_enum_desc(state, element)
     enum.is_protected = element.attrib['prot'] == 'protected'
