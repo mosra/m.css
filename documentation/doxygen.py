@@ -437,7 +437,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # some silly reason, and then the Markdown is processed as a HTML,
         # resulting in <blockquote><para><zwj/>. Drop the <zwj/> from there, as
         # it's useless and messes up with our <para> patching logic.
-        if index == 0 and i.tag == 'zwj' and element.tag == 'para' and immediate_parent and immediate_parent.tag == 'blockquote':
+        if index == 0 and i.tag == 'zwj' and element.tag == 'para' and immediate_parent is not None and immediate_parent.tag == 'blockquote':
             if i.tail:
                 tail: str = html.escape(i.tail)
                 if trim:
@@ -470,7 +470,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # In a blockquote we need to not count the initial <zwj/> added by
             # Doxygen 1.9. Otherwise all code blocks alone in a blockquote
             # would be treated as inline.
-            if element.tag == 'para' and immediate_parent and immediate_parent.tag == 'blockquote':
+            if element.tag == 'para' and immediate_parent is not None and immediate_parent.tag == 'blockquote':
                 element_children_count = 0
                 for listing_index, listing in enumerate(element):
                     if listing_index == 0 and listing.tag == 'zwj': continue
@@ -500,7 +500,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # and begin of a code block by a paragraph even if there is
                 # a blank line. But it does so for xrefitems such as @todo.
                 # I don't even.)
-                ((previous_section or (previous_element and previous_element.tag == 'blockquote')) and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
+                ((previous_section or (previous_element is not None and previous_element.tag == 'blockquote')) and (not i.tail or not i.tail.strip()) and index + 1 == element_children_count)
             ):
                 code_block = True
 
@@ -578,7 +578,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.parsed = out.parsed.rstrip()
                 if not out.parsed:
                     out.write_paragraph_start_tag = False
-                elif immediate_parent and immediate_parent.tag == 'listitem' and i.tag in ['itemizedlist', 'orderedlist']:
+                elif immediate_parent is not None and immediate_parent.tag == 'listitem' and i.tag in ['itemizedlist', 'orderedlist']:
                     out.write_paragraph_start_tag = False
                 elif out.write_paragraph_close_tag:
                     out.parsed += '</p>'
@@ -2365,7 +2365,11 @@ def extract_metadata(state: State, xml):
     # Groups are explicitly created so they *have details*, other
     # things need to have at least some documentation. Pages are treated as
     # having something unless they're stupid. See the function for details.
-    compound.has_details = compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription') or (compound.kind == 'page' and not is_a_stupid_empty_markdown_page(compounddef))
+    #
+    # ElementTree deprecated the __bool__ conversion of Element, so I now have
+    # to check that `detaileddescription` actually has any children. Checking
+    # against None is not enough as it could be present but be empty.
+    compound.has_details = compound.kind == 'group' or compound.brief or len(compounddef.find('detaileddescription')) or (compound.kind == 'page' and not is_a_stupid_empty_markdown_page(compounddef))
     compound.children = []
 
     # Version badges, deprecation status. If @since is followed by
@@ -2628,7 +2632,12 @@ def parse_xml(state: State, xml: str):
     # Ignoring compounds w/o any description, except for groups,
     # which are created explicitly. Pages are treated as having something
     # unless they're stupid. See the function for details.
-    if not compounddef.find('briefdescription') and not compounddef.find('detaileddescription') and not compounddef.attrib['kind'] == 'group' and (not compounddef.attrib['kind'] == 'page' or is_a_stupid_empty_markdown_page(compounddef)):
+    #
+    # ElementTree deprecated the __bool__ conversion of Element, so I now have
+    # to check that `briefdescription` / `detaileddescription` actually has any
+    # children. Checking against None is not enough as it could be present but
+    # be empty.
+    if not len(compounddef.find('briefdescription')) and not len(compounddef.find('detaileddescription')) and not compounddef.attrib['kind'] == 'group' and (not compounddef.attrib['kind'] == 'page' or is_a_stupid_empty_markdown_page(compounddef)):
         logging.debug("{}: neither brief nor detailed description present, skipping".format(state.current))
         return None
 
@@ -3356,8 +3365,12 @@ def parse_xml(state: State, xml: str):
                     entry.include = None
 
     # Add the compound to search data, if it's documented
+    #
+    # ElementTree deprecated the __bool__ conversion of Element, so I now have
+    # to check that `detaileddescription` actually has any children. Checking
+    # against None is not enough as it could be present but be empty.
     # TODO: add example sources there? how?
-    if not state.config['SEARCH_DISABLED'] and not compound.kind == 'example' and (compound.kind == 'group' or compound.brief or compounddef.find('detaileddescription')):
+    if not state.config['SEARCH_DISABLED'] and not compound.kind == 'example' and (compound.kind == 'group' or compound.brief or len(compounddef.find('detaileddescription'))):
         if compound.kind == 'namespace':
             kind = EntryType.NAMESPACE
         elif compound.kind == 'struct':
