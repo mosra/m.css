@@ -79,6 +79,18 @@ printf("The answer to the universe and everything is %d.", 5*9)
 The answer to the universe and everything is 42.
 @endparblock
 
+A paragraph containing a footnote @m_class{m-footnote} [27](#note27) reference.
+
+@m_class{m-footnote}
+
+<dl>
+<dt>27.</dt>
+<dd>
+@anchor note27
+And a styled footnote, overriding the default styling which is used for
+TODO pages and other xrefitems, like @ref licenses.
+</dd>
+</dl>
 */
 
 /** @page math Math

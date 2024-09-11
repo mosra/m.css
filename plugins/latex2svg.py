@@ -48,8 +48,8 @@ default_params = {
     'libgs': None,
 }
 
-
-if not hasattr(os.environ, 'LIBGS') and not find_library('gs'):
+libgs = find_library('gs')
+if not hasattr(os.environ, 'LIBGS') and not libgs:
     if sys.platform == 'darwin':
         # Fallback to homebrew Ghostscript on macOS
         homebrew_libgs = '/usr/local/opt/ghostscript/lib/libgs.dylib'
@@ -57,7 +57,41 @@ if not hasattr(os.environ, 'LIBGS') and not find_library('gs'):
             default_params['libgs'] = homebrew_libgs
     if not default_params['libgs']:
         print('Warning: libgs not found')
+# dvisvgm < 3.0 only looks for ghostscript < 10 on its own, attempt to supply
+# it directly if version 10 is found. Fixed in
+# https://github.com/mgieseki/dvisvgm/commit/46b11c02a46883309a824e3fc798f8093041daec
+# TODO related https://bugs.archlinux.org/task/76083 was resolved on May 29th
+# 2023, remove after enough time passes if no similar case happens in other
+# distros
+elif '.so.10' in str(libgs):
+    # If dvisvgm seems to be at least 3.0, don't even attempt to find libgs and
+    # just assume it works
+    dvisvgm_is_new_enough = False
+    try:
+        ret = subprocess.run(['dvisvgm', '--version'], stdout=subprocess.PIPE)
+        if b'dvisvgm 3' in ret.stdout:
+            dvisvgm_is_new_enough = True
+    except:
+        pass
 
+    # Just winging it here, there doesn't seem to be an easy way to get the
+    # actual full path the library was found in -- ctypes/util.py does crazy
+    # stuff like invoking gcc (!!) to get the library filename.
+    #
+    # On Arch /usr/lib64 is a symlink to /usr/lib, so only the former is
+    # needed; on Fedora it's two distinct directories and libgs is in the
+    # latter (ugh). Elsewhere it might be /usr/lib/x86_64-linux-gnu or just
+    # anything else, so let's just bet that dvisvgm is 3.0+ in most cases and
+    # this gets hit only very rarely.
+    if not dvisvgm_is_new_enough:
+        prefixes = ['/usr/lib', '/usr/lib64']
+        for prefix in prefixes:
+            libgs_absolute = os.path.join(prefix, libgs)
+            if os.path.exists(libgs_absolute):
+                default_params['libgs'] = libgs_absolute
+                break
+        else:
+            raise RuntimeError('libgs found by linker magic, but is not in {}'.format(' or '.join(prefixes)))
 
 def latex2svg(code, params=default_params, working_directory=None):
     """Convert LaTeX to SVG using dvisvgm.
@@ -143,6 +177,13 @@ def latex2svg(code, params=default_params, working_directory=None):
             return None
 
     output = ret.stderr.decode('utf-8')
+
+    # Since we rely on Ghostscript to give us a "depth" (= vertical alignment)
+    # value, dvisvgm not using it means the output would be broken and it makes
+    # no sense to continue.
+    if 'Ghostscript not found' in output:
+        raise RuntimeError('libgs not detected by dvisvgm, point the LIBGS environment variable to its location')
+
     width, height = get_size(output)
     depth = get_measure(output, 'depth')
     return {'svg': svg, 'depth': depth, 'width': width, 'height': height}

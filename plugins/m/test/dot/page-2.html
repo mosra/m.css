@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>m.dot | A Pelican Blog</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i" />
+  <link rel="stylesheet" href="static/m-dark.css" />
+  <link rel="canonical" href="page.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<header><nav id="navigation">
+  <div class="m-container">
+    <div class="m-row">
+      <a href="./" id="m-navbar-brand" class="m-col-t-9 m-col-m-none m-left-m">A Pelican Blog</a>
+    </div>
+  </div>
+</nav></header>
+<main>
+<article>
+  <div class="m-container m-container-inflatable">
+    <div class="m-row">
+      <div class="m-col-l-10 m-push-l-1">
+        <h1>m.dot</h1>
+<!-- content -->
+<p>Note: the test uses DejaVu Sans instead of Source Sans Pro in order to have
+predictable rendering on the CIs.</p>
+<p>Different shapes, fills etc. All default colors, filled only the first node
+and the arrowheads, nothing else. Non-default font size should be preserved.</p>
+<div class="m-graph">
+<svg style="width: 16.312rem; height: 5.312rem;" viewBox="0.00 0.00 261.18 85.48">
+<g transform="scale(1 1) rotate(0) translate(4 81.48)">
+<title>Basics</title>
+<g class="m-node">
+<title>a</title>
+<polygon points="54,-41.09 0,-41.09 0,-5.09 54,-5.09 54,-41.09"/>
+<text text-anchor="middle" x="27" y="-19.29">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="114.09" cy="-23.09" rx="19.17" ry="19.17"/>
+<ellipse cx="114.09" cy="-23.09" rx="23.18" ry="23.18"/>
+<text text-anchor="middle" x="114.09" y="-19.29">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;b</title>
+<path d="M54.46,-23.09C62.78,-23.09 72.07,-23.09 80.75,-23.09"/>
+<polygon points="80.94,-26.59 90.94,-23.09 80.94,-19.59 80.94,-26.59"/>
+</g>
+<g class="m-node m-flat">
+<title>c</title>
+<ellipse cx="226.18" cy="-23.09" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="226.18" y="-19.29">c</text>
+</g>
+<g class="m-edge">
+<title>b&#45;&gt;c</title>
+<path d="M137.37,-23.09C152.15,-23.09 171.88,-23.09 188.89,-23.09"/>
+<polygon points="189.07,-26.59 199.07,-23.09 189.07,-19.59 189.07,-26.59"/>
+<text text-anchor="middle" x="168.18" y="-35.09" style="font-size: 40.0px;">0</text>
+</g>
+<g class="m-edge">
+<title>c&#45;&gt;c</title>
+<path d="M215.91,-40.31C213.81,-50.24 217.23,-59.48 226.18,-59.48 231.92,-59.48 235.38,-55.68 236.58,-50.35"/>
+<polygon points="240.08,-50.27 236.46,-40.31 233.08,-50.35 240.08,-50.27"/>
+<text text-anchor="middle" x="226.18" y="-64.68">1</text>
+</g>
+</g>
+</svg>
+</div>
+<div class="m-graph">
+<svg style="width: 5.688rem; height: 2.750rem;" viewBox="0.00 0.00 91.00 44.00">
+<g transform="scale(1 1) rotate(0) translate(4 40)">
+<title>More shapes</title>
+<g class="m-node m-flat">
+<title>d</title>
+<text text-anchor="middle" x="41.5" y="-14.2">outsider</text>
+</g>
+</g>
+</svg>
+</div>
+<p>Colors:</p>
+<div class="m-graph">
+<svg style="width: 5.812rem; height: 8.562rem;" viewBox="0.00 0.00 93.09 136.95">
+<g transform="scale(1 1) rotate(0) translate(4 132.95)">
+<title>Colors</title>
+<g class="m-node m-success m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-110.57" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-106.77">a</text>
+</g>
+<g class="m-node m-dim">
+<title>b</title>
+<ellipse cx="27" cy="-19.09" rx="19.18" ry="19.18"/>
+<text text-anchor="middle" x="27" y="-15.29">b</text>
+</g>
+<g class="m-edge m-warning">
+<title>a&#45;&gt;b</title>
+<path d="M27,-91.89C27,-79.55 27,-62.82 27,-48.61"/>
+<polygon points="30.5,-48.35 27,-38.35 23.5,-48.35 30.5,-48.35"/>
+<text text-anchor="middle" x="41" y="-61.38">yes</text>
+</g>
+<g class="m-edge m-primary">
+<title>b&#45;&gt;b</title>
+<path d="M44.55,-27.24C54.67,-28.91 64.09,-26.19 64.09,-19.09 64.09,-14.54 60.23,-11.8 54.79,-10.84"/>
+<polygon points="54.52,-7.35 44.55,-10.94 54.59,-14.35 54.52,-7.35"/>
+<text text-anchor="middle" x="74.59" y="-15.29">no</text>
+</g>
+</g>
+</svg>
+</div>
+<p>Unoriented graph without a title:</p>
+<div class="m-graph m-success">
+<svg style="width: 3.875rem; height: 7.375rem;" viewBox="0.00 0.00 62.00 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.54)">
+<g class="m-node m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-87.35">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&#45;b</title>
+<path d="M21.12,-73.02C19.95,-61.9 19.96,-47.45 21.14,-36.36"/>
+</g>
+<g class="m-edge">
+<title>a&#45;&#45;b</title>
+<path d="M32.88,-73.02C34.05,-61.9 34.04,-47.45 32.86,-36.36"/>
+</g>
+</g>
+</svg>
+</div>
+<p>Strict graphs:</p>
+<div class="m-graph">
+<svg style="width: 3.875rem; height: 7.375rem;" viewBox="0.00 0.00 62.00 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.54)">
+<title>A to B</title>
+<g class="m-node m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-87.35">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;b</title>
+<path d="M27,-72.66C27,-64.98 27,-55.77 27,-47.19"/>
+<polygon points="30.5,-47.17 27,-37.17 23.5,-47.17 30.5,-47.17"/>
+</g>
+</g>
+</svg>
+</div>
+<div class="m-graph">
+<svg style="width: 3.875rem; height: 7.375rem;" viewBox="0.00 0.00 62.00 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.54)">
+<title>A to B</title>
+<g class="m-node m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-87.35">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&#45;b</title>
+<path d="M27,-72.66C27,-61.85 27,-48.03 27,-37.17"/>
+</g>
+</g>
+</svg>
+</div>
+<p>Structs:</p>
+<div class="m-graph">
+<svg style="width: 13.188rem; height: 5.438rem;" viewBox="0.00 0.00 210.50 87.00">
+<g transform="scale(1 1) rotate(0) translate(4 83)">
+<title>Structs</title>
+<g class="m-node m-info m-flat">
+<title>struct</title>
+<polygon points="0,-0.5 0,-78.5 79,-78.5 79,-0.5 0,-0.5"/>
+<text text-anchor="middle" x="39.5" y="-61.7">a</text>
+<polyline points="0,-52.5 79,-52.5 "/>
+<text text-anchor="middle" x="39.5" y="-35.7">b</text>
+<polyline points="0,-26.5 79,-26.5 "/>
+<text text-anchor="middle" x="13" y="-9.7">c</text>
+<polyline points="26,-0.5 26,-26.5 "/>
+<text text-anchor="middle" x="39.5" y="-9.7">d</text>
+<polyline points="53,-0.5 53,-26.5 "/>
+<text text-anchor="middle" x="66" y="-9.7">e</text>
+</g>
+<g class="m-node m-flat">
+<title>another</title>
+<polygon points="96.5,-13.5 96.5,-65.5 202.5,-65.5 202.5,-13.5 96.5,-13.5"/>
+<text text-anchor="middle" x="109.5" y="-35.7">a</text>
+<polyline points="122.5,-13.5 122.5,-65.5 "/>
+<text text-anchor="middle" x="136" y="-48.7">b</text>
+<polyline points="122.5,-39.5 149.5,-39.5 "/>
+<text text-anchor="middle" x="136" y="-22.7">c</text>
+<polyline points="149.5,-13.5 149.5,-65.5 "/>
+<text text-anchor="middle" x="163" y="-35.7">d</text>
+<polyline points="176.5,-13.5 176.5,-65.5 "/>
+<text text-anchor="middle" x="189.5" y="-35.7">e</text>
+</g>
+</g>
+</svg>
+</div>
+<figure class="m-figure">
+<svg class="m-graph m-info" style="width: 3.875rem; height: 7.375rem;" viewBox="0.00 0.00 62.00 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.54)">
+<title>A to B</title>
+<g class="m-node m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-87.35">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;b</title>
+<path d="M27,-72.66C27,-64.98 27,-55.77 27,-47.19"/>
+<polygon points="30.5,-47.17 27,-37.17 23.5,-47.17 30.5,-47.17"/>
+</g>
+</g>
+</svg>
+<figcaption>This is a title.<div class="m-figure-description">
+<p>This is a description.</p>
+</div>
+</figcaption>
+</figure>
+<figure class="m-figure">
+<svg class="m-graph" style="width: 3.875rem; height: 7.375rem;" viewBox="0.00 0.00 62.00 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.54)">
+<g class="m-node m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-87.35">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;b</title>
+<path d="M27,-72.66C27,-64.98 27,-55.77 27,-47.19"/>
+<polygon points="30.5,-47.17 27,-37.17 23.5,-47.17 30.5,-47.17"/>
+</g>
+</g>
+</svg>
+<p>The graph below should not be styled as a part of the figure:</p>
+<div class="m-graph m-danger">
+<svg style="width: 3.875rem; height: 7.375rem;" viewBox="0.00 0.00 62.00 117.54">
+<g transform="scale(1 1) rotate(0) translate(4 113.54)">
+<title>A to B</title>
+<g class="m-node m-flat">
+<title>a</title>
+<ellipse cx="27" cy="-91.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-87.35">a</text>
+</g>
+<g class="m-node m-flat">
+<title>b</title>
+<ellipse cx="27" cy="-18.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="27" y="-14.58">b</text>
+</g>
+<g class="m-edge">
+<title>a&#45;&gt;b</title>
+<path d="M27,-72.66C27,-64.98 27,-55.77 27,-47.19"/>
+<polygon points="30.5,-47.17 27,-37.17 23.5,-47.17 30.5,-47.17"/>
+</g>
+</g>
+</svg>
+</div>
+</figure>
+<p>Subgraphs:</p>
+<div class="m-graph">
+<svg style="width: 10.875rem; height: 17.625rem;" viewBox="0.00 0.00 174.00 282.31">
+<g transform="scale(1 1) rotate(0) translate(4 278.31)">
+<g class="m-cluster">
+<title>cluster_Outer</title>
+<polygon points="8,-8 8,-266.31 158,-266.31 158,-8 8,-8"/>
+<text text-anchor="middle" x="83" y="-249.51">Outer</text>
+</g>
+<g class="m-cluster m-info">
+<title>cluster_Inner</title>
+<polygon points="80,-80.77 80,-232.31 150,-232.31 150,-80.77 80,-80.77"/>
+<text text-anchor="middle" x="115" y="-215.51">Inner</text>
+</g>
+<g class="m-node m-flat">
+<title>A</title>
+<ellipse cx="43" cy="-179.92" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="43" y="-176.12">A</text>
+</g>
+<g class="m-node m-flat">
+<title>B</title>
+<ellipse cx="115" cy="-107.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="115" y="-103.35">B</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;B</title>
+<path d="M57.92,-164.26C67.96,-154.39 81.38,-141.2 92.68,-130.09"/>
+<polygon points="95.42,-132.31 100.1,-122.8 90.52,-127.31 95.42,-132.31"/>
+</g>
+<g class="m-node m-flat">
+<title>C</title>
+<ellipse cx="43" cy="-107.15" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="43" y="-103.35">C</text>
+</g>
+<g class="m-edge">
+<title>A&#45;&gt;C</title>
+<path d="M43,-161.43C43,-153.75 43,-144.54 43,-135.95"/>
+<polygon points="46.5,-135.94 43,-125.94 39.5,-135.94 46.5,-135.94"/>
+</g>
+<g class="m-node m-flat">
+<title>D</title>
+<ellipse cx="115" cy="-34.38" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="115" y="-30.58">D</text>
+</g>
+<g class="m-edge">
+<title>B&#45;&gt;D</title>
+<path d="M115,-88.66C115,-80.98 115,-71.77 115,-63.19"/>
+<polygon points="118.5,-63.17 115,-53.17 111.5,-63.17 118.5,-63.17"/>
+</g>
+<g class="m-node m-flat">
+<title>B2</title>
+<ellipse cx="115" cy="-179.92" rx="27" ry="18.27"/>
+<text text-anchor="middle" x="115" y="-176.12">B2</text>
+</g>
+<g class="m-edge">
+<title>B2&#45;&gt;B</title>
+<path d="M115,-161.43C115,-153.75 115,-144.54 115,-135.95"/>
+<polygon points="118.5,-135.94 115,-125.94 111.5,-135.94 118.5,-135.94"/>
+</g>
+</g>
+</svg>
+</div>
+<!-- /content -->
+      </div>
+    </div>
+  </div>
+</article>
+</main>
+</body>
+</html>

@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -26,9 +26,7 @@
 import os
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import IntegrationTestCase, doxygen_version
+from . import IntegrationTestCase, doxygen_version, parse_version
 
 class Order(IntegrationTestCase):
     def test(self):
@@ -36,7 +34,7 @@ class Order(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('pages.html'))
 
 class Brief(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/624")
     def test(self):
         self.run_doxygen(wildcard='*.xml')
@@ -45,7 +43,7 @@ class Brief(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('page-b.html'))
 
 class Toc(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/625")
     def test(self):
         self.run_doxygen(wildcard='page-toc.xml')
@@ -74,7 +72,7 @@ class EmptyTitle(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('untitled.html'))
 
 class SubpageOfIndex(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.17"),
+    @unittest.skipUnless(parse_version(doxygen_version()) >= parse_version("1.8.17"),
         "1.8.16 and below doesn't mark the page as subpage of index")
     def test(self):
         self.run_doxygen(wildcard='*.xml')

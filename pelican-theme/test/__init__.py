@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,6 +28,11 @@ import shutil
 import unittest
 
 from pelican import read_settings, Pelican
+
+# A copy of the same utility that's in plugins/m/test/__init__.py because
+# distutils is deprecated and alternatives are insane. See there for details.
+def parse_version(string: str):
+    return tuple([int(i) for i in string.split('.')])
 
 class MinimalTestCase(unittest.TestCase):
     def __init__(self, path, dir, *args, **kwargs):

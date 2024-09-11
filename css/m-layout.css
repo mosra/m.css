@@ -1,7 +1,7 @@
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
@@ -394,11 +394,11 @@ article#m-jumbo > header #m-jumbo-cover {
   padding-bottom: 5rem;
 }
 article#m-jumbo > header #m-jumbo-image {
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   margin-bottom: -3rem;
 }
 article#m-jumbo > header h1 {
-  font-size: 10vmin;
+  font-size: 8vmin;
 }
 article#m-jumbo > header h2 {
   font-size: 3vmin;

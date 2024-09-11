@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -79,7 +79,7 @@ def init(tagfiles, input):
                 # Linking to files
                 if child.attrib['kind'] == 'file':
                     file_path = child.find('path')
-                    link = path + child.find('filename').text + ".html"
+                    link = path + child.find('filename').text
                     symbol_mapping[(file_path.text if file_path is not None else '') + child.find('name').text] = (None, link, css_classes)
 
                     for member in child.findall('member'):
@@ -92,19 +92,26 @@ def init(tagfiles, input):
                 # Linking to namespaces, structs and classes
                 if child.attrib['kind'] in ['class', 'struct', 'namespace']:
                     name = child.find('name').text
-                    link = path + child.findtext('filename') # <filename> can be empty (cppreference tag file)
+                    # The cppreference tag file has <filename> empty
+                    link = path + child.findtext('filename')
                     symbol_mapping[name] = (None, link, css_classes)
                     for member in child.findall('member'):
                         if not 'kind' in member.attrib: continue
 
-                        # Typedefs, constants
-                        if member.attrib['kind'] == 'typedef' or member.attrib['kind'] == 'enumvalue':
-                            symbol_mapping[name + '::' + member.find('name').text] = (None, link + '#' + member.find('anchor').text, css_classes)
+                        # In case of the cppreference tag file, <compound>
+                        # <filename> is empty, and <anchorfile> inside <member>
+                        # is used instead. Doxygen fills both, so use
+                        # <anchorfile> to cover both cases.
+                        link = path + member.find('anchorfile').text
+
+                        # Typedefs, constants, variables
+                        if member.attrib['kind'] in ['typedef', 'enumvalue', 'variable']:
+                            symbol_mapping[name + '::' + member.find('name').text] = (None, link + ('#' + member.findtext('anchor') if member.findtext('anchor') else ''), css_classes)
 
                         # Functions
                         if member.attrib['kind'] == 'function':
                             # <filename> can be empty (cppreference tag file)
-                            symbol_mapping[name + '::' + member.find('name').text + "()"] = (None, link + '#' + member.findtext('anchor'), css_classes)
+                            symbol_mapping[name + '::' + member.find('name').text + "()"] = (None, link + ('#' + member.findtext('anchor') if member.findtext('anchor') else ''), css_classes)
 
                         # Enums with values
                         if member.attrib['kind'] == 'enumeration':
@@ -114,7 +121,10 @@ def init(tagfiles, input):
                             for value in member.findall('enumvalue'):
                                 symbol_mapping[enumeration + '::' + value.text] = (None, link + '#' + value.attrib['anchor'], css_classes)
 
-                # Sections
+                # Sections. While rather strange, these reuse the `link`
+                # variable defined by whatever came earlier --- because pages
+                # have it with implicit `.html` but e.g. files with explicit
+                # `.html`. TODO: fix more robustly
                 for section in child.findall('docanchor'):
                     symbol_mapping[section.text] = (section.attrib.get('title', ''), link + '#' + section.text, css_classes)
 

@@ -1,8 +1,9 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2024 John Turner <7strbass@gmail.com>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -28,7 +29,6 @@ import os.path
 import docutils
 from docutils.parsers import rst
 from docutils.parsers.rst.roles import set_classes
-from docutils.utils.error_reporting import SafeString, ErrorString, locale_encoding
 from docutils.parsers.rst import Directive, directives
 import docutils.parsers.rst.directives.misc
 from docutils import io, nodes, utils, statemachine
@@ -171,6 +171,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
         'filters': directives.unchanged,
         'hl-lines': directives.unchanged
     }
+    has_content = False
 
     def run(self):
         """
@@ -187,7 +188,6 @@ class Include(docutils.parsers.rst.directives.misc.Include):
             path = os.path.join(self.standard_include_path, path[1:-1])
         path = os.path.normpath(os.path.join(source_dir, path))
         path = utils.relative_path(None, path)
-        path = nodes.reprunicode(path)
         e_handler=self.state.document.settings.input_encoding_error_handler
         tab_width = self.options.get(
             'tab-width', self.state.document.settings.tab_width)
@@ -202,7 +202,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
                               (self.name, SafeString(path)))
         except IOError as error:
             raise self.severe('Problems with "%s" directive path:\n%s.' %
-                      (self.name, ErrorString(error)))
+                      (self.name, str(error)))
         startline = self.options.get('start-line', None)
         endline = self.options.get('end-line', None)
         try:
@@ -213,7 +213,7 @@ class Include(docutils.parsers.rst.directives.misc.Include):
                 rawtext = include_file.read()
         except UnicodeError as error:
             raise self.severe('Problem with "%s" directive:\n%s' %
-                              (self.name, ErrorString(error)))
+                              (self.name, str(error)))
         # start-after/end-before: no restrictions on newlines in match-text,
         # and no restrictions on matching inside lines vs. line boundaries
         after_text = self.options.get('start-after', None)

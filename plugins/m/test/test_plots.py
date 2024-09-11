@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -28,9 +28,7 @@ import os
 import sys
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import PelicanPluginTestCase
+from . import PelicanPluginTestCase, parse_version
 
 class Plots(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
@@ -43,13 +41,18 @@ class Plots(PelicanPluginTestCase):
         })
 
         # FUCK this is annoying
-        if LooseVersion(matplotlib.__version__) >= LooseVersion('3.5'):
-            self.assertEqual(*self.actual_expected_contents('page.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.4'):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-34.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.2'):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-32.html'))
-        elif LooseVersion(matplotlib.__version__) >= LooseVersion('3.0'):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-30.html'))
+        if parse_version(matplotlib.__version__) >= parse_version('3.6'):
+            # https://github.com/matplotlib/matplotlib/commit/1cf5a33b5b5fb07f8fd3956322b85efa0e307b18
+            file = 'page.html'
+        elif parse_version(matplotlib.__version__) >= parse_version('3.5'):
+            file = 'page-35.html'
+        elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
+            file = 'page-34.html'
+        elif parse_version(matplotlib.__version__) >= parse_version('3.2'):
+            file = 'page-32.html'
+        elif parse_version(matplotlib.__version__) >= parse_version('3.0'):
+            file = 'page-30.html'
         else:
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-22.html'))
+            file = 'page-22.html'
+
+        self.assertEqual(*self.actual_expected_contents('page.html', file))

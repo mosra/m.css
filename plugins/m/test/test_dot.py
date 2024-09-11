@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,9 +27,7 @@ import re
 import subprocess
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import PelicanPluginTestCase
+from . import PelicanPluginTestCase, parse_version
 
 def dot_version():
     return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
@@ -44,9 +42,13 @@ class Dot(PelicanPluginTestCase):
             'M_DOT_FONT': 'DejaVu Sans'
         })
 
-        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
-        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
+        # The damn thing adopted Chrome versioning apparently. No idea if the
+        # output changed in version 7, 8 or 9 already.
+        if parse_version(dot_version()) >= parse_version("10.0"):
             file = 'page.html'
+        # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
+        elif parse_version(dot_version()) >= parse_version("2.42.2"):
+            file = 'page-2.html'
         else:
             file = 'page-240.html'
 

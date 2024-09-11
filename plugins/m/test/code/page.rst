@@ -1,6 +1,8 @@
 m.code
 ######
 
+.. role:: ansi(code)
+    :language: ansi
 .. role:: cpp(code)
     :language: c++
 .. role:: tex(code)
@@ -55,7 +57,7 @@ Syntax highlighting:
     # Comment
     var = "string{}escape\n"
 
-Console colors:
+Console colors, including :ansi:`[31minline` code:
 
 .. include:: console-colors.ansi
     :code: ansi

@@ -15,6 +15,11 @@ struct Class {
     void foo2(std::string) {}
 };
 
+struct Class26 {
+    void foo1(int) {}
+    void foo2(int, float, const std::string&) {}
+};
+
 PYBIND11_MODULE(pybind_external_overload_docs, m) {
     m.doc() = "pybind11 external overload docs";
 
@@ -28,4 +33,21 @@ PYBIND11_MODULE(pybind_external_overload_docs, m) {
     py::class_<Class>(m, "Class", "My fun class!")
         .def("foo", &Class::foo1, "First overload", py::arg("index"))
         .def("foo", &Class::foo2, "Second overload", py::arg("name"));
+
+    py::class_<Class26> pybind26{m, "Class26", "Pybind 2.6 features"};
+
+    /* Checker so the Python side can detect if testing pybind 2.6 features is
+       feasible */
+    pybind26.attr("is_pybind26") =
+        #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
+        true
+        #else
+        false
+        #endif
+        ;
+
+    #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
+    pybind26
+        .def("foo", &Class26::foo2, "Positional and keyword-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"), py::kw_only{}, py::arg("keyword"));
+    #endif
 }

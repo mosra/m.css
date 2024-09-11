@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -25,9 +25,7 @@
 
 import sys
 
-from distutils.version import LooseVersion
-
-from . import PelicanPluginTestCase
+from . import PelicanPluginTestCase, parse_version
 
 class Qr(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
@@ -38,9 +36,18 @@ class Qr(PelicanPluginTestCase):
             'PLUGINS': ['m.htmlsanity', 'm.qr']
         })
 
-        if LooseVersion(sys.version) >= LooseVersion("3.8"):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page.html'))
-        elif LooseVersion(sys.version) >= LooseVersion("3.7"):
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-py37.html'))
+        if sys.version_info >= (3, 8):
+            from importlib.metadata import version
+            # Version 7.4 is likely available on Python 3.7 as well, but we
+            # don't have importlib there so just assume older Pythons have old
+            # qrcode packages.
+            if parse_version(version('qrcode')) >= (7, 4):
+                file = 'page.html'
+            else:
+                file = 'page-73.html'
+        elif sys.version_info >= (3, 7):
+            file = 'page-py37.html'
         else:
-            self.assertEqual(*self.actual_expected_contents('page.html', 'page-py36.html'))
+            file = 'page-py36.html'
+
+        self.assertEqual(*self.actual_expected_contents('page.html', file))

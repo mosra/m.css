@@ -30,6 +30,8 @@ Listing only people with code contributions, because otherwise there's too many
 -   `@gotchafr <https://github.com/gotchafr>`_ --- Linux-related fixes
 -   Guillaume Jacquemin (`@williamjcm <https://github.com/williamjcm>`_) ---
     Pelican theme fixes, semantic improvements to the ``m.htmlsanity`` plugin
+-   `John Turner <https://github.com/jturner65>`_ --- docutils compatibility
+    fixes
 -   `@joshyrobot <https://github.com/joshyrobot>`_ --- CSS validity fixes
 -   Lukas Pirl (`@lpirl <https://github.com/lpirl>`_) --- Pelican theme
     improvements, fixes for Pelican 4.5+ support
@@ -37,7 +39,7 @@ Listing only people with code contributions, because otherwise there's too many
 -   Marin (`@marinjurjevic <https://github.com/marinjurjevic>`_) --- Doxygen
     theme fixes
 -   Mark Gillard (`@marzer <https://github.com/marzer>`_) --- Doxygen theme
-    improvements
+    improvements, CSS fixes
 -   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
     theme improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related

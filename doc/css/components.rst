@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
@@ -519,11 +519,13 @@ bold, all :html:`<th>` and :html:`<td>` are aligned to left while table
           </tfoot>
         </table>
 
-Rows are highlighted on hover, if you want to disable that, put :css:`.m-flat`
-CSS class on the :html:`<table>` element. You can also put :css:`.m-thin` onto
-:html:`<th>` elements to remove the bold styling. Similarly to other
-components, you can color particular :html:`<tr>` or :html:`<td>` elements
-using the color classes from above:
+Use the :css:`.m-fullwidth` CSS class on the :html:`<table>` element to make
+the table span the full width instead of being centered. Rows are highlighted
+on hover, if you want to disable that, put :css:`.m-flat` on the
+:html:`<table>` element. You can also  put :css:`.m-thin` onto :html:`<th>`
+elements to remove the bold styling. Similarly to other components, you can
+color particular :html:`<tr>` or :html:`<td>` elements using the color classes
+from above:
 
 .. raw:: html
 
@@ -605,10 +607,11 @@ justified.
 `Images`_
 =========
 
-Putting :css:`.m-image` class onto an :html:`<img>` / :html:`<svg>` tag makes
-the image centered, slightly rounded and sets its max width to 100%. Adding
-:css:`.m-fullwidth` on the image element works as expected. For accessibility
-reasons it's a good practice to include the ``alt`` attribute.
+Putting :css:`.m-image` class onto an :html:`<img>`, :html:`<svg>` or
+:html:`<video>` tag makes the image or video centered, slightly rounded and
+sets its max width to 100%. Adding :css:`.m-fullwidth` on the image element
+works as expected. For accessibility reasons it's a good practice to include
+the ``alt`` attribute.
 
 .. code-figure::
 
@@ -648,6 +651,8 @@ not the surrounding area:
 For avatars, similarly to the `Badges`_ above, applying a :css:`.m-badge` class
 together with :css:`.m-image` will make the image round. Works for both plain
 :html:`<img>` and clickable images wrapped in :html:`<div class="m-image">`.
+The :css:`.m-badge` isn't recognized for :html:`<svg>` or :html:`<video>`
+however.
 
 .. code-figure::
 
@@ -668,8 +673,8 @@ border around the caption and description. The caption is expected to be in the
 :html:`<figcaption>` element. Inside it, there can optionally be a longer
 description wrapped in a :css:`div.m-figure-description` element. The
 :css:`.m-fullwidth` class works here too and you can also wrap the
-:html:`<img>` / :html:`<svg>` element in an :html:`<a>` tag to make it
-clickable.
+:html:`<img>` / :html:`<svg>` / :html:`<video>` element in an :html:`<a>` tag
+to make it clickable.
 
 Figure always expects at least the caption to be present. If you want just an
 image, use the plain image tag. If you have a lot of figures on the page and

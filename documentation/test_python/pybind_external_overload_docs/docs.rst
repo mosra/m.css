@@ -30,6 +30,10 @@
 
     And the fallback matching works there, too.
 
+.. py:function:: pybind_external_overload_docs.Class26.foo(self, a: int, b: float, keyword: str)
+
+    The ``/`` and ``*`` are excluded from matching.
+
 .. py:function:: pybind_external_overload_docs.foo(first: int)
     :param second: But the second argument doesn't exist?!
 

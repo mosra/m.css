@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -69,6 +69,14 @@ docutils_settings = {
     'embed_stylesheet': False
 }
 
+# findall() is new in docutils 0.18, replacing traverse() because that one was
+# attempted to be changed to return an iterator instead of a list, which broke
+# Sphinx, so it instead got deprecated in favor of findall() which is the same
+# as traverse() returning an iterator was. To retain compatibility with earlier
+# versions, add an alias.
+if not hasattr(docutils.nodes.Node, 'findall'):
+    setattr(docutils.nodes.Node, 'findall', docutils.nodes.Node.traverse)
+
 words_re = re.compile(r'\w+', re.UNICODE|re.X)
 
 def extract_document_language(document):
@@ -76,7 +84,7 @@ def extract_document_language(document):
     language = document.settings.language_code
 
     # Then try to find the :lang: metadata option
-    for field in document.traverse(nodes.field):
+    for field in document.findall(nodes.field):
         assert isinstance(field[0], nodes.field_name)
         assert isinstance(field[1], nodes.field_body)
         # field_body -> paragraph -> text
@@ -137,7 +145,7 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
 
         # "Educate" quotes in normal text. Handle each block of text
         # (TextElement node) as a unit to keep context around inline nodes:
-        for node in self.document.traverse(nodes.TextElement):
+        for node in self.document.findall(nodes.TextElement):
             # skip preformatted text blocks and special elements:
             if isinstance(node, (nodes.FixedTextElement, nodes.Special)):
                 continue
@@ -148,7 +156,7 @@ class SmartQuotes(docutils.transforms.universal.SmartQuotes):
             # list of text nodes in the "text block":
             # Patched here to exclude more stuff.
             txtnodes = []
-            for txtnode in node.traverse(nodes.Text):
+            for txtnode in node.findall(nodes.Text):
                 if not can_apply_typography(txtnode): continue
                 # Don't convert -- in option strings
                 if isinstance(txtnode.parent, nodes.option_string): continue
@@ -204,12 +212,12 @@ class Pyphen(Transform):
         pyphen_for_lang = {}
 
         # Go through all text words and hyphenate them
-        for node in self.document.traverse(nodes.TextElement):
+        for node in self.document.findall(nodes.TextElement):
             # Skip preformatted text blocks and special elements
             if isinstance(node, (nodes.FixedTextElement, nodes.Special)):
                 continue
 
-            for txtnode in node.traverse(nodes.Text):
+            for txtnode in node.findall(nodes.Text):
                 if not can_apply_typography(txtnode): continue
 
                 # Don't hyphenate document title. Not part of

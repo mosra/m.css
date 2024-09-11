@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -25,19 +25,17 @@
 
 import unittest
 
-from distutils.version import LooseVersion
-
-from . import IntegrationTestCase, doxygen_version
+from . import IntegrationTestCase, doxygen_version, parse_version
 
 class EnumClass(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/627")
     def test(self):
         self.run_doxygen(wildcard='File_8h.xml')
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
 class TemplateAlias(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/626")
     def test(self):
         self.run_doxygen(wildcard='*.xml')
@@ -58,7 +56,7 @@ class Derived(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
 
 class Friends(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "1.8.13 produces invalid XML for friend declarations")
     def test(self):
         self.run_doxygen(wildcard='class*.xml')

@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
 #             Vladimír Vondruš <mosra@centrum.cz>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
@@ -32,9 +32,7 @@ import unittest
 
 from hashlib import sha1
 
-from distutils.version import LooseVersion
-
-from . import BaseTestCase, IntegrationTestCase, doxygen_version
+from . import BaseTestCase, IntegrationTestCase, doxygen_version, parse_version
 
 def dot_version():
     return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
@@ -44,7 +42,7 @@ class Typography(IntegrationTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.17"), "new features in 1.8.17")
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.17"), "new features in 1.8.17")
     def test_1817(self):
         self.run_doxygen(wildcard='doxygen1817.xml')
         self.assertEqual(*self.actual_expected_contents('doxygen1817.html'))
@@ -56,7 +54,7 @@ class Blocks(IntegrationTestCase):
         # Multiple xrefitems should be merged into one
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.18"), "new features in 1.8.18")
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.18"), "new features in 1.8.18")
     def test_1818(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('doxygen1818.html'))
@@ -64,16 +62,16 @@ class Blocks(IntegrationTestCase):
     def test_xrefitem(self):
         self.run_doxygen(wildcard='*.xml')
 
-        if LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
+        if parse_version(doxygen_version()) > parse_version("1.8.14"):
             self.assertEqual(*self.actual_expected_contents('todo.html'))
         # https://github.com/doxygen/doxygen/pull/6587 fucking broke this
         else:
             self.assertEqual(*self.actual_expected_contents('todo.html', 'todo_1814.html'))
 
         # 1.8.18 to 1.8.20 has a different order, not sure why
-        if LooseVersion(doxygen_version()) >= LooseVersion("1.8.18") and LooseVersion(doxygen_version()) < LooseVersion("1.9.0"):
+        if parse_version(doxygen_version()) >= parse_version("1.8.18") and parse_version(doxygen_version()) < parse_version("1.9.0"):
             self.assertEqual(*self.actual_expected_contents('old.html', 'old_1818.html'))
-        elif LooseVersion(doxygen_version()) > LooseVersion("1.8.14"):
+        elif parse_version(doxygen_version()) > parse_version("1.8.14"):
             self.assertEqual(*self.actual_expected_contents('old.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('old.html', 'old_1814.html'))
@@ -100,19 +98,19 @@ class Code(IntegrationTestCase):
         ])
 
 class CodeLanguage(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/621")
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/623")
     def test_ansi(self):
         self.run_doxygen(wildcard='ansi.xml')
         self.assertEqual(*self.actual_expected_contents('ansi.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.13"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/621")
     def test_warnings(self):
         with self.assertLogs() as cm:
@@ -140,7 +138,7 @@ class Image(IntegrationTestCase):
             "WARNING:root:warnings.xml: image nonexistent.png was not found in XML_OUTPUT"
         ])
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) > LooseVersion("1.8.15"),
+    @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.15"),
                          "fully fixed after 1.8.15")
     def test_imagelink(self):
         self.run_doxygen(wildcard='imagelink.xml')
@@ -284,7 +282,7 @@ class Custom(IntegrationTestCase):
         self.run_doxygen(wildcard='dot.xml')
 
         # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
-        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
+        if parse_version(dot_version()) >= parse_version("2.42.2"):
             file = 'dot.html'
         else:
             file = 'dot-240.html'
@@ -310,7 +308,7 @@ class AutobriefBlockquote(IntegrationTestCase):
 # properly.
 
 class AutobriefHr(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
+    @unittest.skipUnless(parse_version(doxygen_version()) < parse_version("1.8.15"),
                          "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test_1814(self):
         with self.assertLogs() as cm:
@@ -323,7 +321,7 @@ class AutobriefHr(IntegrationTestCase):
             "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of <hr/>"
         ])
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.15"),
+    @unittest.skipUnless(parse_version(doxygen_version()) >= parse_version("1.8.15"),
                          "1.8.15 doesn't put <hruler> into <briefdescription> anymore")
     def test(self):
         # No warnings should be produced here
@@ -346,7 +344,7 @@ class AutobriefMultiline(IntegrationTestCase):
         ])
 
 class AutobriefHeading(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.15"),
+    @unittest.skipUnless(parse_version(doxygen_version()) < parse_version("1.8.15"),
                          "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test_1814(self):
         with self.assertLogs() as cm:
@@ -359,7 +357,7 @@ class AutobriefHeading(IntegrationTestCase):
             "WARNING:root:namespaceNamespace.xml: JAVADOC_AUTOBRIEF / QT_AUTOBRIEF produced a brief description with block elements. That's not supported, ignoring the whole contents of <p>===============</p><h4>The Thing </h4>",
         ])
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.15"),
+    @unittest.skipUnless(parse_version(doxygen_version()) >= parse_version("1.8.15"),
                          "1.8.15 doesn't put <heading> into <briefdescription> anymore")
     def test(self):
         # No warnings should be produced here
@@ -368,7 +366,7 @@ class AutobriefHeading(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
 
 class BriefMultilineIngroup(IntegrationTestCase):
-    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.16"),
+    @unittest.skipUnless(parse_version(doxygen_version()) < parse_version("1.8.16"),
         "1.8.16 doesn't merge adjacent paragraphs into brief in presence of an @ingroup anymore")
     def test_1815(self):
         with self.assertLogs() as cm:
@@ -379,7 +377,7 @@ class BriefMultilineIngroup(IntegrationTestCase):
             "WARNING:root:group__thatgroup.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <p>Function that's in a group</p><p>Lines of detailed description that get merged to the brief for no freaking reason.</p>"
         ])
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),
+    @unittest.skipUnless(parse_version(doxygen_version()) >= parse_version("1.8.16"),
         "1.8.16 doesn't merge adjacent paragraphs into brief in presence of an @ingroup anymore")
     def test(self):
         # No warnings should be produced here
@@ -445,15 +443,19 @@ class Dot(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
 
+        # The damn thing adopted Chrome versioning apparently. No idea if the
+        # output changed in version 7, 8 or 9 already.
+        if parse_version(dot_version()) >= parse_version("10.0"):
+            file = 'page.html'
         # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
-        if LooseVersion(dot_version()) >= LooseVersion("2.42.2"):
-            file = 'index.html'
+        elif parse_version(dot_version()) >= parse_version("2.42.2"):
+            file = 'index-2.html'
         else:
             file = 'index-240.html'
 
         self.assertEqual(*self.actual_expected_contents('index.html', file))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.16"),
+    @unittest.skipUnless(parse_version(doxygen_version()) >= parse_version("1.8.16"),
         "1.8.16+ drops the whole <dotfile> tag if the file doesn't exist, which is incredibly dumb")
     def test_warnings(self):
         # No warnings should be produced here
@@ -461,7 +463,7 @@ class Dot(IntegrationTestCase):
         self.run_doxygen(wildcard='warnings.xml')
         self.assertEqual(*self.actual_expected_contents('warnings.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) < LooseVersion("1.8.16"),
+    @unittest.skipUnless(parse_version(doxygen_version()) < parse_version("1.8.16"),
         "1.8.16+ drops the whole <dotfile> tag if the file doesn't exist, which is incredibly dumb")
     def test_warnings_1815(self):
         with self.assertLogs() as cm:
@@ -477,7 +479,7 @@ class HtmlonlyHtmlinclude(IntegrationTestCase):
         self.run_doxygen(wildcard='indexpage.xml')
         self.assertEqual(*self.actual_expected_contents('index.html'))
 
-    @unittest.skipUnless(LooseVersion(doxygen_version()) >= LooseVersion("1.8.18"),
+    @unittest.skipUnless(parse_version(doxygen_version()) >= parse_version("1.8.18"),
         "1.8.17 and older doesn't include @htmlonly in XML output")
     def test_htmlonly(self):
         self.run_doxygen(wildcard='html-only.xml')

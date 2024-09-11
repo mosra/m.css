@@ -54,7 +54,13 @@ commands:
       matplotlib-version:
         type: string
         default: ""
+      numpy-version:
+        type: string
+        default: ""
       pelican-version:
+        type: string
+        default: ""
+      qrcode-version:
         type: string
         default: ""
     steps:
@@ -63,7 +69,7 @@ commands:
         # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
         # differently, I have to update the expected output first.
         command: |
-          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >>
+          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode<< parameters.qrcode-version >> matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >> numpy<< parameters.numpy-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -217,6 +223,9 @@ jobs:
         matplotlib-version: ==3.4.3
         # Docutils 0.17 dropped `object_image_types`, test that it works there
         docutils-version: ==0.17.1
+        # 7.4 has different output, however on 3.7 and older it's too annoying
+        # to check what version is installed, so pin to 7.3
+        qrcode-version: ==7.3.1
     - checkout
     - test-theme
     - test-plugins
@@ -234,6 +243,9 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Matplotlib 3.6 has slightly different output, be sure to have at
+        # least one job testing 3.5 so we don't regress
+        matplotlib-version: ==3.5.2
         # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
         # 0.18.1 reverted again, test we're not affected by those
         docutils-version: ==0.18.0
@@ -254,7 +266,12 @@ jobs:
     - install-base:
         # libtinfo5 needed by doxygen 1.8.18, wtf
         extra: graphviz cmake ninja-build wget libtinfo5
-    - install-python-deps
+    - install-python-deps:
+        # Matplotlib 3.8+ has significantly different output AGAIN, pin on 3.7
+        # until I can be bothered testing yet again
+        matplotlib-version: ==3.7.4
+        # NumPy 2.0 only works with pybind 2.12+
+        numpy-version: ==1.26.4
     - checkout
     - test-theme
     - test-plugins
@@ -272,15 +289,21 @@ jobs:
     - install-base:
         # libtinfo5 needed by doxygen 1.8.18, wtf
         extra: graphviz cmake ninja-build wget libtinfo5
-    - install-python-deps
+    - install-python-deps:
+        # Matplotlib 3.8+ has significantly different output AGAIN, pin on 3.7
+        # until I can be bothered testing yet again
+        matplotlib-version: ==3.7.4
+        # NumPy 2.0 doesn't work with pybind 2.11, see below
+        numpy-version: ==1.26.4
     - checkout
     - test-theme
     - test-plugins
     - test-documentation-themes:
         python-version: "3.10"
-        # Python 3.10 and Pybind 2.8 were both released on 2021-10-04, so
-        # assume anything older won't really work there.
-        pybind-version: "2.8.0"
+        # 2.12.0 is the first that works with NumPy 2.0, unfortunately it has
+        # different docstring typing annotations to which I need to adapt tests
+        # first. Pinning to a version before together with NumPy 1.
+        pybind-version: "2.11.1"
         doxygen-version: "1.8.18"
     - coverage
 
