@@ -3,3 +3,6 @@ htmlcov/
 coverage/
 .coverage
 *.kdev4
+
+*.egg-info
+dist/
