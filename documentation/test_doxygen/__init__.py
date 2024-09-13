@@ -36,6 +36,12 @@ from doxygen import State, parse_doxyfile, run, default_templates, default_wildc
 # https://stackoverflow.com/a/12867228
 _camelcase_to_snakecase = re.compile('((?<=[a-z0-9])[A-Z]|(?!^)[A-Z](?=[a-z]))')
 
+# As Doxygen randomly changes the MD5 hashes, it's a lot less work to just
+# replace them all with a static string when comparing. The actual file is not
+# changed in order to make it possible to follow the links, it's only for the
+# comparison.
+_normalize_hashes = re.compile('[0-9a-f]{33}')
+
 def doxygen_version():
     return subprocess.check_output(['doxygen', '-v']).decode('utf-8').strip().split(' ')[0]
 
@@ -79,11 +85,12 @@ class BaseTestCase(unittest.TestCase):
 
     def actual_expected_contents(self, actual, expected = None):
         if not expected: expected = actual
-
         with open(os.path.join(self.path, expected)) as f:
             expected_contents = f.read().strip()
         with open(os.path.join(self.path, 'html', actual)) as f:
             actual_contents = f.read().strip()
+        actual_contents = _normalize_hashes.sub('g'*33, actual_contents)
+        expected_contents = _normalize_hashes.sub('g'*33, expected_contents)
         return actual_contents, expected_contents
 
 class IntegrationTestCase(BaseTestCase):
