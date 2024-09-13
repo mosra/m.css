@@ -30,7 +30,7 @@ import unittest
 from . import PelicanPluginTestCase, parse_version
 
 def dot_version():
-    return re.match(".*version (?P<version>\d+\.\d+\.\d+).*", subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
+    return re.match(r'.*version (?P<version>\d+\.\d+\.\d+).*', subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
 
 class Dot(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
