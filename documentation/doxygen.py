@@ -2135,6 +2135,15 @@ def parse_func(state: State, element: ET.Element):
     else:
         func.is_noexcept = False
         func.is_conditional_noexcept = False
+    # Noexcept can be also an attribute (since 1.8.16), merge with that. Until
+    # https://github.com/doxygen/doxygen/commit/b51d6d2dd2cb6a4945a3775a649e7eca8e120515
+    # (1.11) it seems it was present both in the signature and in the attribs.
+    if 'noexcept' in element.attrib:
+        func.is_noexcept = func.is_noexcept or element.attrib['noexcept'] == 'yes'
+    # noexceptexpression is since 1.11. If not present, it's not conditionally
+    # noexcept.
+    if 'noexceptexpression' in element.attrib:
+        func.is_conditional_noexcept = True
     # Put the rest (const, volatile, ...) into a suffix
     func.suffix = html.escape(signature[signature.rindex(')') + 1:].strip())
     if func.suffix: func.suffix = ' ' + func.suffix
@@ -2244,6 +2253,11 @@ def parse_var(state: State, element: ET.Element):
     # complicated with other possible keyword combinations. Fixed in 1.11.
     if var.type.startswith('static'):
         var.type = var.type[7:]
+    # Constexpr can be also an attribute, merge with that. Until
+    # https://github.com/doxygen/doxygen/commit/b51d6d2dd2cb6a4945a3775a649e7eca8e120515
+    # (1.11) it seems it was present both in the signature and in the attribs.
+    if 'constexpr' in element.attrib:
+        var.is_constexpr = var.is_constexpr or element.attrib['constexpr'] == 'yes'
     var.is_static = element.attrib['static'] == 'yes'
     var.is_protected = element.attrib['prot'] == 'protected'
     var.is_private = element.attrib['prot'] == 'private'
