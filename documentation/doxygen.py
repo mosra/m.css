@@ -597,8 +597,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 out.parsed += '<p>'
                 out.write_paragraph_close_tag = True
 
-        # Block elements
-        if i.tag in ['sect1', 'sect2', 'sect3', 'sect4']:
+        # Block elements. Until Doxygen 1.11 it was at most <sect4>, 1.12 seems
+        # to have up to 6: https://github.com/doxygen/doxygen/issues/11016
+        if i.tag in ['sect1', 'sect2', 'sect3', 'sect4', 'sect5', 'sect6']:
             assert element.tag != 'para' # should be top-level block element
             has_block_elements = True
 
@@ -637,6 +638,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     tag = 'h4'
                 elif element.tag == 'sect4':
                     tag = 'h5'
+                elif element.tag == 'sect5':
+                    tag = 'h6'
+                elif element.tag == 'sect6':
+                    tag = 'h6'
+                    logging.warning("{}: more than five levels of sections are not supported, stopping at <h6>".format(state.current))
                 elif not element.tag == 'simplesect': # pragma: no cover
                     assert False
 
@@ -672,7 +678,11 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     out.parsed += '<{0} id="{1}">{2}</{0}>'.format(tag, id, title)
 
         # Apparently, in 1.8.18, <heading> is used for Markdown headers only if
-        # we run out of sect1-4 tags. Eh, what the hell.
+        # we run out of sect1-4 tags. Which also happens when there's a heading
+        # with a ####### underline. In 1.12 it doesn't produce a <heading>, and
+        # instead just puts the #'s to the output verbatim. Which means we
+        # can't warn for that. See test_contents.SectionsHeadings for repro
+        # cases.
         elif i.tag == 'heading':
             assert element.tag == 'para' # is inside a paragraph :/
             has_block_elements = True

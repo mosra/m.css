@@ -407,14 +407,28 @@ class SectionsHeadings(IntegrationTestCase):
         with self.assertLogs() as cm:
             self.run_doxygen(wildcard='*arnings*.xml')
 
-        self.assertEqual(*self.actual_expected_contents('warnings.html'))
-        self.assertEqual(*self.actual_expected_contents('Warnings_8h.html'))
-        self.assertEqual(cm.output, [
-            "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
-            "WARNING:root:Warnings_8h.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
-            "WARNING:root:warnings.xml: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>",
-            "WARNING:root:warnings.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
-        ])
+        # https://github.com/doxygen/doxygen/issues/11016, merged into 1.12, is
+        # responsible I think. It got better, yes.
+        if parse_version(doxygen_version()) >= (1, 12):
+            page = 'warnings.html'
+            file = 'Warnings_8h.html'
+            output = [
+                "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
+                "WARNING:root:warnings.xml: more than five levels of sections are not supported, stopping at <h6>",
+            ]
+        else:
+            page = 'warnings-111.html'
+            file = 'Warnings_8h-111.html'
+            output = [
+                "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
+                "WARNING:root:Warnings_8h.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
+                "WARNING:root:warnings.xml: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>",
+                "WARNING:root:warnings.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
+            ]
+
+        self.assertEqual(*self.actual_expected_contents('warnings.html', page))
+        self.assertEqual(*self.actual_expected_contents('Warnings_8h.html', file))
+        self.assertEqual(cm.output, output)
 
 class AnchorInBothGroupAndNamespace(IntegrationTestCase):
     def test(self):
