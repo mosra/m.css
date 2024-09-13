@@ -300,13 +300,23 @@ class AutobriefCppComments(IntegrationTestCase):
 
 class AutobriefBlockquote(IntegrationTestCase):
     def test(self):
-        with self.assertLogs() as cm:
+        # ///> in a brief used to cause a multi-line brief in 1.8.18+, which
+        # caused the whole brief to be discarded with a warning. That's no
+        # longer the case in 1.12, there it's put into the detailed description
+        # instead. Not sure if that changed due to
+        # https://github.com/doxygen/doxygen/issues/10902 or something else in
+        # some earlier version.
+        if parse_version(doxygen_version()) >= (1, 12):
             self.run_doxygen(wildcard='File_8h.xml')
+            self.assertEqual(*self.actual_expected_contents('File_8h.html'))
+        else:
+            with self.assertLogs() as cm:
+                self.run_doxygen(wildcard='File_8h.xml')
 
-        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
-        self.assertEqual(cm.output, [
-            "WARNING:root:File_8h.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <blockquote><p>An enum on the right</p></blockquote>"
-        ])
+            self.assertEqual(*self.actual_expected_contents('File_8h.html', 'File_8h-111.html'))
+            self.assertEqual(cm.output, [
+                "WARNING:root:File_8h.xml: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: <blockquote><p>An enum on the right</p></blockquote>"
+            ])
 
 # JAVADOC_AUTOBRIEF should be nuked from orbit. Or implemented from scratch,
 # properly.

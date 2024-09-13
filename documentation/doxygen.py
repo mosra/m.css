@@ -1781,7 +1781,10 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # In 1.8.18+, if ///> is accidentally used to mark "a docblock for
             # the following symbol", it leads to a <blockquote> contained in
             # the brief. Not much to do except for ignoring the whole thing.
-            # See the contents_autobrief_blockquote test for details.
+            # See the contents_autobrief_blockquote test for details. Doesn't
+            # happen in 1.12 anymore, not sure if that changed due to
+            # https://github.com/doxygen/doxygen/issues/10902 or something
+            # else in some earlier version.
             if has_block_elements or paragraph_count > 1:
                 logging.warning("{}: ignoring brief description containing multiple paragraphs. Please modify your markup to remove any block elements from the following: {}".format(state.current, out.parsed))
                 out.parsed = ''
