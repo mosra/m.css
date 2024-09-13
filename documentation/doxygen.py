@@ -1156,6 +1156,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # Adding a custom CSS class to the immediately following block/inline
         # element
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}class':
+            # Doxygen may put one or more spaces before, depending on the
+            # version. Replace them with just one to have consistent output
+            # across all versions. Have to keep at least one as it's often
+            # intentional, block elements such as <mcss:div> have both the
+            # leading and trailing spaces stripped always. Sane is done for
+            # <mcss:span> below.
+            if out.parsed.endswith(' '):
+                out.parsed = out.parsed.rstrip() + ' '
+
             # Bubble up in case we are alone in a paragraph, as that's meant to
             # affect the next paragraph content.
             if len([listing for listing in element]) == 1:
@@ -1397,6 +1406,15 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
         # in _document_all_stuff(). In that case the class attribute is not
         # present.
         elif i.tag == '{http://mcss.mosra.cz/doxygen/}span':
+            # Doxygen may put one or more spaces before, depending on the
+            # version. Replace them with just one to have consistent output
+            # across all versions. Have to keep at least one as it's often
+            # intentional, block elements such as <mcss:div> have both the
+            # leading and trailing spaces stripped always. Sane is done for
+            # <mcss:class> above.
+            if out.parsed.endswith(' '):
+                out.parsed = out.parsed.rstrip() + ' '
+
             content = parse_inline_desc(state, i).strip()
             if '{http://mcss.mosra.cz/doxygen/}class' in i.attrib:
                 out.parsed += '<span class="{}">{}</span>'.format(i.attrib['{http://mcss.mosra.cz/doxygen/}class'], content)
@@ -1694,13 +1712,14 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             # is done by the caller.
             out.parsed += html.escape(i.tail.lstrip())
 
-        # Otherwise strip if requested by the caller or if this is right after
-        # a line break
+        # Otherwise strip if requested by the caller, if this is right after a
+        # line break or a <mcss:div>, or if <mcss:class> was before (which
+        # likely had a space before itself as well)
         elif i.tail:
             tail: str = html.escape(i.tail)
             if trim:
                 tail = tail.strip()
-            elif out.parsed.endswith('<br />'):
+            elif out.parsed.endswith('<br />') or i.tag in ['{http://mcss.mosra.cz/doxygen/}div', '{http://mcss.mosra.cz/doxygen/}class']:
                 tail = tail.lstrip()
             out.parsed += tail
 
