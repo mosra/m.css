@@ -329,6 +329,12 @@ if sys.version_info >= (3, 11):
         ('__getstate__', "Helper for pickle.")
     })
 
+# Python 3.12 changes the __format__ docstring
+if sys.version_info >= (3, 11):
+    _filtered_builtin_functions.update({
+        ('__format__', "Default object formatter.\n\nReturn str(self) if format_spec is empty. Raise TypeError otherwise.")
+    })
+
 _filtered_builtin_properties = set([
     # (if defined) is gone in https://github.com/python/cpython/issues/112266
     # which is backported all the way to 3.11
