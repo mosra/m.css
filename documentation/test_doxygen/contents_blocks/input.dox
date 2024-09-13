@@ -46,7 +46,7 @@ Text right after that blockquote was a new paragraph before 1.9.3, not anymore.
 
 -   Another item
 
-    <p></p>
+    with another paragraph
 
     -   A sub list
 
