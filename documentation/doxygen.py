@@ -2406,8 +2406,10 @@ def extract_metadata(state: State, xml):
     compound.id  = compounddef.attrib['id']
     compound.kind = compounddef.attrib['kind']
     # Compound name is page filename, so we have to use title there. The same
-    # is for groups.
-    compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.find('compoundname').text)
+    # is for groups. In some cases, such as anonymous namespaces in Doxygen
+    # 1.9.7+, <compoundname> is empty. Corresponding test case is in
+    # test_compound.Ignored. https://github.com/doxygen/doxygen/commit/a18e4c76ed6415893800c7d77a2f798614fb638b
+    compound.name = html.escape(compounddef.find('title').text if compound.kind in ['page', 'group'] and compounddef.findtext('title') else compounddef.findtext('compoundname'))
     # Compound URL is ID, except for index page, where it is named "indexpage"
     # and so I have to override it back to "index". Can't use <compoundname>
     # for pages because that doesn't reflect CASE_SENSE_NAMES. THANKS DOXYGEN.
@@ -2672,7 +2674,12 @@ def parse_xml(state: State, xml: str):
 
     # Ignoring private structs/classes and unnamed namespaces
     if ((compounddef.attrib['kind'] in ['struct', 'class', 'union'] and compounddef.attrib['prot'] == 'private') or
-        (compounddef.attrib['kind'] == 'namespace' and '@' in compounddef.find('compoundname').text)):
+        # Doxygen 1.9.7+ makes <compoundname> empty for anonymous namespaces,
+        # earlier versions put a generated name with @ there. See
+        # test_compound.Ignored for a corresponding test case. Similar
+        # difference is with anonymous enums.
+        # https://github.com/doxygen/doxygen/commit/a18e4c76ed6415893800c7d77a2f798614fb638b
+        (compounddef.attrib['kind'] == 'namespace' and (compounddef.find('compoundname').text is None or '@' in compounddef.find('compoundname').text))):
         logging.debug("{}: only private things, skipping".format(state.current))
         return None
 
