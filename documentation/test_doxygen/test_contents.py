@@ -446,7 +446,7 @@ class Dot(IntegrationTestCase):
         # The damn thing adopted Chrome versioning apparently. No idea if the
         # output changed in version 7, 8 or 9 already.
         if parse_version(dot_version()) >= parse_version("10.0"):
-            file = 'page.html'
+            file = 'index.html'
         # Used to be >= 2.44.0, but 2.42.2 appears to have the same output
         elif parse_version(dot_version()) >= parse_version("2.42.2"):
             file = 'index-2.html'
