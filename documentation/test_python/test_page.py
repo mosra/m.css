@@ -30,6 +30,9 @@ import subprocess
 
 from . import BaseTestCase, parse_version
 
+# Same as in the m.plots test case, see there for details
+_normalize_matplotlib_hashes = re.compile('([mp])[0-9a-f]{10}')
+
 def dot_version():
     return re.match(r'.*version (?P<version>\d+\.\d+\.\d+).*', subprocess.check_output(['dot', '-V'], stderr=subprocess.STDOUT).decode('utf-8').strip()).group('version')
 
@@ -99,11 +102,15 @@ class Plugins(BaseTestCase):
             file = 'plots.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.5'):
             file = 'plots-35.html'
-        elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
-            file = 'plots-34.html'
         else:
             file = 'plots-32.html'
-        self.assertEqual(*self.actual_expected_contents('plots.html', file))
+
+        # The element hashes change wildly between versions, replace them with
+        # something stable before comparison
+        plots_actual_contents, plots_expected_contents = self.actual_expected_contents('plots.html', file)
+        plots_actual_contents = _normalize_matplotlib_hashes.sub(r'\1gggggggggg', plots_actual_contents)
+        plots_expected_contents = _normalize_matplotlib_hashes.sub(r'\1gggggggggg', plots_expected_contents)
+        self.assertEqual(plots_actual_contents, plots_expected_contents)
         self.assertTrue(os.path.exists(os.path.join(self.path, 'output/tiny.png')))
 
         import fancyline

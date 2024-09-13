@@ -25,10 +25,17 @@
 
 import matplotlib
 import os
+import re
 import sys
 import unittest
 
 from . import PelicanPluginTestCase, parse_version
+
+# Basically every matplotlib version causes the hashes to change, and 3.9.2 has
+# them also different on different machines. Yay software developers. Replace
+# them with a static string when comparing. The actual file is not changed in
+# order to make it possible to actually view it, it's only for the comparison.
+_normalize_hashes = re.compile('([mp])[0-9a-f]{10}')
 
 class Plots(PelicanPluginTestCase):
     def __init__(self, *args, **kwargs):
@@ -46,8 +53,6 @@ class Plots(PelicanPluginTestCase):
             file = 'page.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.5'):
             file = 'page-35.html'
-        elif parse_version(matplotlib.__version__) >= parse_version('3.4'):
-            file = 'page-34.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.2'):
             file = 'page-32.html'
         elif parse_version(matplotlib.__version__) >= parse_version('3.0'):
@@ -55,4 +60,9 @@ class Plots(PelicanPluginTestCase):
         else:
             file = 'page-22.html'
 
-        self.assertEqual(*self.actual_expected_contents('page.html', file))
+        # The element hashes change wildly between versions, replace them with
+        # something stable before comparison
+        actual_contents, expected_contents = self.actual_expected_contents('page.html', file)
+        actual_contents = _normalize_hashes.sub(r'\1gggggggggg', actual_contents)
+        expected_contents = _normalize_hashes.sub(r'\1gggggggggg', expected_contents)
+        self.assertEqual(actual_contents, expected_contents)

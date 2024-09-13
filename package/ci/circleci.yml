@@ -243,7 +243,7 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
-        # Matplotlib 3.6 has slightly different output, be sure to have at
+        # Matplotlib 3.6+ has slightly different output, be sure to have at
         # least one job testing 3.5 so we don't regress
         matplotlib-version: ==3.5.2
         # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
@@ -267,9 +267,9 @@ jobs:
         # libtinfo5 needed by doxygen 1.8.18, wtf
         extra: graphviz cmake ninja-build wget libtinfo5
     - install-python-deps:
-        # Matplotlib 3.8+ has significantly different output AGAIN, pin on 3.7
-        # until I can be bothered testing yet again
-        matplotlib-version: ==3.7.4
+        # Matplotlib 3.6 to 3.9.2 is known to have output as expected, pin it
+        # to ensure we don't regress once new versions change something again
+        matplotlib-version: ==3.9.2
         # NumPy 2.0 only works with pybind 2.12+
         numpy-version: ==1.26.4
     - checkout
@@ -290,9 +290,6 @@ jobs:
         # libtinfo5 needed by doxygen 1.8.18, wtf
         extra: graphviz cmake ninja-build wget libtinfo5
     - install-python-deps:
-        # Matplotlib 3.8+ has significantly different output AGAIN, pin on 3.7
-        # until I can be bothered testing yet again
-        matplotlib-version: ==3.7.4
         # NumPy 2.0 doesn't work with pybind 2.11, see below
         numpy-version: ==1.26.4
     - checkout
