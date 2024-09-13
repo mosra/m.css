@@ -29,6 +29,7 @@
             <li>
               Reference
               <ul>
+                <li><a href="#pub-static-attribs">Public static variables</a></li>
                 <li><a href="#pub-static-methods">Public static functions</a></li>
                 <li><a href="#typeless-methods">Constructors, destructors, conversion operators</a></li>
                 <li><a href="#pub-methods">Public functions</a></li>
@@ -36,6 +37,19 @@
             </li>
           </ul>
         </nav>
+        <section id="pub-static-attribs">
+          <h2><a href="#pub-static-attribs">Public static variables</a></h2>
+          <dl class="m-doc">
+            <dt>
+              static int <a href="#a3fca5e0d9720095041dce1c150d3c9f8" class="m-doc">ConstexprStaticVariable</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>Constexpr before static, a variable.</dd>
+            <dt>
+              static int <a href="#aca521b15a93807423e798f96b1bdde5a" class="m-doc">StaticConstexprVariable</a> <span class="m-label m-flat m-primary">constexpr</span>
+            </dt>
+            <dd>Constexpr after static, a variable.</dd>
+          </dl>
+        </section>
         <section id="pub-static-methods">
           <h2><a href="#pub-static-methods">Public static functions</a></h2>
           <dl class="m-doc">
@@ -162,6 +176,23 @@
             </h3>
             <p>decltype(auto) and constexpr together</p>
 <p>For some reason, due to decltype(auto), Doxygen swaps the order, causing the constexpr to be hard to detect. Don&#x27;t even ask how it handles trailing return types. It&#x27;s just HORRIBLE.</p>
+          </div></section>
+        </section>
+        <section>
+          <h2>Variable documentation</h2>
+          <section class="m-doc-details" id="a3fca5e0d9720095041dce1c150d3c9f8"><div>
+            <h3>
+              static int Foo::<wbr /><a href="#a3fca5e0d9720095041dce1c150d3c9f8" class="m-doc-self">ConstexprStaticVariable</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>Constexpr before static, a variable.</p>
+<p>1.8.18 again puts both <code>constexpr</code> and <code>static</code> into the return type so I have to remove them.</p>
+          </div></section>
+          <section class="m-doc-details" id="aca521b15a93807423e798f96b1bdde5a"><div>
+            <h3>
+              static int Foo::<wbr /><a href="#aca521b15a93807423e798f96b1bdde5a" class="m-doc-self">StaticConstexprVariable</a> <span class="m-label m-primary">constexpr</span>
+            </h3>
+            <p>Constexpr after static, a variable.</p>
+<p>Here <code>static</code> is not in the type either.</p>
           </div></section>
         </section>
       </div>

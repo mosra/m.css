@@ -83,7 +83,7 @@ class VariableTemplate(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('structFoo.html'))
         self.assertEqual(*self.actual_expected_contents('structBar.html'))
 
-class FunctionAttributes(IntegrationTestCase):
+class FunctionVariableAttributes(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('structFoo.html'))

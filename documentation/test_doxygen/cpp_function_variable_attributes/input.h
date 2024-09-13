@@ -11,6 +11,14 @@ struct Foo {
     constexpr static int constexprStaticFunction();
 
     /**
+     * @brief Constexpr before static, a variable
+     *
+     * 1.8.18 again puts both `constexpr` and `static` into the return type so
+     * I have to remove them.
+     */
+    constexpr static int ConstexprStaticVariable = 0;
+
+    /**
      * @brief Consteval before static
      *
      * Same as above, but for C++20's consteval.
@@ -23,6 +31,13 @@ struct Foo {
      * In this case, `static` is not in the return type. FFS.
      */
     static constexpr int staticConstexprFunction();
+
+    /**
+     * @brief Constexpr after static, a variable
+     *
+     * Here `static` is not in the type either.
+     */
+    static constexpr int StaticConstexprVariable = 0;
 
     /**
      * @brief Consteval after static

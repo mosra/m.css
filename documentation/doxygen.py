@@ -2228,6 +2228,12 @@ def parse_var(state: State, element: ET.Element):
         var.is_constexpr = True
     else:
         var.is_constexpr = False
+    # When 1.8.18 encounters `constexpr static`, it keeps the static there. For
+    # `static constexpr` it doesn't. In both cases the static="yes" is put
+    # there correctly. Same case is for functions, although there it's further
+    # complicated with other possible keyword combinations. Fixed in 1.11.
+    if var.type.startswith('static'):
+        var.type = var.type[7:]
     var.is_static = element.attrib['static'] == 'yes'
     var.is_protected = element.attrib['prot'] == 'protected'
     var.is_private = element.attrib['prot'] == 'private'
