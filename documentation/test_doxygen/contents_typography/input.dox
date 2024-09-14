@@ -33,7 +33,7 @@ This is a `typewriter text`, *emphasis*, **bold**. <em>Emphasis with
 and [URL](http://google.com). <small>Small *text*.</small> En-dash -- and
 em-dash ---. Reference to a @ref section. Named reference with special
 characters in title: @ref section "&raquo; Warnings &laquo;". Reference with
-escaped characters in&nbsp;title: @ref an-anchor "<anchor>".
+escaped characters in&nbsp;title: @ref an-anchor "&lt;anchor&gt;".
 
 2<sup>nd</sup> is L<sub>&infin;</sub> &forall; &nabla; &pi; &real; &image;
 This costs no $, &euro;, &pound;, &yen; or &curren;.
