@@ -135,7 +135,7 @@ void fooInModule();
  * @}
  */
 
-}}
+}
 
 /* An undocumented define */
 #define A_DEFINE
