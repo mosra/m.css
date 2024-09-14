@@ -24,7 +24,13 @@ executors:
     - image: python:3.9.8
   python-3_10:
     docker:
-    - image: python:3.10.1
+    - image: python:3.10.15
+  python-3_11:
+    docker:
+    - image: python:3.11.10
+  python-3_12:
+    docker:
+    - image: python:3.12.6
   node-10:
     docker:
     - image: node:10.24.0-buster-slim
@@ -287,8 +293,7 @@ jobs:
     executor: python-3_10
     steps:
     - install-base:
-        # libtinfo5 needed by doxygen 1.8.18, wtf
-        extra: graphviz cmake ninja-build wget libtinfo5
+        extra: graphviz cmake ninja-build wget
     - install-python-deps:
         # NumPy 2.0 doesn't work with pybind 2.11, see below
         numpy-version: ==1.26.4
@@ -301,7 +306,54 @@ jobs:
         # different docstring typing annotations to which I need to adapt tests
         # first. Pinning to a version before together with NumPy 1.
         pybind-version: "2.11.1"
-        doxygen-version: "1.8.18"
+        # 1.9.1 is in Ubuntu 22.04 repos, HOWEVER both 1.9.1 and 1.9.2 link
+        # against libclang-9.so.1, which is stupid. I think I even asked if the
+        # builds could be fixed back then, but of course they didn't even
+        # realize it could be a problem. 1.9.3 is the first working.
+        doxygen-version: "1.9.3"
+    - coverage
+
+  py311:
+    executor: python-3_11
+    steps:
+    - install-base:
+        extra: graphviz cmake ninja-build wget
+    - install-python-deps:
+        # NumPy 2.0 doesn't work with pybind 2.11, see below
+        numpy-version: ==1.26.4
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.11"
+        # 2.12.0 is the first that works with NumPy 2.0, unfortunately it has
+        # different docstring typing annotations to which I need to adapt tests
+        # first. Pinning to a version before together with NumPy 1.
+        pybind-version: "2.11.1"
+        # 1.9.8 is in Ubuntu 24.04 repos
+        doxygen-version: "1.9.8"
+    - coverage
+
+  py312:
+    executor: python-3_12
+    steps:
+    - install-base:
+        extra: graphviz cmake ninja-build wget
+    - install-python-deps:
+        # NumPy 2.0 doesn't work with pybind 2.11, see below
+        numpy-version: ==1.26.4
+    - checkout
+    - test-theme
+    - test-plugins
+    - test-documentation-themes:
+        python-version: "3.12"
+        # 2.12.0 is the first that works with NumPy 2.0, unfortunately it has
+        # different docstring typing annotations to which I need to adapt tests
+        # first. Pinning to a version before together with NumPy 1.
+        pybind-version: "2.11.1"
+        # 1.11 is the latest that passes all tests, 1.12 first needs
+        # https://github.com/doxygen/doxygen/pull/11141 merged to be usable.
+        doxygen-version: "1.11.0"
     - coverage
 
   js:
@@ -324,4 +376,6 @@ workflows:
     - py308
     - py309
     - py310
+    - py311
+    - py312
     - js
