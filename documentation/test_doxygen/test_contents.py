@@ -419,7 +419,7 @@ class SectionsHeadings(IntegrationTestCase):
 
         # https://github.com/doxygen/doxygen/issues/11016, merged into 1.12, is
         # responsible I think. It got better, yes.
-        if parse_version(doxygen_version()) >= (1, 12):
+        if parse_version(doxygen_version()) >= (1, 11):
             page = 'warnings.html'
             file = 'Warnings_8h.html'
             output = [
@@ -427,8 +427,8 @@ class SectionsHeadings(IntegrationTestCase):
                 "WARNING:root:warnings.xml: more than five levels of sections are not supported, stopping at <h6>",
             ]
         else:
-            page = 'warnings-111.html'
-            file = 'Warnings_8h-111.html'
+            page = 'warnings-110.html'
+            file = 'Warnings_8h-110.html'
             output = [
                 "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
                 "WARNING:root:Warnings_8h.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
