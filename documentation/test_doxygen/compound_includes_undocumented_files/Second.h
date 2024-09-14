@@ -51,15 +51,16 @@ void relatedFunc();
 /**
 @brief A class forward-declared in one file but defined in another
 
-Because Doxygen is stupid, it reports the class to be defined in First.h even
-though there's just a fwdecl. Happens only if the class is a template,
-a non-templated class would have its location reported correctly.
+Doxygen < 1.8.20 is stupid and reports the class to be defined in First.h even
+though there's just a fwdecl. Happens only if the class is a template, a
+non-templated class would have its location reported correctly.
 
-If includes are enabled, members should have Second.h listed as their include,
-but if they are disabled, brief-only members shouldn't have detailed sections
-at all.
+With Doxygen < 1.8.20, if includes are enabled, members should have Second.h
+listed as their include, but if they are disabled, brief-only members shouldn't
+have detailed sections at all. With 1.8.20+, there should be just one (correct)
+include for the whole class.
 */
 template<class T> struct SpreadClass {
-    /** @brief A function with (detailed) include information but no details if includes are disabled */
+    /** @brief A function with (detailed) include information on < 1.8.20 but no details if includes are disabled or on 1.8.20+ */
     void foo();
 };

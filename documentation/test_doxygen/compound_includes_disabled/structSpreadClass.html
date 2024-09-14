@@ -35,14 +35,14 @@
             </li>
           </ul>
         </nav>
-<p>Because Doxygen is stupid, it reports the class to be defined in First.h even though there&#x27;s just a fwdecl. Happens only if the class is a template, a non-templated class would have its location reported correctly.</p><p>If includes are enabled, members should have Second.h listed as their include, but if they are disabled, brief-only members shouldn&#x27;t have detailed sections at all.</p>
+<p>Doxygen &lt; 1.8.20 is stupid and reports the class to be defined in First.h even though there&#x27;s just a fwdecl. Happens only if the class is a template, a non-templated class would have its location reported correctly.</p><p>With Doxygen &lt; 1.8.20, if includes are enabled, members should have Second.h listed as their include, but if they are disabled, brief-only members shouldn&#x27;t have detailed sections at all. With 1.8.20+, there should be just one (correct) include for the whole class.</p>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
             <dt id="a0537e4d57c78086a29ab6143da0d9a21">
               <span class="m-doc-wrap-bumper">void <a href="#a0537e4d57c78086a29ab6143da0d9a21" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
-            <dd>A function with (detailed) include information but no details if includes are disabled.</dd>
+            <dd>A function with (detailed) include information on &lt; 1.8.20 but no details if includes are disabled or on 1.8.20+.</dd>
           </dl>
         </section>
       </div>

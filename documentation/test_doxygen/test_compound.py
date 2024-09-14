@@ -270,7 +270,13 @@ class Includes(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
-        self.assertEqual(*self.actual_expected_contents('structSpreadClass.html'))
+
+        # The bug this tests for happens only on < 1.8.20. Maybe it's fixed in
+        # 1.8.19 already, but I only have 1.8.18 and 1.8.20 available to test.
+        if parse_version(doxygen_version()) >= parse_version("1.8.20"):
+            self.assertEqual(*self.actual_expected_contents('structSpreadClass.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('structSpreadClass.html', 'structSpreadClass-1818.html'))
 
         # These two should all have local includes because otherwise it gets
         # misleading; the Empty namespace a global one
