@@ -98,60 +98,30 @@ class Annotations(BaseInspectTestCase):
         else:
             self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html', 'inspect_annotations.AContainer-py36-38.html'))
 
-    # https://github.com/python/cpython/pull/13394
-    @unittest.skipUnless(sys.version_info >= (3, 7, 4),
-        "signature with / for pow() is not present in 3.6, "
-        "3.7.3 and below has a different docstring")
     def test_math(self):
         # From math export only pow() so we have the verification easier, and
         # in addition log() because it doesn't provide any signature metadata
         assert not hasattr(math, '__all__')
-        math.__all__ = ['pow', 'log']
-
-        self.run_python({
-            'INPUT_MODULES': [math]
-        })
-
-        del math.__all__
-        assert not hasattr(math, '__all__')
-
-        self.assertEqual(*self.actual_expected_contents('math.html'))
-
-    # https://github.com/python/cpython/pull/13394
-    @unittest.skipUnless(sys.version_info < (3, 7, 4) and sys.version_info >= (3, 7),
-        "signature with / for pow() is not present in 3.6, "
-        "3.7.3 and below has a different docstring")
-    def test_math373(self):
-        # From math export only pow() so we have the verification easier, and
-        # in addition log() because it doesn't provide any signature metadata
-        assert not hasattr(math, '__all__')
-        math.__all__ = ['pow', 'log']
-
-        self.run_python({
-            'INPUT_MODULES': [math]
-        })
-
-        del math.__all__
-        assert not hasattr(math, '__all__')
-
-        self.assertEqual(*self.actual_expected_contents('math.html', 'math373.html'))
-
-    @unittest.skipUnless(sys.version_info < (3, 7),
-        "docstring for log() is different in 3.7")
-    def test_math36(self):
-        # From math export only pow() so we have the verification easier, and
-        # in addition log() because it doesn't provide any signature metadata
-        assert not hasattr(math, '__all__')
         math.__all__ = ['log']
+        # signature with / for pow() is not present in 3.6 so it makes no sense
+        # to have it
+        if sys.version_info >= (3, 7):
+            math.__all__ = ['pow'] + math.__all__
 
         self.run_python({
             'INPUT_MODULES': [math]
         })
 
-        del math.__all__
-        assert not hasattr(math, '__all__')
-
-        self.assertEqual(*self.actual_expected_contents('math.html', 'math36.html'))
+        if sys.version_info >= (3, 7, 4):
+            file = 'math.html'
+        # 3.7.3 and below has a different docstring
+        # https://github.com/python/cpython/pull/13394
+        elif sys.version_info >= (3, 7):
+            file = 'math373.html'
+        # signature with / for pow() is not present in 3.6
+        else:
+            file = 'math36.html'
+        self.assertEqual(*self.actual_expected_contents('math.html', file))
 
 class NameMapping(BaseInspectTestCase):
     def test(self):
