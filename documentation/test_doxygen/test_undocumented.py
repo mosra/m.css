@@ -48,7 +48,7 @@ class Undocumented(IntegrationTestCase):
         # stupid because the XML is no longer self-contained. I refuse to
         # implement parsing of nested XMLs, so the output will lack some
         # members if groups are used.
-        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+        if parse_version(doxygen_version()) >= parse_version("1.9.7"):
             self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace-stupid.html'))
             self.assertEqual(*self.actual_expected_contents('File_8h.html', 'File_8h-stupid.html'))
         else:
@@ -67,7 +67,7 @@ class Undocumented(IntegrationTestCase):
 
             # See above, it's because certain symbols got skipped due to
             # stupidity
-            if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            if parse_version(doxygen_version()) >= parse_version("1.9.7"):
                 self.assertEqual(symbol_count, 28)
             else:
                 self.assertEqual(symbol_count, 44)

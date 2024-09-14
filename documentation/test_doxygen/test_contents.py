@@ -448,7 +448,7 @@ class AnchorInBothGroupAndNamespace(IntegrationTestCase):
         # stupid because the XML is no longer self-contained. I refuse to
         # implement parsing of nested XMLs, so the output will lack some
         # members if groups are used.
-        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+        if parse_version(doxygen_version()) >= parse_version("1.9.7"):
             self.assertEqual(*self.actual_expected_contents('namespaceFoo.html', 'namespaceFoo-stupid.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))

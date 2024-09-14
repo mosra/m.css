@@ -163,7 +163,7 @@ class ModulesInNamespace(IntegrationTestCase):
         # stupid because the XML is no longer self-contained. I refuse to
         # implement parsing of nested XMLs, so the output will lack some
         # members if groups are used.
-        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+        if parse_version(doxygen_version()) >= parse_version("1.9.7"):
             self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace-stupid.html'))
             self.assertEqual(*self.actual_expected_contents('file3_8h.html', 'file3_8h-stupid.html'))
         else:
@@ -262,7 +262,7 @@ class Includes(IntegrationTestCase):
         # stupid because the XML is no longer self-contained. I refuse to
         # implement parsing of nested XMLs, so the output will lack some
         # members if groups are used.
-        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+        if parse_version(doxygen_version()) >= parse_version("1.9.7"):
             self.assertEqual(*self.actual_expected_contents('namespaceContained.html', 'namespaceContained-stupid.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
@@ -289,7 +289,7 @@ class IncludesDisabled(IntegrationTestCase):
         # stupid because the XML is no longer self-contained. I refuse to
         # implement parsing of nested XMLs, so the output will lack some
         # members if groups are used.
-        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+        if parse_version(doxygen_version()) >= parse_version("1.9.7"):
             self.assertEqual(*self.actual_expected_contents('namespaceContained.html', 'namespaceContained-stupid.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
@@ -310,7 +310,7 @@ class IncludesUndocumentedFiles(IntegrationTestCase):
         # stupid because the XML is no longer self-contained. I refuse to
         # implement parsing of nested XMLs, so the output will lack some
         # members if groups are used.
-        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+        if parse_version(doxygen_version()) >= parse_version("1.9.7"):
             self.assertEqual(*self.actual_expected_contents('namespaceContained.html', '../compound_includes_disabled/namespaceContained-stupid.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('namespaceContained.html', '../compound_includes_disabled/namespaceContained.html'))
