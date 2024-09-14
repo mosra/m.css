@@ -36,7 +36,7 @@ class Foo:
 
     class UndocumentedInnerEnum(enum.IntFlag):
         FLAG_ONE = 1
-        FLAG_SEVENTEEN = 17
+        FLAG_SIXTEEN = 16
 
     class Subclass:
         """A subclass of Foo"""
@@ -123,7 +123,7 @@ MyEnum.ANOTHER.__doc__ = "Another value"
 
 class UndocumentedEnum(enum.IntFlag):
     FLAG_ONE = 1
-    FLAG_SEVENTEEN = 17
+    FLAG_SIXTEEN = 16
 
 def function():
     """A function"""

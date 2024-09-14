@@ -33,7 +33,7 @@ _MyPrivateEnum.ANOTHER.__doc__ = "Another value"
 
 class UndocumentedEnum(enum.IntFlag):
     FLAG_ONE = 1
-    FLAG_SEVENTEEN = 17
+    FLAG_SIXTEEN = 16
 
 class HiddenEnum(enum.Flag):
     pass
