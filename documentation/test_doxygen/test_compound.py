@@ -391,5 +391,6 @@ class InlineNamespace(IntegrationTestCase):
                 self.skipTest("Doxygen doesn't support inline namespaces here")
 
         self.assertEqual(*self.actual_expected_contents('namespaceFoo_1_1Bar.html'))
+        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
         self.assertEqual(*self.actual_expected_contents('namespaces.html'))

@@ -2481,7 +2481,18 @@ def extract_metadata(state: State, xml):
         for i in compounddef.findall('innerclass'):
             compound.children += [i.attrib['refid']]
         for i in compounddef.findall('innernamespace'):
-            compound.children += [i.attrib['refid']]
+            # Children of inline namespaces get listed also in their parents as
+            # of 1.9.0 and https://github.com/doxygen/doxygen/commit/4372054e0b7af9c0cd1c1390859d8fef3581d8bb
+            # So e.g. if Bar is inline, Foo::Bar::Baz gets shortened to
+            # Foo::Baz, and listed as <innernamespace> of both Foo and
+            # Foo::Bar. Compare their IDs (because they don't get shortened)
+            # and add the namespace only if it's a direct descendant. Another
+            # patching gets done in postprocess_state() below, then the same
+            # child filtering is done in parse_xml(), and finally the
+            # duplicates have to be removed in parse_index_xml() as well. See
+            # test_compound.InlineNamespace for a matching test case.
+            if i.attrib['refid'].rpartition('_1_1')[0] == compound.id:
+                compound.children += [i.attrib['refid']]
     elif compounddef.attrib['kind'] in ['dir', 'file']:
         for i in compounddef.findall('innerdir'):
             compound.children += [i.attrib['refid']]
@@ -2509,8 +2520,15 @@ def postprocess_state(state: State):
             compound.leaf_name = compound.name
             continue
 
+        # Extract leaf namespace name from symbol name, take just everything
+        # after the last ::, as the parent names may have intermediate inline
+        # namespaces removed since 1.9.0 and https://github.com/doxygen/doxygen/commit/4372054e0b7af9c0cd1c1390859d8fef3581d8bb
+        # The full name is reconstructed in a second step below.
+        if compound.kind == 'namespace':
+            compound.leaf_name = compound.name.rpartition('::')[2]
+
         # Strip parent namespace/class from symbol name
-        if compound.kind in ['namespace', 'struct', 'class', 'union']:
+        elif compound.kind in ['struct', 'class', 'union']:
             prefix = state.compounds[compound.parent].name + '::'
             assert compound.name.startswith(prefix)
             compound.leaf_name = compound.name[len(prefix):]
@@ -2526,6 +2544,18 @@ def postprocess_state(state: State):
 
         # Other compounds are not in any index pages or breadcrumb, so leaf
         # name not needed
+
+    # Now that we have leaf names for all namespaces made above, reconstruct
+    # full names from them. FFS, so much extra code just to undo this crap.
+    for _, compound in state.compounds.items():
+        if not compound.kind == 'namespace':
+            continue
+        compound.name = compound.leaf_name
+        parent = compound.parent
+        while parent:
+            compound_parent = state.compounds[parent]
+            compound.name = compound_parent.leaf_name + '::' + compound.name
+            parent = compound_parent.parent
 
     # Build reverse header name to ID mapping for #include information, unless
     # it's explicitly disabled. Doxygen doesn't provide full path for files so
@@ -2917,7 +2947,21 @@ def parse_xml(state: State, xml: str):
                     namespace.deprecated = symbol.deprecated
                     namespace.since = symbol.since
                     namespace.is_inline = compounddef_child.attrib.get('inline') == 'yes'
-                    compound.namespaces += [namespace]
+
+                    # Children of inline namespaces get listed also in their
+                    # parents as of 1.9.0 and https://github.com/doxygen/doxygen/commit/4372054e0b7af9c0cd1c1390859d8fef3581d8bb
+                    # So e.g. if Bar is inline, Foo::Bar::Baz gets shortened to
+                    # Foo::Baz, and listed as <innernamespace> of both Foo and
+                    # Foo::Bar. Compare their IDs (because they don't get
+                    # shortened) and add the namespace only if it's a direct
+                    # descendant. Same is done in extract_metadata() above. See
+                    # test_compound.InlineNamespace for a matching test case.
+                    #
+                    # Note that file / group compounds can also contain
+                    # <innernamespace>. Those should list all namespaces
+                    # always.
+                    if compound.kind != 'namespace' or compounddef_child.attrib['refid'].rpartition('_1_1')[0] == compound.id:
+                        compound.namespaces += [namespace]
 
                 else:
                     assert compounddef_child.tag == 'innerclass'
@@ -3546,6 +3590,17 @@ def parse_index_xml(state: State, xml):
         entry.has_nestable_children = False
         if compound.kind == 'namespace':
             entry.is_inline = compound.is_inline
+
+            # As of 1.9.0 and https://github.com/doxygen/doxygen/commit/4372054e0b7af9c0cd1c1390859d8fef3581d8bb
+            # children of inline namespaces are listed twice in index.xml, once
+            # with their full name, and once with the intermediate inline
+            # namespaces removed. Keep just the ones with full names, i.e.
+            # where the name matches what was painstakingly reconstructed
+            # in postprocess_state() before. I hate this fucking tool of a
+            # tool.
+            if compound.name != i.findtext('name'):
+                continue
+
         if compound.kind in ['class', 'struct', 'union']:
             entry.is_final = compound.is_final
 

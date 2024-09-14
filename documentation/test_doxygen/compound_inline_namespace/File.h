@@ -1,3 +1,7 @@
+/** @file
+ * @brief A file
+ */
+
 /** @brief A namespace */
 namespace Foo {
 
