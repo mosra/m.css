@@ -46,8 +46,13 @@ class String(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.FooSlots.html'))
-        self.assertEqual(*self.actual_expected_contents('inspect_string.DerivedException.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Specials.html'))
+
+        # Python 3.11 adds BaseException.add_note()
+        if sys.version_info >= (3, 11):
+            self.assertEqual(*self.actual_expected_contents('inspect_string.DerivedException.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_string.DerivedException.html', 'inspect_string.DerivedException-310.html'))
 
         self.assertEqual(*self.actual_expected_contents('classes.html'))
         self.assertEqual(*self.actual_expected_contents('modules.html'))
@@ -70,7 +75,13 @@ class Object(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html', '../inspect_string/inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html', '../inspect_string/inspect_string.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.FooSlots.html', '../inspect_string/inspect_string.FooSlots.html'))
-        self.assertEqual(*self.actual_expected_contents('inspect_string.DerivedException.html', '../inspect_string/inspect_string.DerivedException.html'))
+
+        # Python 3.11 adds BaseException.add_note()
+        if sys.version_info >= (3, 11):
+            self.assertEqual(*self.actual_expected_contents('inspect_string.DerivedException.html', '../inspect_string/inspect_string.DerivedException.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_string.DerivedException.html', '../inspect_string/inspect_string.DerivedException-310.html'))
+
         self.assertEqual(*self.actual_expected_contents('inspect_string.Specials.html', '../inspect_string/inspect_string.Specials.html'))
 
         self.assertEqual(*self.actual_expected_contents('classes.html', '../inspect_string/classes.html'))
@@ -112,8 +123,14 @@ class Annotations(BaseInspectTestCase):
             'INPUT_MODULES': [math]
         })
 
-        if sys.version_info >= (3, 7, 4):
+        # 3.12 improves a docstring further. It got seemingly backported to
+        # 3.11.3 and 3.10.11 as well, but an actual build of 3.11.9 doesn't
+        # seem to have that, so checking this just on 3.12.
+        # https://github.com/python/cpython/pull/102049
+        if sys.version_info >= (3, 12):
             file = 'math.html'
+        elif sys.version_info >= (3, 7, 4):
+            file = 'math39.html'
         # 3.7.3 and below has a different docstring
         # https://github.com/python/cpython/pull/13394
         elif sys.version_info >= (3, 7):
