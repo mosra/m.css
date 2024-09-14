@@ -19,7 +19,7 @@ namespace Contained {
 enum Enum {};
 
 /** @brief A typedef */
-typedef int Int;
+typedef int Int1;
 
 /** @brief A variable */
 constexpr const int Var = 3;
@@ -62,7 +62,7 @@ namespace Spread {
 enum Enum {};
 
 /** @brief A typedef */
-typedef int Int;
+typedef int Int2;
 
 /** @brief A variable */
 constexpr const int Var = 3;
@@ -108,7 +108,7 @@ All entries inside should have include information. (Unless the includes are dis
 enum Enum {};
 
 /** @brief A typedef */
-typedef int Int;
+typedef int Int3;
 
 /** @brief A variable */
 constexpr const int Var = 3;
