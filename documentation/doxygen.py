@@ -216,10 +216,18 @@ def parse_ref(state: State, element: ET.Element, add_inline_css_class: str = Non
     id = element.attrib['refid']
 
     if element.attrib['kindref'] == 'compound':
+        # TODO Unlike below, where the filename is dropped if it matches the
+        # current compound URL, here I don't really know what to do because
+        # <a> with empty href="" gets treated as a non-link by browsers.
         url = id + '.html'
     elif element.attrib['kindref'] == 'member':
         i = id.rindex('_1')
-        url = id[:i] + '.html' + '#' + id[i+2:]
+        url = id[:i] + '.html'
+        # There's no point in including the filename itself if linking to an
+        # anchor on the same page.
+        if url == state.current_compound_url:
+            url = ''
+        url += '#' + id[i+2:]
     else: # pragma: no cover
         logging.critical("{}: unknown <ref> kind {}".format(state.current, element.attrib['kindref']))
         assert False

@@ -19,6 +19,9 @@ Text.
 
 @section Class-section2 Section 2
 
+@ref Size "Link to this page shouldn't contain the filename" while
+@ref Directory::Var "link to another page should". Same with
+@ref Class-section "section references" vs @ref section-notoc "external pages".
 */
 class Class {
     public:
