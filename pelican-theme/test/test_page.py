@@ -27,7 +27,7 @@ import unittest
 
 import pelican
 
-from . import PageTestCase, parse_version
+from . import PageTestCase
 
 class Page(PageTestCase):
     def __init__(self, *args, **kwargs):
@@ -158,10 +158,9 @@ class HtmlEscape(PageTestCase):
         self.assertEqual(*self.actual_expected_contents('landing.html'))
         self.assertEqual(*self.actual_expected_contents('breadcrumb.html'))
 
-    # Not merged for 4.7 yet and no time from my side to push the PR through,
-    # so let's defer this to blow up at some point in the future.
-    @unittest.skipUnless(parse_version(pelican.__version__) > parse_version("5.0.0"),
-                         "https://github.com/getpelican/pelican/pull/2260")
+    # Not merged yet and no time from my side to push the PR through, so let's
+    # just skip this
+    @unittest.skip("https://github.com/getpelican/pelican/pull/2260")
     def test_content(self):
         self.run_pelican({
             'SITENAME': "<&> in site name",
