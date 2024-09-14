@@ -2337,7 +2337,11 @@ def parse_define(state: State, element: ET.Element):
 def _document_all_stuff(compounddef: ET.Element):
     for i in compounddef.findall('.//briefdescription/..'):
         brief = i.find('briefdescription')
-        if not brief and not i.find('detaileddescription'):
+        # ElementTree deprecated the __bool__ conversion of Element, so I now
+        # have to check that `detaileddescription` actually has any children.
+        # Checking against None is not enough as it could be present but be
+        # empty.
+        if not len(brief) and not len(i.find('detaileddescription')):
             # Add an empty <span> to the paragraph so it doesn't look empty.
             # Can't use strong/emphasis, as those are collapsed if empty as
             # well; on the other hand it's very unlikely that someone would
