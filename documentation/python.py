@@ -1278,8 +1278,9 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
         elif sys.version_info < (3, 7) and hasattr(annotation, '__name__'):
             name = 'typing.' + annotation.__name__
             args = annotation.__args__
-        # Any doesn't have __name__ in 3.6
-        elif sys.version_info < (3, 7) and annotation is typing.Any:
+        # Any doesn't have __name__ in 3.6, and doesn't have anything in 3.11+
+        # Not sure what commit caused that, probably https://github.com/python/cpython/pull/31841
+        elif (sys.version_info < (3, 7) or sys.version_info >= (3, 11)) and annotation is typing.Any:
             name = 'typing.Any'
             args = None
         # Whoops, something we don't know yet. Warn and return a string
