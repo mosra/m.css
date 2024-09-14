@@ -278,25 +278,40 @@ def is_underscored_and_undocumented(state: State, type, path, docstring):
 # Builtin dunder functions have hardcoded docstrings. This is totally useless
 # to have in the docs, so filter them out. Uh... kinda ugly.
 _filtered_builtin_functions = set([
-    ('__delattr__', "Implement delattr(self, name)."),
-    ('__eq__', "Return self==value."),
-    ('__ge__', "Return self>=value."),
-    ('__getattribute__', "Return getattr(self, name)."),
-    ('__gt__', "Return self>value."),
+    # https://github.com/python/cpython/blob/401fff7423ca3c8bf1d02e594edfd1412616a559/Objects/typeobject.c#L10470
+    # Matching the order there, be sure to follow it when updating
+    ('__repr__', "Return repr(self)."),
     ('__hash__', "Return hash(self)."),
-    ('__init__', "Initialize self.  See help(type(self)) for accurate signature."),
+    ('__call__', "Call self as a function."),
+    ('__str__', "Return str(self)."),
+    ('__getattribute__', "Return getattr(self, name)."),
+    ('__getattr__', "Implement getattr(self, name)."),
+    ('__setattr__', "Implement setattr(self, name, value)."),
+    ('__delattr__', "Implement delattr(self, name)."),
+    ('__lt__', "Return self<value."),
+    ('__le__', "Return self<=value."),
+    ('__eq__', "Return self==value."),
+    ('__ne__', "Return self!=value."),
+    ('__gt__', "Return self>value."),
+    ('__ge__', "Return self>=value."),
+    ('__iter__', "Implement iter(self)."),
+    ('__next__', "Implement next(self)."),
+    ('__get__', "Return an attribute of instance, which is of type owner."),
+    ('__set__', "Set an attribute of instance to value."),
+    ('__delete__', "Delete an attribute of instance."),
+    ('__init__',
+        "Initialize self.  See help(type(self)) for accurate signature."),
+    ('__new__',
+        "Create and return a new object.  See help(type) for accurate signature."),
+    ('__del__', "Called when the instance is about to be destroyed."),
+    # TODO there's many more, maybe just add all?
+
+    # https://github.com/python/cpython/blob/401fff7423ca3c8bf1d02e594edfd1412616a559/Objects/typeobject.c#L7342
     ('__init_subclass__',
         "This method is called when a class is subclassed.\n\n"
         "The default implementation does nothing. It may be\n"
         "overridden to extend subclasses.\n"),
-    ('__le__', "Return self<=value."),
-    ('__lt__', "Return self<value."),
-    ('__ne__', "Return self!=value."),
-    ('__new__',
-        "Create and return a new object.  See help(type) for accurate signature."),
-    ('__repr__', "Return repr(self)."),
-    ('__setattr__', "Implement setattr(self, name, value)."),
-    ('__str__', "Return str(self)."),
+    # https://github.com/python/cpython/blob/401fff7423ca3c8bf1d02e594edfd1412616a559/Objects/typeobject.c#L7328
     ('__subclasshook__',
         "Abstract classes can override this to customize issubclass().\n\n"
         "This is invoked early on by abc.ABCMeta.__subclasscheck__().\n"
