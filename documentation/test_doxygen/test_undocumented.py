@@ -29,7 +29,7 @@ import os
 
 from _search import Serializer, searchdata_filename
 
-from . import IntegrationTestCase
+from . import IntegrationTestCase, doxygen_version, parse_version
 
 class Undocumented(IntegrationTestCase):
     def test(self):
@@ -43,9 +43,18 @@ class Undocumented(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
 
         # Namespace, dir, file, group and class member listing
-        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+
+        # The change in https://github.com/doxygen/doxygen/issues/8790 is
+        # stupid because the XML is no longer self-contained. I refuse to
+        # implement parsing of nested XMLs, so the output will lack some
+        # members if groups are used.
+        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace-stupid.html'))
+            self.assertEqual(*self.actual_expected_contents('File_8h.html', 'File_8h-stupid.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+            self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('dir_4b0d5f8864bf89936129251a2d32609b.html'))
-        self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
         self.assertEqual(*self.actual_expected_contents('structNamespace_1_1ClassInANamespace.html'))
 
@@ -55,4 +64,10 @@ class Undocumented(IntegrationTestCase):
         with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
             serialized = f.read()
             magic, version, type_data, symbol_count, map_offset, type_map_offset = Serializer.header_struct.unpack_from(serialized)
-            self.assertEqual(symbol_count, 44)
+
+            # See above, it's because certain symbols got skipped due to
+            # stupidity
+            if parse_version(doxygen_version()) > parse_version("1.9.7"):
+                self.assertEqual(symbol_count, 28)
+            else:
+                self.assertEqual(symbol_count, 44)

@@ -158,8 +158,17 @@ class ModulesInNamespace(IntegrationTestCase):
         self.run_doxygen(wildcard='*.xml')
         self.assertEqual(*self.actual_expected_contents('group__group1.html'))
         self.assertEqual(*self.actual_expected_contents('group__group2.html'))
-        self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
-        self.assertEqual(*self.actual_expected_contents('file3_8h.html'))
+
+        # The change in https://github.com/doxygen/doxygen/issues/8790 is
+        # stupid because the XML is no longer self-contained. I refuse to
+        # implement parsing of nested XMLs, so the output will lack some
+        # members if groups are used.
+        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html', 'namespaceNamespace-stupid.html'))
+            self.assertEqual(*self.actual_expected_contents('file3_8h.html', 'file3_8h-stupid.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('namespaceNamespace.html'))
+            self.assertEqual(*self.actual_expected_contents('file3_8h.html'))
 
 class Deprecated(IntegrationTestCase):
     def test(self):
@@ -248,7 +257,16 @@ class Includes(IntegrationTestCase):
         # group, even though in a single file, should have local includes; and
         # the SpreadClass struct is forward-declared in another file, which
         # triggers a silly Doxygen bug so it has per-member includes also
-        self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
+
+        # The change in https://github.com/doxygen/doxygen/issues/8790 is
+        # stupid because the XML is no longer self-contained. I refuse to
+        # implement parsing of nested XMLs, so the output will lack some
+        # members if groups are used.
+        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            self.assertEqual(*self.actual_expected_contents('namespaceContained.html', 'namespaceContained-stupid.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
+
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
@@ -266,7 +284,15 @@ class IncludesDisabled(IntegrationTestCase):
 
         # No include information as SHOW_INCLUDE_FILES is disabled globally,
         # and no useless detailed sections either
-        self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
+
+        # The change in https://github.com/doxygen/doxygen/issues/8790 is
+        # stupid because the XML is no longer self-contained. I refuse to
+        # implement parsing of nested XMLs, so the output will lack some
+        # members if groups are used.
+        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            self.assertEqual(*self.actual_expected_contents('namespaceContained.html', 'namespaceContained-stupid.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('namespaceContained.html'))
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
@@ -279,7 +305,16 @@ class IncludesUndocumentedFiles(IntegrationTestCase):
         # The files are not documented, so there should be no include
         # information and no useless detailed sections either -- practically
         # the same output as when SHOW_INCLUDE_FILES is disabled globally
-        self.assertEqual(*self.actual_expected_contents('namespaceContained.html', '../compound_includes_disabled/namespaceContained.html'))
+
+        # The change in https://github.com/doxygen/doxygen/issues/8790 is
+        # stupid because the XML is no longer self-contained. I refuse to
+        # implement parsing of nested XMLs, so the output will lack some
+        # members if groups are used.
+        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            self.assertEqual(*self.actual_expected_contents('namespaceContained.html', '../compound_includes_disabled/namespaceContained-stupid.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('namespaceContained.html', '../compound_includes_disabled/namespaceContained.html'))
+
         self.assertEqual(*self.actual_expected_contents('namespaceSpread.html', '../compound_includes_disabled/namespaceSpread.html'))
         self.assertEqual(*self.actual_expected_contents('classClass.html', '../compound_includes_disabled/classClass.html'))
         self.assertEqual(*self.actual_expected_contents('group__group.html', '../compound_includes_disabled/group__group.html'))

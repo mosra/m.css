@@ -443,7 +443,16 @@ class SectionsHeadings(IntegrationTestCase):
 class AnchorInBothGroupAndNamespace(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
-        self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
+
+        # The change in https://github.com/doxygen/doxygen/issues/8790 is
+        # stupid because the XML is no longer self-contained. I refuse to
+        # implement parsing of nested XMLs, so the output will lack some
+        # members if groups are used.
+        if parse_version(doxygen_version()) > parse_version("1.9.7"):
+            self.assertEqual(*self.actual_expected_contents('namespaceFoo.html', 'namespaceFoo-stupid.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('namespaceFoo.html'))
+
         self.assertEqual(*self.actual_expected_contents('group__fizzbuzz.html'))
 
 class AnchorHtmlNoPrefixBug(IntegrationTestCase):

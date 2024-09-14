@@ -3020,6 +3020,33 @@ def parse_xml(state: State, xml: str):
 
         # Other, grouped in sections
         elif compounddef_child.tag == 'sectiondef':
+            # If grouping is used in the documentation, Doxygen 1.9.7+ no
+            # longer puts the whole <memberdef> info into file and namespace
+            # docs, but instead only <member> references, forcing the parsers
+            # to look for the identifier in other XML files.
+            #
+            # The reason for this, as discussed in the linked PR, is because
+            # some random downstream project failed due to encountering
+            # duplicate IDs (which are there for file/namespace members also,
+            # by the way! or for relatedalso members!!). And Doxygen maintainer
+            # VERY HELPFULLY OFFERED TO CRIPPLE THE XML OUTPUT FOR EVERYONE
+            # ELSE just to fix that damn thing. Once I calm down I may try to
+            # convince them to revert this insanity, until then enjoy the
+            # crappy output.
+            #
+            # Also, yes, it may happen that there are combined <memberdef> and
+            # <member> children. But handling that means adding the same damn
+            # piece of code, or some dumb filtering, to all branches below,
+            # just to counter a dumb decision. Nope. Nononono.
+            is_stupid = False
+            for memberdef in compounddef_child:
+                if memberdef.tag == 'member':
+                    logging.warning("{}: sorry, parsing of non-self-contained XML not implemented: due to https://github.com/doxygen/doxygen/issues/8790 the output will not list file / namespace {} members".format(state.current, compounddef_child.attrib['kind']))
+                    is_stupid = True
+                    break
+            if is_stupid:
+                continue
+
             if compounddef_child.attrib['kind'] == 'enum':
                 for memberdef in compounddef_child:
                     enum = parse_enum(state, memberdef)
