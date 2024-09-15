@@ -1,7 +1,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
 #             Vladimír Vondruš <mosra@centrum.cz>
 #   Copyright © 2024 John Turner <7strbass@gmail.com>
 #
