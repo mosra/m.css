@@ -271,12 +271,20 @@ def make_include_strip_from_path(path: str, prefixes: List[str]) -> str:
     strip_candidates = list(filter(bool, map(lambda x: remove_path_prefix(path, x), prefixes)))
     return min(strip_candidates, key=len) if strip_candidates else path
 
-def make_include(state: State, file, include_str=None) -> Tuple[str, str]:
-    if include_str is None:
-        include_str = make_include_strip_from_path(file, state.doxyfile['STRIP_FROM_INC_PATH']) if state.doxyfile['STRIP_FROM_INC_PATH'] is not None else file
-
+def make_include(state: State, file) -> Tuple[str, str]:
     if file in state.includes and state.compounds[state.includes[file]].has_details:
-        return (html.escape('<{}>'.format(include_str)), state.compounds[state.includes[file]].url)
+        return (html.escape('<{}>'.format(make_include_strip_from_path(file, state.doxyfile['STRIP_FROM_INC_PATH']) if state.doxyfile['STRIP_FROM_INC_PATH'] is not None else file)), state.compounds[state.includes[file]].url)
+    return None
+
+# Used only from a single place but put here to ensure it's kept consistent
+# with make_include() above, in particular the checks
+def make_class_include(state: State, file_id, name) -> Tuple[str, str]:
+    # state.includes is a map from a filename to file ID, and since we already
+    # have a file ID we don't need to use it. But if it's empty, it means
+    # includes are disabled globally, in which case we shouldn't return
+    # anything.
+    if state.includes and state.compounds[file_id].has_details:
+        return (html.escape('<{}>'.format(name)), state.compounds[file_id].url)
     return None
 
 def parse_id_and_include(state: State, element: ET.Element) -> Tuple[str, str, str, Tuple[str, str], bool]:
@@ -2870,19 +2878,33 @@ def parse_xml(state: State, xml: str):
         compound.is_final = compounddef.attrib.get('final') == 'yes'
 
     # Decide about the include file for this compound. Classes get it always,
-    # namespaces without any members too.
+    # namespaces without any class / group members too.
     state.current_kind = compound.kind
     if compound.kind in ['struct', 'class', 'union'] or (compound.kind == 'namespace' and compounddef.find('innerclass') is None and compounddef.find('innernamespace') is None and compounddef.find('sectiondef') is None):
         location_attribs = compounddef.find('location').attrib
         file = location_attribs['declfile'] if 'declfile' in location_attribs else location_attribs['file']
-        include_str = compounddef.find('includes').text if compounddef.find('includes') is not None else file
-        compound.include = make_include(state, file, include_str)
+
+        # Classes, structs and unions allow supplying custom header file and a
+        # custom include name, which *seems* to be present in the first
+        # <includes> element of given compound. If that's the case, we use the
+        # provided ID as the include link target and the name as the include
+        # name. Otherwise the information is extracted from the <location> tag.
+        # See test_compound.IncludesStripFromPath for a test case.
+        compound_includes = compounddef.find('includes')
+        if compound.kind in ['struct', 'class', 'union'] and compound_includes is not None:
+            compound.include = make_class_include(state, compound_includes.attrib['refid'], compound_includes.text)
+        else:
+            compound.include = make_include(state, file)
 
         # Save include for current compound. Every enum/var/function/... parser
         # checks against it and resets to None in case the include differs for
         # given entry, meaning all entries need to have their own include
         # definition instead. That's then finally reflected in has_details of
         # each entry.
+        #
+        # If the class overrode the include location to something else above,
+        # we *still* use the actual file from <location>, as otherwise an
+        # include would get listed redundantly for all class members.
         state.current_include = file
 
     # Namespaces with members get a placeholder that gets filled from the

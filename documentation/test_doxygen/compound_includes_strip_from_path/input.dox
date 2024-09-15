@@ -1,0 +1,17 @@
+/* The top-level project/ directory shouldn't be shown anywhere. Also, the
+   `input.dox` which this is generated from shouldn't be shown anywhere, nor it
+   should expand the file tree one level up. */
+
+/** @dir project/include
+ * @brief A top-level include directory
+ *
+ * Should be shown only as `include/`. The file tree also shouldn't list
+ * the top-level `project/` directory.
+ */
+
+/** @dir project/include/Library
+ * @brief A library include directory
+ *
+ * Should be shown only only as `include/Library/`. The file tree also
+ * shouldn't list the top-level `project/` directory.
+ */

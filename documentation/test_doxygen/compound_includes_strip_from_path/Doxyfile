@@ -1,0 +1,20 @@
+INPUT                   = input.dox project/examples/example.cpp project/include/Library/Library.h project/include/Library/Data.h
+AUTOLINK_SUPPORT        = NO
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
+XML_PROGRAMLISTING      = NO
+CASE_SENSE_NAMES        = YES
+
+# These are what makes the test actually work. The first entries don't exist
+# and should be ignored.
+STRIP_FROM_PATH = nonexistent/path/ project/ project/examples/
+STRIP_FROM_INC_PATH = examples/nonexistentpath/ project/include
+
+##! M_PAGE_FINE_PRINT   =
+##! M_THEME_COLOR       =
+##! M_FAVICON           =
+##! M_LINKS_NAVBAR1     =
+##! M_LINKS_NAVBAR2     = files
+##! M_SEARCH_DISABLED   = YES

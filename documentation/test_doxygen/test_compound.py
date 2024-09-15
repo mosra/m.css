@@ -306,6 +306,28 @@ class IncludesDisabled(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('group__group.html'))
         self.assertEqual(*self.actual_expected_contents('structSpreadClass.html'))
 
+class IncludesStripFromPath(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+
+        # Directories and files should not be prefixed with project/
+        self.assertEqual(*self.actual_expected_contents('dir_d44c64559bbebec7f509842c48db8b23.html'))
+        self.assertEqual(*self.actual_expected_contents('dir_f3b5534f769798fe34f6616e7fe90e4d.html'))
+        self.assertEqual(*self.actual_expected_contents('Data_8h.html'))
+        self.assertEqual(*self.actual_expected_contents('Library_8h.html'))
+        self.assertEqual(*self.actual_expected_contents('example_8cpp.html'))
+
+        # Namespaces and classes should show the correct #include not prefixed
+        # with project/includes/
+        self.assertEqual(*self.actual_expected_contents('namespaceLibrary.html'))
+        self.assertEqual(*self.actual_expected_contents('namespaceLibrary_1_1Helper.html'))
+        self.assertEqual(*self.actual_expected_contents('classLibrary_1_1Class.html'))
+        self.assertEqual(*self.actual_expected_contents('structLibrary_1_1Struct.html'))
+
+        # The file tree should show the two dirs and three files with correct
+        # nesting and again without the project/ prefix
+        self.assertEqual(*self.actual_expected_contents('files.html'))
+
 class IncludesUndocumentedFiles(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')
