@@ -368,6 +368,10 @@ option to highlight lines; if you want to add additional CSS classes, use the
             return 0;
         }
 
+Omitting the language parameter renders a plain code block without any
+highlighing. In that case the :rst:`class:` option is still recognized (and the
+:css:`.m-code` CSS class added as well) but :rst:`:hl-lines:` is ignored.
+
 The `builtin include directive <http://docutils.sourceforge.net/docs/ref/rst/directives.html#include>`_
 is also patched to use the improved code directive, and:
 
@@ -402,7 +406,11 @@ supported as well.
     of the source file.
 
 For inline code highlighting, use :rst:`:code:` interpreted text role. To
-specify which language should be highlighted, derive a custom role from it:
+specify which language should be highlighted, derive a custom role from it.
+Like with the :rst:`.. code::` directive it's possible to supply CSS classes
+via the :rst:`:class:` option, and if you omit the :rst:`:language:` option you
+get a plain inline code without any highlighting but :rst:`:class:` still
+applied, and the :css:`.m-code` CSS class added as well.
 
 .. code-figure::
 

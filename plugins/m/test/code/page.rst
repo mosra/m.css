@@ -12,6 +12,9 @@ m.code
 .. role:: py(code)
     :language: py
 
+.. role:: text-success(code)
+    :class: m-text m-success
+
 .. code:: c++
 
     int main() {
@@ -44,8 +47,7 @@ highlighting:
     :class: m-inverted
     :hl-lines: 2
 
-Inline code is here: :cpp:`constexpr`. Code without a language should be
-rendered as plain monospace text: :code:`code`.
+Inline code is here: :cpp:`constexpr int foo = 5;`.
 
 .. include:: console.ansi
     :code: ansi
@@ -76,6 +78,21 @@ Don't trim leading spaces in blocks:
             nope();
         return false;
     }
+
+`Code with no language specified`_
+==================================
+
+.. code::
+
+    This is a plain block.
+
+.. code::
+    :class: m-text m-info
+
+    This is a plain block,
+        which is colored.
+
+This is a :code:`plain inline code` and :text-success:`one which is also colored`.
 
 `Advanced file inclusion`_
 ==========================

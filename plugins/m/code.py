@@ -26,6 +26,7 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import html
 import os.path
 
 import docutils
@@ -123,8 +124,8 @@ def _highlight(code, language, options, *, is_block, filters=[]):
     return class_, highlighted
 
 class Code(Directive):
-    required_arguments = 1
-    optional_arguments = 0
+    required_arguments = 0
+    optional_arguments = 1
     final_argument_whitespace = True
     option_spec = {
         'hl-lines': directives.unchanged,
@@ -143,6 +144,13 @@ class Code(Directive):
         if 'classes' in self.options:
             classes += self.options['classes']
             del self.options['classes']
+
+        # If language is not specified, render a simple block
+        if not self.arguments:
+            content = nodes.raw('', html.escape('\n'.join(self.content)), format='html')
+            pre = nodes.literal_block('', classes=['m-code'] + classes)
+            pre.append(content)
+            return [pre]
 
         # Legacy alias to hl-lines
         if 'hl_lines' in self.options:
@@ -297,7 +305,7 @@ def code(role, rawtext, text, lineno, inliner, options={}, content=[]):
     # If language is not specified, render a simple literal
     if not 'language' in options:
         content = nodes.raw('', utils.unescape(text), format='html')
-        node = nodes.literal(rawtext, '', **options)
+        node = nodes.literal(rawtext, '', classes=['m-code'] + classes, **options)
         node.append(content)
         return [node], []
 
