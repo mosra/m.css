@@ -111,8 +111,7 @@ class Math(rst.Directive):
         node = nodes.raw(self.block_text, latex2svgextra.patch(content, svg, None, ''), format='html')
         node.line = self.content_offset + 1
         self.add_name(node)
-        container = nodes.container(**self.options)
-        container['classes'] += ['m-math']
+        container = nodes.container(classes=['m-math'] + classes, **self.options)
         container.append(node)
         return [container]
 
