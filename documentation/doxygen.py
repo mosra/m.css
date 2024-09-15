@@ -12,6 +12,7 @@
 #   Copyright © 2020 Yuri Edward <nicolas1.fraysse@epitech.eu>
 #   Copyright © 2020 Sergei Izmailov <sergei.a.izmailov@gmail.com>
 #   Copyright © 2020 Marin <marin.jurjevic@hotmail.com>
+#   Copyright © 2021 Maxime Schmitt <maxime.schmitt91@gmail.com>
 #   Copyright © 2021 Wojciech Jarosz <wkjarosz@users.noreply.github.com>
 #   Copyright © 2022 crf8472 <crf8472@web.de>
 #   Copyright © 2022 SRGDamia1 <sdamiano@stroudcenter.org>

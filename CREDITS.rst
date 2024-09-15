@@ -46,6 +46,8 @@ Listing only people with code contributions, because otherwise there's too many
     theme fixes
 -   Mark Gillard (`@marzer <https://github.com/marzer>`_) --- Doxygen theme
     improvements, CSS fixes
+-   Maxime Schmitt (`@Syllo <https://github.com/Syllo>`_) --- configurable file
+    and include handling in the Doxygen theme
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
 -   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
