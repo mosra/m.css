@@ -30,11 +30,27 @@ Test
 :breadcrumb: {filename}/plugins.rst Plugins
              {filename}/plugins/math-and-code.rst Math and code
 
+.. role:: math-default(math)
+    :class: m-default
+.. role:: math-primary(math)
+    :class: m-primary
+.. role:: math-success(math)
+    :class: m-success
+.. role:: math-warning(math)
+    :class: m-warning
+.. role:: math-danger(math)
+    :class: m-danger
+.. role:: math-info(math)
+    :class: m-info
+.. role:: math-dim(math)
+    :class: m-dim
+
 Math
 ====
 
 First is colored except :math:`c^2`, second is colored globally, third is
-colored globally with overrides except for :math:`c^2`.
+colored globally with overrides except for :math:`c^2`. Second row in each is
+the same but inline instead of a block.
 
 .. container:: m-row
 
@@ -43,6 +59,10 @@ colored globally with overrides except for :math:`c^2`.
         .. math::
 
             {\color{m-default} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-default} a^2 + b^2 =} ~ c^2`
 
     .. container:: m-col-m-4
 
@@ -51,6 +71,10 @@ colored globally with overrides except for :math:`c^2`.
 
             a^2 + b^2 = c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-default:`a^2 + b^2 = c^2`
+
     .. container:: m-col-m-4
 
         .. math::
@@ -58,11 +82,19 @@ colored globally with overrides except for :math:`c^2`.
 
             {\color{m-default} a^2 + b^2 =} ~ c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`{\color{m-default} a^2 + b^2 =} ~ c^2`
+
     .. container:: m-col-m-4
 
         .. math::
 
             {\color{m-primary} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-primary} a^2 + b^2 =} ~ c^2`
 
     .. container:: m-col-m-4
 
@@ -71,6 +103,10 @@ colored globally with overrides except for :math:`c^2`.
 
             a^2 + b^2 = c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-primary:`a^2 + b^2 = c^2`
+
     .. container:: m-col-m-4
 
         .. math::
@@ -78,11 +114,19 @@ colored globally with overrides except for :math:`c^2`.
 
             {\color{m-primary} a^2 + b^2 =} ~ c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`{\color{m-primary} a^2 + b^2 =} ~ c^2`
+
     .. container:: m-col-m-4
 
         .. math::
 
             {\color{m-success} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-success} a^2 + b^2 =} ~ c^2`
 
     .. container:: m-col-m-4
 
@@ -91,6 +135,10 @@ colored globally with overrides except for :math:`c^2`.
 
             a^2 + b^2 = c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-success:`a^2 + b^2 = c^2`
+
     .. container:: m-col-m-4
 
         .. math::
@@ -98,11 +146,19 @@ colored globally with overrides except for :math:`c^2`.
 
             {\color{m-success} a^2 + b^2 =} ~ c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`{\color{m-success} a^2 + b^2 =} ~ c^2`
+
     .. container:: m-col-m-4
 
         .. math::
 
             {\color{m-warning} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-warning} a^2 + b^2 =} ~ c^2`
 
     .. container:: m-col-m-4
 
@@ -111,6 +167,10 @@ colored globally with overrides except for :math:`c^2`.
 
             a^2 + b^2 = c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-warning:`a^2 + b^2 = c^2`
+
     .. container:: m-col-m-4
 
         .. math::
@@ -118,11 +178,19 @@ colored globally with overrides except for :math:`c^2`.
 
             {\color{m-warning} a^2 + b^2 =} ~ c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`{\color{m-warning} a^2 + b^2 =} ~ c^2`
+
     .. container:: m-col-m-4
 
         .. math::
 
             {\color{m-danger} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-danger} a^2 + b^2 =} ~ c^2`
 
     .. container:: m-col-m-4
 
@@ -130,6 +198,10 @@ colored globally with overrides except for :math:`c^2`.
             :class: m-danger
 
             a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`a^2 + b^2 = c^2`
 
     .. container:: m-col-m-4
 
@@ -138,6 +210,10 @@ colored globally with overrides except for :math:`c^2`.
 
             {\color{m-danger} a^2 + b^2 =} ~ c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-success:`{\color{m-danger} a^2 + b^2 =} ~ c^2`
+
 .. container:: m-row
 
     .. container:: m-col-m-4
@@ -145,6 +221,10 @@ colored globally with overrides except for :math:`c^2`.
         .. math::
 
             {\color{m-info} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-info} a^2 + b^2 =} ~ c^2`
 
     .. container:: m-col-m-4
 
@@ -153,12 +233,20 @@ colored globally with overrides except for :math:`c^2`.
 
             a^2 + b^2 = c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-info:`a^2 + b^2 = c^2`
+
     .. container:: m-col-m-4
 
         .. math::
             :class: m-danger
 
             {\color{m-info} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`{\color{m-info} a^2 + b^2 =} ~ c^2`
 
 .. container:: m-row
 
@@ -168,6 +256,10 @@ colored globally with overrides except for :math:`c^2`.
 
             {\color{m-dim} a^2 + b^2 =} ~ c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math:`{\color{m-dim} a^2 + b^2 =} ~ c^2`
+
     .. container:: m-col-m-4
 
         .. math::
@@ -175,9 +267,17 @@ colored globally with overrides except for :math:`c^2`.
 
             a^2 + b^2 = c^2
 
+        .. class:: m-text-center m-noindent
+
+        :math-dim:`a^2 + b^2 = c^2`
+
     .. container:: m-col-m-4
 
         .. math::
             :class: m-danger
 
             {\color{m-dim} a^2 + b^2 =} ~ c^2
+
+        .. class:: m-text-center m-noindent
+
+        :math-danger:`{\color{m-dim} a^2 + b^2 =} ~ c^2`
