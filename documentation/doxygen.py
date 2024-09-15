@@ -1400,7 +1400,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             # Fallback rendering as code requested
             if state.config['M_MATH_RENDER_AS_CODE']:
-                out.parsed += '<{0} class="m-code{1}{2}">{3}</{0}>'.format(
+                out.parsed += '<{0} class="m-code m-math{1}{2}">{3}</{0}>'.format(
                     'pre' if formula_block else 'code',
                     ' ' + add_css_class if formula_block and add_css_class else '',
                     # TODO try w/ this removed

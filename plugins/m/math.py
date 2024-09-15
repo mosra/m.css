@@ -73,8 +73,13 @@ class Math(rst.Directive):
     has_content = True
 
     def run(self):
-        set_classes(self.options)
         self.assert_has_content()
+
+        set_classes(self.options)
+        classes = []
+        if 'classes' in self.options:
+            classes += self.options['classes']
+            del self.options['classes']
 
         parent = self.state.parent
 
@@ -86,7 +91,7 @@ class Math(rst.Directive):
                 parent['classes'][parent['classes'].index('m-figure')] = 'm-code-figure'
 
             content = nodes.raw('', html.escape('\n'.join(self.content)), format='html')
-            pre = nodes.literal_block('')
+            pre = nodes.literal_block('', classes=['m-code', 'm-math'] + classes)
             pre.append(content)
             return [pre]
 
@@ -127,7 +132,7 @@ def math(role, rawtext, text, lineno, inliner, options={}, content=[]):
             del options['classes']
 
         content = nodes.raw('', html.escape(utils.unescape(text)), format='html')
-        node = nodes.literal(rawtext, '', **options)
+        node = nodes.literal(rawtext, '', classes=['m-code', 'm-math'] + classes, **options)
         node.append(content)
         return [node], []
 

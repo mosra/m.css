@@ -45,6 +45,23 @@ Test
 .. role:: math-dim(math)
     :class: m-dim
 
+.. role:: code-math(code)
+    :class: m-math
+.. role:: code-math-default(code)
+    :class: m-math m-default
+.. role:: code-math-primary(code)
+    :class: m-math m-primary
+.. role:: code-math-success(code)
+    :class: m-math m-success
+.. role:: code-math-warning(code)
+    :class: m-math m-warning
+.. role:: code-math-danger(code)
+    :class: m-math m-danger
+.. role:: code-math-info(code)
+    :class: m-math m-info
+.. role:: code-math-dim(code)
+    :class: m-math m-dim
+
 Math
 ====
 
@@ -281,3 +298,103 @@ the same but inline instead of a block.
         .. class:: m-text-center m-noindent
 
         :math-danger:`{\color{m-dim} a^2 + b^2 =} ~ c^2`
+
+Math as code
+------------
+
+Block and inline math, same as above. Since the ``M_MATH_RENDER_AS_CODE``
+option is global, here it's faked with code blocks that have classes applied.
+
+.. container:: m-row
+
+    .. container:: m-col-m-4
+
+        .. code::
+            :class: m-math
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math:`a^2 + b^2 = c^2`
+
+    .. container:: m-col-m-4
+
+        .. code::
+            :class: m-math m-default
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-default:`a^2 + b^2 = c^2`
+
+    .. container:: m-col-m-4
+
+        .. code::
+            :class: m-math m-primary
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-primary:`a^2 + b^2 = c^2`
+
+.. container:: m-row
+
+    .. container:: m-col-m-4
+
+        .. code::
+            :class: m-math m-success
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-success:`a^2 + b^2 = c^2`
+
+    .. container:: m-col-m-4
+
+        .. code::
+            :class: m-math m-warning
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-warning:`a^2 + b^2 = c^2`
+
+    .. container:: m-col-m-4
+
+        .. code::
+            :class: m-math m-danger
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-danger:`a^2 + b^2 = c^2`
+
+.. container:: m-row
+
+    .. container:: m-col-m-4 m-push-m-2
+
+        .. code::
+            :class: m-math m-info
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-info:`a^2 + b^2 = c^2`
+
+    .. container:: m-col-m-4 m-push-m-2
+
+        .. code::
+            :class: m-math m-dim
+
+            a^2 + b^2 = c^2
+
+        .. class:: m-text-center m-noindent
+
+        :code-math-dim:`a^2 + b^2 = c^2`

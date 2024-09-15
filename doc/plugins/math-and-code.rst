@@ -241,6 +241,12 @@ to disable caching.
             logging.warning("LaTeX not found, fallback to rendering math as code")
             M_MATH_RENDER_AS_CODE = True
 
+    With :py:`M_MATH_RENDER_AS_CODE` enabled, math blocks are put into
+    :html:`<pre class="m-code m-math">` and inline math into
+    :html:`<code class="m-code m-math">`. Any additionally specified CSS
+    classes are included in this case as well, so the code blocks retain also
+    any coloring, if present.
+
 `Math figure`_
 --------------
 

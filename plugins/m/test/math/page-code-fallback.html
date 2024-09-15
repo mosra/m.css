@@ -23,31 +23,31 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>m.math</h1>
 <!-- content -->
-<p>Inline colored math <code>a^2</code> and colored math block:</p>
-<pre>a^2 + b^2 = c^2</pre>
-<p>Colored parts of inline <code>b^2 - \color{m-info}{4ac}</code> and block formulas:</p>
-<pre>\frac{-b \pm \color{m-success} \sqrt{D}}{2a}</pre>
+<p>Inline colored math <code class="m-code m-math m-primary">a^2</code> and colored math block:</p>
+<pre class="m-code m-math m-success">a^2 + b^2 = c^2</pre>
+<p>Colored parts of inline <code class="m-code m-math">b^2 - \color{m-info}{4ac}</code> and block formulas:</p>
+<pre class="m-code m-math">\frac{-b \pm \color{m-success} \sqrt{D}}{2a}</pre>
 <p>Properly align <em>huge</em> formulas vertically on a line:
-<code>\hat q^{-1} = \frac{\hat q^*}{|\hat q|^2}</code>
-and make sure there's enough space for all the complex <code>W</code> things between
-the lines <code>W = \sum_{i=0}^{n} \frac{w_i}{h_i}</code> because
-<code>Y = \sum_{i=0}^{n} B</code></p>
-<p>The <code>\cfrac</code> thing doesn't align well: <code>W = \sum_{i=0}^{n} \cfrac{w_i}{h_i}</code></p>
+<code class="m-code m-math">\hat q^{-1} = \frac{\hat q^*}{|\hat q|^2}</code>
+and make sure there's enough space for all the complex <code class="m-code m-math">W</code> things between
+the lines <code class="m-code m-math">W = \sum_{i=0}^{n} \frac{w_i}{h_i}</code> because
+<code class="m-code m-math">Y = \sum_{i=0}^{n} B</code></p>
+<p>The <code>\cfrac</code> thing doesn't align well: <code class="m-code m-math">W = \sum_{i=0}^{n} \cfrac{w_i}{h_i}</code></p>
 <p>Properly escape the formula source:</p>
-<pre>\begin{array}{rcl}
+<pre class="m-code m-math">\begin{array}{rcl}
     x &amp; = &amp; 1
 \end{array}</pre>
-<p class="m-text m-big">Formulas <code>a^2</code> in big text are big.</p>
-<p class="m-text m-small">Formulas <code>a^2</code> in small text are small.</p>
+<p class="m-text m-big">Formulas <code class="m-code m-math">a^2</code> in big text are big.</p>
+<p class="m-text m-small">Formulas <code class="m-code m-math">a^2</code> in small text are small.</p>
 <figure class="m-code-figure">
-<pre>a^2 + b^2 = c^2</pre>
+<pre class="m-code m-math m-info">a^2 + b^2 = c^2</pre>
 <figcaption>This is a title.</figcaption>
 <p>This is a description.</p>
 </figure>
 <figure class="m-code-figure">
-<pre>a^2 + b^2 = c^2</pre>
+<pre class="m-code m-math">a^2 + b^2 = c^2</pre>
 <p>The math below should not be styled as a part of the figure:</p>
-<pre>a^2 + b^2 = c^2</pre>
+<pre class="m-code m-math m-danger">a^2 + b^2 = c^2</pre>
 </figure>
 <!-- /content -->
       </div>
