@@ -1,0 +1,19 @@
+/** @mainpage
+
+Here's a block formula:
+
+@f[
+    \hat q = [\boldsymbol 0, 1] + \epsilon [\frac{\boldsymbol v}{2}, 0]
+@f]
+
+And @f$ \hat q @f$ is how quaternion is denoted. A green formula should have
+the CSS class applied:
+
+@m_class{m-text m-success}
+
+@f[
+    \pi^2
+@f]
+
+A yellow @m_class{m-text m-warning} @f$ \Sigma @f$ inline formula as well.
+*/

@@ -164,6 +164,16 @@ class Math(IntegrationTestCase):
         with self.assertRaises(subprocess.CalledProcessError) as context:
             self.run_doxygen(wildcard='error.xml')
 
+class MathCodeFallback(IntegrationTestCase):
+    def test(self):
+        self.run_doxygen(wildcard='indexpage.xml')
+
+        # Doxygen 1.9.8+ (or maybe earlier? 1.9.1 not yet) changes the spacing,
+        if parse_version(doxygen_version()) >= parse_version("1.9.8"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-191.html'))
+
 class MathCached(IntegrationTestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

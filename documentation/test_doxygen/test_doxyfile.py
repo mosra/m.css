@@ -77,6 +77,7 @@ class Doxyfile(unittest.TestCase):
         'M_CODE_FILTERS_PRE': {},
         'M_CODE_FILTERS_POST': {},
         'M_MATH_CACHE_FILE': 'm.math.cache',
+        'M_MATH_RENDER_AS_CODE': False,
 
         'SEARCH_DISABLED': False,
         'SEARCH_DOWNLOAD_BINARY': False,

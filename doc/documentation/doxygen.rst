@@ -455,6 +455,10 @@ Variable                            Description
                                     output directory is used. Equivalent to an
                                     option of the same name in the
                                     `m.math plugin <{filename}/plugins/math-and-code.rst#math>`.
+:py:`M_MATH_RENDER_AS_CODE`         Don't invoke LaTex and render math as
+                                    inline code and code blocks. Equivalent to
+                                    an option of the same name in the
+                                    `m.math plugin <{filename}/plugins/math-and-code.rst#math>`.
 :py:`M_CODE_FILTERS_PRE: Dict`      Filters to apply before a code snippet is
                                     rendered. Equivalent to an option of the
                                     same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`.

@@ -133,6 +133,7 @@ default_config = {
     'CLASS_INDEX_EXPAND_INNER': False,
 
     'M_MATH_CACHE_FILE': 'm.math.cache',
+    'M_MATH_RENDER_AS_CODE': False,
     'M_CODE_FILTERS_PRE': {},
     'M_CODE_FILTERS_POST': {},
 
@@ -1394,23 +1395,34 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
 
             logging.debug("{}: rendering math: {}".format(state.current, i.text))
 
-            # Assume that Doxygen wrapped the formula properly to distinguish
-            # between inline, block or special environment
-            depth, svg = latex2svgextra.fetch_cached_or_render('{}'.format(i.text))
-
             # We should have decided about block/inline above
             assert formula_block is not None
-            if formula_block:
-                has_block_elements = True
-                out.parsed += '<div class="m-math{}">{}</div>'.format(
-                    ' ' + add_css_class if add_css_class else '',
-                    latex2svgextra.patch(i.text, svg, None, ''))
+
+            # Fallback rendering as code requested
+            if state.config['M_MATH_RENDER_AS_CODE']:
+                out.parsed += '<{0} class="m-code{1}{2}">{3}</{0}>'.format(
+                    'pre' if formula_block else 'code',
+                    ' ' + add_css_class if formula_block and add_css_class else '',
+                    # TODO try w/ this removed
+                    ' ' + add_inline_css_class if not formula_block and add_inline_css_class else '',
+                    i.text)
             else:
-                # CSS classes and styling for proper vertical alignment. Depth is relative
-                # to font size, describes how below the line the text is. Scaling it back
-                # to 12pt font, scaled by 125% as set above in the config.
-                attribs = ' class="m-math{}"'.format(' ' + add_inline_css_class if add_inline_css_class else '')
-                out.parsed += latex2svgextra.patch(i.text, svg, depth, attribs)
+                # Assume that Doxygen wrapped the formula properly to
+                # distinguish between inline, block or special environment
+                depth, svg = latex2svgextra.fetch_cached_or_render('{}'.format(i.text))
+
+                if formula_block:
+                    has_block_elements = True
+                    out.parsed += '<div class="m-math{}">{}</div>'.format(
+                        ' ' + add_css_class if add_css_class else '',
+                        latex2svgextra.patch(i.text, svg, None, ''))
+                else:
+                    # CSS classes and styling for proper vertical alignment.
+                    # Depth is relative to font size, describes how below the
+                    # line the text is. Scaling it back to 12pt font, scaled by
+                    # 125% as set above in the config.
+                    attribs = ' class="m-math{}"'.format(' ' + add_inline_css_class if add_inline_css_class else '')
+                    out.parsed += latex2svgextra.patch(i.text, svg, depth, attribs)
 
         # Inline elements
         elif i.tag == 'linebreak':
@@ -3912,6 +3924,7 @@ def parse_doxyfile(state: State, doxyfile, values = None):
         ('M_VERSION_LABELS', 'VERSION_LABELS', bool),
 
         ('M_MATH_CACHE_FILE', 'M_MATH_CACHE_FILE', str),
+        ('M_MATH_RENDER_AS_CODE', 'M_MATH_RENDER_AS_CODE', bool),
     ]:
         if key not in values: continue
 

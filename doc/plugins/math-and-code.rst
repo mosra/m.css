@@ -81,9 +81,8 @@ for block-level math or the ``@f$`` command for inline math. It's possible to
 add extra CSS classes by placing ``@m_class`` in a paragraph before the actual
 math block (or right before inline math), see the
 `Doxygen theme-specific commands <http://localhost:8000/documentation/doxygen/#theme-specific-commands>`_
-for more information. The :ini:`M_MATH_CACHE_FILE` option is supported as well;
-there's no equivalent to the :ini:`M_MATH_RENDER_AS_CODE` option implemented at
-this point.
+for more information. The :ini:`M_MATH_CACHE_FILE` and
+:ini:`M_MATH_RENDER_AS_CODE` options are supported as well.
 
 In addition you need some LaTeX distribution installed. Use your distribution
 package manager, for example on Ubuntu:
