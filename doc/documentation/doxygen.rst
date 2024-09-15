@@ -210,7 +210,7 @@ In addition to features `shared by all doc generators <{filename}/documentation.
 
     This list presents my opinions. Not everybody likes my opinions.
 
-The theme is deliberately *only* for C and C++. See the `Python documentation generator <{filename}/python.rst>`__
+The theme is deliberately *only* for C and C++. See the `Python documentation generator <{filename}python.rst>`__
 for a dedicated tool handling Python. Other languages such as C# or Java would
 be also better handled using dedicated tools that can make use of reflection
 features built into the language itself instead of attempting to (badly) parse
@@ -454,19 +454,19 @@ Variable                            Description
                                     not set, ``m.math.cache`` file in the
                                     output directory is used. Equivalent to an
                                     option of the same name in the
-                                    `m.math plugin <{filename}/plugins/math-and-code.rst#math>`.
+                                    `m.math plugin <{filename}/plugins/math-and-code.rst#math>`_.
 :py:`M_MATH_RENDER_AS_CODE`         Don't invoke LaTex and render math as
                                     inline code and code blocks. Equivalent to
                                     an option of the same name in the
-                                    `m.math plugin <{filename}/plugins/math-and-code.rst#math>`.
+                                    `m.math plugin <{filename}/plugins/math-and-code.rst#math>`_.
 :py:`M_CODE_FILTERS_PRE: Dict`      Filters to apply before a code snippet is
                                     rendered. Equivalent to an option of the
-                                    same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`.
+                                    same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`_.
                                     Note that due to the limitations of Doxygen
                                     markup, named filters are not supported.
 :py:`M_CODE_FILTERS_POST: Dict`     Filters to apply after a code snippet is
                                     rendered. Equivalent to an option of the
-                                    same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`.
+                                    same name in the `m.code plugin <{filename}/plugins/math-and-code.rst#filters>`_.
                                     Note that due to the limitations of Doxygen
                                     markup, named filters are not supported.
 =================================== ===========================================
