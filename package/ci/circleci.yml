@@ -191,6 +191,9 @@ commands:
           coverage combine
           codecov
 
+# NOTE: Try to keep the versions reflected in doc/build-status.html.in for
+#   easier debugging when something goes wrong
+
 jobs:
   py306:
     executor: python-3_06
