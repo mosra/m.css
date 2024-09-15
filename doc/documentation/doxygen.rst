@@ -205,8 +205,15 @@ In addition to features `shared by all doc generators <{filename}/documentation.
 
     This list presents my opinions. Not everybody likes my opinions.
 
+The theme is deliberately *only* for C and C++. See the `Python documentation generator <{filename}/python.rst>`__
+for a dedicated tool handling Python. Other languages such as C# or Java would
+be also better handled using dedicated tools that can make use of reflection
+features built into the language itself instead of attempting to (badly) parse
+the sources, plus a dedicated tool can better adjust to specifics of given
+language, such as not calling Python or Java packages "namespaces".
+
 Features that I don't see a point in because they just artificially inflate the
-amount of generated content for no added value.
+amount of generated content for no added value:
 
 -   Class hierarchy graphs are ignored (it only inflates the documentation with
     little added value)

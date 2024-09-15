@@ -2403,6 +2403,12 @@ def extract_metadata(state: State, xml):
     if compounddef.tag != 'compounddef':
         logging.warning("{}: first child element expected to be <compounddef> but is <{}>, skipping whole file".format(state.current, compounddef.tag))
         return
+    # Using `in []` to prepare for potential future additions like 'C', but so
+    # far Doxygen treats even *.c files as language="C++". Reproduced in the
+    # test_ignored.Languages test case.
+    if compounddef.attrib.get('language', 'C++') not in ['C++']:
+        logging.warning("{}: unsupported language {}, skipping whole file".format(state.current, compounddef.attrib['language']))
+        return
     assert len([i for i in root]) == 1
 
     if compounddef.attrib['kind'] not in ['namespace', 'group', 'class', 'struct', 'union', 'dir', 'file', 'page']:
@@ -2710,6 +2716,9 @@ def parse_xml(state: State, xml: str):
         return
     compounddef: ET.Element = root[0]
     if compounddef.tag != 'compounddef':
+        return
+    # See extract_metadata() for why `in []` is used
+    if compounddef.attrib.get('language', 'C++') not in ['C++']:
         return
 
     assert len([i for i in root]) == 1

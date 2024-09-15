@@ -25,9 +25,9 @@
 
 import os
 
-from . import BaseTestCase
+from . import BaseTestCase, IntegrationTestCase, doxygen_version, parse_version
 
-class IgnoredXmls(BaseTestCase):
+class Xmls(BaseTestCase):
     def test(self):
         with self.assertLogs() as cm:
             self.run_doxygen(wildcard='*.xml')
@@ -54,3 +54,24 @@ class IgnoredXmls(BaseTestCase):
         # Some index page should be generated, with version 1.0.666 extracted
         # from index.xml
         self.assertEqual(*self.actual_expected_contents('pages.html'))
+
+class Languages(IntegrationTestCase):
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(index_pages=[], wildcard='*.xml')
+
+        expected = [
+            'WARNING:root:file_8cs.xml: unsupported language C#, skipping whole file',
+            'WARNING:root:file_8java.xml: unsupported language Java, skipping whole file',
+            'WARNING:root:file_8py.xml: unsupported language Python, skipping whole file',
+            'WARNING:root:namespacefile.xml: unsupported language Python, skipping whole file'
+        ]
+        # Doxygen 1.9.3 (?) generates one more strange file for Java
+        if parse_version(doxygen_version()) >= parse_version("1.9.3"):
+            expected += ['WARNING:root:namespacejava_1_1lang.xml: unsupported language Java, skipping whole file']
+        self.assertEqual(cm.output, expected)
+
+        # C files shouldn't be ignored. Testing explicitly as the rest of the
+        # tests is all C++ files. Right now, Doxygen says the language is C++
+        # as well, but that might change in the future, so have that verified.
+        self.assertEqual(*self.actual_expected_contents('file_8c.html'))
