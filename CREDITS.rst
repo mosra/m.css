@@ -13,6 +13,8 @@ Listing only people with code contributions, because otherwise there's too many
 
 -   Arvid Gerstmann (`@Leandros <https://github.com/Leandros>`_) ---
     Windows-related fixes, bugreports
+-   Andy Kluger (`@AndydeCleyre <https://github.com/AndydeCleyre>\_) --- typo
+    fixes
 -   Blair Conrad (`@blairconrad <https://github.com/blairconrad>`_) ---
     complete rewrite of the ANSI color lexer to be the *best ever*
 -   `@Bridouz <https://github.com/Bridouz>`_ --- documentation improvements
@@ -32,18 +34,22 @@ Listing only people with code contributions, because otherwise there's too many
     Pelican theme fixes, semantic improvements to the ``m.htmlsanity`` plugin
 -   `John Turner <https://github.com/jturner65>`_ --- docutils compatibility
     fixes
+-   Jelmer Vernooĳ (`@jelmer <https://github.com/jelmer>`_) --- improvements to
+    the image gallery plugin
 -   `@joshyrobot <https://github.com/joshyrobot>`_ --- CSS validity fixes
 -   Lukas Pirl (`@lpirl <https://github.com/lpirl>`_) --- Pelican theme
     improvements, fixes for Pelican 4.5+ support
+-   Luke Peterson (`@hazelnusse <https://github.com/hazelnusse>`_) --- typo
+    fixes
 -   `@luzpaz <https://github.com/luzpaz>`_ --- Typo fixes
 -   Marin (`@marinjurjevic <https://github.com/marinjurjevic>`_) --- Doxygen
     theme fixes
 -   Mark Gillard (`@marzer <https://github.com/marzer>`_) --- Doxygen theme
     improvements, CSS fixes
--   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
-    theme improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
+-   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
+    theme improvements
 -   Ryohei Machida (`@machida-mn <https://github.com/machida-mn>`_) ---
     proof-of-concept implementation of ``#include`` information in the Doxygen
     theme
@@ -56,5 +62,7 @@ Listing only people with code contributions, because otherwise there's too many
     compatibility
 -   Varun Gandhi (`@typesanitizer <https://github.com/typesanitizer>`_) ---
     documentation updates
+-   Wojciech Jarosz (`@wkjarosz <https://github.com/wkjarosz>`_) ---
+    improvements to the Doxygen theme
 -   Yuri Edward (`@Yuri6037 <https://github.com/Yuri6037>`_) --- improvements
     to the Doxygen theme

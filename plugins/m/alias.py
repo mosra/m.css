@@ -3,6 +3,7 @@
 #
 #   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
 #             Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2020 shniubobo <shniubobo@outlook.com>
 #
 #   Loosely based on https://github.com/Nitron/pelican-alias,
 #   copyright © 2013 Christopher Williams

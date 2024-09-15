@@ -5,7 +5,18 @@
 #
 #   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
 #             Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2018 Ryohei Machida <machida_mn@complex.ist.hokudai.ac.jp>
+#   Copyright © 2018 Arvid Gerstmann <dev@arvid-g.de>
+#   Copyright © 2019, 2021 Cris Luengo <cris.l.luengo@gmail.com>
+#   Copyright © 2020 Rémi Marche <remimarche@gmail.com>
 #   Copyright © 2020 Yuri Edward <nicolas1.fraysse@epitech.eu>
+#   Copyright © 2020 Sergei Izmailov <sergei.a.izmailov@gmail.com>
+#   Copyright © 2020 Marin <marin.jurjevic@hotmail.com>
+#   Copyright © 2021 Wojciech Jarosz <wkjarosz@users.noreply.github.com>
+#   Copyright © 2022 crf8472 <crf8472@web.de>
+#   Copyright © 2022 SRGDamia1 <sdamiano@stroudcenter.org>
+#   Copyright © 2022 luz paz <luzpaz@pm.me>
+#   Copyright © 2022 Mark Gillard <marzer_@hotmail.com>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),

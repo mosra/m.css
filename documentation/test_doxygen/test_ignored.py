@@ -3,6 +3,8 @@
 #
 #   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
 #             Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2022 crf8472 <crf8472@web.de>
+#   Copyright © 2022 SRGDamia1 <sdamiano@stroudcenter.org>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),

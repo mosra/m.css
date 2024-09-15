@@ -5,6 +5,8 @@
 #
 #   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
 #             Vladimír Vondruš <mosra@centrum.cz>
+#   Copyright © 2019 DarkContact <DarkContact@mail.ru>
+#   Copyright © 2019 Cris Luengo <cris.l.luengo@gmail.com>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),

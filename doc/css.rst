@@ -3,6 +3,8 @@
 
     Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
               Vladimír Vondruš <mosra@centrum.cz>
+    Copyright © 2019 Andy Kluger <AndydeCleyre@users.noreply.github.com>
+    Copyright © 2019 DarkContact <DarkContact@mail.ru>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
