@@ -51,7 +51,7 @@ class Math(PelicanPluginTestCase):
 
     def test_code_fallback(self):
         self.run_pelican({
-            'PLUGINS': ['m.htmlsanity', 'm.math'],
+            'PLUGINS': ['m.htmlsanity', 'm.components', 'm.math'],
             'M_MATH_RENDER_AS_CODE': True
         })
 
