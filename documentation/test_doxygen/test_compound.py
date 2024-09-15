@@ -31,6 +31,9 @@ import unittest
 from . import IntegrationTestCase, doxygen_version, parse_version
 
 class Listing(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        IntegrationTestCase.__init__(self, *args, **kwargs)
+
     def test_index_pages(self):
         self.run_doxygen(wildcard='index.xml', index_pages=['annotated', 'namespaces', 'pages'])
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
@@ -75,6 +78,13 @@ class Listing(IntegrationTestCase):
     def test_page_no_toc(self):
         self.run_doxygen(wildcard='page-no-toc.xml')
         self.assertEqual(*self.actual_expected_contents('page-no-toc.html'))
+
+# Like Listing, but tests with STRIP_FROM_INC_PATH set to a trivial value.
+# Both should result in the exact same output regardless of any Doxygen warts
+# inside.
+class ListingStripFromPath(Listing):
+    def __init__(self, *args, **kwargs):
+        Listing.__init__(self, *args, dir='listing', doxyfile='Doxyfile-strip-from-path', **kwargs)
 
 class Detailed(IntegrationTestCase):
     def test_namespace(self):

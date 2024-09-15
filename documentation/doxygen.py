@@ -2890,8 +2890,13 @@ def parse_xml(state: State, xml: str):
         # provided ID as the include link target and the name as the include
         # name. Otherwise the information is extracted from the <location> tag.
         # See test_compound.IncludesStripFromPath for a test case.
+        #
+        # Apparently, if STRIP_FROM_INC_PATH isn't set at all in the Doxyfile,
+        # the damn thing does the worst possible and keeps just the leaf
+        # filename there. Which is useless, so assume that if someone wants
+        # to override include names, they also set STRIP_FROM_INC_PATH.
         compound_includes = compounddef.find('includes')
-        if compound.kind in ['struct', 'class', 'union'] and compound_includes is not None:
+        if state.doxyfile['STRIP_FROM_INC_PATH'] and compound.kind in ['struct', 'class', 'union'] and compound_includes is not None:
             compound.include = make_class_include(state, compound_includes.attrib['refid'], compound_includes.text)
         else:
             compound.include = make_include(state, file)

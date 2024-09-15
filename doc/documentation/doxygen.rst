@@ -303,6 +303,18 @@ Variable                        Description
                                 glaringly useless in every imaginable way and
                                 thus the theme is reusing it for something
                                 actually useful. Doxygen default is ``YES``.
+:ini:`STRIP_FROM_PATH`          Prefix to strip from directory and file paths
+                                shown in page titles.
+:ini:`STRIP_FROM_INC_PATH`      Prefix to strip from paths of :cpp:`#include`
+                                files shown for classes, namespaces and
+                                namespace members. Often set to the same value
+                                as :ini:`STRIP_FROM_INC_PATH`. Note that you
+                                have to set this option to something non-empty
+                                if you're using header name overrides in the
+                                `@class <https://www.doxygen.nl/manual/commands.html#cmdclass>`_
+                                command --- otherwise Doxygen strips all
+                                directory information from include files which
+                                m.css then has no way of restoring.
 =============================== ===============================================
 
 On top of the above, the script can take additional options in a way consistent

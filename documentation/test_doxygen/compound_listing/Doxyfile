@@ -9,6 +9,12 @@ GENERATE_XML            = YES
 XML_PROGRAMLISTING      = NO
 CASE_SENSE_NAMES        = YES
 
+# This deliberately doesn't have STRIP_FROM_PATH / STRIP_FROM_INC_PATH to
+# verify correct behavior with subdirs being preserved by default. The
+# Doxyfile-strip-from-path and the ListingStripFromPath test then sets
+# STRIP_FROM_INC_PATH to a trivial value, which then should give the exact same
+# result.
+
 ##! M_FILE_TREE_EXPAND_LEVELS = 2
 ##! M_CLASS_TREE_EXPAND_LEVELS = 5
 ##! M_EXPAND_INNER_TYPES = YES

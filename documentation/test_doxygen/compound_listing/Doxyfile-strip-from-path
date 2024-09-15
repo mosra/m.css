@@ -1,0 +1,7 @@
+@INCLUDE                = Doxyfile
+
+# Without this, Doxygen strips all directories from <includes> elements, losing
+# the actual filesystem hierarchy. M.css detects that and uses <location>
+# instead. This then verifies that the output is the same with
+# STRIP_FROM_INC_PATH not set at all and set to a trivial value.
+STRIP_FROM_INC_PATH     = .

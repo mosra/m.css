@@ -52,8 +52,10 @@ def parse_version(string: str):
     return tuple([int(i) for i in string.split('.')])
 
 class BaseTestCase(unittest.TestCase):
-    def __init__(self, *args, dir=None, **kwargs):
+    def __init__(self, *args, dir=None, doxyfile='Doxyfile', **kwargs):
         unittest.TestCase.__init__(self, *args, **kwargs)
+
+        self.doxyfile = doxyfile
 
         # Get the test filename from the derived class module file. If path is
         # not supplied, get it from derived class name converted to snake_case
@@ -81,7 +83,7 @@ class BaseTestCase(unittest.TestCase):
 
     def run_doxygen(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, config={}):
         state = State({**copy.deepcopy(default_config), **config})
-        parse_doxyfile(state, os.path.join(self.path, 'Doxyfile'))
+        parse_doxyfile(state, os.path.join(self.path, self.doxyfile))
         run(state, templates=templates, wildcard=wildcard, index_pages=index_pages, sort_globbed_files=True)
 
     def actual_expected_contents(self, actual, expected = None):
@@ -97,6 +99,6 @@ class BaseTestCase(unittest.TestCase):
 class IntegrationTestCase(BaseTestCase):
     def setUp(self):
         if os.path.exists(os.path.join(self.path, 'xml')): shutil.rmtree(os.path.join(self.path, 'xml'))
-        subprocess.run(['doxygen'], cwd=self.path, check=True)
+        subprocess.run(['doxygen', self.doxyfile], cwd=self.path, check=True)
 
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
