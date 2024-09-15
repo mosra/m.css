@@ -33,7 +33,7 @@ import os
 import sys
 
 import_rx = re.compile("^@import url\\('(?P<file>[^']+)'\\);$")
-opening_brace_rx = re.compile("^\\s*:root\s*{\\s*$")
+opening_brace_rx = re.compile("^\\s*:root\\s*{\\s*$")
 closing_brace_rx = re.compile("^\\s*}\\s*$")
 comment_rx = re.compile("^\\s*(/\\*.*\\*/)?\\s*$")
 comment_start_rx = re.compile("^\\s*(/\\*.*)\\s*$")
