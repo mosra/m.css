@@ -1751,7 +1751,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             try:
                 entity = mapping[i.tag]
                 out.parsed += '&{};'.format(entity)
-            except:
+            except: # pragma: no cover
                 logging.warning("{}: ignoring <{}> in desc".format(state.current, i.tag))
 
         # Now we can reset previous_section to None, nobody needs it anymore.
