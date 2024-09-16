@@ -1366,7 +1366,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 class_ = 'm-code'
 
             if isinstance(lexer, ansilexer.AnsiLexer):
-                formatter = ansilexer.HtmlAnsiFormatter()
+                formatter = ansilexer.HtmlAnsiFormatter(nowrap=True)
             else:
                 formatter = HtmlFormatter(nowrap=True)
 

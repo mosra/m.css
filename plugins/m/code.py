@@ -94,7 +94,7 @@ def _highlight(code, language, options, *, is_block, filters=[]):
         del options['hl-lines']
 
     if isinstance(lexer, ansilexer.AnsiLexer):
-        formatter = ansilexer.HtmlAnsiFormatter(**options)
+        formatter = ansilexer.HtmlAnsiFormatter(nowrap=True, **options)
     else:
         formatter = HtmlFormatter(nowrap=True, **options)
 

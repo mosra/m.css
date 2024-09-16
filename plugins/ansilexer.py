@@ -290,12 +290,8 @@ class HtmlAnsiFormatter(HtmlFormatter):
         '(?P<Suffix>")'
     )
 
-    # Pygments 2.12+ doesn't have the outfile parameter anymore
-    def wrap(self, source, outfile=None):
-        return self._wrap_code(source)
-
-    def _wrap_code(self, source):
-        for i, t in source:
+    def _format_lines(self, tokensource):
+        for i, t in HtmlFormatter._format_lines(self, tokensource):
             if i == 1: # it's a line of formatted code
                 t = self._ansi_color_re.sub(self._replace_ansi_class, t)
             yield i, t
