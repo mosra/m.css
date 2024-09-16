@@ -908,7 +908,14 @@ def _pybind11_extract_default_argument(string):
     raise SyntaxError("Unexpected end of `{}`".format(string))
 
 def _pybind_map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
-    if input_type in ['Callable', 'Dict', 'Iterator', 'Iterable', 'List', 'Optional', 'Set', 'Tuple', 'Union']:
+    # As of pybind11 2.12, the names match https://peps.python.org/pep-0585/
+    # which replaces the original typing.List, Dict etc. with actual builtin
+    # types to avoid duplication. To make testing simpler, this tool makes them
+    # follow PEP585 with older pybind11 as well.
+    input_type_lowercase = input_type.lower()
+    if input_type_lowercase in ['dict', 'list', 'set', 'tuple']:
+        return input_type_lowercase
+    if input_type in ['Callable', 'Iterator', 'Iterable', 'Optional', 'Union']:
         return 'typing.' + input_type
     else:
         return map_name_prefix(state, input_type)

@@ -1,10 +1,10 @@
-.. py:function:: pybind_external_overload_docs.foo(a: int, b: typing.Tuple[int, str])
+.. py:function:: pybind_external_overload_docs.foo(a: int, b: tuple[int, str])
     :param a: First parameter
     :param b: Second parameter
 
     Details for the first overload.
 
-.. py:function:: pybind_external_overload_docs.foo(arg0: typing.Callable[[float, typing.List[float]], int])
+.. py:function:: pybind_external_overload_docs.foo(arg0: typing.Callable[[float, list[float]], int])
     :param arg0: The caller
 
     Complex signatures in the second overload should be matched properly, too.

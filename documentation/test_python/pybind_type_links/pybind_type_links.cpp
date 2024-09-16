@@ -17,7 +17,7 @@ struct Foo {
 
 Foo typeReturn() { return {}; }
 
-void typeNested(const std::pair<Foo, std::vector<Enum>>&) {}
+void typeNested(const std::pair<Foo, std::vector<Enum>>&, const std::set<Enum>&, const std::map<int, Foo>&) {}
 
 void typeNestedEnumAndDefault(std::pair<int, Enum>) {}
 
