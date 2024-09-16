@@ -47,22 +47,12 @@ highlighting:
     :class: m-inverted
     :hl-lines: 2
 
-Inline code is here: :cpp:`constexpr int foo = 5;`.
-
-.. include:: console.ansi
-    :code: ansi
-
-Syntax highlighting:
+Inline code is here: :cpp:`constexpr int foo = 5;`. Syntax highlighting:
 
 .. code:: py
 
     # Comment
     var = "string{}escape\n"
-
-Console colors, including :ansi:`[31minline` code:
-
-.. include:: console-colors.ansi
-    :code: ansi
 
 .. code:: whatthefuck
 

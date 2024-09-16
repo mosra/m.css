@@ -55,3 +55,4 @@ class Code(PelicanPluginTestCase):
         })
 
         self.assertEqual(*self.actual_expected_contents('page.html'))
+        self.assertEqual(*self.actual_expected_contents('ansi.html'))
