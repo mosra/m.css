@@ -2602,8 +2602,8 @@ def postprocess_state(state: State):
             prefix = state.compounds[compound.parent].name + '/'
             if compound.name.startswith(prefix):
                 compound.leaf_name = compound.name[len(prefix):]
-            else: # pragma: no cover
-                logging.warning("{}: potential issue: directory {} parent is not a prefix: {}".format(state.current, compound.name, prefix))
+            else:
+                logging.warning("potential issue: the parent of {}/ is {} which is not a prefix, you may want to enable FULL_PATH_NAMES together with STRIP_FROM_PATH and STRIP_FROM_INC_PATH to preserve filesystem hierarchy".format(compound.name, prefix))
                 compound.leaf_name = compound.name
 
         # Other compounds are not in any index pages or breadcrumb, so leaf

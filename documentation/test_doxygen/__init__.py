@@ -99,6 +99,9 @@ class BaseTestCase(unittest.TestCase):
 class IntegrationTestCase(BaseTestCase):
     def setUp(self):
         if os.path.exists(os.path.join(self.path, 'xml')): shutil.rmtree(os.path.join(self.path, 'xml'))
-        subprocess.run(['doxygen', self.doxyfile], cwd=self.path, check=True)
+        # Run Doxygen at the path where Doxyfile is, in order to interpret the
+        # paths in it relative to that file
+        subpath, doxyfile = os.path.split(self.doxyfile)
+        subprocess.run(['doxygen', doxyfile], cwd=os.path.join(self.path, subpath), check=True)
 
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))

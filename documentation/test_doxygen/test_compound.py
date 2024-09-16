@@ -428,3 +428,16 @@ class InlineNamespace(IntegrationTestCase):
         self.assertEqual(*self.actual_expected_contents('File_8h.html'))
         self.assertEqual(*self.actual_expected_contents('annotated.html'))
         self.assertEqual(*self.actual_expected_contents('namespaces.html'))
+
+class NoFullPathNames(IntegrationTestCase):
+    def __init__(self, *args, **kwargs):
+        Listing.__init__(self, *args, doxyfile='doc/Doxyfile', **kwargs)
+
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='*.xml')
+
+        self.assertEqual(*self.actual_expected_contents('files.html'))
+        self.assertEqual(cm.output, [
+            "WARNING:root:potential issue: the parent of directory/ is project/ which is not a prefix, you may want to enable FULL_PATH_NAMES together with STRIP_FROM_PATH and STRIP_FROM_INC_PATH to preserve filesystem hierarchy"
+        ])
