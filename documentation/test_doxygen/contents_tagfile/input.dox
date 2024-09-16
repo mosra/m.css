@@ -1,9 +1,11 @@
 /** @mainpage
 
-See @ref CORRADE_ASSERT() for more information.
+See @ref CORRADE_ASSERT() for more information. The snippet below should have a
+link in the XML but not in the generated HTML (verifying it's correctly
+stripped).
 
 @code{.cpp}
-Corrade::Utility::Resource rx;
+Corrade::Containers::String s;
 @endcode
 
 */

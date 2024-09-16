@@ -3,7 +3,8 @@
      corrade.tag generated for https://github.com/mosra/corrade, with
      everything needed by:
      - doc/plugins/links.rst
-     - plugins/m/test/dox/page.rst -->
+     - plugins/m/test/dox/page.rst
+     - documentation/test_doxygen/contents_tagfile/input.dox -->
 <tagfile>
   <compound kind="namespace">
     <name>Corrade::Utility::Path</name>
