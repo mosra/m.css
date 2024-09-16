@@ -1,4 +1,5 @@
 [run]
 omit =
+    */test/*
     */test_*/*
     */latex2svg.py
