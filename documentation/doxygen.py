@@ -699,7 +699,7 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                     tag = 'h5'
                 elif element.tag == 'sect3':
                     tag = 'h6'
-                elif element.tag == 'sect4':
+                elif element.tag in ['sect4', 'sect5', 'sect6']:
                     tag = 'h6'
                     logging.warning("{}: more than three levels of sections in member descriptions are not supported, stopping at <h6>".format(state.current))
                 elif not element.tag == 'simplesect': # pragma: no cover

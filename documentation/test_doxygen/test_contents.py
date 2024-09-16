@@ -481,6 +481,9 @@ class SectionsHeadings(IntegrationTestCase):
             page = 'warnings.html'
             file = 'Warnings_8h.html'
             output = [
+                # Once for every extra level
+                "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
+                "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
                 "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
                 "WARNING:root:warnings.xml: more than five levels of sections are not supported, stopping at <h6>",
             ]
@@ -488,7 +491,10 @@ class SectionsHeadings(IntegrationTestCase):
             page = 'warnings-110.html'
             file = 'Warnings_8h-110.html'
             output = [
+                # Once for the first extra level, then two more for another
                 "WARNING:root:Warnings_8h.xml: more than three levels of sections in member descriptions are not supported, stopping at <h6>",
+                'WARNING:root:Warnings_8h.xml: more than three levels of Markdown headings in member descriptions are not supported, stopping at <h6>',
+                'WARNING:root:Warnings_8h.xml: more than three levels of Markdown headings in member descriptions are not supported, stopping at <h6>',
                 "WARNING:root:Warnings_8h.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
                 "WARNING:root:warnings.xml: more than five levels of Markdown headings for top-level docs are not supported, stopping at <h6>",
                 "WARNING:root:warnings.xml: a Markdown heading underline was apparently misparsed by Doxygen, prefix the headings with # instead",
