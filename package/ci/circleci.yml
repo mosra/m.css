@@ -66,16 +66,17 @@ commands:
       pelican-version:
         type: string
         default: ""
+      pygments-version:
+        type: string
+        default: ""
       qrcode-version:
         type: string
         default: ""
     steps:
     - run:
         name: Install Python dependencies
-        # Pygments 2.11 (and apparently 2.10 as well) treats certain whitespace
-        # differently, I have to update the expected output first.
         command: |
-          pip install jinja2 docutils<< parameters.docutils-version >> pygments==2.9.0 pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode<< parameters.qrcode-version >> matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >> numpy<< parameters.numpy-version >>
+          pip install jinja2 docutils<< parameters.docutils-version >> pygments<< parameters.pygments-version >> pelican<< parameters.pelican-version >> Pyphen Pillow coverage codecov qrcode<< parameters.qrcode-version >> matplotlib<< parameters.matplotlib-version >> attrs<< parameters.attrs-version >> numpy<< parameters.numpy-version >>
     - run:
         name: Fix unheard-of cursed issues
         # otherwise i get Error: unsupported locale setting
@@ -208,6 +209,11 @@ jobs:
         pelican-version: ==4.2.0
         # Ubuntu 18.04 has docutils 0.14
         docutils-version: ==0.14
+        # Pygments 2.9 are the last before 2.10+ starts classifying whitespace
+        # differently. Ubuntu 18.04 has pygments 2.2.0, but when requesting
+        # that one, the pelican version doesn't play well with Jinja, and I
+        # just don't have patience to deal with that for such an old version.
+        pygments-version: ==2.9.0
     - checkout
     - test-theme
     - test-plugins
@@ -235,6 +241,11 @@ jobs:
         # 7.4 has different output, however on 3.7 and older it's too annoying
         # to check what version is installed, so pin to 7.3
         qrcode-version: ==7.3.1
+        # Pygments 2.9 are the last before 2.10+ starts classifying whitespace
+        # differently. Ubuntu 20.04 has pygments 2.3.1, but that one has a
+        # slight difference in output and it doesn't make sense to add another
+        # test variant for such an old version.
+        pygments-version: ==2.9.0
     - checkout
     - test-theme
     - test-plugins
@@ -258,6 +269,9 @@ jobs:
         # Docutils 0.18.0 dropped `in_footnote_list` and made some changes that
         # 0.18.1 reverted again, test we're not affected by those
         docutils-version: ==0.18.0
+        # Pygments 2.9 are the last before 2.10+ starts classifying whitespace
+        # differently
+        pygments-version: ==2.9.0
     - checkout
     - test-theme
     - test-plugins
@@ -281,6 +295,8 @@ jobs:
         matplotlib-version: ==3.9.2
         # NumPy 2.0 only works with pybind 2.12+
         numpy-version: ==1.26.4
+        # Pygments 2.10 classifies whitespace differently than 2.9 and 2.11
+        pygments-version: ==2.10.0
     - checkout
     - test-theme
     - test-plugins
@@ -300,6 +316,8 @@ jobs:
     - install-python-deps:
         # NumPy 2.0 doesn't work with pybind 2.11, see below
         numpy-version: ==1.26.4
+        # Ubuntu 22.04 has pygments 2.11
+        pygments-version: ==2.11.0
     - checkout
     - test-theme
     - test-plugins
@@ -324,6 +342,8 @@ jobs:
     - install-python-deps:
         # NumPy 2.0 doesn't work with pybind 2.11, see below
         numpy-version: ==1.26.4
+        # Ubuntu 24.04 has pygments 2.17
+        pygments-version: ==2.17.0
     - checkout
     - test-theme
     - test-plugins

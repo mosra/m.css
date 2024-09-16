@@ -3,12 +3,12 @@
     <tr>
       <th style="border-bottom-width: 0;"></th>
       <!-- try to keep these consistent with package/ci/circleci.yml -->
-      <th><abbr title="pybind11 2.3.0, doxygen 1.8.16">Python<br />3.6</abbr></th>
-      <th><abbr title="pybind11 2.3.0, doxygen 1.8.16">Python<br />3.7</abbr></th>
-      <th><abbr title="pybind11 2.4.3, doxygen 1.8.17">Python<br />3.8</abbr></th>
-      <th><abbr title="pybind11 2.5.0, doxygen 1.8.18">Python<br />3.9</abbr></th>
-      <th><abbr title="pybind11 2.11.1, doxygen 1.9.3">Python<br />3.10</abbr></th>
-      <th><abbr title="pybind11 2.11.1, doxygen 1.9.8">Python<br />3.11</abbr></th>
+      <th><abbr title="pygments 2.9.0, pybind11 2.3.0, doxygen 1.8.16">Python<br />3.6</abbr></th>
+      <th><abbr title="pygments 2.9.0, pybind11 2.3.0, doxygen 1.8.16">Python<br />3.7</abbr></th>
+      <th><abbr title="pygments 2.9.0, pybind11 2.4.3, doxygen 1.8.17">Python<br />3.8</abbr></th>
+      <th><abbr title="pygments 2.10.0, pybind11 2.5.0, doxygen 1.8.18">Python<br />3.9</abbr></th>
+      <th><abbr title="pygments 2.11.0, pybind11 2.11.1, doxygen 1.9.3">Python<br />3.10</abbr></th>
+      <th><abbr title="pygments 2.17.0, pybind11 2.11.1, doxygen 1.9.8">Python<br />3.11</abbr></th>
       <th><abbr title="pybind11 2.11.1, doxygen 1.11.0">Python<br />3.12</abbr></th>
     </tr>
     <tr>

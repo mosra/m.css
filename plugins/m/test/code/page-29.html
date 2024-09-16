@@ -23,30 +23,30 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>m.code</h1>
 <!-- content -->
-<pre class="m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<pre class="m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span></pre>
-<pre class="m-inverted m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="hll"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<pre class="m-inverted m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="hll">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class="p">}</span></pre>
 <p>Legacy <code class="m-code"><span class="nc">:hl_lines:</span></code> option should work the same:</p>
-<pre class="m-inverted m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="hll"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<pre class="m-inverted m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="hll">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class="p">}</span></pre>
 <p>Same as above, but for a <code class="m-code"><span class="p">..</span> <span class="ow">include</span><span class="p">::</span></code>, which should also support line
 highlighting:</p>
-<pre class="m-inverted m-code"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="hll"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<pre class="m-inverted m-code"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="hll">    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 </span><span class="p">}</span></pre>
-<p>Inline code is here: <code class="cpp m-code"><span class="k">constexpr</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span></code>. Syntax highlighting:</p>
+<p>Inline code is here: <code class="cpp m-code"><span class="k">constexpr</span> <span class="kt">int</span> <span class="n">foo</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span></code>. Syntax highlighting:</p>
 <pre class="m-code"><span class="c1"># Comment</span>
 <span class="n">var</span> <span class="o">=</span> <span class="s2">&quot;string</span><span class="si">{}</span><span class="s2">escape</span><span class="se">\n</span><span class="s2">&quot;</span></pre>
 <pre class="m-code">// this language is not highlighted</pre>
 <p>Properly preserve backslashes: <code class="m-code"><span class="k">\frac</span><span class="nb">{</span>a<span class="nb">}{</span>b<span class="nb">}</span></code> ... and backticks:
 <code class="m-code"><span class="na">:ref:</span><span class="nv">`a function &lt;os.path.join()&gt;`</span></code></p>
 <p>Don't trim leading spaces in blocks:</p>
-<pre class="m-code"><span class="w">        </span><span class="n">nope</span><span class="p">();</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<pre class="m-code">        <span class="n">nope</span><span class="p">();</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
 <span class="p">}</span></pre>
 <section id="code-with-no-language-specified">
 <h2><a href="#code-with-no-language-specified">Code with no language specified</a></h2>
@@ -74,18 +74,18 @@ of it is stripped also:</p>
 <section id="filters">
 <h2><a href="#filters">Filters</a></h2>
 <p>Applied by default, adding typographically correct spaces before and a color
-swatch after --- and for inline as well: <code class="m-code"><span class="nt">p</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#ff3366<span class="m-code-color" style="background-color: #ff3366;"></span></span><span class="p">;</span><span class="w"> </span><span class="p">}</span></code></p>
-<pre class="m-code"><span class="nt">p</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#ff3366<span class="m-code-color" style="background-color: #ff3366;"></span></span><span class="p">;</span>
+swatch after --- and for inline as well: <code class="m-code"><span class="nt">p</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="mh">#ff3366<span class="m-code-color" style="background-color: #ff3366;"></span></span><span class="p">;</span> <span class="p">}</span></code></p>
+<pre class="m-code"><span class="nt">p</span> <span class="p">{</span>
+    <span class="k">color</span><span class="p">:</span> <span class="mh">#ff3366<span class="m-code-color" style="background-color: #ff3366;"></span></span><span class="p">;</span>
 <span class="p">}</span></pre>
 <p>Applied explicitly and then by default --- and for inline as well:
-<code class="css-filtered m-code"><span class="nt">p</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span><span class="w"> </span><span class="p">}</span></code></p>
-<pre class="m-code"><span class="nt">p</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span>
+<code class="css-filtered m-code"><span class="nt">p</span> <span class="p">{</span> <span class="k">color</span><span class="p">:</span> <span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span> <span class="p">}</span></code></p>
+<pre class="m-code"><span class="nt">p</span> <span class="p">{</span>
+    <span class="k">color</span><span class="p">:</span> <span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span>
 <span class="p">}</span></pre>
 <p>Includes too:</p>
-<pre class="m-code"><span class="nt">p</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span>
+<pre class="m-code"><span class="nt">p</span> <span class="p">{</span>
+    <span class="k">color</span><span class="p">:</span> <span class="mh">#3bd267<span class="m-code-color" style="background-color: #3bd267;"></span></span><span class="p">;</span>
 <span class="p">}</span></pre>
 </section>
 <!-- /content -->

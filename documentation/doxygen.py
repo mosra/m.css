@@ -1375,6 +1375,13 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
             if filter: code = filter(code)
 
             highlighted = highlight(code, lexer, formatter).rstrip()
+            # Pygments < 2.14 leave useless empty spans in the output. Filter
+            # them out to have the markup consistent across versions for easier
+            # testing.
+            # TODO same is in m.code, remove once support for < 2.14 is dropped
+            highlighted = (highlighted
+                .replace('<span class="w"></span>', '')
+                .replace('<span class="cp"></span>', ''))
             # Strip whitespace around if inline code, strip only trailing
             # whitespace if a block
             if not code_block: highlighted = highlighted.lstrip()

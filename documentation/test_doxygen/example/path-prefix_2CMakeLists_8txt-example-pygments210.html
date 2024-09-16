@@ -26,10 +26,10 @@
           CMakeLists.txt <span class="m-thin">source</span>
         </h1>
 <pre class="m-code"><span class="nb">configure_file</span><span class="p">(</span><span class="o">${</span><span class="nv">CMAKE_CURRENT_SOURCE_DIR</span><span class="o">}</span><span class="s">/configure.h.cmake</span>
-<span class="w">               </span><span class="o">${</span><span class="nv">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="s">/configure.h</span><span class="p">)</span>
+               <span class="o">${</span><span class="nv">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="s">/configure.h</span><span class="p">)</span>
 
-<span class="nb">add_executable</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="s">main.cpp</span><span class="p">)</span>
-<span class="nb">target_include_directories</span><span class="p">(</span><span class="s">app</span><span class="w"> </span><span class="o">${</span><span class="nv">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="p">)</span></pre>
+<span class="nb">add_executable</span><span class="p">(</span><span class="s">app</span> <span class="s">main.cpp</span><span class="p">)</span>
+<span class="nb">target_include_directories</span><span class="p">(</span><span class="s">app</span> <span class="o">${</span><span class="nv">CMAKE_CURRENT_BINARY_DIR</span><span class="o">}</span><span class="p">)</span></pre>
         <div class="m-note m-dim m-thin m-text-center"><a href="example.html" class="m-doc">The Example</a> | <a href="path-prefix_2configure_8h_8cmake-example.html" class="m-doc">configure.h.cmake &raquo;</a></div>
       </div>
     </div>

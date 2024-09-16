@@ -25,6 +25,7 @@
 
 import os
 import pickle
+import pygments
 import re
 import shutil
 import subprocess
@@ -84,13 +85,24 @@ class Internal(IntegrationTestCase):
 class Code(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text
+        if parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments29.html'))
 
     def test_warnings(self):
         with self.assertLogs() as cm:
             self.run_doxygen(wildcard='warnings.xml')
 
-        self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text
+        if parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('warnings.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('warnings.html', 'warnings-pygments29.html'))
         self.assertEqual(cm.output, [
             "WARNING:root:warnings.xml: no filename attribute in <programlisting>, assuming C++",
             "WARNING:root:warnings.xml: inline code has multiple lines, fallback to a code block",
@@ -102,7 +114,15 @@ class CodeLanguage(IntegrationTestCase):
                          "https://github.com/doxygen/doxygen/pull/621")
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text. Pygments 2.14+ further improve on that.
+        if parse_version(pygments.__version__) >= parse_version("2.14"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        elif parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments213.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments29.html'))
 
     @unittest.skipUnless(parse_version(doxygen_version()) > parse_version("1.8.13"),
                          "https://github.com/doxygen/doxygen/pull/623")
@@ -291,12 +311,24 @@ class MathCached(IntegrationTestCase):
 class Tagfile(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text
+        if parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments29.html'))
 
 class Custom(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text
+        if parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments29.html'))
 
     @unittest.skipUnless(shutil.which('latex'),
                          "Math rendering requires LaTeX installed")
@@ -568,9 +600,22 @@ class CodeFilters(IntegrationTestCase):
                 'CSS': _add_color_swatch,
             }
         })
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text. Compared to elsewhere, in this case the difference is only with
+        # 2.11+.
+        if parse_version(pygments.__version__) >= parse_version("2.11"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments210.html'))
 
 class Blockquote(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='indexpage.xml')
-        self.assertEqual(*self.actual_expected_contents('index.html'))
+
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text
+        if parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('index.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments29.html'))

@@ -23,9 +23,10 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
+import pygments
 import re
 
-from . import PelicanPluginTestCase
+from . import PelicanPluginTestCase, parse_version
 
 _css_colors_src = re.compile(r"""<span class="mh">#(?P<hex>[0-9a-f]{6})</span>""")
 _css_colors_dst = r"""<span class="mh">#\g<hex><span class="m-code-color" style="background-color: #\g<hex>;"></span></span>"""
@@ -54,5 +55,12 @@ class Code(PelicanPluginTestCase):
             },
         })
 
-        self.assertEqual(*self.actual_expected_contents('page.html'))
+        # Pygments 2.10+ properly highlight Whitespace as such, and not as
+        # Text. The whitespace classification is further improved in 2.11.
+        if parse_version(pygments.__version__) >= parse_version("2.11"):
+            self.assertEqual(*self.actual_expected_contents('page.html'))
+        elif parse_version(pygments.__version__) >= parse_version("2.10"):
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-210.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-29.html'))
         self.assertEqual(*self.actual_expected_contents('ansi.html'))
