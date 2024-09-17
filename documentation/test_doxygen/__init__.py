@@ -82,8 +82,10 @@ class BaseTestCase(unittest.TestCase):
         if os.path.exists(os.path.join(self.path, 'html')): shutil.rmtree(os.path.join(self.path, 'html'))
 
     def run_doxygen(self, templates=default_templates, wildcard=default_wildcard, index_pages=default_index_pages, config={}):
-        state = State({**copy.deepcopy(default_config), **config})
+        state = State(copy.deepcopy(default_config))
         parse_doxyfile(state, os.path.join(self.path, self.doxyfile))
+        # Make the supplied config values overwrite what's in the Doxyfile
+        state.config = {**state.config, **config}
         run(state, templates=templates, wildcard=wildcard, index_pages=index_pages, sort_globbed_files=True)
 
     def actual_expected_contents(self, actual, expected = None):

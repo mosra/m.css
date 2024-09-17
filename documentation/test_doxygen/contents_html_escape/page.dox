@@ -1,0 +1,35 @@
+/**
+@page page Page &lt;&amp;&gt; title &lt;&amp;&gt; should be escaped, in the page list also
+
+@section section Section &lt;&amp;&gt; name should be escaped
+
+The &lt;&amp;&gt; first text before any markup should be escaped. <b>Yes</b>
+The &lt;&amp;&gt; last text after any markup should be escaped.
+
+## Section level 2 &lt;&amp;&gt; should be escaped
+
+### Section level 3 &lt;&amp;&gt; should be escaped
+
+#### Section level 4 &lt;&amp;&gt; should be escaped
+
+####5 Section level 5 &lt;&amp;&gt; should be escaped
+
+    Stuff in a code <&> block <&> should be escaped
+
+@par Paragraph &lt;&amp;&gt; title should be escaped
+    Yes
+
+@note Yes
+
+Text right after a note &lt;&amp;&gt; should be escaped
+
+> Text in a blockquote &lt;&amp;&gt; should be escaped
+
+$Id: some strange RCS &lt;&amp;&gt; content should be escaped $
+
+@image html tiny.png "Image &lt;&amp;&gt; title should be escaped"
+
+<img src="tiny.png" alt="Image &lt;&amp;&gt; alt should be escaped, but only because Doxygen forgets to unescape when parsing and so m.css doesn't escape again"/>
+
+<a href="https://mcss.mosra.cz/?url&lt;&amp;&gt;should-be-escaped">Yes</a>
+*/

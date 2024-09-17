@@ -34,6 +34,12 @@ foreach(target pybind_signatures pybind_enums pybind_external_overload_docs pybi
 endforeach()
 
 # Need a special location for this one
+pybind11_add_module(pybind_content_html_escape content_html_escape/content_html_escape/pybind.cpp)
+set_target_properties(pybind_content_html_escape PROPERTIES
+    OUTPUT_NAME pybind
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/content_html_escape/content_html_escape)
+
+# Need a special location for this one
 pybind11_add_module(pybind_inspect_create_intersphinx inspect_create_intersphinx/inspect_create_intersphinx/pybind.cpp)
 set_target_properties(pybind_inspect_create_intersphinx PROPERTIES
     OUTPUT_NAME pybind

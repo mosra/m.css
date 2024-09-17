@@ -1,0 +1,19 @@
+INPUT                   = page.dox Fi&le.h
+IMAGE_PATH              = .
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
+XML_PROGRAMLISTING      = NO
+CASE_SENSE_NAMES        = YES
+
+# Needed to make the @struct <file> <name> recognized by m.css, otherwise it's
+# ignored as the directory structure gets lost with empty STRIP_FROM_INC_PATH
+STRIP_FROM_INC_PATH = .
+
+##! M_PAGE_FINE_PRINT   =
+##! M_THEME_COLOR       =
+##! M_FAVICON           =
+##! M_LINKS_NAVBAR1     = files
+##! M_LINKS_NAVBAR2     = pages annotated
+##! M_SEARCH_DISABLED   = YES

@@ -2497,16 +2497,16 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             # chars which should fit the full function name in the list in most
             # cases, yet be still long enough to be able to distinguish
             # particular overloads.
-            # TODO: the suffix_length has to be calculated on UTF-8 and I
-            # am (un)escaping a lot back and forth here -- needs to be
-            # cleaned up
+            # TODO: the suffix_length has to be calculated on UTF-8
             params = ', '.join(result.params)
+            assert is_html_safe(params) # this is not C++, so no <>&
             if len(params) > 49:
                 params = params[:48] + '…'
             name_with_args += '(' + params + ')'
             suffix_length += len(params.encode('utf-8')) + 2
 
         complete_name = joiner.join(result.prefix + [name_with_args])
+        # TODO needs escaping once page names are exposed to search
         assert is_html_safe(complete_name) # this is not C++, so no <>&
         index = map.add(complete_name, result.url, suffix_length=suffix_length, flags=result.flags)
 
@@ -2525,7 +2525,9 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
                 if name:
                     lookahead_barriers += [len(name)]
                     name += joiner
-                name += html.unescape(j)
+                # TODO needs escaping once page names are exposed to search
+                assert is_html_safe(j) # this is not C++, so no <>&
+                name += j
             trie.insert(name.lower(), index, lookahead_barriers=lookahead_barriers if add_lookahead_barriers else [])
 
             # Add functions the second time with () appended, referencing

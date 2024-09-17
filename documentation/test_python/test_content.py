@@ -24,8 +24,12 @@
 #
 
 import os
+import unittest
 
 from . import BaseInspectTestCase
+
+from _search import pretty_print, searchdata_filename
+from python import EntryType
 
 class Content(BaseInspectTestCase):
     def test(self):
@@ -52,3 +56,42 @@ class ParseDocstrings(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('content_parse_docstrings.html'))
         self.assertEqual(*self.actual_expected_contents('content_parse_docstrings.Class.html'))
+
+class HtmlEscape(BaseInspectTestCase):
+    def test(self):
+        self.run_python({
+            'INPUT_PAGES': ['page.rst'],
+            'PYBIND11_COMPATIBILITY': True,
+            'LINKS_NAVBAR1': [
+                ('Pages', 'pages', []),
+                ('Modules', 'modules', [])],
+        })
+
+        # Page title escaping
+        self.assertEqual(*self.actual_expected_contents('page.html'))
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
+
+        # Value escaping
+        self.assertEqual(*self.actual_expected_contents('content_html_escape.html'))
+        self.assertEqual(*self.actual_expected_contents('content_html_escape.Class.html'))
+        self.assertEqual(*self.actual_expected_contents('content_html_escape.pybind.html'))
+
+    @unittest.skip("Page names are currently not exposed to search and there's nothing else that would require escaping, nothing to test")
+    def test_search(self):
+        # Re-run everything with search enabled, the search data shouldn't be
+        # escaped. Not done as part of above as it'd unnecessarily inflate the
+        # size of compared files with the search icon and popup.
+        self.run_python({
+            'INPUT_PAGES': ['page.rst'],
+            'PYBIND11_COMPATIBILITY': True,
+            'SEARCH_DISABLED': False,
+            'SEARCH_DOWNLOAD_BINARY': True
+        })
+
+        with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
+            serialized = f.read()
+            search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
+        # print(search_data_pretty)
+        self.assertEqual(search_data_pretty, """
+TODO
+""".strip())

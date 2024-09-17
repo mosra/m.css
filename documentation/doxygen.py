@@ -1130,6 +1130,9 @@ def parse_desc_internal(state: State, element: ET.Element, immediate_parent: ET.
                 # The alt text can apparently be specified only with the HTML
                 # <img> tag, not with @image. It's also present only since
                 # 1.9.1(?).
+                # TODO Doxygen seems to be double-escaping this, which
+                #   ultimately means we cannot escape this ourselves as it'd be
+                #   wrong. See test_contents.HtmlEscape for a repro case.
                 alt = i.attrib.get('alt', 'Image')
 
                 caption = i.text
@@ -2640,25 +2643,26 @@ def postprocess_state(state: State):
             # Fill breadcrumb with leaf names and URLs
             include = []
             for i in reversed(path_reverse):
-                include += [state.compounds[i].leaf_name]
+                # TODO the escaping / unescaping is a mess, fix that
+                include += [html.unescape(state.compounds[i].leaf_name)]
 
             state.includes['/'.join(include)] = compound.id
 
     # Resolve navbar links that are just an ID
-    def resolve_link(html, title, url, id):
-        if not html and not title and not url:
+    def resolve_link(html_, title, url, id):
+        if not html_ and not title and not url:
             assert id in state.compounds, "Navbar references {} which wasn't found".format(id)
             found = state.compounds[id]
             title, url = found.name, found.url
-        return html, title, url, id
+        return html_, title, url, id
     for var in 'LINKS_NAVBAR1', 'LINKS_NAVBAR2':
         links = []
-        for html, title, url, id, sub in state.config[var]:
-            html, title, url, id = resolve_link(html, title, url, id)
+        for html_, title, url, id, sub in state.config[var]:
+            html_, title, url, id = resolve_link(html_, title, url, id)
             sublinks = []
             for i in sub:
                 sublinks += [resolve_link(*i)]
-            links += [(html, title, url, id, sublinks)]
+            links += [(html_, title, url, id, sublinks)]
         state.config[var] = links
 
 def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=True, merge_prefixes=True) -> bytearray:

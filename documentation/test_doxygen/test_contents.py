@@ -33,6 +33,9 @@ import unittest
 
 from hashlib import sha1
 
+from doxygen import EntryType
+from _search import pretty_print, searchdata_filename
+
 from . import BaseTestCase, IntegrationTestCase, doxygen_version, parse_version
 
 def dot_version():
@@ -625,3 +628,112 @@ class Blockquote(IntegrationTestCase):
             self.assertEqual(*self.actual_expected_contents('index.html'))
         else:
             self.assertEqual(*self.actual_expected_contents('index.html', 'index-pygments29.html'))
+
+class HtmlEscape(IntegrationTestCase):
+    def setUp(self):
+        IntegrationTestCase.setUp(self)
+
+        # Doxygen does *almost* a good job of escaping everything, except the
+        # bit in <includes>. Patch that up.
+        for i in [
+            'structClass.xml',
+            'structSub_3_01char_00_01T_01_4.xml',
+            'structSub_3_01char_00_01T_01_4_1_1Nested.xml',
+            # These two are broken only in 1.8.16 and older, the second one
+            # isn't actually used for anything but still produces an error log
+            # if not patched.
+            'Fi_6le_8h.xml',
+            'structSub.xml'
+        ]:
+            with open(os.path.join(self.path, 'xml', i), 'r+') as f:
+                contents = f.read()
+                f.seek(0)
+                f.truncate(0)
+                f.write(contents.replace('Fi&le.h', 'Fi&amp;le.h'))
+
+    def test(self):
+        self.run_doxygen(wildcard='*.xml')
+
+        # Page title escaping, content escaping
+        self.assertEqual(*self.actual_expected_contents('pages.html'))
+
+        # Versions before 1.9.1(?) don't have the alt attribute preserved for
+        # <img>
+        if parse_version(doxygen_version()) >= parse_version("1.9.1"):
+            self.assertEqual(*self.actual_expected_contents('page.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('page.html', 'page-1820.html'))
+
+        # Filename escaping
+        self.assertEqual(*self.actual_expected_contents('files.html'))
+        self.assertEqual(*self.actual_expected_contents('Fi_6le_8h.html'))
+
+        # Class name escaping; include, symbol and value escaping
+        self.assertEqual(*self.actual_expected_contents('annotated.html'))
+        self.assertEqual(*self.actual_expected_contents('structClass.html'))
+        self.assertEqual(*self.actual_expected_contents('structSub_3_01char_00_01T_01_4.html'))
+        self.assertEqual(*self.actual_expected_contents('structSub_3_01char_00_01T_01_4_1_1Nested.html'))
+
+    def test_search(self):
+        # Re-run everything with search enabled, the search data shouldn't be
+        # escaped. Not done as part of above as it'd unnecessarily inflate the
+        # size of compared files with the search icon and popup.
+        self.run_doxygen(index_pages=[], wildcard='*.xml', config={
+            'SEARCH_DISABLED': False,
+            'SEARCH_DOWNLOAD_BINARY': True
+        })
+
+        with open(os.path.join(self.path, 'html', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
+            serialized = f.read()
+            search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
+        # print(search_data_pretty)
+        self.assertEqual(search_data_pretty, """
+8 symbols
+fi&le.h [2]
+||     :$
+||      :functionshouldhavespecializednameescaped<char&> [0]
+||                                                      ($
+||                                                       ) [1]
+|unctionshouldhavespecializednameescaped<char&> [0]
+||                                             ($
+||                                              ) [1]
+page <&> title <&> should be escaped, in the page list also [3]
+class [7]
+|    :$
+|     :enum [4]
+|      suffixshouldbeescaped [5]
+|      |                    ($
+|      |                     ) [6]
+enum [4]
+suffixshouldbeescaped [5]
+| |                  ($
+| |                   ) [6]
+| b<char, t> [8]
+| |         :$
+| |          :nested [9]
+nested [9]
+0: ::functionShouldHaveSpecializedNameEscaped<char&>() [prefix=2[:14], suffix_length=2, type=FUNC] -> #a3b5d61927252197070e8d998f643a2b2
+1:  [prefix=0[:48], type=FUNC] ->
+2: Fi&le.h [type=FILE] -> Fi_6le_8h.html
+3: Page <&> title <&> should be escaped, in the page list also [type=PAGE] -> page.html
+4: ::Enum [prefix=7[:16], type=ENUM] -> #abc566500394204b1aff6106bb4559e18
+5: ::suffixShouldBeEscaped(const Type<char>::ShouldBeEscaped&) && [prefix=7[:16], suffix_length=39, type=FUNC] -> #a0dbbef222ebfc3607c4ad7283ec260c3
+6:  [prefix=5[:50], suffix_length=37, type=FUNC] ->
+7: Class [type=STRUCT] -> structClass.html
+8: Sub<char, T> [type=STRUCT] -> structSub_3_01char_00_01T_01_4.html
+9: ::Nested [prefix=8[:30], type=STRUCT] -> _1_1Nested.html
+(EntryType.PAGE, CssClass.SUCCESS, 'page'),
+(EntryType.NAMESPACE, CssClass.PRIMARY, 'namespace'),
+(EntryType.GROUP, CssClass.SUCCESS, 'group'),
+(EntryType.CLASS, CssClass.PRIMARY, 'class'),
+(EntryType.STRUCT, CssClass.PRIMARY, 'struct'),
+(EntryType.UNION, CssClass.PRIMARY, 'union'),
+(EntryType.TYPEDEF, CssClass.PRIMARY, 'typedef'),
+(EntryType.DIR, CssClass.WARNING, 'dir'),
+(EntryType.FILE, CssClass.WARNING, 'file'),
+(EntryType.FUNC, CssClass.INFO, 'func'),
+(EntryType.DEFINE, CssClass.INFO, 'define'),
+(EntryType.ENUM, CssClass.PRIMARY, 'enum'),
+(EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
+(EntryType.VAR, CssClass.DEFAULT, 'var')
+""".strip())

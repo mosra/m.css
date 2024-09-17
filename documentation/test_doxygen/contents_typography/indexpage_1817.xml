@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="indexpage" kind="page">
+    <compoundname>index</compoundname>
+    <title>My Project</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><blockquote><para>A blockquote. </para>
+</blockquote><verbatim>Preformatted text.
+</verbatim></para>
+<para>Paragraph <linebreak/>
+ with <linebreak/>
+ explicit <linebreak/>
+ line <linebreak/>
+ breaks.</para>
+<sect1 id="index_1section">
+<title>Page section</title>
+<para><preformatted>Differently
+  preformatted
+text.</preformatted></para>
+<para><itemizedlist>
+<listitem><para>Unordered</para>
+</listitem><listitem><para>list</para>
+</listitem><listitem><para>of<itemizedlist>
+<listitem><para>nested</para>
+</listitem><listitem><para>items</para>
+</listitem></itemizedlist>
+</para>
+</listitem><listitem><para>and back</para>
+</listitem></itemizedlist>
+<orderedlist>
+<listitem><para>Ordered</para>
+</listitem><listitem><para>list</para>
+</listitem><listitem><para>of<orderedlist>
+<listitem><para>nested</para>
+</listitem><listitem><para>items</para>
+</listitem></orderedlist>
+</para>
+</listitem><listitem><para>and back</para>
+</listitem></orderedlist>
+</para>
+<para><anchor id="index_1an-anchor"/> This is a <computeroutput>typewriter text</computeroutput>, <emphasis>emphasis</emphasis>, <bold>bold</bold>. <emphasis>Emphasis with <computeroutput>typewriter</computeroutput> and <bold>bold</bold> nested.</emphasis> <ulink url="http://google.com">http://google.com</ulink> and <ulink url="http://google.com">URL</ulink>. <small>Small <emphasis>text</emphasis>.</small> En-dash <ndash/> and em-dash <mdash/>. Reference to a <ref refid="index_1section" kindref="member">Page section</ref>. Named reference with special characters in title: <ref refid="index_1section" kindref="member"><raquo/> Warnings <laquo/></ref>. Reference with escaped characters in<nonbreakablespace/>title: <ref refid="index_1an-anchor" kindref="member">&lt;anchor&gt;</ref>.</para>
+<para>2<superscript>nd</superscript> is L<subscript><infin/></subscript> <forall/> <nabla/> <pi/> <real/> <imaginary/> This costs no $, <euro/>, <pound/>, <yen/> or <curren/>.</para>
+<para>Empty elements: <emphasis></emphasis> <computeroutput></computeroutput> <bold></bold> <preformatted></preformatted> <small></small></para>
+<para><hruler/>
+</para>
+<para>Above is a horizontal line. </para>
+</sect1>
+    </detaileddescription>
+  </compounddef>
+</doxygen>
