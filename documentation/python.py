@@ -436,7 +436,8 @@ def crawl_class(state: State, path: List[str], class_):
             # match them
             if hasattr(previous_entry, 'object') and id(previous_entry.object) == id(class_):
                 break
-        else: assert False, "%s marked as crawled but can't find it" % '.'.join(path)
+        else: # pragma: no cover
+            assert False, "%s marked as crawled but can't find it" % '.'.join(path)
         logging.error("Class %s previously found in %s, only one occurrence will be chosen. Ensure each class is exposed only in a single module for generating correct documentation.", '.'.join(path), '.'.join(previous_entry.path))
         state.name_map['.'.join(path)] = previous_entry
         return
@@ -458,7 +459,8 @@ def crawl_class(state: State, path: List[str], class_):
         # Crawl the subclasses recursively (they also add itself to the
         # name_map)
         if type_ == EntryType.CLASS:
-            if name in ['__base__', '__class__']: continue # TODO
+            if name in ['__base__', '__class__']:
+                continue # TODO
             # Classes derived from typing.Generic in 3.6 have a _gorg property
             # that causes a crawl cycle, firing an assert in crawl_class(). Not
             # present from 3.7 onwards. Can't use isinstance(object, Generic)
@@ -793,7 +795,8 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
     return submodules_to_crawl
 
 def make_relative_name(state: State, referrer_path: List[str], name):
-    if name not in state.name_map: return name
+    if name not in state.name_map:
+        return name
 
     entry = state.name_map[name]
 
@@ -820,8 +823,10 @@ def make_relative_name(state: State, referrer_path: List[str], name):
         for i in reversed(range(len(referrer_path))):
             potentially_ambiguous = referrer_path[:i] + shortened_path
             if '.'.join(potentially_ambiguous) in state.name_map:
-                if potentially_ambiguous == entry.path: return False
-                else: return True
+                if potentially_ambiguous == entry.path:
+                    return False
+                else:
+                    return True
         # the target *has to be* found
         assert False # pragma: no cover
     shortened_path = entry.path[common_prefix_length:]
@@ -832,7 +837,8 @@ def make_relative_name(state: State, referrer_path: List[str], name):
     return '.'.join(shortened_path)
 
 def make_name_link(state: State, referrer_path: List[str], name) -> str:
-    if name is None: return None
+    if name is None:
+        return None
     assert isinstance(name, str)
 
     # Not found, return as-is. However, if the prefix is one of the
@@ -1075,7 +1081,8 @@ def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> 
 # Used to format function default arguments and data values. *Not* pybind's
 # function default arguments, as those are parsed from a string representation.
 def format_value(state: State, referrer_path: List[str], value) -> Optional[str]:
-    if value is None: return str(value)
+    if value is None:
+        return str(value)
     if isinstance(value, enum.Enum):
         return make_name_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
     # pybind enums have the __members__ attribute instead
@@ -1229,12 +1236,14 @@ def get_type_hints_or_nothing(state: State, path: List[str], object) -> Dict:
 
 def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tuple[str, str]:
     # Empty annotation, as opposed to a None annotation, handled below
-    if annotation is inspect.Signature.empty: return None, None
+    if annotation is inspect.Signature.empty:
+        return None, None
 
     # If dereferencing with typing.get_type_hints() failed, we might end up
     # with forward-referenced types being plain strings. Keep them as is, since
     # those are most probably an error.
-    if type(annotation) == str: return annotation, annotation
+    if type(annotation) == str:
+        return annotation, annotation
 
     # Or the plain strings might be inside (e.g. List['Foo']), which gets
     # converted by Python to ForwardRef. Hammer out the actual string and again
@@ -1334,7 +1343,8 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
 
                 # If nested parsing failed (the invalid annotation below),
                 # fail the whole thing
-                if None in nested_types: return None, None
+                if None in nested_types:
+                    return None, None
 
                 return (
                     '{}[{}]'.format(name, ', '.join(nested_types)),
@@ -1412,8 +1422,10 @@ def extract_enum_doc(state: State, entry: Empty):
             docstring = entry.object.__doc__
 
         out.base = extract_type(entry.object.__base__)
-        if out.base: out.base_link = make_name_link(state, entry.path, out.base)
-        else: out.base, out.base_link = None, None
+        if out.base:
+            out.base_link = make_name_link(state, entry.path, out.base)
+        else:
+            out.base, out.base_link = None, None
 
         for i in entry.object:
             value = Empty()
@@ -1617,7 +1629,8 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     # `module.EnumType.VALUE`
                     if arg_type in state.name_map and state.name_map[arg_type].type == EntryType.ENUM:
                         param.default = make_name_link(state, entry.path, '.'.join(state.name_map[arg_type].path[:-1] + [arg_default]))
-                    else: param.default = html.escape(arg_default)
+                    else:
+                        param.default = html.escape(arg_default)
                 else:
                     param.default = None
                 if arg_type or arg_default: out.has_complex_params = True
@@ -1937,8 +1950,10 @@ def extract_property_doc(state: State, parent, entry: Empty):
                     assert entry.object.fset
                     parsed_args = parse_pybind_signature(state, entry.path, entry.object.fset.__doc__)[2]
                     # If argument parsing failed, we're screwed
-                    if len(parsed_args) == 1: out.type, out.type_link = None, None
-                    else: out.type, out.type_link = parsed_args[1][1:3]
+                    if len(parsed_args) == 1:
+                        out.type, out.type_link = None, None
+                    else:
+                        out.type, out.type_link = parsed_args[1][1:3]
             else:
                 out.type, out.type_link = None, None
 
@@ -1948,7 +1963,8 @@ def extract_property_doc(state: State, parent, entry: Empty):
 
     # Render the docs
     out.summary, out.content = extract_docs(state, state.property_docs, entry.type, entry.path, docstring)
-    if out.content: out.has_details = True
+    if out.content:
+        out.has_details = True
 
     # Call all scope exit hooks after rendering the docs
     for hook in state.hooks_post_scope:
@@ -2025,7 +2041,8 @@ def render(*, config, template: str, url: str, filename: str, env: jinja2.Enviro
         **config, **kwargs)
     output = os.path.join(config['OUTPUT'], filename)
     output_dir = os.path.dirname(output)
-    if not os.path.exists(output_dir): os.makedirs(output_dir)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     with open(output, 'wb') as f:
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with
@@ -2088,16 +2105,19 @@ def render_module(state: State, path, module, env):
         elif member_entry.type == EntryType.ENUM:
             enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
-            if enum_.has_details: page.has_enum_details = True
+            if enum_.has_details:
+                page.has_enum_details = True
         elif member_entry.type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
             functions = extract_function_doc(state, module, member_entry)
             page.functions += functions
             for function in functions:
-                if function.has_details: page.has_function_details = True
+                if function.has_details:
+                    page.has_function_details = True
         elif member_entry.type == EntryType.DATA:
             data = extract_data_doc(state, module, member_entry)
             page.data += [data]
-            if data.has_details: page.has_data_details = True
+            if data.has_details:
+                page.has_data_details = True
         else: # pragma: no cover
             assert False
 
@@ -2179,7 +2199,8 @@ def render_class(state: State, path, class_, env):
         elif member_entry.type == EntryType.ENUM:
             enum_ = extract_enum_doc(state, member_entry)
             page.enums += [enum_]
-            if enum_.has_details: page.has_enum_details = True
+            if enum_.has_details:
+                page.has_enum_details = True
         elif member_entry.type in [EntryType.FUNCTION, EntryType.OVERLOADED_FUNCTION]:
             for function in extract_function_doc(state, class_, member_entry):
                 if name.startswith('__'):
@@ -2190,15 +2211,18 @@ def render_class(state: State, path, class_, env):
                     page.staticmethods += [function]
                 else:
                     page.methods += [function]
-                if function.has_details: page.has_function_details = True
+                if function.has_details:
+                    page.has_function_details = True
         elif member_entry.type == EntryType.PROPERTY:
             property = extract_property_doc(state, class_, member_entry)
             page.properties += [property]
-            if property.has_details: page.has_property_details = True
+            if property.has_details:
+                page.has_property_details = True
         elif member_entry.type == EntryType.DATA:
             data = extract_data_doc(state, class_, member_entry)
             page.data += [data]
-            if data.has_details: page.has_data_details = True
+            if data.has_details:
+                page.has_data_details = True
         else: # pragma: no cover
             assert False
 
@@ -2482,8 +2506,8 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             joiner = '.'
         elif EntryType(result.flags.type) == EntryType.PAGE:
             joiner = ' » '
-        else:
-            assert False # pragma: no cover
+        else: # pragma: no cover
+            assert False
 
         # Handle function arguments
         name_with_args = result.name
@@ -2553,7 +2577,8 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
 
     # Make the output dir absolute
     config['OUTPUT'] = os.path.join(config['INPUT'], config['OUTPUT'])
-    if not os.path.exists(config['OUTPUT']): os.makedirs(config['OUTPUT'])
+    if not os.path.exists(config['OUTPUT']):
+        os.makedirs(config['OUTPUT'])
 
     # Guess MIME type of the favicon
     if config['FAVICON']:
@@ -2681,7 +2706,8 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         # If there is no object, the entry is an external reference. Skip
         # those. Can't do `not entry.object` because that gives ValueError
         # for numpy ("use a.any() or a.all()")
-        if hasattr(entry, 'object') and entry.object is None: continue
+        if hasattr(entry, 'object') and entry.object is None:
+            continue
 
         if entry.type == EntryType.MODULE:
             render_module(state, entry.path, entry.object, env)
