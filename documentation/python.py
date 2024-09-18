@@ -2034,11 +2034,10 @@ def render(*, config, template: str, url: str, filename: str, env: jinja2.Enviro
     rendered = template.render(URL=url,
         SEARCHDATA_FORMAT_VERSION=searchdata_format_version,
         **config, **kwargs)
-    output = os.path.join(config['OUTPUT'], filename)
-    output_dir = os.path.dirname(output)
+    output_dir = os.path.dirname(filename)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    with open(output, 'wb') as f:
+    with open(filename, 'wb') as f:
         f.write(rendered.encode('utf-8'))
         # Add back a trailing newline so we don't need to bother with
         # patching test files to include a trailing newline to make Git
@@ -2126,8 +2125,8 @@ def render_module(state: State, path, module, env):
 
     render(config=state.config,
         template='module.html',
-        filename=page.filename,
-        url=page.url,
+        filename=os.path.join(state.config['OUTPUT'], filename),
+        url=url,
         env=env,
         page=page)
 
@@ -2231,8 +2230,8 @@ def render_class(state: State, path, class_, env):
 
     render(config=state.config,
         template='class.html',
-        filename=page.filename,
-        url=page.url,
+        filename=os.path.join(state.config['OUTPUT'], filename),
+        url=url,
         env=env,
         page=page)
 
@@ -2426,8 +2425,8 @@ def render_page(state: State, path, input_filename, env):
             entry.name = page.breadcrumb[-1][0]
             render(config=state.config,
                 template='page.html',
-                filename=page.filename,
-                url=page.url,
+                filename=os.path.join(state.config['OUTPUT'], filename),
+                url=url,
                 env=env,
                 page=page)
             return
@@ -2482,8 +2481,8 @@ def render_page(state: State, path, input_filename, env):
 
     render(config=state.config,
         template='page.html',
-        filename=page.filename,
-        url=page.url,
+        filename=os.path.join(state.config['OUTPUT'], filename),
+        url=url,
         env=env,
         page=page)
 
@@ -2768,7 +2767,7 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         filename, url = config['URL_FORMATTER'](EntryType.SPECIAL, [file])
         render(config=config,
             template=file + '.html',
-            filename=filename,
+            filename=os.path.join(config['OUTPUT'], filename),
             url=url,
             env=env,
             index=index)
@@ -2785,8 +2784,8 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
         page.breadcrumb = [(config['PROJECT_TITLE'], url)]
         render(config=config,
             template='page.html',
-            filename=page.filename,
-            url=page.url,
+            filename=os.path.join(config['OUTPUT'], filename),
+            url=url,
             env=env,
             page=page)
 
