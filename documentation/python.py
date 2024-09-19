@@ -1508,8 +1508,6 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     if not state.config['SEARCH_DISABLED']:
         page_url = state.name_map['.'.join(entry.path[:-1])].url
 
-    overloads = []
-
     # Extract the signature from the docstring for pybind11, since it can't
     # expose it to the metadata: https://github.com/pybind/pybind11/issues/990
     # What's not solvable with metadata, however, are function overloads ---
