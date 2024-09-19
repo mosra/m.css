@@ -1718,6 +1718,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             param = Empty()
             param.name = '...'
             param.type, param.type_link = None, None
+            param.default = None
             out.params = [param]
             out.type, out.type_link = None, None
             param_names = []
@@ -1881,8 +1882,7 @@ def extract_property_doc(state: State, parent, entry: Empty):
         out.is_gettable = True
         out.is_settable = False
         out.is_deletable = False
-        out.type = None
-        #return out
+        out.type, out.type_link = None, None
 
     # Otherwise it's a classic property
     else:
