@@ -1263,10 +1263,15 @@ Property                                Description
 :py:`enum.id`                           Enum ID [5]_
 :py:`enum.summary`                      Doc summary
 :py:`enum.content`                      Detailed documentation, if any
-:py:`enum.base`                         Base class from which the enum is
-                                        derived. Set to :py:`None` if no base
-                                        class information is available.
-:py:`enum.base_link`                    Like :py:`enum.base`, but with
+:py:`enum.base`                         Fully qualified name of a base class
+                                        from which the enum is derived. Set to
+                                        :py:`None` if no base class information
+                                        is available.
+:py:`enum.base_relative`                Like :py:`enum.base`, but relative,
+                                        i.e. with a common prefix of the base
+                                        class and containing module / class
+                                        omitted
+:py:`enum.base_link`                    Like :py:`enum.base_relative`, but with
                                         cross-linked types
 :py:`enum.values`                       List of enum values
 :py:`enum.has_details`                  If there is enough content for the full
@@ -1301,8 +1306,12 @@ Property                            Description
 :py:`function.id`                   Function ID [5]_
 :py:`function.summary`              Doc summary
 :py:`function.content`              Detailed documentation, if any
-:py:`function.type`                 Function return type annotation [2]_
-:py:`function.type_link`            Like :py:`function.type`, but with
+:py:`function.type`                 Fully qualified function return type
+                                    annotation [2]_
+:py:`function.type_relative`        Like :py:`function.type`, but relative,
+                                    i.e. with a common prefix of the type and
+                                    containing module / class omitted
+:py:`function.type_link`            Like :py:`function.type_relative`, but with
                                     cross-linked types
 :py:`function.params`               List of function parameters. See below for
                                     details.
@@ -1332,18 +1341,30 @@ description. Each item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`param.name`            Parameter name
-:py:`param.type`            Parameter type annotation [2]_
-:py:`param.type_link`       Like :py:`param.type`, but with cross-linked types
-:py:`param.default`         Default parameter value, if any
-:py:`param.kind`            Parameter kind, a string equivalent to one of the
-                            `inspect.Parameter.kind <https://docs.python.org/3/library/inspect.html#inspect.Parameter.kind>`_
-                            values
-:py:`param.content`         Detailed documentation, if any
-=========================== ===================================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`param.name`                Parameter name
+:py:`param.type`                Fully qualified parameter type annotation [2]_
+:py:`param.type_relative`       Like :py:`param.type`, but relative, i.e. with
+                                a common prefix of the type and containing
+                                module / class omitted
+:py:`param.type_link`           Like :py:`param.type_relative`, but with
+                                cross-linked types
+:py:`param.default`             Default parameter value, if any. If
+                                :py:`param.type` is an enum, is a
+                                fully-qualified enum value.
+:py:`param.default_relative`    Like :py:`param.default`, but relative, i.e.
+                                with a common prefix of the type and containing
+                                module / class omitted if :py:`param.type` is
+                                an enum
+:py:`param.default_link`        Like :py:`param.default_relative`, but with
+                                cross-linked types
+:py:`param.kind`                Parameter kind, a string equivalent to one of
+                                the `inspect.Parameter.kind <https://docs.python.org/3/library/inspect.html#inspect.Parameter.kind>`_
+                                values
+:py:`param.content`             Detailed documentation, if any
+=============================== ===============================================
 
 In some cases (for example in case of native APIs), the parameters can't be
 introspected. In that case, the parameter list is a single entry with ``name``
@@ -1354,59 +1375,69 @@ Each item has the following properties:
 
 .. class:: m-table m-fullwidth
 
-=========================== ===================================================
-Property                    Description
-=========================== ===================================================
-:py:`exception.type`        Exception type
-:py:`exception.type_link`   Like :py:`exception`, but with a cross-linked type
-:py:`exception.content`     Detailed documentation
-=========================== ===================================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`exception.type`            Fully qualified exception type
+:py:`exception.type_relative`   Like :py:`exception.type`, but relative, i.e.
+                                with a common prefix of the type and containing
+                                module / class omitted
+:py:`exception.type_link`       Like :py:`exception.type_relative`, but with a
+                                cross-linked type
+:py:`exception.content`         Detailed documentation
+=============================== ===============================================
 
 `Property properties`_
 ``````````````````````
 
 .. class:: m-table m-fullwidth
 
-=================================== ===========================================
-Property                            Description
-=================================== ===========================================
-:py:`property.name`                 Property name
-:py:`property.id`                   Property ID [5]_
-:py:`property.type`                 Property getter return type annotation [2]_
-:py:`property.type_link`            Like :py:`property.type`, but with
-                                    cross-linked types
-:py:`property.summary`              Doc summary
-:py:`property.content`              Detailed documentation, if any
-:py:`property.exceptions`           List of exceptions raised when accessing
-                                    this property. Same as
-                                    :py:`function.exceptions` described in
-                                    `function properties`_.
-:py:`property.is_gettable`          If the property is gettable
-:py:`property.is_settable`          If the property is settable
-:py:`property.is_deletable`         If the property is deletable with :py:`del`
-:py:`property.has_details`          If there is enough content for the full
-                                    description block [3]_
-=================================== ===========================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`property.name`             Property name
+:py:`property.id`               Property ID [5]_
+:py:`property.type`             Fully qualified property getter return type
+                                annotation [2]_
+:py:`property.type_relative`    Like :py:`property.type`, but relative, i.e.
+                                with a common prefix of the type and containing
+                                module / class omitted
+:py:`property.type_link`        Like :py:`property.type_relative`, but with
+                                cross-linked types
+:py:`property.summary`          Doc summary
+:py:`property.content`          Detailed documentation, if any
+:py:`property.exceptions`       List of exceptions raised when accessing this
+                                property. Same as :py:`function.exceptions`
+                                described in `function properties`_.
+:py:`property.is_gettable`      If the property is gettable
+:py:`property.is_settable`      If the property is settable
+:py:`property.is_deletable`     If the property is deletable with :py:`del`
+:py:`property.has_details`      If there is enough content for the full
+                                description block [3]_
+=============================== ===============================================
 
 `Data properties`_
 ``````````````````
 
 .. class:: m-table m-fullwidth
 
-=================================== ===========================================
-Property                            Description
-=================================== ===========================================
-:py:`data.name`                     Data name
-:py:`data.id`                       Data ID [5]_
-:py:`data.type`                     Data type
-:py:`data.type_link`                Like :py:`data.type_link`, but with
-                                    cross-linked types
-:py:`data.summary`                  Doc summary
-:py:`data.content`                  Detailed documentation, if any
-:py:`data.value`                    Data value representation
-:py:`data.has_details`              If there is enough content for the full
-                                    description block [3]_
-=================================== ===========================================
+=============================== ===============================================
+Property                        Description
+=============================== ===============================================
+:py:`data.name`                 Data name
+:py:`data.id`                   Data ID [5]_
+:py:`data.type`                 Fully qualified data type annotation [2]_
+:py:`data.type_relative`        Like :py:`data.type`, but relative, i.e. with a
+                                common prefix of the type and containing module
+                                / class omitted
+:py:`data.type_link`            Like :py:`data.type_relative`, but with
+                                cross-linked types
+:py:`data.summary`              Doc summary
+:py:`data.content`              Detailed documentation, if any
+:py:`data.value`                Data value representation
+:py:`data.has_details`          If there is enough content for the full
+                                description block [3]_
+=============================== ===============================================
 
 `Index page templates`_
 -----------------------
@@ -1458,8 +1489,9 @@ Module/class list is ordered in a way that all modules are before all classes.
 
 -------------------------------
 
-.. [2] :py:`i.type` is extracted out of function annotation. If the types
-    aren't annotated, the annotation is empty.
+.. [2] :py:`i.type` is extracted out of function parameter type, function
+    return type, property type and data type annotation. If the types aren't
+    annotated, the annotation is empty.
 .. [3] :py:`page.has_*_details` and :py:`i.has_details` are :py:`True` if
     there is detailed description, function parameter documentation or
     *documented* enum value listing that makes it worth to render the full
