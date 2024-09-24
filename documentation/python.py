@@ -837,8 +837,6 @@ def make_relative_name(state: State, referrer_path: List[str], name):
     return '.'.join(shortened_path)
 
 def make_name_link(state: State, referrer_path: List[str], name) -> str:
-    if name is None:
-        return None
     assert isinstance(name, str)
 
     # Not found, return as-is. However, if the prefix is one of the
@@ -1422,10 +1420,7 @@ def extract_enum_doc(state: State, entry: Empty):
             docstring = entry.object.__doc__
 
         out.base = extract_type(entry.object.__base__)
-        if out.base:
-            out.base_link = make_name_link(state, entry.path, out.base)
-        else:
-            out.base, out.base_link = None, None
+        out.base_link = make_name_link(state, entry.path, out.base)
 
         for i in entry.object:
             value = Empty()
