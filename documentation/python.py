@@ -1467,7 +1467,7 @@ def extract_enum_doc(state: State, entry: Empty):
             value = Empty()
             value. name = name
             value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, entry.path[-1:] + [name])
-            value.value = int(v)
+            value.value = str(int(v))
             value.content = ''
             out.values += [value]
 
