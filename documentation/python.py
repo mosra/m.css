@@ -1093,12 +1093,14 @@ def format_value(state: State, referrer_path: List[str], value) -> Optional[Tupl
         # TODO Python 3.8+ supports `a, *b`, switch to that once 3.7 is dropped
         return (value.name, ) + make_name_relative_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
     elif inspect.isfunction(value):
-        return (html.escape('<function {}>'.format(value.__name__)), )*3
+        out = '<function {}>'.format(value.__name__)
+        return out, out, html.escape(out)
     elif '__repr__' in type(value).__dict__:
         rendered = repr(value)
         # TODO: tuples of non-representable values will still be ugly
         # If the value is too large, return just an ellipsis
-        return (html.escape(rendered) if len(rendered) < 128 else '…', )*3
+        out = rendered if len(rendered) < 128 else '…'
+        return out, out, html.escape(out)
     else:
         return None
 
@@ -1440,7 +1442,7 @@ def extract_enum_doc(state: State, entry: Empty):
             value = Empty()
             value.name = i.name
             value.id = state.config['ID_FORMATTER'](EntryType.ENUM_VALUE, entry.path[-1:] + [i.name])
-            value.value = html.escape(repr(i.value))
+            value.value = repr(i.value)
 
             # Value doc gets by default inherited from the enum, that's useless
             # This gets further processed below.
@@ -1638,8 +1640,8 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                         param.default = '.'.join(state.name_map[arg_type].path[:-1] + [arg_default])
                         param.default_relative, param.default_link = make_name_relative_link(state, entry.path, param.default)
                     else:
-                        param.default = html.escape(arg_default)
-                        param.default_relative, param.default_link = param.default, param.default
+                        param.default, param.default_relative = arg_default, arg_default
+                        param.default_link = html.escape(arg_default)
                 else:
                     param.default, param.default_relative, param.default_link = None, None, None
                 if arg_type or arg_default: out.has_complex_params = True
@@ -2137,6 +2139,25 @@ def render_module(state: State, path, module, env):
         result.name = path[-1]
         state.search += [result]
 
+    # Perform HTML escaping for everything going into the template. Done here
+    # instead of inside extract_*_doc() to avoid having to unescape in certain
+    # cases.
+    for enum in page.enums:
+        for value in enum.values:
+            value.value = html.escape(value.value)
+    for function in page.functions:
+        for param in function.params:
+            if param.default:
+                param.default = html.escape(param.default)
+                param.default_relative = html.escape(param.default_relative)
+                # param.default_link may contain HTML and thus had to be
+                # escaped early
+    for data in page.data:
+        if data.value:
+            data.value = html.escape(data.value)
+            data.value_relative = html.escape(data.value_relative)
+            # data.value_link may contain HTML and thus had to be escaped early
+
     render(config=state.config,
         template='module.html',
         filename=os.path.join(state.config['OUTPUT'], filename),
@@ -2241,6 +2262,25 @@ def render_class(state: State, path, class_, env):
         result.prefix = path[:-1]
         result.name = path[-1]
         state.search += [result]
+
+    # Perform HTML escaping for everything going into the template. Done here
+    # instead of inside extract_*_doc() to avoid having to unescape in certain
+    # cases.
+    for enum in page.enums:
+        for value in enum.values:
+            value.value = html.escape(value.value)
+    for function in page.classmethods + page.staticmethods + page.dunder_methods + page.methods:
+        for param in function.params:
+            if param.default:
+                param.default = html.escape(param.default)
+                param.default_relative = html.escape(param.default_relative)
+                # param.default_link may contain HTML and thus had to be
+                # escaped early
+    for data in page.data:
+        if data.value:
+            data.value = html.escape(data.value)
+            data.value_relative = html.escape(data.value_relative)
+            # data.value_link may contain HTML and thus had to be escaped early
 
     render(config=state.config,
         template='class.html',
