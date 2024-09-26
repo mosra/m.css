@@ -127,6 +127,13 @@ class Builtin(BaseInspectTestCase):
             file = 'inspect_builtin36.html'
         self.assertEqual(*self.actual_expected_contents('inspect_builtin.html', file))
 
+        # BaseException has the weird args getset_descriptor. Python 3.11 adds
+        # BaseException.add_note().
+        if sys.version_info >= (3, 11):
+            self.assertEqual(*self.actual_expected_contents('inspect_builtin.BaseException.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('inspect_builtin.BaseException.html', 'inspect_builtin.BaseException-310.html'))
+
 class NameMapping(BaseInspectTestCase):
     def test(self):
         self.run_python({
