@@ -351,8 +351,10 @@ if sys.version_info >= (3, 11):
     })
 
 _filtered_builtin_properties = set([
+    # https://github.com/python/cpython/blob/0d9d56c4e4246495f506f7fb319548fb105b535b/Objects/typeobject.c#L3553
     # (if defined) is gone in https://github.com/python/cpython/issues/112266
     # which is backported all the way to 3.11
+    ('__dict__', "dictionary for instance variables" if sys.version_info >= (3, 11) else "dictionary for instance variables (if defined)"),
     ('__weakref__', "list of weak references to the object" if sys.version_info >= (3, 11) else "list of weak references to the object (if defined)")
 ])
 
