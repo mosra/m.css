@@ -1095,8 +1095,12 @@ def format_value(state: State, referrer_path: List[str], value) -> Optional[Tupl
     elif state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__'):
         # TODO Python 3.8+ supports `a, *b`, switch to that once 3.7 is dropped
         return (value.name, ) + make_name_relative_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
-    elif inspect.isfunction(value):
-        out = '<function {}>'.format(value.__name__)
+    # isbuiltin returns true if object is a builtin _function_ or _method_, not
+    # just any builtin such as the False literal
+    elif inspect.isfunction(value) or inspect.isbuiltin(value):
+        # TODO if the function is in our name map, return its name and link to
+        #   it maybe?
+        out = '...'
         return out, out, html.escape(out)
     elif '__repr__' in type(value).__dict__:
         rendered = repr(value)

@@ -1,6 +1,8 @@
 """Value and default argument formatting"""
 
 import enum
+import math
+import os
 
 class Foo:
     ...
@@ -8,7 +10,9 @@ class Foo:
 def basics(string_param = "string", tuple_param = (3, 5), float_param = 1.2, unrepresentable_param = Foo()):
     pass
 
-def setup_callback(callback = basics):
+def setup_callback(unknown_function_is_an_ellipsis = os.path.join,
+                   builtin_function_is_an_ellipsis = math.log,
+                   lambda_is_an_ellipsis = lambda a: a):
     """Should produce a deterministic output."""
     pass
 

@@ -33,7 +33,7 @@ class Class:
 class Enum(enum.Enum):
     VALUE_THAT_SHOULD_BE_ESCAPED = "<&>"
 
-def function(default_string_that_should_be_escaped = "<&>", default_function_that_should_be_escaped = lambda a: a):
+def function(default_string_that_should_be_escaped = "<&>"):
     pass
 
 DATA_THAT_SHOULD_BE_ESCAPED = "<&>"
