@@ -1102,7 +1102,7 @@ def format_value(state: State, referrer_path: List[str], value) -> Optional[Tupl
         rendered = repr(value)
         # TODO: tuples of non-representable values will still be ugly
         # If the value is too large, return just an ellipsis
-        out = rendered if len(rendered) < 128 else '…'
+        out = rendered if len(rendered) < 128 else '...'
         return out, out, html.escape(out)
     else:
         return None
@@ -1725,7 +1725,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 if i.default is inspect.Signature.empty:
                     param.default, param.default_relative, param.default_link = None, None, None
                 else:
-                    param.default, param.default_relative, param.default_link = format_value(state, entry.path, i.default) or ('…', )*3
+                    param.default, param.default_relative, param.default_link = format_value(state, entry.path, i.default) or ('...', )*3
                     out.has_complex_params = True
                 param.kind = str(i.kind)
                 out.params += [param]
