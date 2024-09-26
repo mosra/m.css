@@ -4148,7 +4148,9 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                     # Add back a trailing newline so we don't need to bother
                     # with patching test files to include a trailing newline to
                     # make Git happy. Can't use keep_trailing_newline because
-                    # that'd add it also for nested templates :(
+                    # that'd add it also for nested templates :( The rendered
+                    # file should never contain a trailing newline on its own.
+                    assert not rendered.endswith('\n')
                     f.write(b'\n')
         else:
             parsed = parse_xml(state, file)
@@ -4168,7 +4170,9 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                 # Add back a trailing newline so we don't need to bother with
                 # patching test files to include a trailing newline to make Git
                 # happy. Can't use keep_trailing_newline because that'd add it
-                # also for nested templates :(
+                # also for nested templates :( The rendered file should never
+                # contain a trailing newline on its own.
+                assert not rendered.endswith('\n')
                 f.write(b'\n')
 
     # Empty index page in case no mainpage documentation was provided so
@@ -4195,7 +4199,9 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
             # Add back a trailing newline so we don't need to bother with
             # patching test files to include a trailing newline to make Git
             # happy. Can't use keep_trailing_newline because that'd add it
-            # also for nested templates :(
+            # also for nested templates :( The rendered file should never
+            # contain a trailing newline on its own.
+            assert not rendered.endswith('\n')
             f.write(b'\n')
 
     if not state.config['SEARCH_DISABLED']:
@@ -4223,7 +4229,9 @@ def run(state: State, *, templates=default_templates, wildcard=default_wildcard,
                 # Add back a trailing newline so we don't need to bother with
                 # patching test files to include a trailing newline to make Git
                 # happy. Can't use keep_trailing_newline because that'd add it
-                # also for nested templates :(
+                # also for nested templates :( The rendered file should never
+                # contain a trailing newline on its own.
+                assert not rendered.endswith('\n')
                 f.write(b'\n')
 
     # Copy all referenced files

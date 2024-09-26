@@ -2060,7 +2060,9 @@ def render(*, config, template: str, url: str, filename: str, env: jinja2.Enviro
         # Add back a trailing newline so we don't need to bother with
         # patching test files to include a trailing newline to make Git
         # happy. Can't use keep_trailing_newline because that'd add it
-        # also for nested templates :(
+        # also for nested templates :( The rendered file should never contain a
+        # trailing newline on its own.
+        assert not rendered.endswith('\n')
         f.write(b'\n')
 
 def render_module(state: State, path, module, env):
@@ -2874,7 +2876,9 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
                 # Add back a trailing newline so we don't need to bother with
                 # patching test files to include a trailing newline to make Git
                 # happy. Can't use keep_trailing_newline because that'd add it
-                # also for nested templates :(
+                # also for nested templates :( The rendered file should never
+                # contain a trailing newline on its own.
+                assert not rendered.endswith('\n')
                 f.write(b'\n')
 
     # Copy referenced files
