@@ -1033,7 +1033,8 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
         # Expecting end of the signature line now, if not there, we failed
         if signature and signature[0] != '\n': raise SyntaxError("Expected end of the signature, got `{}`".format(signature))
 
-    # Failed to parse, return an ellipsis and docs
+    # Failed to parse, return with a single parameter with name being None and
+    # docs
     except SyntaxError as e:
         end = original_signature.find('\n')
         logging.warning("cannot parse pybind11 function signature %s: %s", (original_signature[:end if end != -1 else None]), e)
@@ -1041,7 +1042,7 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
             docstring = inspect.cleandoc(original_signature[end + 1:])
         else:
             docstring = ''
-        return (name, docstring, [('…', None, None, None, None)], None, None, None)
+        return (name, docstring, [(None, None, None, None, None)], None, None, None)
 
     if len(signature) > 1 and signature[1] == '\n':
         docstring = inspect.cleandoc(signature[2:])
@@ -1734,7 +1735,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
         # https://docs.python.org/3/library/inspect.html#inspect.signature
         except ValueError:
             param = Empty()
-            param.name = '...'
+            param.name = None
             param.type, param.type_relative, param.type_link = None, None, None
             param.default, param.default_relative, param.default_link = None, None, None
             out.params = [param]
@@ -1759,7 +1760,10 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
     # Common path for parameter / exception / return value docs and search
     path_str = '.'.join(entry.path)
     for out in overloads:
-        signature = '({})'.format(', '.join(['{}: {}'.format(param.name, param.type) if param.type else param.name for param in out.params]))
+        # In case of introspection error, there's just a single param with name
+        # and everything else being None, replace it with ... to match what the
+        # HTML output shows
+        signature = '({})'.format(', '.join(['{}: {}'.format(param.name, param.type) if param.type else param.name or '...' for param in out.params]))
         param_names = [param.name for param in out.params]
 
         # Call all scope enter hooks for this particular overload

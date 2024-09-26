@@ -111,7 +111,10 @@ class Annotations(BaseInspectTestCase):
 
 class Builtin(BaseInspectTestCase):
     def test(self):
-        self.run_python()
+        self.run_python({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
+        })
 
         # log() and pow() from the builtin math module. 3.12 improves a
         # docstring. It got seemingly backported to 3.11.3 and 3.10.11 as well,

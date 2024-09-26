@@ -187,7 +187,7 @@ class Signature(unittest.TestCase):
                  ('a', 'str', 'str', 'str', '[dict(key="A", value=\'B\')["key"][0], None][0]')
              ], None, None, None))
 
-        bad_signature = ('foo', '', [('…', None, None, None, None)], None, None, None)
+        bad_signature = ('foo', '', [(None, None, None, None, None)], None, None, None)
 
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = [0][)'), bad_signature)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: float = ()'), bad_signature)
@@ -246,12 +246,12 @@ class Signature(unittest.TestCase):
             ], None, None, None))
 
         # This will fail
-        bad_signature = ('foo', '', [('…', None, None, None, None)], None, None, None)
+        bad_signature = ('foo', '', [(None, None, None, None, None)], None, None, None)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER: 17>a)'), bad_signature)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER: 89><)'), bad_signature)
 
     def test_bad_return_type(self):
-        bad_signature = ('foo', '', [('…', None, None, None, None)], None, None, None)
+        bad_signature = ('foo', '', [(None, None, None, None, None)], None, None, None)
         for i in [
             # pybind11 2.11 and older
             'foo() -> List[[]',
@@ -268,7 +268,7 @@ class Signature(unittest.TestCase):
     def test_crazy_stuff(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)'),
-            ('foo', '', [('…', None, None, None, None)], None, None, None))
+            ('foo', '', [(None, None, None, None, None)], None, None, None))
 
     def test_crazy_stuff_nested(self):
         for i in [
@@ -278,17 +278,17 @@ class Signature(unittest.TestCase):
             'foo(a: int, b: list[Math::Vector<4, UnsignedInt>])'
         ]:
             self.assertEqual(parse_pybind_signature(self.state, [], i),
-                ('foo', '', [('…', None, None, None, None)], None, None, None))
+                ('foo', '', [(None, None, None, None, None)], None, None, None))
 
     def test_crazy_stuff_docs(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int, b: Math::Vector<4, UnsignedInt>)\n\nThis is text!!'),
-            ('foo', 'This is text!!', [('…', None, None, None, None)], None, None, None))
+            ('foo', 'This is text!!', [(None, None, None, None, None)], None, None, None))
 
     def test_crazy_return(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int) -> Math::Vector<4, UnsignedInt>'),
-            ('foo', '', [('…', None, None, None, None)], None, None, None))
+            ('foo', '', [(None, None, None, None, None)], None, None, None))
 
     def test_crazy_return_nested(self):
         for i in [
@@ -298,12 +298,12 @@ class Signature(unittest.TestCase):
             'foo(a: int) -> list[Math::Vector<4, UnsignedInt>]'
         ]:
             self.assertEqual(parse_pybind_signature(self.state, [], i),
-                ('foo', '', [('…', None, None, None, None)], None, None, None))
+                ('foo', '', [(None, None, None, None, None)], None, None, None))
 
     def test_crazy_return_docs(self):
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: int) -> Math::Vector<4, UnsignedInt>\n\nThis returns!'),
-            ('foo', 'This returns!', [('…', None, None, None, None)], None, None, None))
+            ('foo', 'This returns!', [(None, None, None, None, None)], None, None, None))
 
     def test_no_name(self):
         self.assertEqual(parse_pybind_signature(self.state, [],

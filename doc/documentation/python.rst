@@ -1368,7 +1368,10 @@ Property                        Description
 
 In some cases (for example in case of native APIs), the parameters can't be
 introspected. In that case, the parameter list is a single entry with ``name``
-set to :py:`"..."` and the rest being empty.
+set to :py:`None` and the rest being :py:`None` as well. It's then up to the
+template what it does. For example the builtin Python :py:`help()` shows
+``...`` (which isn't valid syntax), if you need a valid syntax you can also use
+:py:`*args` instead.
 
 The :py:`function.exceptions` is a list of exceptions types and descriptions.
 Each item has the following properties:
