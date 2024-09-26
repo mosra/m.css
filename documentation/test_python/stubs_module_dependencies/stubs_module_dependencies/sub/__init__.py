@@ -1,0 +1,3 @@
+class Type:
+    class InnerClass:
+        ...

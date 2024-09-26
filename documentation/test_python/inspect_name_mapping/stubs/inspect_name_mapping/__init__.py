@@ -1,0 +1,6 @@
+class Class:
+    def a_thing(self) -> Class:
+        ...
+
+def foo() -> Class:
+    ...
