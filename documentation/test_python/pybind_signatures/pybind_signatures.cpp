@@ -106,6 +106,10 @@ could be another, but it's not added yet.)");
         .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property")
         .def_property_readonly("bar", &MyClass::foo, "A read-only property");
 
+    m.def_submodule("just_overloads", "Stubs for this module should import typing as well")
+        .def("overloaded", static_cast<std::string(*)(int)>(&overloaded), "Overloaded for ints")
+        .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats");
+
     py::class_<MyClass23> pybind23{m, "MyClass23", "Testing pybind 2.3 features"};
 
     /* Checker so the Python side can detect if testing pybind 2.3 features is

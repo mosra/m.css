@@ -97,7 +97,7 @@ class BaseTestCase(unittest.TestCase):
     def actual_expected_contents(self, actual, expected = None):
         if not expected: expected = actual
 
-        with open(os.path.join(self.path, expected)) as f:
+        with open(os.path.join(self.path, 'stubs', expected) if expected.endswith('.pyi') and not expected.startswith('../') else os.path.join(self.path, expected)) as f:
             expected_contents = f.read()
         with open(os.path.join(self.path, 'output', actual)) as f:
             actual_contents = f.read()
@@ -117,3 +117,27 @@ class BaseInspectTestCase(BaseTestCase):
             config_overrides = config
 
         BaseTestCase.run_python(self, config_overrides, templates)
+
+    def run_python_stubs(self, config_overrides={}, templates=default_templates):
+        # Defaults that make sense for stub-only tests
+        config = copy.deepcopy(default_config)
+        config.update({
+            'FINE_PRINT': None,
+            'THEME_COLOR': None,
+            'FAVICON': None,
+            'LINKS_NAVBAR1': [],
+            'LINKS_NAVBAR2': [],
+            'SEARCH_DISABLED': True,
+            'OUTPUT': None,
+            'OUTPUT_STUBS': os.path.join(self.path, 'output'),
+            'STUB_HEADER': ''
+        })
+
+        if 'INPUT_MODULES' not in config_overrides:
+            sys.path.append(self.path)
+            config['INPUT_MODULES'] = [self.dirname]
+
+        # Update it with config overrides
+        config.update(config_overrides)
+
+        run(self.path, config, templates=templates)

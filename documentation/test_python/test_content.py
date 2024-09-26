@@ -76,6 +76,16 @@ class HtmlEscape(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('content_html_escape.Class.html'))
         self.assertEqual(*self.actual_expected_contents('content_html_escape.pybind.html'))
 
+    def test_stubs(self):
+        self.run_python_stubs({
+            'PYBIND11_COMPATIBILITY': True,
+        })
+
+        # Compared to the HTML output, *none* of these should have any HTML
+        # entities
+        self.assertEqual(*self.actual_expected_contents('content_html_escape/__init__.pyi'))
+        self.assertEqual(*self.actual_expected_contents('content_html_escape/pybind.pyi'))
+
     @unittest.skip("Page names are currently not exposed to search and there's nothing else that would require escaping, nothing to test")
     def test_search(self):
         # Re-run everything with search enabled, the search data shouldn't be

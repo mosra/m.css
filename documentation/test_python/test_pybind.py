@@ -404,6 +404,25 @@ class Signatures(BaseInspectTestCase):
         if pybind_signatures.MyClass26.is_pybind26:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass26.html'))
 
+    def test_stubs(self):
+        sys.path.append(self.path)
+        import pybind_signatures
+        self.run_python_stubs({
+            # Nothing in false_positives that would affect stub generation and
+            # wouldn't be tested by the HTML output already
+            'INPUT_MODULES': [pybind_signatures],
+            'PYBIND11_COMPATIBILITY': True
+        })
+
+        # TODO handle writeonly properties correctly
+        if pybind_signatures.MyClass26.is_pybind26:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi'))
+        elif pybind_signatures.MyClass23.is_pybind23:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi', 'pybind_signatures/__init__-pybind25.pyi'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi', 'pybind_signatures/__init__-pybind22.pyi'))
+        self.assertEqual(*self.actual_expected_contents('pybind_signatures/just_overloads.pyi'))
+
 class Enums(BaseInspectTestCase):
     def test(self):
         self.run_python({
@@ -413,6 +432,14 @@ class Enums(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_enums.html'))
 
+    def test_stubs(self):
+        self.run_python_stubs({
+            'PLUGINS': ['m.sphinx'],
+            'INPUT_DOCS': ['docs.rst'],
+            'PYBIND11_COMPATIBILITY': True,
+        })
+        self.assertEqual(*self.actual_expected_contents('pybind_enums.pyi'))
+
 class Submodules(BaseInspectTestCase):
     def test(self):
         self.run_python({
@@ -420,12 +447,18 @@ class Submodules(BaseInspectTestCase):
         })
         self.assertEqual(*self.actual_expected_contents('pybind_submodules.html'))
 
+    # Nothing pybind-specific here that would affect stub generation and
+    # wouldn't be tested by the HTML output already
+
 class SubmodulesPackage(BaseInspectTestCase):
     def test(self):
         self.run_python({
             'PYBIND11_COMPATIBILITY': True
         })
         self.assertEqual(*self.actual_expected_contents('pybind_submodules_package.sub.html'))
+
+    # Nothing pybind-specific here that would affect stub generation and
+    # wouldn't be tested by the HTML output already
 
 class NameMapping(BaseInspectTestCase):
     def test(self):
@@ -435,6 +468,19 @@ class NameMapping(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_name_mapping.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_name_mapping.Class.html'))
         self.assertEqual(*self.actual_expected_contents('pybind_name_mapping.submodule.html'))
+
+    def test_stubs(self):
+        self.run_python_stubs({
+            'PYBIND11_COMPATIBILITY': True,
+            # So it looks like a regular Python file so I can verify the
+            # imports (KDevelop doesn't look for .pyi for imports)
+            'STUB_EXTENSION': '.py'
+        })
+        # The stubs/ directory is implicitly prepended only for *.pyi files to
+        # make testing against the input itself possible, so here I have to do
+        # it manually.
+        self.assertEqual(*self.actual_expected_contents('pybind_name_mapping/__init__.py', 'stubs/pybind_name_mapping/__init__.py'))
+        self.assertEqual(*self.actual_expected_contents('pybind_name_mapping/submodule.py', 'stubs/pybind_name_mapping/submodule.py'))
 
 class TypeLinks(BaseInspectTestCase):
     def test(self):
