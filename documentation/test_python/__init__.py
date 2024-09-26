@@ -98,9 +98,9 @@ class BaseTestCase(unittest.TestCase):
         if not expected: expected = actual
 
         with open(os.path.join(self.path, expected)) as f:
-            expected_contents = f.read().strip()
+            expected_contents = f.read()
         with open(os.path.join(self.path, 'output', actual)) as f:
-            actual_contents = f.read().strip()
+            actual_contents = f.read()
         return actual_contents, expected_contents
 
 # On top of the automagic of BaseTestCase this automatically sets INPUT_MODULES

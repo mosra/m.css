@@ -91,9 +91,9 @@ class BaseTestCase(unittest.TestCase):
     def actual_expected_contents(self, actual, expected = None):
         if not expected: expected = actual
         with open(os.path.join(self.path, expected)) as f:
-            expected_contents = f.read().strip()
+            expected_contents = f.read()
         with open(os.path.join(self.path, 'html', actual)) as f:
-            actual_contents = f.read().strip()
+            actual_contents = f.read()
         actual_contents = _normalize_hashes.sub('g'*33, actual_contents)
         expected_contents = _normalize_hashes.sub('g'*33, expected_contents)
         return actual_contents, expected_contents
