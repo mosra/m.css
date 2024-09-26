@@ -109,36 +109,23 @@ class Annotations(BaseInspectTestCase):
         else:
             self.assertEqual(*self.actual_expected_contents('inspect_annotations.AContainer.html', 'inspect_annotations.AContainer-py36-38.html'))
 
-    def test_math(self):
-        # From math export only pow() so we have the verification easier, and
-        # in addition log() because it doesn't provide any signature metadata
-        assert not hasattr(math, '__all__')
-        math.__all__ = ['log']
-        # signature with / for pow() is not present in 3.6 so it makes no sense
-        # to have it
-        if sys.version_info >= (3, 7):
-            math.__all__ = ['pow'] + math.__all__
+class Builtin(BaseInspectTestCase):
+    def test(self):
+        self.run_python()
 
-        self.run_python({
-            'INPUT_MODULES': [math]
-        })
-
-        # 3.12 improves a docstring further. It got seemingly backported to
-        # 3.11.3 and 3.10.11 as well, but an actual build of 3.11.9 doesn't
-        # seem to have that, so checking this just on 3.12.
+        # log() and pow() from the builtin math module. 3.12 improves a
+        # docstring. It got seemingly backported to 3.11.3 and 3.10.11 as well,
+        # but an actual build of 3.11.9 doesn't seem to have that, so checking
+        # this just on 3.12.
         # https://github.com/python/cpython/pull/102049
         if sys.version_info >= (3, 12):
-            file = 'math.html'
-        elif sys.version_info >= (3, 7, 4):
-            file = 'math39.html'
-        # 3.7.3 and below has a different docstring
-        # https://github.com/python/cpython/pull/13394
+            file = 'inspect_builtin.html'
         elif sys.version_info >= (3, 7):
-            file = 'math373.html'
-        # signature with / for pow() is not present in 3.6
+            file = 'inspect_builtin39.html'
+        # Signature with / for pow() is not present in 3.6
         else:
-            file = 'math36.html'
-        self.assertEqual(*self.actual_expected_contents('math.html', file))
+            file = 'inspect_builtin36.html'
+        self.assertEqual(*self.actual_expected_contents('inspect_builtin.html', file))
 
 class NameMapping(BaseInspectTestCase):
     def test(self):
