@@ -4,7 +4,7 @@
 .. py:property:: inspect_attrs.MyClassAutoAttribs.complex_annotation
     :summary: This is complex.
 
-.. py:data:: inspect_attrs.MySlotClass.annotated
+.. py:property:: inspect_attrs.MySlotClass.annotated
     :summary: This is a float slot.
 
 .. py:data:: inspect_attrs.MyClass.plain_data
