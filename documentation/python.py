@@ -1384,9 +1384,9 @@ def extract_annotation(state: State, referrer_path: List[str], annotation) -> Tu
         return ('None', ) + make_name_relative_link(state, referrer_path, 'None')
 
     # Otherwise it's a plain type. Turn it into a link.
-    name = extract_type(annotation)
+    name = map_name_prefix(state, extract_type(annotation))
     # TODO Python 3.8+ supports `a, *b`, switch to that once 3.7 is dropped
-    return (name, ) + make_name_relative_link(state, referrer_path, map_name_prefix(state, name))
+    return (name, ) + make_name_relative_link(state, referrer_path, name)
 
 def extract_module_doc(state: State, entry: Empty):
     assert inspect.ismodule(entry.object)
