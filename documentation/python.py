@@ -1088,13 +1088,11 @@ def parse_pybind_docstring(state: State, referrer_path: List[str], doc: str) -> 
 def format_value(state: State, referrer_path: List[str], value) -> Optional[Tuple[str, str, str]]:
     if value is None:
         return str(value), str(value), str(value)
-    if isinstance(value, enum.Enum):
+    # pybind enums don't inherit from enum.Enum but have the __members__
+    # attribute instead
+    if isinstance(value, enum.Enum) or (state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__')):
         # TODO Python 3.8+ supports `a, *b`, switch to that once 3.7 is dropped
-        return (value.name, ) + make_name_relative_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
-    # pybind enums have the __members__ attribute instead
-    elif state.config['PYBIND11_COMPATIBILITY'] and hasattr(value.__class__, '__members__'):
-        # TODO Python 3.8+ supports `a, *b`, switch to that once 3.7 is dropped
-        return (value.name, ) + make_name_relative_link(state, referrer_path, '{}.{}.{}'.format(value.__class__.__module__, value.__class__.__qualname__, value.name))
+        return (value.name, ) + make_name_relative_link(state, referrer_path, '.'.join([value.__class__.__module__, value.__class__.__qualname__, value.name]))
     # isbuiltin returns true if object is a builtin _function_ or _method_, not
     # just any builtin such as the False literal
     elif inspect.isfunction(value) or inspect.isbuiltin(value):
