@@ -620,8 +620,16 @@ def crawl_module(state: State, path: List[str], module) -> List[Tuple[List[str],
     state.crawled.add(id(module))
 
     # This module isn't a duplicate, thus we can now safely add itself to
-    # parent's members (if there's a parent)
-    if len(path) > 1: state.name_map['.'.join(path[:-1])].members += [path[-1]]
+    # parent's members, if this is not a root module
+    if len(path) > 1:
+        # It's possible to supply nested modules in INPUT_MODULES, but for each
+        # such module all parents should be listed as well. We could probably
+        # add some dummies for the missing modules but the extra logic for
+        # deduplicating those if they get actually crawled later etc etc is
+        # way more complicated than just telling the user to list everything.
+        parent_path_str = '.'.join(path[:-1])
+        assert parent_path_str in state.name_map, "%s listed in INPUT_MODULES without %s being known yet, add the parent explicitly earlier" % ('.'.join(path), parent_path_str)
+        state.name_map[parent_path_str].members += [path[-1]]
 
     module_entry = Empty()
     module_entry.type = EntryType.MODULE
@@ -2720,8 +2728,12 @@ def run(basedir, config, *, templates=default_templates, search_add_lookahead_ba
             module = importlib.import_module(module)
         else:
             module_name = module.__name__
-        modules_to_crawl += [([module_name], module)]
-        class_index += [module_name]
+        module_path = module_name.split('.')
+        modules_to_crawl += [(module_path, module)]
+        # Add the module to the class index only if it's a top-level one,
+        # otherwise expect that it'll appear somewhere deeper on its own
+        if len(module_path) == 1:
+            class_index += [module_name]
     while modules_to_crawl:
         path, object = modules_to_crawl.pop(0)
         if id(object) in state.crawled: continue

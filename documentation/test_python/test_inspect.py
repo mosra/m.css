@@ -37,12 +37,16 @@ import m.sphinx
 
 class String(BaseInspectTestCase):
     def test(self):
+        sys.path.append(self.path)
         self.run_python({
             'LINKS_NAVBAR1': [
                 ('Modules', 'modules', []),
                 ('Classes', 'classes', [])],
+            'INPUT_MODULES': ['inspect_string', 'inspect_string.subpackage', 'inspect_string.subpackage.inner']
         })
         self.assertEqual(*self.actual_expected_contents('inspect_string.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_string.subpackage.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_string.subpackage.inner.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.FooSlots.html'))
@@ -63,15 +67,18 @@ class Object(BaseInspectTestCase):
         # an object and not a string
         sys.path.append(os.path.join(os.path.dirname(self.path), 'inspect_string'))
         import inspect_string
+        import inspect_string.subpackage.inner
         self.run_python({
             'LINKS_NAVBAR1': [
                 ('Modules', 'modules', []),
                 ('Classes', 'classes', [])],
-            'INPUT_MODULES': [inspect_string]
+            'INPUT_MODULES': [inspect_string, inspect_string.subpackage, inspect_string.subpackage.inner]
         })
 
         # The output should be the same as when inspecting a string
         self.assertEqual(*self.actual_expected_contents('inspect_string.html', '../inspect_string/inspect_string.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_string.subpackage.html', '../inspect_string/inspect_string.subpackage.html'))
+        self.assertEqual(*self.actual_expected_contents('inspect_string.subpackage.inner.html', '../inspect_string/inspect_string.subpackage.inner.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.another_module.html', '../inspect_string/inspect_string.another_module.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.Foo.html', '../inspect_string/inspect_string.Foo.html'))
         self.assertEqual(*self.actual_expected_contents('inspect_string.FooSlots.html', '../inspect_string/inspect_string.FooSlots.html'))
