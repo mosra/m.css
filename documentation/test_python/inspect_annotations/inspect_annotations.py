@@ -71,8 +71,11 @@ def annotation_optional(a: Optional[float]):
 def annotation_union_second_bracketed(a: Union[float, List[int]]):
     """Annotation with the Union type and second type bracketed, where we can't use isinstance"""
 
-def annotation_union_of_undefined(a: Union[int, 'something.Undefined']):
-    """Annotation with an union that has an undefined type inside, where we can't use isinstance either"""
+def annotation_union_of_forward_reference(a: Union[int, 'something.Undefined']):
+    """Annotation with an union that has a forward reference inside, where we can't use isinstance either"""
+
+def annotation_invalid() -> 'Foo.Bar':
+    """Annotation with an invalid annotation, which is kept as a string"""
 
 def annotation_list_noparam(a: List):
     """Annotation with the unparametrized List type. 3.7 and 3.8 adds an implicit TypeVar to it, 3.6, 3.9 and 3.10 not, so the output is different between the versions."""

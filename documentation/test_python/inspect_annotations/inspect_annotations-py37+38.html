@@ -93,6 +93,10 @@
               <span class="m-doc-wrap-bumper">def <a href="#annotation_generic" class="m-doc-self">annotation_generic</a>(</span><span class="m-doc-wrap">a: typing.List[Tp]) -&gt; Tp</span>
             </dt>
             <dd>Annotation with a generic type</dd>
+            <dt id="annotation_invalid">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_invalid" class="m-doc-self">annotation_invalid</a>(</span><span class="m-doc-wrap">) -&gt; Foo.Bar</span>
+            </dt>
+            <dd>Annotation with an invalid annotation, which is kept as a string</dd>
             <dt id="annotation_list_noparam">
               <span class="m-doc-wrap-bumper">def <a href="#annotation_list_noparam" class="m-doc-self">annotation_list_noparam</a>(</span><span class="m-doc-wrap">a: typing.List[T])</span>
             </dt>
@@ -115,10 +119,10 @@
               <span class="m-doc-wrap-bumper">def <a href="#annotation_union" class="m-doc-self">annotation_union</a>(</span><span class="m-doc-wrap">a: typing.Union[float, int])</span>
             </dt>
             <dd>Annotation with the Union type</dd>
-            <dt id="annotation_union_of_undefined">
-              <span class="m-doc-wrap-bumper">def <a href="#annotation_union_of_undefined" class="m-doc-self">annotation_union_of_undefined</a>(</span><span class="m-doc-wrap">a: typing.Union[int, something.Undefined])</span>
+            <dt id="annotation_union_of_forward_reference">
+              <span class="m-doc-wrap-bumper">def <a href="#annotation_union_of_forward_reference" class="m-doc-self">annotation_union_of_forward_reference</a>(</span><span class="m-doc-wrap">a: typing.Union[int, something.Undefined])</span>
             </dt>
-            <dd>Annotation with an union that has an undefined type inside, where we can&#x27;t use isinstance either</dd>
+            <dd>Annotation with an union that has a forward reference inside, where we can&#x27;t use isinstance either</dd>
             <dt id="annotation_union_second_bracketed">
               <span class="m-doc-wrap-bumper">def <a href="#annotation_union_second_bracketed" class="m-doc-self">annotation_union_second_bracketed</a>(</span><span class="m-doc-wrap">a: typing.Union[float, typing.List[int]])</span>
             </dt>
