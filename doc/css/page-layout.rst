@@ -32,7 +32,7 @@ Page layout
     .. note-dim::
         :class: m-text-center
 
-        `« Components <{filename}/css/components.rst>`_ | `CSS <{filename}/css.rst>`_ | `Themes » <{filename}/css/themes.rst>`_
+        `« Components <{filename}/css/components.rst>`_ | `CSS <{filename}/css.rst>`_ | `Presentation » <{filename}/css/presentation.rst>`_
 
 .. role:: raw-html(raw)
    :format: html
