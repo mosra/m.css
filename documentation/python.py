@@ -972,16 +972,28 @@ def _pybind11_extract_default_argument(string):
         # everything until the colon and discard the rest. It can however be a
         # part of a rogue C++ type name, so pick the < only if directly at the
         # start or after a space or bracket, and the > only if at the end
-        # again. Also ignore stuff like <FooBar object at 0x1234> -- a : has to
-        # be before a >. Ugh maybe I should just use a regex here.
+        # again.
         if c == '<' and (i == 0 or string[i - 1] in [' ', '(', '[']) and -1 < string.find(':', i + 1) < string.find('>', i + 1):
             name_end = string.index(':', i + 1)
-
             default += string[i + 1:name_end]
             i = string.index('>', name_end + 1) + 1
 
             if i < len(string) and string[i] not in [',', ')', ']']:
                 raise SyntaxError("Unexpected content after enum value: `{}`".format(string[i:]))
+
+            continue
+
+        # It can also be stuff like <FooBar object at 0x1234>, which is useless
+        # and should be replaced with just a '...'. Similar check as in the
+        # above -- enums and unrepresentable values can be combined together,
+        # so
+        if c == '<' and (i == 0 or string[i - 1] in [' ', '(', '[']) and -1 < string.find(' object at 0x', i + 1) < string.find('>', i + 1):
+            address_end = string.index(' object at 0x', i)
+            default += '...'
+            i = string.index('>', address_end + 1) + 1
+
+            if i < len(string) and string[i] not in [',', ')', ']']:
+                raise SyntaxError("Unexpected content after object address value: `{}`".format(string[i:]))
 
             continue
 
@@ -1199,6 +1211,12 @@ def format_value(state: State, referrer_path: List[str], value) -> Optional[Tupl
         #   it maybe?
         out = '...'
         return out, out, html.escape(out)
+    # All classes inherit __repr__ from the object base class, which prints
+    # stuff like '<Foo object at 0x72a03a835870>'. Not useful, so do this only
+    # if __repr__ is directly on the actual object type.
+    # TODO could also do `type(value).__repr__ is not object.__repr_` instead,
+    #   maybe that would improve this for subclasses where the parent already
+    #   defines a reasonable __repr__?
     elif '__repr__' in type(value).__dict__:
         rendered = repr(value)
         # TODO: tuples of non-representable values will still be ugly

@@ -39,6 +39,8 @@ struct MyClass {
     private: float _foo = 0.0f;
 };
 
+void defaultUnrepresentableArgument(MyClass) {}
+
 struct MyClass23 {
     void setFoo(float) {}
 
@@ -105,6 +107,9 @@ could be another, but it's not added yet.)");
         .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only")
         .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property")
         .def_property_readonly("bar", &MyClass::foo, "A read-only property");
+
+    /* Has to be done only after the MyClass is defined */
+    m.def("default_unrepresentable_argument", &defaultUnrepresentableArgument, "A function with an unrepresentable default argument", py::arg("a") = MyClass{});
 
     m.def_submodule("just_overloads", "Stubs for this module should import typing as well")
         .def("overloaded", static_cast<std::string(*)(int)>(&overloaded), "Overloaded for ints")

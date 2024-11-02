@@ -63,6 +63,9 @@ class MyClass26:
 def crazy_signature(*args):
     ...
 
+def default_unrepresentable_argument(a: MyClass = ...) -> None:
+    ...
+
 def duck(*args, **kwargs) -> None:
     ...
 

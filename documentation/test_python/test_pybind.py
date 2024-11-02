@@ -229,15 +229,6 @@ class Signature(unittest.TestCase):
                 ('a', 'Enum', 'Enum', 'Enum', 'Enum_MISSING_DOT')
             ], None, None, None))
 
-        # This is how pybind prints various objects, should be passed as-is.
-        # It should not corrupt any parameters after.
-        self.assertEqual(parse_pybind_signature(self.state, [],
-            'foo(a: FooBar = <FooBar object at 0xabcd>, b: int = 3)'),
-            ('foo', '', [
-                ('a', 'FooBar', 'FooBar', 'FooBar', '<FooBar object at 0xabcd>'),
-                ('b', 'int', 'int', 'int', '3')
-            ], None, None, None))
-
         # This is weird and so will be passed as-is.
         self.assertEqual(parse_pybind_signature(self.state, [],
             'foo(a: Enum = <Enum_MISSING_GT: -1)'),
@@ -249,6 +240,37 @@ class Signature(unittest.TestCase):
         bad_signature = ('foo', '', [(None, None, None, None, None)], None, None, None)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER: 17>a)'), bad_signature)
         self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: Enum = <Enum.CHARACTERS_AFTER: 89><)'), bad_signature)
+
+    def test_default_unrepresentable_values(self):
+        # This is the default __repr__ implementation. Should be ignored the
+        # same way as is it done for pure Python code in format_value().
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: FooBar = <FooBar object at 0xabcd>, b: int = 3)'),
+            ('foo', '', [
+                ('a', 'FooBar', 'FooBar', 'FooBar', '...'),
+                ('b', 'int', 'int', 'int', '3')
+            ], None, None, None))
+
+        # Nested values
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: tuple[FooBar, int, FooBar] = (<FooBar object at 0xabcd>, 3, <FooBar object at 0x123>), b: int = 3)'),
+            ('foo', '', [
+                ('a', 'tuple[FooBar, int, FooBar]', 'tuple[FooBar, int, FooBar]', 'tuple[FooBar, int, FooBar]', '(..., 3, ...)'),
+                ('b', 'int', 'int', 'int', '3')
+            ], None, None, None))
+
+        # Nested values, combined with an enum
+        self.assertEqual(parse_pybind_signature(self.state, [],
+            'foo(a: tuple[FooBar, Enum, FooBar, Enum] = (<FooBar object at 0xabcd>, <Enum.FOO_BAR: -13376>, <FooBar object at 0x123>, <Enum.FIZZ_BUZZ: 2324>), b: int = 3)'),
+            ('foo', '', [
+                ('a', 'tuple[FooBar, Enum, FooBar, Enum]', 'tuple[FooBar, Enum, FooBar, Enum]', 'tuple[FooBar, Enum, FooBar, Enum]', '(..., Enum.FOO_BAR, ..., Enum.FIZZ_BUZZ)'),
+                ('b', 'int', 'int', 'int', '3')
+            ], None, None, None))
+
+        # This will fail
+        bad_signature = ('foo', '', [(None, None, None, None, None)], None, None, None)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: FooBar = <FooBar object at 0x123>a)'), bad_signature)
+        self.assertEqual(parse_pybind_signature(self.state, [], 'foo(a: FooBar = <FooBar object at 0x123> object at 0x)'), bad_signature)
 
     def test_bad_return_type(self):
         bad_signature = ('foo', '', [(None, None, None, None, None)], None, None, None)
