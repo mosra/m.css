@@ -2919,9 +2919,20 @@ def parse_xml(state: State, xml: str):
         # the damn thing does the worst possible and keeps just the leaf
         # filename there. Which is useless, so assume that if someone wants
         # to override include names, they also set STRIP_FROM_INC_PATH.
+        #
+        # Furthermore, if VERBATIM_HEADERS is disabled, the <includes> tag has
+        # no refid, in which case we can't really make use of that either as
+        # we won't know what to link to. Print at least a helpful warning in
+        # that case.
         compound_includes = compounddef.find('includes')
         if state.doxyfile['STRIP_FROM_INC_PATH'] and compound.kind in ['struct', 'class', 'union'] and compound_includes is not None:
-            compound.include = make_class_include(state, compound_includes.attrib['refid'], compound_includes.text)
+            if 'refid' in compound_includes.attrib:
+                compound.include = make_class_include(state, compound_includes.attrib['refid'], compound_includes.text)
+            else:
+                actual_file = make_include_strip_from_path(file, state.doxyfile['STRIP_FROM_INC_PATH'])
+                if compound_includes.text != actual_file:
+                    logging.warning("{}: cannot use a custom include name <{}> with VERBATIM_HEADERS disabled, falling back to <{}>".format(state.current, compound_includes.text, actual_file))
+                compound.include = make_include(state, file)
         else:
             compound.include = make_include(state, file)
 

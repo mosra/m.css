@@ -338,6 +338,20 @@ class IncludesStripFromPath(IntegrationTestCase):
         # nesting and again without the project/ prefix
         self.assertEqual(*self.actual_expected_contents('files.html'))
 
+class IncludesStripFromPathNoVerbatimHeaders(IntegrationTestCase):
+    def test(self):
+        with self.assertLogs() as cm:
+            self.run_doxygen(wildcard='*.xml')
+
+        # This one has the FakeHeader.h not used but the real Library/Data.h
+        self.assertEqual(*self.actual_expected_contents('classLibrary_1_1Class.html'))
+        # This one is the same as above
+        self.assertEqual(*self.actual_expected_contents('structLibrary_1_1Struct.html', '../compound_includes_strip_from_path/structLibrary_1_1Struct.html'))
+        # It should warn just for the overriden name, not for the other
+        self.assertEqual(cm.output, [
+            "WARNING:root:classLibrary_1_1Class.xml: cannot use a custom include name <FakeHeader.h> with VERBATIM_HEADERS disabled, falling back to <Library/Data.h>"
+        ])
+
 class IncludesUndocumentedFiles(IntegrationTestCase):
     def test(self):
         self.run_doxygen(wildcard='*.xml')

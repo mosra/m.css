@@ -1,0 +1,23 @@
+# Same as compound_includes_strip_from_path/Doxyfile, just w/ VERBATIM_HEADERS
+# disabled in addition
+
+INPUT                   = ../compound_includes_strip_from_path/input.dox ../compound_includes_strip_from_path/project/examples/example.cpp ../compound_includes_strip_from_path/project/include/Library/Library.h ../compound_includes_strip_from_path/project/include/Library/Data.h
+AUTOLINK_SUPPORT        = NO
+QUIET                   = YES
+GENERATE_HTML           = NO
+GENERATE_LATEX          = NO
+GENERATE_XML            = YES
+XML_PROGRAMLISTING      = NO
+CASE_SENSE_NAMES        = YES
+
+STRIP_FROM_PATH = nonexistent/path/ ../compound_includes_strip_from_path/project/ ../compound_includes_strip_from_path/project/examples/
+STRIP_FROM_INC_PATH = examples/nonexistentpath/ ../compound_includes_strip_from_path/project/include
+
+##! M_PAGE_FINE_PRINT   =
+##! M_THEME_COLOR       =
+##! M_FAVICON           =
+##! M_LINKS_NAVBAR1     =
+##! M_LINKS_NAVBAR2     = files
+##! M_SEARCH_DISABLED   = YES
+
+VERBATIM_HEADERS = NO
