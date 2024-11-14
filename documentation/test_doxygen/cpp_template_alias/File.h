@@ -13,8 +13,10 @@ template<class T, class U = void, class = int> struct Template {
     template<class V, bool = false> using Foo = Buuu<V, false>;
 };
 
+/* Not putting the second sentence into detailed docs to verify that just a
+   presence of tparam alone makes the detailed docs appear */
 /**
-@brief A templated type with just template details
+@brief A templated type with just template details. The `UndocumentedTemplate` shouldn't appear in the template detailed description.
 @tparam T Template param
 */
-template<class T, typename = void> using Foo = Bar<T, int>;
+template<class T, class UndocumentedTemplate, typename = void> using Foo = Bar<T, int>;

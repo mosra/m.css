@@ -3,11 +3,13 @@ struct Foo {
     /** @brief Template variable without template docs */
     template<class T> static T* variable;
 
+    /* Not putting the second sentence into detailed docs to verify that just a
+       presence of tparam alone makes the detailed docs appear */
     /**
-     * @brief Template variable with template docs
+     * @brief Template variable with template docs. The `UndocumentedTemplate` shouldn't appear in the template detailed description.
      * @tparam T Well, the type
      */
-    template<class T> static T& another;
+    template<class T, class UndocumentedTemplate> static T& another;
 };
 
 /** @brief Template class */

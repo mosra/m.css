@@ -21,7 +21,7 @@
       <div class="m-col-l-10 m-push-l-1">
         <h1>
           <div class="m-doc-include m-code m-inverted m-right-m m-text-right"><span class="cp">#include</span> <a class="cpf" href="File_8h.html">&lt;File.h&gt;</a></div>
-          <div class="m-doc-template">template&lt;class T, class U = void, class = int&gt;</div>
+          <div class="m-doc-template">template&lt;class T, class U = void, class UndocumentedTemplate = int, class = int&gt;</div>
           Template <span class="m-thin">struct</span>
         </h1>
         <p>Class with template parameters.</p>
@@ -54,12 +54,12 @@
             </li>
           </ul>
         </nav>
-<p>Should have it displayed on top.</p>
+<p>Should have it displayed on top. The <code>UndocumentedTemplate</code> shouldn&#x27;t appear in the template detailed description.</p>
         <section id="pub-methods">
           <h2><a href="#pub-methods">Public functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <span class="m-doc-wrap-bumper">void <a href="#af51f2282e44f51eea57a198c123f8b16" class="m-doc">bar</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#aeac0ea182b5e51c994538906b4f6a157" class="m-doc">bar</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>Another.</dd>
           </dl>
@@ -72,11 +72,11 @@
             </dt>
             <dd>Enum.</dd>
             <dt>
-              using <a href="#a661cbea16b59544c9907189d8ccf6da5" class="m-doc">B</a> = A
+              using <a href="#ad01711856b91cdd6482f80053b12ed88" class="m-doc">B</a> = A
             </dt>
             <dd>Typedef.</dd>
             <dt>
-              using <a href="#a94438a80326daae3500ce76ff0048c5e" class="m-doc">Foo</a> = Buuu&lt;U, false&gt;
+              using <a href="#a4861d00c5d508390f83329a12342a1e9" class="m-doc">Foo</a> = Buuu&lt;U, false&gt;
             </dt>
             <dd>Template alias.</dd>
           </dl>
@@ -86,7 +86,7 @@
           <dl class="m-doc">
             <dt>
               <div class="m-doc-template">template&lt;class V, int = 3&gt;</div>
-              <span class="m-doc-wrap-bumper">void <a href="#aab8b2a12ab389309990a2f3d7ae0289e" class="m-doc">foo</a>(</span><span class="m-doc-wrap">)</span>
+              <span class="m-doc-wrap-bumper">void <a href="#a3b5c01513828df8fdec0eb1783c08d24" class="m-doc">foo</a>(</span><span class="m-doc-wrap">)</span>
             </dt>
             <dd>Function.</dd>
           </dl>
@@ -95,7 +95,7 @@
           <h2><a href="#pro-attribs">Protected variables</a></h2>
           <dl class="m-doc">
             <dt>
-              int <a href="#aaf7ee941db121bdf57653fe4bd8f3f53" class="m-doc">a</a>
+              int <a href="#a25e95a959521c412c4231453e5fec43a" class="m-doc">a</a>
             </dt>
             <dd>Variable.</dd>
           </dl>
@@ -105,9 +105,9 @@
           <section class="m-doc-details" id="a78bd618022079b3efbf1db104e058c8a"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T, class U, class _3&gt;
+                template&lt;class T, class U, class UndocumentedTemplate, class _4&gt;
               </div>
-              enum Template&lt;T, U, _3&gt;::<wbr /><a href="#a78bd618022079b3efbf1db104e058c8a" class="m-doc-self">Bar</a> <span class="m-label m-warning">protected</span>
+              enum Template&lt;T, U, UndocumentedTemplate, _4&gt;::<wbr /><a href="#a78bd618022079b3efbf1db104e058c8a" class="m-doc-self">Bar</a> <span class="m-label m-warning">protected</span>
             </h3>
             <p>Enum.</p>
 <p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details.</p>
@@ -115,22 +115,22 @@
         </section>
         <section>
           <h2>Typedef documentation</h2>
-          <section class="m-doc-details" id="a661cbea16b59544c9907189d8ccf6da5"><div>
+          <section class="m-doc-details" id="ad01711856b91cdd6482f80053b12ed88"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T, class U, class _3&gt;
+                template&lt;class T, class U, class UndocumentedTemplate, class _4&gt;
               </div>
-              typedef A Template&lt;T, U, _3&gt;::<wbr /><a href="#a661cbea16b59544c9907189d8ccf6da5" class="m-doc-self">B</a> <span class="m-label m-warning">protected</span>
+              typedef A Template&lt;T, U, UndocumentedTemplate, _4&gt;::<wbr /><a href="#ad01711856b91cdd6482f80053b12ed88" class="m-doc-self">B</a> <span class="m-label m-warning">protected</span>
             </h3>
             <p>Typedef.</p>
 <p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details.</p>
           </div></section>
-          <section class="m-doc-details" id="a94438a80326daae3500ce76ff0048c5e"><div>
+          <section class="m-doc-details" id="a4861d00c5d508390f83329a12342a1e9"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T, class U, class _3&gt;
+                template&lt;class T, class U, class UndocumentedTemplate, class _4&gt;
               </div>
-              using Template&lt;T, U, _3&gt;::<wbr /><a href="#a94438a80326daae3500ce76ff0048c5e" class="m-doc-self">Foo</a> = Buuu&lt;U, false&gt; <span class="m-label m-warning">protected</span>
+              using Template&lt;T, U, UndocumentedTemplate, _4&gt;::<wbr /><a href="#a4861d00c5d508390f83329a12342a1e9" class="m-doc-self">Foo</a> = Buuu&lt;U, false&gt; <span class="m-label m-warning">protected</span>
             </h3>
             <p>Template alias.</p>
 <p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details. Template parameters are tested in <code>cpp_template_aliases</code> test as they need newer Doxygen.</p>
@@ -138,23 +138,23 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="af51f2282e44f51eea57a198c123f8b16"><div>
+          <section class="m-doc-details" id="aeac0ea182b5e51c994538906b4f6a157"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T, class U, class _3&gt;
+                template&lt;class T, class U, class UndocumentedTemplate, class _4&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void Template&lt;T, U, _3&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#af51f2282e44f51eea57a198c123f8b16" class="m-doc-self">bar</a>(</span><span class="m-doc-wrap">)</span></span>
+              <span class="m-doc-wrap-bumper">void Template&lt;T, U, UndocumentedTemplate, _4&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aeac0ea182b5e51c994538906b4f6a157" class="m-doc-self">bar</a>(</span><span class="m-doc-wrap">)</span></span>
             </h3>
             <p>Another.</p>
 <p>Should have just one template with _3 for unnamed parameter.</p>
           </div></section>
-          <section class="m-doc-details" id="aab8b2a12ab389309990a2f3d7ae0289e"><div>
+          <section class="m-doc-details" id="a3b5c01513828df8fdec0eb1783c08d24"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T, class U, class _3&gt;
+                template&lt;class T, class U, class UndocumentedTemplate, class _4&gt;
                 template&lt;class V, int = 3&gt;
               </div>
-              <span class="m-doc-wrap-bumper">void Template&lt;T, U, _3&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#aab8b2a12ab389309990a2f3d7ae0289e" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">protected</span></span></span>
+              <span class="m-doc-wrap-bumper">void Template&lt;T, U, UndocumentedTemplate, _4&gt;::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a3b5c01513828df8fdec0eb1783c08d24" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">) <span class="m-label m-warning">protected</span></span></span>
             </h3>
             <p>Function.</p>
             <table class="m-table m-fullwidth m-flat">
@@ -173,12 +173,12 @@
         </section>
         <section>
           <h2>Variable documentation</h2>
-          <section class="m-doc-details" id="aaf7ee941db121bdf57653fe4bd8f3f53"><div>
+          <section class="m-doc-details" id="a25e95a959521c412c4231453e5fec43a"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T, class U, class _3&gt;
+                template&lt;class T, class U, class UndocumentedTemplate, class _4&gt;
               </div>
-              int Template&lt;T, U, _3&gt;::<wbr /><a href="#aaf7ee941db121bdf57653fe4bd8f3f53" class="m-doc-self">a</a> <span class="m-label m-warning">protected</span>
+              int Template&lt;T, U, UndocumentedTemplate, _4&gt;::<wbr /><a href="#a25e95a959521c412c4231453e5fec43a" class="m-doc-self">a</a> <span class="m-label m-warning">protected</span>
             </h3>
             <p>Variable.</p>
 <p>Should have just one template with _3 for unnamed parameter. Should also have the <code>protected</code> label in the details.</p>

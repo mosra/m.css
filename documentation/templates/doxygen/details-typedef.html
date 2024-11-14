@@ -35,7 +35,13 @@
                 <tr><th colspan="2">Template parameters</th></tr>
               </thead>
               <tbody>
-                {% for template in typedef.templates|selectattr('name') %}
+                {# Unlike with function arguments, where it's desirable to
+                   document either all of them or none, template parameters are
+                   often implicit, not meant to be specified by the user. Thus,
+                   if they're not documented, assume they're implicit, and
+                   don't list them in the details. Same is with unnamed
+                   template arguments, those aren't shown either. #}
+                {% for template in typedef.templates|selectattr('name')|selectattr('description') %}
                 <tr>
                   <td{% if loop.index == 1 %} style="width: 1%"{% endif %}>{{ template.name }}</td>
                   <td>{{ template.description }}</td>

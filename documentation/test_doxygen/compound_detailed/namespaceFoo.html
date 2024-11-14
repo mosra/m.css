@@ -39,8 +39,8 @@
           <h2><a href="#func-members">Functions</a></h2>
           <dl class="m-doc">
             <dt>
-              <div class="m-doc-template">template&lt;class T&gt;</div>
-              <span class="m-doc-wrap-bumper">auto <a href="#a438de3b4c677344081baef1ec352f691" class="m-doc">foo</a>(</span><span class="m-doc-wrap">int a,
+              <div class="m-doc-template">template&lt;class T, class UndocumentedTemplate&gt;</div>
+              <span class="m-doc-wrap-bumper">auto <a href="#a6a1f9ee341c4ae2ec463d900690893b0" class="m-doc">foo</a>(</span><span class="m-doc-wrap">int a,
               std::string b,
               char(&amp;things)[5],
               bool,
@@ -83,12 +83,12 @@
         </section>
         <section>
           <h2>Function documentation</h2>
-          <section class="m-doc-details" id="a438de3b4c677344081baef1ec352f691"><div>
+          <section class="m-doc-details" id="a6a1f9ee341c4ae2ec463d900690893b0"><div>
             <h3>
               <div class="m-doc-template">
-                template&lt;class T&gt;
+                template&lt;class T, class UndocumentedTemplate&gt;
               </div>
-              <span class="m-doc-wrap-bumper">int Foo::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a438de3b4c677344081baef1ec352f691" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">int a,
+              <span class="m-doc-wrap-bumper">int Foo::<wbr /></span><span class="m-doc-wrap"><span class="m-doc-wrap-bumper"><a href="#a6a1f9ee341c4ae2ec463d900690893b0" class="m-doc-self">foo</a>(</span><span class="m-doc-wrap">int a,
               std::string b,
               char(&amp;things)[5],
               bool,
@@ -145,7 +145,7 @@
                 </tr>
               </tbody>
             </table>
-<p>Ooooh, more text!</p>
+<p>Ooooh, more text! The <code>UndocumentedTemplate</code> shouldn&#x27;t appear in the template detailed description, same as with the class.</p>
           </div></section>
           <section class="m-doc-details" id="a256688820e6f5564e3210874bbda84c3"><div>
             <h3>

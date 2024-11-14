@@ -7,9 +7,10 @@
 @tparam T Template parameter T
 @tparam U Template parameter U
 
-Should have it displayed on top.
+Should have it displayed on top. The `UndocumentedTemplate` shouldn't appear in
+the template detailed description.
 */
-template<class T, class U = void, class = int> struct Template {
+template<class T, class U = void, class UndocumentedTemplate = int, class = int> struct Template {
     /**
      * @brief Another
      *
@@ -105,9 +106,10 @@ namespace Foo {
 @retval 0       Zero?
 @retval 42      The Answer.
 
-Ooooh, more text!
+Ooooh, more text! The `UndocumentedTemplate` shouldn't appear in the template
+detailed description, same as with the class.
 */
-template<class T> int foo(int a, std::string b, char(&things)[5], bool, char(&)[42], int stuff[], double[1337]);
+template<class T, class UndocumentedTemplate> int foo(int a, std::string b, char(&things)[5], bool, char(&)[42], int stuff[], double[1337]);
 
 /**
 @brief Input and output
