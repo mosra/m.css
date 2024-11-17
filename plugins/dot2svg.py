@@ -43,9 +43,19 @@ _comment_src = re.compile(r"""<!--[^-]+-->\n""")
 _class_src = re.compile(r"""<g id="(edge|node|clust)\d+" class="(?P<type>edge|node|cluster)(?P<classes>[^"]*)">
 <title>(?P<title>[^<]*)</title>
 <(?P<element>ellipse|polygon|path|text)( fill="(?P<fill>[^"]+)" stroke="[^"]+")? """)
-
 _class_dst = r"""<g class="{classes}">
 <title>{title}</title>
+<{element} """
+
+# Nodes that are links have an additional group containing a link inside. Again
+# Graphviz < 2.40 (Ubuntu 16.04 and older) doesn't have a linebreak between <g>
+# and <title>.
+_class_with_link_inside_src = re.compile(r"""<g id="(edge|node)\d+" class="(?P<type>edge|node)(?P<classes>[^"]*)">[\n]?<title>(?P<title>[^<]*)</title>
+<g id="a_(edge|node)\d+"><a (?P<link>[^>]+)>
+<(?P<element>ellipse|polygon|path) fill="(?P<fill>[^"]+)" stroke="[^"]+" """)
+_class_with_link_inside_dst = r"""<g class="{classes}">
+<title>{title}</title>
+<g><a {link}>
 <{element} """
 
 _attributes_src = re.compile(r"""<(?P<element>ellipse|polygon|polyline) fill="[^"]+" stroke="[^"]+" """)
@@ -110,6 +120,20 @@ def dot2svg(source, size=None, attribs=''):
             title=match.group('title'),
             element=match.group('element'))
     svg = _class_src.sub(element_repl, svg)
+
+    # Links have additional group around, second pass with a different regex
+    def element_link_repl(match):
+        classes = ['m-' + match.group('type')] + match.group('classes').replace('&#45;', '-').split()
+        # distinguish between solid and filled nodes
+        if match.group('type') == 'node' and match.group('fill') == 'none':
+            classes += ['m-flat']
+
+        return _class_with_link_inside_dst.format(
+            link=match.group('link'),
+            classes=' '.join(classes),
+            title=match.group('title'),
+            element=match.group('element'))
+    svg = _class_with_link_inside_src.sub(element_link_repl, svg)
 
     # Remove unnecessary fill and stroke attributes
     svg = _attributes_src.sub(_attributes_dst, svg)
