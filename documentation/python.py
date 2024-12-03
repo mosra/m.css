@@ -2893,7 +2893,19 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
     # order by default
     trie.sort(map)
 
-    return serialize_search_data(Serializer(file_offset_bytes=state.config['SEARCH_FILE_OFFSET_BYTES'], result_id_bytes=state.config['SEARCH_RESULT_ID_BYTES'], name_size_bytes=state.config['SEARCH_NAME_SIZE_BYTES']), trie, map, search_type_map, symbol_count, merge_subtrees=merge_subtrees, merge_prefixes=merge_prefixes)
+    return serialize_search_data(
+        Serializer(
+            file_offset_bytes=state.config['SEARCH_FILE_OFFSET_BYTES'],
+            result_id_bytes=state.config['SEARCH_RESULT_ID_BYTES'],
+            name_size_bytes=state.config['SEARCH_NAME_SIZE_BYTES']
+        ),
+        trie=trie,
+        map=map,
+        type_map=search_type_map,
+        symbol_count=symbol_count,
+        merge_subtrees=merge_subtrees,
+        merge_prefixes=merge_prefixes,
+    )
 
 def run(basedir, config, *, templates=default_templates, search_add_lookahead_barriers=True, search_merge_subtrees=True, search_merge_prefixes=True):
     # Populate the INPUT, if not specified, make it absolute
