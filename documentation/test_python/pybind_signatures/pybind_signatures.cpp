@@ -2,6 +2,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> /* needed for std::vector! */
 #include <pybind11/functional.h> /* for std::function */
+#include <pybind11/stl/filesystem.h> /* for std::filesystem::path */
 
 namespace py = pybind11;
 
@@ -25,6 +26,11 @@ bool overloaded(float) { return {}; }
 // Doesn't work with just a plain function pointer, MEH
 void takesAFunction(std::function<int(float, std::vector<float>&)>) {}
 void takesAFunctionReturningVoid(std::function<void()>) {}
+
+// Function demonstrating std::filesystem::path
+std::string demonstratePathArg(const std::filesystem::path& input_path) {
+    return input_path.filename().string();  // Returns the filename portion of the path
+}
 
 struct MyClass {
     static MyClass staticFunction(int, float) { return {}; }
@@ -97,7 +103,8 @@ takes just 3 instead.)")
 This overload, however, takes just a 32-bit (or 64-bit) floating point value of
 3. full_docstring_overloaded(a: int, b: int)
 takes just 2. There's nothing for 4. full_docstring_overloaded(a: poo, b: foo)
-could be another, but it's not added yet.)");
+could be another, but it's not added yet.)")
+        .def("demonstratePathArg", &demonstratePathArg, "Process a std::filesystem::path and return the filename portion");
 
     py::class_<MyClass>(m, "MyClass", "My fun class!")
         .def_static("static_function", &MyClass::staticFunction, "Static method with positional-only args")

@@ -1,3 +1,4 @@
+import os
 import typing
 
 class MyClass:
@@ -58,6 +59,9 @@ def full_docstring_overloaded(arg0: int, arg1: int, /) -> None:
 
 @typing.overload
 def full_docstring_overloaded(arg0: float, arg1: float, /) -> None:
+    ...
+
+def demonstratePathArg(input_path: os.PathLike, /) -> None:
     ...
 
 @typing.overload
