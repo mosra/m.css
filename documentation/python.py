@@ -234,8 +234,8 @@ class State:
         # Should be filled only through add_module_dependency_for()
         self.module_dependencies: Dict[str, Set[str]] = {}
 
-        # If we're genearating stubs, parsed classes have to be saved and then
-        # rendered together with the rest of the module
+        # If we're generating stubs, parsed classes have to be saved and then
+        # rendered together with the rest of the module.
         if self.config['OUTPUT_STUBS']:
             # Key is path including the class name, value is a parsed class
             self.parsed_classes: Dict[List[str], Empty] = {}
