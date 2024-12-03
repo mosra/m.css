@@ -907,48 +907,59 @@ def enclosing_module_for(state: State, name: str) -> Optional[str]:
     return None
 
 def add_module_dependency_for(state: State, object: Union[Any, str]):
+    """Update the set of module dependencies for `state.current_module`.
+
+    Based on the type of `object`, add the module it's defined in to the set of
+    dependencies for the current module. If the object is a string, it's assumed
+    to be a type name that's already in the name map and the module name is
+    extracted from it. If the object is a module, its name is extracted from
+    `object.__name__`. If the object is a class/function/enum/..., its module
+    name is extracted from `object.__module__`.
+    """
+
     assert state.current_module
 
     # If not a string and not a module, try looking if its name-mapped type is
     # in our name map. If it is, and its enclosing module is as well, use that
     # to have name mapping correctly applied for it.
-    name = None
+    module_name = None
     if not isinstance(object, str) and not inspect.ismodule(object):
         name_candidate = map_name_prefix(state, extract_type(object))
         if name_candidate in state.name_map:
-            name = enclosing_module_for(state, name_candidate)
+            module_name = enclosing_module_for(state, name_candidate)
 
     # If the above didn't succeed, try other options
-    if not name:
-        # If it's a string, assume it's a parsed name that's already in the
-        # name map, find the leaf module name and add it
-        if isinstance(object, str):
+    if not module_name:
+        if object == 'os.PathLike':
+            module_name = 'os'
+
+        # If it's a string, assume it's a parsed module_name that's already in the
+        # module_name map, find the leaf module module_name and add it
+        elif isinstance(object, str):
             # We should get string names only for pybind11 types, nothing else
             # TODO er wait, what about unknown annotations? those probably
             #   shouldn't get here at all?
             assert state.config['PYBIND11_COMPATIBILITY']
-            name = enclosing_module_for(state, object)
+            module_name = enclosing_module_for(state, object)
             # If there's no enclosing module, it's a builtin, for which we add
             # no dependency. Given that str is passed only from pybind, all
             # referenced names should be either builtin or known.
-            if not name:
-                if '.' not in object or object == 'os.PathLike':
-                    return
-                raise ValueError("Unknown type {} in module {}".format(object, state.current_module))
+            if not module_name:
+                assert '.' not in object, "Unknown type {} in module {}".format(object, state.current_module)
 
         # If it's directly a module (such as `typing` or `enum` passed from
-        # certain parts of the codebase), apply name mapping to it
+        # certain parts of the codebase), apply module_name mapping to it.
         elif inspect.ismodule(object):
-            name = map_name_prefix(state, object.__name__)
+            module_name = map_name_prefix(state, object.__name__)
 
         # Otherwise it's a class/function/enum/..., extract module name from
-        # it, apply name mapping
+        # it, apply name mapping.
         else:
-            name = map_name_prefix(state, object.__module__)
+            module_name = map_name_prefix(state, object.__module__)
 
     # Add it only if it's not a module self-reference and if it's not builtins
-    if name != 'builtins' and name != state.current_module:
-        state.module_dependencies[state.current_module].add(name)
+    if module_name != 'builtins' and module_name != state.current_module and (module_name is not None):
+        state.module_dependencies[state.current_module].add(module_name)
 
 _pybind_name_rx = re.compile('[a-zA-Z0-9_]*')
 _pybind_arg_name_rx = re.compile('[/*a-zA-Z0-9_]+')
