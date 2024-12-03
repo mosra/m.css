@@ -7,6 +7,7 @@
     Copyright © 2017 gotchafr <gotchafr@users.noreply.github.com>
     Copyright © 2022 luz paz <luzpaz@pm.me>
     Copyright © 2022 Varun Gandhi <git@cutcul.us>
+    Copyright © 2024 Guillaume Jacquemin <williamjcm@users.noreply.github.com>
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the "Software"),
@@ -484,9 +485,9 @@ Example usage:
 ----------------
 
 It's possible to override the default 10-column behavior for pages to make a
-`landing page <{filename}/css/page-layout.rst#landing-pages>`__ with large
-cover image spanning the whole window width. Put cover image URL into a
-:rst:`:cover:` field, the :rst:`:landing:` field then contains
+`landing page <{filename}/css/page-layout.rst#landing-pages>`__ with an
+optional large cover image spanning the whole window width. Put a cover image
+URL into a :rst:`:cover:` field, the :rst:`:landing:` field then contains
 :abbr:`reST <reStructuredText>`-processed content that appears on top of the
 cover image. Contents of the :rst:`:landing:` are put into a
 :html:`<div class="m-container">`, you are expected to fully take care of rows

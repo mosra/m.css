@@ -4,6 +4,7 @@
 #   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
 #             Vladimír Vondruš <mosra@centrum.cz>
 #   Copyright © 2022 Lukas Pirl <git@lukas-pirl.de>
+#   Copyright © 2024 Guillaume Jacquemin <williamjcm@users.noreply.github.com>
 #
 #   Permission is hereby granted, free of charge, to any person obtaining a
 #   copy of this software and associated documentation files (the "Software"),
@@ -108,9 +109,10 @@ class Landing(PageTestCase):
 
         # The landing field should have the links expanded, header should not
         # be shown, footer should be. Navbar brand should be hidden in the
-        # second case.
+        # second and third cases.
         self.assertEqual(*self.actual_expected_contents('page.html'))
         self.assertEqual(*self.actual_expected_contents('hide-navbar-brand.html'))
+        self.assertEqual(*self.actual_expected_contents('hide-navbar-brand-no-cover.html'))
 
 class Cover(PageTestCase):
     def __init__(self, *args, **kwargs):

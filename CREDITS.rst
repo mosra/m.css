@@ -48,6 +48,8 @@ Listing only people with code contributions, because otherwise there's too many
     improvements, CSS fixes
 -   Maxime Schmitt (`@Syllo <https://github.com/Syllo>`_) --- configurable file
     and include handling in the Doxygen theme
+-   Parker L (`@parker-research <https://github.com/parker-research>`_) ---
+    Python theme improvements
 -   `@paulignari <https://github.com/paulignari>`_ --- i18n-related
     improvements
 -   Rémi Marche (`@Marr11317 <https://github.com/Marr11317>`_) --- Doxygen
