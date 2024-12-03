@@ -1702,7 +1702,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 if arg[0] == '/':
                     param_kind = 'POSITIONAL_ONLY'
                     break
-                # Otherwise, if * is among the arguments, everythign until the
+                # Otherwise, if * is among the arguments, everything until the
                 # * is positional-or-keyword. Assuming pybind11 sanity, so
                 # not handling cases where * would be before / and such.
                 if arg[0] == '*':
@@ -1717,7 +1717,7 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                 # either self (for the first argument) or arg(I-1) (for second
                 # argument and further). Also, the `self` argument is
                 # positional-or-keyword only if there are positional-or-keyword
-                # arguments afgter it, otherwise it's positional-only.
+                # arguments after it, otherwise it's positional-only.
                 if inspect.isclass(parent) and not out.is_staticmethod:
                     assert args and args[0][0] == 'self'
 
