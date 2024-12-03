@@ -906,7 +906,7 @@ def enclosing_module_for(state: State, name: str) -> Optional[str]:
             return name
     return None
 
-def add_module_dependency_for(state: State, object: Union[Any, str]):
+def add_module_dependency_for(state: State, object: Union[Any, str]) -> None:
     assert state.current_module
 
     # If not a string and not a module, try looking if its name-mapped type is
