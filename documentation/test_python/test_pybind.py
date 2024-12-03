@@ -425,6 +425,8 @@ class Signatures(BaseInspectTestCase):
             self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass23.html'))
         if pybind_signatures.MyClass26.is_pybind26:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass26.html'))
+        if pybind_signatures.MyClass29.is_pybind29:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass29.html'))
 
     def test_stubs(self):
         sys.path.append(self.path)
@@ -437,7 +439,9 @@ class Signatures(BaseInspectTestCase):
         })
 
         # TODO handle writeonly properties correctly
-        if pybind_signatures.MyClass26.is_pybind26:
+        if pybind_signatures.MyClass29.is_pybind29:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi'))
+        elif pybind_signatures.MyClass26.is_pybind26:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi'))
         elif pybind_signatures.MyClass23.is_pybind23:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi', 'pybind_signatures/__init__-pybind25.pyi'))

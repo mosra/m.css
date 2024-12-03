@@ -61,13 +61,21 @@ class MyClass26:
     def positional_only(a: int, /, b: float) -> int:
         ...
 
+class MyClass29:
+    is_pybind29 = True
+
+    @staticmethod
+    def demonstrate_path_arg(arg0: os.PathLike, /) -> str:
+        ...
+
+    @staticmethod
+    def demonstrate_path_return(arg0: str, arg1: str, /) -> os.PathLike:
+        ...
+
 def crazy_signature(*args):
     ...
 
 def default_unrepresentable_argument(a: MyClass = ...) -> None:
-    ...
-
-def demonstrate_path_arg(arg0: os.PathLike, /) -> str:
     ...
 
 def duck(*args, **kwargs) -> None:

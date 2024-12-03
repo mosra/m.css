@@ -1,4 +1,3 @@
-import os
 import typing
 
 class MyClass:
@@ -35,13 +34,13 @@ class MyClass23:
 class MyClass26:
     is_pybind26 = False
 
+class MyClass29:
+    is_pybind29 = False
+
 def crazy_signature(*args):
     ...
 
 def default_unrepresentable_argument(a: MyClass = ...) -> None:
-    ...
-
-def demonstrate_path_arg(arg0: os.PathLike, /) -> str:
     ...
 
 def duck(*args, **kwargs) -> None:

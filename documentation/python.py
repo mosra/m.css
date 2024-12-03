@@ -928,13 +928,16 @@ def add_module_dependency_for(state: State, object: Union[Any, str]):
         if name_candidate in state.name_map:
             module_name = enclosing_module_for(state, name_candidate)
 
-    # If the above didn't succeed, try other options
+    # If the above didn't succeed, try other options.
     if not module_name:
         if object == 'os.PathLike':
             module_name = 'os'
 
+        elif object == 'pathlib.Path':
+            module_name = 'pathlib'
+
         # If it's a string, assume it's a parsed module_name that's already in the
-        # module_name map, find the leaf module module_name and add it
+        # module_name map, find the leaf module module_name and add it.
         elif isinstance(object, str):
             # We should get string names only for pybind11 types, nothing else
             # TODO er wait, what about unknown annotations? those probably
