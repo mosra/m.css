@@ -3,3 +3,4 @@ htmlcov/
 coverage/
 .coverage
 *.kdev4
+build/
