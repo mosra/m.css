@@ -932,8 +932,9 @@ def add_module_dependency_for(state: State, object: Union[Any, str]):
             # no dependency. Given that str is passed only from pybind, all
             # referenced names should be either builtin or known.
             if not name:
-                assert '.' not in object
-                return
+                if '.' not in object or object == 'os.PathLike':
+                    return
+                raise ValueError("Unknown type {} in module {}".format(object, state.current_module))
 
         # If it's directly a module (such as `typing` or `enum` passed from
         # certain parts of the codebase), apply name mapping to it
@@ -1985,6 +1986,8 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
                     # TODO use param.type_relative if it ever exists again in
                     #   addition to param.type_quoted
                     result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, param.type)) if param.type else param.name]
+            # Filter null values out. Not sure where they come from.
+            result.params = [i for i in result.params if i is not None]
             state.search += [result]
 
     return overloads
