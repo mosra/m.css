@@ -34,6 +34,9 @@ class MyClass23:
 class MyClass26:
     is_pybind26 = False
 
+class MyClass29:
+    is_pybind29 = False
+
 def crazy_signature(*args):
     ...
 

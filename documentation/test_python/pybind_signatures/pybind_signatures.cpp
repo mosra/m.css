@@ -3,6 +3,14 @@
 #include <pybind11/stl.h> /* needed for std::vector! */
 #include <pybind11/functional.h> /* for std::function */
 
+#if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 209
+#define PYBIND11_HAS_FILESYSTEM
+#endif
+
+#ifdef PYBIND11_HAS_FILESYSTEM
+#include <pybind11/stl/filesystem.h> /* for std::filesystem::path */
+#endif
+
 namespace py = pybind11;
 
 int scale(int a, float argument) {
@@ -27,6 +35,7 @@ void takesAFunction(std::function<int(float, std::vector<float>&)>) {}
 void takesAFunctionReturningVoid(std::function<void()>) {}
 
 struct MyClass {
+    // Test class (all versions of Pybind11).
     static MyClass staticFunction(int, float) { return {}; }
 
     std::pair<float, int> instanceFunction(int, const std::string&) { return {0.5f, 42}; }
@@ -42,15 +51,36 @@ struct MyClass {
 void defaultUnrepresentableArgument(MyClass) {}
 
 struct MyClass23 {
+    // Class which tests pybind11 >=2.3 features.
     void setFoo(float) {}
 
     void setFooCrazy(const Crazy<3, int>&) {}
 };
 
 struct MyClass26 {
+    // Class which tests pybind11 >=2.6 features.
     static int positionalOnly(int, float) { return 1; }
     static int keywordOnly(float, const std::string&) { return 2; }
     static int positionalKeywordOnly(int, float, const std::string&) { return 3; }
+};
+
+struct MyClass29 {
+    // Class which tests pybind11 >=2.9 features.
+
+    #ifdef PYBIND11_HAS_FILESYSTEM
+    // Function demonstrating `std::filesystem::path` as an argument.
+    static std::string demonstrate_path_arg(const std::filesystem::path& input_path) {
+        return input_path.filename().string();  // Returns the filename portion of the path
+    }
+
+    // Function demonstrating `std::filesystem::path` as a return value.
+    static std::filesystem::path demonstrate_path_return(
+        const std::string& base_path, const std::string& sub_path
+    ) {
+        std::filesystem::path combined_path = std::filesystem::path(base_path) / sub_path;
+        return combined_path; // Returns the combined path
+    }
+    #endif
 };
 
 void duck(py::args, py::kwargs) {}
@@ -117,7 +147,7 @@ could be another, but it's not added yet.)");
 
     py::class_<MyClass23> pybind23{m, "MyClass23", "Testing pybind 2.3 features"};
 
-    /* Checker so the Python side can detect if testing pybind 2.3 features is
+    /* Checker so the Python side can detect if testing pybind 2.3+ features is
        feasible */
     pybind23.attr("is_pybind23") =
         #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 203
@@ -135,7 +165,7 @@ could be another, but it's not added yet.)");
 
     py::class_<MyClass26> pybind26{m, "MyClass26", "Testing pybind 2.6 features"};
 
-    /* Checker so the Python side can detect if testing pybind 2.6 features is
+    /* Checker so the Python side can detect if testing pybind 2.6+ features is
        feasible */
     pybind26.attr("is_pybind26") =
         #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
@@ -150,5 +180,23 @@ could be another, but it's not added yet.)");
         .def_static("positional_only", &MyClass26::positionalOnly, "Positional-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"))
         .def_static("keyword_only", &MyClass26::keywordOnly, "Keyword-only arguments", py::arg("b"), py::kw_only{}, py::arg("keyword") = "no")
         .def_static("positional_keyword_only", &MyClass26::positionalKeywordOnly, "Positional and keyword-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"), py::kw_only{}, py::arg("keyword") = "no");
+    #endif
+
+    py::class_<MyClass29> pybind29{m, "MyClass29", "Testing pybind 2.9 features"};
+
+    /* Checker so the Python side can detect if testing pybind 2.9+ features is
+       feasible */
+    pybind29.attr("is_pybind29") =
+        #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 209
+        true
+        #else
+        false
+        #endif
+        ;
+
+    #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 209
+    pybind29
+        .def_static("demonstrate_path_arg", &MyClass29::demonstrate_path_arg, "Process a std::filesystem::path and return the filename portion")
+        .def_static("demonstrate_path_return", &MyClass29::demonstrate_path_return, "Combine two strings into a std::filesystem::path and return it");
     #endif
 }
