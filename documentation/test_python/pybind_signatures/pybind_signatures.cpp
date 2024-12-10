@@ -1,9 +1,20 @@
 #include <functional>
+
+#ifndef USE_NANOBIND
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h> /* needed for std::vector! */
 #include <pybind11/functional.h> /* for std::function */
 
 namespace py = pybind11;
+#else
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/pair.h>
+#include <nanobind/stl/function.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
+
+namespace py = nanobind;
+#endif
 
 int scale(int a, float argument) {
     return int(a*argument);
@@ -57,7 +68,12 @@ void duck(py::args, py::kwargs) {}
 
 template<class T, class U> void tenOverloads(T, U) {}
 
-PYBIND11_MODULE(pybind_signatures, m) {
+#ifndef USE_NANOBIND
+PYBIND11_MODULE(pybind_signatures, m)
+#else
+NB_MODULE(pybind_signatures, m)
+#endif
+{
     m.doc() = "pybind11 function signature extraction";
 
     m
@@ -105,8 +121,18 @@ could be another, but it's not added yet.)");
         .def("instance_function", &MyClass::instanceFunction, "Instance method with positional-only args")
         .def("instance_function_kwargs", &MyClass::instanceFunction, "Instance method with position or keyword args", py::arg("hey"), py::arg("what") = "<eh?>")
         .def("another", &MyClass::another, "Instance method with no args, 'self' is thus position-only")
-        .def_property("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property")
-        .def_property_readonly("bar", &MyClass::foo, "A read-only property");
+        #ifndef USE_NANOBIND
+        .def_property
+        #else
+        .def_prop_rw
+        #endif
+            ("foo", &MyClass::foo, &MyClass::setFoo, "A read/write property")
+        #ifndef USE_NANOBIND
+        .def_property_readonly
+        #else
+        .def_prop_ro
+        #endif
+            ("bar", &MyClass::foo, "A read-only property");
 
     /* Has to be done only after the MyClass is defined */
     m.def("default_unrepresentable_argument", &defaultUnrepresentableArgument, "A function with an unrepresentable default argument", py::arg("a") = MyClass{});
@@ -127,6 +153,7 @@ could be another, but it's not added yet.)");
         #endif
         ;
 
+    // TODO enable these for nanobind
     #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 203
     pybind23
         .def_property("writeonly", nullptr, &MyClass23::setFoo, "A write-only property")
@@ -145,6 +172,8 @@ could be another, but it's not added yet.)");
         #endif
         ;
 
+    // TODO enable these for nanobind? or maybe drop some backwards compat
+    // TODO pos_only not in nanobind
     #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
     pybind26
         .def_static("positional_only", &MyClass26::positionalOnly, "Positional-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"))

@@ -23,14 +23,29 @@
 #   DEALINGS IN THE SOFTWARE.
 #
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 project(McssDocumentationPybindTests)
 
 find_package(pybind11 CONFIG REQUIRED)
 
+find_package(Python 3.8 COMPONENTS Interpreter Development.Module REQUIRED)
+
+execute_process(
+  COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+  OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
+find_package(nanobind REQUIRED)
+
 foreach(target pybind_signatures pybind_enums pybind_external_overload_docs pybind_submodules pybind_type_links search_long_suffix_length)
     pybind11_add_module(${target} ${target}/${target}.cpp)
     set_target_properties(${target} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${target})
+endforeach()
+
+foreach(target signatures)
+    nanobind_add_module(nanobind_${target} pybind_${target}/pybind_${target}.cpp)
+    target_compile_definitions(nanobind_${target} PRIVATE USE_NANOBIND)
+    set_target_properties(nanobind_${target} PROPERTIES
+        OUTPUT_NAME pybind_${target}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/nanobind_${target})
 endforeach()
 
 # Need a special location for this one
