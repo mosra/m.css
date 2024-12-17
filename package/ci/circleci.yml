@@ -308,6 +308,9 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Matplotlib 3.10 has different output again
+        # TODO update once I have it in Arch
+        matplotlib-version: ==3.9.3
         # NumPy 2.0 doesn't work with pybind < 2.12
         numpy-version: ==1.26.4
         # Ubuntu 22.04 has pygments 2.11
@@ -332,6 +335,9 @@ jobs:
     - install-base:
         extra: graphviz cmake ninja-build wget
     - install-python-deps:
+        # Matplotlib 3.10 has different output again
+        # TODO update once I have it in Arch
+        matplotlib-version: ==3.9.3
         # NumPy 2.0 doesn't work with pybind < 2.12
         numpy-version: ==1.26.4
         # Ubuntu 24.04 has pygments 2.17
@@ -353,7 +359,10 @@ jobs:
     steps:
     - install-base:
         extra: graphviz cmake ninja-build wget
-    - install-python-deps
+    - install-python-deps:
+        # Matplotlib 3.10 has different output again
+        # TODO update once I have it in Arch
+        matplotlib-version: ==3.9.3
     - checkout
     - test-theme
     - test-plugins
