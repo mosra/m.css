@@ -28,7 +28,7 @@ class MyClass:
     def foo(self, value: float):
         ...
 
-class MyClass23:
+class Pybind23:
     is_pybind23 = True
 
     @property
@@ -45,7 +45,7 @@ class MyClass23:
     def writeonly_crazy(self, value):
         ...
 
-class MyClass26:
+class Pybind26:
     is_pybind26 = False
 
 def crazy_signature(*args):

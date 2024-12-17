@@ -41,13 +41,13 @@ struct MyClass {
 
 void defaultUnrepresentableArgument(MyClass) {}
 
-struct MyClass23 {
+struct Pybind23 {
     void setFoo(float) {}
 
     void setFooCrazy(const Crazy<3, int>&) {}
 };
 
-struct MyClass26 {
+struct Pybind26 {
     static int positionalOnly(int, float) { return 1; }
     static int keywordOnly(float, const std::string&) { return 2; }
     static int positionalKeywordOnly(int, float, const std::string&) { return 3; }
@@ -115,9 +115,9 @@ could be another, but it's not added yet.)");
         .def("overloaded", static_cast<std::string(*)(int)>(&overloaded), "Overloaded for ints")
         .def("overloaded", static_cast<bool(*)(float)>(&overloaded), "Overloaded for floats");
 
-    py::class_<MyClass23> pybind23{m, "MyClass23", "Testing pybind 2.3 features"};
+    py::class_<Pybind23> pybind23{m, "Pybind23", "Testing pybind 2.3 features"};
 
-    /* Checker so the Python side can detect if testing pybind 2.3 features is
+    /* Checker so the Python side can detect if testing pybind 2.3+ features is
        feasible */
     pybind23.attr("is_pybind23") =
         #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 203
@@ -129,13 +129,13 @@ could be another, but it's not added yet.)");
 
     #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 203
     pybind23
-        .def_property("writeonly", nullptr, &MyClass23::setFoo, "A write-only property")
-        .def_property("writeonly_crazy", nullptr, &MyClass23::setFooCrazy, "A write-only property with a type that can't be parsed");
+        .def_property("writeonly", nullptr, &Pybind23::setFoo, "A write-only property")
+        .def_property("writeonly_crazy", nullptr, &Pybind23::setFooCrazy, "A write-only property with a type that can't be parsed");
     #endif
 
-    py::class_<MyClass26> pybind26{m, "MyClass26", "Testing pybind 2.6 features"};
+    py::class_<Pybind26> pybind26{m, "Pybind26", "Testing pybind 2.6 features"};
 
-    /* Checker so the Python side can detect if testing pybind 2.6 features is
+    /* Checker so the Python side can detect if testing pybind 2.6+ features is
        feasible */
     pybind26.attr("is_pybind26") =
         #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
@@ -147,8 +147,8 @@ could be another, but it's not added yet.)");
 
     #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 206
     pybind26
-        .def_static("positional_only", &MyClass26::positionalOnly, "Positional-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"))
-        .def_static("keyword_only", &MyClass26::keywordOnly, "Keyword-only arguments", py::arg("b"), py::kw_only{}, py::arg("keyword") = "no")
-        .def_static("positional_keyword_only", &MyClass26::positionalKeywordOnly, "Positional and keyword-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"), py::kw_only{}, py::arg("keyword") = "no");
+        .def_static("positional_only", &Pybind26::positionalOnly, "Positional-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"))
+        .def_static("keyword_only", &Pybind26::keywordOnly, "Keyword-only arguments", py::arg("b"), py::kw_only{}, py::arg("keyword") = "no")
+        .def_static("positional_keyword_only", &Pybind26::positionalKeywordOnly, "Positional and keyword-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"), py::kw_only{}, py::arg("keyword") = "no");
     #endif
 }

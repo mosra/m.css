@@ -383,32 +383,32 @@ class Signatures(BaseInspectTestCase):
         # Similar to above, but these functions have explicit py::pos_only and
         # py::kw_only placeholders
 
-        if not pybind_signatures.MyClass26.is_pybind26:
+        if not pybind_signatures.Pybind26.is_pybind26:
             self.skipTest("only on pybind 2.6+")
 
         # The a: int argument is always before the / and thus shouldn't be
         # callable with a keyword
-        self.assertEqual(pybind_signatures.MyClass26.positional_only(1, 3.0), 1)
-        self.assertEqual(pybind_signatures.MyClass26.positional_keyword_only(1, 3.0), 3)
+        self.assertEqual(pybind_signatures.Pybind26.positional_only(1, 3.0), 1)
+        self.assertEqual(pybind_signatures.Pybind26.positional_keyword_only(1, 3.0), 3)
         with self.assertRaises(TypeError):
-            pybind_signatures.MyClass26.positional_only(a=1, b=3.0)
+            pybind_signatures.Pybind26.positional_only(a=1, b=3.0)
         with self.assertRaises(TypeError):
-            pybind_signatures.MyClass26.positional_keyword_only(a=1, b=3.0)
+            pybind_signatures.Pybind26.positional_keyword_only(a=1, b=3.0)
 
         # The b argument is always between / and * and thus should be callable
         # both without (done above/below) and with
-        self.assertEqual(pybind_signatures.MyClass26.positional_only(1, b=3.0), 1)
-        self.assertEqual(pybind_signatures.MyClass26.keyword_only(b=3.0), 2)
-        self.assertEqual(pybind_signatures.MyClass26.positional_keyword_only(1, b=3.0), 3)
+        self.assertEqual(pybind_signatures.Pybind26.positional_only(1, b=3.0), 1)
+        self.assertEqual(pybind_signatures.Pybind26.keyword_only(b=3.0), 2)
+        self.assertEqual(pybind_signatures.Pybind26.positional_keyword_only(1, b=3.0), 3)
 
         # The keyword: str argument is always after the / and thus shouldn't be
         # callable without a keyword
-        self.assertEqual(pybind_signatures.MyClass26.keyword_only(3.0, keyword='yes'), 2)
-        self.assertEqual(pybind_signatures.MyClass26.positional_keyword_only(1, 3.0, keyword='yes'), 3)
+        self.assertEqual(pybind_signatures.Pybind26.keyword_only(3.0, keyword='yes'), 2)
+        self.assertEqual(pybind_signatures.Pybind26.positional_keyword_only(1, 3.0, keyword='yes'), 3)
         with self.assertRaises(TypeError):
-            pybind_signatures.MyClass26.keyword_only(3.0, 'yes')
+            pybind_signatures.Pybind26.keyword_only(3.0, 'yes')
         with self.assertRaises(TypeError):
-            pybind_signatures.MyClass26.positional_keyword_only(1, 3.0, 'yes')
+            pybind_signatures.Pybind26.positional_keyword_only(1, 3.0, 'yes')
 
     def test(self):
         sys.path.append(self.path)
@@ -421,10 +421,10 @@ class Signatures(BaseInspectTestCase):
         self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass.html'))
         self.assertEqual(*self.actual_expected_contents('false_positives.html'))
 
-        if pybind_signatures.MyClass23.is_pybind23:
-            self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass23.html'))
-        if pybind_signatures.MyClass26.is_pybind26:
-            self.assertEqual(*self.actual_expected_contents('pybind_signatures.MyClass26.html'))
+        if pybind_signatures.Pybind23.is_pybind23:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures.Pybind23.html'))
+        if pybind_signatures.Pybind26.is_pybind26:
+            self.assertEqual(*self.actual_expected_contents('pybind_signatures.Pybind26.html'))
 
     def test_stubs(self):
         sys.path.append(self.path)
@@ -437,9 +437,9 @@ class Signatures(BaseInspectTestCase):
         })
 
         # TODO handle writeonly properties correctly
-        if pybind_signatures.MyClass26.is_pybind26:
+        if pybind_signatures.Pybind26.is_pybind26:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi'))
-        elif pybind_signatures.MyClass23.is_pybind23:
+        elif pybind_signatures.Pybind23.is_pybind23:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi', 'pybind_signatures/__init__-pybind25.pyi'))
         else:
             self.assertEqual(*self.actual_expected_contents('pybind_signatures/__init__.pyi', 'pybind_signatures/__init__-pybind22.pyi'))

@@ -28,10 +28,10 @@ class MyClass:
     def foo(self, value: float):
         ...
 
-class MyClass23:
+class Pybind23:
     is_pybind23 = False
 
-class MyClass26:
+class Pybind26:
     is_pybind26 = False
 
 def crazy_signature(*args):
