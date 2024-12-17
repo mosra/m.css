@@ -1,3 +1,4 @@
+import datetime
 import os
 import typing
 
@@ -69,6 +70,9 @@ class Pybind27:
         ...
 
 def crazy_signature(*args):
+    ...
+
+def date_time(arg0: datetime.datetime, arg1: datetime.timedelta, /) -> None:
     ...
 
 def default_unrepresentable_argument(a: MyClass = ...) -> None:

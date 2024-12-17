@@ -1027,6 +1027,10 @@ def _pybind_map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
             add_module_dependency_for(state, typing)
         return 'typing.' + input_type
     elif input_type in [
+        # std::chrono::timepoint
+        'datetime.datetime',
+        # std::chrono::duration
+        'datetime.timedelta',
         # For std::filesystem::path as of pybind11 2.7. The commit says that
         # it gets converted to pathlib.Path (i.e., as a return value?) instead
         # of os.PathLike, but that's not the case, both input and output types

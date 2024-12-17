@@ -1,5 +1,6 @@
 #include <functional>
 #include <pybind11/pybind11.h>
+#include <pybind11/chrono.h> /* for std::chrono */
 #include <pybind11/stl.h> /* needed for std::vector! */
 #include <pybind11/functional.h> /* for std::function */
 
@@ -29,6 +30,8 @@ bool overloaded(float) { return {}; }
 // Doesn't work with just a plain function pointer, MEH
 void takesAFunction(std::function<int(float, std::vector<float>&)>) {}
 void takesAFunctionReturningVoid(std::function<void()>) {}
+
+void dateTime(std::chrono::time_point<std::chrono::system_clock>, std::chrono::nanoseconds) {}
 
 struct MyClass {
     static MyClass staticFunction(int, float) { return {}; }
@@ -87,6 +90,7 @@ PYBIND11_MODULE(pybind_signatures, m) {
         .def("duck", &duck, "A function taking args/kwargs directly")
         .def("takes_a_function", &takesAFunction, "A function taking a Callable")
         .def("takes_a_function_returning_none", &takesAFunctionReturningVoid, "A function taking a Callable that returns None")
+        .def("date_time", &dateTime, "A function taking a datetime.datetime and timedelta")
         .def("escape_docstring", &voidFunction, "A docstring that <em>should</em> be escaped")
         .def("failed_parse_docstring", &crazySignature, "A failed parse should <strong>also</strong> escape the docstring")
 
