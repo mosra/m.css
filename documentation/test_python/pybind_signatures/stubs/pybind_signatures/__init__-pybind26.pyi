@@ -1,3 +1,4 @@
+import datetime
 import typing
 
 class MyClass:
@@ -29,15 +30,44 @@ class MyClass:
         ...
 
 class Pybind23:
-    is_pybind23 = False
+    is_pybind23 = True
+
+    @property
+    def writeonly(self) -> float:
+        ...
+    @writeonly.setter
+    def writeonly(self, value: float):
+        ...
+
+    @property
+    def writeonly_crazy(self):
+        ...
+    @writeonly_crazy.setter
+    def writeonly_crazy(self, value):
+        ...
 
 class Pybind26:
-    is_pybind26 = False
+    is_pybind26 = True
+
+    @staticmethod
+    def keyword_only(b: float, *, keyword: str = 'no') -> int:
+        ...
+
+    @staticmethod
+    def positional_keyword_only(a: int, /, b: float, *, keyword: str = 'no') -> int:
+        ...
+
+    @staticmethod
+    def positional_only(a: int, /, b: float) -> int:
+        ...
 
 class Pybind27:
     is_pybind27 = False
 
 def crazy_signature(*args):
+    ...
+
+def date_time(arg0: datetime.datetime, arg1: datetime.timedelta, /) -> None:
     ...
 
 def default_unrepresentable_argument(a: MyClass = ...) -> None:

@@ -3,6 +3,10 @@
 #include <pybind11/stl.h> /* needed for std::vector! */
 #include <pybind11/functional.h> /* for std::function */
 
+#if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 207
+#include <pybind11/stl/filesystem.h> /* for std::filesystem::path */
+#endif
+
 namespace py = pybind11;
 
 int scale(int a, float argument) {
@@ -51,6 +55,18 @@ struct Pybind26 {
     static int positionalOnly(int, float) { return 1; }
     static int keywordOnly(float, const std::string&) { return 2; }
     static int positionalKeywordOnly(int, float, const std::string&) { return 3; }
+};
+
+struct Pybind27 {
+    #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 207
+    /* In https://github.com/pybind/pybind11/commit/5bcaaa0423c6757ca1c2738d0a54947dacdb03a1
+       it says that std::filesystem_path gets converted to pathlib.Path (i.e.,
+       as a return value?) instead of os.PathLike, but that's not the case,
+       both are exposed as os.PathLike */
+    static std::filesystem::path path(const std::filesystem::path& path) {
+        return path;
+    }
+    #endif
 };
 
 void duck(py::args, py::kwargs) {}
@@ -150,5 +166,22 @@ could be another, but it's not added yet.)");
         .def_static("positional_only", &Pybind26::positionalOnly, "Positional-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"))
         .def_static("keyword_only", &Pybind26::keywordOnly, "Keyword-only arguments", py::arg("b"), py::kw_only{}, py::arg("keyword") = "no")
         .def_static("positional_keyword_only", &Pybind26::positionalKeywordOnly, "Positional and keyword-only arguments", py::arg("a"), py::pos_only{}, py::arg("b"), py::kw_only{}, py::arg("keyword") = "no");
+    #endif
+
+    py::class_<Pybind27> pybind27{m, "Pybind27", "Testing pybind 2.7 features"};
+
+    /* Checker so the Python side can detect if testing pybind 2.7+ features is
+       feasible */
+    pybind27.attr("is_pybind27") =
+        #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 207
+        true
+        #else
+        false
+        #endif
+        ;
+
+    #if PYBIND11_VERSION_MAJOR*100 + PYBIND11_VERSION_MINOR >= 207
+    pybind27
+        .def_static("path", &Pybind27::path, "Take and return a std::filesystem::path");
     #endif
 }

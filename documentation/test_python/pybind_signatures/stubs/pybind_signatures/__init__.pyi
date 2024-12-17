@@ -1,3 +1,4 @@
+import os
 import typing
 
 class MyClass:
@@ -58,6 +59,13 @@ class Pybind26:
 
     @staticmethod
     def positional_only(a: int, /, b: float) -> int:
+        ...
+
+class Pybind27:
+    is_pybind27 = True
+
+    @staticmethod
+    def path(arg0: os.PathLike, /) -> os.PathLike:
         ...
 
 def crazy_signature(*args):

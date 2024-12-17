@@ -1026,6 +1026,23 @@ def _pybind_map_name_prefix_or_add_typing_suffix(state: State, input_type: str):
         if state.current_module:
             add_module_dependency_for(state, typing)
         return 'typing.' + input_type
+    elif input_type in [
+        # For std::filesystem::path as of pybind11 2.7. The commit says that
+        # it gets converted to pathlib.Path (i.e., as a return value?) instead
+        # of os.PathLike, but that's not the case, both input and output types
+        # are exposed as os.PathLike:
+        #   https://github.com/pybind/pybind11/commit/5bcaaa0423c6757ca1c2738d0a54947dacdb03a1
+        'os.PathLike'
+    ]:
+        # current_module might be unset when calling this from unittests etc.
+        if state.current_module:
+            # Turn the string into a real module to add a dependency for,
+            # otherwise add_module_dependency_for() will try to find it in the
+            # name map, and it may not be there at all if no pure Python code
+            # used those yet
+            module = importlib.import_module(input_type.partition('.')[0])
+            add_module_dependency_for(state, module)
+        return input_type
     else:
         type = map_name_prefix(state, input_type)
         # current_module might be unset when calling this from unittests etc.
