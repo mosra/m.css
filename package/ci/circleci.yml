@@ -321,6 +321,7 @@ jobs:
     - test-documentation-themes:
         python-version: "3.10"
         # 2.9 series seems to be the first to work with Python 3.10
+        # TODO have something that tests 2.6 and 2.7 explicitly
         pybind-version: "2.9.2"
         # 1.9.1 is in Ubuntu 22.04 repos, HOWEVER both 1.9.1 and 1.9.2 link
         # against libclang-9.so.1, which is stupid. I think I even asked if the
