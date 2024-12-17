@@ -932,7 +932,7 @@ def add_module_dependency_for(state: State, object: Union[Any, str]):
             # no dependency. Given that str is passed only from pybind, all
             # referenced names should be either builtin or known.
             if not name:
-                assert '.' not in object
+                assert '.' not in object, "Pybind11 type {} not known, cannot add a module dependency for it".format(object)
                 return
 
         # If it's directly a module (such as `typing` or `enum` passed from
