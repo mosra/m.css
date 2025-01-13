@@ -2868,7 +2868,7 @@ def build_search_data(state: State, merge_subtrees=True, add_lookahead_barriers=
             # cases, yet be still long enough to be able to distinguish
             # particular overloads.
             # TODO: the suffix_length has to be calculated on UTF-8
-            params = ', '.join(result.params)
+            params = ', '.join([i for i in result.params if i is not None])
             assert is_html_safe(params) # this is not C++, so no <>&
             if len(params) > 49:
                 params = params[:48] + '…'
