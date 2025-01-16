@@ -1,7 +1,7 @@
 ..
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025
               Vladimír Vondruš <mosra@centrum.cz>
     Copyright © 2017 Bridouz <justin.berthault@gmail.com>
     Copyright © 2017 gotchafr <gotchafr@users.noreply.github.com>

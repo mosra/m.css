@@ -3,7 +3,7 @@
 #
 #   This file is part of m.css.
 #
-#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
+#   Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025
 #             Vladimír Vondruš <mosra@centrum.cz>
 #   Copyright © 2019 DarkContact <DarkContact@mail.ru>
 #   Copyright © 2019 Cris Luengo <cris.l.luengo@gmail.com>
@@ -144,7 +144,7 @@ def postprocess(files, process_imports, out_file):
 /*
     This file is part of m.css.
 
-    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
+    Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025
               Vladimír Vondruš <mosra@centrum.cz>
 
     Permission is hereby granted, free of charge, to any person obtaining a
