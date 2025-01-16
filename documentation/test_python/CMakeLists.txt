@@ -57,6 +57,12 @@ set_target_properties(pybind_search PROPERTIES
     OUTPUT_NAME pybind
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/search/search)
 
+# Need a special location for this one
+pybind11_add_module(pybind_broken_signatures pybind_broken_signatures/pybind_broken_signatures/pybind.cpp)
+set_target_properties(pybind_broken_signatures PROPERTIES
+    OUTPUT_NAME pybind
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pybind_broken_signatures/pybind_broken_signatures)
+
 # Need a special name for this one
 pybind11_add_module(pybind_name_mapping pybind_name_mapping/sub.cpp)
 set_target_properties(pybind_name_mapping PROPERTIES

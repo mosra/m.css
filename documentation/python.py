@@ -1121,9 +1121,14 @@ def parse_pybind_signature(state: State, referrer_path: List[str], signature: st
     try:
         # Arguments
         while signature[0] != ')':
-            # Name
-            arg_name = _pybind_arg_name_rx.match(signature).group(0)
-            assert arg_name
+            # Name. We might be attempting to parse a pybind11 signature
+            # completely by accident, which can happen for example with the
+            # docstring for the builtin math.log(). See the
+            # pybind_broken_signatures test for a repro case.
+            arg_name_match = _pybind_arg_name_rx.match(signature)
+            if not arg_name_match:
+                raise SyntaxError("Expected argument name, got `{}`".format(signature))
+            arg_name = arg_name_match.group(0)
             signature = signature[len(arg_name):]
 
             # Type (optional)
@@ -2001,11 +2006,19 @@ def extract_function_doc(state: State, parent, entry: Empty) -> List[Any]:
             # If the function is overloaded, add arguments to each to
             # distinguish between them
             if len(overloads) != 1:
-                for i in range(len(out.params)):
-                    param = out.params[i]
-                    # TODO use param.type_relative if it ever exists again in
-                    #   addition to param.type_quoted
-                    result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, param.type)) if param.type else param.name]
+                # Given overload may have failed parsing, such as with pybind11
+                # signatures containing C++ types, in which case it's a single
+                # None entry, or in case of the builtin math.log() function.
+                # Replace that with an ellipsis. See the
+                # pybind_broken_signatures test for a repro case.
+                if len(out.params) == 1 and out.params[0].name is None:
+                    result.params = ['…']
+                else:
+                    for i in range(len(out.params)):
+                        param = out.params[i]
+                        # TODO use param.type_relative if it ever exists again
+                        #   in #   addition to param.type_quoted
+                        result.params += ['{}: {}'.format(param.name, make_relative_name(state, entry.path, param.type)) if param.type else param.name]
             state.search += [result]
 
     return overloads

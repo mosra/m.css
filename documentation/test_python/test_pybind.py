@@ -25,10 +25,12 @@
 #
 
 import copy
+import os
 import sys
 import unittest
 
-from python import State, parse_pybind_signature, default_config
+from _search import searchdata_filename, pretty_print
+from python import EntryType, State, parse_pybind_signature, default_config
 
 from . import BaseInspectTestCase
 
@@ -541,3 +543,81 @@ class ExternalOverloadDocs(BaseInspectTestCase):
         import pybind_external_overload_docs
         if pybind_external_overload_docs.Class26.is_pybind26:
             self.assertEqual(*self.actual_expected_contents('pybind_external_overload_docs.Class26.html'))
+
+class BrokenSignatures(BaseInspectTestCase):
+    def test(self):
+        self.run_python({
+            'SEARCH_DISABLED': False,
+            'SEARCH_DOWNLOAD_BINARY': True,
+            'PYBIND11_COMPATIBILITY': True
+        })
+        # Python 3.6 has a slightly different line wrapping in the log()
+        # docstring, causing it to be interpreted differently when accidentally
+        # parsing it as a pybind11 signature
+        if sys.version_info >= (3, 7):
+            self.assertEqual(*self.actual_expected_contents('pybind_broken_signatures.html'))
+        else:
+            self.assertEqual(*self.actual_expected_contents('pybind_broken_signatures.html', 'pybind_broken_signatures-py36.html'))
+
+        # Verify that the broken signatures get handled gracefully for search
+        # as well
+        with open(os.path.join(self.path, 'output', searchdata_filename.format(search_filename_prefix='searchdata')), 'rb') as f:
+            serialized = f.read()
+            search_data_pretty = pretty_print(serialized, entryTypeClass=EntryType)[0]
+        # print(search_data_pretty)
+        self.assertEqual(len(serialized), 764)
+        # The overloads should contain an ellipsis in place of the arguments
+        self.assertEqual(search_data_pretty, """
+8 symbols
+pybind_broken_signatures [14]
+|                       .$
+|                        log [0]
+|                        |  ($
+|                        |   ) [1]
+|                        overload [4, 6, 2]
+|                        |       ($
+|                        |        ) [5, 7, 3]
+|                        |       2 [10, 12, 8]
+|                        |       |($
+|                        |       | ) [11, 13, 9]
+log [0]
+|  ($
+|   ) [1]
+overload [4, 6, 2]
+|       ($
+|        ) [5, 7, 3]
+|       2 [10, 12, 8]
+|       |($
+|       | ) [11, 13, 9]
+0: .log() [prefix=14[:29], suffix_length=2, type=FUNCTION] -> #log
+1:  [prefix=0[:33], type=FUNCTION] ->
+2: .overload(arg0: int) [prefix=14[:29], suffix_length=11, type=FUNCTION] -> #overload-46f8a
+3:  [prefix=2[:44], suffix_length=9, type=FUNCTION] ->
+4: .overload(…) [prefix=14[:29], suffix_length=5, type=FUNCTION] -> #overload-6eef6
+5:  [prefix=4[:44], suffix_length=3, type=FUNCTION] ->
+6: .overload(…) [prefix=14[:29], suffix_length=5, type=FUNCTION] -> #overload-6eef6
+7:  [prefix=4[:44], suffix_length=3, type=FUNCTION] ->
+8: .overload2(arg0: int) [prefix=14[:29], suffix_length=11, type=FUNCTION] -> #overload2-46f8a
+9:  [prefix=8[:45], suffix_length=9, type=FUNCTION] ->
+10: .overload2(…) [prefix=14[:29], suffix_length=5, type=FUNCTION] -> #overload2-6eef6
+11:  [prefix=10[:45], suffix_length=3, type=FUNCTION] ->
+12: .overload2(…) [prefix=14[:29], suffix_length=5, type=FUNCTION] -> #overload2-6eef6
+13:  [prefix=10[:45], suffix_length=3, type=FUNCTION] ->
+14: pybind_broken_signatures [type=MODULE] -> pybind_broken_signatures.html
+(EntryType.PAGE, CssClass.SUCCESS, 'page'),
+(EntryType.MODULE, CssClass.PRIMARY, 'module'),
+(EntryType.CLASS, CssClass.PRIMARY, 'class'),
+(EntryType.FUNCTION, CssClass.INFO, 'func'),
+(EntryType.PROPERTY, CssClass.WARNING, 'property'),
+(EntryType.ENUM, CssClass.PRIMARY, 'enum'),
+(EntryType.ENUM_VALUE, CssClass.DEFAULT, 'enum val'),
+(EntryType.DATA, CssClass.DEFAULT, 'data')
+""".strip())
+
+    def test_stubs(self):
+        self.run_python_stubs({
+            'PYBIND11_COMPATIBILITY': True
+        })
+
+        # Stubs will have just *args in the argument list
+        self.assertEqual(*self.actual_expected_contents('pybind_broken_signatures.pyi'))
