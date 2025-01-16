@@ -364,6 +364,9 @@ jobs:
         # Matplotlib 3.10 has different output again
         # TODO update once I have it in Arch
         matplotlib-version: ==3.9.3
+        # pygments 2.19 change the output slightly
+        # TODO update once I dare to update my Arch
+        pygments-version: ==2.18
     - checkout
     - test-theme
     - test-plugins
