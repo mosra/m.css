@@ -65,6 +65,47 @@ var Search = {
        input (so not deletion, cut, or anything else). This is flipped in the
        onkeypress event and reset after each oninput event. */
     autocompleteNextInputEvent: false,
+    /* On Android using a virtual keyboard, all `event.key`s are reported as
+       `Unidentified` (in Chrome) or `Process` (in Firefox) with `event.code`
+       229 and thus the onkeydown / onKeyup events are useless. See this
+       WONTFIX bug for details:
+        https://bugs.chromium.org/p/chromium/issues/detail?id=118639
+       Couldn't find any similar bugreport for Firefox, but I assume the
+       virtual keyboard is the main thing to blame, not the browser.
+
+       Instead, to make the autocompletion working when it should and not
+       working when it shouldn't, when such event is detected we defer the
+       handling to the input event, which is fired right after and has the data
+       we need. */
+    fallbackBuggyAndroidToNextInputEvent: false,
+    /* On Android with Firefox Mobile, programmatically setting an input value
+       will trigger an inputEvent as well, triggering another round of search
+       and autocompletion. This variable is thus set after the input value is
+       modified to prevent that -- otherwise characters added with an
+       autocompletion highlight active will not replace the selection, but
+       rather insert before it, breaking the search. */
+    // TODO this might be also what fixes the similar Chrome bug I couldn't
+    //  reproduce?
+    nextInputEventIsFromAutocompletion: false,
+    /* And finally, on Android with Firefox Mobile, if there's an
+       autocompletion highlight and the whole selection gets deleted, it
+       results in THREE input events instead of one:
+
+        1. `deleteContentBackward` removing the selection (same as Chrome or
+           desktop Firefox)
+        2. `deleteContentBackward` removing *the whole word* that contained the
+           selection (or the whole text if it's just one word)
+        3. `insertCompositionText`, adding the word back in, resulting in the
+           same state as (1).
+
+       This variable thus remembers what was the last input value after every
+       input event that adds something, and triggers autocompletion only
+       if the new value is different from that.
+    */
+    // TODO but the two extra events break the `autocompleteNextInputEvent`,
+    //  meaning autocompletion gets randomly triggered even when we're deleting
+    //  the text, which we wanted to prevent
+    autocompleteNextInputEventOnlyIfNotEqualTo: '',
 
     init: function(buffer, maxResults) {
         let view = new DataView(buffer);
@@ -595,9 +636,25 @@ var Search = {
             if(this.autocompleteNextInputEvent && resultsSuggestedTabAutocompletion[1].length && searchInput.selectionEnd == searchInput.value.length) {
                 let suggestedTabAutocompletion = this.fromUtf8(resultsSuggestedTabAutocompletion[1]);
 
-                let lengthBefore = searchInput.value.length;
-                searchInput.value += suggestedTabAutocompletion;
-                searchInput.setSelectionRange(lengthBefore, searchInput.value.length);
+                if(this.autocompleteNextInputEventIfNotEqualTo != searchInput.value) {
+                    this.autocompleteNextInputEventIfNotEqualTo = searchInput.value;
+                    /* On Firefox, the searchInput.value modification below
+                       will trigger an input event and thus another round of
+                       autocompletion, resulting in new characters being added
+                       before the autocompleted selection instead of replacing
+                       the selection. Ignore that event. */
+                    this.nextInputEventIsFromAutocompletion = true;
+
+                    /* Delay-set the selected autocompletion text. Witout this we
+                       hit a NASTY bug on Android Chrome where the selection is
+                       displayed but deleting it via the virtual keyboard does
+                       nothing. */
+                    window.setTimeout(function() {
+                        console.log("autocompleting!!!", Search.autocompleteNextInputEventIfNotEqualTo, searchInput.value);
+                        searchInput.value += suggestedTabAutocompletion;
+                        searchInput.setSelectionRange(searchInput.value.length - suggestedTabAutocompletion.length, searchInput.value.length);
+                    });
+                }
             }
 
         /* Nothing found */
@@ -707,14 +764,51 @@ function copyToKeyboard(text) {
    work is beyond me. */ /* istanbul ignore if */
 if(typeof document !== 'undefined') {
     document.getElementById('search-input').oninput = function(event) {
+        /* This input event was triggered as a result of adding the
+           autocompletion highlight on Firefox Mobile. Ignore that. */
+        if(Search.nextInputEventIsFromAutocompletion) {
+            console.log("autocompletion-triggered search ignored!!!");
+            Search.nextInputEventIsFromAutocompletion = false;
+            return;
+        }
+
+        /* Figure out if to autocomplete on Androids using a virtual keyboard,
+           as the onkeydown event fired just before was useless. See the
+           note about `Unidentified` keys below. */
+        if(window.location.hash == '#search' && document.activeElement.id == 'search-input' && Search.fallbackBuggyAndroidToNextInputEvent) {
+            if(event.inputType.startsWith('insert'))
+                Search.autocompleteNextInputEvent = true;
+            else
+                Search.autocompleteNextInputEvent = false;
+            Search.fallbackBuggyAndroidToNextInputEvent = false;
+        }
+
+        console.log("searching!!!", event, document.getElementById('search-input').value, document.getElementById('search-input').selectionEnd, document.getElementById('search-input').selectionStart, Search.autocompleteNextInputEventIfNotEqualTo);
+
         Search.searchAndRender(document.getElementById('search-input').value);
     };
 
     document.onkeydown = function(event) {
         /* Search shown */
         if(window.location.hash == '#search') {
+            /* We're on Android and using a virtual keyboard, which reports all
+               `event.key`s as `Unidentified` (on Chrome) or `Process` (on
+               Firefox) with `event.code` 229 and thus we have no way to do
+               anything. See this WONTFIX bug for details:
+                https://bugs.chromium.org/p/chromium/issues/detail?id=118639
+               Couldn't find any similar bugreport for Firefox, but I assume
+               the virtual keyboard is the main thing to blame, not the
+               browser.
+
+               We don't expect the virtual keyboard to be used for stuff like
+               moving up/down in the result list or copying links, so the only
+               thing to be handled there is the autocompletion enable/disable,
+               which we'll defer to the immediately following input event. */
+            if(event.key == 'Unidentified' || event.key == 'Process') {
+                Search.fallbackBuggyAndroidToNextInputEvent = true;
+
             /* Close the search */
-            if(event.key == 'Escape') {
+            } else if(event.key == 'Escape') {
                 hideSearch();
 
             /* Focus the search input, if not already, using T or Tab */
@@ -799,62 +893,7 @@ if(typeof document !== 'undefined') {
                worst case the autocompletion won't be allowed ever, which is
                much more acceptable behavior than having no ability to disable
                it and annoying the users. */
-            } else if(event.key != 'Backspace' && event.key != 'Delete' && !event.metaKey && (!event.ctrlKey || event.altKey)
-                /* Don't ever attempt autocompletion with Android virtual
-                   keyboards, as those report all `event.key`s as
-                   `Unidentified` (on Chrome) or `Process` (on Firefox) with
-                   `event.code` 229 and thus we have no way to tell if a text
-                   is entered or deleted. See this WONTFIX bug for details:
-                    https://bugs.chromium.org/p/chromium/issues/detail?id=118639
-                   Couldn't find any similar bugreport for Firefox, but I
-                   assume the virtual keyboard is to blame.
-
-                   An alternative is to hook into inputEvent, which has the
-                   data, but ... there's more cursed issues right after that:
-
-                    - setSelectionRange() in Chrome on Android only renders
-                      stuff, but doesn't actually act as such. Pressing
-                      Backspace will only remove the highlight, but the text
-                      stays here. Only delay-calling it through a timeout will
-                      work as intended. Possibly related SO suggestion (back
-                      then not even the rendering worked properly):
-                       https://stackoverflow.com/a/13235951
-                      Possibly related Chrome bug:
-                       https://bugs.chromium.org/p/chromium/issues/detail?id=32865
-
-                    - On Firefox Mobile, programmatically changing an input
-                      value (for the autocompletion highlight) will trigger an
-                      input event, leading to search *and* autocompletion being
-                      triggered again. Ultimately that results in newly typed
-                      characters not replacing the autocompletion but rather
-                      inserting before it, corrupting the searched string. This
-                      event has to be explicitly ignored.
-
-                    - On Firefox Mobile, deleting a highlight with the
-                      backspace key will result in *three* input events instead
-                      of one:
-                        1. `deleteContentBackward` removing the selection (same
-                           as Chrome or desktop Firefox)
-                        2. `deleteContentBackward` removing *the whole word*
-                           that contained the selection (or the whole text if
-                           it's just one word)
-                        3. `insertCompositionText`, adding the word back in,
-                           resulting in the same state as (1).
-                      I have no idea WHY it has to do this (possibly some
-                      REALLY NASTY workaround to trigger correct font shaping?)
-                      but ultimately it results in the autocompletion being
-                      added again right after it got deleted, making this whole
-                      thing VERY annoying to use.
-
-                   I attempted to work around the above, but it resulted in a
-                   huge amount of browser-specific code that achieves only 90%
-                   of the goal, with certain corner cases still being rather
-                   broken (such as autocompletion randomly triggering when
-                   erasing the text, even though it shouldn't). So disabling
-                   autocompletion on this HELLISH BROKEN PLATFORM is the best
-                   option at the moment. */
-                && event.key != 'Unidentified' && event.key != 'Process'
-            ) {
+            } else if(event.key != 'Backspace' && event.key != 'Delete' && !event.metaKey && (!event.ctrlKey || event.altKey)) {
                 Search.autocompleteNextInputEvent = true;
             /* Otherwise reset the flag, because when the user would press e.g.
                the 'a' key and then e.g. ArrowRight (which doesn't trigger
