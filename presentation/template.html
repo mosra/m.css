@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="{% if page.lang %}{{ page.lang }}{% else %}{{ DEFAULT_LANG }}{%endif %}"{% if PRESENTER_VIEW %} class="m-presenter"{% endif %}{% if not M_DISABLE_SOCIAL_META_TAGS %} prefix="og: http://ogp.me/ns#"{% endif %}>
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ page.title }}</title>
+  {% for href in STYLESHEETS %}
+  <link rel="stylesheet" href="{{ href|basename_or_url|e }}" />
+  {% endfor %}
+  {% if page.css %}
+  {% set styles = page.css.strip().split('\n') %}
+  {% for style in styles %}
+  <link rel="stylesheet" href="{{ style|trim|basename_or_url|e }}" />
+  {% endfor %}
+  {% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% if M_THEME_COLOR %}
+  <meta name="theme-color" content="{{ M_THEME_COLOR }}" />
+  {% endif %}
+  {% if not M_DISABLE_SOCIAL_META_TAGS %}
+  {% if M_SOCIAL_TWITTER_SITE %}
+  <meta name="twitter:site" content="{{ M_SOCIAL_TWITTER_SITE }}" />
+  {% endif %}
+  {% if M_SOCIAL_TWITTER_SITE_ID %}
+  <meta name="twitter:site:id" content="{{ M_SOCIAL_TWITTER_SITE_ID }}" />
+  {% endif %}
+  {% endif %}
+</head>
+<body>
+<div class="m-container m-container-inflatable">
+<div class="m-row">
+<div class="{% if PRESENTER_VIEW %}m-col-m-10 m-push-m-1{% else %}m-col-m-12 m-nopad{% endif %}">
+<article>
+  {% if PRESENTER_VIEW %}
+  <aside>
+    <h1>{{ page.title }}</h1>
+    <h2>{{ page.subtitle }}</h2>
+    <div class="m-row">
+      <div class="m-col-t-4 m-push-t-2">
+        <div class="m-button m-primary m-fullwidth"><a href="#cover">Start presentation</a></div>
+      </div>
+      <div class="m-col-t-4 m-push-t-2">
+        <div class="m-button m-success m-fullwidth"><a href="index.html#cover" onclick="return openMainView(this);">Open main view</a></div>
+      </div>
+    </div>
+    <aside class="m-presenter">Main view: <span id="main-view-connection-status" class="m-text m-danger">not connected</span></aside>
+  </aside>
+  {% endif %}
+  <section id="cover"{% if page.cover %} class="m-presentation-cover" style="background-image: url('{{ page.cover|basename_or_url|e }}');"{% endif %}>
+    <h1>{{ page.title }}</h1>
+    <h2>{{ page.subtitle }}</h2>
+  </section>
+<!-- content -->
+{{ page.content|trim }}
+{% if page.after %}
+{{ page.after|trim }}
+{% endif %}
+<!-- /content -->
+</article>
+</div>
+</div>
+</div>
+<script src="{{ 'presentation.js'|basename_or_url|e }}"></script>
+{% if page.js %}
+{% set scripts = page.js.strip().split('\n') %}
+{% for script in scripts %}
+<script src="{{ script|trim|basename_or_url|e }}"></script>
+{% endfor %}
+{% endif %}
+</body>
+</html>
