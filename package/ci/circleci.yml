@@ -25,9 +25,9 @@ executors:
   python-3_12:
     docker:
     - image: python:3.12.6
-  node-10:
+  node-26:
     docker:
-    - image: node:10.24.0-buster-slim
+    - image: node:26.7.0-trixie-slim
 
 commands:
   install-base:
@@ -381,7 +381,7 @@ jobs:
     - coverage
 
   js:
-    executor: node-10
+    executor: node-26
     steps:
     - install-base:
         extra: python3 curl
